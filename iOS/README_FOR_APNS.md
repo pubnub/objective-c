@@ -1,13 +1,18 @@
 # PubNub APNS Setup Guide and Walkthrough
 
-This is a semi-detialed guide to getting started with PubNub Push Notifications on iOS devices such as iPhones and iPads.  You will need to follow each of these steps in order to issue APNs messages into your mobile device.  Note that APNs requires a real iOS Device and does not work on the iOS Simulators. This means that you can not simulate Push Notifications on the iOS simulator.  This is different from PubNub Messages, as you **CAN** receive PubNub Real-time Messages via the iOS Simulator via PubNub.Subscribe() function.  Just know that APNs requires a physical device.
+This is a detialed guide on how to setup PubNub Push Notifications on iOS devices such as iPhones and iPads.  
+
+You will need to follow each of these steps in order to issue APNs messages into your mobile device.  
+
+**Note that APNS requires a real iOS Device and does not work on the iOS Simulators.**
+This means that you __CANNOT__ simulate Push Notifications on the iOS simulator.  (However, you can of course receive PubNub native messages on the iOS simulator.)
 
 ## Four Step Process
 
 This is a four step process that requires initial preparation steps and testing.  It is simple as we've organized the process for you.  Start by creating the iOS PEM Key for you App.  Send us your PEM key by emailing support@pubnub.com directly.  Add source code files to your project for registering and requesting user permission in your app.  Register Channels via our REST API with the Device ID that your user has been approved and accepted your Push Notification Request. Finally you will test the device by running the App on a real iOS device.
 
-1. Create APNS Certificate.  Email to support@pubnub.com Resulting PEM File.
-2. Add Objective-C Delegates Source File To your Project.
+1. Create an APNS Certificate.  Submit the resulting PEM file via the web admin app, or email to support@pubnub.com if you encounter any difficulties.
+2. Add Objective-C Delegates to your project to handle the inbound APNS messages.
 3. Register Device ID to a PubNub Channel via REST API.
 4. TEST IT: Run the iOS app on a Native Device.  Allow Push Notifications.  Click Home Button.  Issue a PubNub Publish() Request.
 
