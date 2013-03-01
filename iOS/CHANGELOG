@@ -1,6 +1,6 @@
 02-28-2013
 . better handling of gzip responses
-. better handling of corner-case malformed json 
+. better handling of corner-case malformed json
 . removed xcode warnings
 
 02-22-2013
