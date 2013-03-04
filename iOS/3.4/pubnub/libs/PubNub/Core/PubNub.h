@@ -324,7 +324,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * @return PNMessage instance which will represent message
  *         which is sent for processing
  */
-+ (PNMessage *)sendMessage:(NSString *)message toChannel:(PNChannel *)channel;
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel;
 
 /**
  * Same as +sendMessage:toChannel: but allow to specify
@@ -335,7 +335,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * If you need to track message sending from many places, use
  * PNObservationCenter methods for this purpose.
  */
-+ (PNMessage *)sendMessage:(NSString *)message
++ (PNMessage *)sendMessage:(id)message
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 

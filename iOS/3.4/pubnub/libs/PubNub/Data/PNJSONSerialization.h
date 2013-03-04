@@ -39,6 +39,18 @@
              completionBlock:(void(^)(id result, BOOL isJSONPStyle, NSString *callbackMethodName))completionBlock
                   errorBlock:(void(^)(NSError *error))errorBlock;
 
+/**
+ * Serialize provided object into JSON string
+ */
++ (NSString *)stringFromJSONObject:(id)object;
+
+/**
+ * Return whether specified object is valid JSON
+ * string or not (will check whether first node is one
+ * of supported or not)
+ */
++ (BOOL)isJSONString:(id)object;
+
 #pragma mark -
 
 

@@ -788,12 +788,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 #pragma mark - Messages processing methods
 
-+ (PNMessage *)sendMessage:(NSString *)message toChannel:(PNChannel *)channel {
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel {
 
     return [self sendMessage:message toChannel:channel withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(NSString *)message
++ (PNMessage *)sendMessage:(id)message
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
@@ -815,7 +815,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     else {
 
         PNError *sendingError = [PNError errorWithCode:statusCode];
-        PNMessage *failedMessage = [PNMessage messageWithText:message forChannel:channel error:nil];
+        PNMessage *failedMessage = [PNMessage messageWithObject:message forChannel:channel error:nil];
         sendingError.associatedObject = failedMessage;
 
         [[self sharedInstance] notifyDelegateAboutMessageSendingFailedWithError:sendingError];

@@ -96,6 +96,33 @@
     }
 }
 
++ (NSString *)stringFromJSONObject:(id)object {
+
+    NSString *JSONString = nil;
+    if (![self isJSONString:object]) {
+
+        if (NSClassFromString(@"NSJSONSerialization")) {
+
+            NSError *serializationError = nil;
+            NSData *JSONSerializedObject = [NSJSONSerialization dataWithJSONObject:object
+                                                                           options:NSJSONWritingPrettyPrinted
+                                                                             error:&serializationError];
+            JSONString = [[NSString alloc] initWithData:JSONSerializedObject encoding:NSUTF8StringEncoding];
+        }
+        else {
+
+            JSONString = [object JSONString];
+        }
+    }
+    else {
+
+        JSONString = object;
+    }
+
+
+    return JSONString;
+}
+
 + (void)getCallbackMethodName:(NSString **)callbackMethodName fromJSONString:(NSString *)jsonString {
 
     if (jsonString) {
@@ -127,6 +154,18 @@
     
     
     return [JSONWrappedInParens stringByTrimmingCharactersInSet:parens];
+}
+
++ (BOOL)isJSONString:(id)object {
+
+    BOOL isJSONString = [object isKindOfClass:[NSNumber class]];
+    if ([object isKindOfClass:[NSString class]]) {
+
+        unichar nodeChar = [(NSString *)object characterAtIndex:0];
+        isJSONString = nodeChar == '"' || nodeChar == '[' || nodeChar == '{';
+    }
+
+    return isJSONString;
 }
 
 #pragma mark -

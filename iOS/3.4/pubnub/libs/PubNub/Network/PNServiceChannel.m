@@ -226,22 +226,22 @@
 
 #pragma mark - Messages processing methods
 
-- (PNMessage *)sendMessage:(NSString *)message toChannel:(PNChannel *)channel {
+- (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel {
 
-    // Create message instance
+    // Create object instance
     PNError *error = nil;
-    PNMessage *messageObject = [PNMessage messageWithText:message forChannel:channel error:&error];
+    PNMessage *messageObject = [PNMessage messageWithObject:object forChannel:channel error:&error];
 
     // Checking whether
     if (messageObject) {
 
-        // Schedule message sending request
+        // Schedule object sending request
         [self scheduleRequest:[PNMessagePostRequest postMessageRequestWithMessage:messageObject]
       shouldObserveProcessing:YES];
     }
     else {
 
-        // Notify delegate about message sending error
+        // Notify delegate about object sending error
         [self.serviceDelegate serviceChannel:self didFailMessageSend:messageObject withError:error];
     }
 

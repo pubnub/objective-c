@@ -42,11 +42,11 @@
 #pragma mark - Class methods
 
 /**
- * Return reference on message data object initialized with
- * message and target channel
+ * Return reference on object data object initialized with
+ * object object and target channel
  * Message should be in stringified JSON format
  */
-+ (PNMessage *)messageWithText:(NSString *)message forChannel:(PNChannel *)channel error:(PNError **)error;
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel error:(PNError **)error;
 
 /**
  * Return reference on message data object which will represent
@@ -58,9 +58,9 @@
 #pragma mark - Instance methods
 
 /**
- * Initialize message instance with text and channel
+ * Initialize object instance with text and channel
  */
-- (id)initWithText:(NSString *)message forChannel:(PNChannel *)channel;
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel;
 
 - (void)setReceiveDate:(NSDate *)receiveDate;
 
