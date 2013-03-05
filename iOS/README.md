@@ -15,6 +15,11 @@ Detailed information on methods, constants, and notifications can be found in th
         #import "PNImports.h"
 
 ***Its just that easy to start using PubNub real-time within your application!***
+## APNS Setup
+
+If you've enabled your keys for APNS, you can use native PubNub publish operations to send messages to iPhones and iPads via iOS push notifications!
+Refer to the [APNS documentation HOWTO](https://github.com/pubnub/objective-c/blob/master/iOS/README_FOR_APNS.md) for more information on PubNub APNS setup.
+(A more formal "PubNub APNS Hello World" document is on its way!)
 
 ## Client configuration
 
