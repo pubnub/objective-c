@@ -26,6 +26,7 @@
 #import "PNServiceChannel.h"
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
+#import "PNConfiguration+Protected.h"
 
 
 #pragma mark Static
@@ -189,7 +190,19 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  */
 - (void)notifyDelegateAboutError:(PNError *)error;
 
+/**
+ * This method allow notify delegate that client is about to close
+ * connection because of speficied error
+ */
+- (void)notifyDelegateClientWillDisconnectWithError:(PNError *)error;
+
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object;
+
+/**
+ * Check whether client should restore connection after
+ * network went down and restored now
+ */
+- (BOOL)shouldRestoreConnection;
 
 /**
  * Retrieve request execution possibility code.
@@ -304,7 +317,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     if ([self sharedInstance].state == PNPubNubClientStateCreated ||
                         [self sharedInstance].state == PNPubNubClientStateDisconnected) {
 
-                        NSLog(@"{1} >>>>>>>>>>>>>>> CONNECTING STATE");
                         [self sharedInstance].state = PNPubNubClientStateConnecting;
                         
                         // Initialize communication channels
@@ -315,7 +327,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     }
                     else {
 
-                        NSLog(@"{2} >>>>>>>>>>>>>>> CONNECTING STATE");
                         [self sharedInstance].state = PNPubNubClientStateConnecting;
                         
                         
@@ -375,13 +386,17 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
         [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
         [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
+
+        [[self sharedInstance].configuration shouldKillDNSCache:NO];
     }
 
     // Mark that client is disconnecting from remote PubNub services on
     // user request (or by internal client request when updating configuration)
-
-    NSLog(@"{3} >>>>>>>>>>>>>>> DISCONNECTING STATE");
     [self sharedInstance].state = PNPubNubClientStateDisconnecting;
+
+    // Reset client runtime flags and properties
+    [self sharedInstance].connectOnServiceReachabilityCheck = NO;
+    [self sharedInstance].restoringConnection = NO;
 
 
     // Empty connection pool after connection will
@@ -397,8 +412,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 + (void)disconnectForConfigurationChange {
 
     // Mark that client is closing connection because of settings update
-
-    NSLog(@"{4} >>>>>>>>>>>>>>> DISCONNECTING ON CONFIGURATION CHANGE STATE");
     [self sharedInstance].state = PNPubNubClientStateDisconnectingOnConfigurationChange;
     
     
@@ -614,8 +627,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
         if(handlerBlock) {
-
-            handlerBlock(channels, NO, subscriptionError);
+            
+            handlerBlock(PNSubscriptionProcessNotSubscribedState, channels, subscriptionError);
         }
     }
 }
@@ -968,8 +981,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     // Check whether initialization successful or not
     if((self = [super init])) {
 
-
-        NSLog(@"{5} >>>>>>>>>>>>>>> CREATED STATE");
         self.state = PNPubNubClientStateCreated;
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
@@ -977,29 +988,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Adding PubNub services availability observer
         __block __pn_desired_weak PubNub *weakSelf = self;
         self.reachability.reachabilityChangeHandleBlock = ^(BOOL connected) {
+
+            PNLog(PNLogGeneralLevel, weakSelf, @"IS CONNECTED? %@ (STATE: %i)", connected?@"YES":@"NO", weakSelf.state);
             
             if (weakSelf.shouldConnectOnServiceReachabilityCheck) {
-                    
-                [[weakSelf class] connect];
+
+                if (connected) {
+
+                    [[weakSelf class] connect];
+                }
             }
             else {
                 
                 if (connected) {
                     
                     if (weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError) {
-
-                        BOOL shouldRestoreConnection = weakSelf.configuration.shouldAutoReconnectClient;
-                        if ([weakSelf.delegate respondsToSelector:@selector(shouldReconnectPubNubClient:)]) {
-                            
-                            shouldRestoreConnection = [[weakSelf.delegate performSelector:@selector(shouldReconnectPubNubClient:)
-                                                                               withObject:weakSelf] boolValue];
-                        }
-                        
                         
                         // Check whether should restore connection or not
-                        if(shouldRestoreConnection) {
+                        if([weakSelf shouldRestoreConnection]) {
 
-                            self.restoringConnection = YES;
+                            weakSelf.restoringConnection = YES;
                             
                             [[weakSelf class] connect];
                         }
@@ -1015,9 +1023,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             [weakSelf handleConnectionErrorOnNetworkFailure];
                         }
                         else {
+                            PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
+                            [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
 
-
-                            NSLog(@"{6} >>>>>>>>>>>>>>> DISCONNECTED ON ERROR STATE");
                             weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
                             
                             // Disconnect communication channels because of
@@ -1113,11 +1121,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host {
 
-    NSLog(@"MESSAGING CHANNEL CONNECTED? %@", [self.messagingChannel isConnected]?@"YES":@"NO");
-    NSLog(@"SERVICE CHANNEL CONNECTED? %@", [self.serviceChannel isConnected]?@"YES":@"NO");
-    NSLog(@"PubNub client state: %i (IS CONNECTING? %@)", self.state,
-          self.state == PNPubNubClientStateConnecting?@"YES":@"NO");
-    NSLog(@"IS SAME HOST? %@", [self.configuration.origin isEqualToString:host]?@"YES":@"NO");
     // Check whether all communication channels connected and whether
     // client in corresponding state or not
     if ([self.messagingChannel isConnected] && [self.serviceChannel isConnected] &&
@@ -1125,14 +1128,31 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         
         // Mark that PubNub client established connection to PubNub
         // services
-
-        NSLog(@"{7} >>>>>>>>>>>>>>> CONNECTED STATE");
         self.state = PNPubNubClientStateConnected;
 
 
         [self warmUpConnection];
 
+        [self notifyDelegateAboutConnectionToOrigin:host];
+
         if (self.isRestoringConnection) {
+
+            NSArray *channels = [self.messagingChannel subscribedChannels];
+
+            if ([channels count] > 0) {
+
+                // Notify delegate that client is about to restore subscription
+                // on previously subscribed channels
+                if ([self.delegate respondsToSelector:@selector(pubnubClient:willRestoreSubscriptionOnChannels:)]) {
+
+                    [self.delegate performSelector:@selector(pubnubClient:willRestoreSubscriptionOnChannels:)
+                                        withObject:self
+                                        withObject:channels];
+                }
+
+                [self sendNotification:kPNClientSubscriptionWillRestoreNotification withObject:channels];
+            }
+
 
             BOOL shouldResubscribe = self.configuration.shouldResubscribeOnConnectionRestore;
             if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
@@ -1141,11 +1161,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
 
             [self.messagingChannel restoreSubscription:shouldResubscribe];
+
+
         }
 
         self.restoringConnection = NO;
-
-        [self notifyDelegateAboutConnectionToOrigin:host];
     }
 }
 
@@ -1157,6 +1177,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     // communication channels not connected to the server
     if(self.state == PNPubNubClientStateConnecting && [self.configuration.origin isEqualToString:host] &&
        ![self.messagingChannel isConnected] && ![self.serviceChannel isConnected]) {
+
+        [self.configuration shouldKillDNSCache:YES];
         
         if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
             
@@ -1197,14 +1219,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             
             PNPubNubClientState state = PNPubNubClientStateDisconnected;
             if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
-                
                 state = PNPubNubClientStateDisconnectedOnNetworkError;
-
-                NSLog(@"{8} >>>>>>>>>>>>>>> DISCONNECTED ON NETWORK ERROR STATE");
-            }
-            else {
-
-                NSLog(@"{9} >>>>>>>>>>>>>>> DISCONNECTED STATE");
             }
             self.state = state;
             
@@ -1240,26 +1255,33 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 // Clean up cached data
                 [PNChannel purgeChannelsCache];
             }
+            else {
+
+                // Check whether service is available
+                // (this event may arrive after device was unlocked
+                // so basically connection is available and only
+                // sockets closed by remote server or internal kernel
+                // layer)
+                if ([self.reachability isServiceReachabilityChecked] && [self.reachability isServiceAvailable]) {
+
+                    // Check whether should restore connection or not
+                    if ([self shouldRestoreConnection]) {
+
+                        self.restoringConnection = YES;
+
+                        // Try to restore connection to remote PubNub services
+                        [[self class] connect];
+                    }
+                }
+            }
         }
         // Check whether server unexpectedly closed connection
         // while client was active or not
         else if(self.state == PNPubNubClientStateConnected) {
 
-
-            NSLog(@"{10} >>>>>>>>>>>>>>> DISCONNECTED STATE");
             self.state = PNPubNubClientStateDisconnected;
             
-            
-            // Check whether PubNub client should try to restore
-            // connection with PubNub service
-            BOOL shouldRestoreConnection = self.configuration.shouldAutoReconnectClient;
-            if ([self.delegate respondsToSelector:@selector(shouldReconnectPubNubClient:)]) {
-                
-                shouldRestoreConnection = [[self.delegate performSelector:@selector(shouldReconnectPubNubClient:)
-                                                               withObject:self] boolValue];
-            }
-            
-            if(shouldRestoreConnection) {
+            if([self shouldRestoreConnection]) {
                 
                 // Try to restore connection to remote PubNub services
                 [[self class] connect];
@@ -1279,8 +1301,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 
-
-                NSLog(@"{11} >>>>>>>>>>>>>>> CREATED STATE");
                 self.state = PNPubNubClientStateCreated;
                 self.configuration = self.temporaryConfiguration;
                 self.temporaryConfiguration = nil;
@@ -1298,30 +1318,25 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     if (self.state == PNPubNubClientStateConnected && [self.configuration.origin isEqualToString:host]) {
 
-
-        NSLog(@"{12} >>>>>>>>>>>>>>> DISCONNECTING STATE");
         self.state = PNPubNubClientStateDisconnecting;
         BOOL disconnectedOnNetworkError = ![self.reachability isServiceAvailable];
         if(!disconnectedOnNetworkError) {
 
             disconnectedOnNetworkError = error.code == kPNRequestExecutionFailedOnInternetFailureError;
         }
+        if (!disconnectedOnNetworkError) {
+
+            disconnectedOnNetworkError = ![self.messagingChannel isConnected] || ![self.serviceChannel isConnected];
+        }
         if (disconnectedOnNetworkError) {
 
-
-            NSLog(@"{13} >>>>>>>>>>>>>>> DISCONNECTING ON NETWROK ERROR STATE");
             self.state = PNPubNubClientStateDisconnectingOnNetworkError;
         }
-        
-        
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:willDisconnectWithError:)]) {
-            
-            [self.delegate performSelector:@selector(pubnubClient:willDisconnectWithError:)
-                                withObject:self
-                                withObject:error];
-        }
 
-        [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+        [self.reachability updateReachabilityFromError:error];
+
+
+        [self notifyDelegateClientWillDisconnectWithError:error];
     }
 }
 
@@ -1329,19 +1344,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 #pragma mark - Handler methods
 
 - (void)handleConnectionErrorOnNetworkFailure {
-    
-    PNError *networkError = [PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError];
-    
-    // Notify delegate about connection error if delegate
-    // implemented error handling delegate method
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
-        
-        [self.delegate performSelector:@selector(pubnubClient:connectionDidFailWithError:)
-                            withObject:self
-                            withObject:networkError];
-    }
 
-    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:networkError];
+    // Check whether client is connectig currently or not
+    if (self.state == PNPubNubClientStateConnecting) {
+
+        PNError *networkError = [PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError];
+
+        // Notify delegate about connection error if delegate
+        // implemented error handling delegate method
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
+
+            [self.delegate performSelector:@selector(pubnubClient:connectionDidFailWithError:)
+                                withObject:self
+                                withObject:networkError];
+        }
+
+        [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:networkError];
+    }
 }
 
 
@@ -1455,11 +1474,36 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     [self sendNotification:kPNClientErrorNotification withObject:error];
 }
 
+- (void)notifyDelegateClientWillDisconnectWithError:(PNError *)error {
+
+    if ([self.delegate respondsToSelector:@selector(pubnubClient:willDisconnectWithError:)]) {
+
+        [self.delegate performSelector:@selector(pubnubClient:willDisconnectWithError:)
+                            withObject:self
+                            withObject:error];
+    }
+
+    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+}
+
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object {
 
     // Send notification to all who is interested in it
     // (observation center will track it as well)
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self userInfo:object];
+}
+
+- (BOOL)shouldRestoreConnection {
+
+    BOOL shouldRestoreConnection = self.configuration.shouldAutoReconnectClient;
+    if ([self.delegate respondsToSelector:@selector(shouldReconnectPubNubClient:)]) {
+
+        shouldRestoreConnection = [[self.delegate performSelector:@selector(shouldReconnectPubNubClient:)
+                                                       withObject:self] boolValue];
+    }
+
+
+    return shouldRestoreConnection;
 }
 
 - (NSInteger)requestExecutionPossibilityStatusCode {
@@ -1498,6 +1542,20 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 
     [self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channels];
+}
+
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels {
+
+    // Check whether delegate can handle subscription restore on channels or not
+    if ([self.delegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
+
+        [self.delegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)
+                            withObject:self
+                            withObject:channels];
+    }
+
+
+    [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
 }
 
 - (void)  messagingChannel:(PNMessagingChannel *)channel

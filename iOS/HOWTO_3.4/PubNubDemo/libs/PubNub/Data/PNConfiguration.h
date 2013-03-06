@@ -57,8 +57,12 @@
 @property (nonatomic, assign, getter = shouldUseSecureConnection) BOOL useSecureConnection;
 
 // Stores whether connection should be restored
-// if it failed in previuos sesion or not
+// if it failed in previous session or not
 @property (nonatomic, assign, getter = shouldAutoReconnectClient) BOOL autoReconnectClient;
+
+// Stores whether client should accept GZIP responses
+// from remote origin or not
+@property (nonatomic, assign, getter = shouldAcceptCompressedResponse) BOOL acceptCompressedResponse;
 
 
 #pragma mark - Class methods
@@ -104,18 +108,6 @@
         subscribeKey:(NSString *)subscribeKey
            secretKey:(NSString *)secretKey
            cipherKey:(NSString *)cipherKey;
-
-/**
- * Check whether PubNub client should reset connection
- * because new configuration instance changed critical
- * parts of configuration or not
- */
-- (BOOL)requiresConnectionResetWithConfiguration:(PNConfiguration *)configuration;
-
-/**
- * Check whether configuration is valid or not
- */
-- (BOOL)isValid;
 
 #pragma mark -
 

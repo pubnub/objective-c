@@ -31,6 +31,10 @@
 // fields)
 @property (nonatomic, readonly, assign) NSUInteger size;
 
+// Stores reference on error object which will hold
+// any information about parsing error
+@property (nonatomic, readonly, strong) PNError *error;
+
 // Stores reference on request small identifier
 // hash which will be used to find request
 // which sent this request
@@ -58,11 +62,16 @@
 #pragma mark - Instance methods
 
 /**
- * Intialize response instance with response
+ * Initialize response instance with response
  * body content data, response size and status
  * code (HTTP status code)
  */
 - (id)initWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSUInteger)statusCode;
+
+/**
+ * Return whether request has been processed correctly or not
+ */
+- (BOOL)isCorrectResponse;
 
 #pragma mark -
 

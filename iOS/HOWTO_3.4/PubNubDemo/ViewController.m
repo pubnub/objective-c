@@ -142,13 +142,13 @@
 {
     self.currentChannel = [PNChannel channelWithName:self.channelName.text
                               shouldObservePresence:NO];
-    [PubNub subscribeOnChannel:self.currentChannel withCompletionHandlingBlock:^(NSArray *channels,
-                                                                     BOOL subscribed,
+    [PubNub subscribeOnChannel:self.currentChannel withCompletionHandlingBlock:^(PNSubscriptionProcessState state,
+                                                                     NSArray *channels,
                                                                      PNError *subscriptionError) {
         
-        NSString *alertMessage = [NSString stringWithFormat:@"Subscribed on channel: %@\n",
+        NSString *alertMessage = [NSString stringWithFormat:@"Subscribed on channel: %@\nTo be able to send messages, select channel from righthand list",
                                   self.currentChannel.name];
-        if (!subscribed) {
+        if (state == PNSubscriptionProcessNotSubscribedState) {
             
             alertMessage = [NSString stringWithFormat:@"Failed to subscribe on: %@", self.currentChannel.name];
         }

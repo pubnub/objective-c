@@ -14,6 +14,7 @@
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import "NSData+PNAdditions.h"
+#include <stdlib.h>
 
 
 #ifndef PNMacro_h
@@ -97,13 +98,16 @@ void PNLog(PNLogLevels level, id sender, ...) {
 }
 
 
-static void PNCFRelease(CFTypeRef *CFObject);
-void PNCFRelease(CFTypeRef *CFObject) {
+static void PNCFRelease(void *CFObject);
+void PNCFRelease(void *CFObject) {
 
-    if (*CFObject != NULL) {
+    if (CFObject != NULL) {
 
-        CFRelease(*CFObject);
-        *CFObject = NULL;
+        if (*((CFTypeRef*)CFObject) != NULL) {
+
+            CFRelease(*((CFTypeRef*)CFObject));
+        }
+        *((CFTypeRef*)CFObject) = NULL;
     }
 }
 
@@ -214,6 +218,12 @@ BOOL PNIsUserGeneratedUUID(NSString *uuid) {
 
 
     return ![generatedUUIDCheckPredicate evaluateWithObject:uuid];
+}
+
+static NSInteger PNRandomInteger();
+NSInteger PNRandomInteger() {
+
+    return (arc4random() %(INT32_MAX)-1);
 }
 
 

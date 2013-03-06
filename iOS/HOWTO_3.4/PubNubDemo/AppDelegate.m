@@ -43,24 +43,44 @@
     
     // Subscribe application delegate on subscription updates
     // (events when client subscribe on some channel)
-    [[PNObservationCenter defaultCenter] addClientChannelSubscriptionObserver:self
-                                                            withCallbackBlock:^(NSArray *channels,
-                                                                                BOOL subscribed,
-                                                                                PNError *subscriptionError) {
-                                                                
-                                                                if (subscribed) {
-                                                                    
-                                                                    PNLog(PNLogGeneralLevel, self,
-                                                                          @"{BLOCK-P} PubNub client subscribed on channels: %@",
-                                                                          channels);
-                                                                }
-                                                                else {
-                                                                    
-                                                                    PNLog(PNLogGeneralLevel, self,
-                                                                          @"{BLOCK-P} PubNub client subscription failed with error: %@",
-                                                                          subscriptionError);
-                                                                }
-                                                            }];
+    // Subscribe application delegate on subscription updates
+    // (events when client subscribe on some channel)
+    [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:self
+                                                                 withCallbackBlock:^(PNSubscriptionProcessState state,
+                                                                                     NSArray *channels,
+                                                                                     PNError *subscriptionError) {
+                                                                     
+                                                                     switch (state) {
+                                                                             
+                                                                         case PNSubscriptionProcessNotSubscribedState:
+                                                                             
+                                                                             PNLog(PNLogGeneralLevel, self,
+                                                                                   @"{BLOCK-P} PubNub client subscription failed with error: %@",
+                                                                                   subscriptionError);
+                                                                             break;
+                                                                             
+                                                                         case PNSubscriptionProcessSubscribedState:
+                                                                             
+                                                                             PNLog(PNLogGeneralLevel, self,
+                                                                                   @"{BLOCK-P} PubNub client subscribed on channels: %@",
+                                                                                   channels);
+                                                                             break;
+                                                                             
+                                                                         case PNSubscriptionProcessWillRestoreState:
+                                                                             
+                                                                             PNLog(PNLogGeneralLevel, self,
+                                                                                   @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
+                                                                                   channels);
+                                                                             break;
+                                                                             
+                                                                         case PNSubscriptionProcessRestoredState:
+                                                                             
+                                                                             PNLog(PNLogGeneralLevel, self,
+                                                                                   @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
+                                                                                   channels);
+                                                                             break;
+                                                                     }
+                                                                 }];
     
     // Subscribe on message arrival events with block
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
@@ -88,7 +108,7 @@
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
-    
+    //Initialize PubNub library
     [self initializePubNubClient];
     return YES;
 }
@@ -119,6 +139,7 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
 
 #pragma mark - PubNub client delegate methods
 

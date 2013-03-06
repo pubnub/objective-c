@@ -43,6 +43,10 @@
 // on which this client is subscribed now
 @property (nonatomic, strong) NSMutableSet *subscribedChannelsSet;
 
+// Stores flag on whether messaging channel is restoring
+// subscription on previous channels or not
+@property (nonatomic, assign, getter = isRestoringSubscription) BOOL restoringSubscription;
+
 
 #pragma mark - Instance methods
 
@@ -56,13 +60,6 @@
 
 
 #pragma mark - Channels management
-
-/**
- * Same as -resubscribe but allow to specify whether
- * action was called by user request or not
- * (affect on notification chain)
- */
-- (void)resubscribeByUserRequest:(BOOL)resubscribeByUserRequest;
 
 /**
  * Same function as -unsubscribeFromChannelsWithPresenceEvent:
@@ -203,12 +200,19 @@
     }
 }
 
+- (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
+
+    return [request isKindOfClass:[PNSubscribeRequest class]];
+}
+
 #pragma mark - Connection management
 
 - (void)disconnectWithReset:(BOOL)shouldResetCommunicationChannel {
 
     // Forward to the super class
     [super disconnect];
+
+    self.restoringSubscription = NO;
 
 
     // Check whether communication channel should reset state or not
@@ -217,6 +221,7 @@
         // Clean up channels stack
         [self.subscribedChannelsSet removeAllObjects];
         [self purgeObservedRequestsPool];
+        [self purgeStoredRequestsPool];
         [self clearScheduledRequestsQueue];
     }
 }
@@ -266,6 +271,7 @@
         [self scheduleRequest:[PNLeaveRequest leaveRequestForChannels:channelsForUnsubscribe
                                                         byUserRequest:isLeavingByUserRequest]
       shouldObserveProcessing:YES];
+
     }
 }
 
@@ -284,6 +290,8 @@
 
 - (void)resubscribe {
 
+    self.restoringSubscription = NO;
+
     // Ensure that client connected to at least one channel
     if ([self.subscribedChannelsSet count] > 0) {
 
@@ -296,20 +304,23 @@
     }
 }
 
-- (void)resubscribeByUserRequest:(BOOL)resubscribeByUserRequest {
-}
-
 - (void)restoreSubscription:(BOOL)shouldResubscribe {
 
-    if (shouldResubscribe) {
+    if ([self.subscribedChannelsSet count]) {
 
-        // Reset last update time token for channels in list
-        [self.subscribedChannelsSet makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
+        if (shouldResubscribe) {
+
+            // Reset last update time token for channels in list
+            [self.subscribedChannelsSet makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
+        }
+
+        self.restoringSubscription = YES;
+
+
+        [self scheduleRequest:[PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
+                                                                byUserRequest:YES]
+      shouldObserveProcessing:shouldResubscribe];
     }
-
-    [self scheduleRequest:[PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
-                                                            byUserRequest:YES]
-  shouldObserveProcessing:YES];
 }
 
 - (void)updateSubscription {
@@ -318,6 +329,8 @@
 }
 
 - (void)updateSubscriptionForChannels:(NSArray *)channels {
+
+    self.restoringSubscription = NO;
 
     // Ensure that client connected to at least one channel
     if ([channels count] > 0) {
@@ -336,6 +349,8 @@
 }
 
 - (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent {
+
+    self.restoringSubscription = NO;
 
     // Checking whether client already subscribed on one of
     // channels from set or not
@@ -376,6 +391,7 @@
 - (NSArray *)unsubscribeFromChannelsWithPresenceEvent:(BOOL)withPresenceEvent
                                         byUserRequest:(BOOL)isLeavingByUserRequest {
 
+    self.restoringSubscription = NO;
     NSArray *subscribedChannels = [self.subscribedChannelsSet allObjects];
 
     // Check whether should generate 'leave' presence event
@@ -589,6 +605,17 @@
 
 - (void)handleSubscribeUnsubscribeRequestCompletion:(PNBaseRequest *)request {
 
+    // Check whether channel is restoring subscription on previously
+    // subscribed channels or not
+    if (self.isRestoringSubscription) {
+
+        self.restoringSubscription = NO;
+
+        [self.messagingDelegate performSelector:@selector(messagingChannel:didRestoreSubscriptionOnChannels:)
+                                     withObject:self
+                                     withObject:[self subscribedChannels]];
+    }
+
     // Prepare selectors which will be pulled on delegate and
     // list of subscribed channels
     SEL delegateSelector = @selector(messagingChannel:didSubscribeOnChannels:);
@@ -714,20 +741,49 @@
 
         [super connection:connection didReceiveResponse:response];
 
-
-        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RECIEVED RESPONSE: %@", response);
+        
+        BOOL shouldResendRequest = response.error.code == kPNResponseMalformedJSONError;
 
         // Retrieve reference on observer request
         PNBaseRequest *request = [self observedRequestWithIdentifier:response.requestIdentifier];
-        [self destroyRequest:request];
+        BOOL shouldObserveExecution = request != nil;
 
-        [self processResponse:response forRequest:request];
+
+        // Check whether response is valid or not
+        if (shouldResendRequest) {
+
+            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" RECEIVED MALFORMED RESPONSE: %@", response);
+
+            if (request == nil) {
+
+                request = [super storedRequestWithIdentifier:response.requestIdentifier];
+            }
+            [request reset];
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RESCHEDULING REQUEST: %@", request);
+        }
+        // Looks like response is valid (continue)
+        else {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RECIEVED RESPONSE: %@", response);
+
+            [self destroyRequest:request];
+            [self processResponse:response forRequest:request];
+        }
+
 
         // Check whether connection available or not
         if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
-
-            // Asking to schedule next request
-            [self scheduleNextRequest];
+            
+            if (shouldResendRequest) {
+                
+                [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution];
+            }
+            else {
+                
+                // Asking to schedule next request
+                [self scheduleNextRequest];
+            }
         }
     }
 }
@@ -746,7 +802,6 @@
           request.resourcePath);
 
 
-    // Check whether this is 'Leave' request or not
     if ([request isKindOfClass:[PNLeaveRequest class]]) {
 
         // Check whether connection should be closed for resubscribe

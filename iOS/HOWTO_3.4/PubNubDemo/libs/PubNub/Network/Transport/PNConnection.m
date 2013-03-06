@@ -13,7 +13,6 @@
 
 #import "PNConnection.h"
 #import <Security/SecureTransport.h>
-#import "NSMutableArray+PNAdditions.h"
 #import "PNResponseDeserialize.h"
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
@@ -72,6 +71,9 @@ static int const kPNStreamBufferSize = 32768;
 // Stores flag of whether connection should process next
 // request from queue or not
 @property (nonatomic, assign, getter = shouldProcessNextRequest) BOOL processNextRequest;
+
+// Stores flag on whether connecion is closing or not
+@property (nonatomic, assign, getter = isClosingConnection) BOOL closingConnection;
 
 // Stores whether connection instance is reconnecting at
 // this moment (which will mean that it should automatically
@@ -587,7 +589,19 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             case ESHUTDOWN:     // Can't send after socket shutdown
             case EHOSTDOWN:     // Host is down
             case EHOSTUNREACH:  // Can't reach host
-            case ETIMEDOUT:
+            case ETIMEDOUT:     // Socket timeout
+            case EPIPE:         // Something went wrong and pipe was dameged
+
+                isConnectionIssue = YES;
+                break;
+        }
+    }
+    else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
+
+        switch (CFErrorGetCode(error)) {
+
+            case kCFHostErrorHostNotFound:
+            case kCFHostErrorUnknown:
 
                 isConnectionIssue = YES;
                 break;
@@ -638,7 +652,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         [self configureReadStream:self.socketReadStream];
         [self configureWriteStream:self.socketWriteStream];
 
-        // Check whether sream successfully configured or configuration
+        // Check whether stream successfully configured or configuration
         // failed
         if (self.readStreamState != PNSocketStreamReady || self.writeStreamState != PNSocketStreamReady) {
 
@@ -653,6 +667,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (void)closeStreams {
+
+    self.closingConnection = YES;
 
     // Clean up cached data
     [self unscheduleRequestsExecution];
@@ -852,7 +868,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         // Looks like there is no data or error occurred while tried
         // to read out stream content
-        else if (readedBytesCount <= 0) {
+        else if (readedBytesCount < 0) {
 
             CFErrorRef error = CFReadStreamCopyError(self.socketReadStream);
             [self handleStreamError:error];
@@ -1228,7 +1244,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [self reconnect];
             }
         }
-        else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX]) {
+        else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX] ||
+                [errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
 
             // Check whether connection should be reconnected
             // because of critical error
@@ -1258,9 +1275,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             if (shouldCloseConnection) {
 
-                [self.delegate connection:self willDisconnectFromHost:self.configuration.origin withError:errorObject];
+                if (!self.isClosingConnection) {
 
-                [self closeStreams];
+                    [self.delegate connection:self willDisconnectFromHost:self.configuration.origin withError:errorObject];
+
+                    [self closeStreams];
+                }
             }
             else {
 
@@ -1368,7 +1388,13 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         if ([self isConnectionIssuesError:error]) {
 
-            errorInstance = [PNError errorWithCode:kPNRequestExecutionFailedOnInternetFailureError];
+            int errorCode = kPNClientConnectionClosedOnInternetFailureError;
+            if (self.writeBuffer != nil && [self.writeBuffer hasData] && self.writeBuffer.isSendingBytes) {
+
+                errorCode = kPNRequestExecutionFailedOnInternetFailureError;
+            }
+
+            errorInstance = [PNError errorWithCode:errorCode];
         }
         else {
 
