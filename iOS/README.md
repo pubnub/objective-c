@@ -204,7 +204,8 @@ Each subscription method has designated methods, one to add a presence flag, and
 
 Here are some subscribe examples:
 
-    // Simply subscribe to a channel  
+    // Subscribe to the channel "iosdev" and because shouldObservePresence is true,
+    // also automatically subscribes to "iosdev-pnpres" (the Presence channel for "iosdev")    
     [PubNub subscribeOnChannel:[PNChannel channelWithName:@"iosdev" shouldObservePresence:YES]];  
 
     // Subscribe on set of channels with subscription state handling block
