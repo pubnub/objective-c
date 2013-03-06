@@ -103,11 +103,22 @@
 
         if (NSClassFromString(@"NSJSONSerialization")) {
 
-            NSError *serializationError = nil;
-            NSData *JSONSerializedObject = [NSJSONSerialization dataWithJSONObject:object
-                                                                           options:NSJSONWritingPrettyPrinted
-                                                                             error:&serializationError];
-            JSONString = [[NSString alloc] initWithData:JSONSerializedObject encoding:NSUTF8StringEncoding];
+            if ([object isKindOfClass:[NSArray class]] || [object isKindOfClass:[NSDictionary class]]) {
+
+                NSError *serializationError = nil;
+                NSData *JSONSerializedObject = [NSJSONSerialization dataWithJSONObject:object
+                                                                               options:(NSJSONWritingOptions)0
+                                                                                 error:&serializationError];
+                JSONString = [[NSString alloc] initWithData:JSONSerializedObject encoding:NSUTF8StringEncoding];
+            }
+            else if ([object isKindOfClass:[NSNumber class]]) {
+
+                JSONString = [(NSNumber *)object stringValue];
+            }
+            else {
+
+                JSONString = [NSString stringWithFormat:@"\"%@\"", object];
+            }
         }
         else {
 
@@ -161,8 +172,13 @@
     BOOL isJSONString = [object isKindOfClass:[NSNumber class]];
     if ([object isKindOfClass:[NSString class]]) {
 
-        unichar nodeChar = [(NSString *)object characterAtIndex:0];
-        isJSONString = nodeChar == '"' || nodeChar == '[' || nodeChar == '{';
+        unichar nodeStartChar = [(NSString *)object characterAtIndex:0];
+        unichar nodeClosingChar = [(NSString *)object characterAtIndex:([(NSString *)object length] - 1)];
+        isJSONString = nodeStartChar == '"' || nodeStartChar == '[' || nodeStartChar == '{';
+        if (isJSONString) {
+
+            isJSONString = nodeClosingChar == '"' || nodeClosingChar == ']' || nodeClosingChar == '}';
+        }
     }
 
     return isJSONString;

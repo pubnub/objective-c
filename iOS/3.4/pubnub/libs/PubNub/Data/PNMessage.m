@@ -51,6 +51,7 @@
 + (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel error:(PNError **)error {
 
     PNMessage *messageObject = nil;
+    object = [PNJSONSerialization stringFromJSONObject:object];
 
     // Ensure that all parameters provided and they are valid or not
     if ([[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0 && channel != nil) {
