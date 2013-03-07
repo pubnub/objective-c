@@ -4,7 +4,20 @@
 PubNub 3.4 for iOS provides iOS ARC support in Objective-C for the PubNub real-time messaging network [PubNub.com](http://www.pubnub.com/).  
 All requests made by the client are asynchronous, and handled by callback blocks (also blocks from observation centre), delegate methods and notifications.  
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
-  
+
+## Adding PubNub to your project  
+
+1. Add the JSONKit support files to your project (/libs/JSONKit)  
+2. Add the PubNub library folder to your project (/libs/PubNub)  
+3. Add PNImports to your project precompile header (.pch)  
+
+        #import "PNImports.h"
+        
+4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
+5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options
+
+For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
+
 ## Jumping Right In - Try out the Hello World and Reference Apps!
 
 There are two iOS PubNub 3.4 client demo apps available.
@@ -19,15 +32,6 @@ The [Hello World](HOWTO_3.4) app references how to create a simple application u
 Once you are familiar with the [Hello World](HOWTO_3.4) app, The deluxe iPad-only app demonstrates all API functions in greater detail than
 the Hello World app. It is intended to be a reference application.
 
-## Adding PubNub in your project  
-
-1. Add the JSONKit suppor files to your project (pubnub/libs/JSONKit)  
-2. Add the PubNub library folder to your project (pubnub/libs)  
-3. Add PNImports to your project precompile header (.pch)  
-
-        #import "PNImports.h"
-
-***Its just that easy to start using PubNub real-time within your application!***
 ## APNS Setup
 
 If you've enabled your keys for APNS, you can use native PubNub publish operations to send messages to iPhones and iPads via iOS push notifications!
