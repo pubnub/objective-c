@@ -5,7 +5,7 @@ PubNub 3.4 for iOS provides iOS ARC support in Objective-C for the PubNub real-t
 All requests made by the client are asynchronous, and handled by callback blocks (also blocks from observation centre), delegate methods and notifications.  
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
   
-## Jumping Right In - Tryout the Hello World and Reference Apps!
+## Jumping Right In - Try out the Hello World and Reference Apps!
 
 There are two iOS PubNub 3.4 client demo apps available.
 
