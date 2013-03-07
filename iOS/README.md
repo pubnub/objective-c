@@ -5,7 +5,20 @@ PubNub 3.4 for iOS provides iOS ARC support in Objective-C for the PubNub real-t
 All requests made by the client are asynchronous, and handled by callback blocks (also blocks from observation centre), delegate methods and notifications.  
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
   
-  
+## Jumping Right In - Tryout the Hello World and Reference Apps!
+
+There are two iOS PubNub 3.4 client demo apps available.
+
+### Hello World HOWTO
+
+The [Hello World](HOWTO_3.4) app references how to create a simple application using PubNub and iOS. 
+[A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HelloWorldHOWTO_34.pdf).
+
+### Deluxe iPad Full Featured Demo
+
+Once you are familiar with the [Hello World](HOWTO_3.4) app, The deluxe iPad-only app demonstrates all API functions in greater detail than
+the Hello World app. It is intended to be a reference application.
+
 ## Adding PubNub in your project  
 
 1. Add the JSONKit suppor files to your project (pubnub/libs/JSONKit)  
