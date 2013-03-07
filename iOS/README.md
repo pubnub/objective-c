@@ -339,7 +339,7 @@ You can use the following methods to send messages:
 
 The first two methods return a [__PNMessage__](3.4/pubnub/libs/PubNub/Data/PNMessage.h) instance. If there is a need to re-publish this message for any reason, (for example, the publish request timed-out due to lack of Internet connection), it can be passed back to the last two methods to easily re-publish.
   
-    PNMessage *helloMessage = [PubNub sendMessage:@"Hello PubNub\"  
+    PNMessage *helloMessage = [PubNub sendMessage:@"Hello PubNub"  
                                         toChannel:[PNChannel channelWithName:@"iosdev"]  
                               withCompletionBlock:^(PNMessageState messageSendingState, id data) {  
                                     
