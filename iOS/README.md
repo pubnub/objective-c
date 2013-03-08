@@ -342,13 +342,13 @@ Usage is very simple:
 
 ### Publishing Messages
 
-All messages should be serialised into JSON string before sending. Since JSON serialisation converts the object into a string,
-all of the message-sending methods need only take a string as an argument.
+Messahe can be instance of one of the following classed: __NSString__, __NSNumber__, __NSArray__, __NSDictionary__, or __NSNull__.  
+If you use some other JSON serialization kit or do it by yourself, ensure that JSON comply with all requirements. If JSON string is mailformed you will receive corresponding error from remote server.  
 
 You can use the following methods to send messages:  
   
-    + (PNMessage *)sendMessage:(NSString *)message toChannel:(PNChannel *)channel;   
-    + (PNMessage *)sendMessage:(NSString *)message  
+    + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel;   
+    + (PNMessage *)sendMessage:(id)message  
                  toChannel:(PNChannel *)channel  
        withCompletionBlock:(PNClientMessageProcessingBlock)success;  
        
@@ -357,7 +357,7 @@ You can use the following methods to send messages:
 
 The first two methods return a [__PNMessage__](3.4/pubnub/libs/PubNub/Data/PNMessage.h) instance. If there is a need to re-publish this message for any reason, (for example, the publish request timed-out due to lack of Internet connection), it can be passed back to the last two methods to easily re-publish.
   
-    PNMessage *helloMessage = [PubNub sendMessage:@"\"Hello PubNub\""  
+    PNMessage *helloMessage = [PubNub sendMessage:@"Hello PubNub"  
                                         toChannel:[PNChannel channelWithName:@"iosdev"]  
                               withCompletionBlock:^(PNMessageState messageSendingState, id data) {  
                                     
@@ -379,6 +379,11 @@ The first two methods return a [__PNMessage__](3.4/pubnub/libs/PubNub/Data/PNMes
                                           break;  
                                   }  
                               }];  
+Here is examplehow to send __NSDictionary__:  
+
+    [PubNub sendMessage:@{@"message":@"Hello from dictionary object"} 
+              toChannel:[PNChannel channelWithName:@"iosdev"];  
+              
 
 ### History
 

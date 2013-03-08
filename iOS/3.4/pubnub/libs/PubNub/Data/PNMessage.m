@@ -48,14 +48,15 @@
 
 #pragma mark - Class methods
 
-+ (PNMessage *)messageWithText:(NSString *)message forChannel:(PNChannel *)channel error:(PNError **)error {
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel error:(PNError **)error {
 
     PNMessage *messageObject = nil;
+    object = [PNJSONSerialization stringFromJSONObject:object];
 
     // Ensure that all parameters provided and they are valid or not
-    if ([[message stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0 && channel != nil) {
+    if ([[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0 && channel != nil) {
 
-        messageObject = [[[self class] alloc] initWithText:message forChannel:channel];
+        messageObject = [[[self class] alloc] initWithObject:object forChannel:channel];
     }
     // Looks like some conditions not met
     else {
@@ -63,12 +64,12 @@
         // Check whether reference on error holder has been passed or not
         if (error != NULL) {
 
-            // Check whether user tried to send empty message or not
-            if ([[message stringByReplacingOccurrencesOfString:@" " withString:@""] length] == 0) {
+            // Check whether user tried to send empty object or not
+            if ([[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] == 0) {
 
                 *error = [PNError errorWithCode:kPNMessageHasNoContentError];
             }
-            // Looks like user didn't specified channel on which this message
+            // Looks like user didn't specified channel on which this object
             // should be sent
             else {
 
@@ -95,12 +96,12 @@
 
 #pragma mark - Instance methods
 
-- (id)initWithText:(NSString *)message forChannel:(PNChannel *)channel {
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
 
-        self.message = message;
+        self.message = [PNJSONSerialization stringFromJSONObject:object];
         self.channel = channel;
     }
 

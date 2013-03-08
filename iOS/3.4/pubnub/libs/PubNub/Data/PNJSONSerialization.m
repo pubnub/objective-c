@@ -96,6 +96,44 @@
     }
 }
 
++ (NSString *)stringFromJSONObject:(id)object {
+
+    NSString *JSONString = nil;
+    if (![self isJSONString:object]) {
+
+        if (NSClassFromString(@"NSJSONSerialization")) {
+
+            if ([object isKindOfClass:[NSArray class]] || [object isKindOfClass:[NSDictionary class]]) {
+
+                NSError *serializationError = nil;
+                NSData *JSONSerializedObject = [NSJSONSerialization dataWithJSONObject:object
+                                                                               options:(NSJSONWritingOptions)0
+                                                                                 error:&serializationError];
+                JSONString = [[NSString alloc] initWithData:JSONSerializedObject encoding:NSUTF8StringEncoding];
+            }
+            else if ([object isKindOfClass:[NSNumber class]]) {
+
+                JSONString = [(NSNumber *)object stringValue];
+            }
+            else {
+
+                JSONString = [NSString stringWithFormat:@"\"%@\"", object];
+            }
+        }
+        else {
+
+            JSONString = [object JSONString];
+        }
+    }
+    else {
+
+        JSONString = object;
+    }
+
+
+    return JSONString;
+}
+
 + (void)getCallbackMethodName:(NSString **)callbackMethodName fromJSONString:(NSString *)jsonString {
 
     if (jsonString) {
@@ -127,6 +165,23 @@
     
     
     return [JSONWrappedInParens stringByTrimmingCharactersInSet:parens];
+}
+
++ (BOOL)isJSONString:(id)object {
+
+    BOOL isJSONString = [object isKindOfClass:[NSNumber class]];
+    if ([object isKindOfClass:[NSString class]]) {
+
+        unichar nodeStartChar = [(NSString *)object characterAtIndex:0];
+        unichar nodeClosingChar = [(NSString *)object characterAtIndex:([(NSString *)object length] - 1)];
+        isJSONString = nodeStartChar == '"' || nodeStartChar == '[' || nodeStartChar == '{';
+        if (isJSONString) {
+
+            isJSONString = nodeClosingChar == '"' || nodeClosingChar == ']' || nodeClosingChar == '}';
+        }
+    }
+
+    return isJSONString;
 }
 
 #pragma mark -

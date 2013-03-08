@@ -788,12 +788,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 #pragma mark - Messages processing methods
 
-+ (PNMessage *)sendMessage:(NSString *)message toChannel:(PNChannel *)channel {
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel {
 
     return [self sendMessage:message toChannel:channel withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(NSString *)message
++ (PNMessage *)sendMessage:(id)message
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
@@ -815,7 +815,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     else {
 
         PNError *sendingError = [PNError errorWithCode:statusCode];
-        PNMessage *failedMessage = [PNMessage messageWithText:message forChannel:channel error:nil];
+        PNMessage *failedMessage = [PNMessage messageWithObject:message forChannel:channel error:nil];
         sendingError.associatedObject = failedMessage;
 
         [[self sharedInstance] notifyDelegateAboutMessageSendingFailedWithError:sendingError];
@@ -1246,6 +1246,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                     }
 
                     [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
+                    
+                    
+                    // Check whether error is caused by network error or not
+                    switch (connectionError.code) {
+                        case kPNClientConnectionFailedOnInternetFailureError:
+                        case kPNClientConnectionClosedOnInternetFailureError:
+                            
+                            // Try to refresh reachability state (there is situation whem reachability state
+                            // changed within library to handle sockets timeout/error)
+                            [self.reachability refreshReachabilityState];
+                            break;
+                            
+                        default:
+                            break;
+                    }
                 }
             }
             

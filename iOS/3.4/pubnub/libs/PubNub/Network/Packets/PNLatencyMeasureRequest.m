@@ -46,7 +46,7 @@
     NSString *latencyMeterChannelName = [kPNLatencyMeterChannel stringByAppendingFormat:@"-%@",
                                          [PubNub sharedInstance].launchSessionIdentifier];
     PNChannel *latencyMeterChannel = [PNChannel channelWithName:latencyMeterChannelName];
-    PNMessage *message = [PNMessage messageWithText:@"1" forChannel:latencyMeterChannel error:NULL];
+    PNMessage *message = [PNMessage messageWithObject:@"1" forChannel:latencyMeterChannel error:NULL];
 
     // Use super class initialization method to prepare latency meter request
     self = [super initWithMessage:message];

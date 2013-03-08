@@ -680,7 +680,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (BOOL)connect {
-
+    
+    self.closingConnection = NO;
     BOOL isStreamOpened = NO;
 
     if (![self isConnected] && [self isReady]) {

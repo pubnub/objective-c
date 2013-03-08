@@ -50,9 +50,9 @@
 #pragma mark - Messages processing methods
 
 /**
- * Generate message sending request to specified channel
+ * Generate object sending request to specified channel
  */
-- (PNMessage *)sendMessage:(NSString *)message toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel;
 
 /**
  * Sends configured message request to the PubNub service

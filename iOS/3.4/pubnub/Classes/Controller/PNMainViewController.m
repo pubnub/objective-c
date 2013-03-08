@@ -422,8 +422,10 @@ static NSUInteger const inChatMessageLabelTag = 878;
 
 - (IBAction)sendMessageButtonTapped:(id)sender {
 
-    [PubNub sendMessage:[NSString stringWithFormat:@"\"%@\"", self.messageTextField.text]
+    [PubNub sendMessage:self.messageTextField.text
               toChannel:[PNDataManager sharedInstance].currentChannel];
+    [PubNub sendMessage:@{@"message":@"Hello from dictionary object"}
+                  toChannel:[PNDataManager sharedInstance].currentChannel];
     self.messageTextField.text = nil;
     [self updateMessageSendingInterfaceWithMessage:nil];
     [self.view endEditing:YES];
