@@ -1246,6 +1246,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                     }
 
                     [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
+                    
+                    
+                    // Check whether error is caused by network error or not
+                    switch (connectionError.code) {
+                        case kPNClientConnectionFailedOnInternetFailureError:
+                        case kPNClientConnectionClosedOnInternetFailureError:
+                            
+                            // Try to refresh reachability state (there is situation whem reachability state
+                            // changed within library to handle sockets timeout/error)
+                            [self.reachability refreshReachabilityState];
+                            break;
+                            
+                        default:
+                            break;
+                    }
                 }
             }
             

@@ -263,6 +263,11 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability, SCNetworkReac
     
 }
 
+- (void)refreshReachabilityState {
+    
+    _status = PNReachabilityStatusForFlags(self.reachabilityFlags);
+}
+
 - (void)updateReachabilityFromError:(PNError *)error {
 
     if ([self isServiceAvailable]) {
