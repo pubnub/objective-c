@@ -1,3 +1,6 @@
+03-08-2013
+. fixed resume on unlock bug
+
 02-28-2013
 . better handling of gzip responses
 . better handling of corner-case malformed json
