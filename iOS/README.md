@@ -218,7 +218,7 @@ The client provides a set of methods which allow you to subscribe to channel(s):
               withPresenceEvent:(BOOL)withPresenceEvent  
      andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;  
 
-Each subscription method has designated methods, one to add a presence flag, and another to add a handling block.  If `withPresenceEvent` is set to `YES`, the client will explictly send 'join' and 'leave' presence events as it adds and removes channels to its PNChannel list.
+Each subscription method has designated methods, one to add a presence flag, and another to add a handling block.  If `withPresenceEvent` is set to `YES`, the client will automatically receive "Presence" ('join', 'leave', and 'timeout') events for channels as you subscribe to them.
 
 Here are some subscribe examples:
 
