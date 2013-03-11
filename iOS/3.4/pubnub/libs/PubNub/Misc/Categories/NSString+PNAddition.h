@@ -16,6 +16,23 @@
 
 - (NSString *)percentEscapedString;
 
+/**
+ * Generate string which is composed of ASCII char
+ * codes
+ */
+- (NSString *)ASCIIString;
+
+/**
+ * Generate string which is composed of HEX values
+ * of ASCII char codes
+ */
+- (NSString *)ASCIIHEXString;
+
+#pragma mark - Cryptography methods
+
+- (NSData *)sha256Data;
+- (NSString *)sha256HEXString;
+
 #pragma mark -
 
 
