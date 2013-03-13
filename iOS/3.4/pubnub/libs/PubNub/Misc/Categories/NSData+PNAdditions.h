@@ -22,6 +22,11 @@
 - (unsigned long long int)unsignedLongLongFromHEXData;
 
 /**
+ * Allow to encode bytes into base64 string
+ */
+- (NSString *)base64Encoding;
+
+/**
  * Allow to extract HEX string from bytes stored
  * inside object
  */

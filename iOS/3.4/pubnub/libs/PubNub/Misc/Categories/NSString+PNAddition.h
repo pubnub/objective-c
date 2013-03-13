@@ -28,6 +28,18 @@
  */
 - (NSString *)ASCIIHEXString;
 
+/**
+ * Generate array which is composed of ASCII char
+ * codes
+ */
+- (unichar*)ASCIIArray;
+
+/**
+ * Generate array which is composed of HEX values
+ * of ASCII char codes
+ */
+- (unichar*)ASCIIHEXArray;
+
 #pragma mark - Cryptography methods
 
 - (NSData *)sha256Data;

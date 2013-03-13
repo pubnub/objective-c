@@ -13,7 +13,8 @@
 
 @interface NSString (PNAdditionPrivate)
 
-- (NSString *)ASCIIStringHEXEncoded:(BOOL)shouldUseHEXCodes;
+- (NSString *)ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes;
+- (unichar*)ASCIIStringHEXEncodedArray:(BOOL)shouldUseHEXCodes;
 
 @end
 
@@ -39,15 +40,25 @@
 
 - (NSString *)ASCIIString {
 
-    return [self ASCIIStringHEXEncoded:NO];
+    return [self ASCIIStringHEXEncodedString:NO];
 }
 
 - (NSString *)ASCIIHEXString {
 
-    return [self ASCIIStringHEXEncoded:YES];
+    return [self ASCIIStringHEXEncodedString:YES];
 }
 
-- (NSString *)ASCIIStringHEXEncoded:(BOOL)shouldUseHEXCodes {
+- (unichar*)ASCIIArray {
+
+    return [self ASCIIStringHEXEncodedArray:NO];
+}
+
+- (unichar*)ASCIIHEXArray {
+
+    return [self ASCIIStringHEXEncodedArray:YES];
+}
+
+- (NSString *)ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes {
 
     NSMutableString *asciiString = [NSMutableString stringWithCapacity:([self length]*2.0f)];
     NSUInteger charIdx, charsCount = [self length];
@@ -59,6 +70,25 @@
 
 
     return asciiString;
+}
+
+- (unichar*)ASCIIStringHEXEncodedArray:(BOOL)shouldUseHEXCodes {
+
+    int arrayLength = [self length]*2.0f;
+    unichar asciiArray[arrayLength];
+    NSUInteger charIdx, charsCount = [self length];
+    for (charIdx = 0; charIdx < charsCount; charIdx++) {
+
+        unichar charCode = [self characterAtIndex:charIdx];
+        if (shouldUseHEXCodes) {
+
+            sprintf(charCode,"%x",charCode);
+        }
+        asciiArray[charIdx]=charCode;
+    }
+
+
+    return asciiArray;
 }
 
 
