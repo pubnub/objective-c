@@ -77,6 +77,8 @@
 		79C322A1166E0291006DB535 /* PubNub.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C3229F166E0291006DB535 /* PubNub.m */; };
 		79C322AA166E0568006DB535 /* PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C322A9166E0568006DB535 /* PNConfiguration.m */; };
 		79C322AB166E0568006DB535 /* PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C322A9166E0568006DB535 /* PNConfiguration.m */; };
+		79C9D72916F28F9500E91D74 /* PNCryptoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C9D72816F28F9500E91D74 /* PNCryptoHelper.m */; };
+		79C9D72A16F28F9500E91D74 /* PNCryptoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C9D72816F28F9500E91D74 /* PNCryptoHelper.m */; };
 		79DA9A3716AC0DC1000AE3A1 /* PNIdentificationViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79DA9A3616AC0DC1000AE3A1 /* PNIdentificationViewController~ipad.xib */; };
 		79DA9A3816AC0DC1000AE3A1 /* PNIdentificationViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79DA9A3616AC0DC1000AE3A1 /* PNIdentificationViewController~ipad.xib */; };
 		79DA9A3B16AC0DF7000AE3A1 /* PNIdentificationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79DA9A3A16AC0DF7000AE3A1 /* PNIdentificationViewController.xib */; };
@@ -267,6 +269,8 @@
 		79C322A9166E0568006DB535 /* PNConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConfiguration.m; sourceTree = "<group>"; };
 		79C322AC166E063B006DB535 /* PNDefaultConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDefaultConfiguration.h; sourceTree = "<group>"; };
 		79C322BC166E1358006DB535 /* PNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConstants.h; sourceTree = "<group>"; };
+		79C9D72716F28F9500E91D74 /* PNCryptoHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCryptoHelper.h; sourceTree = "<group>"; };
+		79C9D72816F28F9500E91D74 /* PNCryptoHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHelper.m; sourceTree = "<group>"; };
 		79DA9A3616AC0DC1000AE3A1 /* PNIdentificationViewController~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PNIdentificationViewController~ipad.xib"; sourceTree = "<group>"; };
 		79DA9A3A16AC0DF7000AE3A1 /* PNIdentificationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PNIdentificationViewController.xib; sourceTree = "<group>"; };
 		79DA9A5216AC101D000AE3A1 /* red-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red-button.png"; sourceTree = "<group>"; };
@@ -770,35 +774,45 @@
 				792C1F5416788B240054E18E /* Channels */,
 				79024528167B5F3B00E36546 /* Buffers */,
 				79EB391A1681E50000696025 /* Parsers */,
+				79C9D72616F28F8900E91D74 /* Crypto */,
 				7966DFC2166FD60900E07B40 /* PNJSONSerialization.h */,
 				7966DFC3166FD60900E07B40 /* PNJSONSerialization.m */,
 				7902B9E31679EEFC00DE2BBB /* PNRequestsQueue.h */,
 				7902B9E41679EEFC00DE2BBB /* PNRequestsQueue.m */,
+				DD71BA0E2595B8F111648D33 /* PNConfiguration+Protected.h */,
 				79C322A8166E0568006DB535 /* PNConfiguration.h */,
 				79C322A9166E0568006DB535 /* PNConfiguration.m */,
 				79EB392416835B7C00696025 /* PNResponse.h */,
 				79EB392516835B7C00696025 /* PNResponse.m */,
+				DD71B74317C3270771D65B61 /* PNError+Protected.h */,
 				79A8B5C9166FB69800C64BCF /* PNError.h */,
 				79A8B5CA166FB69800C64BCF /* PNError.m */,
-				DD71BEB42DA849259AE8B3FE /* PNMessage.m */,
-				DD71BD0B08E57FCEDEEB6BE9 /* PNMessage.h */,
 				DD71B545D6436E26F0A21ECF /* PNMessage+Protected.h */,
-				DD71B74317C3270771D65B61 /* PNError+Protected.h */,
+				DD71BD0B08E57FCEDEEB6BE9 /* PNMessage.h */,
+				DD71BEB42DA849259AE8B3FE /* PNMessage.m */,
+				DD71B2508C3F38176478B558 /* PNOperationStatus+Protected.h */,
 				DD71B23225028625475BD097 /* PNOperationStatus.h */,
 				DD71B60939665AFE8C50DB18 /* PNOperationStatus.m */,
-				DD71B2508C3F38176478B558 /* PNOperationStatus+Protected.h */,
+				DD71BE0A5082792E461CEDD0 /* PNHereNow+Protected.h */,
 				DD71BCD209608045985EB1E5 /* PNHereNow.m */,
 				DD71BE3BEE74F13B9516F19D /* PNHereNow.h */,
-				DD71BE0A5082792E461CEDD0 /* PNHereNow+Protected.h */,
+				DD71BDB92F505FDCACDDDCE3 /* PNChannelEvents+Protected.h */,
 				DD71BBE9C6FD0288E40E0AF3 /* PNChannelEvents.m */,
 				DD71B9554CFFFD2A43343B36 /* PNChannelEvents.h */,
-				DD71BDB92F505FDCACDDDCE3 /* PNChannelEvents+Protected.h */,
+				DD71BACF5F9CB939AEA62A65 /* PNMessagesHistory+Protected.h */,
 				DD71B286201A499AF1BF1146 /* PNMessagesHistory.m */,
 				DD71BFAB0FEB9AF00E5DE50C /* PNMessagesHistory.h */,
-				DD71BACF5F9CB939AEA62A65 /* PNMessagesHistory+Protected.h */,
-				DD71BA0E2595B8F111648D33 /* PNConfiguration+Protected.h */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		79C9D72616F28F8900E91D74 /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+				79C9D72716F28F9500E91D74 /* PNCryptoHelper.h */,
+				79C9D72816F28F9500E91D74 /* PNCryptoHelper.m */,
+			);
+			path = Crypto;
 			sourceTree = "<group>";
 		};
 		79EB391A1681E50000696025 /* Parsers */ = {
@@ -1081,6 +1095,7 @@
 				DD71B5C0968E991740639BCC /* UIDevice+PNAdditions.m in Sources */,
 				DD71BA3A6549ED4F4A7DEE2E /* PNChannelCell.m in Sources */,
 				799A5ADF16DD55F8007025AF /* NSString+PNAddition.m in Sources */,
+				79C9D72916F28F9500E91D74 /* PNCryptoHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1143,6 +1158,7 @@
 				DD71B242B4215B5F3AD9796C /* UIDevice+PNAdditions.m in Sources */,
 				DD71BB3EB8AFFAA51FF7B5D0 /* PNChannelCell.m in Sources */,
 				799A5AE016DD55F8007025AF /* NSString+PNAddition.m in Sources */,
+				79C9D72A16F28F9500E91D74 /* PNCryptoHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

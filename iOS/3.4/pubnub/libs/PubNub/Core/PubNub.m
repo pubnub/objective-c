@@ -16,6 +16,7 @@
 #import "PNObservationCenter+Protected.h"
 #import "PNConnectionChannelDelegate.h"
 #import "PNPresenceEvent+Protected.h"
+#import "PNConfiguration+Protected.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
 #import "PNHereNow+Protected.h"
@@ -26,7 +27,7 @@
 #import "PNServiceChannel.h"
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
-#import "PNConfiguration+Protected.h"
+#import "PNCryptoHelper.h"
 
 
 #pragma mark Static
@@ -139,6 +140,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 
 #pragma mark - Misc methods
+
+/**
+ * Will prepare crypto helper it is possible
+ */
+- (void)prepareCryptoHelper;
 
 /**
  * This method will notify delegate about that
@@ -461,6 +467,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if (canUpdateConfiguration) {
 
             [self sharedInstance].configuration = configuration;
+            
+            [[self sharedInstance] prepareCryptoHelper];
         }
         
         
@@ -1320,6 +1328,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 self.configuration = self.temporaryConfiguration;
                 self.temporaryConfiguration = nil;
                 
+                [self prepareCryptoHelper];
+                
+                
                 // Restore connection which will use new configuration
                 [[self class] connect];
             });
@@ -1380,6 +1391,34 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
 #pragma mark - Misc methods
+
+- (void)prepareCryptoHelper {
+    
+    if ([self.configuration.cipherKey length] > 0) {
+        
+        PNError *helperInitializationError = nil;
+        [[PNCryptoHelper sharedInstance] updateWithConfiguration:self.configuration
+                                                       withError:&helperInitializationError];
+        if (helperInitializationError != nil) {
+            
+            PNLog(PNLogGeneralLevel, self, @" [INFO] Crypto helper initialization failed because of error: %@",
+                  helperInitializationError);
+        }
+        
+        PNError *processingError = nil;
+        NSString *inputDataString = @"\"Pubnub Messaging API 1\"";
+        NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:inputDataString
+                                                                                       error:&processingError];
+        if (processingError == nil) {
+            
+            NSLog(@"ENCRYPTED MESSAGE: %@", encryptedData);
+        }
+        else {
+            
+            NSLog(@"ENCRYPTION ERROR: %@", processingError);
+        }
+    }
+}
 
 - (void)notifyDelegateAboutConnectionToOrigin:(NSString *)originHostName {
 

@@ -194,8 +194,37 @@
                 errorDescription = @"PubNub client can't decode response";
                 break;
             case kPNResponseMalformedJSONError:
-
+                
                 errorDescription = @"PubNub client can't parse response";
+                break;
+            case kPNCryptoEmptyCipherKeyError:
+            case kPNCryptoIllegalInitializationParametersError:
+                
+                errorDescription = @"Cipher helper initalization error";
+                break;
+            case kPNCryptoInsufficentBufferSizeError:
+                
+                errorDescription = @"Wrong buffer size";
+                break;
+            case kPNCryptoInsufficentMemoryError:
+                
+                errorDescription = @"Insufficient memory";
+                break;
+            case kPNCryptoAligmentInputDataError:
+                
+                errorDescription = @"Input data error";
+                break;
+            case kPNCryptoInputDataProcessingError:
+                
+                errorDescription = @"Input data processing error";
+                break;
+            case kPNCryptoUnavailableFeatureError:
+                
+                errorDescription = @"Not implemented";
+                break;
+            case kPNCryptoStateResetError:
+                
+                errorDescription = @"Cryptor reset error";
                 break;
             default:
 
@@ -283,6 +312,38 @@
 
             failureReason = @"Looks like remote service send response with malformed JSON in it (maybe truncated)";
             break;
+        case kPNCryptoEmptyCipherKeyError:
+            
+            failureReason = @"Looks like there is no cipher key in configuration instance which was used for client configuration";
+            break;
+        case kPNCryptoIllegalInitializationParametersError:
+            
+            failureReason = @"Looks like some illegal parameter values has been used during cryptor initialization";
+            break;
+        case kPNCryptoInsufficentBufferSizeError:
+            
+            failureReason = @"Looks like output buffer with insufficient type has been specified";
+            break;
+        case kPNCryptoInsufficentMemoryError:
+            
+            failureReason = @"Looks like there is not enough memory for Crypto helper operation completion";
+            break;
+        case kPNCryptoAligmentInputDataError:
+            
+            failureReason = @"Looks like input data not aligned properly";
+            break;
+        case kPNCryptoInputDataProcessingError:
+            
+            failureReason = @"Crypto helper failed to process input data because of unknown error";
+            break;
+        case kPNCryptoUnavailableFeatureError:
+            
+            failureReason = @"Looks like someone tried to use feature which is not available for specified algorythm";
+            break;
+        case kPNCryptoStateResetError:
+            
+            failureReason = @"Cryptor state reset failure";
+            break;
         default:
 
             failureReason = @"Unknown error reason.";
@@ -363,6 +424,38 @@
         case kPNResponseMalformedJSONError:
 
             fixSuggestion = @"Try resend request which caused this error";
+            break;
+        case kPNCryptoEmptyCipherKeyError:
+            
+            fixSuggestion = @"Please check client configuration instance and ensure that key is specified or don't try to initialize helper if there is no key supplied.";
+            break;
+        case kPNCryptoIllegalInitializationParametersError:
+            
+            fixSuggestion = @"Ensure that correct parameters has been passed to cryptor creation functions.";
+            break;
+        case kPNCryptoInsufficentBufferSizeError:
+            
+            fixSuggestion = @"Ensure that buffer with correct amount of space has been specified and provided for cryptor";
+            break;
+        case kPNCryptoInsufficentMemoryError:
+            
+            fixSuggestion = @"Looks like cryptor is run out of memory during his last operation. Try to separate input data in chunks and process them one by one if possible.";
+            break;
+        case kPNCryptoAligmentInputDataError:
+            
+            fixSuggestion = @"Ensure that input data is alligned according to PKCS5/7 padding.";
+            break;
+        case kPNCryptoInputDataProcessingError:
+            
+            fixSuggestion = @"Cryptor stumbled on unknown error during input data processing.";
+            break;
+        case kPNCryptoUnavailableFeatureError:
+            
+            fixSuggestion = @"Looks like you tried to perform some operation which is not supported by cryptor with specified algorythm.";
+            break;
+        case kPNCryptoStateResetError:
+            
+            fixSuggestion = @"Ensure that cryptor is in correct state and there is no error with parameters";
             break;
         default:
 
