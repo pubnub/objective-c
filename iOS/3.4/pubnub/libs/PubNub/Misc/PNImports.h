@@ -10,7 +10,9 @@
 //
 //
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "UIDevice+PNAdditions.h"
+#endif
 #import "PNJSONSerialization.h"
 #import "PNObservationCenter.h"
 #import "PNChannelPresence.h"
