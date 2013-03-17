@@ -17,6 +17,7 @@
 
 #import "PNMessage.h"
 #import "PNMessage+Protected.h"
+#import "PNCryptoHelper.h"
 
 
 #pragma mark Private interface methods
@@ -86,6 +87,31 @@
 
     PNMessage *message = [[self class] new];
     message.message = messageBody;
+    if ([PNCryptoHelper sharedInstance].isReady) {
+
+        PNError *processingError = nil;
+        NSString *decodedMessage = [[PNCryptoHelper sharedInstance] decryptedStringFromString:message.message
+                                                                                        error:&processingError];
+        if (processingError != nil) {
+
+            PNLog(PNLogGeneralLevel,
+                  message,
+                  @" Message decoding failed because of error: %@. Encoded message will shown.",
+                  processingError);
+        }
+        else {
+
+            [PNJSONSerialization JSONObjectWithString:decodedMessage
+                                      completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
+
+                                          message.message = result;
+                                      }
+                                           errorBlock:^(NSError *error) {
+
+                                               PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
+                                           }];
+        }
+    }
     message.channel = channel;
     message.receiveDate = messagePostDate;
 

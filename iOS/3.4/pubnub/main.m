@@ -7,6 +7,8 @@
 //
 
 #import "PNAppDelegate.h"
+#import "PNCryptoHelper.h"
+#import "NSString+PNAddition.h"
 
 
 int main(int argc, char *argv[])

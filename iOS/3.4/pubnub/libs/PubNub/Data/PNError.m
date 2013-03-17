@@ -222,10 +222,6 @@
                 
                 errorDescription = @"Not implemented";
                 break;
-            case kPNCryptoStateResetError:
-                
-                errorDescription = @"Cryptor reset error";
-                break;
             default:
 
                 errorDescription = @"Unknown error.";
@@ -340,10 +336,6 @@
             
             failureReason = @"Looks like someone tried to use feature which is not available for specified algorythm";
             break;
-        case kPNCryptoStateResetError:
-            
-            failureReason = @"Cryptor state reset failure";
-            break;
         default:
 
             failureReason = @"Unknown error reason.";
@@ -452,10 +444,6 @@
         case kPNCryptoUnavailableFeatureError:
             
             fixSuggestion = @"Looks like you tried to perform some operation which is not supported by cryptor with specified algorythm.";
-            break;
-        case kPNCryptoStateResetError:
-            
-            fixSuggestion = @"Ensure that cryptor is in correct state and there is no error with parameters";
             break;
         default:
 

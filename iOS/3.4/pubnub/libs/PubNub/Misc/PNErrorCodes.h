@@ -90,10 +90,6 @@ static NSInteger const kPNCryptoInputDataProcessingError = 117;
 // available in specified algorithm
 static NSInteger const kPNCryptoUnavailableFeatureError = 118;
 
-// Error occured because Crypto helper was unable to reset
-// cryptor state for next processing iteration
-static NSInteger const kPNCryptoStateResetError = 119;
-
 
 
 #pragma mark - Developers error (caused by developer)

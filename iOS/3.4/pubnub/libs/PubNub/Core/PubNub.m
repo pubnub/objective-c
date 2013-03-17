@@ -28,6 +28,7 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
+#import "NSString+PNAddition.h"
 
 
 #pragma mark Static
@@ -1403,19 +1404,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             
             PNLog(PNLogGeneralLevel, self, @" [INFO] Crypto helper initialization failed because of error: %@",
                   helperInitializationError);
-        }
-        
-        PNError *processingError = nil;
-        NSString *inputDataString = @"\"Pubnub Messaging API 1\"";
-        NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:inputDataString
-                                                                                       error:&processingError];
-        if (processingError == nil) {
-            
-            NSLog(@"ENCRYPTED MESSAGE: %@", encryptedData);
-        }
-        else {
-            
-            NSLog(@"ENCRYPTION ERROR: %@", processingError);
         }
     }
 }

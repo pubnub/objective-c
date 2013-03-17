@@ -79,6 +79,11 @@
     return [[[self sha256Data] HEXString] lowercaseString];
 }
 
+- (NSString *)base64DecodedString {
+
+    return [NSString stringWithUTF8String:[[NSData dataFromBase64String:self] bytes]];
+}
+
 #pragma mark -
 
 @end

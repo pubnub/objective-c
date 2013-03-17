@@ -33,6 +33,7 @@
 
 - (NSData *)sha256Data;
 - (NSString *)sha256HEXString;
+- (NSString *)base64DecodedString;
 
 #pragma mark -
 

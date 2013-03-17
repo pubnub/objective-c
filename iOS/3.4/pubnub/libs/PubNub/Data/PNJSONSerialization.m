@@ -68,7 +68,7 @@
     if (NSClassFromString(@"NSJSONSerialization")) {
         
         result = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]
-                                                 options:(NSJSONReadingOptions)kNilOptions
+                                                 options:NSJSONReadingAllowFragments
                                                    error:&parsingError];
     }
     // Fallback to JSONKit usage

@@ -19,6 +19,12 @@
 @interface PNCryptoHelper : NSObject
 
 
+#pragma mark - Properties
+
+// Stores whether crypto helper was prepared or not
+@property (nonatomic, readonly, assign, getter = isReady) BOOL ready;
+
+
 #pragma mark - Class methods
 
 /**
