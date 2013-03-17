@@ -102,9 +102,10 @@ You can use few class methods to intialise and update instance properties:
             (getter = shouldReduceSecurityLevelOnError) reduceSecurityLevelOnError  
         __Default:__ YES (_kPNShouldReduceSecurityLevelOnError_ key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    6.  When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
+    7.  When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
       
-           (getter = canIgnoreSecureConnectionRequirement) ignoreSecureConnectionRequirement  
+            (getter = canIgnoreSecureConnectionRequirement) ignoreSecureConnectionRequirement
+            
         __Default:__ YES (_kPNCanIgnoreSecureConnectionRequirement_ key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
   
 ***NOTE: If you are using the `+defaultConfiguration` method to create your configuration instance, than you will need to update:  _kPNPublishKey_, _kPNSubscriptionKey_ and _kPNOriginHost_ keys in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h).***
@@ -217,7 +218,7 @@ The client provides a set of methods which allow you to subscribe to channel(s):
               withPresenceEvent:(BOOL)withPresenceEvent  
      andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;  
 
-Each subscription method has designated methods, one to add a presence flag, and another to add a handling block.  If `withPresenceEvent` is set to `YES`, the client will explictly send 'join' and 'leave' presence events as it adds and removes channels to its PNChannel list.
+Each subscription method has designated methods, one to add a presence flag, and another to add a handling block.  If `withPresenceEvent` is set to `YES`, the client will automatically receive "Presence" ('join', 'leave', and 'timeout') events for channels as you subscribe to them.
 
 Here are some subscribe examples:
 
@@ -342,7 +343,7 @@ Usage is very simple:
 
 ### Publishing Messages
 
-Messahe can be instance of one of the following classed: __NSString__, __NSNumber__, __NSArray__, __NSDictionary__, or __NSNull__.  
+Messages can be an instance of one of the following classed: __NSString__, __NSNumber__, __NSArray__, __NSDictionary__, or __NSNull__.  
 If you use some other JSON serialization kit or do it by yourself, ensure that JSON comply with all requirements. If JSON string is mailformed you will receive corresponding error from remote server.  
 
 You can use the following methods to send messages:  
