@@ -19,6 +19,7 @@
 #import "PNChannel+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNConstants.h"
+#import "PNCryptoHelper.h"
 
 
 #pragma mark Private interface methods
@@ -32,8 +33,16 @@
 // be processed
 @property (nonatomic, strong) PNMessage *message;
 
+// Stores reference on prepared message
+@property (nonatomic, strong) NSString *preparedMessage;
+
 
 #pragma mark - Instance methods
+
+/**
+ * Retrieve reference on encrypted message
+ */
+- (NSString *)encryptedMessageWithError:(PNError **)encryptionError;
 
 /**
  * Retrieve message post request signature
@@ -79,9 +88,30 @@
 
 - (NSString *)resourcePath {
 
-    // Encode message with % so it will be delivered w/o damages to
-    // the PubNub service
-    NSString *escapedMessage = [self.message.message percentEscapedString];
+    if (self.preparedMessage == nil) {
+
+        NSString *message = self.message.message;
+
+        // Retrieve reference on encrypted message (if possible)
+        PNError *encryptionError;
+        if ([PNCryptoHelper sharedInstance].isReady) {
+
+            message = [self encryptedMessageWithError:&encryptionError];
+
+            if (encryptionError != nil) {
+
+                PNLog(PNLogCommunicationChannelLayerErrorLevel,
+                        self,
+                        @"Message encryption failed with error: %@\nUnencrypted message will be sent.",
+                        encryptionError);
+            }
+        }
+
+        // Encode message with % so it will be delivered w/o damages to
+        // the PubNub service
+        self.preparedMessage = [message percentEscapedString];
+    }
+
 
     return [NSString stringWithFormat:@"%@/publish/%@/%@/%@/%@/%@_%@/%@?uuid=%@",
                     kPNRequestAPIVersionPrefix,
@@ -91,8 +121,16 @@
                     [self.message.channel escapedName],
                     [self callbackMethodName],
                     self.shortIdentifier,
-                    escapedMessage,
+                    self.preparedMessage,
                     [PubNub escapedClientIdentifier]];
+}
+
+- (NSString *)encryptedMessageWithError:(PNError **)encryptionError {
+
+    NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:self.message.message
+                                                                                          error:encryptionError];
+
+    return [NSString stringWithFormat:@"\"%@\"", encryptedData];
 }
 
 - (NSString *)signature {
@@ -112,7 +150,7 @@
     }
 
 
-    return signature;
+    return @"0";
 }
 
 #pragma mark -

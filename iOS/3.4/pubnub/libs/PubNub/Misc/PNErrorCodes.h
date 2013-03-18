@@ -62,34 +62,63 @@ static NSInteger const kPNTooLongMessageError = 110;
 static NSInteger const kPNRestrictedCharacterInChannelNameError = 111;
 
 
+#pragma mark - Cryptography error
+
+// Developer tried to initalize Cryptor helper with configuraiton
+// which doesn't has cipher key in it
+static NSInteger const kPNCryptoEmptyCipherKeyError = 112;
+
+// Error occured during cryptor initialization because of error
+// in provided paramteres
+static NSInteger const kPNCryptoIllegalInitializationParametersError = 113;
+
+// Error occured because buffer with insufficient size was
+// provided for encrypted/decrypted data output
+static NSInteger const kPNCryptoInsufficentBufferSizeError = 114;
+
+// Error occure in case if during cryptor operation there was not enough
+// memory for it's operation
+static NSInteger const kPNCryptoInsufficentMemoryError = 115;
+
+// Error occured because input data wasn't properly alligned
+static NSInteger const kPNCryptoAligmentInputDataError = 116;
+
+// Error occured during input data encode/decode process
+static NSInteger const kPNCryptoInputDataProcessingError = 117;
+
+// Error occure if developer try to use one of features which is not
+// available in specified algorithm
+static NSInteger const kPNCryptoUnavailableFeatureError = 118;
+
+
 
 #pragma mark - Developers error (caused by developer)
 
 // Developer tries to submit empty (nil) request by passing
 // no message object to PubNub service
-static NSInteger const kPNMessageObjectError = 112;
+static NSInteger const kPNMessageObjectError = 120;
 
 // Developer tried to submit message w/o text to PubNub service
-static NSInteger const kPNMessageHasNoContentError = 113;
+static NSInteger const kPNMessageHasNoContentError = 121;
 
 // Developer tried to submit message w/o target channel to
 // PubNub service
-static NSInteger const kPNMessageHasNoChannelError = 114;
+static NSInteger const kPNMessageHasNoChannelError = 122;
 
 
 #pragma mark - Service error (caused by remote server)
 
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 115;
+static NSInteger const kPNResponseEncodingError = 123;
 
 // Server provided response with malformed JSON in it
 // (in such casses library will try to resend request to
 // remote origin)
-static NSInteger const kPNResponseMalformedJSONError = 116;
+static NSInteger const kPNResponseMalformedJSONError = 124;
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some
 // errors
-static NSInteger const kPNConnectionErrorOnSetup = 117;
+static NSInteger const kPNConnectionErrorOnSetup = 125;
