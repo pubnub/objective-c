@@ -10,7 +10,11 @@
 //
 
 #import "PNCryptoHelper.h"
+#import <CommonCrypto/CommonCrypto.h>
 #import "NSString+PNAddition.h"
+#import "NSData+PNAdditions.h"
+#import "PNConfiguration.h"
+#import "PNError.h"
 
 
 #pragma mark Types
