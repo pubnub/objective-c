@@ -259,7 +259,7 @@ static NSData *_cryptorKeyData = nil;
             inputData = [NSData dataFromBase64String:string];
         }
         else {
-
+            
             inputData = [string dataUsingEncoding:NSUTF8StringEncoding];
         }
 
