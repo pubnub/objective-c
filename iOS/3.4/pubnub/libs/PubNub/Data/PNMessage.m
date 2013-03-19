@@ -87,7 +87,7 @@
 
     PNMessage *message = [[self class] new];
     message.message = messageBody;
-    if ([PNCryptoHelper sharedInstance].isReady) {
+    if ([PNCryptoHelper sharedInstance].isReady && [message.message isKindOfClass:[NSString class]]) {
 
         PNError *processingError = nil;
         NSString *decodedMessage = [[PNCryptoHelper sharedInstance] decryptedStringFromString:message.message

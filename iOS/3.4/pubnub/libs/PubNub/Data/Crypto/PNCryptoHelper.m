@@ -10,7 +10,11 @@
 //
 
 #import "PNCryptoHelper.h"
+#import <CommonCrypto/CommonCrypto.h>
 #import "NSString+PNAddition.h"
+#import "NSData+PNAdditions.h"
+#import "PNConfiguration.h"
+#import "PNError.h"
 
 
 #pragma mark Types
@@ -255,7 +259,7 @@ static NSData *_cryptorKeyData = nil;
             inputData = [NSData dataFromBase64String:string];
         }
         else {
-
+            
             inputData = [string dataUsingEncoding:NSUTF8StringEncoding];
         }
 
