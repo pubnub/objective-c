@@ -49,23 +49,25 @@ Data from [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultCo
 You can use few class methods to intialise and update instance properties:  
 
 1. Retrieve reference on default client configuration (all values taken from [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
-  
-       + (PNConfiguration *)defaultConfiguration;  
+
+        + (PNConfiguration *)defaultConfiguration;  
   
 2. Retrieve the reference on the configuration instance via these methods:  
-  
-       + (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey  
-                                           subscribeKey:(NSString *)subscribeKey  
-                                              secretKey:(NSString *)secretKey;  
-       + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
-                                        publishKey:(NSString *)publishKey  
-		                              subscribeKey:(NSString *)subscribeKey  
-		                                 secretKey:(NSString *)secretKey;  
-       + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
-		                                publishKey:(NSString *)publishKey  
-		                              subscribeKey:(NSString *)subscribeKey  
-		                                 secretKey:(NSString *)secretKey  
-		                                 cipherKey:(NSString *)cipherKey;  
+
+        + (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey  
+                                            subscribeKey:(NSString *)subscribeKey  
+                                               secretKey:(NSString *)secretKey;  
+
+        + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
+                                         publishKey:(NSString *)publishKey                                        
+                                       subscribeKey:(NSString *)subscribeKey
+                                          secretKey:(NSString *)secretKey;		                                 
+
+        + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
+                                         publishKey:(NSString *)publishKey  
+                                       subscribeKey:(NSString *)subscribeKey  
+                                          secretKey:(NSString *)secretKey  
+                                          cipherKey:(NSString *)cipherKey;  // To initialize with encryption, use cipherKey
 
   
 3. Update the configuration instance using this next set of parameters:  
