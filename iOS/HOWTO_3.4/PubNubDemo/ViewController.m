@@ -33,6 +33,9 @@
     self.messages = [NSMutableDictionary dictionary];
     self.configuration = [PNConfiguration defaultConfiguration];
     
+    self.sendMessageButton.enabled = NO;
+    self.subscribeButton.enabled = NO;
+    
     
     ViewController *weakSelf = self;
     
@@ -65,7 +68,7 @@
                                                              
                                                              [self.messageTextView setText:messages];
                                                              
-                                                             //                                                             weakSelf.currentChannelChat = [weakSelf.messages valueForKey:weakSelf.currentChannel.name];
+                                                             //weakSelf.currentChannelChat = [weakSelf.messages valueForKey:weakSelf.currentChannel.name];
                                                          }];
 }
 
@@ -89,7 +92,7 @@
             
             
         });
-
+        self.subscribeButton.enabled = YES;
         
     }
      // In case of error you always can pull out error code and
@@ -136,12 +139,17 @@
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self];
     [[PNObservationCenter defaultCenter] removeChannelParticipantsListProcessingObserver:self];
     [[PNObservationCenter defaultCenter] removePresenceEventObserver:self];
+    
+    self.subscribeButton.enabled = NO;
+    self.sendMessageButton.enabled = NO;
 }
 
 - (IBAction)addChannelButtonTapped:(id)sender
 {
     self.currentChannel = [PNChannel channelWithName:self.channelName.text
                               shouldObservePresence:NO];
+    NSLog(@"%p", self.currentChannel);
+    
     [PubNub subscribeOnChannel:self.currentChannel withCompletionHandlingBlock:^(PNSubscriptionProcessState state,
                                                                      NSArray *channels,
                                                                      PNError *subscriptionError) {
@@ -151,15 +159,17 @@
         if (state == PNSubscriptionProcessNotSubscribedState) {
             
             alertMessage = [NSString stringWithFormat:@"Failed to subscribe on: %@", self.currentChannel.name];
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Subscribe"
+                                                                message:alertMessage
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+        }else if(state == PNSubscriptionProcessSubscribedState){
+            self.sendMessageButton.enabled = YES;
         }
         
-        
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Subscribe"
-                                                            message:alertMessage
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-        [alertView show];
     }];
     
     [self.view endEditing:YES];

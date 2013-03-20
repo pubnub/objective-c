@@ -25,6 +25,8 @@
 // Stores reference on message input text field
 @property (nonatomic, pn_desired_weak) IBOutlet UITextView *messageTextView;
 
+@property (nonatomic, pn_desired_weak) IBOutlet UIButton *subscribeButton;
+@property (nonatomic, pn_desired_weak) IBOutlet UIButton *sendMessageButton;
 
 // Stores reference on PubNub client configuration
 @property (nonatomic, strong) PNConfiguration *configuration;
