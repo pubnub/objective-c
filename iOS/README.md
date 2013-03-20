@@ -69,7 +69,8 @@ You can use few class methods to intialise and update instance properties:
                                           secretKey:(NSString *)secretKey  
                                           cipherKey:(NSString *)cipherKey;  // To initialize with encryption, use cipherKey
 
-  
+***NOTE:  When encryption is enabled, and non-encrypted messages will be passed through as the string "DECRYPTION_ERROR".**
+
 3. Update the configuration instance using this next set of parameters:  
 
     1.  Timeout after which the library will report any ***non-subscription-related*** request (here now, leave, message history, message post, time token) or execution failure.  
