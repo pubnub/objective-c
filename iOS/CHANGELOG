@@ -1,3 +1,7 @@
+03-20-2013
+. aes encryption support added via new constructor
+. when encryption is enabled and non-encrypted data is received, "DECRYPTION_ERROR" is displayed instead.
+
 03-08-2013
 . fixed resume on unlock bug
 
