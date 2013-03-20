@@ -96,8 +96,11 @@
 
             PNLog(PNLogGeneralLevel,
                   message,
-                  @" Message decoding failed because of error: %@. Encoded message will shown.",
+                  @" Message decoding failed because of error: %@",
                   processingError);
+            
+            message.message = @"DECRYPTION_ERROR";
+    
         }
         else {
 
@@ -114,7 +117,6 @@
     }
     message.channel = channel;
     message.receiveDate = messagePostDate;
-
 
     return message;
 }
