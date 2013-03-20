@@ -30,8 +30,4 @@ struct PNConnectionIdentifiersStruct {
     __unsafe_unretained NSString *serviceConnection;
 };
 
-static struct PNConnectionIdentifiersStruct PNConnectionIdentifiers = {
-    
-    .messagingConnection = @"PNMessaginConnectionIdentifier",
-    .serviceConnection = @"PNServiceConnectionIdentifier"
-};
+extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;

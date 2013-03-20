@@ -13,6 +13,7 @@
 
 #import "PNConnection.h"
 #import <Security/SecureTransport.h>
+#import "PNConnection+Protected.h"
 #import "PNResponseDeserialize.h"
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
@@ -38,6 +39,12 @@ typedef enum _PNConnectionSSLConfigurationLevel {
     // security options)
     PNConnectionSSLConfigurationInSecure,
 } PNConnectionSSLConfigurationLevel;
+
+struct PNConnectionIdentifiersStruct PNConnectionIdentifiers = {
+    
+    .messagingConnection = @"PNMessaginConnectionIdentifier",
+    .serviceConnection = @"PNServiceConnectionIdentifier"
+};
 
 
 #pragma mark - Static

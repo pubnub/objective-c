@@ -32,12 +32,7 @@ struct PNPresenceEventDataKeysStruct {
     __unsafe_unretained NSString *occupancy;
 };
 
-static struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
-    .action = @"action",
-    .timestamp = @"timestamp",
-    .uuid = @"uuid",
-    .occupancy = @"occupancy"
-};
+extern struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys;
 
 
 #pragma mark - Protected interface methods
