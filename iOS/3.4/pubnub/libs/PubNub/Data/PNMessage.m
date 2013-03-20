@@ -87,12 +87,47 @@
 
     PNMessage *message = [[self class] new];
     message.message = messageBody;
-    if ([PNCryptoHelper sharedInstance].isReady && [message.message isKindOfClass:[NSString class]]) {
-
+    if ([PNCryptoHelper sharedInstance].isReady) {
+        
+        NSInteger processingErrorCode = -1;
         PNError *processingError = nil;
-        NSString *decodedMessage = [[PNCryptoHelper sharedInstance] decryptedStringFromString:message.message
-                                                                                        error:&processingError];
-        if (processingError != nil) {
+        
+        // Check whether arrived message is string and should be
+        // encrypted
+        if ([message.message isKindOfClass:[NSString class]]) {
+            
+            NSString *decodedMessage = [[PNCryptoHelper sharedInstance] decryptedStringFromString:message.message
+                                                                                            error:&processingError];
+            
+            if (decodedMessage == nil && processingError == nil) {
+                
+                processingErrorCode = kPNCryptoInputDataProcessingError;
+            }
+            
+            if (processingError == nil && processingErrorCode < 0) {
+                
+                [PNJSONSerialization JSONObjectWithString:decodedMessage
+                                          completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
+                                              
+                                              message.message = result;
+                                          }
+                                               errorBlock:^(NSError *error) {
+                                                   
+                                                   PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
+                                               }];
+            }
+        }
+        else {
+            
+            processingErrorCode = kPNCryptoInputDataProcessingError;
+        }
+        
+        if (processingError != nil || processingErrorCode > 0) {
+            
+            if (processingErrorCode > 0) {
+                
+                processingError = [PNError errorWithCode:processingErrorCode];
+            }
 
             PNLog(PNLogGeneralLevel,
                   message,
@@ -100,19 +135,6 @@
                   processingError);
             
             message.message = @"DECRYPTION_ERROR";
-    
-        }
-        else {
-
-            [PNJSONSerialization JSONObjectWithString:decodedMessage
-                                      completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
-
-                                          message.message = result;
-                                      }
-                                           errorBlock:^(NSError *error) {
-
-                                               PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
-                                           }];
         }
     }
     message.channel = channel;
