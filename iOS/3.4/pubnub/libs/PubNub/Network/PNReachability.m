@@ -257,9 +257,12 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability, SCNetworkReac
 }
 
 - (BOOL)isServiceAvailable {
-    
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
     return (self.status == PNReachabilityStatusReachableViaCellular ||
             self.status == PNReachabilityStatusReachableViaWiFi);
+#else
+    return self.status == PNReachabilityStatusReachableViaWiFi;
+#endif
     
 }
 
