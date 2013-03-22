@@ -465,7 +465,7 @@
     NSMutableData *joinedData = [NSMutableData data];
     BOOL parsingChunkOctet = NO;
     BOOL parsingChunk = NO;
-    int chunkStart = 0;
+    NSUInteger chunkStart = 0;
 
     NSRange cursor = [chunkedData rangeOfData:self.endLineCharactersData
                                       options:(NSDataSearchOptions)0
@@ -481,7 +481,12 @@
 
         // The next chunk starts after the cursor.
         chunkStart = cursor.location + cursor.length;
-        NSRange nextSearchRange = NSMakeRange(chunkStart, searchRange.length - chunkStart);
+        NSUInteger chunkEnd = searchRange.length - chunkStart;
+        f (searchRange.length - chunkStart < 0) {
+
+            chunkEnd = (searchRange.length + searchRange.length) - chunkStart;
+        }
+        NSRange nextSearchRange = NSMakeRange(chunkStart, chunkEnd);
 
         if (parsingChunk) {
 
