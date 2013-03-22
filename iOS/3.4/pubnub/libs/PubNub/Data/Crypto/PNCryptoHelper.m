@@ -227,6 +227,11 @@ static NSData *_cryptorKeyData = nil;
                 size_t remainingUnprocessedDataLength;
                 processingStatus = CCCryptorFinal(cryptor, processedDataEndPointer, unfilledSize, &remainingUnprocessedDataLength);
                 [processedData setLength:(updatedProcessedDataLength+remainingUnprocessedDataLength)];
+                
+                if (unfilledSize > 0 && remainingUnprocessedDataLength == 0) {
+                    
+                    processingStatus = kCCDecodeError;
+                }
             }
 
 
@@ -252,11 +257,17 @@ static NSData *_cryptorKeyData = nil;
     NSInteger errorCode = -1;
     
     if (self.isReady) {
-
+        
+        CCCryptorStatus status = kCCSuccess;
         NSData *inputData;
         if (cryptorType == PNCryptorDecrypt) {
 
             inputData = [NSData dataFromBase64String:string];
+            
+            if (inputData == nil) {
+                
+                status = kCCDecodeError;
+            }
         }
         else {
             
@@ -264,7 +275,10 @@ static NSData *_cryptorKeyData = nil;
         }
 
         NSData *processedData = nil;
-        CCCryptorStatus status = [self getProcessedData:&processedData fromInputData:inputData withCryptorType:cryptorType];
+        if (status == kCCSuccess) {
+            
+            status = [self getProcessedData:&processedData fromInputData:inputData withCryptorType:cryptorType];
+        }
 
         if (status == kCCSuccess) {
 
