@@ -482,12 +482,6 @@
         // The next chunk starts after the cursor.
         chunkStart = cursor.location + cursor.length;
         NSUInteger chunkEnd = searchRange.location + searchRange.length - chunkStart;
-        
-        if ((searchRange.location + searchRange.length) < chunkStart) {
-
-            break;
-        }
-        
         NSRange nextSearchRange = NSMakeRange(chunkStart, chunkEnd);
 
         if (parsingChunk) {
