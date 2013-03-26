@@ -1,3 +1,6 @@
+03-26-2013
+. fix for NSRangeException integer overflow bug
+
 03-20-2013
 . aes encryption support added via new constructor
 . when encryption is enabled and non-encrypted data is received, "DECRYPTION_ERROR" is displayed instead.
