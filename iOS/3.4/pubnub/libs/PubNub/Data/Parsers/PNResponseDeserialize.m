@@ -300,7 +300,6 @@
 
                     if ([self isCompressedResponse:data inRange:responseRange]) {
                         
-                        PNLog(PNLogGeneralLevel, self, @"UNARCHIVE RESPONSE");
                         responseData = [[self joinedDataFromChunkedDataUsingOctets:data inRange:responseRange] GZIPInflate];
                     }
                     else {
@@ -466,7 +465,7 @@
     NSMutableData *joinedData = [NSMutableData data];
     BOOL parsingChunkOctet = NO;
     BOOL parsingChunk = NO;
-    NSUInteger chunkStart = 0;
+    NSUInteger chunkStart = searchRange.location;
 
     NSRange cursor = [chunkedData rangeOfData:self.endLineCharactersData
                                       options:(NSDataSearchOptions)0
@@ -482,9 +481,9 @@
 
         // The next chunk starts after the cursor.
         chunkStart = cursor.location + cursor.length;
-        NSUInteger chunkEnd = searchRange.length - chunkStart;
+        NSUInteger chunkEnd = searchRange.location + searchRange.length - chunkStart;
         
-        if (searchRange.length < chunkStart) {
+        if ((searchRange.location + searchRange.length) < chunkStart) {
 
             break;
         }
