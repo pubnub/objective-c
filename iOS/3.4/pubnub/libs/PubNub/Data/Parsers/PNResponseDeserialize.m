@@ -299,7 +299,7 @@
                 if (responseIsChunked) {
 
                     if ([self isCompressedResponse:data inRange:responseRange]) {
-
+                        
                         responseData = [[self joinedDataFromChunkedDataUsingOctets:data inRange:responseRange] GZIPInflate];
                     }
                     else {
@@ -465,7 +465,7 @@
     NSMutableData *joinedData = [NSMutableData data];
     BOOL parsingChunkOctet = NO;
     BOOL parsingChunk = NO;
-    int chunkStart = 0;
+    NSUInteger chunkStart = searchRange.location;
 
     NSRange cursor = [chunkedData rangeOfData:self.endLineCharactersData
                                       options:(NSDataSearchOptions)0
@@ -481,7 +481,8 @@
 
         // The next chunk starts after the cursor.
         chunkStart = cursor.location + cursor.length;
-        NSRange nextSearchRange = NSMakeRange(chunkStart, searchRange.length - chunkStart);
+        NSUInteger chunkEnd = searchRange.location + searchRange.length - chunkStart;
+        NSRange nextSearchRange = NSMakeRange(chunkStart, chunkEnd);
 
         if (parsingChunk) {
 
@@ -503,10 +504,10 @@
             NSScanner *scanner = [NSScanner scannerWithString:octet];
             unsigned int chunkSize = 0;
             [scanner scanHexInt:&chunkSize];
-
+            
             // Check whether octet report that next chunk of data will
             // be zero length or not
-            if (chunkSize == 0) {
+            if (chunkSize == 0 || chunkSize == INT_MAX || chunkSize == INT_MIN) {
 
                 break;
             }

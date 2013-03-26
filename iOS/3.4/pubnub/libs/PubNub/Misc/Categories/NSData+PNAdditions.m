@@ -102,7 +102,7 @@ static unsigned char decodeCharTable[256] =
 
 - (unsigned long long int)unsignedLongLongFromHEXData {
 
-    return strtoull([self bytes], NULL, 16);;
+    return strtoull([self bytes], NULL, 16);
 }
 
 - (NSString *)base64Encoding {
