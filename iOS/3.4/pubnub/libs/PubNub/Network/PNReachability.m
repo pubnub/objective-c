@@ -55,6 +55,14 @@ typedef enum _PNReachabilityStatus {
 @property (nonatomic, assign) SCNetworkReachabilityRef serviceReachability;
 
 
+#pragma mark - Class methods
+
+/**
+ * Retrieve reference on created reachability instance with specific address
+ */
++ (SCNetworkReachabilityRef)newReachabilityForWiFi:(BOOL)wifiReachability;
+
+
 @end
 
 
@@ -68,6 +76,22 @@ typedef enum _PNReachabilityStatus {
 + (PNReachability *)serviceReachability {
     
     return [[[self class] alloc] init];
+}
+
++ (SCNetworkReachabilityRef)newReachabilityForWiFi:(BOOL)wifiReachability {
+    
+    struct sockaddr_in address;
+    bzero(&address, sizeof(address));
+    address.sin_len = sizeof(address);
+    address.sin_family = AF_INET;
+    
+    if (wifiReachability) {
+        
+        address.sin_addr.s_addr = htonl(IN_LINKLOCALNETNUM);
+    }
+    
+    
+    return SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr*)&address);
 }
 
 
@@ -264,6 +288,23 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability, SCNetworkReac
 }
 
 - (void)refreshReachabilityState {
+    
+    SCNetworkConnectionFlags reachabilityFlags;
+    SCNetworkReachabilityRef internerReachability = [[self class] newReachabilityForWiFi:NO];
+    SCNetworkReachabilityGetFlags(internerReachability, &reachabilityFlags);
+    PNReachabilityStatus reachabilityStatus = PNReachabilityStatusForFlags(reachabilityFlags);
+    if (reachabilityStatus == PNReachabilityStatusUnknown || reachabilityStatus == PNReachabilityStatusNotReachable) {
+        
+        SCNetworkReachabilityRef wifiReachability = [[self class] newReachabilityForWiFi:YES];
+        SCNetworkReachabilityGetFlags(wifiReachability, &reachabilityFlags);
+        
+        reachabilityStatus = PNReachabilityStatusForFlags(reachabilityFlags);
+        CFRelease(wifiReachability);
+    }
+        
+    self.reachabilityFlags = reachabilityFlags;
+    CFRelease(internerReachability);
+    
     
     _status = PNReachabilityStatusForFlags(self.reachabilityFlags);
 }
