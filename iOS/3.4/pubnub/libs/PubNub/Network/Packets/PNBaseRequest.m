@@ -23,6 +23,10 @@
 
 #pragma mark - Properties
 
+// Stores reference on whether connection should
+// be closed before sending this message or not
+@property (nonatomic, assign, getter = shouldCloseConnection) BOOL closeConnection;
+
 // Stores number of request sending retries
 // (when it will reach limit communication
 // channel should remove it from queue
