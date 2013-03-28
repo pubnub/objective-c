@@ -1226,6 +1226,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         if (self.state == PNPubNubClientStateDisconnecting ||
             self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
             
+            PNError *connectionError;
             PNPubNubClientState state = PNPubNubClientStateDisconnected;
             if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
                 state = PNPubNubClientStateDisconnectedOnNetworkError;
@@ -1247,30 +1248,27 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 }
                 else {
 
-                    PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
+                    connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
 
-                    if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
-
-                        [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
-                    }
+                    [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
 
                     [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
-                    
-                    
-                    // Check whether error is caused by network error or not
-                    switch (connectionError.code) {
-                        case kPNClientConnectionFailedOnInternetFailureError:
-                        case kPNClientConnectionClosedOnInternetFailureError:
-                            
-                            // Try to refresh reachability state (there is situation whem reachability state
-                            // changed within library to handle sockets timeout/error)
-                            [self.reachability refreshReachabilityState];
-                            break;
-                            
-                        default:
-                            break;
-                    }
                 }
+            }
+            
+            
+            // Check whether error is caused by network error or not
+            switch (connectionError.code) {
+                case kPNClientConnectionFailedOnInternetFailureError:
+                case kPNClientConnectionClosedOnInternetFailureError:
+                    
+                    // Try to refresh reachability state (there is situation whem reachability state
+                    // changed within library to handle sockets timeout/error)
+                    [self.reachability refreshReachabilityState];
+                    break;
+                    
+                default:
+                    break;
             }
             
             
