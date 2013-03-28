@@ -1,3 +1,6 @@
+03-29-2013
+. fixed issue when encountered issues during repeated sub/unsub/sub, with and without presence
+
 03-26-2013
 . fix for NSRangeException integer overflow bug
 
