@@ -16,7 +16,7 @@ Detailed information on methods, constants, and notifications can be found in th
 4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
 5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options
 
-For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
+For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
 
 ## Jumping Right In - Try out the Hello World and Reference Apps!
 
@@ -24,8 +24,8 @@ There are two iOS PubNub 3.4 client demo apps available.
 
 ### Hello World HOWTO
 
-The [Hello World](HOWTO_3.4) app references how to create a simple application using PubNub and iOS. 
-[A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HelloWorldHOWTO_34.pdf).
+The [Hello World](HOWTO/HelloWorld/3.4) app references how to create a simple application using PubNub and iOS. 
+[A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf).
 
 ### Deluxe iPad Full Featured Demo
 
