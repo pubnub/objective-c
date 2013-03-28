@@ -362,6 +362,9 @@
         [channelsSet minusSet:filteredChannels];
     }
 
+    // Check whether client already was subscribed on channels before
+    BOOL shouldReconnect = [self.subscribedChannelsSet count] > 0 && !self.isRestoringSubscription;
+
 
     // In case if client currently connected to
     // PubNub services, we should send leave event
@@ -378,9 +381,9 @@
         [subscriptionChannels makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
     }
 
-
-    [self scheduleRequest:[PNSubscribeRequest subscribeRequestForChannels:subscriptionChannels byUserRequest:YES]
-  shouldObserveProcessing:YES];
+    PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:subscriptionChannels byUserRequest:YES];
+    subscribeRequest.closeConnection = shouldReconnect;
+    [self scheduleRequest:subscribeRequest shouldObserveProcessing:YES];
 }
 
 - (NSArray *)unsubscribeFromChannelsWithPresenceEvent:(BOOL)withPresenceEvent {
@@ -450,10 +453,16 @@
 
     if ([currentlySubscribedChannels count] > 0) {
 
+        PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[currentlySubscribedChannels allObjects]
+                                                                        byUserRequest:isLeavingByUserRequest];
+        subscribeRequest.closeConnection = YES;
+
         // Resubscribe on rest of channels which is left after unsubscribe
-        [self scheduleRequest:[PNSubscribeRequest subscribeRequestForChannels:[currentlySubscribedChannels allObjects]
-                                                                byUserRequest:isLeavingByUserRequest]
-      shouldObserveProcessing:YES];
+        [self scheduleRequest:subscribeRequest shouldObserveProcessing:NO];
+    }
+    else {
+
+        [self reconnect];
     }
 }
 
@@ -506,7 +515,6 @@
 
         [self.subscribedChannelsSet minusSet:[self channelsWithPresenceFromList:channels]];
     }
-
 
     if (isLeavingByUserRequest) {
 
@@ -802,20 +810,17 @@
           request.resourcePath);
 
 
-    if ([request isKindOfClass:[PNLeaveRequest class]]) {
+    // Check whether connection should be closed for resubscribe
+    // or not
+    if (request.shouldCloseConnection) {
 
-        // Check whether connection should be closed for resubscribe
-        // or not
-        if (((PNLeaveRequest *)request).shouldCloseConnection) {
+        // Mark that we don't need to close connection after next time
+        // this request will be scheduled for processing
+        // (this will happen right after connection will be restored)
+        request.closeConnection = NO;
 
-            // Mark that we don't need to close connection after next time
-            // this request will be scheduled for processing
-            // (this will happen right after connection will be restored)
-            ((PNLeaveRequest *)request).closeConnection = NO;
-
-            // Reconnect communication channel
-            [self reconnect];
-        }
+        // Reconnect communication channel
+        [self reconnect];
     }
 }
 
