@@ -20,7 +20,14 @@ For a more detailed walkthrough of the above steps, be sure to follow the [Hello
 
 ## Jumping Right In - Try out the Hello World and Reference Apps!
 
-There are two iOS PubNub 3.4 client demo apps available.
+There are three iOS PubNub 3.4 client demo apps available!
+
+### SimpleSubscribe HOWTO
+
+The [SimpleSubscribe](HOWTO/SimpleSubscribe/3.4) app references how to create a simple subscribe-only, non-ui application using PubNub and iOS. 
+[A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/SimpleSubscribe/SimpleSubscribeHOWTO_34.pdf).
+
+This is the most basic example of how to wire it all up, and as such, should take beginners and experts alike about 5-10 minutes to complete.
 
 ### Hello World HOWTO
 
