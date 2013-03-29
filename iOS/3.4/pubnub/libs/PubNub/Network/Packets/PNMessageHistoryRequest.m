@@ -25,9 +25,9 @@
 // be pulled out
 @property (nonatomic, strong) PNChannel *channel;
 
-// Stores reference on history time frame start/end dates
-@property (nonatomic, strong) NSDate *startDate;
-@property (nonatomic, strong) NSDate *endDate;
+// Stores reference on history time frame start/end dates (time tokens)
+@property (nonatomic, strong) id startDate;
+@property (nonatomic, strong) id endDate;
 
 // Stores reference on maximum number of messages which
 // should be returned from backend
@@ -55,8 +55,8 @@
  * partial history
  */
 + (PNMessageHistoryRequest *)messageHistoryRequestForChannel:(PNChannel *)channel
-                                                        from:(NSDate *)startDate
-                                                          to:(NSDate*)endDate
+                                                        from:(id)startDate
+                                                          to:(id)endDate
                                                        limit:(NSUInteger)limit
                                               reverseHistory:(BOOL)shouldReverseMessagesInResponse {
 
@@ -76,8 +76,8 @@
  * which is passed to it
  */
 - (id)initForChannel:(PNChannel *)channel
-                from:(NSDate *)startDate
-                  to:(NSDate*)endDate
+                from:(id)startDate
+                  to:(id)endDate
                limit:(NSUInteger)limit
       reverseHistory:(BOOL)shouldReverseMessagesInResponse {
 
@@ -120,11 +120,21 @@
     // to set message history time frame or not
     if (self.startDate) {
 
-        [parameters appendFormat:@"&start=%@", PNStringFromUnsignedLongLongNumber(PNTimeTokenFromDate(self.startDate))];
+        NSNumber *startTimeToken = self.startDate;
+        if ([startTimeToken isKindOfClass:[NSDate class]]) {
+
+            startTimeToken = PNTimeTokenFromDate(self.startDate);
+        }
+        [parameters appendFormat:@"&start=%@", PNStringFromUnsignedLongLongNumber(startTimeToken)];
     }
     if (self.endDate) {
 
-        [parameters appendFormat:@"&end=%@", PNStringFromUnsignedLongLongNumber(PNTimeTokenFromDate(self.endDate))];
+        NSNumber *endTimeToken = self.startDate;
+        if ([endTimeToken isKindOfClass:[NSDate class]]) {
+
+            endTimeToken = PNTimeTokenFromDate(self.endDate);
+        }
+        [parameters appendFormat:@"&end=%@", PNStringFromUnsignedLongLongNumber(endTimeToken)];
     }
 
     // Check whether user specified limit or not

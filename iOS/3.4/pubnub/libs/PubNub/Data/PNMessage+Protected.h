@@ -37,6 +37,9 @@
 // (doesn't work for history, only for presence events)
 @property (nonatomic, strong) NSDate *receiveDate;
 
+// Stores reference on timetoken when this message was received
+@property (nonatomic, strong) NSNumber *timeToken;
+
 
 
 #pragma mark - Class methods
@@ -52,7 +55,10 @@
  * Return reference on message data object which will represent
  * message received from PubNub service
  */
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(NSDate *)messagePostDate;
++ (PNMessage *)messageFromServiceResponse:(id)messageBody
+                                onChannel:(PNChannel *)channel
+                                   atDate:(NSDate *)messagePostDate
+                                timeToken:(NSNumber *)timeToken;
 
 
 #pragma mark - Instance methods

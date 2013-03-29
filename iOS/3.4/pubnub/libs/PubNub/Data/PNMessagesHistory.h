@@ -23,8 +23,14 @@
 // Stores reference on history time frame start date
 @property (nonatomic, readonly, strong) NSDate *startDate;
 
+// Stores reference on history time frame start time token
+@property (nonatomic, readonly, strong) NSNumber *startTimeToken;
+
 // Stores reference on history time frame end date
 @property (nonatomic, readonly, strong) NSDate *endDate;
+
+// Stores reference on history time frame end time token
+@property (nonatomic, readonly, strong) NSNumber *endTimeToken;
 
 // Store reference on channel for which history has been
 // downloaded

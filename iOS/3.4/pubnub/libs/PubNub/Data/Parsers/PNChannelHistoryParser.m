@@ -65,17 +65,23 @@ static NSUInteger const kPNResponseEndDateElementIndexForEvent = 2;
     if ((self = [super init])) {
 
         NSArray *responseData = response.response;
-        self.history = [PNMessagesHistory new];
         NSNumber *startTimeToken = [responseData objectAtIndex:kPNResponseStartDateElementIndex];
         NSNumber *endTimeToken = [responseData objectAtIndex:kPNResponseEndDateElementIndexForEvent];
-        self.history.startDate = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(startTimeToken)];
-        self.history.endDate = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(endTimeToken)];
+        NSDate *startDate = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(startTimeToken)];
+        NSDate *endDate = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(startTimeToken)];
+        self.history = [PNMessagesHistory historyBetween:startDate
+                                          startTimeToken:startTimeToken
+                                              andEndDate:endDate
+                                            endTimeToken:endTimeToken];
 
         NSArray *messages = [responseData objectAtIndex:kPNResponseMessagesListElementIndex];
         NSMutableArray *historyMessages = [NSMutableArray arrayWithCapacity:[messages count]];
         [messages enumerateObjectsUsingBlock:^(id message, NSUInteger messageIdx, BOOL *messageEnumerator) {
 
-            PNMessage *messageObject = [PNMessage messageFromServiceResponse:message onChannel:nil atDate:nil];
+            PNMessage *messageObject = [PNMessage messageFromServiceResponse:message
+                                                                   onChannel:nil
+                                                                      atDate:nil
+                                                                   timeToken:nil];
             [historyMessages addObject:messageObject];
         }];
 

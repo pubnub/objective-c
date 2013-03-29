@@ -123,7 +123,10 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
                 }
                 else {
 
-                    eventObject = [PNMessage messageFromServiceResponse:event onChannel:channel atDate:eventDate];
+                    eventObject = [PNMessage messageFromServiceResponse:event
+                                                              onChannel:channel
+                                                                 atDate:eventDate
+                                                              timeToken:self.events.timeToken];
                 }
 
                 [eventObjects addObject:eventObject];

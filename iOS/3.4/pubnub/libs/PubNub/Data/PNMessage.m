@@ -83,7 +83,10 @@
     return messageObject;
 }
 
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(NSDate *)messagePostDate {
++ (PNMessage *)messageFromServiceResponse:(id)messageBody
+                                onChannel:(PNChannel *)channel
+                                   atDate:(NSDate *)messagePostDate
+                                timeToken:(NSNumber *)timeToken {
 
     PNMessage *message = [[self class] new];
     message.message = messageBody;
@@ -139,6 +142,8 @@
     }
     message.channel = channel;
     message.receiveDate = messagePostDate;
+    message.timeToken = timeToken;
+
 
     return message;
 }

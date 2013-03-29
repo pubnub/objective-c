@@ -28,8 +28,8 @@
  * partial history
  */
 + (PNMessageHistoryRequest *)messageHistoryRequestForChannel:(PNChannel *)channel
-                                                        from:(NSDate *)startDate
-                                                          to:(NSDate*)endDate
+                                                        from:(id)startDate
+                                                          to:(id)endDate
                                                        limit:(NSUInteger)limit
                                               reverseHistory:(BOOL)shouldReverseMessagesInResponse;
 
@@ -42,8 +42,8 @@
  * which is passed to it
  */
 - (id)initForChannel:(PNChannel *)channel
-                from:(NSDate *)startDate
-                  to:(NSDate*)endDate
+                from:(id)startDate
+                  to:(id)endDate
                limit:(NSUInteger)limit
       reverseHistory:(BOOL)shouldReverseMessagesInResponse;
 

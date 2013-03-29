@@ -29,8 +29,14 @@
 // Stores reference on history time frame start date
 @property (nonatomic, strong) NSDate *startDate;
 
+// Stores reference on history time frame start time token
+@property (nonatomic, strong) NSNumber *startTimeToken;
+
 // Stores reference on history time frame end date
 @property (nonatomic, strong) NSDate *endDate;
+
+// Stores reference on history time frame end time token
+@property (nonatomic, strong) NSNumber *endTimeToken;
 
 // Store reference on channel for which history has been
 // downloaded
@@ -38,6 +44,17 @@
 
 // Stores reference on list of messages which has been downloaded
 @property (nonatomic, strong) NSArray *messages;
+
+
+#pragma mark - Class methods
+
+/**
+ * Return reference on fully initialized history instance
+ */
++ (instancetype)historyBetween:(NSDate *)startDate
+                startTimeToken:(NSNumber *)startTimeToken
+                    andEndDate:(NSDate *)endDate
+                  endTimeToken:(NSNumber *)endTimeToken;
 
 #pragma mark -
 
