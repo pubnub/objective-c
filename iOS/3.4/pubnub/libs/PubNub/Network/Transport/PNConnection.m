@@ -477,7 +477,7 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
             CFErrorRef error = CFReadStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
 
-            PNCFRelease(error);
+            PNCFRelease(&error);
             break;
 
         // Server disconnected socket and read stream
@@ -531,7 +531,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFErrorRef error = CFWriteStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
 
-            PNCFRelease(error);
+            PNCFRelease(&error);
             break;
 
         // Server disconnected socket and write stream
@@ -656,8 +656,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Configure default socket stream states
         self.writeStreamState = PNSocketStreamNotConfigured;
         self.readStreamState = PNSocketStreamNotConfigured;
-        [self configureReadStream:self.socketReadStream];
-        [self configureWriteStream:self.socketWriteStream];
+        [self configureReadStream:_socketReadStream];
+        [self configureWriteStream:_socketWriteStream];
 
         // Check whether stream successfully configured or configuration
         // failed
@@ -682,8 +682,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     _proxySettings = nil;
 
 
-    [self destroyReadStream:self.socketReadStream];
-    [self destroyWriteStream:self.socketWriteStream];
+    [self destroyReadStream:_socketReadStream];
+    [self destroyWriteStream:_socketWriteStream];
 }
 
 - (BOOL)connect {
@@ -730,8 +730,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     self.reconnecting = YES;
 
 
-    [self destroyReadStream:self.socketReadStream];
-    [self destroyWriteStream:self.socketWriteStream];
+    [self destroyReadStream:_socketReadStream];
+    [self destroyWriteStream:_socketWriteStream];
 }
 
 - (void)closeConnection {
@@ -739,8 +739,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     [self closeStreams];
 
 
-    [self destroyReadStream:self.socketReadStream];
-    [self destroyWriteStream:self.socketWriteStream];
+    [self destroyReadStream:_socketReadStream];
+    [self destroyWriteStream:_socketWriteStream];
 }
 
 
@@ -816,7 +816,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFReadStreamClose(readStream);
         }
 
-        PNCFRelease(readStream);
+        PNCFRelease(&readStream);
         self.socketReadStream = NULL;
 
 
@@ -844,7 +844,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFRunLoopRun();
         }
 
-        PNCFRelease(error);
+        PNCFRelease(&error);
     }
 }
 
@@ -881,7 +881,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFErrorRef error = CFReadStreamCopyError(self.socketReadStream);
             [self handleStreamError:error];
 
-            PNCFRelease(error);
+            PNCFRelease(&error);
         }
     }
 }
@@ -959,7 +959,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFRunLoopRun();
         }
 
-        PNCFRelease(error);
+        PNCFRelease(&error);
     }
 }
 
@@ -994,7 +994,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFWriteStreamClose(writeStream);
         }
 
-        PNCFRelease(writeStream);
+        PNCFRelease(&writeStream);
         self.socketWriteStream = NULL;
 
         if (shouldCloseStream) {
@@ -1064,7 +1064,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         CFErrorRef writeError = CFWriteStreamCopyError(self.socketWriteStream);
                         [self handleRequestProcessingError:writeError];
 
-                        PNCFRelease(writeError);
+                        PNCFRelease(&writeError);
                     }
                     // Check whether socket was able to transfer whole
                     // write buffer at once or not
@@ -1357,7 +1357,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     else if (!self.configuration.shouldUseSecureConnection ||
             self.sslConfigurationLevel == PNConnectionSSLConfigurationInSecure) {
 
-        PNCFRelease(_streamSecuritySettings);
+        PNCFRelease(&_streamSecuritySettings);
     }
 
 
@@ -1425,7 +1425,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     _delegate = nil;
     _proxySettings = nil;
 
-    PNCFRelease(_streamSecuritySettings);
+    PNCFRelease(&_streamSecuritySettings);
 }
 
 #pragma mark -

@@ -97,9 +97,18 @@ void PNLog(PNLogLevels level, id sender, ...) {
     }
 }
 
-#define PNCFRelease(__CF_OBJECT__) \
-                CFRelease(__CF_OBJECT__); \
-                __CF_OBJECT__ = NULL;
+static void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject);
+void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
+    if (CFObject != NULL) {
+
+        if (*((CFTypeRef*)CFObject) != NULL) {
+            
+            CFRelease(*((CFTypeRef*)CFObject));
+        }
+        
+        *((CFTypeRef*)CFObject) = NULL;
+    }
+}
 
 static NSUInteger PNRandomValueInRange(NSRange valuesRange);
 NSUInteger PNRandomValueInRange(NSRange valuesRange) {

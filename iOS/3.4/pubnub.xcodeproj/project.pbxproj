@@ -209,7 +209,7 @@
 		792C1F671678915A0054E18E /* PNMessagingChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagingChannel.m; sourceTree = "<group>"; };
 		792C1F6B167896E30054E18E /* PNConnection+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnection+Protected.h"; sourceTree = "<group>"; };
 		792C1F6C167896E30054E18E /* PNConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnection.h; sourceTree = "<group>"; };
-		792C1F6D167896E30054E18E /* PNConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnection.m; sourceTree = "<group>"; };
+		792C1F6D167896E30054E18E /* PNConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PNConnection.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		792C1F6E167896E30054E18E /* PNConnectionChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnectionChannel+Protected.h"; sourceTree = "<group>"; };
 		792C1F6F167896E30054E18E /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		792C1F70167896E30054E18E /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
@@ -288,7 +288,7 @@
 		79ECCF1A167217D2005E83B3 /* PNReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNReachability.m; sourceTree = "<group>"; };
 		79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		79ECCF5016761F05005E83B3 /* PNConnectionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionDelegate.h; sourceTree = "<group>"; };
-		79F84AFA166F60450005E3B1 /* PNMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMacro.h; sourceTree = "<group>"; };
+		79F84AFA166F60450005E3B1 /* PNMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PNMacro.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		79F84B03166F72000005E3B1 /* PNImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNImports.h; sourceTree = "<group>"; };
 		79F84B05166F74A80005E3B1 /* PubNub+Protected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+Protected.h"; sourceTree = "<group>"; };
 		79FFF67A167C919E008093F2 /* PNServiceChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannel.h; sourceTree = "<group>"; };
