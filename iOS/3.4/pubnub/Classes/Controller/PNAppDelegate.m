@@ -258,11 +258,11 @@
     PNLog(PNLogGeneralLevel, self, @"PubNub client received presence event: %@", event);
 }
 
-- (void)pubnubClient:(PubNub *)client
-        didReceiveMessageHistory:(NSArray *)messages
-        forChannel:(PNChannel *)channel
-        startingFrom:(NSDate *)startDate
-        to:(NSDate *)endDate {
+- (void)    pubnubClient:(PubNub *)client
+didReceiveMessageHistory:(NSArray *)messages
+              forChannel:(PNChannel *)channel
+            startingFrom:(PNDate *)startDate
+                      to:(PNDate *)endDate {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client received history for %@ starting from %@ to %@: %@",
           channel, startDate, endDate, messages);

@@ -13,14 +13,16 @@
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 
+#include <net/if.h>
+
 
 #pragma mark Static
 
 // Stores reference on WiFi/LAN interface name
-static char * const kPNNetworkWirelessCableInterfaceName = "en0";
+static NSString * const kPNNetworkWirelessCableInterfaceName = @"en";
 
 // Store reference on 3G/EDGE interface name
-static char * const kPNNetworkCellularInterfaceName = "pdp_ip0";
+static NSString * const kPNNetworkCellularInterfaceName = @"pdp_ip";
 
 // Stores reference on default IP address which means that
 // interface is not really connected
@@ -53,17 +55,24 @@ static char * const kPNNetworkDefaultAddress = "0.0.0.0";
 
                 char *interfaceName = interface->ifa_name;
                 char *interfaceAddress = inet_ntoa(((struct sockaddr_in*)interface->ifa_addr)->sin_addr);
-
-                if (strcmp(interfaceName, kPNNetworkWirelessCableInterfaceName) == 0 ||
-                    strcmp(interfaceName, kPNNetworkCellularInterfaceName) == 0) {
-
-                    if (strcmp(interfaceAddress, kPNNetworkDefaultAddress) != 0) {
-
-                        address = [NSString stringWithUTF8String:interfaceAddress];
-
-                        break;
+                unsigned int interfaceStateFlags = (struct sockaddr_in*)interface->ifa_flags;
+                BOOL isActive = !(interfaceStateFlags & IFF_LOOPBACK);
+                
+                if (isActive) {
+                    
+                    NSString *interfaceNameString = [NSString stringWithUTF8String:interfaceName];
+                    
+                    if ([interfaceNameString hasPrefix:kPNNetworkWirelessCableInterfaceName] ||
+                        [interfaceNameString hasPrefix:kPNNetworkCellularInterfaceName]) {
+                        
+                        if (strcmp(interfaceAddress, kPNNetworkDefaultAddress) != 0) {
+                            
+                            address = [NSString stringWithUTF8String:interfaceAddress];
+                            
+                            break;
+                        }
+                        
                     }
-
                 }
             }
             

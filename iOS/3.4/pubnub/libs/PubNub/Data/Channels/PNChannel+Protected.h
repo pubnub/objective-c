@@ -42,7 +42,7 @@
 @property (nonatomic, assign) NSUInteger participantsCount;
 
 // Last presence update date
-@property (nonatomic, strong) NSDate *presenceUpdateDate;
+@property (nonatomic, strong) PNDate *presenceUpdateDate;
 
 
 #pragma mark - Class methods

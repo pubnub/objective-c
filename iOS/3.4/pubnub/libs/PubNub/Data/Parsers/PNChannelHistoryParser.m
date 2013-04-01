@@ -67,21 +67,14 @@ static NSUInteger const kPNResponseEndDateElementIndexForEvent = 2;
         NSArray *responseData = response.response;
         NSNumber *startTimeToken = [responseData objectAtIndex:kPNResponseStartDateElementIndex];
         NSNumber *endTimeToken = [responseData objectAtIndex:kPNResponseEndDateElementIndexForEvent];
-        NSDate *startDate = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(startTimeToken)];
-        NSDate *endDate = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(startTimeToken)];
-        self.history = [PNMessagesHistory historyBetween:startDate
-                                          startTimeToken:startTimeToken
-                                              andEndDate:endDate
-                                            endTimeToken:endTimeToken];
+        self.history = [PNMessagesHistory historyBetween:[PNDate dateWithToken:startTimeToken]
+                                              andEndDate:[PNDate dateWithToken:endTimeToken]];
 
         NSArray *messages = [responseData objectAtIndex:kPNResponseMessagesListElementIndex];
         NSMutableArray *historyMessages = [NSMutableArray arrayWithCapacity:[messages count]];
         [messages enumerateObjectsUsingBlock:^(id message, NSUInteger messageIdx, BOOL *messageEnumerator) {
 
-            PNMessage *messageObject = [PNMessage messageFromServiceResponse:message
-                                                                   onChannel:nil
-                                                                      atDate:nil
-                                                                   timeToken:nil];
+            PNMessage *messageObject = [PNMessage messageFromServiceResponse:message onChannel:nil atDate:nil];
             [historyMessages addObject:messageObject];
         }];
 

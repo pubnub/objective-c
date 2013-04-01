@@ -8,6 +8,7 @@
 
 
 #import "PNMessagesHistory.h"
+#import "PNDate.h"
 
 
 #pragma mark Private interface methods
@@ -17,10 +18,8 @@
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) NSDate *startDate;
-@property (nonatomic, strong) NSDate *startTimeToken;
-@property (nonatomic, strong) NSDate *endDate;
-@property (nonatomic, strong) NSNumber *endTimeToken;
+@property (nonatomic, strong) PNDate *startDate;
+@property (nonatomic, strong) PNDate *endDate;
 @property (nonatomic, strong) PNChannel *channel;
 @property (nonatomic, strong) NSArray *messages;
 
@@ -30,10 +29,7 @@
 /**
  * Initialize history object with specified criteria
  */
-- (id)initHistoryBetween:(NSDate *)startDate
-          startTimeToken:(NSNumber *)startTimeToken
-              andEndDate:(NSDate *)endDate
-            endTimeToken:(NSNumber *)endTimeToken;
+- (id)initHistoryBetween:(PNDate *)startDate andEndDate:(PNDate *)endDate;
 
 #pragma mark -
 
@@ -48,15 +44,9 @@
 
 #pragma mark - Class methods
 
-+ (instancetype)historyBetween:(NSDate *)startDate
-                startTimeToken:(NSNumber *)startTimeToken
-                    andEndDate:(NSDate *)endDate
-                  endTimeToken:(NSNumber *)endTimeToken {
++ (instancetype)historyBetween:(PNDate *)startDate andEndDate:(PNDate *)endDate; {
 
-    return [[self alloc] initHistoryBetween:startDate
-                             startTimeToken:startTimeToken
-                                 andEndDate:endDate
-                               endTimeToken:endTimeToken];
+    return [[self alloc] initHistoryBetween:startDate andEndDate:endDate];
 }
 
 #pragma mark - Instance methods
@@ -64,18 +54,13 @@
 /**
  * Initialize history object with specified criteria
  */
-- (id)initHistoryBetween:(NSDate *)startDate
-          startTimeToken:(NSNumber *)startTimeToken
-              andEndDate:(NSDate *)endDate
-            endTimeToken:(NSNumber *)endTimeToken {
+- (id)initHistoryBetween:(PNDate *)startDate andEndDate:(PNDate *)endDate {
 
     // Check whether intialization was successful or not
     if ((self = [super init])) {
 
         self.startDate = startDate;
-        self.startTimeToken = startTimeToken;
         self.endDate = endDate;
-        self.endTimeToken = endTimeToken;
     }
 
 

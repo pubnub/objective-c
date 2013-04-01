@@ -53,7 +53,7 @@ static struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
 // Stores reference on presence occurrence
 // date
-@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, strong) PNDate *date;
 
 #pragma mark -
 

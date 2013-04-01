@@ -16,7 +16,7 @@
 
 #pragma mark Class forward
 
-@class PNChannel;
+@class PNChannel, PNDate;
 
 
 #pragma mark - Protected methods
@@ -35,10 +35,7 @@
 
 // Stores reference on date when this message was received
 // (doesn't work for history, only for presence events)
-@property (nonatomic, strong) NSDate *receiveDate;
-
-// Stores reference on timetoken when this message was received
-@property (nonatomic, strong) NSNumber *timeToken;
+@property (nonatomic, strong) PNDate *receiveDate;
 
 
 
@@ -55,10 +52,7 @@
  * Return reference on message data object which will represent
  * message received from PubNub service
  */
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody
-                                onChannel:(PNChannel *)channel
-                                   atDate:(NSDate *)messagePostDate
-                                timeToken:(NSNumber *)timeToken;
++ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate;
 
 
 #pragma mark - Instance methods
@@ -68,7 +62,7 @@
  */
 - (id)initWithObject:(id)object forChannel:(PNChannel *)channel;
 
-- (void)setReceiveDate:(NSDate *)receiveDate;
+- (void)setReceiveDate:(PNDate *)receiveDate;
 
 
 @end

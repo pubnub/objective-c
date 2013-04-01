@@ -26,7 +26,7 @@
 
 // Stores reference on presence occurrence
 // date
-@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, strong) PNDate *date;
 
 // Stores reference on user identifier which
 // is triggered presence event
@@ -86,7 +86,7 @@
 
         // Extracting event date from response
         NSNumber *timestamp = [presenceResponse valueForKey:PNPresenceEventDataKeys.timestamp];
-        self.date = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(timestamp)];
+        self.date = [PNDate dateWithToken:timestamp];
 
         // Extracting user identifier from response
         self.uuid = [presenceResponse valueForKey:PNPresenceEventDataKeys.uuid];

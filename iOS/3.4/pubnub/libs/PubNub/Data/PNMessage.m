@@ -15,7 +15,6 @@
 //
 
 
-#import "PNMessage.h"
 #import "PNMessage+Protected.h"
 #import "PNCryptoHelper.h"
 
@@ -36,7 +35,10 @@
 
 // Stores reference on date when this message was received
 // (doesn't work for history, only for presence events)
-@property (nonatomic, strong) NSDate *receiveDate;
+@property (nonatomic, strong) PNDate *receiveDate;
+
+// Stores reference on timetoken when this message was received
+@property (nonatomic, strong) NSNumber *timeToken;
 
 
 @end
@@ -83,10 +85,7 @@
     return messageObject;
 }
 
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody
-                                onChannel:(PNChannel *)channel
-                                   atDate:(NSDate *)messagePostDate
-                                timeToken:(NSNumber *)timeToken {
++ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate {
 
     PNMessage *message = [[self class] new];
     message.message = messageBody;
@@ -142,7 +141,6 @@
     }
     message.channel = channel;
     message.receiveDate = messagePostDate;
-    message.timeToken = timeToken;
 
 
     return message;

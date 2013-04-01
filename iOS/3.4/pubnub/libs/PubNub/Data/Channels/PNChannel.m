@@ -32,7 +32,7 @@ static NSMutableDictionary *_channelsCache = nil;
 // Channel name
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *updateTimeToken;
-@property (nonatomic, strong) NSDate *presenceUpdateDate;
+@property (nonatomic, strong) PNDate *presenceUpdateDate;
 @property (nonatomic, assign) NSUInteger participantsCount;
 @property (nonatomic, strong) NSMutableArray *participantsList;
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
@@ -187,12 +187,12 @@ static NSMutableDictionary *_channelsCache = nil;
         [self.participantsList removeObject:event.uuid];
     }
 
-    self.presenceUpdateDate = [NSDate date];
+    self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
 }
 
 - (void)updateWithParticipantsList:(PNHereNow *)hereNow {
 
-    self.presenceUpdateDate = [NSDate date];
+    self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
     self.participantsCount = hereNow.participantsCount;
     self.participantsList = [hereNow.participants mutableCopy];
 }

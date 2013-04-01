@@ -36,10 +36,7 @@
 
 // Stores reference on date when this message was received
 // (doesn't work for history, only for presence events)
-@property (nonatomic, readonly, strong) NSDate *receiveDate;
-
-// Stores reference on timetoken when this message was received
-@property (nonatomic, readonly, strong) NSNumber *timeToken;
+@property (nonatomic, readonly, strong) PNDate *receiveDate;
 
 #pragma mark -
 

@@ -16,7 +16,7 @@
 
 #pragma mark Class forward
 
-@class PNChannel;
+@class PNChannel, PNDate;
 
 
 #pragma mark - Protected interface methods
@@ -27,16 +27,10 @@
 #pragma mark - Properties
 
 // Stores reference on history time frame start date
-@property (nonatomic, strong) NSDate *startDate;
-
-// Stores reference on history time frame start time token
-@property (nonatomic, strong) NSNumber *startTimeToken;
+@property (nonatomic, strong) PNDate *startDate;
 
 // Stores reference on history time frame end date
-@property (nonatomic, strong) NSDate *endDate;
-
-// Stores reference on history time frame end time token
-@property (nonatomic, strong) NSNumber *endTimeToken;
+@property (nonatomic, strong) PNDate *endDate;
 
 // Store reference on channel for which history has been
 // downloaded
@@ -51,10 +45,7 @@
 /**
  * Return reference on fully initialized history instance
  */
-+ (instancetype)historyBetween:(NSDate *)startDate
-                startTimeToken:(NSNumber *)startTimeToken
-                    andEndDate:(NSDate *)endDate
-                  endTimeToken:(NSNumber *)endTimeToken;
++ (instancetype)historyBetween:(PNDate *)startDate andEndDate:(PNDate *)endDate;
 
 #pragma mark -
 

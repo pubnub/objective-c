@@ -864,30 +864,30 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self requestHistoryForChannel:channel from:nil to:nil withCompletionBlock:handleBlock];
 }
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(NSDate *)startDate to:(NSDate *)endDate {
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate withCompletionBlock:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:0 withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit withCompletionBlock:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
@@ -900,8 +900,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory {
 
@@ -914,8 +914,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
