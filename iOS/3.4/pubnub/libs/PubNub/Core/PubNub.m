@@ -1232,28 +1232,27 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 state = PNPubNubClientStateDisconnectedOnNetworkError;
             }
             self.state = state;
-            
-            SEL selectorForCheck = @selector(pubnubClient:didDisconnectFromOrigin:);
-            if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
-                
-                selectorForCheck = @selector(pubnubClient:didDisconnectFromOrigin:withError:);
-            }
-            if ([self.delegate respondsToSelector:selectorForCheck]) {
-                
-                if (self.state == PNPubNubClientStateDisconnected) {
-                    
+
+
+            if (self.state == PNPubNubClientStateDisconnected) {
+
+                if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
                     [self.delegate pubnubClient:self didDisconnectFromOrigin:host];
-
-                    [self sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
                 }
-                else {
 
-                    connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
+                [self sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
+            }
+            else if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
+
+                if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
 
                     [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
-
-                    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
                 }
+
+                [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
             }
             
             
