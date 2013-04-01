@@ -15,7 +15,6 @@
 #import "PNLeaveRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PubNub+Protected.h"
-#import "PNConstants.h"
 
 
 @interface PNLeaveRequest ()
