@@ -297,8 +297,6 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability, SCNetworkReac
         
         SCNetworkReachabilityRef wifiReachability = [[self class] newReachabilityForWiFi:YES];
         SCNetworkReachabilityGetFlags(wifiReachability, &reachabilityFlags);
-        
-        reachabilityStatus = PNReachabilityStatusForFlags(reachabilityFlags);
         CFRelease(wifiReachability);
     }
         
