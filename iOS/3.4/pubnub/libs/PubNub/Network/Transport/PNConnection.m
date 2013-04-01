@@ -13,6 +13,7 @@
 
 #import "PNConnection.h"
 #import <Security/SecureTransport.h>
+#import "PNConnection+Protected.h"
 #import "PNResponseDeserialize.h"
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
@@ -38,6 +39,12 @@ typedef enum _PNConnectionSSLConfigurationLevel {
     // security options)
     PNConnectionSSLConfigurationInSecure,
 } PNConnectionSSLConfigurationLevel;
+
+struct PNConnectionIdentifiersStruct PNConnectionIdentifiers = {
+    
+    .messagingConnection = @"PNMessaginConnectionIdentifier",
+    .serviceConnection = @"PNServiceConnectionIdentifier"
+};
 
 
 #pragma mark - Static
@@ -470,7 +477,7 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
             CFErrorRef error = CFReadStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
 
-            PNCFRelease(&error);
+            PNCFRelease(error);
             break;
 
         // Server disconnected socket and read stream
@@ -524,7 +531,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFErrorRef error = CFWriteStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
 
-            PNCFRelease(&error);
+            PNCFRelease(error);
             break;
 
         // Server disconnected socket and write stream
@@ -809,7 +816,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFReadStreamClose(readStream);
         }
 
-        PNCFRelease(&readStream);
+        PNCFRelease(readStream);
         self.socketReadStream = NULL;
 
 
@@ -837,7 +844,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFRunLoopRun();
         }
 
-        PNCFRelease(&error);
+        PNCFRelease(error);
     }
 }
 
@@ -874,7 +881,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFErrorRef error = CFReadStreamCopyError(self.socketReadStream);
             [self handleStreamError:error];
 
-            PNCFRelease(&error);
+            PNCFRelease(error);
         }
     }
 }
@@ -952,7 +959,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFRunLoopRun();
         }
 
-        PNCFRelease(&error);
+        PNCFRelease(error);
     }
 }
 
@@ -987,7 +994,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFWriteStreamClose(writeStream);
         }
 
-        PNCFRelease(&writeStream);
+        PNCFRelease(writeStream);
         self.socketWriteStream = NULL;
 
         if (shouldCloseStream) {
@@ -1057,7 +1064,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         CFErrorRef writeError = CFWriteStreamCopyError(self.socketWriteStream);
                         [self handleRequestProcessingError:writeError];
 
-                        PNCFRelease(&writeError);
+                        PNCFRelease(writeError);
                     }
                     // Check whether socket was able to transfer whole
                     // write buffer at once or not
@@ -1350,7 +1357,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     else if (!self.configuration.shouldUseSecureConnection ||
             self.sslConfigurationLevel == PNConnectionSSLConfigurationInSecure) {
 
-        PNCFRelease(&_streamSecuritySettings);
+        PNCFRelease(_streamSecuritySettings);
     }
 
 
@@ -1418,7 +1425,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     _delegate = nil;
     _proxySettings = nil;
 
-    PNCFRelease(&_streamSecuritySettings);
+    PNCFRelease(_streamSecuritySettings);
 }
 
 #pragma mark -

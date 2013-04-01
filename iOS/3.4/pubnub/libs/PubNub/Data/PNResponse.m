@@ -29,6 +29,20 @@ static NSUInteger const kPNResponseCallbackMethodNameIndex = 0;
 static NSUInteger const kPNResponseRequestIdentifierIndex = 1;
 
 
+#pragma mark Structures
+
+struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
+    
+    .latencyMeasureMessageCallback = @"lm",
+    .subscriptionCallback = @"s",
+    .leaveChannelCallback = @"lv",
+    .sendMessageCallback = @"m",
+    .timeTokenCallback = @"t",
+    .messageHistoryCallback = @"h",
+    .channelParticipantsCallback = @"p"
+};
+
+
 #pragma mark - Private interface methods
 
 @interface PNResponse ()
