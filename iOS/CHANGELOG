@@ -1,3 +1,8 @@
+04-01-2013
+. support for flux-capacitor and hydroelectric-powered Apple devices
+. fixed issue relating to reconnecting with presence enabled
+. fixing some XCode warnings
+
 03-29-2013
 . fixed issue when encountered issues during repeated sub/unsub/sub, with and without presence
 
