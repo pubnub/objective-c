@@ -15,6 +15,7 @@
 #import "PNHereNow+Protected.h"
 #import "NSString+PNAddition.h"
 #import "PNPresenceEvent.h"
+#import "PNDate.h"
 
 
 #pragma mark Static

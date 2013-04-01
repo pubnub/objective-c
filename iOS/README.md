@@ -404,30 +404,30 @@ If you have enabled the history feature for your account, the following methods 
     + (void)requestFullHistoryForChannel:(PNChannel *)channel   
                      withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;  
                      
-    + (void)requestHistoryForChannel:(PNChannel *)channel from:(NSDate *)startDate to:(NSDate *)endDate;  
+    + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate;  
     + (void)requestHistoryForChannel:(PNChannel *)channel  
-                                from:(NSDate *)startDate  
-                                  to:(NSDate *)endDate  
+                                from:(PNDate *)startDate  
+                                  to:(PNDate *)endDate  
                  withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;  
                  
 	+ (void)requestHistoryForChannel:(PNChannel *)channel  
-	                            from:(NSDate *)startDate  
-	                              to:(NSDate *)endDate  
+	                            from:(PNDate *)startDate  
+	                              to:(PNDate *)endDate  
 	                           limit:(NSUInteger)limit;  
 	+ (void)requestHistoryForChannel:(PNChannel *)channel  
-	                            from:(NSDate *)startDate  
-	                              to:(NSDate *)endDate  
+	                            from:(PNDate *)startDate  
+	                              to:(PNDate *)endDate  
 	                           limit:(NSUInteger)limit  
 	             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;  
 
 	+ (void)requestHistoryForChannel:(PNChannel *)channel  
-	                            from:(NSDate *)startDate  
-	                              to:(NSDate *)endDate  
+	                            from:(PNDate *)startDate  
+	                              to:(PNDate *)endDate  
 	                           limit:(NSUInteger)limit  
 	                  reverseHistory:(BOOL)shouldReverseMessageHistory;  
 	+ (void)requestHistoryForChannel:(PNChannel *)channel  
-	                            from:(NSDate *)startDate  
-	                              to:(NSDate *)endDate  
+	                            from:(PNDate *)startDate  
+	                              to:(PNDate *)endDate  
 	                           limit:(NSUInteger)limit  
 	                  reverseHistory:(BOOL)shouldReverseMessageHistory  
 	             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;  
@@ -436,8 +436,8 @@ The first two methods will receive the full message history for a specified chan
   
 In the following example, we pull history for the `iosdev` channel within the specified time frame, limiting the maximum number of messages returned to 34:
     
-    NSDate *startDate;  
-    NSDate *endDate;  
+    PNDate *startDate = [PNDate dateWithDate:[NSDate dateWithTimeIntervalSinceNow:(-3600.0f)]];  
+    PNDate *endDate = [PNDate dateWithDate:[NSDate date]];  
     int limit = 34;  
     [PubNub requestHistoryForChannel:[PNChannel channelWithName:@"iosdev"]  
                                 from:startDate  
@@ -446,8 +446,8 @@ In the following example, we pull history for the `iosdev` channel within the sp
                       reverseHistory:NO  
                  withCompletionBlock:^(NSArray *messages,  
                                        PNChannel *channel,  
-                                       NSDate *startDate,  
-                                       NSDate *endDate,  
+                                       PNDate *startDate,  
+                                       PNDate *endDate,  
                                        PNError *error) {  
                                        
                      if (error == nil) {  
@@ -511,8 +511,8 @@ Here is full set of callbacks which are available:
     - (void)    pubnubClient:(PubNub *)client  
     didReceiveMessageHistory:(NSArray *)messages  
                   forChannel:(PNChannel *)channel  
-                startingFrom:(NSDate *)startDate  
-                          to:(NSDate *)endDate;  
+                startingFrom:(PNDate *)startDate  
+                          to:(PNDate *)endDate;  
     - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error;  
     
     - (void)      pubnubClient:(PubNub *)client  
