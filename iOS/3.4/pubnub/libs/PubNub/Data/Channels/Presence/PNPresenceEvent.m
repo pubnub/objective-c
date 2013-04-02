@@ -14,7 +14,17 @@
 #import "PNPresenceEvent+Protected.h"
 
 
-#pragma mark Private interface methods
+#pragma mark Structures
+
+struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
+    .action = @"action",
+    .timestamp = @"timestamp",
+    .uuid = @"uuid",
+    .occupancy = @"occupancy"
+};
+
+
+#pragma mark - Private interface methods
 
 @interface PNPresenceEvent ()
 

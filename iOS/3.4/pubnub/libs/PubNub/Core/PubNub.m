@@ -989,7 +989,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     // Check whether initialization successful or not
     if((self = [super init])) {
-
+        
         self.state = PNPubNubClientStateCreated;
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
@@ -1034,7 +1034,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         else {
                             PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
                             [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
-
+                            
                             weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
                             
                             // Disconnect communication channels because of
@@ -1229,6 +1229,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNError *connectionError;
             PNPubNubClientState state = PNPubNubClientStateDisconnected;
             if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+                
                 state = PNPubNubClientStateDisconnectedOnNetworkError;
             }
             self.state = state;
@@ -1299,7 +1300,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Check whether server unexpectedly closed connection
         // while client was active or not
         else if(self.state == PNPubNubClientStateConnected) {
-
+            
             self.state = PNPubNubClientStateDisconnected;
             
             if([self shouldRestoreConnection]) {
@@ -1321,7 +1322,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             int64_t delayInSeconds = 1;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-
+                
                 self.state = PNPubNubClientStateCreated;
                 self.configuration = self.temporaryConfiguration;
                 self.temporaryConfiguration = nil;
@@ -1341,7 +1342,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 withError:(PNError *)error {
     
     if (self.state == PNPubNubClientStateConnected && [self.configuration.origin isEqualToString:host]) {
-
+        
         self.state = PNPubNubClientStateDisconnecting;
         BOOL disconnectedOnNetworkError = ![self.reachability isServiceAvailable];
         if(!disconnectedOnNetworkError) {
@@ -1353,7 +1354,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             disconnectedOnNetworkError = ![self.messagingChannel isConnected] || ![self.serviceChannel isConnected];
         }
         if (disconnectedOnNetworkError) {
-
+            
             self.state = PNPubNubClientStateDisconnectingOnNetworkError;
         }
 
