@@ -157,6 +157,23 @@ Example:
 
 ```
 
+#### Setting message TTL
+
+Expire the message if it is undeliverable within the TTL window (e.g. device is off, or out of network).
+
+Set using top level key of "pn_ttl", measured in seconds. Defaults to 3600 (one hour).
+
+Example (one minute ttl):
+```
+{
+  "aps" : {
+      "alert" : "You got your emails."
+  },
+  "pn_ttl": 60
+}
+
+```
+
 ### Device Token Requirements
 The Device Token ID may only have HEX Characters.
 
