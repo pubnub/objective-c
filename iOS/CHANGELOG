@@ -1,3 +1,6 @@
+04-02-2013
+. fixing connection loss bug on sleep
+
 04-01-2013
 . support for flux-capacitor and hydroelectric-powered Apple devices
 . fixed issue relating to reconnecting with presence enabled
