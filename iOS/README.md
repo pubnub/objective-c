@@ -306,7 +306,7 @@ To use the Presence feature in your app, the follow methods are provided:
     
 ### Who is "Here Now" ?
 
-As Presence provides a way to receive occupancy information in real-time, the ***Here Now** feature allows you enumerate current channel occupancy inforamtion on-demand.
+As Presence provides a way to receive occupancy information in real-time, the ***Here Now*** feature allows you enumerate current channel occupancy information on-demand.
 
 Two methods are provided for this:
   
