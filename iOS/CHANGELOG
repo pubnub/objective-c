@@ -1,3 +1,6 @@
+04-03-2013
+. reset state after disconnecting without reconnect enabled
+
 04-02-2013
 . fixing connection loss bug on sleep
 
