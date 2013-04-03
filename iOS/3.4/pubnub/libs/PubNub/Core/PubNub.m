@@ -397,9 +397,17 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [[self sharedInstance].configuration shouldKillDNSCache:NO];
     }
 
-    // Mark that client is disconnecting from remote PubNub services on
-    // user request (or by internal client request when updating configuration)
-    [self sharedInstance].state = PNPubNubClientStateDisconnecting;
+    // Check whether client disconnected at this moment (maybe previously was
+    // disconnected because connection loss)
+    BOOL isDisconnected = ![[self sharedInstance] isConnected];
+
+    // Check whether should update state to 'disconnecting'
+    if (!isDisconnected) {
+
+        // Mark that client is disconnecting from remote PubNub services on
+        // user request (or by internal client request when updating configuration)
+        [self sharedInstance].state = PNPubNubClientStateDisconnecting;
+    }
 
     // Reset client runtime flags and properties
     [self sharedInstance].connectOnServiceReachabilityCheck = NO;
@@ -1284,15 +1292,24 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 // so basically connection is available and only
                 // sockets closed by remote server or internal kernel
                 // layer)
-                if ([self.reachability isServiceReachabilityChecked] && [self.reachability isServiceAvailable]) {
+                if ([self.reachability isServiceReachabilityChecked]) {
 
-                    // Check whether should restore connection or not
-                    if ([self shouldRestoreConnection]) {
+                    if ([self.reachability isServiceAvailable]) {
 
-                        self.restoringConnection = YES;
+                        // Check whether should restore connection or not
+                        if ([self shouldRestoreConnection]) {
 
-                        // Try to restore connection to remote PubNub services
-                        [[self class] connect];
+                            self.restoringConnection = YES;
+
+                            // Try to restore connection to remote PubNub services
+                            [[self class] connect];
+                        }
+                    }
+                    // In case if there is no connection check whether clint
+                    // should restore connection or not.
+                    else if(![self shouldRestoreConnection]) {
+
+                        self.state = PNPubNubClientStateDisconnected;
                     }
                 }
             }
