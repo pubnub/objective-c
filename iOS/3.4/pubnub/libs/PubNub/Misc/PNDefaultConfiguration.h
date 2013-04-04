@@ -22,6 +22,7 @@ static NSString * const kPNCipherKey = nil;
 static BOOL const kPNSecureConnectionRequired = YES;
 static BOOL const kPNShouldAutoReconnectClient = YES;
 static BOOL const kPNShouldResubscribeOnConnectionRestore = YES;
+static BOOL const kPNShouldRestoreSubscriptionFromLastTimeToken = YES;
 static BOOL const kPNShouldAcceptCompressedResponse = YES;
 
 static NSTimeInterval const kPNConnectionIdleTimeout = 10.0f;

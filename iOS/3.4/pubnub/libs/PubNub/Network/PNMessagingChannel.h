@@ -73,7 +73,7 @@
  * Will restore channels subscription if doesn't
  * set that it should resubscribe
  */
-- (void)restoreSubscription:(BOOL)shouldResubscribe;
+- (void)restoreSubscription:(BOOL)shouldRestoreResubscriptionFromLastTimeToken;
 
 /**
  * Will resubscribe on channels to receive messages from

@@ -1197,12 +1197,28 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
             BOOL shouldResubscribe = self.configuration.shouldResubscribeOnConnectionRestore;
+            BOOL shouldRestoreFromLastTimeToken = self.configuration.shouldRestoreSubscriptionFromLastTimeToken;
             if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
 
                 shouldResubscribe = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
             }
+            if ([self.delegate respondsToSelector:@selector(shouldRestoreSubscriptionFromLastTimeToken)]) {
 
-            [self.messagingChannel restoreSubscription:shouldResubscribe];
+                shouldRestoreFromLastTimeToken = [[self.delegate shouldRestoreSubscriptionFromLastTimeToken] boolValue];
+            }
+
+
+            // Check whethr user want to resubscribe on previously subscribed channels or not
+            if (shouldResubscribe) {
+
+                [self.messagingChannel restoreSubscription:shouldRestoreFromLastTimeToken];
+            }
+            // Looks like developer doesn't want to restore subscription on previously
+            // subscribed channels, flush channels
+            else {
+
+                [self.messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+            }
 
 
         }
