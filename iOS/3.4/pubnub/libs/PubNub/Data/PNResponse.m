@@ -217,7 +217,6 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 - (NSString *)decodedResponse {
 
     NSString *encodedString = [[NSString alloc] initWithData:self.content encoding:NSUTF8StringEncoding];
-    encodedString = [encodedString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     return [encodedString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
