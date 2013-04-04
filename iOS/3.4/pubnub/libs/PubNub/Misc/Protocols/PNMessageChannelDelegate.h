@@ -21,6 +21,12 @@
 @protocol PNMessageChannelDelegate <NSObject>
 
 /**
+ * Sent to delegate when message channel is in idle state
+ * for long enough time
+ */
+- (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel;
+
+/**
  * Sent to the delegate when client successfully
  * subscribed on specified set of channels
  */

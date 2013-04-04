@@ -21,8 +21,10 @@
 #import "PNConnectionChannel+Protected.h"
 #import "PNChannelEventsResponseParser.h"
 #import "PNChannelPresence+Protected.h"
+#import "PNMessagesHistory.h"
 #import "PNPresenceEvent+Protected.h"
 #import "PNChannelEvents+Protected.h"
+#import "PNDefaultConfiguration.h"
 #import "PNMessage+Protected.h"
 #import "PNChannel+Protected.h"
 #import "PNOperationStatus.h"
@@ -46,6 +48,8 @@
 // Stores flag on whether messaging channel is restoring
 // subscription on previous channels or not
 @property (nonatomic, assign, getter = isRestoringSubscription) BOOL restoringSubscription;
+
+@property (nonatomic, strong) NSTimer *idleTimer;
 
 
 #pragma mark - Instance methods
@@ -125,8 +129,21 @@
  */
 - (void)handleSubscribeUnsubscribeRequestCompletion:(PNBaseRequest *)request;
 
+/**
+ * Handle Idle timer trigger and reconnect channel if it is possible
+ */
+- (void)handleIdleTimer:(NSTimer *)timer;
+
 
 #pragma mark - Misc methods
+
+/**
+ * Start/stop channel idle handler timer.
+ * This timer allow to detect situation when client is in idle state
+ * longer than this is allowed.
+ */
+- (void)startChannelIdleTimer;
+- (void)stopChannelIdleTimer;
 
 /**
  * Retrieve full list of channels on which channel should subscribe
@@ -721,8 +738,34 @@
     }
 }
 
+- (void)handleIdleTimer:(NSTimer *)timer {
+
+    [self.delegate messagingChannelIdleTimeout:self];
+}
+
 
 #pragma mark - Misc methods
+
+- (void)startChannelIdleTimer {
+
+    [self stopChannelIdleTimer];
+
+    self.idleTimer = [NSTimer timerWithTimeInterval:kPNConnectionIdleTimeout
+                                             target:self
+                                           selector:@selector(handleIdleTimer:)
+                                           userInfo:nil
+                                            repeats:NO];
+    [[NSRunLoop currentRunLoop] addTimer:self.idleTimer forMode:NSRunLoopCommonModes];
+}
+
+- (void)stopChannelIdleTimer {
+
+    if ([self.idleTimer isValid]) {
+
+        [self.idleTimer invalidate];
+        self.idleTimer = nil;
+    }
+}
 
 - (NSSet *)channelsWithPresenceFromList:(NSArray *)channelsList {
 
@@ -759,6 +802,14 @@
 
 
 #pragma mark - Connection delegate methods
+
+- (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName {
+
+    // Forward to the super class
+    [super connection:connection didConnectToHost:hostName];
+
+    [self startChannelIdleTimer];
+}
 
 - (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
 
@@ -810,7 +861,17 @@
                 [self scheduleNextRequest];
             }
         }
+
+        [self startChannelIdleTimer];
     }
+}
+
+- (void)connection:(PNConnection *)connection didDisconnectFromHost:(NSString *)hostName {
+
+    // Forward to the super class
+    [super connection:connection didDisconnectFromHost:hostName];
+
+    [self stopChannelIdleTimer];
 }
 
 

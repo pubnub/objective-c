@@ -28,7 +28,6 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
-#import "NSString+PNAddition.h"
 
 
 #pragma mark Static
@@ -210,6 +209,18 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * network went down and restored now
  */
 - (BOOL)shouldRestoreConnection;
+
+/**
+ * Check whether client should restore subscription to previous
+ * channels or not
+ */
+- (BOOL)shouldRestoreSubscription;
+
+/**
+ * Check whether client should restore subscription with last time token
+ * or not
+ */
+- (BOOL)shouldRestoreSubscriptionWithLastTimeToken;
 
 /**
  * Retrieve request execution possibility code.
@@ -1600,6 +1611,10 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 
 #pragma mark - Message channel delegate methods
+
+- (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
+
+}
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
 
