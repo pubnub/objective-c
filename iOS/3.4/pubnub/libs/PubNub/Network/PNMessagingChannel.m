@@ -321,6 +321,11 @@
     }
 }
 
+- (BOOL)canResubscribe {
+
+    return [self.subscribedChannelsSet count] > 0;
+}
+
 - (void)restoreSubscription:(BOOL)shouldRestoreResubscriptionFromLastTimeToken {
 
     if ([self.subscribedChannelsSet count]) {
@@ -334,9 +339,17 @@
         self.restoringSubscription = YES;
 
 
-        [self scheduleRequest:[PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
-                                                                byUserRequest:YES]
-      shouldObserveProcessing:shouldRestoreResubscriptionFromLastTimeToken];
+        PNSubscribeRequest *resubscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
+                                                                        byUserRequest:YES];
+
+        // Check whether messaging channel is connected or not
+        if ([self isConnected]) {
+
+            // Mark that we should close connection to terminate long-poll request on
+            // server side before subscribe on new channels
+            resubscribeRequest.closeConnection = YES;
+        }
+        [self scheduleRequest:resubscribeRequest shouldObserveProcessing:shouldRestoreResubscriptionFromLastTimeToken];
 
     }
 }
@@ -745,7 +758,7 @@
 
 - (void)handleIdleTimer:(NSTimer *)timer {
 
-    [self.delegate messagingChannelIdleTimeout:self];
+    [self.messagingDelegate messagingChannelIdleTimeout:self];
 }
 
 
@@ -998,6 +1011,14 @@
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" DID CANCEL REQUEST: %@ [BODY: %@]",
           request,
           request.resourcePath);
+}
+
+
+#pragma mark Memory management
+
+- (void)dealloc {
+
+    [self stopChannelIdleTimer];
 }
 
 #pragma mark -

@@ -25,7 +25,7 @@ static BOOL const kPNShouldResubscribeOnConnectionRestore = YES;
 static BOOL const kPNShouldRestoreSubscriptionFromLastTimeToken = YES;
 static BOOL const kPNShouldAcceptCompressedResponse = YES;
 
-static NSTimeInterval const kPNConnectionIdleTimeout = 10.0f;
+static NSTimeInterval const kPNConnectionIdleTimeout = 310.0f;
 static NSTimeInterval const kPNNonSubscriptionRequestTimeout = 10.0f;
 static NSTimeInterval const kPNSubscriptionRequestTimeout = 10.0f;
 

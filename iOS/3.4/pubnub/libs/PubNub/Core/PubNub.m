@@ -28,6 +28,7 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
+#import "PNConnectionChannel+Protected.h"
 
 
 #pragma mark Static
@@ -1196,22 +1197,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
 
 
-            BOOL shouldResubscribe = self.configuration.shouldResubscribeOnConnectionRestore;
-            BOOL shouldRestoreFromLastTimeToken = self.configuration.shouldRestoreSubscriptionFromLastTimeToken;
-            if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
-
-                shouldResubscribe = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
-            }
-            if ([self.delegate respondsToSelector:@selector(shouldRestoreSubscriptionFromLastTimeToken)]) {
-
-                shouldRestoreFromLastTimeToken = [[self.delegate shouldRestoreSubscriptionFromLastTimeToken] boolValue];
-            }
-
-
             // Check whethr user want to resubscribe on previously subscribed channels or not
-            if (shouldResubscribe) {
+            if ([self shouldRestoreSubscription]) {
 
-                [self.messagingChannel restoreSubscription:shouldRestoreFromLastTimeToken];
+                [self.messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
             }
             // Looks like developer doesn't want to restore subscription on previously
             // subscribed channels, flush channels
@@ -1604,6 +1593,30 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     return shouldRestoreConnection;
 }
 
+- (BOOL)shouldRestoreSubscription {
+
+    BOOL shouldRestoreSubscription = self.configuration.shouldResubscribeOnConnectionRestore;
+    if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
+
+        shouldRestoreSubscription = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
+    }
+
+
+    return shouldRestoreSubscription;
+}
+
+- (BOOL)shouldRestoreSubscriptionWithLastTimeToken {
+
+    BOOL shouldRestoreFromLastTimeToken = self.configuration.shouldRestoreSubscriptionFromLastTimeToken;
+    if ([self.delegate respondsToSelector:@selector(shouldRestoreSubscriptionFromLastTimeToken)]) {
+
+        shouldRestoreFromLastTimeToken = [[self.delegate shouldRestoreSubscriptionFromLastTimeToken] boolValue];
+    }
+
+
+    return shouldRestoreFromLastTimeToken;
+}
+
 - (NSInteger)requestExecutionPossibilityStatusCode {
 
     NSInteger statusCode = 0;
@@ -1630,6 +1643,26 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 - (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
 
+    if ([messagingChannel canResubscribe]) {
+
+        // Check whether user want to resubscribe on previously subscribed channels or not
+        if ([self shouldRestoreSubscription]) {
+
+            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+        }
+        // Looks like developer doesn't want to restore subscription on previously
+        // subscribed channels, flush channels
+        else {
+
+            [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+        }
+    }
+    // Looks like there is no channels on which client can resubscribe
+    // reconnect messaging channel
+    else {
+
+        [messagingChannel reconnect];
+    }
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
