@@ -22,6 +22,8 @@ For a more detailed walkthrough of the above steps, be sure to follow the [Hello
 
 There are three iOS PubNub 3.4 client demo apps available!
 
+The demo app located in the 3.4 folder is an iPad only demo app!
+
 ### SimpleSubscribe HOWTO
 
 The [SimpleSubscribe](HOWTO/SimpleSubscribe/3.4) app references how to create a simple subscribe-only, non-ui application using PubNub and iOS. 
