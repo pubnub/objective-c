@@ -580,3 +580,19 @@ This is the set of methods which can be used to handle events:
 The client also triggers notifications with custom user information, so from any place in your application you can listen for notifications and perform appropriate actions.
 
 A full list of notifications are stored in [__PNNotifications.h__](3.4/pubnub/libs/PubNub/Misc/PNNotifications.h) along with their description, their parameters, and how to handle them.  
+
+### Logging
+
+Logging can be controlled via the following booleans:
+
+    #define PNLOG_GENERAL_LOGGING_ENABLED 0
+    #define PNLOG_REACHABILITY_LOGGING_ENABLED 0
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 0
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 0
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 0
+    #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 0
+    #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 0
+
+in [3.4/pubnub/libs/PubNub/Misc/PNMacro.h](3.4/pubnub/libs/PubNub/Misc/PNMacro.h#L37)
+
+In the above example, all logging is disabled. By default, all logging is enabled.
