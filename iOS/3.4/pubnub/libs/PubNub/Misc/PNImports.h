@@ -20,6 +20,7 @@
 #import "PNNotifications.h"
 #import "PNErrorCodes.h"
 #import "PNStructures.h"
+#import "PNMessage.h"
 #import "PNChannel.h"
 #import "PNError.h"
 #import "PNMacro.h"
