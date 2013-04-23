@@ -7,51 +7,51 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A77D82F517021FB80049BFA1 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D826817021FB80049BFA1 /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		A77D82F617021FB80049BFA1 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D826A17021FB80049BFA1 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		A77D82F717021FB80049BFA1 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D826F17021FB80049BFA1 /* PNObservationCenter.m */; };
-		A77D82F817021FB80049BFA1 /* PubNub.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D827217021FB80049BFA1 /* PubNub.m */; };
-		A77D82F917021FB80049BFA1 /* PNWriteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D827617021FB80049BFA1 /* PNWriteBuffer.m */; };
-		A77D82FA17021FB80049BFA1 /* PNChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D827A17021FB80049BFA1 /* PNChannel.m */; };
-		A77D82FB17021FB80049BFA1 /* PNChannelPresence.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D827E17021FB80049BFA1 /* PNChannelPresence.m */; };
-		A77D82FC17021FB80049BFA1 /* PNPresenceEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D828117021FB80049BFA1 /* PNPresenceEvent.m */; };
-		A77D82FD17021FB80049BFA1 /* PNCryptoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D828417021FB80049BFA1 /* PNCryptoHelper.m */; };
-		A77D82FE17021FB80049BFA1 /* PNActionResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D828817021FB80049BFA1 /* PNActionResponseParser.m */; };
-		A77D82FF17021FB80049BFA1 /* PNChannelEventsResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D828A17021FB80049BFA1 /* PNChannelEventsResponseParser.m */; };
-		A77D830017021FB80049BFA1 /* PNChannelHistoryParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D828C17021FB80049BFA1 /* PNChannelHistoryParser.m */; };
-		A77D830117021FB80049BFA1 /* PNErrorResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D828F17021FB80049BFA1 /* PNErrorResponseParser.m */; };
-		A77D830217021FB80049BFA1 /* PNHereNowResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D829217021FB80049BFA1 /* PNHereNowResponseParser.m */; };
-		A77D830317021FB80049BFA1 /* PNOperationStatusResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D829417021FB80049BFA1 /* PNOperationStatusResponseParser.m */; };
-		A77D830417021FB80049BFA1 /* PNResponseDeserialize.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D829617021FB80049BFA1 /* PNResponseDeserialize.m */; };
-		A77D830517021FB80049BFA1 /* PNResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D829817021FB80049BFA1 /* PNResponseParser.m */; };
-		A77D830617021FB80049BFA1 /* PNTimeTokenResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D829A17021FB80049BFA1 /* PNTimeTokenResponseParser.m */; };
-		A77D830717021FB80049BFA1 /* PNChannelEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D829D17021FB80049BFA1 /* PNChannelEvents.m */; };
-		A77D830817021FB80049BFA1 /* PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82A017021FB80049BFA1 /* PNConfiguration.m */; };
-		A77D830917021FB80049BFA1 /* PNError.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82A317021FB80049BFA1 /* PNError.m */; };
-		A77D830A17021FB80049BFA1 /* PNHereNow.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82A617021FB80049BFA1 /* PNHereNow.m */; };
-		A77D830B17021FB80049BFA1 /* PNJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82A817021FB80049BFA1 /* PNJSONSerialization.m */; };
-		A77D830C17021FB80049BFA1 /* PNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82AB17021FB80049BFA1 /* PNMessage.m */; };
-		A77D830D17021FB80049BFA1 /* PNMessagesHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82AE17021FB80049BFA1 /* PNMessagesHistory.m */; };
-		A77D830E17021FB80049BFA1 /* PNOperationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82B117021FB80049BFA1 /* PNOperationStatus.m */; };
-		A77D830F17021FB80049BFA1 /* PNRequestsQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82B317021FB80049BFA1 /* PNRequestsQueue.m */; };
-		A77D831017021FB80049BFA1 /* PNResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82B517021FB80049BFA1 /* PNResponse.m */; };
-		A77D831117021FB80049BFA1 /* NSData+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82B917021FB80049BFA1 /* NSData+PNAdditions.m */; };
-		A77D831217021FB80049BFA1 /* NSMutableArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82BB17021FB80049BFA1 /* NSMutableArray+PNAdditions.m */; };
-		A77D831317021FB80049BFA1 /* NSString+PNAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82BD17021FB80049BFA1 /* NSString+PNAddition.m */; };
-		A77D831417021FB80049BFA1 /* UIDevice+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82BF17021FB80049BFA1 /* UIDevice+PNAdditions.m */; };
-		A77D831517021FB80049BFA1 /* PNBaseRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82D417021FB80049BFA1 /* PNBaseRequest.m */; };
-		A77D831617021FB80049BFA1 /* PNHereNowRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82D717021FB80049BFA1 /* PNHereNowRequest.m */; };
-		A77D831717021FB80049BFA1 /* PNLatencyMeasureRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82D917021FB80049BFA1 /* PNLatencyMeasureRequest.m */; };
-		A77D831817021FB80049BFA1 /* PNLeaveRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82DC17021FB80049BFA1 /* PNLeaveRequest.m */; };
-		A77D831917021FB80049BFA1 /* PNMessageHistoryRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82DF17021FB80049BFA1 /* PNMessageHistoryRequest.m */; };
-		A77D831A17021FB80049BFA1 /* PNMessagePostRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82E217021FB80049BFA1 /* PNMessagePostRequest.m */; };
-		A77D831B17021FB80049BFA1 /* PNSubscribeRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82E517021FB80049BFA1 /* PNSubscribeRequest.m */; };
-		A77D831C17021FB80049BFA1 /* PNTimeTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82E717021FB80049BFA1 /* PNTimeTokenRequest.m */; };
-		A77D831D17021FB80049BFA1 /* PNMessagingChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82E917021FB80049BFA1 /* PNMessagingChannel.m */; };
-		A77D831E17021FB80049BFA1 /* PNReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82EB17021FB80049BFA1 /* PNReachability.m */; };
-		A77D831F17021FB80049BFA1 /* PNServiceChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82ED17021FB80049BFA1 /* PNServiceChannel.m */; };
-		A77D832017021FB80049BFA1 /* PNConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82F117021FB80049BFA1 /* PNConnection.m */; };
-		A77D832117021FB80049BFA1 /* PNConnectionChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A77D82F417021FB80049BFA1 /* PNConnectionChannel.m */; };
+		A71A57591727233F00B3D830 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56CC1727233F00B3D830 /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A71A575A1727233F00B3D830 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56CE1727233F00B3D830 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A71A575B1727233F00B3D830 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56D31727233F00B3D830 /* PNObservationCenter.m */; };
+		A71A575C1727233F00B3D830 /* PubNub.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56D61727233F00B3D830 /* PubNub.m */; };
+		A71A575D1727233F00B3D830 /* PNWriteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56DA1727233F00B3D830 /* PNWriteBuffer.m */; };
+		A71A575E1727233F00B3D830 /* PNChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56DE1727233F00B3D830 /* PNChannel.m */; };
+		A71A575F1727233F00B3D830 /* PNChannelPresence.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56E21727233F00B3D830 /* PNChannelPresence.m */; };
+		A71A57601727233F00B3D830 /* PNPresenceEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56E51727233F00B3D830 /* PNPresenceEvent.m */; };
+		A71A57611727233F00B3D830 /* PNCryptoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56E81727233F00B3D830 /* PNCryptoHelper.m */; };
+		A71A57621727233F00B3D830 /* PNActionResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56EC1727233F00B3D830 /* PNActionResponseParser.m */; };
+		A71A57631727233F00B3D830 /* PNChannelEventsResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56EE1727233F00B3D830 /* PNChannelEventsResponseParser.m */; };
+		A71A57641727233F00B3D830 /* PNChannelHistoryParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56F01727233F00B3D830 /* PNChannelHistoryParser.m */; };
+		A71A57651727233F00B3D830 /* PNErrorResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56F31727233F00B3D830 /* PNErrorResponseParser.m */; };
+		A71A57661727233F00B3D830 /* PNHereNowResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56F61727233F00B3D830 /* PNHereNowResponseParser.m */; };
+		A71A57671727233F00B3D830 /* PNOperationStatusResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56F81727233F00B3D830 /* PNOperationStatusResponseParser.m */; };
+		A71A57681727233F00B3D830 /* PNResponseDeserialize.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56FA1727233F00B3D830 /* PNResponseDeserialize.m */; };
+		A71A57691727233F00B3D830 /* PNResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56FC1727233F00B3D830 /* PNResponseParser.m */; };
+		A71A576A1727233F00B3D830 /* PNTimeTokenResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A56FE1727233F00B3D830 /* PNTimeTokenResponseParser.m */; };
+		A71A576B1727233F00B3D830 /* PNChannelEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57011727233F00B3D830 /* PNChannelEvents.m */; };
+		A71A576C1727233F00B3D830 /* PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57041727233F00B3D830 /* PNConfiguration.m */; };
+		A71A576D1727233F00B3D830 /* PNError.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57071727233F00B3D830 /* PNError.m */; };
+		A71A576E1727233F00B3D830 /* PNHereNow.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A570A1727233F00B3D830 /* PNHereNow.m */; };
+		A71A576F1727233F00B3D830 /* PNJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A570C1727233F00B3D830 /* PNJSONSerialization.m */; };
+		A71A57701727233F00B3D830 /* PNMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A570F1727233F00B3D830 /* PNMessage.m */; };
+		A71A57711727233F00B3D830 /* PNMessagesHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57121727233F00B3D830 /* PNMessagesHistory.m */; };
+		A71A57721727233F00B3D830 /* PNOperationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57151727233F00B3D830 /* PNOperationStatus.m */; };
+		A71A57731727233F00B3D830 /* PNRequestsQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57171727233F00B3D830 /* PNRequestsQueue.m */; };
+		A71A57741727233F00B3D830 /* PNResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57191727233F00B3D830 /* PNResponse.m */; };
+		A71A57751727233F00B3D830 /* NSData+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A571D1727233F00B3D830 /* NSData+PNAdditions.m */; };
+		A71A57761727233F00B3D830 /* NSMutableArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A571F1727233F00B3D830 /* NSMutableArray+PNAdditions.m */; };
+		A71A57771727233F00B3D830 /* NSString+PNAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57211727233F00B3D830 /* NSString+PNAddition.m */; };
+		A71A57781727233F00B3D830 /* UIDevice+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57231727233F00B3D830 /* UIDevice+PNAdditions.m */; };
+		A71A57791727233F00B3D830 /* PNBaseRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57381727233F00B3D830 /* PNBaseRequest.m */; };
+		A71A577A1727233F00B3D830 /* PNHereNowRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A573B1727233F00B3D830 /* PNHereNowRequest.m */; };
+		A71A577B1727233F00B3D830 /* PNLatencyMeasureRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A573D1727233F00B3D830 /* PNLatencyMeasureRequest.m */; };
+		A71A577C1727233F00B3D830 /* PNLeaveRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57401727233F00B3D830 /* PNLeaveRequest.m */; };
+		A71A577D1727233F00B3D830 /* PNMessageHistoryRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57431727233F00B3D830 /* PNMessageHistoryRequest.m */; };
+		A71A577E1727233F00B3D830 /* PNMessagePostRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57461727233F00B3D830 /* PNMessagePostRequest.m */; };
+		A71A577F1727233F00B3D830 /* PNSubscribeRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57491727233F00B3D830 /* PNSubscribeRequest.m */; };
+		A71A57801727233F00B3D830 /* PNTimeTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A574B1727233F00B3D830 /* PNTimeTokenRequest.m */; };
+		A71A57811727233F00B3D830 /* PNMessagingChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A574D1727233F00B3D830 /* PNMessagingChannel.m */; };
+		A71A57821727233F00B3D830 /* PNReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A574F1727233F00B3D830 /* PNReachability.m */; };
+		A71A57831727233F00B3D830 /* PNServiceChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57511727233F00B3D830 /* PNServiceChannel.m */; };
+		A71A57841727233F00B3D830 /* PNConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57551727233F00B3D830 /* PNConnection.m */; };
+		A71A57851727233F00B3D830 /* PNConnectionChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57581727233F00B3D830 /* PNConnectionChannel.m */; };
 		D94769AA16D62CF00093C0D7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D94769A916D62CF00093C0D7 /* UIKit.framework */; };
 		D94769AC16D62CF00093C0D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D94769AB16D62CF00093C0D7 /* Foundation.framework */; };
 		D94769AE16D62CF00093C0D7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D94769AD16D62CF00093C0D7 /* CoreGraphics.framework */; };
@@ -69,134 +69,134 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A77D826717021FB80049BFA1 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
-		A77D826817021FB80049BFA1 /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
-		A77D826917021FB80049BFA1 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
-		A77D826A17021FB80049BFA1 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
-		A77D826D17021FB80049BFA1 /* PNObservationCenter+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNObservationCenter+Protected.h"; sourceTree = "<group>"; };
-		A77D826E17021FB80049BFA1 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
-		A77D826F17021FB80049BFA1 /* PNObservationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNObservationCenter.m; sourceTree = "<group>"; };
-		A77D827017021FB80049BFA1 /* PubNub+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PubNub+Protected.h"; sourceTree = "<group>"; };
-		A77D827117021FB80049BFA1 /* PubNub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
-		A77D827217021FB80049BFA1 /* PubNub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNub.m; sourceTree = "<group>"; };
-		A77D827517021FB80049BFA1 /* PNWriteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNWriteBuffer.h; sourceTree = "<group>"; };
-		A77D827617021FB80049BFA1 /* PNWriteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNWriteBuffer.m; sourceTree = "<group>"; };
-		A77D827817021FB80049BFA1 /* PNChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNChannel+Protected.h"; sourceTree = "<group>"; };
-		A77D827917021FB80049BFA1 /* PNChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannel.h; sourceTree = "<group>"; };
-		A77D827A17021FB80049BFA1 /* PNChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannel.m; sourceTree = "<group>"; };
-		A77D827C17021FB80049BFA1 /* PNChannelPresence+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNChannelPresence+Protected.h"; sourceTree = "<group>"; };
-		A77D827D17021FB80049BFA1 /* PNChannelPresence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelPresence.h; sourceTree = "<group>"; };
-		A77D827E17021FB80049BFA1 /* PNChannelPresence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelPresence.m; sourceTree = "<group>"; };
-		A77D827F17021FB80049BFA1 /* PNPresenceEvent+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNPresenceEvent+Protected.h"; sourceTree = "<group>"; };
-		A77D828017021FB80049BFA1 /* PNPresenceEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPresenceEvent.h; sourceTree = "<group>"; };
-		A77D828117021FB80049BFA1 /* PNPresenceEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPresenceEvent.m; sourceTree = "<group>"; };
-		A77D828317021FB80049BFA1 /* PNCryptoHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCryptoHelper.h; sourceTree = "<group>"; };
-		A77D828417021FB80049BFA1 /* PNCryptoHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHelper.m; sourceTree = "<group>"; };
-		A77D828617021FB80049BFA1 /* PNActionResponseParser+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNActionResponseParser+Protected.h"; sourceTree = "<group>"; };
-		A77D828717021FB80049BFA1 /* PNActionResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNActionResponseParser.h; sourceTree = "<group>"; };
-		A77D828817021FB80049BFA1 /* PNActionResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNActionResponseParser.m; sourceTree = "<group>"; };
-		A77D828917021FB80049BFA1 /* PNChannelEventsResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelEventsResponseParser.h; sourceTree = "<group>"; };
-		A77D828A17021FB80049BFA1 /* PNChannelEventsResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelEventsResponseParser.m; sourceTree = "<group>"; };
-		A77D828B17021FB80049BFA1 /* PNChannelHistoryParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelHistoryParser.h; sourceTree = "<group>"; };
-		A77D828C17021FB80049BFA1 /* PNChannelHistoryParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelHistoryParser.m; sourceTree = "<group>"; };
-		A77D828D17021FB80049BFA1 /* PNErrorResponseParser+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNErrorResponseParser+Protected.h"; sourceTree = "<group>"; };
-		A77D828E17021FB80049BFA1 /* PNErrorResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNErrorResponseParser.h; sourceTree = "<group>"; };
-		A77D828F17021FB80049BFA1 /* PNErrorResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNErrorResponseParser.m; sourceTree = "<group>"; };
-		A77D829017021FB80049BFA1 /* PNHereNowResponseParser+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNHereNowResponseParser+Protected.h"; sourceTree = "<group>"; };
-		A77D829117021FB80049BFA1 /* PNHereNowResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNHereNowResponseParser.h; sourceTree = "<group>"; };
-		A77D829217021FB80049BFA1 /* PNHereNowResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHereNowResponseParser.m; sourceTree = "<group>"; };
-		A77D829317021FB80049BFA1 /* PNOperationStatusResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNOperationStatusResponseParser.h; sourceTree = "<group>"; };
-		A77D829417021FB80049BFA1 /* PNOperationStatusResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNOperationStatusResponseParser.m; sourceTree = "<group>"; };
-		A77D829517021FB80049BFA1 /* PNResponseDeserialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponseDeserialize.h; sourceTree = "<group>"; };
-		A77D829617021FB80049BFA1 /* PNResponseDeserialize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponseDeserialize.m; sourceTree = "<group>"; };
-		A77D829717021FB80049BFA1 /* PNResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponseParser.h; sourceTree = "<group>"; };
-		A77D829817021FB80049BFA1 /* PNResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponseParser.m; sourceTree = "<group>"; };
-		A77D829917021FB80049BFA1 /* PNTimeTokenResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTimeTokenResponseParser.h; sourceTree = "<group>"; };
-		A77D829A17021FB80049BFA1 /* PNTimeTokenResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimeTokenResponseParser.m; sourceTree = "<group>"; };
-		A77D829B17021FB80049BFA1 /* PNChannelEvents+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNChannelEvents+Protected.h"; sourceTree = "<group>"; };
-		A77D829C17021FB80049BFA1 /* PNChannelEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelEvents.h; sourceTree = "<group>"; };
-		A77D829D17021FB80049BFA1 /* PNChannelEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelEvents.m; sourceTree = "<group>"; };
-		A77D829E17021FB80049BFA1 /* PNConfiguration+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConfiguration+Protected.h"; sourceTree = "<group>"; };
-		A77D829F17021FB80049BFA1 /* PNConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConfiguration.h; sourceTree = "<group>"; };
-		A77D82A017021FB80049BFA1 /* PNConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConfiguration.m; sourceTree = "<group>"; };
-		A77D82A117021FB80049BFA1 /* PNError+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNError+Protected.h"; sourceTree = "<group>"; };
-		A77D82A217021FB80049BFA1 /* PNError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNError.h; sourceTree = "<group>"; };
-		A77D82A317021FB80049BFA1 /* PNError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNError.m; sourceTree = "<group>"; };
-		A77D82A417021FB80049BFA1 /* PNHereNow+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNHereNow+Protected.h"; sourceTree = "<group>"; };
-		A77D82A517021FB80049BFA1 /* PNHereNow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNHereNow.h; sourceTree = "<group>"; };
-		A77D82A617021FB80049BFA1 /* PNHereNow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHereNow.m; sourceTree = "<group>"; };
-		A77D82A717021FB80049BFA1 /* PNJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNJSONSerialization.h; sourceTree = "<group>"; };
-		A77D82A817021FB80049BFA1 /* PNJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNJSONSerialization.m; sourceTree = "<group>"; };
-		A77D82A917021FB80049BFA1 /* PNMessage+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessage+Protected.h"; sourceTree = "<group>"; };
-		A77D82AA17021FB80049BFA1 /* PNMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessage.h; sourceTree = "<group>"; };
-		A77D82AB17021FB80049BFA1 /* PNMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessage.m; sourceTree = "<group>"; };
-		A77D82AC17021FB80049BFA1 /* PNMessagesHistory+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessagesHistory+Protected.h"; sourceTree = "<group>"; };
-		A77D82AD17021FB80049BFA1 /* PNMessagesHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessagesHistory.h; sourceTree = "<group>"; };
-		A77D82AE17021FB80049BFA1 /* PNMessagesHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagesHistory.m; sourceTree = "<group>"; };
-		A77D82AF17021FB80049BFA1 /* PNOperationStatus+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNOperationStatus+Protected.h"; sourceTree = "<group>"; };
-		A77D82B017021FB80049BFA1 /* PNOperationStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNOperationStatus.h; sourceTree = "<group>"; };
-		A77D82B117021FB80049BFA1 /* PNOperationStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNOperationStatus.m; sourceTree = "<group>"; };
-		A77D82B217021FB80049BFA1 /* PNRequestsQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNRequestsQueue.h; sourceTree = "<group>"; };
-		A77D82B317021FB80049BFA1 /* PNRequestsQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNRequestsQueue.m; sourceTree = "<group>"; };
-		A77D82B417021FB80049BFA1 /* PNResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponse.h; sourceTree = "<group>"; };
-		A77D82B517021FB80049BFA1 /* PNResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponse.m; sourceTree = "<group>"; };
-		A77D82B817021FB80049BFA1 /* NSData+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+PNAdditions.h"; sourceTree = "<group>"; };
-		A77D82B917021FB80049BFA1 /* NSData+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+PNAdditions.m"; sourceTree = "<group>"; };
-		A77D82BA17021FB80049BFA1 /* NSMutableArray+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+PNAdditions.h"; sourceTree = "<group>"; };
-		A77D82BB17021FB80049BFA1 /* NSMutableArray+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+PNAdditions.m"; sourceTree = "<group>"; };
-		A77D82BC17021FB80049BFA1 /* NSString+PNAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+PNAddition.h"; sourceTree = "<group>"; };
-		A77D82BD17021FB80049BFA1 /* NSString+PNAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PNAddition.m"; sourceTree = "<group>"; };
-		A77D82BE17021FB80049BFA1 /* UIDevice+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+PNAdditions.h"; sourceTree = "<group>"; };
-		A77D82BF17021FB80049BFA1 /* UIDevice+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+PNAdditions.m"; sourceTree = "<group>"; };
-		A77D82C017021FB80049BFA1 /* PNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConstants.h; sourceTree = "<group>"; };
-		A77D82C117021FB80049BFA1 /* PNDefaultConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDefaultConfiguration.h; sourceTree = "<group>"; };
-		A77D82C217021FB80049BFA1 /* PNErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNErrorCodes.h; sourceTree = "<group>"; };
-		A77D82C317021FB80049BFA1 /* PNImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNImports.h; sourceTree = "<group>"; };
-		A77D82C417021FB80049BFA1 /* PNMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMacro.h; sourceTree = "<group>"; };
-		A77D82C517021FB80049BFA1 /* PNNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNotifications.h; sourceTree = "<group>"; };
-		A77D82C617021FB80049BFA1 /* PNRequestsImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNRequestsImport.h; sourceTree = "<group>"; };
-		A77D82C717021FB80049BFA1 /* PNServiceResponseCallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceResponseCallbacks.h; sourceTree = "<group>"; };
-		A77D82C817021FB80049BFA1 /* PNStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNStructures.h; sourceTree = "<group>"; };
-		A77D82CA17021FB80049BFA1 /* PNConnectionChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannelDelegate.h; sourceTree = "<group>"; };
-		A77D82CB17021FB80049BFA1 /* PNConnectionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionDelegate.h; sourceTree = "<group>"; };
-		A77D82CC17021FB80049BFA1 /* PNDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDelegate.h; sourceTree = "<group>"; };
-		A77D82CD17021FB80049BFA1 /* PNMessageChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessageChannelDelegate.h; sourceTree = "<group>"; };
-		A77D82CE17021FB80049BFA1 /* PNRequestsQueueDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNRequestsQueueDelegate.h; sourceTree = "<group>"; };
-		A77D82CF17021FB80049BFA1 /* PNServiceChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannelDelegate.h; sourceTree = "<group>"; };
-		A77D82D217021FB80049BFA1 /* PNBaseRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNBaseRequest+Protected.h"; sourceTree = "<group>"; };
-		A77D82D317021FB80049BFA1 /* PNBaseRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBaseRequest.h; sourceTree = "<group>"; };
-		A77D82D417021FB80049BFA1 /* PNBaseRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBaseRequest.m; sourceTree = "<group>"; };
-		A77D82D517021FB80049BFA1 /* PNHereNowRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNHereNowRequest+Protected.h"; sourceTree = "<group>"; };
-		A77D82D617021FB80049BFA1 /* PNHereNowRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNHereNowRequest.h; sourceTree = "<group>"; };
-		A77D82D717021FB80049BFA1 /* PNHereNowRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHereNowRequest.m; sourceTree = "<group>"; };
-		A77D82D817021FB80049BFA1 /* PNLatencyMeasureRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLatencyMeasureRequest.h; sourceTree = "<group>"; };
-		A77D82D917021FB80049BFA1 /* PNLatencyMeasureRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLatencyMeasureRequest.m; sourceTree = "<group>"; };
-		A77D82DA17021FB80049BFA1 /* PNLeaveRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNLeaveRequest+Protected.h"; sourceTree = "<group>"; };
-		A77D82DB17021FB80049BFA1 /* PNLeaveRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLeaveRequest.h; sourceTree = "<group>"; };
-		A77D82DC17021FB80049BFA1 /* PNLeaveRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLeaveRequest.m; sourceTree = "<group>"; };
-		A77D82DD17021FB80049BFA1 /* PNMessageHistoryRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessageHistoryRequest+Protected.h"; sourceTree = "<group>"; };
-		A77D82DE17021FB80049BFA1 /* PNMessageHistoryRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessageHistoryRequest.h; sourceTree = "<group>"; };
-		A77D82DF17021FB80049BFA1 /* PNMessageHistoryRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessageHistoryRequest.m; sourceTree = "<group>"; };
-		A77D82E017021FB80049BFA1 /* PNMessagePostRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessagePostRequest+Protected.h"; sourceTree = "<group>"; };
-		A77D82E117021FB80049BFA1 /* PNMessagePostRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessagePostRequest.h; sourceTree = "<group>"; };
-		A77D82E217021FB80049BFA1 /* PNMessagePostRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagePostRequest.m; sourceTree = "<group>"; };
-		A77D82E317021FB80049BFA1 /* PNSubscribeRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNSubscribeRequest+Protected.h"; sourceTree = "<group>"; };
-		A77D82E417021FB80049BFA1 /* PNSubscribeRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNSubscribeRequest.h; sourceTree = "<group>"; };
-		A77D82E517021FB80049BFA1 /* PNSubscribeRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeRequest.m; sourceTree = "<group>"; };
-		A77D82E617021FB80049BFA1 /* PNTimeTokenRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTimeTokenRequest.h; sourceTree = "<group>"; };
-		A77D82E717021FB80049BFA1 /* PNTimeTokenRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimeTokenRequest.m; sourceTree = "<group>"; };
-		A77D82E817021FB80049BFA1 /* PNMessagingChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessagingChannel.h; sourceTree = "<group>"; };
-		A77D82E917021FB80049BFA1 /* PNMessagingChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagingChannel.m; sourceTree = "<group>"; };
-		A77D82EA17021FB80049BFA1 /* PNReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNReachability.h; sourceTree = "<group>"; };
-		A77D82EB17021FB80049BFA1 /* PNReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNReachability.m; sourceTree = "<group>"; };
-		A77D82EC17021FB80049BFA1 /* PNServiceChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannel.h; sourceTree = "<group>"; };
-		A77D82ED17021FB80049BFA1 /* PNServiceChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNServiceChannel.m; sourceTree = "<group>"; };
-		A77D82EF17021FB80049BFA1 /* PNConnection+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnection+Protected.h"; sourceTree = "<group>"; };
-		A77D82F017021FB80049BFA1 /* PNConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnection.h; sourceTree = "<group>"; };
-		A77D82F117021FB80049BFA1 /* PNConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnection.m; sourceTree = "<group>"; };
-		A77D82F217021FB80049BFA1 /* PNConnectionChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnectionChannel+Protected.h"; sourceTree = "<group>"; };
-		A77D82F317021FB80049BFA1 /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
-		A77D82F417021FB80049BFA1 /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
+		A71A56CB1727233F00B3D830 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
+		A71A56CC1727233F00B3D830 /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
+		A71A56CD1727233F00B3D830 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		A71A56CE1727233F00B3D830 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		A71A56D11727233F00B3D830 /* PNObservationCenter+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNObservationCenter+Protected.h"; sourceTree = "<group>"; };
+		A71A56D21727233F00B3D830 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
+		A71A56D31727233F00B3D830 /* PNObservationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNObservationCenter.m; sourceTree = "<group>"; };
+		A71A56D41727233F00B3D830 /* PubNub+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PubNub+Protected.h"; sourceTree = "<group>"; };
+		A71A56D51727233F00B3D830 /* PubNub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
+		A71A56D61727233F00B3D830 /* PubNub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNub.m; sourceTree = "<group>"; };
+		A71A56D91727233F00B3D830 /* PNWriteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNWriteBuffer.h; sourceTree = "<group>"; };
+		A71A56DA1727233F00B3D830 /* PNWriteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNWriteBuffer.m; sourceTree = "<group>"; };
+		A71A56DC1727233F00B3D830 /* PNChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNChannel+Protected.h"; sourceTree = "<group>"; };
+		A71A56DD1727233F00B3D830 /* PNChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannel.h; sourceTree = "<group>"; };
+		A71A56DE1727233F00B3D830 /* PNChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannel.m; sourceTree = "<group>"; };
+		A71A56E01727233F00B3D830 /* PNChannelPresence+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNChannelPresence+Protected.h"; sourceTree = "<group>"; };
+		A71A56E11727233F00B3D830 /* PNChannelPresence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelPresence.h; sourceTree = "<group>"; };
+		A71A56E21727233F00B3D830 /* PNChannelPresence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelPresence.m; sourceTree = "<group>"; };
+		A71A56E31727233F00B3D830 /* PNPresenceEvent+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNPresenceEvent+Protected.h"; sourceTree = "<group>"; };
+		A71A56E41727233F00B3D830 /* PNPresenceEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPresenceEvent.h; sourceTree = "<group>"; };
+		A71A56E51727233F00B3D830 /* PNPresenceEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPresenceEvent.m; sourceTree = "<group>"; };
+		A71A56E71727233F00B3D830 /* PNCryptoHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCryptoHelper.h; sourceTree = "<group>"; };
+		A71A56E81727233F00B3D830 /* PNCryptoHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHelper.m; sourceTree = "<group>"; };
+		A71A56EA1727233F00B3D830 /* PNActionResponseParser+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNActionResponseParser+Protected.h"; sourceTree = "<group>"; };
+		A71A56EB1727233F00B3D830 /* PNActionResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNActionResponseParser.h; sourceTree = "<group>"; };
+		A71A56EC1727233F00B3D830 /* PNActionResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNActionResponseParser.m; sourceTree = "<group>"; };
+		A71A56ED1727233F00B3D830 /* PNChannelEventsResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelEventsResponseParser.h; sourceTree = "<group>"; };
+		A71A56EE1727233F00B3D830 /* PNChannelEventsResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelEventsResponseParser.m; sourceTree = "<group>"; };
+		A71A56EF1727233F00B3D830 /* PNChannelHistoryParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelHistoryParser.h; sourceTree = "<group>"; };
+		A71A56F01727233F00B3D830 /* PNChannelHistoryParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelHistoryParser.m; sourceTree = "<group>"; };
+		A71A56F11727233F00B3D830 /* PNErrorResponseParser+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNErrorResponseParser+Protected.h"; sourceTree = "<group>"; };
+		A71A56F21727233F00B3D830 /* PNErrorResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNErrorResponseParser.h; sourceTree = "<group>"; };
+		A71A56F31727233F00B3D830 /* PNErrorResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNErrorResponseParser.m; sourceTree = "<group>"; };
+		A71A56F41727233F00B3D830 /* PNHereNowResponseParser+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNHereNowResponseParser+Protected.h"; sourceTree = "<group>"; };
+		A71A56F51727233F00B3D830 /* PNHereNowResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNHereNowResponseParser.h; sourceTree = "<group>"; };
+		A71A56F61727233F00B3D830 /* PNHereNowResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHereNowResponseParser.m; sourceTree = "<group>"; };
+		A71A56F71727233F00B3D830 /* PNOperationStatusResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNOperationStatusResponseParser.h; sourceTree = "<group>"; };
+		A71A56F81727233F00B3D830 /* PNOperationStatusResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNOperationStatusResponseParser.m; sourceTree = "<group>"; };
+		A71A56F91727233F00B3D830 /* PNResponseDeserialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponseDeserialize.h; sourceTree = "<group>"; };
+		A71A56FA1727233F00B3D830 /* PNResponseDeserialize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponseDeserialize.m; sourceTree = "<group>"; };
+		A71A56FB1727233F00B3D830 /* PNResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponseParser.h; sourceTree = "<group>"; };
+		A71A56FC1727233F00B3D830 /* PNResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponseParser.m; sourceTree = "<group>"; };
+		A71A56FD1727233F00B3D830 /* PNTimeTokenResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTimeTokenResponseParser.h; sourceTree = "<group>"; };
+		A71A56FE1727233F00B3D830 /* PNTimeTokenResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimeTokenResponseParser.m; sourceTree = "<group>"; };
+		A71A56FF1727233F00B3D830 /* PNChannelEvents+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNChannelEvents+Protected.h"; sourceTree = "<group>"; };
+		A71A57001727233F00B3D830 /* PNChannelEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelEvents.h; sourceTree = "<group>"; };
+		A71A57011727233F00B3D830 /* PNChannelEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelEvents.m; sourceTree = "<group>"; };
+		A71A57021727233F00B3D830 /* PNConfiguration+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConfiguration+Protected.h"; sourceTree = "<group>"; };
+		A71A57031727233F00B3D830 /* PNConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConfiguration.h; sourceTree = "<group>"; };
+		A71A57041727233F00B3D830 /* PNConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConfiguration.m; sourceTree = "<group>"; };
+		A71A57051727233F00B3D830 /* PNError+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNError+Protected.h"; sourceTree = "<group>"; };
+		A71A57061727233F00B3D830 /* PNError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNError.h; sourceTree = "<group>"; };
+		A71A57071727233F00B3D830 /* PNError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNError.m; sourceTree = "<group>"; };
+		A71A57081727233F00B3D830 /* PNHereNow+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNHereNow+Protected.h"; sourceTree = "<group>"; };
+		A71A57091727233F00B3D830 /* PNHereNow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNHereNow.h; sourceTree = "<group>"; };
+		A71A570A1727233F00B3D830 /* PNHereNow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHereNow.m; sourceTree = "<group>"; };
+		A71A570B1727233F00B3D830 /* PNJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNJSONSerialization.h; sourceTree = "<group>"; };
+		A71A570C1727233F00B3D830 /* PNJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNJSONSerialization.m; sourceTree = "<group>"; };
+		A71A570D1727233F00B3D830 /* PNMessage+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessage+Protected.h"; sourceTree = "<group>"; };
+		A71A570E1727233F00B3D830 /* PNMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessage.h; sourceTree = "<group>"; };
+		A71A570F1727233F00B3D830 /* PNMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessage.m; sourceTree = "<group>"; };
+		A71A57101727233F00B3D830 /* PNMessagesHistory+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessagesHistory+Protected.h"; sourceTree = "<group>"; };
+		A71A57111727233F00B3D830 /* PNMessagesHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessagesHistory.h; sourceTree = "<group>"; };
+		A71A57121727233F00B3D830 /* PNMessagesHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagesHistory.m; sourceTree = "<group>"; };
+		A71A57131727233F00B3D830 /* PNOperationStatus+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNOperationStatus+Protected.h"; sourceTree = "<group>"; };
+		A71A57141727233F00B3D830 /* PNOperationStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNOperationStatus.h; sourceTree = "<group>"; };
+		A71A57151727233F00B3D830 /* PNOperationStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNOperationStatus.m; sourceTree = "<group>"; };
+		A71A57161727233F00B3D830 /* PNRequestsQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNRequestsQueue.h; sourceTree = "<group>"; };
+		A71A57171727233F00B3D830 /* PNRequestsQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNRequestsQueue.m; sourceTree = "<group>"; };
+		A71A57181727233F00B3D830 /* PNResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponse.h; sourceTree = "<group>"; };
+		A71A57191727233F00B3D830 /* PNResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponse.m; sourceTree = "<group>"; };
+		A71A571C1727233F00B3D830 /* NSData+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+PNAdditions.h"; sourceTree = "<group>"; };
+		A71A571D1727233F00B3D830 /* NSData+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+PNAdditions.m"; sourceTree = "<group>"; };
+		A71A571E1727233F00B3D830 /* NSMutableArray+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+PNAdditions.h"; sourceTree = "<group>"; };
+		A71A571F1727233F00B3D830 /* NSMutableArray+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+PNAdditions.m"; sourceTree = "<group>"; };
+		A71A57201727233F00B3D830 /* NSString+PNAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+PNAddition.h"; sourceTree = "<group>"; };
+		A71A57211727233F00B3D830 /* NSString+PNAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PNAddition.m"; sourceTree = "<group>"; };
+		A71A57221727233F00B3D830 /* UIDevice+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+PNAdditions.h"; sourceTree = "<group>"; };
+		A71A57231727233F00B3D830 /* UIDevice+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+PNAdditions.m"; sourceTree = "<group>"; };
+		A71A57241727233F00B3D830 /* PNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConstants.h; sourceTree = "<group>"; };
+		A71A57251727233F00B3D830 /* PNDefaultConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDefaultConfiguration.h; sourceTree = "<group>"; };
+		A71A57261727233F00B3D830 /* PNErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNErrorCodes.h; sourceTree = "<group>"; };
+		A71A57271727233F00B3D830 /* PNImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNImports.h; sourceTree = "<group>"; };
+		A71A57281727233F00B3D830 /* PNMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMacro.h; sourceTree = "<group>"; };
+		A71A57291727233F00B3D830 /* PNNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNotifications.h; sourceTree = "<group>"; };
+		A71A572A1727233F00B3D830 /* PNRequestsImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNRequestsImport.h; sourceTree = "<group>"; };
+		A71A572B1727233F00B3D830 /* PNServiceResponseCallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceResponseCallbacks.h; sourceTree = "<group>"; };
+		A71A572C1727233F00B3D830 /* PNStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNStructures.h; sourceTree = "<group>"; };
+		A71A572E1727233F00B3D830 /* PNConnectionChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannelDelegate.h; sourceTree = "<group>"; };
+		A71A572F1727233F00B3D830 /* PNConnectionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionDelegate.h; sourceTree = "<group>"; };
+		A71A57301727233F00B3D830 /* PNDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDelegate.h; sourceTree = "<group>"; };
+		A71A57311727233F00B3D830 /* PNMessageChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessageChannelDelegate.h; sourceTree = "<group>"; };
+		A71A57321727233F00B3D830 /* PNRequestsQueueDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNRequestsQueueDelegate.h; sourceTree = "<group>"; };
+		A71A57331727233F00B3D830 /* PNServiceChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannelDelegate.h; sourceTree = "<group>"; };
+		A71A57361727233F00B3D830 /* PNBaseRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNBaseRequest+Protected.h"; sourceTree = "<group>"; };
+		A71A57371727233F00B3D830 /* PNBaseRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBaseRequest.h; sourceTree = "<group>"; };
+		A71A57381727233F00B3D830 /* PNBaseRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBaseRequest.m; sourceTree = "<group>"; };
+		A71A57391727233F00B3D830 /* PNHereNowRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNHereNowRequest+Protected.h"; sourceTree = "<group>"; };
+		A71A573A1727233F00B3D830 /* PNHereNowRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNHereNowRequest.h; sourceTree = "<group>"; };
+		A71A573B1727233F00B3D830 /* PNHereNowRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHereNowRequest.m; sourceTree = "<group>"; };
+		A71A573C1727233F00B3D830 /* PNLatencyMeasureRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLatencyMeasureRequest.h; sourceTree = "<group>"; };
+		A71A573D1727233F00B3D830 /* PNLatencyMeasureRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLatencyMeasureRequest.m; sourceTree = "<group>"; };
+		A71A573E1727233F00B3D830 /* PNLeaveRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNLeaveRequest+Protected.h"; sourceTree = "<group>"; };
+		A71A573F1727233F00B3D830 /* PNLeaveRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLeaveRequest.h; sourceTree = "<group>"; };
+		A71A57401727233F00B3D830 /* PNLeaveRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLeaveRequest.m; sourceTree = "<group>"; };
+		A71A57411727233F00B3D830 /* PNMessageHistoryRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessageHistoryRequest+Protected.h"; sourceTree = "<group>"; };
+		A71A57421727233F00B3D830 /* PNMessageHistoryRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessageHistoryRequest.h; sourceTree = "<group>"; };
+		A71A57431727233F00B3D830 /* PNMessageHistoryRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessageHistoryRequest.m; sourceTree = "<group>"; };
+		A71A57441727233F00B3D830 /* PNMessagePostRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessagePostRequest+Protected.h"; sourceTree = "<group>"; };
+		A71A57451727233F00B3D830 /* PNMessagePostRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessagePostRequest.h; sourceTree = "<group>"; };
+		A71A57461727233F00B3D830 /* PNMessagePostRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagePostRequest.m; sourceTree = "<group>"; };
+		A71A57471727233F00B3D830 /* PNSubscribeRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNSubscribeRequest+Protected.h"; sourceTree = "<group>"; };
+		A71A57481727233F00B3D830 /* PNSubscribeRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNSubscribeRequest.h; sourceTree = "<group>"; };
+		A71A57491727233F00B3D830 /* PNSubscribeRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeRequest.m; sourceTree = "<group>"; };
+		A71A574A1727233F00B3D830 /* PNTimeTokenRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTimeTokenRequest.h; sourceTree = "<group>"; };
+		A71A574B1727233F00B3D830 /* PNTimeTokenRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimeTokenRequest.m; sourceTree = "<group>"; };
+		A71A574C1727233F00B3D830 /* PNMessagingChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessagingChannel.h; sourceTree = "<group>"; };
+		A71A574D1727233F00B3D830 /* PNMessagingChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagingChannel.m; sourceTree = "<group>"; };
+		A71A574E1727233F00B3D830 /* PNReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNReachability.h; sourceTree = "<group>"; };
+		A71A574F1727233F00B3D830 /* PNReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNReachability.m; sourceTree = "<group>"; };
+		A71A57501727233F00B3D830 /* PNServiceChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannel.h; sourceTree = "<group>"; };
+		A71A57511727233F00B3D830 /* PNServiceChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNServiceChannel.m; sourceTree = "<group>"; };
+		A71A57531727233F00B3D830 /* PNConnection+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnection+Protected.h"; sourceTree = "<group>"; };
+		A71A57541727233F00B3D830 /* PNConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnection.h; sourceTree = "<group>"; };
+		A71A57551727233F00B3D830 /* PNConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnection.m; sourceTree = "<group>"; };
+		A71A57561727233F00B3D830 /* PNConnectionChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnectionChannel+Protected.h"; sourceTree = "<group>"; };
+		A71A57571727233F00B3D830 /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
+		A71A57581727233F00B3D830 /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
 		D94769A616D62CF00093C0D7 /* PubNubDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNubDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D94769A916D62CF00093C0D7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		D94769AB16D62CF00093C0D7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -235,258 +235,257 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A77D826517021FB80049BFA1 /* libs */ = {
+		A71A56C91727233F00B3D830 /* libs */ = {
 			isa = PBXGroup;
 			children = (
-				A77D826617021FB80049BFA1 /* JSONKit */,
-				A77D826B17021FB80049BFA1 /* PubNub */,
+				A71A56CA1727233F00B3D830 /* JSONKit */,
+				A71A56CF1727233F00B3D830 /* PubNub */,
 			);
-			name = libs;
-			path = ../../3.4/pubnub/libs;
+			path = libs;
 			sourceTree = "<group>";
 		};
-		A77D826617021FB80049BFA1 /* JSONKit */ = {
+		A71A56CA1727233F00B3D830 /* JSONKit */ = {
 			isa = PBXGroup;
 			children = (
-				A77D826717021FB80049BFA1 /* JSON.h */,
-				A77D826817021FB80049BFA1 /* JSON.m */,
-				A77D826917021FB80049BFA1 /* JSONKit.h */,
-				A77D826A17021FB80049BFA1 /* JSONKit.m */,
+				A71A56CB1727233F00B3D830 /* JSON.h */,
+				A71A56CC1727233F00B3D830 /* JSON.m */,
+				A71A56CD1727233F00B3D830 /* JSONKit.h */,
+				A71A56CE1727233F00B3D830 /* JSONKit.m */,
 			);
 			path = JSONKit;
 			sourceTree = "<group>";
 		};
-		A77D826B17021FB80049BFA1 /* PubNub */ = {
+		A71A56CF1727233F00B3D830 /* PubNub */ = {
 			isa = PBXGroup;
 			children = (
-				A77D826C17021FB80049BFA1 /* Core */,
-				A77D827317021FB80049BFA1 /* Data */,
-				A77D82B617021FB80049BFA1 /* Misc */,
-				A77D82D017021FB80049BFA1 /* Network */,
+				A71A56D01727233F00B3D830 /* Core */,
+				A71A56D71727233F00B3D830 /* Data */,
+				A71A571A1727233F00B3D830 /* Misc */,
+				A71A57341727233F00B3D830 /* Network */,
 			);
 			path = PubNub;
 			sourceTree = "<group>";
 		};
-		A77D826C17021FB80049BFA1 /* Core */ = {
+		A71A56D01727233F00B3D830 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				A77D826D17021FB80049BFA1 /* PNObservationCenter+Protected.h */,
-				A77D826E17021FB80049BFA1 /* PNObservationCenter.h */,
-				A77D826F17021FB80049BFA1 /* PNObservationCenter.m */,
-				A77D827017021FB80049BFA1 /* PubNub+Protected.h */,
-				A77D827117021FB80049BFA1 /* PubNub.h */,
-				A77D827217021FB80049BFA1 /* PubNub.m */,
+				A71A56D11727233F00B3D830 /* PNObservationCenter+Protected.h */,
+				A71A56D21727233F00B3D830 /* PNObservationCenter.h */,
+				A71A56D31727233F00B3D830 /* PNObservationCenter.m */,
+				A71A56D41727233F00B3D830 /* PubNub+Protected.h */,
+				A71A56D51727233F00B3D830 /* PubNub.h */,
+				A71A56D61727233F00B3D830 /* PubNub.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
 		};
-		A77D827317021FB80049BFA1 /* Data */ = {
+		A71A56D71727233F00B3D830 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				A77D827417021FB80049BFA1 /* Buffers */,
-				A77D827717021FB80049BFA1 /* Channels */,
-				A77D828217021FB80049BFA1 /* Crypto */,
-				A77D828517021FB80049BFA1 /* Parsers */,
-				A77D829B17021FB80049BFA1 /* PNChannelEvents+Protected.h */,
-				A77D829C17021FB80049BFA1 /* PNChannelEvents.h */,
-				A77D829D17021FB80049BFA1 /* PNChannelEvents.m */,
-				A77D829E17021FB80049BFA1 /* PNConfiguration+Protected.h */,
-				A77D829F17021FB80049BFA1 /* PNConfiguration.h */,
-				A77D82A017021FB80049BFA1 /* PNConfiguration.m */,
-				A77D82A117021FB80049BFA1 /* PNError+Protected.h */,
-				A77D82A217021FB80049BFA1 /* PNError.h */,
-				A77D82A317021FB80049BFA1 /* PNError.m */,
-				A77D82A417021FB80049BFA1 /* PNHereNow+Protected.h */,
-				A77D82A517021FB80049BFA1 /* PNHereNow.h */,
-				A77D82A617021FB80049BFA1 /* PNHereNow.m */,
-				A77D82A717021FB80049BFA1 /* PNJSONSerialization.h */,
-				A77D82A817021FB80049BFA1 /* PNJSONSerialization.m */,
-				A77D82A917021FB80049BFA1 /* PNMessage+Protected.h */,
-				A77D82AA17021FB80049BFA1 /* PNMessage.h */,
-				A77D82AB17021FB80049BFA1 /* PNMessage.m */,
-				A77D82AC17021FB80049BFA1 /* PNMessagesHistory+Protected.h */,
-				A77D82AD17021FB80049BFA1 /* PNMessagesHistory.h */,
-				A77D82AE17021FB80049BFA1 /* PNMessagesHistory.m */,
-				A77D82AF17021FB80049BFA1 /* PNOperationStatus+Protected.h */,
-				A77D82B017021FB80049BFA1 /* PNOperationStatus.h */,
-				A77D82B117021FB80049BFA1 /* PNOperationStatus.m */,
-				A77D82B217021FB80049BFA1 /* PNRequestsQueue.h */,
-				A77D82B317021FB80049BFA1 /* PNRequestsQueue.m */,
-				A77D82B417021FB80049BFA1 /* PNResponse.h */,
-				A77D82B517021FB80049BFA1 /* PNResponse.m */,
+				A71A56D81727233F00B3D830 /* Buffers */,
+				A71A56DB1727233F00B3D830 /* Channels */,
+				A71A56E61727233F00B3D830 /* Crypto */,
+				A71A56E91727233F00B3D830 /* Parsers */,
+				A71A56FF1727233F00B3D830 /* PNChannelEvents+Protected.h */,
+				A71A57001727233F00B3D830 /* PNChannelEvents.h */,
+				A71A57011727233F00B3D830 /* PNChannelEvents.m */,
+				A71A57021727233F00B3D830 /* PNConfiguration+Protected.h */,
+				A71A57031727233F00B3D830 /* PNConfiguration.h */,
+				A71A57041727233F00B3D830 /* PNConfiguration.m */,
+				A71A57051727233F00B3D830 /* PNError+Protected.h */,
+				A71A57061727233F00B3D830 /* PNError.h */,
+				A71A57071727233F00B3D830 /* PNError.m */,
+				A71A57081727233F00B3D830 /* PNHereNow+Protected.h */,
+				A71A57091727233F00B3D830 /* PNHereNow.h */,
+				A71A570A1727233F00B3D830 /* PNHereNow.m */,
+				A71A570B1727233F00B3D830 /* PNJSONSerialization.h */,
+				A71A570C1727233F00B3D830 /* PNJSONSerialization.m */,
+				A71A570D1727233F00B3D830 /* PNMessage+Protected.h */,
+				A71A570E1727233F00B3D830 /* PNMessage.h */,
+				A71A570F1727233F00B3D830 /* PNMessage.m */,
+				A71A57101727233F00B3D830 /* PNMessagesHistory+Protected.h */,
+				A71A57111727233F00B3D830 /* PNMessagesHistory.h */,
+				A71A57121727233F00B3D830 /* PNMessagesHistory.m */,
+				A71A57131727233F00B3D830 /* PNOperationStatus+Protected.h */,
+				A71A57141727233F00B3D830 /* PNOperationStatus.h */,
+				A71A57151727233F00B3D830 /* PNOperationStatus.m */,
+				A71A57161727233F00B3D830 /* PNRequestsQueue.h */,
+				A71A57171727233F00B3D830 /* PNRequestsQueue.m */,
+				A71A57181727233F00B3D830 /* PNResponse.h */,
+				A71A57191727233F00B3D830 /* PNResponse.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
 		};
-		A77D827417021FB80049BFA1 /* Buffers */ = {
+		A71A56D81727233F00B3D830 /* Buffers */ = {
 			isa = PBXGroup;
 			children = (
-				A77D827517021FB80049BFA1 /* PNWriteBuffer.h */,
-				A77D827617021FB80049BFA1 /* PNWriteBuffer.m */,
+				A71A56D91727233F00B3D830 /* PNWriteBuffer.h */,
+				A71A56DA1727233F00B3D830 /* PNWriteBuffer.m */,
 			);
 			path = Buffers;
 			sourceTree = "<group>";
 		};
-		A77D827717021FB80049BFA1 /* Channels */ = {
+		A71A56DB1727233F00B3D830 /* Channels */ = {
 			isa = PBXGroup;
 			children = (
-				A77D827817021FB80049BFA1 /* PNChannel+Protected.h */,
-				A77D827917021FB80049BFA1 /* PNChannel.h */,
-				A77D827A17021FB80049BFA1 /* PNChannel.m */,
-				A77D827B17021FB80049BFA1 /* Presence */,
+				A71A56DC1727233F00B3D830 /* PNChannel+Protected.h */,
+				A71A56DD1727233F00B3D830 /* PNChannel.h */,
+				A71A56DE1727233F00B3D830 /* PNChannel.m */,
+				A71A56DF1727233F00B3D830 /* Presence */,
 			);
 			path = Channels;
 			sourceTree = "<group>";
 		};
-		A77D827B17021FB80049BFA1 /* Presence */ = {
+		A71A56DF1727233F00B3D830 /* Presence */ = {
 			isa = PBXGroup;
 			children = (
-				A77D827C17021FB80049BFA1 /* PNChannelPresence+Protected.h */,
-				A77D827D17021FB80049BFA1 /* PNChannelPresence.h */,
-				A77D827E17021FB80049BFA1 /* PNChannelPresence.m */,
-				A77D827F17021FB80049BFA1 /* PNPresenceEvent+Protected.h */,
-				A77D828017021FB80049BFA1 /* PNPresenceEvent.h */,
-				A77D828117021FB80049BFA1 /* PNPresenceEvent.m */,
+				A71A56E01727233F00B3D830 /* PNChannelPresence+Protected.h */,
+				A71A56E11727233F00B3D830 /* PNChannelPresence.h */,
+				A71A56E21727233F00B3D830 /* PNChannelPresence.m */,
+				A71A56E31727233F00B3D830 /* PNPresenceEvent+Protected.h */,
+				A71A56E41727233F00B3D830 /* PNPresenceEvent.h */,
+				A71A56E51727233F00B3D830 /* PNPresenceEvent.m */,
 			);
 			path = Presence;
 			sourceTree = "<group>";
 		};
-		A77D828217021FB80049BFA1 /* Crypto */ = {
+		A71A56E61727233F00B3D830 /* Crypto */ = {
 			isa = PBXGroup;
 			children = (
-				A77D828317021FB80049BFA1 /* PNCryptoHelper.h */,
-				A77D828417021FB80049BFA1 /* PNCryptoHelper.m */,
+				A71A56E71727233F00B3D830 /* PNCryptoHelper.h */,
+				A71A56E81727233F00B3D830 /* PNCryptoHelper.m */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
 		};
-		A77D828517021FB80049BFA1 /* Parsers */ = {
+		A71A56E91727233F00B3D830 /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
-				A77D828617021FB80049BFA1 /* PNActionResponseParser+Protected.h */,
-				A77D828717021FB80049BFA1 /* PNActionResponseParser.h */,
-				A77D828817021FB80049BFA1 /* PNActionResponseParser.m */,
-				A77D828917021FB80049BFA1 /* PNChannelEventsResponseParser.h */,
-				A77D828A17021FB80049BFA1 /* PNChannelEventsResponseParser.m */,
-				A77D828B17021FB80049BFA1 /* PNChannelHistoryParser.h */,
-				A77D828C17021FB80049BFA1 /* PNChannelHistoryParser.m */,
-				A77D828D17021FB80049BFA1 /* PNErrorResponseParser+Protected.h */,
-				A77D828E17021FB80049BFA1 /* PNErrorResponseParser.h */,
-				A77D828F17021FB80049BFA1 /* PNErrorResponseParser.m */,
-				A77D829017021FB80049BFA1 /* PNHereNowResponseParser+Protected.h */,
-				A77D829117021FB80049BFA1 /* PNHereNowResponseParser.h */,
-				A77D829217021FB80049BFA1 /* PNHereNowResponseParser.m */,
-				A77D829317021FB80049BFA1 /* PNOperationStatusResponseParser.h */,
-				A77D829417021FB80049BFA1 /* PNOperationStatusResponseParser.m */,
-				A77D829517021FB80049BFA1 /* PNResponseDeserialize.h */,
-				A77D829617021FB80049BFA1 /* PNResponseDeserialize.m */,
-				A77D829717021FB80049BFA1 /* PNResponseParser.h */,
-				A77D829817021FB80049BFA1 /* PNResponseParser.m */,
-				A77D829917021FB80049BFA1 /* PNTimeTokenResponseParser.h */,
-				A77D829A17021FB80049BFA1 /* PNTimeTokenResponseParser.m */,
+				A71A56EA1727233F00B3D830 /* PNActionResponseParser+Protected.h */,
+				A71A56EB1727233F00B3D830 /* PNActionResponseParser.h */,
+				A71A56EC1727233F00B3D830 /* PNActionResponseParser.m */,
+				A71A56ED1727233F00B3D830 /* PNChannelEventsResponseParser.h */,
+				A71A56EE1727233F00B3D830 /* PNChannelEventsResponseParser.m */,
+				A71A56EF1727233F00B3D830 /* PNChannelHistoryParser.h */,
+				A71A56F01727233F00B3D830 /* PNChannelHistoryParser.m */,
+				A71A56F11727233F00B3D830 /* PNErrorResponseParser+Protected.h */,
+				A71A56F21727233F00B3D830 /* PNErrorResponseParser.h */,
+				A71A56F31727233F00B3D830 /* PNErrorResponseParser.m */,
+				A71A56F41727233F00B3D830 /* PNHereNowResponseParser+Protected.h */,
+				A71A56F51727233F00B3D830 /* PNHereNowResponseParser.h */,
+				A71A56F61727233F00B3D830 /* PNHereNowResponseParser.m */,
+				A71A56F71727233F00B3D830 /* PNOperationStatusResponseParser.h */,
+				A71A56F81727233F00B3D830 /* PNOperationStatusResponseParser.m */,
+				A71A56F91727233F00B3D830 /* PNResponseDeserialize.h */,
+				A71A56FA1727233F00B3D830 /* PNResponseDeserialize.m */,
+				A71A56FB1727233F00B3D830 /* PNResponseParser.h */,
+				A71A56FC1727233F00B3D830 /* PNResponseParser.m */,
+				A71A56FD1727233F00B3D830 /* PNTimeTokenResponseParser.h */,
+				A71A56FE1727233F00B3D830 /* PNTimeTokenResponseParser.m */,
 			);
 			path = Parsers;
 			sourceTree = "<group>";
 		};
-		A77D82B617021FB80049BFA1 /* Misc */ = {
+		A71A571A1727233F00B3D830 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
-				A77D82B717021FB80049BFA1 /* Categories */,
-				A77D82C017021FB80049BFA1 /* PNConstants.h */,
-				A77D82C117021FB80049BFA1 /* PNDefaultConfiguration.h */,
-				A77D82C217021FB80049BFA1 /* PNErrorCodes.h */,
-				A77D82C317021FB80049BFA1 /* PNImports.h */,
-				A77D82C417021FB80049BFA1 /* PNMacro.h */,
-				A77D82C517021FB80049BFA1 /* PNNotifications.h */,
-				A77D82C617021FB80049BFA1 /* PNRequestsImport.h */,
-				A77D82C717021FB80049BFA1 /* PNServiceResponseCallbacks.h */,
-				A77D82C817021FB80049BFA1 /* PNStructures.h */,
-				A77D82C917021FB80049BFA1 /* Protocols */,
+				A71A571B1727233F00B3D830 /* Categories */,
+				A71A57241727233F00B3D830 /* PNConstants.h */,
+				A71A57251727233F00B3D830 /* PNDefaultConfiguration.h */,
+				A71A57261727233F00B3D830 /* PNErrorCodes.h */,
+				A71A57271727233F00B3D830 /* PNImports.h */,
+				A71A57281727233F00B3D830 /* PNMacro.h */,
+				A71A57291727233F00B3D830 /* PNNotifications.h */,
+				A71A572A1727233F00B3D830 /* PNRequestsImport.h */,
+				A71A572B1727233F00B3D830 /* PNServiceResponseCallbacks.h */,
+				A71A572C1727233F00B3D830 /* PNStructures.h */,
+				A71A572D1727233F00B3D830 /* Protocols */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
 		};
-		A77D82B717021FB80049BFA1 /* Categories */ = {
+		A71A571B1727233F00B3D830 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				A77D82B817021FB80049BFA1 /* NSData+PNAdditions.h */,
-				A77D82B917021FB80049BFA1 /* NSData+PNAdditions.m */,
-				A77D82BA17021FB80049BFA1 /* NSMutableArray+PNAdditions.h */,
-				A77D82BB17021FB80049BFA1 /* NSMutableArray+PNAdditions.m */,
-				A77D82BC17021FB80049BFA1 /* NSString+PNAddition.h */,
-				A77D82BD17021FB80049BFA1 /* NSString+PNAddition.m */,
-				A77D82BE17021FB80049BFA1 /* UIDevice+PNAdditions.h */,
-				A77D82BF17021FB80049BFA1 /* UIDevice+PNAdditions.m */,
+				A71A571C1727233F00B3D830 /* NSData+PNAdditions.h */,
+				A71A571D1727233F00B3D830 /* NSData+PNAdditions.m */,
+				A71A571E1727233F00B3D830 /* NSMutableArray+PNAdditions.h */,
+				A71A571F1727233F00B3D830 /* NSMutableArray+PNAdditions.m */,
+				A71A57201727233F00B3D830 /* NSString+PNAddition.h */,
+				A71A57211727233F00B3D830 /* NSString+PNAddition.m */,
+				A71A57221727233F00B3D830 /* UIDevice+PNAdditions.h */,
+				A71A57231727233F00B3D830 /* UIDevice+PNAdditions.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
 		};
-		A77D82C917021FB80049BFA1 /* Protocols */ = {
+		A71A572D1727233F00B3D830 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				A77D82CA17021FB80049BFA1 /* PNConnectionChannelDelegate.h */,
-				A77D82CB17021FB80049BFA1 /* PNConnectionDelegate.h */,
-				A77D82CC17021FB80049BFA1 /* PNDelegate.h */,
-				A77D82CD17021FB80049BFA1 /* PNMessageChannelDelegate.h */,
-				A77D82CE17021FB80049BFA1 /* PNRequestsQueueDelegate.h */,
-				A77D82CF17021FB80049BFA1 /* PNServiceChannelDelegate.h */,
+				A71A572E1727233F00B3D830 /* PNConnectionChannelDelegate.h */,
+				A71A572F1727233F00B3D830 /* PNConnectionDelegate.h */,
+				A71A57301727233F00B3D830 /* PNDelegate.h */,
+				A71A57311727233F00B3D830 /* PNMessageChannelDelegate.h */,
+				A71A57321727233F00B3D830 /* PNRequestsQueueDelegate.h */,
+				A71A57331727233F00B3D830 /* PNServiceChannelDelegate.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
 		};
-		A77D82D017021FB80049BFA1 /* Network */ = {
+		A71A57341727233F00B3D830 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				A77D82D117021FB80049BFA1 /* Packets */,
-				A77D82E817021FB80049BFA1 /* PNMessagingChannel.h */,
-				A77D82E917021FB80049BFA1 /* PNMessagingChannel.m */,
-				A77D82EA17021FB80049BFA1 /* PNReachability.h */,
-				A77D82EB17021FB80049BFA1 /* PNReachability.m */,
-				A77D82EC17021FB80049BFA1 /* PNServiceChannel.h */,
-				A77D82ED17021FB80049BFA1 /* PNServiceChannel.m */,
-				A77D82EE17021FB80049BFA1 /* Transport */,
+				A71A57351727233F00B3D830 /* Packets */,
+				A71A574C1727233F00B3D830 /* PNMessagingChannel.h */,
+				A71A574D1727233F00B3D830 /* PNMessagingChannel.m */,
+				A71A574E1727233F00B3D830 /* PNReachability.h */,
+				A71A574F1727233F00B3D830 /* PNReachability.m */,
+				A71A57501727233F00B3D830 /* PNServiceChannel.h */,
+				A71A57511727233F00B3D830 /* PNServiceChannel.m */,
+				A71A57521727233F00B3D830 /* Transport */,
 			);
 			path = Network;
 			sourceTree = "<group>";
 		};
-		A77D82D117021FB80049BFA1 /* Packets */ = {
+		A71A57351727233F00B3D830 /* Packets */ = {
 			isa = PBXGroup;
 			children = (
-				A77D82D217021FB80049BFA1 /* PNBaseRequest+Protected.h */,
-				A77D82D317021FB80049BFA1 /* PNBaseRequest.h */,
-				A77D82D417021FB80049BFA1 /* PNBaseRequest.m */,
-				A77D82D517021FB80049BFA1 /* PNHereNowRequest+Protected.h */,
-				A77D82D617021FB80049BFA1 /* PNHereNowRequest.h */,
-				A77D82D717021FB80049BFA1 /* PNHereNowRequest.m */,
-				A77D82D817021FB80049BFA1 /* PNLatencyMeasureRequest.h */,
-				A77D82D917021FB80049BFA1 /* PNLatencyMeasureRequest.m */,
-				A77D82DA17021FB80049BFA1 /* PNLeaveRequest+Protected.h */,
-				A77D82DB17021FB80049BFA1 /* PNLeaveRequest.h */,
-				A77D82DC17021FB80049BFA1 /* PNLeaveRequest.m */,
-				A77D82DD17021FB80049BFA1 /* PNMessageHistoryRequest+Protected.h */,
-				A77D82DE17021FB80049BFA1 /* PNMessageHistoryRequest.h */,
-				A77D82DF17021FB80049BFA1 /* PNMessageHistoryRequest.m */,
-				A77D82E017021FB80049BFA1 /* PNMessagePostRequest+Protected.h */,
-				A77D82E117021FB80049BFA1 /* PNMessagePostRequest.h */,
-				A77D82E217021FB80049BFA1 /* PNMessagePostRequest.m */,
-				A77D82E317021FB80049BFA1 /* PNSubscribeRequest+Protected.h */,
-				A77D82E417021FB80049BFA1 /* PNSubscribeRequest.h */,
-				A77D82E517021FB80049BFA1 /* PNSubscribeRequest.m */,
-				A77D82E617021FB80049BFA1 /* PNTimeTokenRequest.h */,
-				A77D82E717021FB80049BFA1 /* PNTimeTokenRequest.m */,
+				A71A57361727233F00B3D830 /* PNBaseRequest+Protected.h */,
+				A71A57371727233F00B3D830 /* PNBaseRequest.h */,
+				A71A57381727233F00B3D830 /* PNBaseRequest.m */,
+				A71A57391727233F00B3D830 /* PNHereNowRequest+Protected.h */,
+				A71A573A1727233F00B3D830 /* PNHereNowRequest.h */,
+				A71A573B1727233F00B3D830 /* PNHereNowRequest.m */,
+				A71A573C1727233F00B3D830 /* PNLatencyMeasureRequest.h */,
+				A71A573D1727233F00B3D830 /* PNLatencyMeasureRequest.m */,
+				A71A573E1727233F00B3D830 /* PNLeaveRequest+Protected.h */,
+				A71A573F1727233F00B3D830 /* PNLeaveRequest.h */,
+				A71A57401727233F00B3D830 /* PNLeaveRequest.m */,
+				A71A57411727233F00B3D830 /* PNMessageHistoryRequest+Protected.h */,
+				A71A57421727233F00B3D830 /* PNMessageHistoryRequest.h */,
+				A71A57431727233F00B3D830 /* PNMessageHistoryRequest.m */,
+				A71A57441727233F00B3D830 /* PNMessagePostRequest+Protected.h */,
+				A71A57451727233F00B3D830 /* PNMessagePostRequest.h */,
+				A71A57461727233F00B3D830 /* PNMessagePostRequest.m */,
+				A71A57471727233F00B3D830 /* PNSubscribeRequest+Protected.h */,
+				A71A57481727233F00B3D830 /* PNSubscribeRequest.h */,
+				A71A57491727233F00B3D830 /* PNSubscribeRequest.m */,
+				A71A574A1727233F00B3D830 /* PNTimeTokenRequest.h */,
+				A71A574B1727233F00B3D830 /* PNTimeTokenRequest.m */,
 			);
 			path = Packets;
 			sourceTree = "<group>";
 		};
-		A77D82EE17021FB80049BFA1 /* Transport */ = {
+		A71A57521727233F00B3D830 /* Transport */ = {
 			isa = PBXGroup;
 			children = (
-				A77D82EF17021FB80049BFA1 /* PNConnection+Protected.h */,
-				A77D82F017021FB80049BFA1 /* PNConnection.h */,
-				A77D82F117021FB80049BFA1 /* PNConnection.m */,
-				A77D82F217021FB80049BFA1 /* PNConnectionChannel+Protected.h */,
-				A77D82F317021FB80049BFA1 /* PNConnectionChannel.h */,
-				A77D82F417021FB80049BFA1 /* PNConnectionChannel.m */,
+				A71A57531727233F00B3D830 /* PNConnection+Protected.h */,
+				A71A57541727233F00B3D830 /* PNConnection.h */,
+				A71A57551727233F00B3D830 /* PNConnection.m */,
+				A71A57561727233F00B3D830 /* PNConnectionChannel+Protected.h */,
+				A71A57571727233F00B3D830 /* PNConnectionChannel.h */,
+				A71A57581727233F00B3D830 /* PNConnectionChannel.m */,
 			);
 			path = Transport;
 			sourceTree = "<group>";
@@ -524,7 +523,7 @@
 		D94769AF16D62CF00093C0D7 /* PubNubDemo */ = {
 			isa = PBXGroup;
 			children = (
-				A77D826517021FB80049BFA1 /* libs */,
+				A71A56C91727233F00B3D830 /* libs */,
 				D94769B816D62CF00093C0D7 /* AppDelegate.h */,
 				D94769B916D62CF00093C0D7 /* AppDelegate.m */,
 				D94769C116D62CF00093C0D7 /* ViewController.h */,
@@ -618,51 +617,51 @@
 				D94769B616D62CF00093C0D7 /* main.m in Sources */,
 				D94769BA16D62CF00093C0D7 /* AppDelegate.m in Sources */,
 				D94769C316D62CF00093C0D7 /* ViewController.m in Sources */,
-				A77D82F517021FB80049BFA1 /* JSON.m in Sources */,
-				A77D82F617021FB80049BFA1 /* JSONKit.m in Sources */,
-				A77D82F717021FB80049BFA1 /* PNObservationCenter.m in Sources */,
-				A77D82F817021FB80049BFA1 /* PubNub.m in Sources */,
-				A77D82F917021FB80049BFA1 /* PNWriteBuffer.m in Sources */,
-				A77D82FA17021FB80049BFA1 /* PNChannel.m in Sources */,
-				A77D82FB17021FB80049BFA1 /* PNChannelPresence.m in Sources */,
-				A77D82FC17021FB80049BFA1 /* PNPresenceEvent.m in Sources */,
-				A77D82FD17021FB80049BFA1 /* PNCryptoHelper.m in Sources */,
-				A77D82FE17021FB80049BFA1 /* PNActionResponseParser.m in Sources */,
-				A77D82FF17021FB80049BFA1 /* PNChannelEventsResponseParser.m in Sources */,
-				A77D830017021FB80049BFA1 /* PNChannelHistoryParser.m in Sources */,
-				A77D830117021FB80049BFA1 /* PNErrorResponseParser.m in Sources */,
-				A77D830217021FB80049BFA1 /* PNHereNowResponseParser.m in Sources */,
-				A77D830317021FB80049BFA1 /* PNOperationStatusResponseParser.m in Sources */,
-				A77D830417021FB80049BFA1 /* PNResponseDeserialize.m in Sources */,
-				A77D830517021FB80049BFA1 /* PNResponseParser.m in Sources */,
-				A77D830617021FB80049BFA1 /* PNTimeTokenResponseParser.m in Sources */,
-				A77D830717021FB80049BFA1 /* PNChannelEvents.m in Sources */,
-				A77D830817021FB80049BFA1 /* PNConfiguration.m in Sources */,
-				A77D830917021FB80049BFA1 /* PNError.m in Sources */,
-				A77D830A17021FB80049BFA1 /* PNHereNow.m in Sources */,
-				A77D830B17021FB80049BFA1 /* PNJSONSerialization.m in Sources */,
-				A77D830C17021FB80049BFA1 /* PNMessage.m in Sources */,
-				A77D830D17021FB80049BFA1 /* PNMessagesHistory.m in Sources */,
-				A77D830E17021FB80049BFA1 /* PNOperationStatus.m in Sources */,
-				A77D830F17021FB80049BFA1 /* PNRequestsQueue.m in Sources */,
-				A77D831017021FB80049BFA1 /* PNResponse.m in Sources */,
-				A77D831117021FB80049BFA1 /* NSData+PNAdditions.m in Sources */,
-				A77D831217021FB80049BFA1 /* NSMutableArray+PNAdditions.m in Sources */,
-				A77D831317021FB80049BFA1 /* NSString+PNAddition.m in Sources */,
-				A77D831417021FB80049BFA1 /* UIDevice+PNAdditions.m in Sources */,
-				A77D831517021FB80049BFA1 /* PNBaseRequest.m in Sources */,
-				A77D831617021FB80049BFA1 /* PNHereNowRequest.m in Sources */,
-				A77D831717021FB80049BFA1 /* PNLatencyMeasureRequest.m in Sources */,
-				A77D831817021FB80049BFA1 /* PNLeaveRequest.m in Sources */,
-				A77D831917021FB80049BFA1 /* PNMessageHistoryRequest.m in Sources */,
-				A77D831A17021FB80049BFA1 /* PNMessagePostRequest.m in Sources */,
-				A77D831B17021FB80049BFA1 /* PNSubscribeRequest.m in Sources */,
-				A77D831C17021FB80049BFA1 /* PNTimeTokenRequest.m in Sources */,
-				A77D831D17021FB80049BFA1 /* PNMessagingChannel.m in Sources */,
-				A77D831E17021FB80049BFA1 /* PNReachability.m in Sources */,
-				A77D831F17021FB80049BFA1 /* PNServiceChannel.m in Sources */,
-				A77D832017021FB80049BFA1 /* PNConnection.m in Sources */,
-				A77D832117021FB80049BFA1 /* PNConnectionChannel.m in Sources */,
+				A71A57591727233F00B3D830 /* JSON.m in Sources */,
+				A71A575A1727233F00B3D830 /* JSONKit.m in Sources */,
+				A71A575B1727233F00B3D830 /* PNObservationCenter.m in Sources */,
+				A71A575C1727233F00B3D830 /* PubNub.m in Sources */,
+				A71A575D1727233F00B3D830 /* PNWriteBuffer.m in Sources */,
+				A71A575E1727233F00B3D830 /* PNChannel.m in Sources */,
+				A71A575F1727233F00B3D830 /* PNChannelPresence.m in Sources */,
+				A71A57601727233F00B3D830 /* PNPresenceEvent.m in Sources */,
+				A71A57611727233F00B3D830 /* PNCryptoHelper.m in Sources */,
+				A71A57621727233F00B3D830 /* PNActionResponseParser.m in Sources */,
+				A71A57631727233F00B3D830 /* PNChannelEventsResponseParser.m in Sources */,
+				A71A57641727233F00B3D830 /* PNChannelHistoryParser.m in Sources */,
+				A71A57651727233F00B3D830 /* PNErrorResponseParser.m in Sources */,
+				A71A57661727233F00B3D830 /* PNHereNowResponseParser.m in Sources */,
+				A71A57671727233F00B3D830 /* PNOperationStatusResponseParser.m in Sources */,
+				A71A57681727233F00B3D830 /* PNResponseDeserialize.m in Sources */,
+				A71A57691727233F00B3D830 /* PNResponseParser.m in Sources */,
+				A71A576A1727233F00B3D830 /* PNTimeTokenResponseParser.m in Sources */,
+				A71A576B1727233F00B3D830 /* PNChannelEvents.m in Sources */,
+				A71A576C1727233F00B3D830 /* PNConfiguration.m in Sources */,
+				A71A576D1727233F00B3D830 /* PNError.m in Sources */,
+				A71A576E1727233F00B3D830 /* PNHereNow.m in Sources */,
+				A71A576F1727233F00B3D830 /* PNJSONSerialization.m in Sources */,
+				A71A57701727233F00B3D830 /* PNMessage.m in Sources */,
+				A71A57711727233F00B3D830 /* PNMessagesHistory.m in Sources */,
+				A71A57721727233F00B3D830 /* PNOperationStatus.m in Sources */,
+				A71A57731727233F00B3D830 /* PNRequestsQueue.m in Sources */,
+				A71A57741727233F00B3D830 /* PNResponse.m in Sources */,
+				A71A57751727233F00B3D830 /* NSData+PNAdditions.m in Sources */,
+				A71A57761727233F00B3D830 /* NSMutableArray+PNAdditions.m in Sources */,
+				A71A57771727233F00B3D830 /* NSString+PNAddition.m in Sources */,
+				A71A57781727233F00B3D830 /* UIDevice+PNAdditions.m in Sources */,
+				A71A57791727233F00B3D830 /* PNBaseRequest.m in Sources */,
+				A71A577A1727233F00B3D830 /* PNHereNowRequest.m in Sources */,
+				A71A577B1727233F00B3D830 /* PNLatencyMeasureRequest.m in Sources */,
+				A71A577C1727233F00B3D830 /* PNLeaveRequest.m in Sources */,
+				A71A577D1727233F00B3D830 /* PNMessageHistoryRequest.m in Sources */,
+				A71A577E1727233F00B3D830 /* PNMessagePostRequest.m in Sources */,
+				A71A577F1727233F00B3D830 /* PNSubscribeRequest.m in Sources */,
+				A71A57801727233F00B3D830 /* PNTimeTokenRequest.m in Sources */,
+				A71A57811727233F00B3D830 /* PNMessagingChannel.m in Sources */,
+				A71A57821727233F00B3D830 /* PNReachability.m in Sources */,
+				A71A57831727233F00B3D830 /* PNServiceChannel.m in Sources */,
+				A71A57841727233F00B3D830 /* PNConnection.m in Sources */,
+				A71A57851727233F00B3D830 /* PNConnectionChannel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
