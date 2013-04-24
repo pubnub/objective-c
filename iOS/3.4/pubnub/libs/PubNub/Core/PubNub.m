@@ -752,6 +752,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)enablePresenceObservationForChannels:(NSArray *)channels {
 
+    // Enumerate over the list of channels and mark that it should observe for presence
+    [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
+        channel.observePresence = YES;
+    }];
+
     [[self sharedInstance].messagingChannel enablePresenceObservationForChannels:channels];
 }
 
@@ -761,6 +767,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)disablePresenceObservationForChannels:(NSArray *)channels {
+
+    // Enumerate over the list of channels and mark that it should observe for presence
+    [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
+        channel.observePresence = NO;
+    }];
 
     [[self sharedInstance].messagingChannel disablePresenceObservationForChannels:channels];
 }
