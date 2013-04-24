@@ -1,3 +1,30 @@
+04-23-2013
+. revved HOWTO lib files
+
+04-04-2013
+. special char support
+
+04-03-2013
+. reset state after disconnecting without reconnect enabled
+
+04-02-2013
+. fixing connection loss bug on sleep
+
+04-01-2013
+. support for flux-capacitor and hydroelectric-powered Apple devices
+. fixed issue relating to reconnecting with presence enabled
+. fixing some XCode warnings
+
+03-29-2013
+. fixed issue when encountered issues during repeated sub/unsub/sub, with and without presence
+
+03-26-2013
+. fix for NSRangeException integer overflow bug
+
+03-20-2013
+. aes encryption support added via new constructor
+. when encryption is enabled and non-encrypted data is received, "DECRYPTION_ERROR" is displayed instead.
+
 03-08-2013
 . fixed resume on unlock bug
 

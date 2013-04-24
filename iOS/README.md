@@ -16,16 +16,23 @@ Detailed information on methods, constants, and notifications can be found in th
 4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
 5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options
 
-For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
+For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
 
 ## Jumping Right In - Try out the Hello World and Reference Apps!
 
-There are two iOS PubNub 3.4 client demo apps available.
+There are three iOS PubNub 3.4 client demo apps available!
+
+### SimpleSubscribe HOWTO
+
+The [SimpleSubscribe](HOWTO/SimpleSubscribe/3.4) app references how to create a simple subscribe-only, non-ui application using PubNub and iOS. 
+[A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/SimpleSubscribe/SimpleSubscribeHOWTO_34.pdf).
+
+This is the most basic example of how to wire it all up, and as such, should take beginners and experts alike about 5-10 minutes to complete.
 
 ### Hello World HOWTO
 
-The [Hello World](HOWTO_3.4) app references how to create a simple application using PubNub and iOS. 
-[A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HelloWorldHOWTO_34.pdf).
+The [Hello World](HOWTO/HelloWorld/3.4) app references how to create a simple application using PubNub and iOS. 
+[A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf).
 
 ### Deluxe iPad Full Featured Demo
 
@@ -49,25 +56,28 @@ Data from [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultCo
 You can use few class methods to intialise and update instance properties:  
 
 1. Retrieve reference on default client configuration (all values taken from [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
-  
-       + (PNConfiguration *)defaultConfiguration;  
+
+        + (PNConfiguration *)defaultConfiguration;  
   
 2. Retrieve the reference on the configuration instance via these methods:  
-  
-       + (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey  
-                                           subscribeKey:(NSString *)subscribeKey  
-                                              secretKey:(NSString *)secretKey;  
-       + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
-                                        publishKey:(NSString *)publishKey  
-		                              subscribeKey:(NSString *)subscribeKey  
-		                                 secretKey:(NSString *)secretKey;  
-       + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
-		                                publishKey:(NSString *)publishKey  
-		                              subscribeKey:(NSString *)subscribeKey  
-		                                 secretKey:(NSString *)secretKey  
-		                                 cipherKey:(NSString *)cipherKey;  
 
-  
+        + (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey  
+                                            subscribeKey:(NSString *)subscribeKey  
+                                               secretKey:(NSString *)secretKey;  
+
+        + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
+                                         publishKey:(NSString *)publishKey                                        
+                                       subscribeKey:(NSString *)subscribeKey
+                                          secretKey:(NSString *)secretKey;		                                 
+
+        + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
+                                         publishKey:(NSString *)publishKey  
+                                       subscribeKey:(NSString *)subscribeKey  
+                                          secretKey:(NSString *)secretKey  
+                                          cipherKey:(NSString *)cipherKey;  // To initialize with encryption, use cipherKey
+
+***NOTE:  When encryption is enabled, and non-encrypted messages will be passed through as the string "DECRYPTION_ERROR".**
+
 3. Update the configuration instance using this next set of parameters:  
 
     1.  Timeout after which the library will report any ***non-subscription-related*** request (here now, leave, message history, message post, time token) or execution failure.  
@@ -296,7 +306,7 @@ To use the Presence feature in your app, the follow methods are provided:
     
 ### Who is "Here Now" ?
 
-As Presence provides a way to receive occupancy information in real-time, the ***Here Now** feature allows you enumerate current channel occupancy inforamtion on-demand.
+As Presence provides a way to receive occupancy information in real-time, the ***Here Now*** feature allows you enumerate current channel occupancy information on-demand.
 
 Two methods are provided for this:
   
@@ -570,3 +580,19 @@ This is the set of methods which can be used to handle events:
 The client also triggers notifications with custom user information, so from any place in your application you can listen for notifications and perform appropriate actions.
 
 A full list of notifications are stored in [__PNNotifications.h__](3.4/pubnub/libs/PubNub/Misc/PNNotifications.h) along with their description, their parameters, and how to handle them.  
+
+### Logging
+
+Logging can be controlled via the following booleans:
+
+    #define PNLOG_GENERAL_LOGGING_ENABLED 0
+    #define PNLOG_REACHABILITY_LOGGING_ENABLED 0
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 0
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 0
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 0
+    #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 0
+    #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 0
+
+in [3.4/pubnub/libs/PubNub/Misc/PNMacro.h](3.4/pubnub/libs/PubNub/Misc/PNMacro.h#L37)
+
+In the above example, all logging is disabled. By default, all logging is enabled.
