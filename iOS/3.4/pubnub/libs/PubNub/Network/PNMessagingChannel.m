@@ -360,6 +360,14 @@
         NSMutableSet *filteredChannels = [self.subscribedChannelsSet mutableCopy];
         [filteredChannels intersectSet:channelsSet];
         [channelsSet minusSet:filteredChannels];
+
+
+        // Checking whether there still channels on which client not subscribed yet
+        if ([channelsSet count] > 0 && !withPresenceEvent) {
+
+            // Reset last update time token for channels in list
+            [channelsSet makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
+        }
     }
 
     // Check whether client already was subscribed on channels before
@@ -405,9 +413,6 @@
     }
     else {
 
-        // Reset last update time token for channels in list
-        [self.subscribedChannelsSet makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
-
         [self handleLeaveRequestCompletionForChannels:subscribedChannels
                                          withResponse:nil
                                         byUserRequest:isLeavingByUserRequest];
@@ -437,9 +442,6 @@
 
 
     if (withPresenceEvent) {
-
-        // Reset last update time token for channels in list
-        [currentlySubscribedChannels makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
 
         [self leaveChannels:channels byUserRequest:isLeavingByUserRequest];
     }
@@ -474,7 +476,7 @@
     PNChannelPresence *presenceObserver = [channel presenceObserver];
 
 
-    return presenceObserver != nil && [self.subscribedChannelsSet containsObject:presenceObserver];;
+    return presenceObserver != nil && [self.subscribedChannelsSet containsObject:presenceObserver];
 }
 
 - (void)enablePresenceObservationForChannels:(NSArray *)channels {
