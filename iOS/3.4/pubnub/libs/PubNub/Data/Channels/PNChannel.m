@@ -97,7 +97,7 @@ static NSMutableDictionary *_channelsCache = nil;
 + (PNChannel *)channelWithName:(NSString *)channelName shouldObservePresence:(BOOL)observePresence {
 
     PNChannel *channel = [self channelWithName:channelName shouldObservePresence:observePresence shouldUpdatePresenceObservingFlag:YES];
-    channel.userDefinedPresenceObservation = YES;
+    channel.userDefinedPresenceObservation = NO;
 
 
     return channel;

@@ -485,12 +485,18 @@
 
 - (void)enablePresenceObservationForChannels:(NSArray *)channels {
 
-    [self subscribeOnChannels:[channels valueForKey:@"presenceObserver"] withPresenceEvent:NO];
+    NSMutableArray *presenceObservers = [[channels valueForKey:@"presenceObserver"] mutableCopy];
+    [presenceObservers removeObject:[NSNull null]];
+
+    [self subscribeOnChannels:presenceObservers withPresenceEvent:NO];
 }
 
 - (void)disablePresenceObservationForChannels:(NSArray *)channels {
 
-    [self unsubscribeFromChannels:[channels valueForKey:@"presenceObserver"] withPresenceEvent:NO];
+    NSMutableArray *presenceObservers = [[channels valueForKey:@"presenceObserver"] mutableCopy];
+    [presenceObservers removeObject:[NSNull null]];
+
+    [self unsubscribeFromChannels:presenceObservers withPresenceEvent:NO];
 }
 
 
