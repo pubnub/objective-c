@@ -32,6 +32,10 @@
 // Stores whether channel presence observation is required
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
 
+// Stores whether channel presence observation flag was set by
+// developer or not
+@property (nonatomic, assign, getter = isUserDefinedPresenceObservation)BOOL userDefinedPresenceObservation;
+
 // Stores number of participants for particular
 // channel (this number fetched from presence API
 // if it is used and updated when requested list
@@ -51,6 +55,14 @@
  * Clear all cached channel instances
  */
 + (void)purgeChannelsCache;
+
+/**
+ * Retrieve reference on channel by it's name and update presence
+ * observing settings by request
+ */
++ (id)            channelWithName:(NSString *)channelName
+            shouldObservePresence:(BOOL)observePresence
+shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag;
 
 
 #pragma mark - Instance methods

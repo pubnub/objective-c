@@ -28,7 +28,7 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
-#import "NSString+PNAddition.h"
+#import "PNConnectionChannel+Protected.h"
 
 
 #pragma mark Static
@@ -210,6 +210,18 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * network went down and restored now
  */
 - (BOOL)shouldRestoreConnection;
+
+/**
+ * Check whether client should restore subscription to previous
+ * channels or not
+ */
+- (BOOL)shouldRestoreSubscription;
+
+/**
+ * Check whether client should restore subscription with last time token
+ * or not
+ */
+- (BOOL)shouldRestoreSubscriptionWithLastTimeToken;
 
 /**
  * Retrieve request execution possibility code.
@@ -752,6 +764,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)enablePresenceObservationForChannels:(NSArray *)channels {
 
+    // Enumerate over the list of channels and mark that it should observe for presence
+    [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
+        channel.observePresence = YES;
+        channel.userDefinedPresenceObservation = YES;
+    }];
+
     [[self sharedInstance].messagingChannel enablePresenceObservationForChannels:channels];
 }
 
@@ -761,6 +780,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)disablePresenceObservationForChannels:(NSArray *)channels {
+
+    // Enumerate over the list of channels and mark that it should observe for presence
+    [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
+        channel.observePresence = NO;
+        channel.userDefinedPresenceObservation = YES;
+    }];
 
     [[self sharedInstance].messagingChannel disablePresenceObservationForChannels:channels];
 }
@@ -1171,13 +1197,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
 
 
-            BOOL shouldResubscribe = self.configuration.shouldResubscribeOnConnectionRestore;
-            if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
+            // Check whethr user want to resubscribe on previously subscribed channels or not
+            if ([self shouldRestoreSubscription]) {
 
-                shouldResubscribe = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
+                [self.messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
             }
+            // Looks like developer doesn't want to restore subscription on previously
+            // subscribed channels, flush channels
+            else {
 
-            [self.messagingChannel restoreSubscription:shouldResubscribe];
+                [self.messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+            }
 
 
         }
@@ -1563,6 +1593,30 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     return shouldRestoreConnection;
 }
 
+- (BOOL)shouldRestoreSubscription {
+
+    BOOL shouldRestoreSubscription = self.configuration.shouldResubscribeOnConnectionRestore;
+    if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
+
+        shouldRestoreSubscription = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
+    }
+
+
+    return shouldRestoreSubscription;
+}
+
+- (BOOL)shouldRestoreSubscriptionWithLastTimeToken {
+
+    BOOL shouldRestoreFromLastTimeToken = self.configuration.shouldRestoreSubscriptionFromLastTimeToken;
+    if ([self.delegate respondsToSelector:@selector(shouldRestoreSubscriptionFromLastTimeToken)]) {
+
+        shouldRestoreFromLastTimeToken = [[self.delegate shouldRestoreSubscriptionFromLastTimeToken] boolValue];
+    }
+
+
+    return shouldRestoreFromLastTimeToken;
+}
+
 - (NSInteger)requestExecutionPossibilityStatusCode {
 
     NSInteger statusCode = 0;
@@ -1586,6 +1640,30 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 
 #pragma mark - Message channel delegate methods
+
+- (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
+
+    if ([messagingChannel canResubscribe]) {
+
+        // Check whether user want to resubscribe on previously subscribed channels or not
+        if ([self shouldRestoreSubscription]) {
+
+            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+        }
+        // Looks like developer doesn't want to restore subscription on previously
+        // subscribed channels, flush channels
+        else {
+
+            [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+        }
+    }
+    // Looks like there is no channels on which client can resubscribe
+    // reconnect messaging channel
+    else {
+
+        [messagingChannel reconnect];
+    }
+}
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
 

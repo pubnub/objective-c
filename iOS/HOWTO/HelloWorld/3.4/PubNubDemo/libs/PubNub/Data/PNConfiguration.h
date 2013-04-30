@@ -36,12 +36,13 @@
 // requests to report that request failed
 @property (nonatomic, assign) NSTimeInterval subscriptionRequestTimeout;
 
-// Stores whether client should restore subscription
-// on channels from same point where connection
-// has been lost or resubscribe on them
-// Set YES if you want to discard all events which occurred
-// while connection  went down
+// Stores whether client should restore subscription on channels after connection
+// has been restored or not
 @property (nonatomic, assign, getter = shouldResubscribeOnConnectionRestore) BOOL resubscribeOnConnectionRestore;
+
+// Stores whether client should restore subscription on channel with last time token
+// or should use "0" time token for initial subscription
+@property (nonatomic, assign, getter = shouldRestoreSubscriptionFromLastTimeToken) BOOL restoreSubscriptionFromLastTimeToken;
 
 // Stores whether client can ignore security
 // requirements and connection using plain HTTP
