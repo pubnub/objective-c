@@ -278,6 +278,8 @@
 
 - (void)reconnect {
 
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Reconnecting by request");
+
     [self.connection reconnect];
 }
 

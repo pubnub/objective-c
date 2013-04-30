@@ -202,8 +202,19 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
  * service are available and previous session is failed because
  * of network error or even not launched.
  * It allow to specify whether client should restore subscription
- * or completely resubscribe
+ * or previously subscribed channels or not
  */
 - (NSNumber *)shouldResubscribeOnConnectionRestore;
+
+/**
+ * This method allow to override value passed in configuration
+ * during client initialization.
+ * This method is called by library right after connection has been
+ * restored and client was configured to restore subscription on channels.
+ */
+- (NSNumber *)shouldRestoreSubscriptionFromLastTimeToken;
+
+#pragma mark -
+
 
 @end
