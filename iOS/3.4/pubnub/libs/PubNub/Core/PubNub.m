@@ -28,7 +28,6 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
-#import "NSString+PNAddition.h"
 
 
 #pragma mark Static
@@ -90,6 +89,14 @@ static PubNub *_sharedInstance = nil;
 // Stores current client state
 @property (nonatomic, assign) PNPubNubClientState state;
 
+// Stores reference on list of invocation instances which is used to
+// support synchronous library methods call (connect/disconnect/subscribe/unsubscribe)
+@property (nonatomic, strong) NSMutableArray *pendingInvocations;
+
+// Stores whether library is performing one of async locking
+// methods or not (if yes, other calls will be placed into pending set)
+@property (nonatomic, assign, getter = isAsyncLockingOperationInProgress) BOOL asyncLockingOperationInProgress;
+
 
 #pragma mark - Instance methods
 
@@ -99,6 +106,9 @@ static PubNub *_sharedInstance = nil;
 #pragma mark - Instance methods
 
 #pragma mark - Client connection management methods
+
+- (void)postponeConnectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
+                             errorBlock:(PNClientConnectionFailureBlock)failure;
 
 /**
  * Configure client connection state observer with 
@@ -139,6 +149,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  */
 - (void)handleConnectionErrorOnNetworkFailure;
 
+/**
+ * Handle locking operation completino and pop new one from
+ * pending invocations list.
+ */
+- (void)handleLockingOperationComplete;
+
 
 #pragma mark - Misc methods
 
@@ -146,6 +162,18 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * Will prepare crypto helper it is possible
  */
 - (void)prepareCryptoHelper;
+
+/**
+ * Check whether whether call to specific method should be postponed
+ * or not. This will allot to perform synchronous call on specific
+ * library methods.
+ */
+- (BOOL)shouldPostponeMethodCall;
+
+/**
+ * Place selector into list of postponed calls with corresponding parameters
+ */
+- (void)postponeSelector:(SEL)calledMethodSelector forObject:(id)object withParameters:(NSArray *)parameters;
 
 /**
  * This method will notify delegate about that
@@ -252,9 +280,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 + (void)connectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
                      errorBlock:(PNClientConnectionFailureBlock)failure {
-    
+
     BOOL shouldAddStateObservation = NO;
-    
+    BOOL methodCallPostponed = NO;
+
     // Check whether instance already connected or not
     if ([self sharedInstance].state == PNPubNubClientStateConnected ||
         [self sharedInstance].state == PNPubNubClientStateConnecting) {
@@ -305,45 +334,60 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 // connection)
                 if ([[self sharedInstance].reachability isServiceAvailable]) {
 
-                    // Notify PubNub delegate about that it will try to
-                    // establish connection with remote PubNub origin
-                    // (notify if delegate implements this method)
-                    if ([[self sharedInstance].delegate respondsToSelector:@selector(pubnubClient:willConnectToOrigin:)]) {
-                        
-                        [[self sharedInstance].delegate performSelector:@selector(pubnubClient:willConnectToOrigin:)
-                                                             withObject:[self sharedInstance]
-                                                             withObject:[self sharedInstance].configuration.origin];
+                    if ([[self sharedInstance] shouldPostponeMethodCall]) {
+
+                        NSArray *parameters = @[(success ? (id) success : [NSNull null]),
+                                                (failure ? (id) failure : [NSNull null])];
+                        [[self sharedInstance] postponeSelector:_cmd forObject:self withParameters:parameters];
+
+                        methodCallPostponed = YES;
                     }
 
-                    [[self sharedInstance] sendNotification:kPNClientWillConnectToOriginNotification
-                                                 withObject:[self sharedInstance].configuration.origin];
+
+                    if (!methodCallPostponed) {
+
+                        [self sharedInstance].asyncLockingOperationInProgress = YES;
+
+                        // Notify PubNub delegate about that it will try to
+                        // establish connection with remote PubNub origin
+                        // (notify if delegate implements this method)
+                        if ([[self sharedInstance].delegate respondsToSelector:@selector(pubnubClient:willConnectToOrigin:)]) {
+
+                            [[self sharedInstance].delegate performSelector:@selector(pubnubClient:willConnectToOrigin:)
+                                                                 withObject:[self sharedInstance]
+                                                                 withObject:[self sharedInstance].configuration.origin];
+                        }
+
+                        [[self sharedInstance] sendNotification:kPNClientWillConnectToOriginNotification
+                                                     withObject:[self sharedInstance].configuration.origin];
 
 
-                    // Check whether PubNub client was just created and there
-                    // is no resources for reuse or not
-                    if ([self sharedInstance].state == PNPubNubClientStateCreated ||
-                        [self sharedInstance].state == PNPubNubClientStateDisconnected) {
+                        // Check whether PubNub client was just created and there
+                        // is no resources for reuse or not
+                        if ([self sharedInstance].state == PNPubNubClientStateCreated ||
+                                [self sharedInstance].state == PNPubNubClientStateDisconnected) {
 
-                        [self sharedInstance].state = PNPubNubClientStateConnecting;
-                        
-                        // Initialize communication channels
-                        [self sharedInstance].messagingChannel = [PNMessagingChannel messageChannelWithDelegate:[self sharedInstance]];
-                        [self sharedInstance].messagingChannel.messagingDelegate = [self sharedInstance];
-                        [self sharedInstance].serviceChannel = [PNServiceChannel serviceChannelWithDelegate:[self sharedInstance]];
-                        [self sharedInstance].serviceChannel.serviceDelegate = [self sharedInstance];
+                            [self sharedInstance].state = PNPubNubClientStateConnecting;
+
+                            // Initialize communication channels
+                            [self sharedInstance].messagingChannel = [PNMessagingChannel messageChannelWithDelegate:[self sharedInstance]];
+                            [self sharedInstance].messagingChannel.messagingDelegate = [self sharedInstance];
+                            [self sharedInstance].serviceChannel = [PNServiceChannel serviceChannelWithDelegate:[self sharedInstance]];
+                            [self sharedInstance].serviceChannel.serviceDelegate = [self sharedInstance];
+                        }
+                        else {
+
+                            [self sharedInstance].state = PNPubNubClientStateConnecting;
+
+
+                            // Reuse existing communication channels and reconnect
+                            // them to remote origin server
+                            [[self sharedInstance].messagingChannel connect];
+                            [[self sharedInstance].serviceChannel connect];
+                        }
+
+                        shouldAddStateObservation = YES;
                     }
-                    else {
-
-                        [self sharedInstance].state = PNPubNubClientStateConnecting;
-                        
-                        
-                        // Reuse existing communication channels and reconnect
-                        // them to remote origin server
-                        [[self sharedInstance].messagingChannel connect];
-                        [[self sharedInstance].serviceChannel connect];
-                    }
-                    
-                    shouldAddStateObservation = YES;
                 }
                 else {
                     
@@ -372,56 +416,66 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         }
     }
 
-    // Remove PubNub client from connection state observers list
-    [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
+    if (!methodCallPostponed) {
+
+        // Remove PubNub client from connection state observers list
+        [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
 
 
-    if(shouldAddStateObservation) {
-        
-        // Subscribe and wait for client connection state change notification
-        [[self sharedInstance] setClientConnectionObservationWithSuccessBlock:success failureBlock:failure];
+        if (shouldAddStateObservation) {
+
+            // Subscribe and wait for client connection state change notification
+            [[self sharedInstance] setClientConnectionObservationWithSuccessBlock:success failureBlock:failure];
+        }
     }
 }
 
 + (void)disconnect {
-    
-    // Remove PubNub client from list which help to observe various events
-    [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
-    if ([self sharedInstance].state != PNPubNubClientStateDisconnectingOnConfigurationChange) {
 
-        [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
-        [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
-        [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
-        [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
+    if ([[self sharedInstance] shouldPostponeMethodCall]) {
 
-        [[self sharedInstance].configuration shouldKillDNSCache:NO];
+        [[self sharedInstance] postponeSelector:_cmd forObject:self withParameters:nil];
     }
+    else {
 
-    // Check whether client disconnected at this moment (maybe previously was
-    // disconnected because connection loss)
-    BOOL isDisconnected = ![[self sharedInstance] isConnected];
+        // Remove PubNub client from list which help to observe various events
+        [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
+        if ([self sharedInstance].state != PNPubNubClientStateDisconnectingOnConfigurationChange) {
 
-    // Check whether should update state to 'disconnecting'
-    if (!isDisconnected) {
+            [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
 
-        // Mark that client is disconnecting from remote PubNub services on
-        // user request (or by internal client request when updating configuration)
-        [self sharedInstance].state = PNPubNubClientStateDisconnecting;
+            [[self sharedInstance].configuration shouldKillDNSCache:NO];
+        }
+
+        // Check whether client disconnected at this moment (maybe previously was
+        // disconnected because connection loss)
+        BOOL isDisconnected = ![[self sharedInstance] isConnected];
+
+        // Check whether should update state to 'disconnecting'
+        if (!isDisconnected) {
+
+            // Mark that client is disconnecting from remote PubNub services on
+            // user request (or by internal client request when updating configuration)
+            [self sharedInstance].state = PNPubNubClientStateDisconnecting;
+        }
+
+        // Reset client runtime flags and properties
+        [self sharedInstance].connectOnServiceReachabilityCheck = NO;
+        [self sharedInstance].restoringConnection = NO;
+
+
+        // Empty connection pool after connection will
+        // be closed
+        [PNConnection closeAllConnections];
+
+
+        // Destroy communication channels
+        [self sharedInstance].messagingChannel = nil;
+        [self sharedInstance].serviceChannel = nil;
     }
-
-    // Reset client runtime flags and properties
-    [self sharedInstance].connectOnServiceReachabilityCheck = NO;
-    [self sharedInstance].restoringConnection = NO;
-
-
-    // Empty connection pool after connection will
-    // be closed
-    [PNConnection closeAllConnections];
-    
-    
-    // Destroy communication channels
-    [self sharedInstance].messagingChannel = nil;
-    [self sharedInstance].serviceChannel = nil;
 }
 
 + (void)disconnectForConfigurationChange {
@@ -1015,6 +1069,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.state = PNPubNubClientStateCreated;
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
+        self.pendingInvocations = [NSMutableArray array];
         
         // Adding PubNub services availability observer
         __block __pn_desired_weak PubNub *weakSelf = self;
@@ -1080,6 +1135,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (BOOL)isConnected {
     
     return self.state == PNPubNubClientStateConnected;
+}
+
+- (void)postponeConnectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
+                             errorBlock:(PNClientConnectionFailureBlock)failure {
+
+    SEL selector = @selector(connectWithSuccessBlock:errorBlock:);
+    NSMethodSignature *methodSignature = [self methodSignatureForSelector:selector];
+    NSInvocation *methodInvocation = [NSInvocation invocationWithMethodSignature:methodSignature];
 }
 
 - (void)setClientConnectionObservationWithSuccessBlock:(PNClientConnectionSuccessBlock)success
@@ -1419,6 +1482,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
+- (void)handleLockingOperationComplete {
+
+    self.asyncLockingOperationInProgress = NO;
+
+    NSInvocation *methodInvocation = nil;
+    if([self.pendingInvocations count] > 0) {
+
+        // Retrieve reference on invocation instance at the start of the list
+        // (oldest schedculed instance)
+        methodInvocation = [self.pendingInvocations objectAtIndex:0];
+        [self.pendingInvocations removeObjectAtIndex:0];
+    }
+
+    [methodInvocation invoke];
+}
+
 
 #pragma mark - Misc methods
 
@@ -1437,6 +1516,33 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
+- (BOOL)shouldPostponeMethodCall {
+
+    return self.isAsyncLockingOperationInProgress;
+}
+
+- (void)postponeSelector:(SEL)calledMethodSelector forObject:(id)object withParameters:(NSArray *)parameters {
+
+    // Initialze variables required to perform postponed method call
+    int signatureParameterOffset = 2;
+    NSMethodSignature *methodSignature = [object methodSignatureForSelector:calledMethodSelector];
+    NSInvocation *methodInvocation = [NSInvocation invocationWithMethodSignature:methodSignature];
+
+    // Configure invocation instance
+    methodInvocation.selector = calledMethodSelector;
+    [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger parameterIdx, BOOL *parametersEnumeratorStop) {
+
+        parameter = [parameter isKindOfClass:[NSNull class]] ? nil : parameter;
+        [methodInvocation setArgument:&parameter atIndex:(parameterIdx + signatureParameterOffset)];
+    }];
+    methodInvocation.target = object;
+    [methodInvocation retainArguments];
+
+
+    // Place invocation instance into mending invocations set for future usage
+    [self.pendingInvocations addObject:methodInvocation];
+}
+
 - (void)notifyDelegateAboutConnectionToOrigin:(NSString *)originHostName {
 
     // Check whether delegate able to handle connection completion
@@ -1448,6 +1554,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 
     [self sendNotification:kPNClientDidConnectToOriginNotification withObject:originHostName];
+
+
+    [self handleLockingOperationComplete];
 }
 
 - (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error {

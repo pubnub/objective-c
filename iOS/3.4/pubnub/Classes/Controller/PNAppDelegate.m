@@ -128,7 +128,10 @@
     [self.window makeKeyAndVisible];
     
     [self initializePubNubClient];
-    
+    [PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+    [PubNub connect];
+    [PubNub subscribeOnChannel:[PNChannel channelWithName:@"iosdev"]];
+    [PubNub disconnect];
     
     return YES;
 }
