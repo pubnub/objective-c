@@ -9,6 +9,7 @@
 //
 //
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "UIDevice+PNAdditions.h"
 #import <arpa/inet.h>
 #import <ifaddrs.h>
@@ -89,3 +90,4 @@ static char * const kPNNetworkDefaultAddress = "0.0.0.0";
 #pragma mark -
 
 @end
+#endif
