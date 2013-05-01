@@ -149,7 +149,7 @@
  * Retrieve full list of channels on which channel should subscribe
  * including presence observing channels
  */
-- (NSSet *)channelsWithPresenceFromList:(NSArray *)channelsList;
+- (NSSet *)channelsWithPresenceFromList:(NSArray *)channelsList forSubscribe:(BOOL)listForSubscribe;
 
 /**
  * Retrieve list of channels which is cleared from presence observing
@@ -276,7 +276,7 @@
 
     // Retrieve set of channels (including presence observers) from
     // which client should unsubscribe
-    NSArray *channelsForUnsubscribe = [[self channelsWithPresenceFromList:[channelsSet allObjects]] allObjects];
+    NSArray *channelsForUnsubscribe = [[self channelsWithPresenceFromList:[channelsSet allObjects] forSubscribe:NO] allObjects];
     if ([channelsForUnsubscribe count] > 0) {
 
         // Reset last update time token for channels in list
@@ -385,7 +385,7 @@
 
     // Checking whether client already subscribed on one of
     // channels from set or not
-    NSMutableSet *channelsSet = [[self channelsWithPresenceFromList:channels] mutableCopy];
+    NSMutableSet *channelsSet = [[self channelsWithPresenceFromList:channels forSubscribe:YES] mutableCopy];
     if ([self.subscribedChannelsSet intersectsSet:channelsSet]) {
 
         NSMutableSet *filteredChannels = [self.subscribedChannelsSet mutableCopy];
@@ -476,7 +476,7 @@
 
     // Retrieve list of channels which will left after unsubscription
     NSMutableSet *currentlySubscribedChannels = [self.subscribedChannelsSet mutableCopy];
-    NSSet *channelsWithPresence = [self channelsWithPresenceFromList:channels];
+    NSSet *channelsWithPresence = [self channelsWithPresenceFromList:channels forSubscribe:NO];
     [currentlySubscribedChannels minusSet:channelsWithPresence];
 
 
@@ -560,7 +560,7 @@
 
     if (shouldRemoveChannels) {
 
-        [self.subscribedChannelsSet minusSet:[self channelsWithPresenceFromList:channels]];
+        [self.subscribedChannelsSet minusSet:[self channelsWithPresenceFromList:channels forSubscribe:NO]];
     }
 
     if (isLeavingByUserRequest) {
@@ -785,7 +785,7 @@
     }
 }
 
-- (NSSet *)channelsWithPresenceFromList:(NSArray *)channelsList {
+- (NSSet *)channelsWithPresenceFromList:(NSArray *)channelsList forSubscribe:(BOOL)listForSubscribe {
 
     NSMutableSet *fullChannelsList = [NSMutableSet setWithCapacity:[channelsList count]];
     [channelsList enumerateObjectsUsingBlock:^(PNChannel *channel,
@@ -794,7 +794,7 @@
 
         [fullChannelsList addObject:channel];
 
-        if (channel.isUserDefinedPresenceObservation) {
+        if ((channel.isUserDefinedPresenceObservation && !listForSubscribe) || listForSubscribe) {
 
             PNChannelPresence *presenceObserver = [channel presenceObserver];
             if (presenceObserver) {
