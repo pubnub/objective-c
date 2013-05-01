@@ -10,7 +10,9 @@
 //
 //
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "UIDevice+PNAdditions.h"
+#endif
 #import "PNJSONSerialization.h"
 #import "PNObservationCenter.h"
 #import "PNChannelPresence.h"
@@ -18,6 +20,7 @@
 #import "PNNotifications.h"
 #import "PNErrorCodes.h"
 #import "PNStructures.h"
+#import "PNMessage.h"
 #import "PNChannel.h"
 #import "PNError.h"
 #import "PNMacro.h"
