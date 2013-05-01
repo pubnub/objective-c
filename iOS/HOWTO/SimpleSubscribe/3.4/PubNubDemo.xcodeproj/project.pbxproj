@@ -67,6 +67,7 @@
 		A77D84131703BDD80049BFA1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A77D840F1703BDD80049BFA1 /* CoreFoundation.framework */; };
 		A77D84141703BDD80049BFA1 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A77D84101703BDD80049BFA1 /* libz.dylib */; };
 		A77D84151703BDD80049BFA1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A77D84111703BDD80049BFA1 /* SystemConfiguration.framework */; };
+		A7FCF6F11730AD9700E42D91 /* PNDate.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FCF6F01730AD9700E42D91 /* PNDate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -218,6 +219,8 @@
 		A77D840F1703BDD80049BFA1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		A77D84101703BDD80049BFA1 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		A77D84111703BDD80049BFA1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A7FCF6EF1730AD9700E42D91 /* PNDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDate.h; sourceTree = "<group>"; };
+		A7FCF6F01730AD9700E42D91 /* PNDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -344,6 +347,8 @@
 		A77D835F1703BD8C0049BFA1 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				A7FCF6EF1730AD9700E42D91 /* PNDate.h */,
+				A7FCF6F01730AD9700E42D91 /* PNDate.m */,
 				A77D83601703BD8C0049BFA1 /* Buffers */,
 				A77D83631703BD8C0049BFA1 /* Channels */,
 				A77D836E1703BD8C0049BFA1 /* Crypto */,
@@ -666,6 +671,7 @@
 				A77D840B1703BD8D0049BFA1 /* PNServiceChannel.m in Sources */,
 				A77D840C1703BD8D0049BFA1 /* PNConnection.m in Sources */,
 				A77D840D1703BD8D0049BFA1 /* PNConnectionChannel.m in Sources */,
+				A7FCF6F11730AD9700E42D91 /* PNDate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -788,6 +794,7 @@
 				A77D83501703BB090049BFA1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
