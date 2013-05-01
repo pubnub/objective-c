@@ -25,7 +25,7 @@
 @property (nonatomic, readonly, copy) NSString *updateTimeToken;
 
 // Last presence update date
-@property (nonatomic, readonly, strong) NSDate *presenceUpdateDate;
+@property (nonatomic, readonly, strong) PNDate *presenceUpdateDate;
 
 // Stores number of participants for particular
 // channel (this number fetched from presence API

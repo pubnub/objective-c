@@ -65,11 +65,10 @@ static NSUInteger const kPNResponseEndDateElementIndexForEvent = 2;
     if ((self = [super init])) {
 
         NSArray *responseData = response.response;
-        self.history = [PNMessagesHistory new];
         NSNumber *startTimeToken = [responseData objectAtIndex:kPNResponseStartDateElementIndex];
         NSNumber *endTimeToken = [responseData objectAtIndex:kPNResponseEndDateElementIndexForEvent];
-        self.history.startDate = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(startTimeToken)];
-        self.history.endDate = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(endTimeToken)];
+        self.history = [PNMessagesHistory historyBetween:[PNDate dateWithToken:startTimeToken]
+                                              andEndDate:[PNDate dateWithToken:endTimeToken]];
 
         NSArray *messages = [responseData objectAtIndex:kPNResponseMessagesListElementIndex];
         NSMutableArray *historyMessages = [NSMutableArray arrayWithCapacity:[messages count]];

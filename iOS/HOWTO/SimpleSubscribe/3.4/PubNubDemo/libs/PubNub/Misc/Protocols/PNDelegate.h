@@ -14,8 +14,7 @@
 
 #pragma mark Class forward
 
-@class PubNub, PNError, PNMessage;
-@class PNPresenceEvent;
+@class PNPresenceEvent, PNMessage, PubNub, PNError, PNDate;
 
 
 @protocol PNDelegate <NSObject>
@@ -154,11 +153,11 @@
  * Called on delegate when client completed message history download
  * for specific channel
  */
-- (void)pubnubClient:(PubNub *)client
-        didReceiveMessageHistory:(NSArray *)messages
-        forChannel:(PNChannel *)channel
-        startingFrom:(NSDate *)startDate
-        to:(NSDate *)endDate;
+- (void)    pubnubClient:(PubNub *)client
+didReceiveMessageHistory:(NSArray *)messages
+              forChannel:(PNChannel *)channel
+            startingFrom:(PNDate *)startDate
+                      to:(PNDate *)endDate;
 
 /**
  * Called on delegate when client failed to download messages history
