@@ -16,6 +16,7 @@
 #import "PNObservationCenter+Protected.h"
 #import "PNConnectionChannelDelegate.h"
 #import "PNPresenceEvent+Protected.h"
+#import "PNConfiguration+Protected.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
 #import "PNHereNow+Protected.h"
@@ -26,7 +27,8 @@
 #import "PNServiceChannel.h"
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
-#import "PNConfiguration+Protected.h"
+#import "PNCryptoHelper.h"
+#import "PNConnectionChannel+Protected.h"
 
 
 #pragma mark Static
@@ -141,6 +143,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 #pragma mark - Misc methods
 
 /**
+ * Will prepare crypto helper it is possible
+ */
+- (void)prepareCryptoHelper;
+
+/**
  * This method will notify delegate about that
  * connection to the PubNub service is established
  * and send notification about it
@@ -203,6 +210,18 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * network went down and restored now
  */
 - (BOOL)shouldRestoreConnection;
+
+/**
+ * Check whether client should restore subscription to previous
+ * channels or not
+ */
+- (BOOL)shouldRestoreSubscription;
+
+/**
+ * Check whether client should restore subscription with last time token
+ * or not
+ */
+- (BOOL)shouldRestoreSubscriptionWithLastTimeToken;
 
 /**
  * Retrieve request execution possibility code.
@@ -390,9 +409,17 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [[self sharedInstance].configuration shouldKillDNSCache:NO];
     }
 
-    // Mark that client is disconnecting from remote PubNub services on
-    // user request (or by internal client request when updating configuration)
-    [self sharedInstance].state = PNPubNubClientStateDisconnecting;
+    // Check whether client disconnected at this moment (maybe previously was
+    // disconnected because connection loss)
+    BOOL isDisconnected = ![[self sharedInstance] isConnected];
+
+    // Check whether should update state to 'disconnecting'
+    if (!isDisconnected) {
+
+        // Mark that client is disconnecting from remote PubNub services on
+        // user request (or by internal client request when updating configuration)
+        [self sharedInstance].state = PNPubNubClientStateDisconnecting;
+    }
 
     // Reset client runtime flags and properties
     [self sharedInstance].connectOnServiceReachabilityCheck = NO;
@@ -461,6 +488,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if (canUpdateConfiguration) {
 
             [self sharedInstance].configuration = configuration;
+            
+            [[self sharedInstance] prepareCryptoHelper];
         }
         
         
@@ -735,6 +764,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)enablePresenceObservationForChannels:(NSArray *)channels {
 
+    // Enumerate over the list of channels and mark that it should observe for presence
+    [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
+        channel.observePresence = YES;
+        channel.userDefinedPresenceObservation = YES;
+    }];
+
     [[self sharedInstance].messagingChannel enablePresenceObservationForChannels:channels];
 }
 
@@ -744,6 +780,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)disablePresenceObservationForChannels:(NSArray *)channels {
+
+    // Enumerate over the list of channels and mark that it should observe for presence
+    [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
+        channel.observePresence = NO;
+        channel.userDefinedPresenceObservation = YES;
+    }];
 
     [[self sharedInstance].messagingChannel disablePresenceObservationForChannels:channels];
 }
@@ -855,30 +898,30 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self requestHistoryForChannel:channel from:nil to:nil withCompletionBlock:handleBlock];
 }
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(NSDate *)startDate to:(NSDate *)endDate {
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate withCompletionBlock:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:0 withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit withCompletionBlock:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
@@ -891,8 +934,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory {
 
@@ -905,8 +948,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
@@ -980,7 +1023,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     // Check whether initialization successful or not
     if((self = [super init])) {
-
+        
         self.state = PNPubNubClientStateCreated;
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
@@ -1025,7 +1068,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         else {
                             PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
                             [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
-
+                            
                             weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
                             
                             // Disconnect communication channels because of
@@ -1154,13 +1197,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
 
 
-            BOOL shouldResubscribe = self.configuration.shouldResubscribeOnConnectionRestore;
-            if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
+            // Check whethr user want to resubscribe on previously subscribed channels or not
+            if ([self shouldRestoreSubscription]) {
 
-                shouldResubscribe = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
+                [self.messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
             }
+            // Looks like developer doesn't want to restore subscription on previously
+            // subscribed channels, flush channels
+            else {
 
-            [self.messagingChannel restoreSubscription:shouldResubscribe];
+                [self.messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+            }
 
 
         }
@@ -1217,51 +1264,49 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         if (self.state == PNPubNubClientStateDisconnecting ||
             self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
             
+            PNError *connectionError;
             PNPubNubClientState state = PNPubNubClientStateDisconnected;
             if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+                
                 state = PNPubNubClientStateDisconnectedOnNetworkError;
             }
             self.state = state;
-            
-            SEL selectorForCheck = @selector(pubnubClient:didDisconnectFromOrigin:);
-            if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
-                
-                selectorForCheck = @selector(pubnubClient:didDisconnectFromOrigin:withError:);
-            }
-            if ([self.delegate respondsToSelector:selectorForCheck]) {
-                
-                if (self.state == PNPubNubClientStateDisconnected) {
-                    
+
+
+            if (self.state == PNPubNubClientStateDisconnected) {
+
+                if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
                     [self.delegate pubnubClient:self didDisconnectFromOrigin:host];
-
-                    [self sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
                 }
-                else {
 
-                    PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
+                [self sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
+            }
+            else if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
-                    if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+                connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
 
-                        [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
-                    }
+                if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
 
-                    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
-                    
-                    
-                    // Check whether error is caused by network error or not
-                    switch (connectionError.code) {
-                        case kPNClientConnectionFailedOnInternetFailureError:
-                        case kPNClientConnectionClosedOnInternetFailureError:
-                            
-                            // Try to refresh reachability state (there is situation whem reachability state
-                            // changed within library to handle sockets timeout/error)
-                            [self.reachability refreshReachabilityState];
-                            break;
-                            
-                        default:
-                            break;
-                    }
+                    [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
                 }
+
+                [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
+            }
+            
+            
+            // Check whether error is caused by network error or not
+            switch (connectionError.code) {
+                case kPNClientConnectionFailedOnInternetFailureError:
+                case kPNClientConnectionClosedOnInternetFailureError:
+                    
+                    // Try to refresh reachability state (there is situation whem reachability state
+                    // changed within library to handle sockets timeout/error)
+                    [self.reachability refreshReachabilityState];
+                    break;
+                    
+                default:
+                    break;
             }
             
             
@@ -1277,15 +1322,24 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 // so basically connection is available and only
                 // sockets closed by remote server or internal kernel
                 // layer)
-                if ([self.reachability isServiceReachabilityChecked] && [self.reachability isServiceAvailable]) {
+                if ([self.reachability isServiceReachabilityChecked]) {
 
-                    // Check whether should restore connection or not
-                    if ([self shouldRestoreConnection]) {
+                    if ([self.reachability isServiceAvailable]) {
 
-                        self.restoringConnection = YES;
+                        // Check whether should restore connection or not
+                        if ([self shouldRestoreConnection]) {
 
-                        // Try to restore connection to remote PubNub services
-                        [[self class] connect];
+                            self.restoringConnection = YES;
+
+                            // Try to restore connection to remote PubNub services
+                            [[self class] connect];
+                        }
+                    }
+                    // In case if there is no connection check whether clint
+                    // should restore connection or not.
+                    else if(![self shouldRestoreConnection]) {
+
+                        self.state = PNPubNubClientStateDisconnected;
                     }
                 }
             }
@@ -1293,7 +1347,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Check whether server unexpectedly closed connection
         // while client was active or not
         else if(self.state == PNPubNubClientStateConnected) {
-
+            
             self.state = PNPubNubClientStateDisconnected;
             
             if([self shouldRestoreConnection]) {
@@ -1315,10 +1369,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             int64_t delayInSeconds = 1;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-
+                
                 self.state = PNPubNubClientStateCreated;
                 self.configuration = self.temporaryConfiguration;
                 self.temporaryConfiguration = nil;
+                
+                [self prepareCryptoHelper];
+                
                 
                 // Restore connection which will use new configuration
                 [[self class] connect];
@@ -1332,7 +1389,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 withError:(PNError *)error {
     
     if (self.state == PNPubNubClientStateConnected && [self.configuration.origin isEqualToString:host]) {
-
+        
         self.state = PNPubNubClientStateDisconnecting;
         BOOL disconnectedOnNetworkError = ![self.reachability isServiceAvailable];
         if(!disconnectedOnNetworkError) {
@@ -1344,7 +1401,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             disconnectedOnNetworkError = ![self.messagingChannel isConnected] || ![self.serviceChannel isConnected];
         }
         if (disconnectedOnNetworkError) {
-
+            
             self.state = PNPubNubClientStateDisconnectingOnNetworkError;
         }
 
@@ -1380,6 +1437,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
 #pragma mark - Misc methods
+
+- (void)prepareCryptoHelper {
+    
+    if ([self.configuration.cipherKey length] > 0) {
+        
+        PNError *helperInitializationError = nil;
+        [[PNCryptoHelper sharedInstance] updateWithConfiguration:self.configuration
+                                                       withError:&helperInitializationError];
+        if (helperInitializationError != nil) {
+            
+            PNLog(PNLogGeneralLevel, self, @" [INFO] Crypto helper initialization failed because of error: %@",
+                  helperInitializationError);
+        }
+    }
+}
 
 - (void)notifyDelegateAboutConnectionToOrigin:(NSString *)originHostName {
 
@@ -1521,6 +1593,30 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     return shouldRestoreConnection;
 }
 
+- (BOOL)shouldRestoreSubscription {
+
+    BOOL shouldRestoreSubscription = self.configuration.shouldResubscribeOnConnectionRestore;
+    if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
+
+        shouldRestoreSubscription = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
+    }
+
+
+    return shouldRestoreSubscription;
+}
+
+- (BOOL)shouldRestoreSubscriptionWithLastTimeToken {
+
+    BOOL shouldRestoreFromLastTimeToken = self.configuration.shouldRestoreSubscriptionFromLastTimeToken;
+    if ([self.delegate respondsToSelector:@selector(shouldRestoreSubscriptionFromLastTimeToken)]) {
+
+        shouldRestoreFromLastTimeToken = [[self.delegate shouldRestoreSubscriptionFromLastTimeToken] boolValue];
+    }
+
+
+    return shouldRestoreFromLastTimeToken;
+}
+
 - (NSInteger)requestExecutionPossibilityStatusCode {
 
     NSInteger statusCode = 0;
@@ -1544,6 +1640,30 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 
 #pragma mark - Message channel delegate methods
+
+- (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
+
+    if ([messagingChannel canResubscribe]) {
+
+        // Check whether user want to resubscribe on previously subscribed channels or not
+        if ([self shouldRestoreSubscription]) {
+
+            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+        }
+        // Looks like developer doesn't want to restore subscription on previously
+        // subscribed channels, flush channels
+        else {
+
+            [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+        }
+    }
+    // Looks like there is no channels on which client can resubscribe
+    // reconnect messaging channel
+    else {
+
+        [messagingChannel reconnect];
+    }
+}
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
 

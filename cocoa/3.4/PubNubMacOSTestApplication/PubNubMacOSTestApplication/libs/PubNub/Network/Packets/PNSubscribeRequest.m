@@ -72,7 +72,7 @@
 
         self.sendingByUserRequest = isSubscribingByUserRequest;
         self.channels = [NSArray arrayWithArray:channels];
-        
+
         
         // Retrieve largest update time token from set of
         // channels (sorting to make larger token to be at

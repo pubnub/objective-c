@@ -13,6 +13,7 @@
 
 #import "PNConnection.h"
 #import <Security/SecureTransport.h>
+#import "PNConnection+Protected.h"
 #import "PNResponseDeserialize.h"
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
@@ -38,6 +39,12 @@ typedef enum _PNConnectionSSLConfigurationLevel {
     // security options)
     PNConnectionSSLConfigurationInSecure,
 } PNConnectionSSLConfigurationLevel;
+
+struct PNConnectionIdentifiersStruct PNConnectionIdentifiers = {
+    
+    .messagingConnection = @"PNMessaginConnectionIdentifier",
+    .serviceConnection = @"PNServiceConnectionIdentifier"
+};
 
 
 #pragma mark - Static
@@ -649,8 +656,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Configure default socket stream states
         self.writeStreamState = PNSocketStreamNotConfigured;
         self.readStreamState = PNSocketStreamNotConfigured;
-        [self configureReadStream:self.socketReadStream];
-        [self configureWriteStream:self.socketWriteStream];
+        [self configureReadStream:_socketReadStream];
+        [self configureWriteStream:_socketWriteStream];
 
         // Check whether stream successfully configured or configuration
         // failed
@@ -675,8 +682,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     _proxySettings = nil;
 
 
-    [self destroyReadStream:self.socketReadStream];
-    [self destroyWriteStream:self.socketWriteStream];
+    [self destroyReadStream:_socketReadStream];
+    [self destroyWriteStream:_socketWriteStream];
 }
 
 - (BOOL)connect {
@@ -723,8 +730,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     self.reconnecting = YES;
 
 
-    [self destroyReadStream:self.socketReadStream];
-    [self destroyWriteStream:self.socketWriteStream];
+    [self destroyReadStream:_socketReadStream];
+    [self destroyWriteStream:_socketWriteStream];
 }
 
 - (void)closeConnection {
@@ -732,8 +739,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     [self closeStreams];
 
 
-    [self destroyReadStream:self.socketReadStream];
-    [self destroyWriteStream:self.socketWriteStream];
+    [self destroyReadStream:_socketReadStream];
+    [self destroyWriteStream:_socketWriteStream];
 }
 
 

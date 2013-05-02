@@ -14,7 +14,17 @@
 #import "PNPresenceEvent+Protected.h"
 
 
-#pragma mark Private interface methods
+#pragma mark Structures
+
+struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
+    .action = @"action",
+    .timestamp = @"timestamp",
+    .uuid = @"uuid",
+    .occupancy = @"occupancy"
+};
+
+
+#pragma mark - Private interface methods
 
 @interface PNPresenceEvent ()
 
@@ -26,7 +36,7 @@
 
 // Stores reference on presence occurrence
 // date
-@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, strong) PNDate *date;
 
 // Stores reference on user identifier which
 // is triggered presence event
@@ -86,7 +96,7 @@
 
         // Extracting event date from response
         NSNumber *timestamp = [presenceResponse valueForKey:PNPresenceEventDataKeys.timestamp];
-        self.date = [NSDate dateWithTimeIntervalSince1970:PNUnixTimeStampFromTimeToken(timestamp)];
+        self.date = [PNDate dateWithToken:timestamp];
 
         // Extracting user identifier from response
         self.uuid = [presenceResponse valueForKey:PNPresenceEventDataKeys.uuid];

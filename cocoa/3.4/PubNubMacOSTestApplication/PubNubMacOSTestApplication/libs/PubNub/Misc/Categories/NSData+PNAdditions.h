@@ -13,13 +13,26 @@
 @interface NSData (PNAdditions)
 
 
-#pragma mark Instance methods
+#pragma mark Class methods
+
+/**
+ * Allow to decode base64 string into data
+ */
++ (NSData *)dataFromBase64String:(NSString *)encodedSting;
+
+
+#pragma mark - Instance methods
 
 /**
  * Allow to extract ull integer from HEX which
  * is represented by string inside NSData
  */
 - (unsigned long long int)unsignedLongLongFromHEXData;
+
+/**
+ * Allow to encode bytes into base64 string
+ */
+- (NSString *)base64Encoding;
 
 /**
  * Allow to extract HEX string from bytes stored

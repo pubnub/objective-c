@@ -97,16 +97,15 @@ void PNLog(PNLogLevels level, id sender, ...) {
     }
 }
 
-
-static void PNCFRelease(void *CFObject);
-void PNCFRelease(void *CFObject) {
-
+static void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject);
+void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
     if (CFObject != NULL) {
 
         if (*((CFTypeRef*)CFObject) != NULL) {
-
+            
             CFRelease(*((CFTypeRef*)CFObject));
         }
+        
         *((CFTypeRef*)CFObject) = NULL;
     }
 }
@@ -154,7 +153,7 @@ NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
     NSTimeInterval timeStamp = longLongValue;
     if (longLongValue > INT32_MAX) {
 
-        timeStamp = longLongValue/10000000;
+        timeStamp = ((NSTimeInterval)longLongValue)/10000000.0f;
     }
 
 
@@ -164,7 +163,7 @@ NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
 static NSNumber* PNTimeTokenFromDate(NSDate *date);
 NSNumber* PNTimeTokenFromDate(NSDate *date) {
 
-    unsigned long long int longLongValue = [date timeIntervalSince1970]*10000000;
+    unsigned long long int longLongValue = ((NSTimeInterval)[date timeIntervalSince1970])*10000000;
 
 
     return [NSNumber numberWithUnsignedLongLong:longLongValue];

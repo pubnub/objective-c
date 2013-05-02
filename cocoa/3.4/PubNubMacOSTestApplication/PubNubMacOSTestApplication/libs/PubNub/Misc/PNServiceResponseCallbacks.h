@@ -49,16 +49,6 @@ struct PNServiceResponseCallbacksStruct {
     __unsafe_unretained NSString *channelParticipantsCallback;
 };
 
-static struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
-    
-    .latencyMeasureMessageCallback = @"lm",
-    .subscriptionCallback = @"s",
-    .leaveChannelCallback = @"lv",
-    .sendMessageCallback = @"m",
-    .timeTokenCallback = @"t",
-    .messageHistoryCallback = @"h",
-    .channelParticipantsCallback = @"p"
-};
-
+extern struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks;
 
 #endif // PNServiceResponseCallbacks_h

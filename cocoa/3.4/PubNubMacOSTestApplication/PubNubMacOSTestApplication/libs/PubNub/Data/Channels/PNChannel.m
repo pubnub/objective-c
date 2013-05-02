@@ -15,6 +15,7 @@
 #import "PNHereNow+Protected.h"
 #import "NSString+PNAddition.h"
 #import "PNPresenceEvent.h"
+#import "PNDate.h"
 
 
 #pragma mark Static
@@ -32,10 +33,11 @@ static NSMutableDictionary *_channelsCache = nil;
 // Channel name
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *updateTimeToken;
-@property (nonatomic, strong) NSDate *presenceUpdateDate;
+@property (nonatomic, strong) PNDate *presenceUpdateDate;
 @property (nonatomic, assign) NSUInteger participantsCount;
 @property (nonatomic, strong) NSMutableArray *participantsList;
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
+@property (nonatomic, assign, getter = isUserDefinedPresenceObservation)BOOL userDefinedPresenceObservation;
 
 
 #pragma mark - Class methods
@@ -87,25 +89,39 @@ static NSMutableDictionary *_channelsCache = nil;
     }
     else {
 
-        channel = [self channelWithName:channelName shouldObservePresence:NO];
+        channel = [self channelWithName:channelName shouldObservePresence:NO shouldUpdatePresenceObservingFlag:NO];
     }
-    
+
     return channel;
 }
 
 + (PNChannel *)channelWithName:(NSString *)channelName shouldObservePresence:(BOOL)observePresence {
-    
+
+    PNChannel *channel = [self channelWithName:channelName shouldObservePresence:observePresence shouldUpdatePresenceObservingFlag:YES];
+    channel.userDefinedPresenceObservation = NO;
+
+
+    return channel;
+}
+
++ (id)            channelWithName:(NSString *)channelName
+            shouldObservePresence:(BOOL)observePresence
+shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
+
     PNChannel *channel = [[[self class] channelsCache] valueForKey:channelName];
-    
+
     if (channel == nil) {
-        
+
         channel = [[[self class] alloc] initWithName:channelName];
         [[[self class] channelsCache] setValue:channel forKey:channelName];
     }
 
-    channel.observePresence = observePresence;
-    
-    
+    if (shouldUpdatePresenceObservingFlag) {
+
+        channel.observePresence = observePresence;
+    }
+
+
     return channel;
 }
 
@@ -187,12 +203,12 @@ static NSMutableDictionary *_channelsCache = nil;
         [self.participantsList removeObject:event.uuid];
     }
 
-    self.presenceUpdateDate = [NSDate date];
+    self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
 }
 
 - (void)updateWithParticipantsList:(PNHereNow *)hereNow {
 
-    self.presenceUpdateDate = [NSDate date];
+    self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
     self.participantsCount = hereNow.participantsCount;
     self.participantsList = [hereNow.participants mutableCopy];
 }

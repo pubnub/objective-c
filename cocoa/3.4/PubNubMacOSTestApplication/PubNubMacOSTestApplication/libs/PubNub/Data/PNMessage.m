@@ -15,8 +15,8 @@
 //
 
 
-#import "PNMessage.h"
 #import "PNMessage+Protected.h"
+#import "PNCryptoHelper.h"
 
 
 #pragma mark Private interface methods
@@ -35,7 +35,10 @@
 
 // Stores reference on date when this message was received
 // (doesn't work for history, only for presence events)
-@property (nonatomic, strong) NSDate *receiveDate;
+@property (nonatomic, strong) PNDate *receiveDate;
+
+// Stores reference on timetoken when this message was received
+@property (nonatomic, strong) NSNumber *timeToken;
 
 
 @end
@@ -82,10 +85,60 @@
     return messageObject;
 }
 
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(NSDate *)messagePostDate {
++ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate {
 
     PNMessage *message = [[self class] new];
     message.message = messageBody;
+    if ([PNCryptoHelper sharedInstance].isReady) {
+        
+        NSInteger processingErrorCode = -1;
+        PNError *processingError = nil;
+        
+        // Check whether arrived message is string and should be
+        // encrypted
+        if ([message.message isKindOfClass:[NSString class]]) {
+            
+            NSString *decodedMessage = [[PNCryptoHelper sharedInstance] decryptedStringFromString:message.message
+                                                                                            error:&processingError];
+            
+            if (decodedMessage == nil && processingError == nil) {
+                
+                processingErrorCode = kPNCryptoInputDataProcessingError;
+            }
+            
+            if (processingError == nil && processingErrorCode < 0) {
+                
+                [PNJSONSerialization JSONObjectWithString:decodedMessage
+                                          completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
+                                              
+                                              message.message = result;
+                                          }
+                                               errorBlock:^(NSError *error) {
+                                                   
+                                                   PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
+                                               }];
+            }
+        }
+        else {
+            
+            processingErrorCode = kPNCryptoInputDataProcessingError;
+        }
+        
+        if (processingError != nil || processingErrorCode > 0) {
+            
+            if (processingErrorCode > 0) {
+                
+                processingError = [PNError errorWithCode:processingErrorCode];
+            }
+
+            PNLog(PNLogGeneralLevel,
+                  message,
+                  @" Message decoding failed because of error: %@",
+                  processingError);
+            
+            message.message = @"DECRYPTION_ERROR";
+        }
+    }
     message.channel = channel;
     message.receiveDate = messagePostDate;
 

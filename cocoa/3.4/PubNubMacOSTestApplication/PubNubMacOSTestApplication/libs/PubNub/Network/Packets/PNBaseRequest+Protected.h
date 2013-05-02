@@ -16,6 +16,13 @@
 @interface PNBaseRequest (Protected)
 
 
+#pragma mark Properties
+
+// Stores reference on whether connection should
+// be closed before sending this message or not
+@property (nonatomic, assign, getter = shouldCloseConnection) BOOL closeConnection;
+
+
 #pragma mark - Instance methods
 
 /**
