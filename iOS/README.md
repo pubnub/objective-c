@@ -1,10 +1,29 @@
-# PubNub 3.4 for iOS (iPhone and iPad)
----  
+# PubNub 3.4.1 for iOS (iPhone and iPad)
+PubNub 3.4.1 for iOS provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
-PubNub 3.4 for iOS provides iOS ARC support in Objective-C for the PubNub real-time messaging network [PubNub.com](http://www.pubnub.com/).  
-All requests made by the client are asynchronous, and handled by callback blocks (also blocks from observation centre), delegate methods and notifications.  
+All requests made by the client are asynchronous, and are handled by:
+
+1. the calling method's callback blocks
+2. observation center callback blocks
+3. delegate methods
+4. notifications
+
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
+## Important Changes from 3.4 to 3.4.1
+If you were using history in 3.4, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
+take PNDate arguments, not NSDate arguments. This is as easy as replacing:
 
+```objective-c
+NSDate *startDate = [NSDate date];
+```
+with
+```objective-c
+PNDate *startDate = [PNDate dateWithDate:[NSDate date]];
+```
+or
+```objective-c
+PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567];
+```
 ## Adding PubNub to your project  
 
 1. Add the JSONKit support files to your project (/libs/JSONKit)  
