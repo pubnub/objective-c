@@ -121,17 +121,22 @@ You can use few class methods to intialise and update instance properties:
             (getter = shouldResubscribeOnConnectionRestore) resubscribeOnConnectionRestore  
         __Default:__ YES (_kPNShouldResubscribeOnConnectionRestore_ key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    5.  Should the PubNub client establish the connection to PubNub using SSL?
+    5.  Upon connection restore, should the PubNub client "catch-up" to where it left off upon reconnecting?
+
+             (getter = shouldRestoreSubscriptionFromLastTimeToken) restoreSubscriptionFromLastTimeToken
+         __Default:__ YES (_kPNShouldRestoreSubscriptionFromLastTimeToken key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))
+
+    6.  Should the PubNub client establish the connection to PubNub using SSL?
       
             (getter = shouldUseSecureConnection) useSecureConnection  
         __Default:__ YES (_kPNSecureConnectionRequired__ key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    6.  When SSL is enabled, should PubNub client ignore all SSL certificate-handshake issues and still continue in SSL mode if it experiences issues handshaking across local proxies, firewalls, etc?
+    7.  When SSL is enabled, should PubNub client ignore all SSL certificate-handshake issues and still continue in SSL mode if it experiences issues handshaking across local proxies, firewalls, etc?
       
             (getter = shouldReduceSecurityLevelOnError) reduceSecurityLevelOnError  
         __Default:__ YES (_kPNShouldReduceSecurityLevelOnError_ key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    7.  When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
+    8.  When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
       
             (getter = canIgnoreSecureConnectionRequirement) ignoreSecureConnectionRequirement
             
