@@ -59,6 +59,8 @@
 		797D0A5F1725426E007A9D9A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797D0A5E1725426D007A9D9A /* SystemConfiguration.framework */; };
 		797D0A611725428D007A9D9A /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 797D0A601725428D007A9D9A /* libz.1.2.5.dylib */; };
 		797D0A631725431B007A9D9A /* TAMainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 797D0A621725431B007A9D9A /* TAMainMenu.xib */; };
+		A74A85761732FEAD00D73ECE /* PNDate.m in Sources */ = {isa = PBXBuildFile; fileRef = A74A85751732FEAD00D73ECE /* PNDate.m */; };
+		A74A857A1732FEC900D73ECE /* PNCryptoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A74A85791732FEC900D73ECE /* PNCryptoHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -198,11 +200,15 @@
 		797D0A1A17253961007A9D9A /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		797D0A1B17253961007A9D9A /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
 		797D0A2017253961007A9D9A /* PubNubMacOSTestApplication-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "PubNubMacOSTestApplication-Info.plist"; sourceTree = "<group>"; };
-		797D0A591725397A007A9D9A /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		797D0A5C17253989007A9D9A /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		797D0A591725397A007A9D9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		797D0A5C17253989007A9D9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		797D0A5E1725426D007A9D9A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		797D0A601725428D007A9D9A /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		797D0A621725431B007A9D9A /* TAMainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TAMainMenu.xib; sourceTree = "<group>"; };
+		A74A85741732FEAD00D73ECE /* PNDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDate.h; sourceTree = "<group>"; };
+		A74A85751732FEAD00D73ECE /* PNDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDate.m; sourceTree = "<group>"; };
+		A74A85781732FEC900D73ECE /* PNCryptoHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCryptoHelper.h; sourceTree = "<group>"; };
+		A74A85791732FEC900D73ECE /* PNCryptoHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -381,6 +387,7 @@
 		797D099A17253960007A9D9A /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				A74A85771732FEC900D73ECE /* Crypto */,
 				797D099B17253960007A9D9A /* Buffers */,
 				797D099E17253960007A9D9A /* Channels */,
 				797D09AC17253960007A9D9A /* Parsers */,
@@ -390,6 +397,8 @@
 				797D09C517253961007A9D9A /* PNConfiguration+Protected.h */,
 				797D09C617253961007A9D9A /* PNConfiguration.h */,
 				797D09C717253961007A9D9A /* PNConfiguration.m */,
+				A74A85741732FEAD00D73ECE /* PNDate.h */,
+				A74A85751732FEAD00D73ECE /* PNDate.m */,
 				797D09C817253961007A9D9A /* PNError+Protected.h */,
 				797D09C917253961007A9D9A /* PNError.h */,
 				797D09CA17253961007A9D9A /* PNError.m */,
@@ -606,6 +615,15 @@
 			path = XIB;
 			sourceTree = "<group>";
 		};
+		A74A85771732FEC900D73ECE /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+				A74A85781732FEC900D73ECE /* PNCryptoHelper.h */,
+				A74A85791732FEC900D73ECE /* PNCryptoHelper.m */,
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -717,6 +735,8 @@
 				797D0A4E17253961007A9D9A /* PNServiceChannel.m in Sources */,
 				797D0A4F17253961007A9D9A /* PNConnection.m in Sources */,
 				797D0A5017253961007A9D9A /* PNConnectionChannel.m in Sources */,
+				A74A85761732FEAD00D73ECE /* PNDate.m in Sources */,
+				A74A857A1732FEC900D73ECE /* PNCryptoHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -844,6 +864,7 @@
 				797D098217253899007A9D9A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

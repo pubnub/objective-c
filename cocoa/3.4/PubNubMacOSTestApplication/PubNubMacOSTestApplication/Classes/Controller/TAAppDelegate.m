@@ -231,8 +231,8 @@ static NSString * const kTAChannelName = @"macosdev";
                                limit:100
                  withCompletionBlock:^(NSArray *messages,
                                        PNChannel *channel,
-                                       NSDate *startDate,
-                                       NSDate *endDate,
+                                       PNDate *startDate,
+                                       PNDate *endDate,
                                        PNError *error) {
                      
                      [messages enumerateObjectsUsingBlock:^(PNMessage *message,
