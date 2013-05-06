@@ -59,6 +59,7 @@
 #pragma mark - Channels management
 
 - (NSArray *)subscribedChannels;
+- (NSArray *)fullSubscribedChannelsList;
 
 - (BOOL)isSubscribedForChannel:(PNChannel *)channel;
 

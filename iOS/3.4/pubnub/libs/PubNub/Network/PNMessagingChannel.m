@@ -283,6 +283,11 @@
     return [self channelsWithOutPresenceFromList:[self.subscribedChannelsSet allObjects]];
 }
 
+- (NSArray *)fullSubscribedChannelsList {
+
+    return [self.subscribedChannelsSet allObjects];
+}
+
 - (BOOL)isSubscribedForChannel:(PNChannel *)channel {
 
     return [self.subscribedChannelsSet containsObject:channel];
