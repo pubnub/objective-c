@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9621C061173930F10044F368 /* PNMessagingChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9621C060173930F10044F368 /* PNMessagingChannelTest.m */; };
+		9621C064173936C80044F368 /* PNConnectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9621C063173936C80044F368 /* PNConnectionTest.m */; };
+		9621C06717393A330044F368 /* PNConnectionChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9621C06617393A330044F368 /* PNConnectionChannelTest.m */; };
 		96307DF11734E635008676AE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96307DF01734E635008676AE /* Security.framework */; };
 		96307DF21734E63D008676AE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96307DF01734E635008676AE /* Security.framework */; };
 		96750D391735336000A67215 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96750D381735336000A67215 /* libOCMock.a */; };
@@ -88,6 +91,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9621C05F173930F10044F368 /* PNMessagingChannelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessagingChannelTest.h; sourceTree = "<group>"; };
+		9621C060173930F10044F368 /* PNMessagingChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagingChannelTest.m; sourceTree = "<group>"; };
+		9621C062173936C80044F368 /* PNConnectionTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionTest.h; sourceTree = "<group>"; };
+		9621C063173936C80044F368 /* PNConnectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionTest.m; sourceTree = "<group>"; };
+		9621C06517393A320044F368 /* PNConnectionChannelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannelTest.h; sourceTree = "<group>"; };
+		9621C06617393A330044F368 /* PNConnectionChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannelTest.m; sourceTree = "<group>"; };
 		96307DF01734E635008676AE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		96750D381735336000A67215 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCMock.a; path = UnitTestSampleTests/Libs/libOCMock.a; sourceTree = "<group>"; };
 		96ADD50D17368AAA00D1DAD9 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
@@ -602,6 +611,12 @@
 				96FE307A1734218300C9487C /* PNReachabilityTest.m */,
 				96ADD5CB17368E2800D1DAD9 /* PNServiceChannelTest.h */,
 				96ADD5CC17368E2800D1DAD9 /* PNServiceChannelTest.m */,
+				9621C05F173930F10044F368 /* PNMessagingChannelTest.h */,
+				9621C060173930F10044F368 /* PNMessagingChannelTest.m */,
+				9621C062173936C80044F368 /* PNConnectionTest.h */,
+				9621C063173936C80044F368 /* PNConnectionTest.m */,
+				9621C06517393A320044F368 /* PNConnectionChannelTest.h */,
+				9621C06617393A330044F368 /* PNConnectionChannelTest.m */,
 				96FE2FA3173418EF00C9487C /* Supporting Files */,
 			);
 			path = UnitTestSampleTests;
@@ -782,6 +797,9 @@
 			files = (
 				96FE307B1734218300C9487C /* PNReachabilityTest.m in Sources */,
 				96ADD5CD17368E2800D1DAD9 /* PNServiceChannelTest.m in Sources */,
+				9621C061173930F10044F368 /* PNMessagingChannelTest.m in Sources */,
+				9621C064173936C80044F368 /* PNConnectionTest.m in Sources */,
+				9621C06717393A330044F368 /* PNConnectionChannelTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

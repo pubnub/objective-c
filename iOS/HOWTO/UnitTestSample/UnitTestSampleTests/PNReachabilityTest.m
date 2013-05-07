@@ -68,8 +68,17 @@
         - start reachabililty
         - expected avaialble service
      */
-    [_reachability startServiceReachabilityMonitoring];
-    STAssertFalse([_reachability isServiceAvailable], @"Service reachability is not available");
+    
+    id mockReachability = [OCMockObject partialMockForObject:_reachability];
+    
+    [[mockReachability expect] stopServiceReachabilityMonitoring];
+    
+    [mockReachability startServiceReachabilityMonitoring];
+    [mockReachability verify];
+    
+    
+    NSLog(@"isServiceAvailable: %d", [mockReachability isServiceAvailable]);
+    STAssertTrue([mockReachability isServiceAvailable], @"Service reachability is not available");
 }
 
 #pragma mark - Interaction tests
@@ -87,12 +96,13 @@
     id mockConfig = [OCMockObject mockForClass:[PNConfiguration class]];
     
     [[[mockPubNub stub] andReturn:mockConfig] configuration];
-    [[[mockConfig stub] andReturn:@"pubsub.pubnub.com"] origin];
+    [[[mockConfig stub] andReturn:@"127.0.0.1"] origin];
     
     [[PubNub sharedInstance] setConfiguration:mockConfig];
     
     [_reachability startServiceReachabilityMonitoring];
     STAssertTrue([_reachability isServiceAvailable], @"Service reachability is not available");
+    [_reachability stopServiceReachabilityMonitoring];
     // TODO: investigate error reason.
     // seems we don't change status of reachability just after start, so probably stop method called just after start is now working correct also.
 }
