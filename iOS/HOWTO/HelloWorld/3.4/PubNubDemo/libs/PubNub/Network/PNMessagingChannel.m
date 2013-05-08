@@ -51,6 +51,8 @@
 
 @property (nonatomic, strong) NSTimer *idleTimer;
 
+@property (nonatomic, assign, getter = isReconnecting) BOOL reconnecting;
+
 
 #pragma mark - Instance methods
 
@@ -61,6 +63,15 @@
 - (BOOL)shouldHandleResponse:(PNResponse *)response;
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;
+
+
+#pragma mark - Connection management
+
+/**
+ * Allow to reconnect message channel and in case if 'shouldHandleReconnectEvent'
+ * is set to 'YES' it will notify delegate about successful reconnection
+ */
+- (void)reconnect:(BOOL)shouldHandleReconnectEvent;
 
 
 #pragma mark - Channels management
@@ -224,6 +235,19 @@
 
 #pragma mark - Connection management
 
+- (void)reconnect {
+    
+    [self reconnect:YES];
+}
+
+- (void)reconnect:(BOOL)shouldHandleReconnectEvent {
+    
+    self.reconnecting = shouldHandleReconnectEvent;
+    
+    // Forward to ther super class
+    [super reconnect];
+}
+
 - (void)disconnectWithReset:(BOOL)shouldResetCommunicationChannel {
 
     // Forward to the super class
@@ -242,6 +266,7 @@
         [self clearScheduledRequestsQueue];
     }
 }
+
 
 #pragma mark - Presence management
 
@@ -453,7 +478,7 @@
 
 
         // Reconnect messaging channel to free up long-poll on server
-        [self reconnect];
+        [self reconnect:NO];
     }
 
 
@@ -503,7 +528,7 @@
     }
     else if(!withPresenceEvent) {
 
-        [self reconnect];
+        [self reconnect:NO];
     }
 }
 
@@ -823,10 +848,19 @@
 
 - (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName {
 
+    [self startChannelIdleTimer];
+    
     // Forward to the super class
     [super connection:connection didConnectToHost:hostName];
 
-    [self startChannelIdleTimer];
+
+    // Check whether message channel is reconnecting by request or not
+    if (self.isReconnecting) {
+
+        self.reconnecting = NO;
+
+        [self.messagingDelegate messagingChannelDidReconnect:self];
+    }
 }
 
 - (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
@@ -885,11 +919,11 @@
 }
 
 - (void)connection:(PNConnection *)connection didDisconnectFromHost:(NSString *)hostName {
+    
+    [self stopChannelIdleTimer];
 
     // Forward to the super class
     [super connection:connection didDisconnectFromHost:hostName];
-
-    [self stopChannelIdleTimer];
 }
 
 
@@ -916,7 +950,7 @@
         request.closeConnection = NO;
 
         // Reconnect communication channel
-        [self reconnect];
+        [self reconnect:NO];
     }
 }
 
