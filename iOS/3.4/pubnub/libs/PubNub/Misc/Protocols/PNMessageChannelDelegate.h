@@ -39,6 +39,12 @@
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels;
 
 /**
+ * Sent to the delegate when messaging channel successfully 
+ * reconnected to remote origin
+ */
+- (void)messagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel;
+
+/**
  * Sent to the delegate when client failed to subscribe
  * on channels because of error
  */

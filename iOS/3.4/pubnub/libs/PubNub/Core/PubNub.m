@@ -112,7 +112,8 @@ static PubNub *_sharedInstance = nil;
  * connections to tell server that we are really
  * interested in persistent connection
  */
-- (void)warmUpConnection;
+- (void)warmUpConnections;
+- (void)warmUpConnection:(PNConnectionChannel *)connectionChannel;
 
 
 #pragma mark - Requests management methods
@@ -1124,10 +1125,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
-- (void)warmUpConnection {
+- (void)warmUpConnections {
     
-    [self sendRequest:[PNTimeTokenRequest new] onChannel:self.messagingChannel shouldObserveProcessing:NO];
-    [self sendRequest:[PNTimeTokenRequest new] onChannel:self.serviceChannel shouldObserveProcessing:NO];
+    [self warmUpConnection:self.messagingChannel];
+    [self warmUpConnection:self.serviceChannel];
+}
+
+- (void)warmUpConnection:(PNConnectionChannel *)connectionChannel {
+    
+    [self sendRequest:[PNTimeTokenRequest new] onChannel:connectionChannel shouldObserveProcessing:NO];
 }
 
 - (void)sendRequest:(PNBaseRequest *)request shouldObserveProcessing:(BOOL)shouldObserveProcessing {
@@ -1174,7 +1180,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.state = PNPubNubClientStateConnected;
 
 
-        [self warmUpConnection];
+        [self warmUpConnections];
 
         [self notifyDelegateAboutConnectionToOrigin:host];
 
@@ -1691,6 +1697,18 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 
     [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
+}
+
+- (void)messagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {
+    
+    if ([messagingChannel canResubscribe]) {
+            
+        [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+    }
+    else {
+        
+        [self warmUpConnection:messagingChannel];
+    }
 }
 
 - (void)  messagingChannel:(PNMessagingChannel *)channel
