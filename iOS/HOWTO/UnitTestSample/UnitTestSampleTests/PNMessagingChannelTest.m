@@ -11,6 +11,8 @@
 
 #import "PNChannel.h"
 #import "PNChannel+Protected.h"
+#import "PNConnectionChannel.h"
+#import "PNConnectionChannel+Protected.h"
 
 #import <OCMock/OCMock.h>
 
@@ -56,60 +58,94 @@
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     [messageChannel subscribeOnChannels:@[mockChannel]];
     
-    STAssertTrue([messageChannel isSubscribedForChannel:mockChannel], @"We should subscribed for channel");
+    [mockChannel verify];
 }
 
 - (void)testCanResubscribe {
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     
+    STAssertFalse([messageChannel canResubscribe], @"Cannot subscribe without any channel");
 }
 
 - (void)testUnsubscribeFromChannelsWithPresenceEvent {
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+
+    // Cannot use mock there, cause all methods are private to check correct behaviour
+    // This test should be improved in the future
     
+    STAssertTrue([[messageChannel unsubscribeFromChannelsWithPresenceEvent:YES] count] == 0, @"Cannot subscribe without any channel");
 }
 
 - (void)testIsPresenceObservationEnabledForChannel {
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     
+    id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
+    
+    [[mockChannel stub] presenceObserver];
+    
+    STAssertFalse([messageChannel isPresenceObservationEnabledForChannel:mockChannel], @"Observeration cannot be enabled for channel if it doesn't subscribed");
+    
+    [mockChannel verify];
 }
 
 #pragma mark - Interaction tests
 
-- (void)testDisconnectWithResetInteraction {
+- (void)testDisconnectWithReset {
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    
+    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
+    
+    [[mockChannel expect] purgeObservedRequestsPool];
+    [[mockChannel expect] purgeStoredRequestsPool];
+    [[mockChannel expect] clearScheduledRequestsQueue];
+    
+    [mockChannel disconnectWithReset:YES];
+    
+    [mockChannel verify];
+}
+
+- (void)testResubscribe {
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    
+    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
+    
+    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
+                  shouldObserveProcessing:YES];
+    
+//    [[mockChannel expect] purgeObservedRequestsPool];
+//    [[mockChannel expect] purgeStoredRequestsPool];
+//    [[mockChannel expect] clearScheduledRequestsQueue];
+    
+    [mockChannel resubscribe];
+    
+    [mockChannel verify];
+}
+
+- (void)testRestoreSubscription {
     
 }
 
-- (void)testResubscribeInteraction {
+- (void)testUpdateSubscription {
     
 }
 
-- (void)testRestoreSubscriptionInteraction {
+- (void)testSubscribeOnChannels {
     
 }
 
-- (void)testUpdateSubscriptionInteraction {
+- (void)testSubscribeOnChannelsWithPresenceEvent {
     
 }
 
-- (void)testSubscribeOnChannelsInteraction {
+- (void)testUnsubscribeFromChannels {
     
 }
 
-- (void)testSubscribeOnChannelsWithPresenceEventInteraction {
+- (void)testEnablePresenceObservationForChannels {
     
 }
 
-- (void)testUnsubscribeFromChannelsInteraction {
-    
-}
-
-- (void)testUnsubscribeFromChannelsWithPresenceEventInteraction {
-    
-}
-
-- (void)testEnablePresenceObservationForChannelsInteraction {
-    
-}
-
-- (void)testDisablePresenceObservationForChannelsInteraction {
+- (void)testDisablePresenceObservationForChannels {
     
 }
 
