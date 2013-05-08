@@ -58,7 +58,7 @@ typedef enum _PNLogLevels {
 static void PNLog(PNLogLevels level, id sender, ...);
 void PNLog(PNLogLevels level, id sender, ...) {
 
-    __block __pn_desired_weak id weakSender = sender;
+    __block __unsafe_unretained id weakSender = sender;
     NSString *formattedLog = nil;
 
     va_list args;
