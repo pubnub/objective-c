@@ -86,6 +86,10 @@
 + (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
                                     subscribeKey:(NSString *)subscribeKey
                                        secretKey:(NSString *)secretKey;
++ (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
+                                    subscribeKey:(NSString *)subscribeKey
+                                       secretKey:(NSString *)secretKey
+                                authorizationKey:(NSString *)authorizationKey;
 + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
                                  publishKey:(NSString *)publishKey 
                                subscribeKey:(NSString *)subscribeKey

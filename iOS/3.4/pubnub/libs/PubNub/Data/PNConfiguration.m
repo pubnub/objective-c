@@ -59,10 +59,22 @@
                                     subscribeKey:(NSString *)subscribeKey
                                        secretKey:(NSString *)secretKey {
     
+    return [self configurationWithPublishKey:publishKey
+                                subscribeKey:subscribeKey
+                                   secretKey:secretKey
+                            authorizationKey:nil];
+}
+
++ (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
+                                    subscribeKey:(NSString *)subscribeKey
+                                       secretKey:(NSString *)secretKey
+                                authorizationKey:(NSString *)authorizationKey {
+    
     return [self configurationForOrigin:kPNDefaultOriginHost
                              publishKey:publishKey
                            subscribeKey:subscribeKey
-                              secretKey:secretKey];
+                              secretKey:secretKey
+                       authorizationKey:authorizationKey];
 }
 
 + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
