@@ -121,5 +121,9 @@ typedef void (^PNClientMessageHandlingBlock)(PNMessage *);
 typedef void (^PNClientHistoryLoadHandlingBlock)(NSArray *, PNChannel *, PNDate *, PNDate *, PNError *);
 typedef void (^PNClientParticipantsHandlingBlock)(NSArray *, PNChannel *, PNError *);
 typedef void (^PNClientPresenceEventHandlingBlock)(PNPresenceEvent *);
+typedef void (^PNClientPushNotificationsEnableHandlingBlock)(NSArray *, PNError *);
+typedef void (^PNClientPushNotificationsDisableHandlingBlock)(NSArray *, PNError *);
+typedef void (^PNClientPushNotificationsEnabledChannelsHandlingBlock)(NSArray *, PNError *);
+typedef void (^PNClientPushNotificationsRemoveHandlingBlock)(NSArray *, PNError *);
 
 #endif

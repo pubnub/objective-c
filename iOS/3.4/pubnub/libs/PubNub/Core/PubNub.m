@@ -29,6 +29,7 @@
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
 #import "PNConnectionChannel+Protected.h"
+#import "PNPushNotificationsStateChangeRequest.h"
 
 
 #pragma mark Static
@@ -166,6 +167,28 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * unsubscription failed with error
  */
 - (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that push notification enabling failed with error
+ */
+- (void)notifyDelegateAboutPushNotificationsEnableFailedWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that push notification disabling failed with error
+ */
+- (void)notifyDelegateAboutPushNotificationsDisableFailedWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that push notification removal from all channels
+ * failed because of error
+ */
+- (void)notifyDelegateAboutPushNotificationsRemoveFailedWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that push notification enabled channels list
+ * retrieval request failed with error
+ */
+- (void)notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:(PNError *)error;
 
 /**
  * This method will notify delegate about that
@@ -736,6 +759,185 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         if (handlerBlock) {
 
             handlerBlock(channels, unsubscriptionError);
+        }
+    }
+}
+
+
+#pragma mark - APNS management
+
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken {
+
+    [self enablePushNotificationsOnChannel:channel withDevicePushToken:pushToken andCompletionHandlingBlock:nil];
+}
+
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+
+    [self enablePushNotificationsOnChannels:@[channel] withDevicePushToken:pushToken andCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken {
+
+    [self enablePushNotificationsOnChannels:channels withDevicePushToken:pushToken andCompletionHandlingBlock:nil];
+}
+
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels
+                      withDevicePushToken:(NSData *)pushToken
+               andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+
+    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
+    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+
+
+    // Check whether client is able to send request or not
+    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+    if (statusCode == 0) {
+
+        if (handlerBlock) {
+
+            [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnableObserverWithBlock:handlerBlock];
+        }
+
+        PNPushNotificationsStateChangeRequest *request;
+        request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
+                                                                             toState:PNPushNotificationsState.enable
+                                                                         forChannels:channels];
+        [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
+    }
+    // Looks like client can't send request because of some reasons
+    else {
+
+        PNError *stateChangeError = [PNError errorWithCode:statusCode];
+        stateChangeError.associatedObject = channels;
+
+        [[self sharedInstance] notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
+
+
+        if (handlerBlock) {
+
+            handlerBlock(channels, stateChangeError);
+        }
+    }
+}
+
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken {
+
+    [self disablePushNotificationsOnChannel:channel withDevicePushToken:pushToken andCompletionHandlingBlock:nil];
+}
+
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+
+    [self disablePushNotificationsOnChannels:@[channel] withDevicePushToken:pushToken andCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken {
+
+    [self disablePushNotificationsOnChannels:channels withDevicePushToken:pushToken andCompletionHandlingBlock:nil];
+}
+
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels
+                       withDevicePushToken:(NSData *)pushToken
+                andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+
+    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
+    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+
+
+    // Check whether client is able to send request or not
+    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+    if (statusCode == 0) {
+
+        if (handlerBlock) {
+
+            [[PNObservationCenter defaultCenter] addClientAsPushNotificationsDisableObserverWithBlock:handlerBlock];
+        }
+
+        PNPushNotificationsStateChangeRequest *request;
+        request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
+                                                                             toState:PNPushNotificationsState.disable
+                                                                         forChannels:channels];
+        [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
+    }
+    // Looks like client can't send request because of some reasons
+    else {
+
+        PNError *stateChangeError = [PNError errorWithCode:statusCode];
+        stateChangeError.associatedObject = channels;
+
+        [[self sharedInstance] notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
+
+
+        if (handlerBlock) {
+
+            handlerBlock(channels, stateChangeError);
+        }
+    }
+}
+
++ (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                         withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
+
+    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsRemoveObserver];
+
+     // Check whether client is able to send request or not
+    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+    if (statusCode == 0) {
+
+        if (handlerBlock) {
+
+            [[PNObservationCenter defaultCenter] addClientAsPushNotificationsRemoveObserverWithBlock:handlerBlock];
+        }
+
+        // TODO: Send push notification removal request
+    }
+    // Looks like client can't send request because of some reasons
+    else {
+
+        PNError *removalError = [PNError errorWithCode:statusCode];
+
+        [[self sharedInstance] notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
+
+
+        if (handlerBlock) {
+
+            handlerBlock(nil, removalError);
+        }
+    }
+}
+
++ (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                     withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
+
+    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnabledChannelsObserver];
+
+
+    // Check whether client is able to send request or not
+    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+    if (statusCode == 0) {
+
+        if (handlerBlock) {
+
+            [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnabledChannelsObserverWithBlock:handlerBlock];
+        }
+
+        [[self sharedInstance] sendRequest:[PNPushNotificationsEnabledChannelsRequest requestWithDevicePushToken:pushToken]
+                   shouldObserveProcessing:YES];
+    }
+    // Looks like client can't send request because of some reasons
+    else {
+
+        PNError *listRetrieveError = [PNError errorWithCode:statusCode];
+
+        [[self sharedInstance] notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
+
+
+        if (handlerBlock) {
+
+            handlerBlock(nil, listRetrieveError);
         }
     }
 }
@@ -1501,6 +1703,70 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
 }
 
+- (void)notifyDelegateAboutPushNotificationsEnableFailedWithError:(PNError *)error {
+
+    // Check whether delegate is able to handle push notification enabling error
+    // or not
+    SEL selector = @selector(pubnubClient:pushNotificationEnableDidFailWithError:);
+    if ([self.delegate respondsToSelector:selector]) {
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:selector withObject:self withObject:error];
+        #pragma clang diagnostic pop
+    }
+
+    [self sendNotification:kPNClientPushNotificationEnableDidFailNotification withObject:error];
+}
+
+- (void)notifyDelegateAboutPushNotificationsDisableFailedWithError:(PNError *)error {
+
+    // Check whether delegate is able to handle push notification enabling error
+    // or not
+    SEL selector = @selector(pubnubClient:pushNotificationDisableDidFailWithError:);
+    if ([self.delegate respondsToSelector:selector]) {
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:selector withObject:self withObject:error];
+        #pragma clang diagnostic pop
+    }
+
+    [self sendNotification:kPNClientPushNotificationDisableDidFailNotification withObject:error];
+}
+
+- (void)notifyDelegateAboutPushNotificationsRemoveFailedWithError:(PNError *)error {
+
+    // Check whether delegate is able to handle push notifications removal error
+    // or not
+    SEL selector = @selector(pubnubClient:pushNotificationsRemoveFromChannelsDidFailWithError:);
+    if ([self.delegate respondsToSelector:selector]) {
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:selector withObject:self withObject:error];
+        #pragma clang diagnostic pop
+    }
+
+    [self sendNotification:kPNClientPushNotificationRemoveDidFailNotification withObject:error];
+}
+
+- (void)notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:(PNError *)error {
+
+    // Check whether delegate is able to handle push notifications removal error
+    // or not
+    SEL selector = @selector(pubnubClient:pushNotificationEnabledChannelsReceiveDidFaileWithError:);
+    if ([self.delegate respondsToSelector:selector]) {
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:selector withObject:self withObject:error];
+        #pragma clang diagnostic pop
+    }
+
+    [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidFailNotification withObject:error];
+}
+
 - (void)notifyDelegateAboutTimeTokenRetrievalFailWithError:(PNError *)error {
 
     // Check whether delegate is able to handle time token retriaval
@@ -1786,13 +2052,100 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
                             withObject:timeToken];
     }
 
-
     [self sendNotification:kPNClientDidReceiveTimeTokenNotification withObject:timeToken];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel receiveTimeTokenDidFailWithError:(PNError *)error {
 
     [self notifyDelegateAboutTimeTokenRetrievalFailWithError:error];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didEnablePushNotificationsOnChannels:(NSArray *)channels {
+
+    // Check whether delegate is able to handle push notification enabled event or not
+    SEL selector = @selector(pubnubClient:didEnablePushNotificationsOnChannels:);
+    if ([self.delegate respondsToSelector:selector]) {
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:selector withObject:self withObject:channels];
+        #pragma clang diagnostic pop
+    }
+
+    [self sendNotification:kPNClientPushNotificationEnableDidCompleteNotification withObject:channels];
+}
+
+- (void)                  serviceChannel:(PNServiceChannel *)channel
+didFailPushNotificationEnableForChannels:(NSArray *)channels
+                               withError:(PNError *)error {
+
+    error.associatedObject = channels;
+    [self notifyDelegateAboutPushNotificationsEnableFailedWithError:error];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didDisablePushNotificationsOnChannels:(NSArray *)channels {
+
+    // Check whether delegate is able to handle push notification disable event or not
+    SEL selector = @selector(pubnubClient:didDisablePushNotificationsOnChannels:);
+    if ([self.delegate respondsToSelector:selector]) {
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:selector withObject:self withObject:channels];
+        #pragma clang diagnostic pop
+    }
+
+    [self sendNotification:kPNClientPushNotificationDisableDidCompleteNotification withObject:channels];
+}
+
+- (void)                   serviceChannel:(PNServiceChannel *)channel
+didFailPushNotificationDisableForChannels:(NSArray *)channels
+                                withError:(PNError *)error {
+
+    error.associatedObject = channels;
+    [self notifyDelegateAboutPushNotificationsDisableFailedWithError:error];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didRemovePushNotificationsFromChannels:(NSArray *)channels {
+
+    // Check wheter delegate is able to handle successfull push notification removal from
+    // all channels or not
+    SEL selector = @selector(pubnubClient:didRemovePushNotificationsFromChannels:);
+    if ([self.delegate respondsToSelector:selector]) {
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:selector withObject:self withObject:channels];
+        #pragma clang diagnostic pop
+    }
+
+    [self sendNotification:kPNClientPushNotificationRemoveDidCompleteNotification withObject:channels];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationsRemoveWithError:(PNError *)error {
+
+    [self notifyDelegateAboutPushNotificationsRemoveFailedWithError:error];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didReceivePushNotificationsEnabledChannels:(NSArray *)channels {
+
+    // Check whether delegate is able to handle push notification enabled
+    // channels retrieval or not
+    SEL selector = @selector(pubnubClient:didReceivePushNotificationEnabledChannels:);
+    if ([self.delegate respondsToSelector:selector]) {
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:selector withObject:self withObject:channels];
+        #pragma clang diagnostic pop
+    }
+
+    [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification withObject:channels];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationEnabledChannelsReceiveWithError:(PNError *)error {
+
+    [self notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:error];
 }
 
 - (void)  serviceChannel:(PNServiceChannel *)channel

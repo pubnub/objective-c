@@ -36,6 +36,57 @@
 - (void)serviceChannel:(PNServiceChannel *)channel receiveTimeTokenDidFailWithError:(PNError *)error;
 
 /**
+ * Sent to the delegate when push notification successfully
+ * enabled on specified channels
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didEnablePushNotificationsOnChannels:(NSArray *)channels;
+
+/**
+ * Sent to the delegate when push notification enabling failed
+ * because of error
+ */
+- (void)                  serviceChannel:(PNServiceChannel *)channel
+didFailPushNotificationEnableForChannels:(NSArray *)channels
+                               withError:(PNError *)error;
+
+/**
+ * Sent to the delegate when push notification successfully
+ * disabled on specified channels
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didDisablePushNotificationsOnChannels:(NSArray *)channels;
+
+/**
+ * Sent to the delegate when push notification disabling failed
+ * because of error
+ */
+- (void)                   serviceChannel:(PNServiceChannel *)channel
+didFailPushNotificationDisableForChannels:(NSArray *)channels
+                                withError:(PNError *)error;
+
+/**
+ * Sent to the delegate when push notifications succeffully removed
+ * from all channels
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didRemovePushNotificationsFromChannels:(NSArray *)channels;
+
+/**
+ * Sent to the delegate when push notification removal failed because of error
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationsRemoveWithError:(PNError *)error;
+
+/**
+ * Sent to the delegate when push notifications enabled channels
+ * successfully received
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didReceivePushNotificationsEnabledChannels:(NSArray *)channels;
+
+/**
+ * Sent to the delegate when push notification enabled channels
+ * retrieval failed
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationEnabledChannelsReceiveWithError:(PNError *)error;
+
+/**
  * Sent to the delegate when latency meter information
  * arrived from backend
  */

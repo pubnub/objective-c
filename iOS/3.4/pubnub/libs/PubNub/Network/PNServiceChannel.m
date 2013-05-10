@@ -9,6 +9,7 @@
 //      - time
 //      - history
 //      - here now (list of participants)
+//      - push notification state manipulation
 //      - "ping" (latency measurement if enabled)
 //
 //  Notice: don't try to create more than
@@ -29,8 +30,6 @@
 #import "PNMessage+Protected.h"
 #import "PNHereNow+Protected.h"
 #import "PNChannel+Protected.h"
-#import "PNError+Protected.h"
-#import "PNOperationStatus.h"
 #import "PubNub+Protected.h"
 #import "PNRequestsImport.h"
 #import "PNResponseParser.h"
@@ -73,8 +72,8 @@
  */
 + (PNServiceChannel *)serviceChannelWithDelegate:(id<PNConnectionChannelDelegate>)delegate {
 
-    return [super connectionChannelWithType:PNConnectionChannelService
-                                andDelegate:delegate];
+    return (PNServiceChannel *)[super connectionChannelWithType:PNConnectionChannelService
+                                                    andDelegate:delegate];
 }
 
 
@@ -93,9 +92,13 @@
 }
 
 - (BOOL)shouldHandleResponse:(PNResponse *)response {
-    
+
     return ([response.callbackMethod hasPrefix:PNServiceResponseCallbacks.latencyMeasureMessageCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.timeTokenCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelPushNotificationsEnableCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelPushNotificationsDisableCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.pushNotificationEnabledChannelsCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.pushNotificationRemoveCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.sendMessageCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelParticipantsCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.messageHistoryCallback]);
@@ -210,6 +213,26 @@
                 [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannel:channel withError:parsedData];
             }
         }
+        else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
+
+            NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
+            if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
+
+                // TODO: PROCESS PUSH NOTIFICATION ENABLE RESPONSE AND CALL CORRESPONDING DELEGATE METHODS
+            }
+            else {
+
+                // TODO: PROCESS PUSH NOTIFICATION DISABLE RESPONSE AND CALL CORRESPONDING DELEGATE METHODS
+            }
+        }
+        else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
+
+            // TODO: PROCESS PUSH NOTIFICATION REMOVAL FROM ALL CHANNELS RESPONSE AND CALL CORRESPONDING DELEGATE METHODS
+        }
+        else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
+
+            // TODO: PROCESS PUSH NOTIFICATION ENABLED CHANNELS RESPONSE AND CALL CORRESPONDING DELEGATE METHODS
+        }
         else {
 
             PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PARSED DATA: %@", parser);
@@ -288,6 +311,44 @@
         [self.serviceDelegate serviceChannel:self
        didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel
                                    withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+    }
+    else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
+
+        NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
+        NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
+        NSString *state = @"enabling";
+        if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
+
+            state = @"disabling";
+        }
+        errorMessage = [NSString stringWithFormat:@"Push notification '%@' failed by timeout", state];
+
+        if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
+
+            [self.serviceDelegate serviceChannel:self
+        didFailPushNotificationEnableForChannels:channels
+                                       withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+        }
+        else {
+
+            [self.serviceDelegate serviceChannel:self
+       didFailPushNotificationDisableForChannels:channels
+                                       withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+        }
+    }
+    else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
+
+        errorMessage = @"Push notification removal from all channels failed by timeout";
+
+        [self.serviceDelegate serviceChannel:self
+     didFailPushNotificationsRemoveWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
+    }
+    else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
+
+        errorMessage = @"Push notification enabled channels retrieval failed by timeout";
+
+        [self.serviceDelegate           serviceChannel:self
+didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
     else {
 
@@ -455,6 +516,41 @@
                   error);
 
             [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
+        }
+        // Check whether this is 'Push notification state change' request or not
+        else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
+
+            NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
+            NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
+            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION [%@] REQUEST HAS BEEN FAILED: %@",
+                    [targetState uppercaseString], error);
+
+            if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
+
+                [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels withError:error];
+            }
+            else {
+
+                [self.serviceDelegate serviceChannel:self didFailPushNotificationDisableForChannels:channels withError:error];
+            }
+        }
+        // Check whether this is 'Push notification remove' request or not
+        else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
+
+            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION REMOVE REQUEST HAS BEEN FAILED: %@",
+                    error);
+
+            [self.serviceDelegate serviceChannel:self
+         didFailPushNotificationsRemoveWithError:error];
+        }
+        // Check whether this is 'Push notification enabled channels' request or not
+        else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
+
+            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION ENABLED CHANNELS REQUEST HAS BEEN FAILED: %@",
+                    error);
+
+            [self.serviceDelegate serviceChannel:self
+                    didFailPushNotificationEnabledChannelsReceiveWithError:error];
         }
         // Check whether this is 'Post message' request or not
         else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
