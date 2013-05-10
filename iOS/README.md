@@ -6,6 +6,7 @@ All requests made by the client are asynchronous, and are handled by:
 1. blocks (via calling method)
 2. delegate methods
 3. notifications
+4. Observation Center
 
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
 ## Important Changes from 3.4 to 3.4.1
