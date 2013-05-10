@@ -74,7 +74,22 @@
                              publishKey:publishKey
                            subscribeKey:subscribeKey
                               secretKey:secretKey
-                              cipherKey:kPNCipherKey];
+                              cipherKey:kPNCipherKey
+                       authorizationKey:nil];
+}
+
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
+                                 publishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey
+                                  secretKey:(NSString *)secretKey
+                           authorizationKey:(NSString *)authorizationKey {
+
+    return [self configurationForOrigin:originHostName
+                                 publishKey:publishKey
+                               subscribeKey:subscribeKey
+                                  secretKey:secretKey
+                                  cipherKey:kPNCipherKey
+                           authorizationKey:authorizationKey];
 }
 
 + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
@@ -83,22 +98,52 @@
                                   secretKey:(NSString *)secretKey
                                   cipherKey:(NSString *)cipherKey {
     
+    return [self configurationForOrigin:originHostName
+                             publishKey:publishKey
+                           subscribeKey:subscribeKey
+                              secretKey:secretKey
+                              cipherKey:cipherKey
+                       authorizationKey:nil];
+}
+
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
+                                 publishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey
+                                  secretKey:(NSString *)secretKey
+                                  cipherKey:(NSString *)cipherKey
+                           authorizationKey:(NSString *)authorizationKey {
+
     return [[[self class] alloc] initWithOrigin:originHostName
                                      publishKey:publishKey
                                    subscribeKey:subscribeKey
                                       secretKey:secretKey
-                                      cipherKey:cipherKey];
+                                      cipherKey:cipherKey
+                               authorizationKey:authorizationKey];
 }
 
 
 #pragma mark - Instance methods
-
 
 - (id)initWithOrigin:(NSString *)originHostName
           publishKey:(NSString *)publishKey
         subscribeKey:(NSString *)subscribeKey
            secretKey:(NSString *)secretKey
            cipherKey:(NSString *)cipherKey {
+
+    return [self initWithOrigin:originHostName
+                     publishKey:publishKey
+                   subscribeKey:subscribeKey
+                      secretKey:secretKey
+                      cipherKey:cipherKey
+               authorizationKey:nil];
+}
+
+- (id)initWithOrigin:(NSString *)originHostName
+          publishKey:(NSString *)publishKey
+        subscribeKey:(NSString *)subscribeKey
+           secretKey:(NSString *)secretKey
+           cipherKey:(NSString *)cipherKey
+    authorizationKey:(NSString *)authorizationKey {
     
     // Checking whether initialization was successful or not
     if((self = [super init])) {
@@ -109,6 +154,7 @@
         self.subscriptionKey = subscribeKey?subscribeKey:@"";
         self.secretKey = secretKey?secretKey:@"0";
         self.cipherKey = cipherKey?cipherKey:@"";
+        self.authorizationKey = authorizationKey?authorizationKey:@"";
         self.useSecureConnection = kPNSecureConnectionRequired;
         self.autoReconnectClient = kPNShouldAutoReconnectClient;
         self.reduceSecurityLevelOnError = kPNShouldReduceSecurityLevelOnError;

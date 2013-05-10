@@ -11,6 +11,7 @@
 //
 //
 
+#import <Foundation/Foundation.h>
 #import "PNBaseRequest.h"
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
@@ -113,9 +114,22 @@
         acceptEncoding = @"Accept-Encoding: gzip, deflate\r\n";
     }
 
+    NSString *resourcePath = [self resourcePath];
+    NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
+    if ([[PubNub sharedInstance].configuration.authorizationKey length] > 0) {
+
+        NSString *parameterAdditionChar = @"&";
+        if ([resourcePath rangeOfString:@"?"].location == NSNotFound) {
+
+            parameterAdditionChar = @"?";
+        }
+
+        resourcePath = [resourcePath stringByAppendingFormat:@"%@auth=%@", parameterAdditionChar, authorizationKey];
+    }
+
     
     return [NSString stringWithFormat:@"GET %@ HTTP/1.1\r\nHost: %@\r\nV: %@\r\nUser-Agent: %@\r\nAccept: */*\r\n%@\r\n",
-            [self resourcePath],
+                    resourcePath,
             [PubNub sharedInstance].configuration.origin,
             kPNClientVersion,
             kPNClientName,
