@@ -138,9 +138,9 @@ static NSMutableArray *pendingInvocations = nil;
 
 #pragma mark - Messages processing methods
 
-+ (PNMessage *)postponeSendMessage:(id)message
-                         toChannel:(PNChannel *)channel
-               withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (void)postponeSendMessage:(id)message
+                  toChannel:(PNChannel *)channel
+        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 
 #pragma mark - History methods
@@ -1137,16 +1137,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     return messageObject;
 }
 
-+ (PNMessage *)postponeSendMessage:(id)message
-                         toChannel:(PNChannel *)channel
-               withCompletionBlock:(PNClientMessageProcessingBlock)success {
++ (void)postponeSendMessage:(id)message
+                  toChannel:(PNChannel *)channel
+        withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
-    //@[PNNillIfNotSet(message), PNNillIfNotSet(channel), PNNillIfNotSet((id)success)]
-    NSArray *parameters = @[(message?message:[NSNull null]), (channel?channel:[NSNull null]), (success?(id)success:[NSNull null])];
-    NSLog(@"PARAMETERS: %@", parameters);
     [[self sharedInstance] postponeSelector:@selector(sendMessage:toChannel:withCompletionBlock:)
                                   forObject:self
-                             withParameters:parameters
+                             withParameters:@[PNNillIfNotSet(message), PNNillIfNotSet(channel), PNNillIfNotSet((id)success)]
                                  outOfOrder:NO];
 }
 
@@ -1806,6 +1803,40 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 [pendingInvocations removeObjectAtIndex:0];
             }
 
+            NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> INVOKE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n------------------------\nMETHOD: %@\nPARAMETERS:", NSStringFromSelector(methodInvocation.selector));
+           /* NSUInteger argumentsCount = methodInvocation.methodSignature.numberOfArguments;
+            for (NSUInteger argumentIdx = 2; argumentIdx < argumentsCount; argumentIdx++) {
+
+                
+                const char *parameterType = [methodInvocation.methodSignature getArgumentTypeAtIndex:argumentIdx];
+                
+                
+                if (strcmp(parameterType, @encode(BOOL)) == 0) {
+                    
+                    BOOL argumentValue;
+                    [methodInvocation getArgument:&argumentValue atIndex:argumentIdx];
+                    
+                    NSLog(@"#%i: %@", (argumentIdx-2), argumentValue?@"YES":@"NO");
+                }
+                else if (strcmp(parameterType, @encode(NSUInteger)) == 0) {
+                    
+                    NSUInteger argumentValue;
+                    [methodInvocation getArgument:&argumentValue atIndex:argumentIdx];
+                    
+                    NSLog(@"#%i: %llu", (argumentIdx-2), argumentValue);
+                }
+                else {
+                    
+                    id argumentValue;
+                    [methodInvocation getArgument:&argumentValue atIndex:argumentIdx];
+
+
+                    argumentValue = argumentValue?argumentValue:[NSNull null];
+
+                    NSLog(@"#%i: %@", (argumentIdx-2), argumentValue);
+                }
+            }*/
+            
             [methodInvocation invoke];
         }
     }
@@ -1866,7 +1897,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         }
         else {
 
-            [methodInvocation setArgument:&parameter atIndex:parameterIndex];
+            if (parameter != nil) {
+
+                [methodInvocation setArgument:&parameter atIndex:parameterIndex];
+            }
         }
     }];
     methodInvocation.target = object;
