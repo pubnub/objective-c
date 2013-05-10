@@ -1555,6 +1555,21 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     [self sendNotification:kPNClientParticipantsListDownloadFailedWithErrorNotification withObject:error];
 }
 
+- (void)notifyDelegateAboutAPNSChangeFailedWithError:(PNError *)error {
+
+    // Check whether delegate us able to handle participants list
+    // download error or not
+    if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailAPNSChangeForChannel:withError:)]) {
+
+        [self.delegate       pubnubClient:self
+didFailAPNSChangeForChannel:error.associatedObject
+                                withError:error];
+    }
+
+    [self sendNotification:kPNClientParticipantsListDownloadFailedWithErrorNotification withObject:error];
+}
+
+
 - (void)notifyDelegateAboutError:(PNError *)error {
         
     if ([self.delegate respondsToSelector:@selector(pubnubClient:error:)]) {
@@ -1880,6 +1895,70 @@ didFailParticipantsListLoadForChannel:(PNChannel *)channel
     [self notifyDelegateAboutParticipantsListDownloadFailedWithError:error];
 
 }
+
+#pragma mark - APNS methods
+
++ (void)enableAPNSOnChannel:(PNChannel *)channel forDevice:(NSString *)deviceID {
+    [self enableAPNSOnChannel:channel
+                    forDevice:deviceID
+          withCompletionBlock:nil];
+}
+
++ (void)enableAPNSOnChannel:(PNChannel *)channel forDevice:(NSString *)deviceID
+           withCompletionBlock:(PNClientAPNSChangeHandlingBlock)handleBlock {
+
+    // Check whether client is able to send request or not
+    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+    if (statusCode == 0) {
+
+        [[PNObservationCenter defaultCenter] removeClientAsAPNSChangeObserver];
+        if (handleBlock) {
+
+            [[PNObservationCenter defaultCenter] addClientAsAPNSChangeObserverWithBlock:handleBlock];
+        }
+
+        PNAPNSAddRequest *request = [PNAPNSAddRequest enableAPNSOnChannel:channel forDevice:deviceID];
+        [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
+    }
+            // Looks like client can't send request because of some reasons
+    else {
+
+        PNError *sendingError = [PNError errorWithCode:statusCode];
+        sendingError.associatedObject = channel;
+
+        [[self sharedInstance] notifyDelegateAboutAPNSChangeFailedWithError:sendingError];
+    }
+}
+
+
+//+ (void)requestParticipantsListForChannel:(PNChannel *)channel
+//                      withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+//
+//    // Check whether client is able to send request or not
+//    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+//    if (statusCode == 0) {
+//
+//        [[PNObservationCenter defaultCenter] removeClientAsParticipantsListDownloadObserver];
+//        if (handleBlock) {
+//
+//            [[PNObservationCenter defaultCenter] addClientAsParticipantsListDownloadObserverWithBlock:handleBlock];
+//        }
+//
+//
+//        PNHereNowRequest *request = [PNHereNowRequest whoNowRequestForChannel:channel];
+//        [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
+//    }
+//            // Looks like client can't send request because of some reasons
+//    else {
+//
+//        PNError *sendingError = [PNError errorWithCode:statusCode];
+//        sendingError.associatedObject = channel;
+//
+//        [[self sharedInstance] notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
+//    }
+//}
+
+
 
 #pragma mark -
 

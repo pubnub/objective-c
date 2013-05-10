@@ -180,6 +180,12 @@ didReceiveParticipantsLits:(NSArray *)participantsList
 didFailParticipantsListDownloadForChannel:(PNChannel *)channel
                                 withError:(PNError *)error;
 
+/**
+ * Called on delegate when client failed change APNS
+ */
+- (void)                     pubnubClient:(PubNub *)client
+didFailAPNSChangeForChannel:(PNChannel *)channel
+                                withError:(PNError *)error;
 
 #pragma mark - Configuration override delegate methods
 

@@ -37,6 +37,8 @@ struct PNObservationEventsStruct {
     __unsafe_unretained NSString *clientReceivedPresenceEvent;
     __unsafe_unretained NSString *clientReceivedHistory;
     __unsafe_unretained NSString *clientReceivedParticipantsList;
+    __unsafe_unretained NSString *clientAPNSChangeComplete;
+
 };
 
 struct PNObservationObserverDataStruct {
@@ -54,7 +56,9 @@ static struct PNObservationEventsStruct PNObservationEvents = {
     .clientReceivedMessage = @"clientReceivedMessageEvent",
     .clientReceivedPresenceEvent = @"clientReceivedPresenceEvent",
     .clientReceivedHistory = @"clientReceivedHistoryEvent",
-    .clientReceivedParticipantsList = @"clientReceivedParticipantsListEvent"
+    .clientReceivedParticipantsList = @"clientReceivedParticipantsListEvent",
+    .clientAPNSChangeComplete = @"clientAPNSChangeCompleteEvent"
+
 };
 
 static struct PNObservationObserverDataStruct PNObservationObserverData = {
@@ -111,6 +115,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 - (void)handleClientMessageHistoryProcess:(NSNotification *)notification;
 - (void)handleClientHereNowProcess:(NSNotification *)notification;
 - (void)handleClientCompletedTimeTokenProcessing:(NSNotification *)notification;
+- (void)handleClientAPNSChange:(NSNotification *)notification;
 
 
 #pragma mark - Misc methods
@@ -245,8 +250,16 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                                                  selector:@selector(handleClientHereNowProcess:)
                                                      name:kPNClientParticipantsListDownloadFailedWithErrorNotification
                                                    object:nil];
-        
-        
+
+        // Handle APNS change arrival
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleClientAPNSChange:)
+                                                     name:kPNClientDidReceiveAPNSChangeNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleClientAPNSChange:)
+                                                     name:kPNClientAPNSChangeFailedWithErrorNotification
+                                                   object:nil];
     }
     
     
@@ -513,6 +526,36 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             oneTimeEvent:NO];
 }
 
+
+#pragma mark - APNS change observing
+
+- (void)addAPNSChangeEventObserver:(id)observer withBlock:(PNClientAPNSChangeHandlingBlock)handleBlock {
+    [self addObserver:observer
+             forEvent:PNObservationEvents.clientAPNSChangeComplete
+         oneTimeEvent:YES
+            withBlock:handleBlock];
+}
+
+- (void)removeAPNSChangeEventObserver:(id)observer {
+    [self removeObserver:observer
+                forEvent:PNObservationEvents.clientAPNSChangeComplete
+            oneTimeEvent:NO];
+}
+
+#pragma mark - APNS change observers
+
+- (void)removeClientAsAPNSChangeObserver {
+    [self removeObserver:[PubNub sharedInstance]
+                forEvent:PNObservationEvents.clientAPNSChangeComplete
+            oneTimeEvent:YES];
+}
+
+- (void)addClientAsAPNSChangeObserverWithBlock:(PNClientAPNSChangeHandlingBlock)handleBlock {
+    [self addObserver:[PubNub sharedInstance]
+             forEvent:PNObservationEvents.clientAPNSChangeComplete
+         oneTimeEvent:YES
+            withBlock:handleBlock];
+}
 
 #pragma mark - History observers
 

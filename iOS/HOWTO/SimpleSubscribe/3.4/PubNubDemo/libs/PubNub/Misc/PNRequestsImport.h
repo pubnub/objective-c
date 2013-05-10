@@ -23,5 +23,6 @@
 #import "PNBaseRequest+Protected.h"
 #import "PNLatencyMeasureRequest.h"
 #import "PNTimeTokenRequest.h"
+#import "PNAPNSAddRequest.h"
 
 #endif // PNRequestsImport_h

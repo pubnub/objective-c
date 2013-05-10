@@ -68,6 +68,7 @@
 		A77D84141703BDD80049BFA1 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A77D84101703BDD80049BFA1 /* libz.dylib */; };
 		A77D84151703BDD80049BFA1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A77D84111703BDD80049BFA1 /* SystemConfiguration.framework */; };
 		A7FCF6F11730AD9700E42D91 /* PNDate.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FCF6F01730AD9700E42D91 /* PNDate.m */; };
+		B56A418B6839924326A58C91 /* PNAPNSAddRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B56A4633EA99C8816A31FFB2 /* PNAPNSAddRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -221,6 +222,8 @@
 		A77D84111703BDD80049BFA1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		A7FCF6EF1730AD9700E42D91 /* PNDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDate.h; sourceTree = "<group>"; };
 		A7FCF6F01730AD9700E42D91 /* PNDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDate.m; sourceTree = "<group>"; };
+		B56A4633EA99C8816A31FFB2 /* PNAPNSAddRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAPNSAddRequest.m; sourceTree = "<group>"; };
+		B56A4E644F1A15ADF074FD03 /* PNAPNSAddRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNAPNSAddRequest.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -540,6 +543,8 @@
 				A77D83D11703BD8D0049BFA1 /* PNSubscribeRequest.m */,
 				A77D83D21703BD8D0049BFA1 /* PNTimeTokenRequest.h */,
 				A77D83D31703BD8D0049BFA1 /* PNTimeTokenRequest.m */,
+				B56A4633EA99C8816A31FFB2 /* PNAPNSAddRequest.m */,
+				B56A4E644F1A15ADF074FD03 /* PNAPNSAddRequest.h */,
 			);
 			path = Packets;
 			sourceTree = "<group>";
@@ -672,6 +677,7 @@
 				A77D840C1703BD8D0049BFA1 /* PNConnection.m in Sources */,
 				A77D840D1703BD8D0049BFA1 /* PNConnectionChannel.m in Sources */,
 				A7FCF6F11730AD9700E42D91 /* PNDate.m in Sources */,
+				B56A418B6839924326A58C91 /* PNAPNSAddRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

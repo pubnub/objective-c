@@ -112,6 +112,16 @@
 - (void)addClientAsParticipantsListDownloadObserverWithBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 - (void)removeClientAsParticipantsListDownloadObserver;
 
+#pragma mark - APNS change observer
+
+/**
+ * Add/remove observer for APNS changes
+ * After event will be fired this observation request will be
+ * removed from queue.
+ */
+- (void)addClientAsAPNSChangeObserverWithBlock:(PNClientAPNSChangeHandlingBlock)handleBlock;
+- (void)removeClientAsAPNSChangeObserver;
+
 #pragma mark -
 
 

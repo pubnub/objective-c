@@ -50,7 +50,6 @@
         self.channel = channel;
     }
 
-
     return self;
 }
 
