@@ -148,7 +148,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         self.content = content;
         self.size = responseSize;
         self.statusCode = statusCode;
-        
+
         
         NSString *decodedResponse = [self decodedResponse];
         if (decodedResponse) {
@@ -172,10 +172,14 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
                                               self.response = result;
                                           }
+                                          else {
+
+                                              self.response = result;
+                                          }
                                       }
                                            errorBlock:^(NSError *error) {
 
-                                               PNLog(PNLogGeneralLevel, self, @"ERROR: %@", error);
+                                               PNLog(PNLogGeneralLevel, self, @"JSON DECODE ERROR: %@", error);
                                                [self handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
         }

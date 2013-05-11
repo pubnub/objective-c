@@ -115,7 +115,7 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 
     // Compose state changing resource path based on desired push notifications
     // state for specified channel(s)
-    NSString *resourcePathBase = [NSString stringWithFormat:@"v1/push/sub-key/%@", [PubNub sharedInstance].configuration.subscriptionKey];
+    NSString *resourcePathBase = [NSString stringWithFormat:@"/v1/push/sub-key/%@", [PubNub sharedInstance].configuration.subscriptionKey];
     if ([self.targetState isEqualToString:PNPushNotificationsState.enable]) {
 
         resourcePathBase = [resourcePathBase stringByAppendingString:@"/devices"];

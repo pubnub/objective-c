@@ -72,7 +72,7 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"v1/push/sub-key/%@/devices/%@?callback=%@_%@&uuid=%@",
+    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@?callback=%@_%@&uuid=%@",
                                       [PubNub sharedInstance].configuration.subscriptionKey,
                                       self.pushToken,
                                       [self callbackMethodName],
