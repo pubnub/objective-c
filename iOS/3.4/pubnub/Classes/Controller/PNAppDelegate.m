@@ -109,11 +109,11 @@
 
     // Subscribe on presence event arrival events with block
     [[PNObservationCenter defaultCenter] addPresenceEventObserver:self
-                                                         withBlock:^(PNPresenceEvent *presenceEvent) {
+                                                        withBlock:^(PNPresenceEvent *presenceEvent) {
 
-                                     PNLog(PNLogGeneralLevel, self, @"{BLOCK-P} PubNubc client received new event: %@",
-                                           presenceEvent);
-                            }];
+                                                            PNLog(PNLogGeneralLevel, self, @"{BLOCK-P} PubNubc client received new event: %@",
+                                                                    presenceEvent);
+                                                        }];
 
 }
 
@@ -128,7 +128,7 @@
     [self.window makeKeyAndVisible];
     
     [self initializePubNubClient];
-
+    
     
     return YES;
 }
@@ -137,7 +137,7 @@
 #pragma mark - PubNub client delegate methods
 
 - (void)pubnubClient:(PubNub *)client error:(PNError *)error {
-    
+
     PNLog(PNLogGeneralLevel, self, @"PubNub client report that error occurred: %@", error);
 }
 
@@ -258,11 +258,11 @@
     PNLog(PNLogGeneralLevel, self, @"PubNub client received presence event: %@", event);
 }
 
-- (void)pubnubClient:(PubNub *)client
-        didReceiveMessageHistory:(NSArray *)messages
-        forChannel:(PNChannel *)channel
-        startingFrom:(NSDate *)startDate
-        to:(NSDate *)endDate {
+- (void)    pubnubClient:(PubNub *)client
+didReceiveMessageHistory:(NSArray *)messages
+              forChannel:(PNChannel *)channel
+            startingFrom:(PNDate *)startDate
+                      to:(PNDate *)endDate {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client received history for %@ starting from %@ to %@: %@",
           channel, startDate, endDate, messages);
@@ -292,24 +292,29 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
 
 - (NSNumber *)shouldResubscribeOnConnectionRestore {
 
-    NSNumber *shouldResubscribeOnConnectionRestore = @(NO);
+    NSNumber *shouldResubscribeOnConnectionRestore = @(YES);
 
-    if ([[PubNub subscribedChannels] count] > 0) {
-
-        NSString *lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
-
-        if ([shouldResubscribeOnConnectionRestore boolValue]) {
-
-            lastTimeToken = @"0";
-        }
-
-        PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription? %@. Resuming at last time token: %@",
-              ![shouldResubscribeOnConnectionRestore boolValue]?@"YES":@"NO",
-              lastTimeToken);
-    }
+    PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription? %@", [shouldResubscribeOnConnectionRestore boolValue] ? @"YES" : @"NO");
 
 
     return shouldResubscribeOnConnectionRestore;
+}
+
+- (NSNumber *)shouldRestoreSubscriptionFromLastTimeToken {
+
+    NSNumber *shouldRestoreSubscriptionFromLastTimeToken = @(NO);
+    NSString *lastTimeToken = @"0";
+
+    if ([[PubNub subscribedChannels] count] > 0) {
+
+        lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
+    }
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
+            [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
+
+
+    return shouldRestoreSubscriptionFromLastTimeToken;
 }
 
 #pragma mark -

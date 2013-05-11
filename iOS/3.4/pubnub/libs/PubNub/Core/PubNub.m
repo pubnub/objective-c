@@ -185,7 +185,8 @@ static NSMutableArray *pendingInvocations = nil;
  * connections to tell server that we are really
  * interested in persistent connection
  */
-- (void)warmUpConnection;
+- (void)warmUpConnections;
+- (void)warmUpConnection:(PNConnectionChannel *)connectionChannel;
 
 
 #pragma mark - Requests management methods
@@ -306,6 +307,18 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * network went down and restored now
  */
 - (BOOL)shouldRestoreConnection;
+
+/**
+ * Check whether client should restore subscription to previous
+ * channels or not
+ */
+- (BOOL)shouldRestoreSubscription;
+
+/**
+ * Check whether client should restore subscription with last time token
+ * or not
+ */
+- (BOOL)shouldRestoreSubscriptionWithLastTimeToken;
 
 /**
  * Retrieve request execution possibility code.
@@ -479,7 +492,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
     if (!methodCallPostponed) {
 
-        [self sharedInstance].asyncLockingOperationInProgress = YES;
 
 
         // Remove PubNub client from connection state observers list
@@ -1171,30 +1183,30 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self requestHistoryForChannel:channel from:nil to:nil withCompletionBlock:handleBlock];
 }
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(NSDate *)startDate to:(NSDate *)endDate {
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate withCompletionBlock:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:0 withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit withCompletionBlock:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
@@ -1207,8 +1219,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory {
 
@@ -1221,8 +1233,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
@@ -1470,10 +1482,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
-- (void)warmUpConnection {
+- (void)warmUpConnections {
     
-    [self sendRequest:[PNTimeTokenRequest new] onChannel:self.messagingChannel shouldObserveProcessing:NO];
-    [self sendRequest:[PNTimeTokenRequest new] onChannel:self.serviceChannel shouldObserveProcessing:NO];
+    [self warmUpConnection:self.messagingChannel];
+    [self warmUpConnection:self.serviceChannel];
+}
+
+- (void)warmUpConnection:(PNConnectionChannel *)connectionChannel {
+    
+    [self sendRequest:[PNTimeTokenRequest new] onChannel:connectionChannel shouldObserveProcessing:NO];
 }
 
 - (void)sendRequest:(PNBaseRequest *)request shouldObserveProcessing:(BOOL)shouldObserveProcessing {
@@ -1520,7 +1537,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.state = PNPubNubClientStateConnected;
 
 
-        [self warmUpConnection];
+        [self warmUpConnections];
 
         [self notifyDelegateAboutConnectionToOrigin:host];
 
@@ -1543,15 +1560,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
 
 
-            BOOL shouldResubscribe = self.configuration.shouldResubscribeOnConnectionRestore;
-            if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
+            // Check whethr user want to resubscribe on previously subscribed channels or not
+            if ([self shouldRestoreSubscription]) {
 
-                shouldResubscribe = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
+                [self.messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
             }
+            // Looks like developer doesn't want to restore subscription on previously
+            // subscribed channels, flush channels
+            else {
 
-            [self.messagingChannel restoreSubscription:shouldResubscribe];
-        }
-        else {
+                [self.messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+            }
 
             [self handleLockingOperationComplete:YES];
         }
@@ -1708,7 +1727,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Check whether connection has been closed because
         // PubNub client updates it's configuration
         else if (self.state == PNPubNubClientStateDisconnectingOnConfigurationChange) {
-
+            
             // Close connection to PubNub services
             [[self class] disconnect];
             
@@ -2071,6 +2090,30 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     return shouldRestoreConnection;
 }
 
+- (BOOL)shouldRestoreSubscription {
+
+    BOOL shouldRestoreSubscription = self.configuration.shouldResubscribeOnConnectionRestore;
+    if ([self.delegate respondsToSelector:@selector(shouldResubscribeOnConnectionRestore)]) {
+
+        shouldRestoreSubscription = [[self.delegate shouldResubscribeOnConnectionRestore] boolValue];
+    }
+
+
+    return shouldRestoreSubscription;
+}
+
+- (BOOL)shouldRestoreSubscriptionWithLastTimeToken {
+
+    BOOL shouldRestoreFromLastTimeToken = self.configuration.shouldRestoreSubscriptionFromLastTimeToken;
+    if ([self.delegate respondsToSelector:@selector(shouldRestoreSubscriptionFromLastTimeToken)]) {
+
+        shouldRestoreFromLastTimeToken = [[self.delegate shouldRestoreSubscriptionFromLastTimeToken] boolValue];
+    }
+
+
+    return shouldRestoreFromLastTimeToken;
+}
+
 - (NSInteger)requestExecutionPossibilityStatusCode {
 
     NSInteger statusCode = 0;
@@ -2094,6 +2137,30 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 
 #pragma mark - Message channel delegate methods
+
+- (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
+
+    if ([messagingChannel canResubscribe]) {
+
+        // Check whether user want to resubscribe on previously subscribed channels or not
+        if ([self shouldRestoreSubscription]) {
+
+            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+        }
+        // Looks like developer doesn't want to restore subscription on previously
+        // subscribed channels, flush channels
+        else {
+
+            [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+        }
+    }
+    // Looks like there is no channels on which client can resubscribe
+    // reconnect messaging channel
+    else {
+
+        [messagingChannel reconnect];
+    }
+}
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
 
@@ -2126,9 +2193,21 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     [self handleLockingOperationComplete:YES];
 }
 
-- (void)    messagingChannel:(PNMessagingChannel *)channel
-  didFailSubscribeOnChannels:(NSArray *)channels
-                   withError:(PNError *)error {
+- (void)messagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {
+    
+    if ([messagingChannel canResubscribe]) {
+            
+        [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+    }
+    else {
+        
+        [self warmUpConnection:messagingChannel];
+    }
+}
+
+- (void)  messagingChannel:(PNMessagingChannel *)channel
+didFailSubscribeOnChannels:(NSArray *)channels
+                 withError:(PNError *)error {
 
     error.associatedObject = channels;
     [self notifyDelegateAboutSubscriptionFailWithError:error];
@@ -2296,9 +2375,9 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
     [self handleLockingOperationComplete:YES];
 }
 
-- (void)                 serviceChannel:(PNServiceChannel *)serviceChannel
-  didFailParticipantsListLoadForChannel:(PNChannel *)channel
-                              withError:(PNError *)error {
+- (void)               serviceChannel:(PNServiceChannel *)serviceChannel
+didFailParticipantsListLoadForChannel:(PNChannel *)channel
+                            withError:(PNError *)error {
 
     error.associatedObject = channel;
     [self notifyDelegateAboutParticipantsListDownloadFailedWithError:error];

@@ -10,7 +10,6 @@
 #import "PNMessageHistoryRequest.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNChannel+Protected.h"
-#import "PNRequestsImport.h"
 #import "PubNub+Protected.h"
 
 
@@ -25,9 +24,9 @@
 // be pulled out
 @property (nonatomic, strong) PNChannel *channel;
 
-// Stores reference on history time frame start/end dates
-@property (nonatomic, strong) NSDate *startDate;
-@property (nonatomic, strong) NSDate *endDate;
+// Stores reference on history time frame start/end dates (time tokens)
+@property (nonatomic, strong) PNDate *startDate;
+@property (nonatomic, strong) PNDate *endDate;
 
 // Stores reference on maximum number of messages which
 // should be returned from backend
@@ -55,8 +54,8 @@
  * partial history
  */
 + (PNMessageHistoryRequest *)messageHistoryRequestForChannel:(PNChannel *)channel
-                                                        from:(NSDate *)startDate
-                                                          to:(NSDate*)endDate
+                                                        from:(PNDate *)startDate
+                                                          to:(PNDate *)endDate
                                                        limit:(NSUInteger)limit
                                               reverseHistory:(BOOL)shouldReverseMessagesInResponse {
 
@@ -76,8 +75,8 @@
  * which is passed to it
  */
 - (id)initForChannel:(PNChannel *)channel
-                from:(NSDate *)startDate
-                  to:(NSDate*)endDate
+                from:(PNDate *)startDate
+                  to:(PNDate *)endDate
                limit:(NSUInteger)limit
       reverseHistory:(BOOL)shouldReverseMessagesInResponse {
 
@@ -109,9 +108,9 @@
                                                                     self.shortIdentifier];
 
     // Swap dates if user specified them in wrong order
-    if (self.startDate && self.endDate && [self.endDate compare:self.startDate] == NSOrderedAscending) {
+    if (self.startDate && self.endDate && [self.endDate.date compare:self.startDate.date] == NSOrderedAscending) {
 
-        NSDate *date = self.startDate;
+        PNDate *date = self.startDate;
         self.startDate = self.endDate;
         self.endDate = date;
     }
@@ -120,11 +119,11 @@
     // to set message history time frame or not
     if (self.startDate) {
 
-        [parameters appendFormat:@"&start=%@", PNStringFromUnsignedLongLongNumber(PNTimeTokenFromDate(self.startDate))];
+        [parameters appendFormat:@"&start=%@", PNStringFromUnsignedLongLongNumber(self.startDate.timeToken)];
     }
     if (self.endDate) {
 
-        [parameters appendFormat:@"&end=%@", PNStringFromUnsignedLongLongNumber(PNTimeTokenFromDate(self.endDate))];
+        [parameters appendFormat:@"&end=%@", PNStringFromUnsignedLongLongNumber(self.endDate.timeToken)];
     }
 
     // Check whether user specified limit or not

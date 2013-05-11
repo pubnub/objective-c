@@ -25,7 +25,7 @@
 
 // Stores reference on presence occurrence
 // date
-@property (nonatomic, readonly, strong) NSDate *date;
+@property (nonatomic, readonly, strong) PNDate *date;
 
 // Stores reference on user identifier which
 // is triggered presence event

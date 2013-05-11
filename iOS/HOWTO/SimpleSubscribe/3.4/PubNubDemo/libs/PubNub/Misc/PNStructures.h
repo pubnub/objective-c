@@ -9,7 +9,7 @@
 
 #pragma mark Class forward
 
-@class PNError, PNMessage, PNPresenceEvent, PNChannel;
+@class PNPresenceEvent, PNMessage, PNChannel, PNError, PNDate;
 
 
 #ifndef PNStructures_h
@@ -118,7 +118,7 @@ typedef void (^PNClientChannelUnsubscriptionHandlerBlock)(NSArray *, PNError *);
 typedef void (^PNClientTimeTokenReceivingCompleteBlock)(NSNumber *, PNError *);
 typedef void (^PNClientMessageProcessingBlock)(PNMessageState, id);
 typedef void (^PNClientMessageHandlingBlock)(PNMessage *);
-typedef void (^PNClientHistoryLoadHandlingBlock)(NSArray *, PNChannel *, NSDate *, NSDate *, PNError *);
+typedef void (^PNClientHistoryLoadHandlingBlock)(NSArray *, PNChannel *, PNDate *, PNDate *, PNError *);
 typedef void (^PNClientParticipantsHandlingBlock)(NSArray *, PNChannel *, PNError *);
 typedef void (^PNClientPresenceEventHandlingBlock)(PNPresenceEvent *);
 

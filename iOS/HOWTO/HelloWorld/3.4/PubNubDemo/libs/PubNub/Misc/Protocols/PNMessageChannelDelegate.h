@@ -21,6 +21,12 @@
 @protocol PNMessageChannelDelegate <NSObject>
 
 /**
+ * Sent to delegate when message channel is in idle state
+ * for long enough time
+ */
+- (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel;
+
+/**
  * Sent to the delegate when client successfully
  * subscribed on specified set of channels
  */
@@ -31,6 +37,12 @@
  * restored subscription on previous set of channels
  */
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels;
+
+/**
+ * Sent to the delegate when messaging channel successfully 
+ * reconnected to remote origin
+ */
+- (void)messagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel;
 
 /**
  * Sent to the delegate when client failed to subscribe

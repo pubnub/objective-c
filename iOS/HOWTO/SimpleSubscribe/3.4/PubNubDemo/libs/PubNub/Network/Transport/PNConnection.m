@@ -161,6 +161,11 @@ static int const kPNStreamBufferSize = 32768;
 - (void)closeStreams;
 
 /**
+ * Disconnect read/write streams
+ */
+- (void)disconnectStreams;
+
+/**
  * Allow to configure read stream with set of parameters 
  * like:
  *   - proxy
@@ -171,6 +176,8 @@ static int const kPNStreamBufferSize = 32768;
 - (void)configureReadStream:(CFReadStreamRef)readStream;
 
 - (void)openReadStream:(CFReadStreamRef)readStream;
+
+- (void)disconnectReadStream:(CFReadStreamRef)readStream shouldHandleCloseEvent:(BOOL)shouldHandleCloseEvent;
 
 - (void)destroyReadStream:(CFReadStreamRef)readStream;
 
@@ -196,6 +203,8 @@ static int const kPNStreamBufferSize = 32768;
 - (void)configureWriteStream:(CFWriteStreamRef)writeStream;
 
 - (void)openWriteStream:(CFWriteStreamRef)writeStream;
+
+- (void)disconnectWriteStream:(CFWriteStreamRef)writeStream shouldHandleCloseEvent:(BOOL)shouldHandleCloseEvent;
 
 - (void)destroyWriteStream:(CFWriteStreamRef)writeStream;
 
@@ -264,6 +273,13 @@ static int const kPNStreamBufferSize = 32768;
  * or not
  */
 - (BOOL)isConnectionIssuesError:(CFErrorRef)error;
+
+/**
+ * Check whether specified error is from OSStatus error domain
+ * and report that error is caused by SSL issue
+ */
+- (BOOL)isSecurityTransportError:(CFErrorRef)error;
+- (BOOL)isInternalSecurityTransportError:(CFErrorRef)error;
 
 /**
  * Connection state retrieval
@@ -471,8 +487,7 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
         // Some error occurred on read stream
         case kCFStreamEventErrorOccurred:
 
-            PNLog(PNLogConnectionLayerErrorLevel, connection, @"[CONNECTION::%@::READ] ERROR OCCURRED (%@)",
-                  connection.name, status);
+            PNLog(PNLogConnectionLayerErrorLevel, connection, @"[CONNECTION::%@::READ] ERROR OCCURRED (%@)", connection.name, status);
 
             CFErrorRef error = CFReadStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
@@ -563,12 +578,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)isConnecting {
 
-    return (self.readStreamState == PNSocketStreamConnecting && self.writeStreamState == PNSocketStreamConnecting);
+    return ((self.readStreamState == PNSocketStreamConnecting && self.writeStreamState == PNSocketStreamConnecting) || self.isReconnecting);
 }
 
 - (BOOL)isConnected {
 
-    return (self.readStreamState == PNSocketStreamConnected && self.writeStreamState == PNSocketStreamConnected);
+    return (self.readStreamState == PNSocketStreamConnected && self.writeStreamState == PNSocketStreamConnected && !self.isReconnecting);
 }
 
 - (BOOL)isDisconnected {
@@ -619,6 +634,31 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     return isConnectionIssue;
 }
 
+- (BOOL)isSecurityTransportError:(CFErrorRef)error {
+    
+    BOOL isSecurityTransportError = NO;
+
+    
+    CFIndex errorCode = CFErrorGetCode(error);
+    NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
+    if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainOSStatus]) {
+        
+        isSecurityTransportError = errSSLClientAuthCompleted <= errorCode <= errSSLProtocol;
+    }
+    else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
+        
+        isSecurityTransportError = kCFURLErrorClientCertificateRequired <= errorCode <= kCFURLErrorSecureConnectionFailed;
+    }
+    
+    
+    return isSecurityTransportError;
+}
+
+- (BOOL)isInternalSecurityTransportError:(CFErrorRef)error {
+    
+    return CFErrorGetCode(error) == errSSLInternal;
+}
+
 
 #pragma mark - Connection lifecycle management methods
 
@@ -636,7 +676,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     else {
 
         UInt32 targetPort = kPNOriginConnectionPort;
-        if (self.configuration.shouldUseSecureConnection) {
+        if (self.configuration.shouldUseSecureConnection &&
+            self.sslConfigurationLevel != PNConnectionSSLConfigurationInSecure) {
 
             targetPort = kPNOriginSSLConnectionPort;
         }
@@ -664,7 +705,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         if (self.readStreamState != PNSocketStreamReady || self.writeStreamState != PNSocketStreamReady) {
 
             streamsPrepared = NO;
-
             [self closeStreams];
         }
     }
@@ -729,31 +769,29 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // automatically renew connection
     self.reconnecting = YES;
 
+    [self disconnectStreams];
+}
 
+- (void)disconnectStreams {
+    
+    [self disconnectReadStream:_socketReadStream shouldHandleCloseEvent:NO];
+    [self disconnectWriteStream:_socketWriteStream shouldHandleCloseEvent:NO];
     [self destroyReadStream:_socketReadStream];
     [self destroyWriteStream:_socketWriteStream];
+    
+    [self handleStreamClose];
 }
 
 - (void)closeConnection {
-
+    
+    self.reconnecting = NO;
     [self closeStreams];
-
-
-    [self destroyReadStream:_socketReadStream];
-    [self destroyWriteStream:_socketWriteStream];
 }
 
 
 #pragma mark - Read stream lifecycle management methods
 
 - (void)configureReadStream:(CFReadStreamRef)readStream {
-
-    // Check whether read stream is initial state or not
-    if (self.readStreamState != PNSocketStreamNotConfigured) {
-
-        [self destroyReadStream:readStream];
-    }
-
 
     CFOptionFlags options = (kCFStreamEventOpenCompleted | kCFStreamEventHasBytesAvailable |
             kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
@@ -762,7 +800,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     BOOL isStreamReady = CFReadStreamSetClient(readStream, options, readStreamCallback, &client);
     if (isStreamReady) {
 
-        CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
         isStreamReady = CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
     }
 
@@ -787,9 +824,27 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         self.readStreamState = PNSocketStreamReady;
 
-
         // Schedule read stream on current runloop
         CFReadStreamScheduleWithRunLoop(readStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+    }
+}
+
+- (void)disconnectReadStream:(CFReadStreamRef)readStream shouldHandleCloseEvent:(BOOL)shouldHandleCloseEvent {
+    
+    self.readStreamState = PNSocketStreamNotConfigured;
+    
+    // Destroying input buffer
+    _retrievedData = nil;
+    
+    
+    if (readStream != NULL) {
+        
+        CFReadStreamClose(readStream);
+        
+        if (shouldHandleCloseEvent) {
+            
+            [self handleStreamClose];
+        }
     }
 }
 
@@ -804,10 +859,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (readStream != NULL) {
 
-
         // Unschedule read stream from runloop
-        CFReadStreamUnscheduleFromRunLoop(readStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
         CFReadStreamSetClient(readStream, kCFStreamEventNone, NULL, NULL);
+        CFReadStreamUnscheduleFromRunLoop(readStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
 
         // Checking whether read stream is opened and
         // close it if required
@@ -919,23 +973,19 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)configureWriteStream:(CFWriteStreamRef)writeStream {
 
-    // Check whether write stream is in initial state or not
-    if (self.writeStreamState != PNSocketStreamNotConfigured) {
-
-        [self destroyWriteStream:writeStream];
-    }
-
     CFOptionFlags options = (kCFStreamEventOpenCompleted | kCFStreamEventCanAcceptBytes |
             kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
     CFStreamClientContext client = [self streamClientContext];
     BOOL isStreamReady = CFWriteStreamSetClient(writeStream, options, writeStreamCallback, &client);
-    CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+    if (isStreamReady) {
+        
+        isStreamReady = CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+    }
 
 
     if (isStreamReady) {
 
         self.writeStreamState = PNSocketStreamReady;
-
 
         // Schedule write stream on current runloop
         CFWriteStreamScheduleWithRunLoop(writeStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
@@ -963,6 +1013,34 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
 }
 
+- (void)disconnectWriteStream:(CFWriteStreamRef)writeStream shouldHandleCloseEvent:(BOOL)shouldHandleCloseEvent {
+    
+    self.writeStreamState = PNSocketStreamNotConfigured;
+    self.writeStreamCanHandleData = NO;
+    
+    // Check whether write buffer was currently processed or not
+    if (_writeBuffer && [_writeBuffer hasData] &&
+        [_writeBuffer isPartialDataSent] && _writeBuffer.isSendingBytes) {
+        
+        // Notify delegate about that request processing hasn't been completed
+        [self.dataSource connection:self didCancelRequestWithIdentifier:_writeBuffer.requestIdentifier];
+        
+        // Clean up
+        _writeBuffer = nil;
+    }
+    
+    
+    if (writeStream != NULL) {
+        
+        CFWriteStreamClose(writeStream);
+        
+        if (shouldHandleCloseEvent) {
+            
+            [self handleStreamClose];
+        }
+    }
+}
+
 - (void)destroyWriteStream:(CFWriteStreamRef)writeStream {
 
     BOOL shouldCloseStream = self.writeStreamState == PNSocketStreamConnected;
@@ -984,8 +1062,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     if (writeStream != NULL) {
 
         // Unschedule write stream from runloop
-        CFWriteStreamUnscheduleFromRunLoop(writeStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
         CFWriteStreamSetClient(writeStream, kCFStreamEventNone, NULL, NULL);
+        CFWriteStreamUnscheduleFromRunLoop(writeStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
 
         // Checking whether write stream is opened and
         // close it if required
@@ -1217,37 +1295,48 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         BOOL shouldNotifyDelegate = YES;
         BOOL isCriticalStreamError = NO;
 
-        PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] GOT ERROR: %@", self.name, errorObject);
+        PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] GOT ERROR: %@ (CFNetwork error code: %d)",
+              self.name, errorObject, CFErrorGetCode(error));
 
         // Check whether error is caused by SSL issues or not
-        if ((errorObject.code <= errSSLProtocol && errorObject.code >= errSSLBadCipherSuite) ||
-            errorObject.code == errSSLConnectionRefused) {
+        if ([self isSecurityTransportError:error]) {
 
-            // Checking whether user allowed to decrease security options
-            // and we can do it
-            if (self.configuration.shouldReduceSecurityLevelOnError &&
-                self.sslConfigurationLevel == PNConnectionSSLConfigurationStrict) {
-
-                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] REDUCING SSL REQUIREMENTS", self.name);
-
-                shouldNotifyDelegate = NO;
-
-                self.sslConfigurationLevel = PNConnectionSSLConfigurationBarelySecure;
-
-                // Try to reconnect with new SSL security settings
-                [self reconnect];
+            if (![self isInternalSecurityTransportError:error]) {
+                
+                // Checking whether user allowed to decrease security options
+                // and we can do it
+                if (self.configuration.shouldReduceSecurityLevelOnError &&
+                    self.sslConfigurationLevel == PNConnectionSSLConfigurationStrict) {
+                    
+                    PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] REDUCING SSL REQUIREMENTS", self.name);
+                    
+                    shouldNotifyDelegate = NO;
+                    
+                    self.sslConfigurationLevel = PNConnectionSSLConfigurationBarelySecure;
+                    
+                    // Try to reconnect with new SSL security settings
+                    [self reconnect];
+                }
+                // Check whether connection can fallback and use plain HTTP connection
+                // w/o SSL
+                else if (self.configuration.canIgnoreSecureConnectionRequirement &&
+                         self.sslConfigurationLevel == PNConnectionSSLConfigurationBarelySecure) {
+                    
+                    PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] DISCARD SSL", self.name);
+                    
+                    shouldNotifyDelegate = NO;
+                    
+                    self.sslConfigurationLevel = PNConnectionSSLConfigurationInSecure;
+                    
+                    // Try to reconnect with new SSL security settings
+                    [self reconnect];
+                }
             }
-            // Check whether connection can fallback and use plain HTTP connection
-            // w/o SSL
-            else if (self.configuration.canIgnoreSecureConnectionRequirement &&
-                    self.sslConfigurationLevel == PNConnectionSSLConfigurationBarelySecure) {
-
-                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] DISCARD SSL", self.name);
-
+            else {
+                
+                isCriticalStreamError = YES;
                 shouldNotifyDelegate = NO;
-
-                self.sslConfigurationLevel = PNConnectionSSLConfigurationInSecure;
-
+                
                 // Try to reconnect with new SSL security settings
                 [self reconnect];
             }
@@ -1286,14 +1375,17 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 if (!self.isClosingConnection) {
 
                     [self.delegate connection:self willDisconnectFromHost:self.configuration.origin withError:errorObject];
-
-                    [self closeStreams];
                 }
             }
             else {
 
                 [self.delegate connection:self connectionDidFailToHost:self.configuration.origin withError:errorObject];
             }
+        }
+            
+        if (shouldCloseConnection && !self.isClosingConnection) {
+                
+            [self closeStreams];
         }
     }
 }
@@ -1331,7 +1423,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (CFMutableDictionaryRef)streamSecuritySettings {
 
     if (self.configuration.shouldUseSecureConnection && _streamSecuritySettings == NULL &&
-            self.sslConfigurationLevel != PNConnectionSSLConfigurationInSecure) {
+        self.sslConfigurationLevel != PNConnectionSSLConfigurationInSecure) {
 
         // Configure security settings
         _streamSecuritySettings = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 6, NULL, NULL);
@@ -1355,7 +1447,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
     }
     else if (!self.configuration.shouldUseSecureConnection ||
-            self.sslConfigurationLevel == PNConnectionSSLConfigurationInSecure) {
+             self.sslConfigurationLevel == PNConnectionSSLConfigurationInSecure) {
 
         PNCFRelease(&_streamSecuritySettings);
     }

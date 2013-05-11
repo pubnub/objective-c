@@ -58,7 +58,7 @@ typedef enum _PNLogLevels {
 static void PNLog(PNLogLevels level, id sender, ...);
 void PNLog(PNLogLevels level, id sender, ...) {
 
-    __block __pn_desired_weak id weakSender = sender;
+    __block __unsafe_unretained id weakSender = sender;
     NSString *formattedLog = nil;
 
     va_list args;
@@ -159,7 +159,7 @@ NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
     NSTimeInterval timeStamp = longLongValue;
     if (longLongValue > INT32_MAX) {
 
-        timeStamp = longLongValue/10000000;
+        timeStamp = ((NSTimeInterval)longLongValue)/10000000.0f;
     }
 
 
@@ -169,7 +169,7 @@ NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
 static NSNumber* PNTimeTokenFromDate(NSDate *date);
 NSNumber* PNTimeTokenFromDate(NSDate *date) {
 
-    unsigned long long int longLongValue = [date timeIntervalSince1970]*10000000;
+    unsigned long long int longLongValue = ((NSTimeInterval)[date timeIntervalSince1970])*10000000;
 
 
     return [NSNumber numberWithUnsignedLongLong:longLongValue];

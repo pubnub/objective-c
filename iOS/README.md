@@ -1,10 +1,28 @@
-# PubNub 3.4 for iOS (iPhone and iPad)
----  
+# PubNub 3.4.1 for iOS (iPhone and iPad)
+PubNub 3.4.1 for iOS provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
-PubNub 3.4 for iOS provides iOS ARC support in Objective-C for the PubNub real-time messaging network [PubNub.com](http://www.pubnub.com/).  
-All requests made by the client are asynchronous, and handled by callback blocks (also blocks from observation centre), delegate methods and notifications.  
+All requests made by the client are asynchronous, and are handled by:
+
+1. blocks (via calling method)
+2. delegate methods
+3. notifications
+
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
+## Important Changes from 3.4 to 3.4.1
+If you were using history in 3.4, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
+take PNDate arguments, not NSDate arguments. This is as easy as replacing:
 
+```objective-c
+NSDate *startDate = [NSDate date];
+```
+with
+```objective-c
+PNDate *startDate = [PNDate dateWithDate:[NSDate date]];
+```
+or
+```objective-c
+PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567];
+```
 ## Adding PubNub to your project  
 
 1. Add the JSONKit support files to your project (/libs/JSONKit)  
@@ -102,17 +120,22 @@ You can use few class methods to intialise and update instance properties:
             (getter = shouldResubscribeOnConnectionRestore) resubscribeOnConnectionRestore  
         __Default:__ YES (_kPNShouldResubscribeOnConnectionRestore_ key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    5.  Should the PubNub client establish the connection to PubNub using SSL?
+    5.  Upon connection restore, should the PubNub client "catch-up" to where it left off upon reconnecting?
+
+             (getter = shouldRestoreSubscriptionFromLastTimeToken) restoreSubscriptionFromLastTimeToken
+         __Default:__ YES (_kPNShouldRestoreSubscriptionFromLastTimeToken key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))
+
+    6.  Should the PubNub client establish the connection to PubNub using SSL?
       
             (getter = shouldUseSecureConnection) useSecureConnection  
         __Default:__ YES (_kPNSecureConnectionRequired__ key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    6.  When SSL is enabled, should PubNub client ignore all SSL certificate-handshake issues and still continue in SSL mode if it experiences issues handshaking across local proxies, firewalls, etc?
+    7.  When SSL is enabled, should PubNub client ignore all SSL certificate-handshake issues and still continue in SSL mode if it experiences issues handshaking across local proxies, firewalls, etc?
       
             (getter = shouldReduceSecurityLevelOnError) reduceSecurityLevelOnError  
         __Default:__ YES (_kPNShouldReduceSecurityLevelOnError_ key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    7.  When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
+    8.  When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
       
             (getter = canIgnoreSecureConnectionRequirement) ignoreSecureConnectionRequirement
             
@@ -404,30 +427,30 @@ If you have enabled the history feature for your account, the following methods 
     + (void)requestFullHistoryForChannel:(PNChannel *)channel   
                      withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;  
                      
-    + (void)requestHistoryForChannel:(PNChannel *)channel from:(NSDate *)startDate to:(NSDate *)endDate;  
+    + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate;  
     + (void)requestHistoryForChannel:(PNChannel *)channel  
-                                from:(NSDate *)startDate  
-                                  to:(NSDate *)endDate  
+                                from:(PNDate *)startDate  
+                                  to:(PNDate *)endDate  
                  withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;  
                  
 	+ (void)requestHistoryForChannel:(PNChannel *)channel  
-	                            from:(NSDate *)startDate  
-	                              to:(NSDate *)endDate  
+	                            from:(PNDate *)startDate  
+	                              to:(PNDate *)endDate  
 	                           limit:(NSUInteger)limit;  
 	+ (void)requestHistoryForChannel:(PNChannel *)channel  
-	                            from:(NSDate *)startDate  
-	                              to:(NSDate *)endDate  
+	                            from:(PNDate *)startDate  
+	                              to:(PNDate *)endDate  
 	                           limit:(NSUInteger)limit  
 	             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;  
 
 	+ (void)requestHistoryForChannel:(PNChannel *)channel  
-	                            from:(NSDate *)startDate  
-	                              to:(NSDate *)endDate  
+	                            from:(PNDate *)startDate  
+	                              to:(PNDate *)endDate  
 	                           limit:(NSUInteger)limit  
 	                  reverseHistory:(BOOL)shouldReverseMessageHistory;  
 	+ (void)requestHistoryForChannel:(PNChannel *)channel  
-	                            from:(NSDate *)startDate  
-	                              to:(NSDate *)endDate  
+	                            from:(PNDate *)startDate  
+	                              to:(PNDate *)endDate  
 	                           limit:(NSUInteger)limit  
 	                  reverseHistory:(BOOL)shouldReverseMessageHistory  
 	             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;  
@@ -436,8 +459,8 @@ The first two methods will receive the full message history for a specified chan
   
 In the following example, we pull history for the `iosdev` channel within the specified time frame, limiting the maximum number of messages returned to 34:
     
-    NSDate *startDate;  
-    NSDate *endDate;  
+    PNDate *startDate = [PNDate dateWithDate:[NSDate dateWithTimeIntervalSinceNow:(-3600.0f)]];  
+    PNDate *endDate = [PNDate dateWithDate:[NSDate date]];  
     int limit = 34;  
     [PubNub requestHistoryForChannel:[PNChannel channelWithName:@"iosdev"]  
                                 from:startDate  
@@ -446,8 +469,8 @@ In the following example, we pull history for the `iosdev` channel within the sp
                       reverseHistory:NO  
                  withCompletionBlock:^(NSArray *messages,  
                                        PNChannel *channel,  
-                                       NSDate *startDate,  
-                                       NSDate *endDate,  
+                                       PNDate *startDate,  
+                                       PNDate *endDate,  
                                        PNError *error) {  
                                        
                      if (error == nil) {  
@@ -511,8 +534,8 @@ Here is full set of callbacks which are available:
     - (void)    pubnubClient:(PubNub *)client  
     didReceiveMessageHistory:(NSArray *)messages  
                   forChannel:(PNChannel *)channel  
-                startingFrom:(NSDate *)startDate  
-                          to:(NSDate *)endDate;  
+                startingFrom:(PNDate *)startDate  
+                          to:(PNDate *)endDate;  
     - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error;  
     
     - (void)      pubnubClient:(PubNub *)client  
