@@ -1,3 +1,11 @@
+05-13-2013
+. make channel presence idempotent
+. connection and reliability improvements
+. force a disconnect after 5 minutes if connection zombies
+. fixed bug in PNReachability
+. added better handling of server-side SSL messages
+. iOS and MacOS code bases are now unified
+
 04-23-2013
 . revved HOWTO lib files
 
