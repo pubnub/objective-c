@@ -102,10 +102,10 @@
 
     [[PNObservationCenter defaultCenter] addMessageHistoryProcessingObserver:self
                                                                    withBlock:^(NSArray *messages,
-                                                                               PNChannel *channel,
-                                                                               NSDate *startDate,
-                                                                               NSDate *endDate,
-                                                                               PNError *error) {
+                                                                           PNChannel *channel,
+                                                                           PNDate *startDate,
+                                                                           PNDate *endDate,
+                                                                           PNError *error) {
 
                NSString *message = nil;
                if (error == nil) {
@@ -115,8 +115,8 @@
 
                    message = [NSString stringWithFormat:@"Downloaded history for: %@\nDownloaded %u messages\nStart date: %@\nEnd date: %@",
                                                         channel.name, [messages count],
-                                                        [dateFormatter stringFromDate:startDate],
-                                                        [dateFormatter stringFromDate:endDate]];
+                                                        [dateFormatter stringFromDate:startDate.date],
+                                                        [dateFormatter stringFromDate:endDate.date]];
                }
                else {
 
@@ -180,14 +180,14 @@
 
     PNChannelHistoryView *weakSelf = self;
     [PubNub requestHistoryForChannel:[PNDataManager sharedInstance].currentChannel
-                                from:self.startDate
-                                  to:self.endDate
+                                from:[PNDate dateWithDate:self.startDate]
+                                  to:[PNDate dateWithDate:self.endDate]
                                limit:[self.limitTextField.text integerValue]
                  withCompletionBlock:^(NSArray *messages,
-                                       PNChannel *channel,
-                                       NSDate *startDate,
-                                       NSDate *endDate,
-                                       PNError *error) {
+                         PNChannel *channel,
+                         PNDate *startDate,
+                         PNDate *endDate,
+                         PNError *error) {
 
                      NSMutableString *historyToShow = [NSMutableString string];
                      [messages enumerateObjectsUsingBlock:^(PNMessage *message,

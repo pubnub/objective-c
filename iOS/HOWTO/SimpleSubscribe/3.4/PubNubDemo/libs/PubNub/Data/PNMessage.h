@@ -36,7 +36,7 @@
 
 // Stores reference on date when this message was received
 // (doesn't work for history, only for presence events)
-@property (nonatomic, readonly, strong) NSDate *receiveDate;
+@property (nonatomic, readonly, strong) PNDate *receiveDate;
 
 #pragma mark -
 

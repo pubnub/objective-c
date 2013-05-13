@@ -608,6 +608,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Retrieving list of observers (including one time and persistent observers)
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientConnectionStateChange];
+
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientConnectionStateChange];
+
     [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
                                             NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
@@ -619,10 +623,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             block(origin, connected, connectionError);
         }
     }];
-
-
-    // Clean one time observers for specific event
-    [self removeOneTimeObserversForEvent:PNObservationEvents.clientConnectionStateChange];
 }
 
 - (void)handleClientSubscriptionProcess:(NSNotification *)notification {
@@ -659,6 +659,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Retrieving list of observers (including one time and persistent observers)
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientSubscriptionOnChannels];
+
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels];
+
     [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
                                                 NSUInteger observerDataIdx,
                                                 BOOL *observerDataEnumeratorStop) {
@@ -670,10 +674,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             block(state, channels, error);
         }
     }];
-
-
-    // Clean one time observers for specific event
-    [self removeOneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels];
 }
 
 - (void)handleClientUnsubscriptionProcess:(NSNotification *)notification {
@@ -684,6 +684,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Retrieving list of observers (including one time and persistent observers)
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
+
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
+
     [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
                                                 NSUInteger observerDataIdx,
                                                 BOOL *observerDataEnumeratorStop) {
@@ -695,10 +699,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             block(channels, nil);
         }
     }];
-
-
-    // Clean one time observers for specific event
-    [self removeOneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
 }
 
 - (void)handleClientMessageProcessingStateChange:(NSNotification *)notification {
@@ -724,6 +724,13 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Retrieving list of observers (including one time and persistent observers)
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientMessageSendCompletion];
+
+    if (shouldUnsubscribe) {
+
+        // Clean one time observers for specific event
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientMessageSendCompletion];
+    }
+
     [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
                                                     NSUInteger observerDataIdx,
                                                     BOOL *observerDataEnumeratorStop) {
@@ -735,13 +742,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             block(state, processingData);
         }
     }];
-
-
-    if (shouldUnsubscribe) {
-
-        // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientMessageSendCompletion];
-    }
 }
 
 - (void)handleClientDidReceiveMessage:(NSNotification *)notification {
@@ -807,6 +807,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Retrieving list of observers (including one time and persistent observers)
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientReceivedHistory];
+
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedHistory];
+
     [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
                                             NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
@@ -818,10 +822,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             block(history.messages, channel, history.startDate, history.endDate, error);
         }
     }];
-
-
-    // Clean one time observers for specific event
-    [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedHistory];
 }
 
 - (void)handleClientHereNowProcess:(NSNotification *)notification {
@@ -843,6 +843,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Retrieving list of observers (including one time and persistent observers)
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientReceivedParticipantsList];
+
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedParticipantsList];
+
     [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
                                             NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
@@ -854,10 +858,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             block(participants.participants, channel, error);
         }
     }];
-
-
-    // Clean one time observers for specific event
-    [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedParticipantsList];
 }
 
 - (void)handleClientCompletedTimeTokenProcessing:(NSNotification *)notification {
@@ -875,6 +875,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Retrieving list of observers (including one time and persistent observers)
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientTimeTokenReceivingComplete];
+
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientTimeTokenReceivingComplete];
+
     [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
                                                 NSUInteger observerDataIdx,
                                                 BOOL *observerDataEnumeratorStop) {
@@ -886,10 +890,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             block(timeToken, error);
         }
     }];
-
-
-    // Clean one time observers for specific event
-    [self removeOneTimeObserversForEvent:PNObservationEvents.clientTimeTokenReceivingComplete];
 }
 
 

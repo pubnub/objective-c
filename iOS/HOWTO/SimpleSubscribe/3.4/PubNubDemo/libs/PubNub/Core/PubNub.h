@@ -19,7 +19,7 @@
 
 #pragma mark Class forward
 
-@class PNConfiguration, PNChannel, PNMessage;
+@class PNConfiguration, PNChannel, PNMessage, PNDate;
 
 
 @interface PubNub : NSObject
@@ -379,7 +379,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * Fetch history for specified channel in defined
  * time frame
  */
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(NSDate *)startDate to:(NSDate *)endDate;
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate;
 
 /**
  * Same as +requestHistoryForChannel:from:to: but allow to specify
@@ -391,8 +391,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
 /**
@@ -400,8 +400,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * time frame with specified limits
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit;
 
 /**
@@ -414,8 +414,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
@@ -425,8 +425,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * be inverted or not
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory;
 
@@ -440,8 +440,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(NSDate *)startDate
-                              to:(NSDate *)endDate
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;

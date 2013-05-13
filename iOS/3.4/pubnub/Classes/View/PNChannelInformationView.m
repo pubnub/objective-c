@@ -182,7 +182,7 @@
 
     if (channel.presenceUpdateDate) {
 
-        self.channelPresenceUpdateDateLabel.text = [dateFormatter stringFromDate:channel.presenceUpdateDate];
+        self.channelPresenceUpdateDateLabel.text = [dateFormatter stringFromDate:channel.presenceUpdateDate.date];
     }
     else {
 

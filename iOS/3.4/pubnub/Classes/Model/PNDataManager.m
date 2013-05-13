@@ -105,7 +105,7 @@ static PNDataManager *_sharedInstance = nil;
                      messages = @"";
                  }
                  messages = [messages stringByAppendingFormat:@"<%@> %@\n",
-                                 [dateFormatter stringFromDate:message.receiveDate],
+                                 [dateFormatter stringFromDate:message.receiveDate.date],
                                  message.message];
                  [weakSelf.messages setValue:messages forKey:channel.name];
 
@@ -141,7 +141,7 @@ static PNDataManager *_sharedInstance = nil;
                     eventMessage = @"";
                 }
                 eventMessage = [eventMessage stringByAppendingFormat:@"<%@> %@ '%@'\n",
-                                                                     [dateFormatter stringFromDate:event.date],
+                                                                     [dateFormatter stringFromDate:event.date.date],
                                                                      event.uuid,
                                                                      eventType];
                 [weakSelf.messages setValue:eventMessage forKey:channel.name];
@@ -226,7 +226,7 @@ static PNDataManager *_sharedInstance = nil;
     BOOL shouldUpdate = NO;
     if(_currentChannel.presenceUpdateDate != nil) {
 
-        if ([[NSDate date] timeIntervalSinceDate:_currentChannel.presenceUpdateDate] > 5.0f) {
+        if ([[NSDate date] timeIntervalSinceDate:_currentChannel.presenceUpdateDate.date] > 5.0f) {
 
             shouldUpdate = YES;
         }

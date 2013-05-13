@@ -52,6 +52,7 @@
 		A71A57831727233F00B3D830 /* PNServiceChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57511727233F00B3D830 /* PNServiceChannel.m */; };
 		A71A57841727233F00B3D830 /* PNConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57551727233F00B3D830 /* PNConnection.m */; };
 		A71A57851727233F00B3D830 /* PNConnectionChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A71A57581727233F00B3D830 /* PNConnectionChannel.m */; };
+		A7FCF6EE1730AD6200E42D91 /* PNDate.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FCF6ED1730AD6200E42D91 /* PNDate.m */; };
 		D94769AA16D62CF00093C0D7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D94769A916D62CF00093C0D7 /* UIKit.framework */; };
 		D94769AC16D62CF00093C0D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D94769AB16D62CF00093C0D7 /* Foundation.framework */; };
 		D94769AE16D62CF00093C0D7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D94769AD16D62CF00093C0D7 /* CoreGraphics.framework */; };
@@ -197,6 +198,8 @@
 		A71A57561727233F00B3D830 /* PNConnectionChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnectionChannel+Protected.h"; sourceTree = "<group>"; };
 		A71A57571727233F00B3D830 /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		A71A57581727233F00B3D830 /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
+		A7FCF6EC1730AD4900E42D91 /* PNDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDate.h; sourceTree = "<group>"; };
+		A7FCF6ED1730AD6200E42D91 /* PNDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDate.m; sourceTree = "<group>"; };
 		D94769A616D62CF00093C0D7 /* PubNubDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNubDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D94769A916D62CF00093C0D7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		D94769AB16D62CF00093C0D7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -282,6 +285,7 @@
 		A71A56D71727233F00B3D830 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				A7FCF6ED1730AD6200E42D91 /* PNDate.m */,
 				A71A56D81727233F00B3D830 /* Buffers */,
 				A71A56DB1727233F00B3D830 /* Channels */,
 				A71A56E61727233F00B3D830 /* Crypto */,
@@ -294,6 +298,7 @@
 				A71A57041727233F00B3D830 /* PNConfiguration.m */,
 				A71A57051727233F00B3D830 /* PNError+Protected.h */,
 				A71A57061727233F00B3D830 /* PNError.h */,
+				A7FCF6EC1730AD4900E42D91 /* PNDate.h */,
 				A71A57071727233F00B3D830 /* PNError.m */,
 				A71A57081727233F00B3D830 /* PNHereNow+Protected.h */,
 				A71A57091727233F00B3D830 /* PNHereNow.h */,
@@ -662,6 +667,7 @@
 				A71A57831727233F00B3D830 /* PNServiceChannel.m in Sources */,
 				A71A57841727233F00B3D830 /* PNConnection.m in Sources */,
 				A71A57851727233F00B3D830 /* PNConnectionChannel.m in Sources */,
+				A7FCF6EE1730AD6200E42D91 /* PNDate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,7 +13,7 @@
 
 #pragma mark Class forward
 
-@class PNChannel;
+@class PNChannel, PNDate;
 
 
 @interface PNMessageHistoryRequest : PNBaseRequest
@@ -28,8 +28,8 @@
  * partial history
  */
 + (PNMessageHistoryRequest *)messageHistoryRequestForChannel:(PNChannel *)channel
-                                                        from:(NSDate *)startDate
-                                                          to:(NSDate*)endDate
+                                                        from:(PNDate *)startDate
+                                                          to:(PNDate *)endDate
                                                        limit:(NSUInteger)limit
                                               reverseHistory:(BOOL)shouldReverseMessagesInResponse;
 
@@ -42,8 +42,8 @@
  * which is passed to it
  */
 - (id)initForChannel:(PNChannel *)channel
-                from:(NSDate *)startDate
-                  to:(NSDate*)endDate
+                from:(PNDate *)startDate
+                  to:(PNDate *)endDate
                limit:(NSUInteger)limit
       reverseHistory:(BOOL)shouldReverseMessagesInResponse;
 
