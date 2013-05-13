@@ -10,7 +10,9 @@ All requests made by the client are asynchronous, and are handled by:
 
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
 ## Important Changes from 3.4 to 3.4.1
-If you were using history in 3.4, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
+Better precision for pulling history is provided client-side via the new PNDate types.
+
+If you were previously using history in 3.4, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
 take PNDate arguments, not NSDate arguments. This is as easy as replacing:
 
 ```objective-c
@@ -18,11 +20,11 @@ NSDate *startDate = [NSDate date];
 ```
 with
 ```objective-c
-PNDate *startDate = [PNDate dateWithDate:[NSDate date]];
+PNDate *startDate = [PNDate dateWithDate:[NSDate date]]; // Convert from a date
 ```
 or
 ```objective-c
-PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567];
+PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567]; // Convert from a timetoken
 ```
 ## Adding PubNub to your project  
 
