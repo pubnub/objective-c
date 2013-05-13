@@ -118,12 +118,6 @@
 - (IBAction)disconnectButtonTapped:(id)sender {
     [PubNub disconnect];
 
-
-    [[PNObservationCenter defaultCenter] removeTimeTokenReceivingObserver:self];
-    [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self];
-    [[PNObservationCenter defaultCenter] removeChannelParticipantsListProcessingObserver:self];
-    [[PNObservationCenter defaultCenter] removePresenceEventObserver:self];
-
     self.subscribeButton.enabled = NO;
     self.sendMessageButton.enabled = NO;
 }
