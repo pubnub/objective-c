@@ -62,7 +62,7 @@
     return [self configurationWithPublishKey:publishKey
                                 subscribeKey:subscribeKey
                                    secretKey:secretKey
-                            authorizationKey:nil];
+                            authorizationKey:kPNAuthorizationKey];
 }
 
 + (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
@@ -87,7 +87,7 @@
                            subscribeKey:subscribeKey
                               secretKey:secretKey
                               cipherKey:kPNCipherKey
-                       authorizationKey:nil];
+                       authorizationKey:kPNAuthorizationKey];
 }
 
 + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
@@ -115,7 +115,7 @@
                            subscribeKey:subscribeKey
                               secretKey:secretKey
                               cipherKey:cipherKey
-                       authorizationKey:nil];
+                       authorizationKey:kPNAuthorizationKey];
 }
 
 + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
@@ -147,7 +147,7 @@
                    subscribeKey:subscribeKey
                       secretKey:secretKey
                       cipherKey:cipherKey
-               authorizationKey:nil];
+               authorizationKey:kPNAuthorizationKey];
 }
 
 - (id)initWithOrigin:(NSString *)originHostName
