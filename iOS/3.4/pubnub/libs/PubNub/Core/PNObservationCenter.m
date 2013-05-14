@@ -235,11 +235,11 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         // Handle push notification enabled channels retrieve events
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleClientPushNotificationEnabledChannels:)
-                                                     name:kPNClientPushNotificationEnableDidCompleteNotification
+                                                     name:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleClientPushNotificationEnabledChannels:)
-                                                     name:kPNClientPushNotificationEnableDidFailNotification
+                                                     name:kPNClientPushNotificationChannelsRetrieveDidFailNotification
                                                    object:nil];
 
 
@@ -882,19 +882,22 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 - (void)handleClientPushNotificationStateChange:(NSNotification *)notification {
 
+    BOOL isEnablingPushNotifications = YES;
     NSString *eventName = PNObservationEvents.clientPushNotificationEnabling;
+    if ([notification.name isEqualToString:kPNClientPushNotificationDisableDidCompleteNotification]) {
+
+        isEnablingPushNotifications = NO;
+        eventName = PNObservationEvents.clientPushNotificationDisabling;
+    }
     NSArray *channels = nil;
     PNError *error = nil;
-    BOOL isEnablingPushNotifications = NO;
     if ([notification.name isEqualToString:kPNClientPushNotificationEnableDidCompleteNotification] ||
-        [notification.name isEqualToString:kPNClientPushNotificationEnableDidCompleteNotification]) {
+        [notification.name isEqualToString:kPNClientPushNotificationDisableDidCompleteNotification]) {
 
-        isEnablingPushNotifications = YES;
         channels = (NSArray *)notification.userInfo;
     }
     else {
 
-        eventName = PNObservationEvents.clientPushNotificationDisabling;
         error = (PNError *)notification.userInfo;
         channels = error.associatedObject;
     }
@@ -928,13 +931,8 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 - (void)handleClientPushNotificationRemoveProcess:(NSNotification *)notification {
 
-    NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientPushNotificationRemoveDidCompleteNotification]) {
-
-        // TODO: Process channels which was disabled for push notifications (if there is such ability on backend)
-    }
-    else {
+    if (![notification.name isEqualToString:kPNClientPushNotificationRemoveDidCompleteNotification]) {
 
         error = (PNError *)notification.userInfo;
     }
@@ -954,7 +952,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         PNClientPushNotificationsRemoveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
         if (block) {
 
-            block(channels, error);
+            block(error);
         }
     }];
 }
@@ -963,7 +961,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientPushNotificationEnableDidCompleteNotification]) {
+    if ([notification.name isEqualToString:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification]) {
 
         channels = (NSArray *)notification.userInfo;
     }

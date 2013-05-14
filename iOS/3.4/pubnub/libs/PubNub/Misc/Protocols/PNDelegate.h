@@ -138,7 +138,7 @@
  * Called on delegate when PubNub client was able to remove
  * push notification from all channels
  */
-- (void)pubnubClient:(PubNub *)client didRemovePushNotificationsFromChannels:(NSArray *)channels;
+- (void)pubnubClientDidRemovePushNotifications:(PubNub *)client;
 
 /**
  * Called on delegate when some kind of error occurred during
@@ -156,7 +156,7 @@
  * Called on delegate when some kind of error occurred during
  * push notifications enabled channels list retrieval process
  */
-- (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFaileWithError:(PNError *)error;
+- (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFailWithError:(PNError *)error;
 
 /**
  * Called on delegate when PubNub client retrieved time

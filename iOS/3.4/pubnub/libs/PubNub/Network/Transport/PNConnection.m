@@ -42,7 +42,7 @@ typedef enum _PNConnectionSSLConfigurationLevel {
 
 struct PNConnectionIdentifiersStruct PNConnectionIdentifiers = {
     
-    .messagingConnection = @"PNMessaginConnectionIdentifier",
+    .messagingConnection = @"PNMessagingConnectionIdentifier",
     .serviceConnection = @"PNServiceConnectionIdentifier"
 };
 

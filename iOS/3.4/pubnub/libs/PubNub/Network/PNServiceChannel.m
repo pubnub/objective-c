@@ -35,6 +35,10 @@
 #import "PNResponseParser.h"
 #import "PNRequestsQueue.h"
 #import "PNResponse.h"
+#import "PNPushNotificationsStateChangeRequest.h"
+#import "NSInvocation+PNAdditions.h"
+#import "PNError+Protected.h"
+#import "PNPushNotificationsEnabledChannelsParser.h"
 
 
 #pragma mark Private interface methods
@@ -215,23 +219,85 @@
         }
         else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
 
+            SEL selector;
+            NSArray *parameters;
+            NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
             NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
-            if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
+            PNLogLevels logLevel = PNLogCommunicationChannelLayerInfoLevel;
+            NSString *message = @" PUSH NOTIFICATIONS ENABLED. SERVICE RESPONSE: %@";
 
-                // TODO: PROCESS PUSH NOTIFICATION ENABLE RESPONSE AND CALL CORRESPONDING DELEGATE METHODS
+            // Check whether there is no error while processed push notifications state change
+            if (![parsedData isKindOfClass:[PNError class]]) {
+
+                selector = @selector(serviceChannel:didEnablePushNotificationsOnChannels:);
+                if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
+
+                    message = @" PUSH NOTIFICATIONS DISABLED. SERVICE RESPONSE: %@";
+                    selector = @selector(serviceChannel:didDisablePushNotificationsOnChannels:);
+                }
+
+                parameters = @[self, channels];
             }
             else {
 
-                // TODO: PROCESS PUSH NOTIFICATION DISABLE RESPONSE AND CALL CORRESPONDING DELEGATE METHODS
+                logLevel = PNLogCommunicationChannelLayerErrorLevel;
+                message = @" PUSH NOTIFICATIONS ENABLING FAILED WITH ERROR: %@";
+                selector = @selector(serviceChannel:didFailPushNotificationEnableForChannels:withError:);
+                if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
+
+                    message = @" PUSH NOTIFICATIONS DISABLING FAILED WITH ERROR: %@";
+                    selector = @selector(serviceChannel:didFailPushNotificationDisableForChannels:withError:);
+                }
+
+                parameters = @[self, channels, parsedData];
             }
+
+            PNLog(logLevel, self, message, parsedData);
+
+            NSInvocation *invocation = [NSInvocation invocationForObject:self.serviceDelegate
+                                                                selector:selector
+                                                        retainsArguments:NO
+                                                              parameters:parameters];
+            [invocation invoke];
         }
         else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
 
-            // TODO: PROCESS PUSH NOTIFICATION REMOVAL FROM ALL CHANNELS RESPONSE AND CALL CORRESPONDING DELEGATE METHODS
+            // Check whether there is no error while removed push notifications from specified set
+            // of channels or not
+            if (![parsedData isKindOfClass:[PNError class]]) {
+
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PUSH NOTIFICATIONS REMOVED. SERVICE RESPONSE: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannelDidRemovePushNotifications:self];
+            }
+            else {
+
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATIONS REMOVE FAILED WITH ERROR: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:parsedData];
+            }
         }
         else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
 
-            // TODO: PROCESS PUSH NOTIFICATION ENABLED CHANNELS RESPONSE AND CALL CORRESPONDING DELEGATE METHODS
+            // Check whether there is no error while retrieved list of channels on which
+            // push notifications was enabled
+            if (![parsedData isKindOfClass:[PNError class]]) {
+
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PUSH NOTIFICATIONS ENABLED CHANNELS LIST RECEIVED. SERVICE RESPONSE: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self
+          didReceivePushNotificationsEnabledChannels:[PNChannel channelsWithNames:parsedData]];
+            }
+            else {
+
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION ENABLED CHANNELS LIST RECEIVE FAILED WITH ERROR: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:parsedData];
+            }
         }
         else {
 
@@ -549,8 +615,8 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
             PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION ENABLED CHANNELS REQUEST HAS BEEN FAILED: %@",
                     error);
 
-            [self.serviceDelegate serviceChannel:self
-                    didFailPushNotificationEnabledChannelsReceiveWithError:error];
+            [self.serviceDelegate       serviceChannel:self
+didFailPushNotificationEnabledChannelsReceiveWithError:error];
         }
         // Check whether this is 'Post message' request or not
         else if ([request isKindOfClass:[PNMessagePostRequest class]]) {

@@ -67,7 +67,7 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
  * Sent to the delegate when push notifications succeffully removed
  * from all channels
  */
-- (void)serviceChannel:(PNServiceChannel *)channel didRemovePushNotificationsFromChannels:(NSArray *)channels;
+- (void)serviceChannelDidRemovePushNotifications:(PNServiceChannel *)channel;
 
 /**
  * Sent to the delegate when push notification removal failed because of error

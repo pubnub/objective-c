@@ -124,6 +124,6 @@ typedef void (^PNClientPresenceEventHandlingBlock)(PNPresenceEvent *);
 typedef void (^PNClientPushNotificationsEnableHandlingBlock)(NSArray *, PNError *);
 typedef void (^PNClientPushNotificationsDisableHandlingBlock)(NSArray *, PNError *);
 typedef void (^PNClientPushNotificationsEnabledChannelsHandlingBlock)(NSArray *, PNError *);
-typedef void (^PNClientPushNotificationsRemoveHandlingBlock)(NSArray *, PNError *);
+typedef void (^PNClientPushNotificationsRemoveHandlingBlock)(PNError *);
 
 #endif

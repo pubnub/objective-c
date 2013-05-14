@@ -92,8 +92,7 @@ static NSString * const kPNClientPushNotificationDisableDidCompleteNotification 
 static NSString * const kPNClientPushNotificationDisableDidFailNotification = @"PNClientPushNotificationDisableDidFailNotification";
 
 // Send when PubNub client successfully removed push notification
-// from all previously enabled channels (channel(s) will be
-// passed in userInfo like plain NSArray)
+// from all previously enabled channels
 static NSString * const kPNClientPushNotificationRemoveDidCompleteNotification = @"PNClientPushNotificationRemoveDidCompleteNotification";
 
 // Send when PubNub client failed to remove push notification

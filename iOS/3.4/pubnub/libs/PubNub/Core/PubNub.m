@@ -892,7 +892,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[PNObservationCenter defaultCenter] addClientAsPushNotificationsRemoveObserverWithBlock:handlerBlock];
         }
 
-        // TODO: Send push notification removal request
+        [[self sharedInstance] sendRequest:[PNPushNotificationsRemoveRequest requestWithDevicePushToken:pushToken]
+                   shouldObserveProcessing:YES];
     }
     // Looks like client can't send request because of some reasons
     else {
@@ -904,7 +905,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         if (handlerBlock) {
 
-            handlerBlock(nil, removalError);
+            handlerBlock(removalError);
         }
     }
 }
@@ -1349,11 +1350,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [request isKindOfClass:[PNTimeTokenRequest class]] ||
         [request isKindOfClass:[PNMessageHistoryRequest class]] ||
         [request isKindOfClass:[PNHereNowRequest class]] ||
-        [request isKindOfClass:[PNLatencyMeasureRequest class]]) {
+        [request isKindOfClass:[PNLatencyMeasureRequest class]] ||
+        [request isKindOfClass:[PNPushNotificationsStateChangeRequest class]] ||
+        [request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]] ||
+        [request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
         
         shouldSendOnMessageChannel = NO;
     }
-    
     
     [self sendRequest:request
             onChannel:(shouldSendOnMessageChannel?self.messagingChannel:self.serviceChannel)
@@ -1755,7 +1758,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     // Check whether delegate is able to handle push notifications removal error
     // or not
-    SEL selector = @selector(pubnubClient:pushNotificationEnabledChannelsReceiveDidFaileWithError:);
+    SEL selector = @selector(pubnubClient:pushNotificationEnabledChannelsReceiveDidFailWithError:);
     if ([self.delegate respondsToSelector:selector]) {
 
         #pragma clang diagnostic push
@@ -2106,20 +2109,20 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
     [self notifyDelegateAboutPushNotificationsDisableFailedWithError:error];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel didRemovePushNotificationsFromChannels:(NSArray *)channels {
+- (void)serviceChannelDidRemovePushNotifications:(PNServiceChannel *)channel {
 
     // Check wheter delegate is able to handle successfull push notification removal from
     // all channels or not
-    SEL selector = @selector(pubnubClient:didRemovePushNotificationsFromChannels:);
+    SEL selector = @selector(pubnubClientDidRemovePushNotifications:);
     if ([self.delegate respondsToSelector:selector]) {
 
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self withObject:channels];
+        [self.delegate performSelector:selector withObject:self];
         #pragma clang diagnostic pop
     }
 
-    [self sendNotification:kPNClientPushNotificationRemoveDidCompleteNotification withObject:channels];
+    [self sendNotification:kPNClientPushNotificationRemoveDidCompleteNotification withObject:nil];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationsRemoveWithError:(PNError *)error {
