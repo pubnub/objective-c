@@ -16,6 +16,17 @@
 
 #import <OCMock/OCMock.h>
 
+#pragma mark - PNMessagingChannel private methods
+
+@interface PNMessagingChannel ()
+
+- (void)leaveSubscribedChannelsByUserRequest:(BOOL)isLeavingByUserRequest;
+- (void)handleLeaveRequestCompletionForChannels:(NSArray *)channels
+                                   withResponse:(PNResponse *)response
+                                  byUserRequest:(BOOL)isLeavingByUserRequest;
+
+@end
+
 @implementation PNMessagingChannelTest
 
 - (void)setUp
@@ -81,9 +92,6 @@
 
 - (void)testUnsubscribeFromChannelsWithPresenceEvent {
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-
-    // Cannot use mock there, cause all methods are private to check correct behaviour
-    // This test should be improved in the future
     
     STAssertTrue([[messageChannel unsubscribeFromChannelsWithPresenceEvent:YES] count] == 0, @"Cannot subscribe without any channel");
 }
@@ -195,39 +203,14 @@
     // it seems now we don't receive anything, cause we are working outside of PubNub client
     // so checking of unsubscribe should be stubbed completely
     
-/*    
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-    [messageChannel subscribeOnChannels:@[[self mockChannel]] withPresenceEvent:YES];
-    
-    dispatch_semaphore_t checkSemaphore = dispatch_semaphore_create(0);
-    
-    // TODO: ask about maximal timout allowed
-    // suppose to have timeout no more than 10s
-    while (dispatch_semaphore_wait(checkSemaphore, 2)) {
-        
-        NSLog(@"Hm: %d", [[messageChannel subscribedChannels] count]);
-        if ([[messageChannel subscribedChannels] count] == 1) {
-            dispatch_semaphore_signal(checkSemaphore);
-        }
-    }
-    
-    STAssertTrue([[messageChannel subscribedChannels] count] == 1, @"Cannot subscribe to channel");
-    
-    [messageChannel unsubscribeFromChannels:@[[self mockChannel]]];
-    
-    STAssertTrue([[messageChannel subscribedChannels] count] == 0, @"Cannot unsubscribe from channel");
- */
-    
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     
-//    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
-//                  shouldObserveProcessing:YES];
+    [[mockChannel expect] leaveSubscribedChannelsByUserRequest:YES];
     
-    // TODO: wee need to have more access to internal mechanisms of this class, to be able to test this part of functinality.
     [mockChannel unsubscribeFromChannelsWithPresenceEvent:YES];
     
-//    [mockChannel verify];
+    [mockChannel verify];
 }
 
 - (void)testEnablePresenceObservationForChannels {

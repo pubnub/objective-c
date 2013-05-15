@@ -13,6 +13,19 @@
 #import "PNConnection.h"
 #import "PNConnection+Protected.h"
 
+@interface PNConnection ()
+
++ (NSMutableDictionary *)connectionsPool;
++ (PNConnection *)connectionFromPoolWithIdentifier:(NSString *)identifier;
++ (void)storeConnection:(PNConnection *)connection withIdentifier:(NSString *)identifier;
+
+- (BOOL)shouldProcessNextRequest;
+- (void)setReconnecting:(BOOL)value;
+- (void)disconnectStreams;
+- (void)closeStreams;
+
+@end
+
 @implementation PNConnectionTest
 
 - (void)setUp
@@ -62,28 +75,61 @@
 
 #pragma mark - Interaction tests
 
-- (void)testDestroyConnectionInteraction {
+- (void)testDestroyConnection {
+    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
     
+    [PNConnection destroyConnection:connection];
+    STAssertNil([PNConnection connectionFromPoolWithIdentifier:@"MyTestIdentifier"], @"Shouldn't be disconnected by default");
 }
 
-- (void)testCloseAllConnectionsInteraction {
+- (void)testCloseAllConnections {
+    __unused PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
     
+    [PNConnection closeAllConnections];
+    STAssertNil([PNConnection connectionFromPoolWithIdentifier:@"MyTestIdentifier"], @"Shouldn't be disconnected by default");    
 }
 
-- (void)testScheduleNextRequestExecutionInteraction {
+- (void)testScheduleNextRequestExecution {
+    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
     
+    id mockConnection = [OCMockObject partialMockForObject:connection];
+    
+    [[mockConnection expect] isConnected];
+    [mockConnection scheduleNextRequestExecution];
+    
+    [mockConnection verify];
 }
 
-- (void)testUnscheduleRequestsExecutionInteraction {
-    
+- (void)testUnscheduleRequestsExecution {
+    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
+    [connection unscheduleRequestsExecution];
+    STAssertFalse([connection shouldProcessNextRequest], @"Shouldn't process next request");
 }
 
-- (void)testReconnectInteraction {
+- (void)testReconnect {
+    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
     
+    id mockConnenction = [OCMockObject partialMockForObject:connection];
+    
+    [[mockConnenction expect] setReconnecting:(BOOL)YES];
+    [[mockConnenction expect] disconnectStreams];
+    
+    [mockConnenction reconnect];
+    
+    [mockConnenction verify];
 }
 
-- (void)testCloseConnectionInteraction {
+- (void)testCloseConnection {
+    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
     
+    id mockConnenction = [OCMockObject partialMockForObject:connection];
+    
+    [[mockConnenction expect] setReconnecting:(BOOL)NO];
+    [[mockConnenction expect] closeStreams];
+    
+    [mockConnenction closeConnection];
+    
+    [mockConnenction verify];
 }
 
 @end
