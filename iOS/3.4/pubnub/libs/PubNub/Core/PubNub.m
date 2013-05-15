@@ -28,6 +28,7 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
+#import "PNConnectionChannel+Protected.h"
 
 
 #pragma mark Static
@@ -203,6 +204,11 @@ static NSMutableArray *pendingInvocations = nil;
 - (void)    sendRequest:(PNBaseRequest *)request
               onChannel:(PNConnectionChannel *)channel
 shouldObserveProcessing:(BOOL)shouldObserveProcessing;
+
+
+#pragma mark - Message channel delegate methods
+
+- (void)postponeMessagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel;
 
 
 #pragma mark - Handler methods
@@ -1279,8 +1285,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeRequestHistoryForChannel:(PNChannel *)channel
-                                    from:(NSDate *)startDate
-                                      to:(NSDate *)endDate
+                                    from:(PNDate *)startDate
+                                      to:(PNDate *)endDate
                                    limit:(NSUInteger)limit
                           reverseHistory:(BOOL)shouldReverseMessageHistory
                      withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
@@ -2140,26 +2146,41 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 - (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
 
-    if ([messagingChannel canResubscribe]) {
+    [[self class] performAsyncLockingBlock:^{
 
-        // Check whether user want to resubscribe on previously subscribed channels or not
-        if ([self shouldRestoreSubscription]) {
+        if ([messagingChannel canResubscribe]) {
 
-            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+            // Check whether user want to resubscribe on previously subscribed channels or not
+            if ([self shouldRestoreSubscription]) {
+
+                [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+            }
+            // Looks like developer doesn't want to restore subscription on previously
+            // subscribed channels, flush channels
+            else {
+
+                [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+            }
         }
-        // Looks like developer doesn't want to restore subscription on previously
-        // subscribed channels, flush channels
+        // Looks like there is no channels on which client can resubscribe
+        // reconnect messaging channel
         else {
 
-            [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+            [messagingChannel reconnect];
         }
     }
-    // Looks like there is no channels on which client can resubscribe
-    // reconnect messaging channel
-    else {
+                   postponedExecutionBlock:^{
 
-        [messagingChannel reconnect];
-    }
+                       [self postponeMessagingChannelIdleTimeout:messagingChannel];
+                   }];
+}
+
+- (void)postponeMessagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
+
+    [self postponeSelector:@selector(messagingChannelIdleTimeout:)
+                 forObject:self
+            withParameters:@[messagingChannel]
+                outOfOrder:NO];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
@@ -2202,6 +2223,8 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     else {
         
         [self warmUpConnection:messagingChannel];
+
+        [self handleLockingOperationComplete:YES];
     }
 }
 
