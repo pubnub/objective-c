@@ -1854,9 +1854,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             if (methodInvocation) {
 
-                NSLog(@"\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> INVOKE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\nMETHOD: %@\nTARGET: %@\n\n",
-                        NSStringFromSelector(methodInvocation.selector), methodInvocation.target);
-
                 [methodInvocation invoke];
             }
         }
