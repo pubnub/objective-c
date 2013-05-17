@@ -7,6 +7,26 @@
 //
 
 #import "PNConnectionChannelTest.h"
+#import "PNConnectionChannel.h"
+#import "PNConnectionChannel+Protected.h"
+
+#import <OCMock/OCMock.h>
+
+#import "PNConnection.h"
+#import "PNSubscribeRequest.h"
+#import "PNChannel.h"
+
+@interface PNConnectionChannel ()
+
+- (BOOL)shouldStoreRequest:(PNBaseRequest *)request;
+
+@end
+
+@interface PNConnectionChannelTest ()
+
+<PNConnectionChannelDelegate>
+
+@end
 
 @implementation PNConnectionChannelTest
 
@@ -27,45 +47,89 @@
 #pragma mark - States tests
 
 - (void)testConnectionChannelWithTypeAndDelegate {
+    PNConnectionChannel *connectionChannel = [PNConnectionChannel connectionChannelWithType:PNConnectionChannelMessaging andDelegate:self];
+    STAssertNotNil(connectionChannel, @"Couldn't create connection with message type and delegate");
     
+    connectionChannel = [PNConnectionChannel connectionChannelWithType:PNConnectionChannelService andDelegate:self];
+    STAssertNotNil(connectionChannel, @"Couldn't create connection with service type and delegate");
 }
 
 - (void)testInitWithTypeAndDelegate {
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    STAssertNotNil(connectionChannel, @"Couldn't create connection with message type and delegate");
     
+    connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelService andDelegate:self];
+    STAssertNotNil(connectionChannel, @"Couldn't create connection with service type and delegate");
 }
 
 - (void)testIsConnected {
-    
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    STAssertFalse([connectionChannel isConnected], @"By default channel shouldn't be connected");
 }
 
 #pragma mark - Interaction tests
 
-- (void)testConnectInteraction {
+- (void)testConnect {
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    [connectionChannel connect];
+    
+    STAssertFalse([connectionChannel isConnected], @"Cannot connect without configuration");
+}
+
+- (void)testDisconnect {
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    
+    [connectionChannel disconnect];
+    
+    STAssertFalse([connectionChannel isConnected], @"Cannot connect without configuration");
+}
+
+- (void)testScheduleRequestShouldObserveProcessing {
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    
+    id mockChannel = [OCMockObject partialMockForObject:connectionChannel];
+    
+    [[mockChannel expect] scheduleNextRequest];
+    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] shouldStoreRequest:OCMOCK_ANY];
+    
+    PNChannel *channel = [PNChannel channelWithName:@"MyTestChannel"];
+    PNSubscribeRequest *mockRequest = [PNSubscribeRequest subscribeRequestForChannel:channel byUserRequest:YES];
+    
+    [mockChannel scheduleRequest:mockRequest shouldObserveProcessing:YES];
+    
+    [mockChannel verify];
+}
+
+- (void)testScheduleNextRequest {
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    
+    [connectionChannel scheduleNextRequest];
+}
+
+- (void)testUnscheduleNextRequest {
     
 }
 
-- (void)testDisconnectInteraction {
+- (void)testUnscheduleRequest {
     
 }
 
-- (void)testScheduleRequestShouldObserveProcessingInteraction {
+- (void)testClearScheduledRequestsQueue {
     
 }
 
-- (void)testScheduleNextRequestInteraction {
-    
-}
+#pragma mark - PNConnectionChannel Delegate
 
-- (void)testUnscheduleNextRequestInteraction {
-    
-}
+- (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host {}
 
-- (void)testUnscheduleRequestInteraction {
-    
-}
+- (void)connectionChannel:(PNConnectionChannel *)channel
+connectionDidFailToOrigin:(NSString *)host
+                withError:(PNError *)error {}
 
-- (void)testClearScheduledRequestsQueueInteraction {
-    
-}
+- (void)connectionChannel:(PNConnectionChannel *)channel didDisconnectFromOrigin:(NSString *)host {}
+
+- (void)connectionChannel:(PNConnectionChannel *)channel
+ willDisconnectFromOrigin:(NSString *)host
+                withError:(PNError *)error {}
 
 @end
