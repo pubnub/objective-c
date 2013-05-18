@@ -58,7 +58,7 @@ typedef enum _PNLogLevels {
 static void PNLog(PNLogLevels level, id sender, ...);
 void PNLog(PNLogLevels level, id sender, ...) {
 
-    __block __pn_desired_weak id weakSender = sender;
+    __block __unsafe_unretained id weakSender = sender;
     NSString *formattedLog = nil;
 
     va_list args;
@@ -108,6 +108,12 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
         
         *((CFTypeRef*)CFObject) = NULL;
     }
+}
+
+static NSNull* PNNillIfNotSet(id object);
+NSNull* PNNillIfNotSet(id object) {
+
+    return (object ? object : [NSNull null]);
 }
 
 static NSUInteger PNRandomValueInRange(NSRange valuesRange);

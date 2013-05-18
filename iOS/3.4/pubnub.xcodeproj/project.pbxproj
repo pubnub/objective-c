@@ -52,6 +52,7 @@
 		799A5AE016DD55F8007025AF /* NSString+PNAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 799A5ADE16DD55F8007025AF /* NSString+PNAddition.m */; };
 		79A8B5CB166FB69800C64BCF /* PNError.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A8B5CA166FB69800C64BCF /* PNError.m */; };
 		79A8B5CC166FB69800C64BCF /* PNError.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A8B5CA166FB69800C64BCF /* PNError.m */; };
+		79BBEFF51747B15C00CF170A /* PNPushNotificationsEnabledChannelsParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BBEFF41747B15C00CF170A /* PNPushNotificationsEnabledChannelsParser.m */; };
 		79C3222D166DF847006DB535 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222C166DF847006DB535 /* UIKit.framework */; };
 		79C3222F166DF847006DB535 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222E166DF847006DB535 /* Foundation.framework */; };
 		79C32231166DF847006DB535 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32230166DF847006DB535 /* CoreGraphics.framework */; };
@@ -254,6 +255,8 @@
 		79A8B5C8166FB55F00C64BCF /* PNDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNDelegate.h; sourceTree = "<group>"; };
 		79A8B5C9166FB69800C64BCF /* PNError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNError.h; sourceTree = "<group>"; };
 		79A8B5CA166FB69800C64BCF /* PNError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNError.m; sourceTree = "<group>"; };
+		79BBEFF31747B15C00CF170A /* PNPushNotificationsEnabledChannelsParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPushNotificationsEnabledChannelsParser.h; sourceTree = "<group>"; };
+		79BBEFF41747B15C00CF170A /* PNPushNotificationsEnabledChannelsParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPushNotificationsEnabledChannelsParser.m; sourceTree = "<group>"; };
 		79C32228166DF847006DB535 /* pubnub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pubnub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C3222C166DF847006DB535 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		79C3222E166DF847006DB535 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -854,6 +857,8 @@
 		79EB391A1681E50000696025 /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
+				79BBEFF31747B15C00CF170A /* PNPushNotificationsEnabledChannelsParser.h */,
+				79BBEFF41747B15C00CF170A /* PNPushNotificationsEnabledChannelsParser.m */,
 				79EB391C1681E58300696025 /* PNResponseDeserialize.h */,
 				79EB391D1681E58300696025 /* PNResponseDeserialize.m */,
 				DD71B423D8CA1AE27101AADB /* PNResponseParser.m */,
@@ -1138,6 +1143,7 @@
 				DD71BF5E9121AA2CB3A5287B /* PNPushNotificationsRemoveRequest.m in Sources */,
 				DD71B426CD58811169AFE508 /* NSArray+PNAdditions.m in Sources */,
 				DD71BFFFB9025F894BA4F975 /* NSInvocation+PNAdditions.m in Sources */,
+				79BBEFF51747B15C00CF170A /* PNPushNotificationsEnabledChannelsParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

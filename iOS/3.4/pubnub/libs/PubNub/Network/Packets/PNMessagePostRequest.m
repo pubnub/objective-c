@@ -36,6 +36,10 @@
 // Stores reference on prepared message
 @property (nonatomic, strong) NSString *preparedMessage;
 
+// Stores reference on client identifier on the
+// moment of request creation
+@property (nonatomic, copy) NSString *clientIdentifier;
+
 
 #pragma mark - Instance methods
 
@@ -75,6 +79,7 @@
 
         self.sendingByUserRequest = YES;
         self.message = message;
+        self.clientIdentifier = [PubNub escapedClientIdentifier];
     }
 
 
@@ -122,7 +127,7 @@
                     [self callbackMethodName],
                     self.shortIdentifier,
                     self.preparedMessage,
-                    [PubNub escapedClientIdentifier]];
+                    self.clientIdentifier];
 }
 
 - (NSString *)encryptedMessageWithError:(PNError **)encryptionError {

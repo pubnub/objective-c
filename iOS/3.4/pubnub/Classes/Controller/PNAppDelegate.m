@@ -47,64 +47,64 @@
     // (observe when client will be disconnected)
     [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
                                                         withCallbackBlock:^(NSString *origin,
-                                                                BOOL connected,
-                                                                PNError *error) {
+                                                                            BOOL connected,
+                                                                            PNError *error) {
 
-                                                            if (!connected && error) {
+                if (!connected && error) {
 
-                                                                PNLog(PNLogGeneralLevel, self, @"#2 PubNub client was unable to connect because of error: %@",
-                                                                        [error localizedDescription],
-                                                                        [error localizedFailureReason]);
-                                                            }
-                                                        }];
+                    PNLog(PNLogGeneralLevel, self, @"#2 PubNub client was unable to connect because of error: %@",
+                          [error localizedDescription],
+                          [error localizedFailureReason]);
+                }
+            }];
 
 
     // Subscribe application delegate on subscription updates
     // (events when client subscribe on some channel)
     [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:self
                                                                  withCallbackBlock:^(PNSubscriptionProcessState state,
-                                                                         NSArray *channels,
-                                                                         PNError *subscriptionError) {
+                                                                                     NSArray *channels,
+                                                                                     PNError *subscriptionError) {
 
-                                                                     switch (state) {
+                                            switch (state) {
 
-                                                                         case PNSubscriptionProcessNotSubscribedState:
+                                                case PNSubscriptionProcessNotSubscribedState:
 
-                                                                             PNLog(PNLogGeneralLevel, self,
-                                                                                     @"{BLOCK-P} PubNub client subscription failed with error: %@",
-                                                                                     subscriptionError);
-                                                                             break;
+                                                    PNLog(PNLogGeneralLevel, self,
+                                                          @"{BLOCK-P} PubNub client subscription failed with error: %@",
+                                                          subscriptionError);
+                                                    break;
 
-                                                                         case PNSubscriptionProcessSubscribedState:
+                                                case PNSubscriptionProcessSubscribedState:
 
-                                                                             PNLog(PNLogGeneralLevel, self,
-                                                                                     @"{BLOCK-P} PubNub client subscribed on channels: %@",
-                                                                                     channels);
-                                                                             break;
+                                                    PNLog(PNLogGeneralLevel, self,
+                                                          @"{BLOCK-P} PubNub client subscribed on channels: %@",
+                                                          channels);
+                                                    break;
 
-                                                                         case PNSubscriptionProcessWillRestoreState:
+                                                case PNSubscriptionProcessWillRestoreState:
 
-                                                                             PNLog(PNLogGeneralLevel, self,
-                                                                                     @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
-                                                                                     channels);
-                                                                             break;
+                                                    PNLog(PNLogGeneralLevel, self,
+                                                          @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
+                                                          channels);
+                                                    break;
 
-                                                                         case PNSubscriptionProcessRestoredState:
+                                                case PNSubscriptionProcessRestoredState:
 
-                                                                             PNLog(PNLogGeneralLevel, self,
-                                                                                     @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
-                                                                                     channels);
-                                                                             break;
-                                                                     }
-                                                                 }];
+                                                    PNLog(PNLogGeneralLevel, self,
+                                                          @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
+                                                          channels);
+                                                    break;
+                                            }
+                                        }];
 
     // Subscribe on message arrival events with block
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
                                                          withBlock:^(PNMessage *message) {
 
-                                                             PNLog(PNLogGeneralLevel, self, @"{BLOCK-P} PubNubc client received new message: %@",
-                                                                     message);
-                                                         }];
+                                     PNLog(PNLogGeneralLevel, self, @"{BLOCK-P} PubNubc client received new message: %@",
+                                           message);
+                            }];
 
     // Subscribe on presence event arrival events with block
     [[PNObservationCenter defaultCenter] addPresenceEventObserver:self
@@ -125,10 +125,10 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [PNIdentificationViewController new];
     [self.window makeKeyAndVisible];
-
+    
     [self initializePubNubClient];
-
-
+    
+    
     return YES;
 }
 
@@ -209,14 +209,14 @@
 }
 
 - (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
-
+    
     PNLog(PNLogGeneralLevel, self, @"#1 PubNub client was unable to connect because of error: %@", error);
 
     self.disconnectedOnNetworkError = error.code == kPNClientConnectionFailedOnInternetFailureError;
 }
 
 - (void)pubnubClient:(PubNub *)client willDisconnectWithError:(PNError *)error {
-
+    
     PNLog(PNLogGeneralLevel, self, @"PubNub clinet will close connection because of error: %@", error);
 }
 
@@ -228,7 +228,7 @@
 }
 
 - (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin {
-
+    
     PNLog(PNLogGeneralLevel, self, @"PubNub client disconnected from PubNub origin at: %@", origin);
 }
 
@@ -248,7 +248,7 @@
 }
 
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
-
+    
     PNLog(PNLogGeneralLevel, self, @"PubNub client failed to subscribe because of error: %@", error);
 }
 
@@ -304,13 +304,13 @@ didReceiveMessageHistory:(NSArray *)messages
                       to:(PNDate *)endDate {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client received history for %@ starting from %@ to %@: %@",
-            channel, startDate, endDate, messages);
+          channel, startDate, endDate, messages);
 }
 
 - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download history for %@ because of error: %@",
-            channel, error);
+          channel, error);
 }
 
 - (void)      pubnubClient:(PubNub *)client
@@ -318,7 +318,7 @@ didReceiveParticipantsLits:(NSArray *)participantsList
                 forChannel:(PNChannel *)channel {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client received participants list for channel %@: %@",
-            participantsList, channel);
+          participantsList, channel);
 }
 
 - (void)                     pubnubClient:(PubNub *)client
@@ -326,7 +326,7 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
                                 withError:(PNError *)error {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download participants list for channel %@ because of error: %@",
-            channel, error);
+          channel, error);
 }
 
 - (NSNumber *)shouldResubscribeOnConnectionRestore {

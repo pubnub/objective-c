@@ -38,7 +38,6 @@
 #import "PNPushNotificationsStateChangeRequest.h"
 #import "NSInvocation+PNAdditions.h"
 #import "PNError+Protected.h"
-#import "PNPushNotificationsEnabledChannelsParser.h"
 
 
 #pragma mark Private interface methods

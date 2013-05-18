@@ -45,9 +45,15 @@
 // on which this client is subscribed now
 @property (nonatomic, strong) NSMutableSet *subscribedChannelsSet;
 
+// Stores list of channels (including presence)
+// from which client should unsubscribe w/o presence
+@property (nonatomic, strong) NSSet *presenceDisablingChannelsSet;
+
 // Stores flag on whether messaging channel is restoring
 // subscription on previous channels or not
 @property (nonatomic, assign, getter = isRestoringSubscription) BOOL restoringSubscription;
+
+@property (nonatomic, assign, getter = isDisablingPresence) BOOL disablingPresence;
 
 @property (nonatomic, strong) NSTimer *idleTimer;
 
@@ -63,6 +69,11 @@
 - (BOOL)shouldHandleResponse:(PNResponse *)response;
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;
+
+
+#pragma mark - Presence observation management
+
+- (void)disablePresenceObservationForChannels:(NSArray *)channels sendRequest:(BOOL)shouldSendRequest;
 
 
 #pragma mark - Connection management
@@ -261,6 +272,7 @@
 
         // Clean up channels stack
         [self.subscribedChannelsSet removeAllObjects];
+        self.presenceDisablingChannelsSet = nil;
         [self purgeObservedRequestsPool];
         [self purgeStoredRequestsPool];
         [self clearScheduledRequestsQueue];
@@ -323,6 +335,11 @@
 - (NSArray *)subscribedChannels {
 
     return [self channelsWithOutPresenceFromList:[self.subscribedChannelsSet allObjects]];
+}
+
+- (NSArray *)fullSubscribedChannelsList {
+
+    return [self.subscribedChannelsSet allObjects];
 }
 
 - (BOOL)isSubscribedForChannel:(PNChannel *)channel {
@@ -507,26 +524,46 @@
 
     if (withPresenceEvent) {
 
+        if (self.isDisablingPresence) {
+
+            [self disablePresenceObservationForChannels:[self.presenceDisablingChannelsSet allObjects]
+                                            sendRequest:NO];
+        }
+
         [self leaveChannels:[channelsWithPresence allObjects] byUserRequest:isLeavingByUserRequest];
     }
     else {
 
-        [self handleLeaveRequestCompletionForChannels:channels
-                                         withResponse:nil
-                                        byUserRequest:isLeavingByUserRequest];
+        if ([currentlySubscribedChannels count] == 0) {
+
+            [self handleLeaveRequestCompletionForChannels:[channelsWithPresence allObjects]
+                                             withResponse:nil
+                                            byUserRequest:isLeavingByUserRequest];
+        }
+        else if (self.presenceDisablingChannelsSet == nil) {
+
+            self.presenceDisablingChannelsSet = channelsWithPresence;
+        }
+
     }
 
 
     if ([currentlySubscribedChannels count] > 0) {
 
         PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[currentlySubscribedChannels allObjects]
-                                                                        byUserRequest:isLeavingByUserRequest];
+                                                                                 byUserRequest:isLeavingByUserRequest];
         subscribeRequest.closeConnection = !withPresenceEvent;
 
         // Resubscribe on rest of channels which is left after unsubscribe
         [self scheduleRequest:subscribeRequest shouldObserveProcessing:NO];
     }
     else if(!withPresenceEvent) {
+
+        if (self.isDisablingPresence) {
+
+            [self disablePresenceObservationForChannels:[self.presenceDisablingChannelsSet allObjects]
+                                            sendRequest:NO];
+        }
 
         [self reconnect:NO];
     }
@@ -553,10 +590,37 @@
 
 - (void)disablePresenceObservationForChannels:(NSArray *)channels {
 
-    NSMutableArray *presenceObservers = [[channels valueForKey:@"presenceObserver"] mutableCopy];
-    [presenceObservers removeObject:[NSNull null]];
+    [self disablePresenceObservationForChannels:channels sendRequest:YES];
+}
 
-    [self unsubscribeFromChannels:presenceObservers withPresenceEvent:NO];
+- (void)disablePresenceObservationForChannels:(NSArray *)channels sendRequest:(BOOL)shouldSendRequest {
+
+    if (shouldSendRequest) {
+
+        self.disablingPresence = YES;
+
+        NSSet *channelsWithPresence = [self channelsWithPresenceFromList:channels forSubscribe:NO];
+        self.presenceDisablingChannelsSet = channelsWithPresence;
+
+
+        NSMutableArray *presenceObservers = [[channels valueForKey:@"presenceObserver"] mutableCopy];
+        [presenceObservers removeObject:[NSNull null]];
+
+        [self unsubscribeFromChannels:presenceObservers withPresenceEvent:NO];
+    }
+    else {
+
+        self.disablingPresence = NO;
+
+        self.presenceDisablingChannelsSet = nil;
+
+        // Enumerate over the list of channels and mark that it should observe for presence
+        [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
+            channel.observePresence = NO;
+            channel.userDefinedPresenceObservation = YES;
+        }];
+    }
 }
 
 
@@ -861,6 +925,21 @@
 
         [self.messagingDelegate messagingChannelDidReconnect:self];
     }
+    else if (self.isDisablingPresence) {
+
+        NSMutableSet *currentlySubscribedChannels = [self.subscribedChannelsSet mutableCopy];
+        [currentlySubscribedChannels minusSet:self.presenceDisablingChannelsSet];
+
+        if ([currentlySubscribedChannels count] == 0) {
+
+            [self handleLeaveRequestCompletionForChannels:[self.presenceDisablingChannelsSet allObjects]
+                                             withResponse:nil
+                                            byUserRequest:YES];
+
+            [self disablePresenceObservationForChannels:[self.presenceDisablingChannelsSet allObjects]
+                                            sendRequest:NO];
+        }
+    }
 }
 
 - (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
@@ -973,6 +1052,16 @@
         // (there probably no situation when this situation will take place)
         if ([request isKindOfClass:[PNSubscribeRequest class]] ||
             [request isKindOfClass:[PNLeaveRequest class]]) {
+
+            if (self.isDisablingPresence) {
+
+                [self handleLeaveRequestCompletionForChannels:[self.presenceDisablingChannelsSet allObjects]
+                                                 withResponse:nil
+                                                byUserRequest:YES];
+
+                [self disablePresenceObservationForChannels:[self.presenceDisablingChannelsSet allObjects]
+                                                sendRequest:NO];
+            }
 
             [self handleSubscribeUnsubscribeRequestCompletion:request];
         }
