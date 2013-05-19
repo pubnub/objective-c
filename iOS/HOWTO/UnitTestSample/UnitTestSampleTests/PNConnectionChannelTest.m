@@ -15,8 +15,12 @@
 #import "PNConnection.h"
 #import "PNSubscribeRequest.h"
 #import "PNChannel.h"
+#import "PNRequestsQueue.h"
 
 @interface PNConnectionChannel ()
+
+@property (nonatomic, strong) PNConnection *connection;
+@property (nonatomic, strong) PNRequestsQueue *requestsQueue;
 
 - (BOOL)shouldStoreRequest:(PNBaseRequest *)request;
 
@@ -100,22 +104,68 @@
     [mockChannel verify];
 }
 
+// All methods below just redirect to PNConnection private property of PNConnectionChannel
+
 - (void)testScheduleNextRequest {
+    // init connection
     PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
     
+    // create mock for private property
+    id mockConnect = [OCMockObject partialMockForObject:[PNConnection connectionWithIdentifier:@"MyTestConnect"]];
+    
+    [[mockConnect expect] scheduleNextRequestExecution];
+    [connectionChannel setConnection:mockConnect];
+    
     [connectionChannel scheduleNextRequest];
+    
+    [mockConnect verify];
 }
 
 - (void)testUnscheduleNextRequest {
+    // init connection
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
     
+    // create mock for private property
+    id mockConnect = [OCMockObject partialMockForObject:[PNConnection connectionWithIdentifier:@"MyTestConnect"]];
+    
+    [[mockConnect expect] unscheduleRequestsExecution];
+    [connectionChannel setConnection:mockConnect];
+    
+    [connectionChannel unscheduleNextRequest];
+    
+    [mockConnect verify];
 }
 
 - (void)testUnscheduleRequest {
+    // init connection
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
     
+    // create mock for private property
+    id mockRequestQueue = [OCMockObject partialMockForObject:[[PNRequestsQueue alloc] init]];
+    
+    [[mockRequestQueue expect] removeRequest:OCMOCK_ANY];
+    [connectionChannel setRequestsQueue:mockRequestQueue];
+    
+    [connectionChannel unscheduleRequest:nil];
+    
+    [mockRequestQueue verify];
 }
 
 - (void)testClearScheduledRequestsQueue {
+    // init connection
+    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
     
+    // create mock for private property
+    id mockRequestQueue = [OCMockObject partialMockForObject:[[PNRequestsQueue alloc] init]];
+    
+    [[mockRequestQueue expect] removeAllRequests];
+    [connectionChannel setRequestsQueue:mockRequestQueue];
+    
+    [connectionChannel clearScheduledRequestsQueue];
+    
+    [mockRequestQueue verify];
+    
+    [connectionChannel setRequestsQueue:nil];
 }
 
 #pragma mark - PNConnectionChannel Delegate
