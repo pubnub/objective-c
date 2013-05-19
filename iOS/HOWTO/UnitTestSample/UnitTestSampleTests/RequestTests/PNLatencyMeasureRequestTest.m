@@ -10,6 +10,14 @@
 #import "PNLatencyMeasureRequest.h"
 
 #import <OCMock/OCMock.h>
+#import <OCMock/OCMArg.h>
+
+@interface PNLatencyMeasureRequest ()
+
+@property (nonatomic, assign) CFAbsoluteTime startTime;
+@property (nonatomic, assign) CFAbsoluteTime endTime;
+
+@end
 
 @implementation PNLatencyMeasureRequestTest
 
@@ -31,6 +39,14 @@
 
 - (void)testMarkStartTime {
     
+    PNLatencyMeasureRequest *req = [[PNLatencyMeasureRequest alloc] init];
+    
+    id mockReq = [OCMockObject partialMockForObject:[[PNLatencyMeasureRequest alloc] init]];
+    [[mockReq expect] setStartTime:OCMOCK_ANY];
+    
+    [mockReq markStartTime];
+    
+    [mockReq verify];
 }
 
 - (void)testMarkEndTime {
