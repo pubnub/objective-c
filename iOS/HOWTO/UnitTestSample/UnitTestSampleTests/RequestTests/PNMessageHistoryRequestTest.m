@@ -14,4 +14,30 @@
 
 @implementation PNMessageHistoryRequestTest
 
+- (void)setUp
+{
+    [super setUp];
+    
+    NSLog(@"setUp: %@", self.name);
+}
+
+- (void)tearDown
+{
+    // Tear-down code here.
+    
+    [super tearDown];
+}
+
+#pragma mark - States tests
+
+- (void)testInitForChannel {
+    
+}
+
+#pragma mark - Interaction tests
+
+- (void)testMessageHistoryRequestForChannel {
+    
+}
+
 @end

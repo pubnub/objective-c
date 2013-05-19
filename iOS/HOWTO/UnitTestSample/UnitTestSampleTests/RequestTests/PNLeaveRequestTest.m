@@ -14,4 +14,34 @@
 
 @implementation PNLeaveRequestTest
 
+- (void)setUp
+{
+    [super setUp];
+    
+    NSLog(@"setUp: %@", self.name);
+}
+
+- (void)tearDown
+{
+    // Tear-down code here.
+    
+    [super tearDown];
+}
+
+#pragma mark - States tests
+
+- (void)testInitForChannels {
+    
+}
+
+#pragma mark - Interaction tests
+
+- (void)testLeaveRequestForChannel {
+    
+}
+
+- (void)testRequestForChannels {
+    
+}
+
 @end

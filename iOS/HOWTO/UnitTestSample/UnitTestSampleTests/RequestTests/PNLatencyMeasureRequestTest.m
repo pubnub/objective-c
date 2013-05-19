@@ -13,4 +13,38 @@
 
 @implementation PNLatencyMeasureRequestTest
 
+- (void)setUp
+{
+    [super setUp];
+    
+    NSLog(@"setUp: %@", self.name);
+}
+
+- (void)tearDown
+{
+    // Tear-down code here.
+    
+    [super tearDown];
+}
+
+#pragma mark - States tests
+
+- (void)testMarkStartTime {
+    
+}
+
+- (void)testMarkEndTime {
+    
+}
+
+- (void)testLatency {
+    
+}
+
+#pragma mark - Interaction tests
+
+- (void)testBandwidthToLoadResponse {
+    
+}
+
 @end

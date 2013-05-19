@@ -14,4 +14,38 @@
 
 @implementation PNSubscribeRequestTest
 
+- (void)setUp
+{
+    [super setUp];
+    
+    NSLog(@"setUp: %@", self.name);
+}
+
+- (void)tearDown
+{
+    // Tear-down code here.
+    
+    [super tearDown];
+}
+
+#pragma mark - States tests
+
+- (void)testInitForChannel {
+    
+}
+
+- (void)testInitForChannels {
+    
+}
+
+#pragma mark - Interaction tests
+
+- (void)testSubscribeRequestForChannel {
+    
+}
+
+- (void)testSubscribeRequestForChannels {
+    
+}
+
 @end

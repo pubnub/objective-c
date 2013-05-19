@@ -14,4 +14,64 @@
 
 @implementation PNBaseRequestTest
 
+- (void)setUp
+{
+    [super setUp];
+    
+    NSLog(@"setUp: %@", self.name);
+}
+
+- (void)tearDown
+{
+    // Tear-down code here.
+    
+    [super tearDown];
+}
+
+#pragma mark - States tests
+
+- (void)testTimeout {
+    
+}
+
+- (void)testCallbackMethodName {
+    
+}
+
+- (void)testResourcePath {
+    
+}
+
+- (void)testBuffer {
+    
+}
+
+// Protected methods
+
+- (void)testReset {
+    
+}
+
+- (void)testAllowedRetryCount {
+    
+}
+
+- (void)resetRetryCount {
+    
+}
+
+- (void)testIncreaseRetryCount {
+    
+}
+
+- (void)testCanRetry {
+    
+}
+
+- (void)testHTTPPayload {
+    
+}
+
+#pragma mark - Interaction tests
+
 @end
