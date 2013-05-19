@@ -10,6 +10,4 @@
 
 @interface PNBaseRequestTest : SenTestCase
 
-
-
 @end
