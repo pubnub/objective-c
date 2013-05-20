@@ -111,22 +111,22 @@ Publish a Message
 
 ### Add channel(s) for a device
 ```
-apns.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>?add=channel,channel,...
+pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>?add=channel,channel,...
 ```
 
 ### Remove channel(s) from a device
 ```
-apns.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>?remove=channel,channel,...
+pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>?remove=channel,channel,...
 ```
 
 ### Remove device (and all channel subscriptions)
 ```
-apns.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>/remove
+pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>/remove
 ```
 
 ### Get channels for a device
 ```
-apns.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>
+pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>
 ```
 
 
