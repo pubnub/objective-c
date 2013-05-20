@@ -642,12 +642,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     CFIndex errorCode = CFErrorGetCode(error);
     NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
     if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainOSStatus]) {
-        
-        isSecurityTransportError = errSSLClientAuthCompleted <= errorCode <= errSSLProtocol;
+
+        isSecurityTransportError = (errSSLClientAuthCompleted <= errorCode) && (errorCode <= errSSLProtocol);
     }
     else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
         
-        isSecurityTransportError = kCFURLErrorClientCertificateRequired <= errorCode <= kCFURLErrorSecureConnectionFailed;
+        isSecurityTransportError = (kCFURLErrorClientCertificateRequired <= errorCode) && (errorCode <= kCFURLErrorSecureConnectionFailed);
     }
     
     
@@ -655,8 +655,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (BOOL)isInternalSecurityTransportError:(CFErrorRef)error {
+
+    CFIndex code = CFErrorGetCode(error);
     
-    return CFErrorGetCode(error) == errSSLInternal;
+    return (code == errSSLInternal) || (code == errSSLClosedAbort);
 }
 
 
@@ -763,6 +765,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (void)reconnect {
+
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Reconnecting \"%@\" channel", self.name);
 
     // Marking that connection instance is reconnecting
     // now and after last connection will be closed should
@@ -1295,8 +1299,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         BOOL shouldNotifyDelegate = YES;
         BOOL isCriticalStreamError = NO;
 
-        PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] GOT ERROR: %@ (CFNetwork error code: %d)",
-              self.name, errorObject, CFErrorGetCode(error));
+        PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] GOT ERROR: %@ (CFNetwork error code: %d; connection should be close? %@)",
+              self.name, errorObject, CFErrorGetCode(error), shouldCloseConnection?@"YES":@"NO");
 
         // Check whether error is caused by SSL issues or not
         if ([self isSecurityTransportError:error]) {
@@ -1335,6 +1339,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             else {
                 
                 isCriticalStreamError = YES;
+                shouldCloseConnection = NO;
                 shouldNotifyDelegate = NO;
                 
                 // Try to reconnect with new SSL security settings

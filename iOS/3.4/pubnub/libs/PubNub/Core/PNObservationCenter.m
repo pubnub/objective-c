@@ -189,6 +189,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                                                  selector:@selector(handleClientUnsubscriptionProcess:)
                                                      name:kPNClientUnsubscriptionDidCompleteNotification
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleClientUnsubscriptionProcess:)
+                                                     name:kPNClientUnsubscriptionDidFailNotification
+                                                   object:nil];
 
 
         // Handle time token events
@@ -678,9 +682,17 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 - (void)handleClientUnsubscriptionProcess:(NSNotification *)notification {
 
-    // Retrieve reference on list of channels
-    NSArray *channels = (NSArray *)notification.userInfo;
+    NSArray *channels = nil;
+    PNError *error = nil;
+    if ([notification.name isEqualToString:kPNClientUnsubscriptionDidCompleteNotification]) {
 
+        channels = (NSArray *)notification.userInfo;
+    }
+    else {
+
+        error = (PNError *)notification.userInfo;
+        channels = (NSArray *)error.associatedObject;
+    }
 
     // Retrieving list of observers (including one time and persistent observers)
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
@@ -696,7 +708,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         PNClientChannelUnsubscriptionHandlerBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
         if (block) {
 
-            block(channels, nil);
+            block(channels, error);
         }
     }];
 }
