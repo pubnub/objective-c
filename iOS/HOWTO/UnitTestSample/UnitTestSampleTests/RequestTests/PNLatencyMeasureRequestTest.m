@@ -49,14 +49,6 @@
     [_latMeasureRequest markStartTime];
     
     STAssertTrue(_latMeasureRequest.startTime <= CFAbsoluteTimeGetCurrent() && _latMeasureRequest.startTime != 0, @"Start time marked incorrectly");
-//    PNLatencyMeasureRequest *req = [[PNLatencyMeasureRequest alloc] init];
-//    
-//    id mockReq = [OCMockObject partialMockForObject:[[PNLatencyMeasureRequest alloc] init]];
-//    [[mockReq expect] setStartTime:OCMOCK_ANY];
-//    
-//    [mockReq markStartTime];
-//    
-//    [mockReq verify];
 }
 
 - (void)testMarkEndTime {
@@ -80,7 +72,6 @@
     
     [[[mockResponse stub] andReturn:mockData] content];
     [[mockData expect] length];
-//    [[[mockResponse expect] andReturn:OCMOCK_ANY] content];
     
     [_latMeasureRequest bandwidthToLoadResponse:mockResponse];
     
