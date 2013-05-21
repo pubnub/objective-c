@@ -31,7 +31,7 @@
     
     _latMeasureRequest = [[PNLatencyMeasureRequest alloc] init];
     
-    STAssertNotNil(_latMeasureRequest, @"Cannot initialize reachability");
+    STAssertNotNil(_latMeasureRequest, @"Cannot initialize latencyMeasure");
     NSLog(@"setUp: %@", self.name);
 }
 

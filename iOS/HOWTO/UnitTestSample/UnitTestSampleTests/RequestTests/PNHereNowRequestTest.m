@@ -9,14 +9,22 @@
 #import "PNHereNowRequestTest.h"
 #import "PNHereNowRequest.h"
 
+#import "PNChannel.h"
+
 #import <OCMock/OCMock.h>
+
+@interface PNHereNowRequest ()
+
+@property (nonatomic, strong) PNChannel *channel;
+
+@end
 
 @implementation PNHereNowRequestTest
 
 - (void)setUp
 {
     [super setUp];
-    
+
     NSLog(@"setUp: %@", self.name);
 }
 
@@ -31,12 +39,23 @@
 
 - (void)testInitWithChannel {
     
+    id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
+    
+    id mockRequest = [OCMockObject partialMockForObject:[PNHereNowRequest alloc]];
+    
+    [[mockRequest expect] setChannel:mockChannel];
+    
+    PNHereNowRequest *request = [mockRequest initWithChannel:mockChannel];
+    
+    STAssertNotNil(request, @"Cannot initialize request");
+    
+    [mockRequest verify];
 }
 
 #pragma mark - Interaction tests
 
 - (void)testWhoNowRequestForChannel {
-    
+    STAssertNotNil([PNHereNowRequest whoNowRequestForChannel:nil], @"Cannot initialize channel");
 }
 
 @end
