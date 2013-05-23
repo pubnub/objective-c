@@ -893,10 +893,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self requestFullHistoryForChannel:channel withCompletionBlock:nil];
 }
 
++ (void)requestFullHistoryForChannel:(PNChannel *)channel includeTimeToken:(BOOL)shouldIncludeTimeToken{
+    
+    [self requestFullHistoryForChannel:channel includeTimeToken:shouldIncludeTimeToken withCompletionBlock:nil];
+}
+
 + (void)requestFullHistoryForChannel:(PNChannel *)channel
                  withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
     [self requestHistoryForChannel:channel from:nil to:nil withCompletionBlock:handleBlock];
+}
+
++ (void)requestFullHistoryForChannel:(PNChannel *)channel
+                    includeTimeToken:(BOOL)shouldIncludeTimeToken
+                 withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:nil to:nil includeTimeToken:shouldIncludeTimeToken withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate {
@@ -904,20 +916,44 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self requestHistoryForChannel:channel from:startDate to:endDate withCompletionBlock:nil];
 }
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                              to:(PNDate *)endDate
-             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
-
-    [self requestHistoryForChannel:channel from:startDate to:endDate limit:0 withCompletionBlock:handleBlock];
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate includeTimeToken:(BOOL)shouldIncludeTimeToken{
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate includeTimeToken:shouldIncludeTimeToken withCompletionBlock:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
                               to:(PNDate *)endDate
-                           limit:(NSUInteger)limit {
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:0 withCompletionBlock:handleBlock ];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                includeTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:0 includeTimeToken:shouldIncludeTimeToken withCompletionBlock:handleBlock ];
+}
+
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit {
+    
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                includeTimeToken:(BOOL)shouldIncludeTimeToken {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit includeTimeToken:shouldIncludeTimeToken withCompletionBlock:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
@@ -931,6 +967,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                 to:endDate
                              limit:limit
                     reverseHistory:NO
+                  includeTimeToken:NO
+               withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                includeTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel
+                              from:startDate
+                                to:endDate
+                             limit:limit
+                    reverseHistory:NO
+                  includeTimeToken:shouldIncludeTimeToken
                withCompletionBlock:handleBlock];
 }
 
@@ -945,6 +998,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                 to:endDate
                              limit:limit
                     reverseHistory:shouldReverseMessageHistory
+                  includeTimeToken:NO
                withCompletionBlock:nil];
 }
 
@@ -953,6 +1007,38 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                               to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory
+                includeTimeToken:(BOOL)shouldIncludeTimeToken{
+    
+    [self requestHistoryForChannel:channel
+                              from:startDate
+                                to:endDate
+                             limit:limit
+                    reverseHistory:shouldReverseMessageHistory
+               withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel
+                              from:startDate
+                                to:endDate
+                             limit:limit
+                    reverseHistory:shouldReverseMessageHistory
+                  includeTimeToken:NO
+               withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory
+                includeTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
     // Check whether client is able to send request or not
@@ -969,7 +1055,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                                                                                from:startDate
                                                                                                  to:endDate
                                                                                               limit:limit
-                                                                                     reverseHistory:shouldReverseMessageHistory];
+                                                                                     reverseHistory:shouldReverseMessageHistory
+                                                                                   includeTimeToken:shouldIncludeTimeToken];
         [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
     }
     // Looks like client can't send request because of some reasons

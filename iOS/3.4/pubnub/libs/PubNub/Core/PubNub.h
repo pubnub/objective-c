@@ -364,6 +364,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  */
 + (void)requestFullHistoryForChannel:(PNChannel *)channel;
 
++ (void)requestFullHistoryForChannel:(PNChannel *)channel includeTimeToken:(BOOL)shouldIncludeTimeToken;
+
 /**
  * Same as +requestFullHistoryForChannel: but allow to specify
  * completion block which will be called when messages history will
@@ -373,13 +375,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * If you need to track history loading events from many places, use
  * PNObservationCenter methods for this purpose.
  */
-+ (void)requestFullHistoryForChannel:(PNChannel *)channel withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
++ (void)requestFullHistoryForChannel:(PNChannel *)channel
+                 withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
++ (void)requestFullHistoryForChannel:(PNChannel *)channel
+                    includeTimeToken:(BOOL)shouldIncludeTimeToken
+                 withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
 
 /**
  * Fetch history for specified channel in defined
  * time frame
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate;
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate includeTimeToken:(BOOL)shouldIncludeTimeToken;
 
 /**
  * Same as +requestHistoryForChannel:from:to: but allow to specify
@@ -395,6 +405,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                               to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                includeTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
 /**
  * Fetch history for specified channel in defined
  * time frame with specified limits
@@ -403,6 +419,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             from:(PNDate *)startDate
                               to:(PNDate *)endDate
                            limit:(NSUInteger)limit;
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                includeTimeToken:(BOOL)shouldIncludeTimeToken;
 
 /**
  * Same as +requestHistoryForChannel:from:to:limit: but allow to specify
@@ -419,6 +441,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                            limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                includeTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
 /**
  * Fetch history for specified channel in defined
  * time frame, limit and whether response should
@@ -429,6 +458,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                               to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory;
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory
+                includeTimeToken:(BOOL)shouldIncludeTimeToken;
 
 /**
  * Same as +requestHistoryForChannel:from:to:limit:reverseHistory:
@@ -444,6 +480,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                               to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory
+                includeTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
 
