@@ -70,8 +70,8 @@ static PNDataManager *_sharedInstance = nil;
         self.configuration = [PNConfiguration defaultConfiguration];
         self.subscribedChannelsList = [NSMutableArray array];
 
-        PNDataManager *weakSelf = self;
-        [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:self
+        __pn_desired_weak typeof(self) weakSelf = self;
+        [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:weakSelf
                                                                      withCallbackBlock:^(PNSubscriptionProcessState state,
                                                                                          NSArray *channels,
                                                                                          PNError *subscriptionError) {
@@ -80,19 +80,19 @@ static PNDataManager *_sharedInstance = nil;
 
                         NSArray *unsortedList = [PubNub subscribedChannels];
                         NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-                        self.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
+                        weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
                     }
                 }];
 
-        [[PNObservationCenter defaultCenter] addClientChannelUnsubscriptionObserver:self
+        [[PNObservationCenter defaultCenter] addClientChannelUnsubscriptionObserver:weakSelf
                                                                   withCallbackBlock:^(NSArray *channels,
                                                                                       PNError *error) {
                   NSArray *unsortedList = [PubNub subscribedChannels];
                   NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-                  self.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
+                  weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
               }];
 
-        [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
+        [[PNObservationCenter defaultCenter] addMessageReceiveObserver:weakSelf
                                                              withBlock:^(PNMessage *message) {
 
                  NSDateFormatter *dateFormatter = [NSDateFormatter new];
@@ -120,7 +120,7 @@ static PNDataManager *_sharedInstance = nil;
                  }
              }];
 
-        [[PNObservationCenter defaultCenter] addPresenceEventObserver:self
+        [[PNObservationCenter defaultCenter] addPresenceEventObserver:weakSelf
                                                             withBlock:^(PNPresenceEvent *event) {
 
                 NSDateFormatter *dateFormatter = [NSDateFormatter new];
@@ -157,7 +157,7 @@ static PNDataManager *_sharedInstance = nil;
                 }
             }];
 
-        [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
+        [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:weakSelf
                                                             withCallbackBlock:^(NSString *origin,
                                                                                 BOOL connected,
                                                                                 PNError *error) {

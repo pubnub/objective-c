@@ -62,7 +62,8 @@
 
     // Subscribe application delegate on subscription updates
     // (events when client subscribe on some channel)
-    [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:self
+    __pn_desired_weak typeof(self) weakSelf = self;
+    [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:weakSelf
                                                                  withCallbackBlock:^(PNSubscriptionProcessState state,
                                                                          NSArray *channels,
                                                                          PNError *subscriptionError) {
@@ -71,28 +72,28 @@
 
                                                                          case PNSubscriptionProcessNotSubscribedState:
 
-                                                                             PNLog(PNLogGeneralLevel, self,
+                                                                             PNLog(PNLogGeneralLevel, weakSelf,
                                                                                      @"{BLOCK-P} PubNub client subscription failed with error: %@",
                                                                                      subscriptionError);
                                                                              break;
 
                                                                          case PNSubscriptionProcessSubscribedState:
 
-                                                                             PNLog(PNLogGeneralLevel, self,
+                                                                             PNLog(PNLogGeneralLevel, weakSelf,
                                                                                      @"{BLOCK-P} PubNub client subscribed on channels: %@",
                                                                                      channels);
                                                                              break;
 
                                                                          case PNSubscriptionProcessWillRestoreState:
 
-                                                                             PNLog(PNLogGeneralLevel, self,
+                                                                             PNLog(PNLogGeneralLevel, weakSelf,
                                                                                      @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
                                                                                      channels);
                                                                              break;
 
                                                                          case PNSubscriptionProcessRestoredState:
 
-                                                                             PNLog(PNLogGeneralLevel, self,
+                                                                             PNLog(PNLogGeneralLevel, weakSelf,
                                                                                      @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
                                                                                      channels);
                                                                              break;
@@ -108,13 +109,12 @@
                                                          }];
 
     // Subscribe on presence event arrival events with block
-    [[PNObservationCenter defaultCenter] addPresenceEventObserver:self
+    [[PNObservationCenter defaultCenter] addPresenceEventObserver:weakSelf
                                                         withBlock:^(PNPresenceEvent *presenceEvent) {
 
-                                                            PNLog(PNLogGeneralLevel, self, @"{BLOCK-P} PubNubc client received new event: %@",
+                                                            PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new event: %@",
                                                                     presenceEvent);
                                                         }];
-
 }
 
 
@@ -128,7 +128,7 @@
     [self.window makeKeyAndVisible];
 
     [self initializePubNubClient];
-
+    
 
     return YES;
 }

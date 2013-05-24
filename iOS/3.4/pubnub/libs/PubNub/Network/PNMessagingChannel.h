@@ -47,6 +47,9 @@
 
 #pragma mark - Instance methods
 
+- (void)prepareForDestroy;
+
+
 #pragma mark - Connection management
 
 /**

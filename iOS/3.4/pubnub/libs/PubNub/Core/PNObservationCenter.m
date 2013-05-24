@@ -272,9 +272,9 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 }
 
 - (void)addObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent withBlock:(id)block {
-    
-    NSDictionary *observerData = @{PNObservationObserverData.observer:observer,
-                      PNObservationObserverData.observerCallbackBlock:block};
+
+    NSMutableDictionary *observerData = [@{PNObservationObserverData.observer:observer,
+                              PNObservationObserverData.observerCallbackBlock:block} mutableCopy];
 
     // Retrieve reference on list of observers for specific event
     SEL observersSelector = isOneTimeEvent?@selector(oneTimeObserversForEvent:): @selector(persistentObserversForEvent:);
@@ -307,7 +307,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     NSArray *filteredObservers = [observers filteredArrayUsingPredicate:filterPredicate];
 
-
+    
     if ([filteredObservers count] > 0) {
 
         // Removing first occurrence of observer request in list
@@ -615,8 +615,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Clean one time observers for specific event
     [self removeOneTimeObserversForEvent:PNObservationEvents.clientConnectionStateChange];
-
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
                                             NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
 
@@ -630,7 +629,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 }
 
 - (void)handleClientSubscriptionProcess:(NSNotification *)notification {
-
 
     NSArray *channels = nil;
     PNError *error = nil;

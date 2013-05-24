@@ -234,6 +234,13 @@
     return [request isKindOfClass:[PNSubscribeRequest class]];
 }
 
+- (void)prepareForDestroy {
+    
+    [self stopChannelIdleTimer];
+    [super cleanUp];
+}
+
+
 #pragma mark - Connection management
 
 - (void)reconnect {

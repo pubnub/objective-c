@@ -140,11 +140,11 @@
     
     // Check whether is able to connect or not
     if([self.connection connect]) {
-        
+
         self.state = PNConnectionChannelStateConnecting;
     }
     else {
-        
+
         self.state = PNConnectionChannelStateDisconnected;
     }
 }
@@ -342,7 +342,6 @@
     
         self.state = PNConnectionChannelStateDisconnectingOnError;
 
-
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
         [self.delegate connectionChannel:self willDisconnectFromOrigin:host withError:error];
@@ -442,25 +441,31 @@
 
 #pragma mark - Memory management
 
-- (void)dealloc {
+- (void)cleanUp {
     
     // Remove all requests sent by this communication
     // channel
     [self clearScheduledRequestsQueue];
-
-    [self stopTimeoutTimerForRequest:nil];
-    self.connection.dataSource = nil;
-    self.requestsQueue.delegate = nil;
-    self.requestsQueue = nil;
     
-    if (self.state == PNConnectionChannelStateConnected) {
+    [self stopTimeoutTimerForRequest:nil];
+    _connection.dataSource = nil;
+    _requestsQueue.delegate = nil;
+    _requestsQueue = nil;
+    
+    if (_state == PNConnectionChannelStateConnected) {
         
-        [self.delegate connectionChannel:self didDisconnectFromOrigin:nil];
+        [_delegate connectionChannel:self didDisconnectFromOrigin:nil];
     }
+    _state = PNConnectionChannelStateDisconnected;
+    
+    _connection.delegate = nil;
+    [PNConnection destroyConnection:_connection];
+    _connection = nil;
+}
 
-    self.connection.delegate = nil;
-    [PNConnection destroyConnection:self.connection];
-    self.connection = nil;
+- (void)dealloc {
+    
+    [self cleanUp];
 }
 
 #pragma mark -

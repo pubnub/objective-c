@@ -280,6 +280,7 @@ static int const kPNStreamBufferSize = 32768;
  */
 - (BOOL)isSecurityTransportError:(CFErrorRef)error;
 - (BOOL)isInternalSecurityTransportError:(CFErrorRef)error;
+- (BOOL)isServerError:(CFErrorRef)error;
 
 /**
  * Connection state retrieval
@@ -372,7 +373,6 @@ static int const kPNStreamBufferSize = 32768;
 
         // Store list of connections before purge connections pool
         NSArray *connections = [_connectionsPool allValues];
-
 
         // Clean up connections pool
         [_connectionsPool removeAllObjects];
@@ -606,7 +606,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             case ENETUNREACH:   // Network is unreachable
             case ECONNABORTED:  // Connection was aborted by software (OS)
             case ENETRESET:     // Network dropped connection on reset
-            case ECONNRESET:    // Connection reset by peer
             case ENOTCONN:      // Socket not connected or was disconnected
             case ESHUTDOWN:     // Can't send after socket shutdown
             case EHOSTDOWN:     // Host is down
@@ -659,6 +658,27 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     CFIndex code = CFErrorGetCode(error);
     
     return (code == errSSLInternal) || (code == errSSLClosedAbort);
+}
+
+- (BOOL)isServerError:(CFErrorRef)error {
+    
+    BOOL isServerError = NO;
+    
+    
+    NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
+    
+    if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX]) {
+        
+        switch (CFErrorGetCode(error)) {
+            case ECONNRESET:    // Connection reset by peer
+                
+                isServerError = YES;
+                break;
+        }
+    }
+    
+    
+    return isServerError;
 }
 
 
@@ -1342,7 +1362,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 shouldCloseConnection = NO;
                 shouldNotifyDelegate = NO;
                 
-                // Try to reconnect with new SSL security settings
                 [self reconnect];
             }
         }
@@ -1361,6 +1380,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 // reconnection
                 isCriticalStreamError = YES;
 
+            }
+            
+            if ([self isServerError:error]) {
+                
+                shouldCloseConnection = NO;
+                shouldNotifyDelegate = NO;
+                
+                [self reconnect];
             }
         }
 
