@@ -12,6 +12,7 @@
 		9621C06717393A330044F368 /* PNConnectionChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9621C06617393A330044F368 /* PNConnectionChannelTest.m */; };
 		96307DF11734E635008676AE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96307DF01734E635008676AE /* Security.framework */; };
 		96307DF21734E63D008676AE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96307DF01734E635008676AE /* Security.framework */; };
+		9645C0F5174FB99F00F82D09 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9645C0F4174FB99F00F82D09 /* libOCMock.a */; };
 		9670AFB017491F9600185200 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670AF2117491F9600185200 /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9670AFB117491F9600185200 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670AF2317491F9600185200 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9670AFB217491F9600185200 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670AF2817491F9600185200 /* PNObservationCenter.m */; };
@@ -58,7 +59,6 @@
 		9670AFDB17491F9600185200 /* PNServiceChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670AFA817491F9600185200 /* PNServiceChannel.m */; };
 		9670AFDC17491F9600185200 /* PNConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670AFAC17491F9600185200 /* PNConnection.m */; };
 		9670AFDD17491F9600185200 /* PNConnectionChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670AFAF17491F9600185200 /* PNConnectionChannel.m */; };
-		96750D391735336000A67215 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96750D381735336000A67215 /* libOCMock.a */; };
 		96ADD5CD17368E2800D1DAD9 /* PNServiceChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96ADD5CC17368E2800D1DAD9 /* PNServiceChannelTest.m */; };
 		96BCED731748C975009A938F /* PNBaseRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BCED721748C975009A938F /* PNBaseRequestTest.m */; };
 		96BCED761748C989009A938F /* PNLatencyMeasureRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BCED751748C989009A938F /* PNLatencyMeasureRequestTest.m */; };
@@ -106,6 +106,7 @@
 		9621C06517393A320044F368 /* PNConnectionChannelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannelTest.h; sourceTree = "<group>"; };
 		9621C06617393A330044F368 /* PNConnectionChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannelTest.m; sourceTree = "<group>"; };
 		96307DF01734E635008676AE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		9645C0F4174FB99F00F82D09 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
 		9670AF2017491F9600185200 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		9670AF2117491F9600185200 /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
 		9670AF2217491F9600185200 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
@@ -236,7 +237,6 @@
 		9670AFAD17491F9600185200 /* PNConnectionChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnectionChannel+Protected.h"; sourceTree = "<group>"; };
 		9670AFAE17491F9600185200 /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		9670AFAF17491F9600185200 /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
-		96750D381735336000A67215 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCMock.a; path = UnitTestSampleTests/Libs/libOCMock.a; sourceTree = "<group>"; };
 		96ADD5CB17368E2800D1DAD9 /* PNServiceChannelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannelTest.h; sourceTree = "<group>"; };
 		96ADD5CC17368E2800D1DAD9 /* PNServiceChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNServiceChannelTest.m; sourceTree = "<group>"; };
 		96BCED711748C975009A938F /* PNBaseRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBaseRequestTest.h; sourceTree = "<group>"; };
@@ -303,7 +303,7 @@
 				96FE2F9D173418EF00C9487C /* SenTestingKit.framework in Frameworks */,
 				96FE2F9E173418EF00C9487C /* UIKit.framework in Frameworks */,
 				96FE2F9F173418EF00C9487C /* Foundation.framework in Frameworks */,
-				96750D391735336000A67215 /* libOCMock.a in Frameworks */,
+				9645C0F5174FB99F00F82D09 /* libOCMock.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -613,7 +613,7 @@
 		96FE2F7D173418EF00C9487C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				96750D381735336000A67215 /* libOCMock.a */,
+				9645C0F4174FB99F00F82D09 /* libOCMock.a */,
 				96307DF01734E635008676AE /* Security.framework */,
 				96FE3074173419C400C9487C /* libz.1.2.5.dylib */,
 				96FE30721734194D00C9487C /* CFNetwork.framework */,
@@ -948,9 +948,17 @@
 		96FE2FAE173418EF00C9487C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnitTestSample/UnitTestSample-Prefix.pch";
 				INFOPLIST_FILE = "UnitTestSample/UnitTestSample-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/UnitTestSampleTests/3rdParty\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -959,9 +967,17 @@
 		96FE2FAF173418EF00C9487C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnitTestSample/UnitTestSample-Prefix.pch";
 				INFOPLIST_FILE = "UnitTestSample/UnitTestSample-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/UnitTestSampleTests/3rdParty\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -974,19 +990,21 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnitTestSample/UnitTestSample-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/UnitTestSampleTests/Libs/\"";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/UnitTestSampleTests/3rdParty\"";
 				INFOPLIST_FILE = "UnitTestSampleTests/UnitTestSampleTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/UnitTestSampleTests/Libs\"",
+					"\"$(SRCROOT)/UnitTestSampleTests/3rdParty\"",
+					"\"$(SRCROOT)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-force_load",
-					"\"$(SRCROOT)/UnitTestSampleTests/Libs/libOCMock.a\"",
+					"\"$(SRCROOT)/libOCMock.a\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -1001,19 +1019,21 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UnitTestSample/UnitTestSample-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/UnitTestSampleTests/Libs/\"";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/UnitTestSampleTests/3rdParty\"";
 				INFOPLIST_FILE = "UnitTestSampleTests/UnitTestSampleTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/UnitTestSampleTests/Libs\"",
+					"\"$(SRCROOT)/UnitTestSampleTests/3rdParty\"",
+					"\"$(SRCROOT)\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-force_load",
-					"\"$(SRCROOT)/UnitTestSampleTests/Libs/libOCMock.a\"",
+					"\"$(SRCROOT)/libOCMock.a\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";

@@ -32,7 +32,6 @@
     _latMeasureRequest = [[PNLatencyMeasureRequest alloc] init];
     
     STAssertNotNil(_latMeasureRequest, @"Cannot initialize latencyMeasure");
-    NSLog(@"setUp: %@", self.name);
 }
 
 - (void)tearDown

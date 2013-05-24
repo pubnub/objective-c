@@ -24,8 +24,6 @@
 - (void)setUp
 {
     [super setUp];
-
-    NSLog(@"setUp: %@", self.name);
 }
 
 - (void)tearDown

@@ -12,6 +12,14 @@
 
 #import <OCMock/OCMock.h>
 
+#import <SystemConfiguration/SystemConfiguration.h>
+
+@interface PNReachability ()
+
+@property (nonatomic, assign) SCNetworkReachabilityRef serviceReachability;
+
+@end
+
 @implementation PNReachabilityTest {
     PNReachability *_reachability;
 }
@@ -32,17 +40,14 @@
     
     _reachability = nil;
     
+    [[PubNub sharedInstance] setConfiguration:[PNConfiguration defaultConfiguration]];
+    
     [super tearDown];
 }
 
 #pragma mark - States tests
 
 - (void)testSeviceNotAvailable {
-    
-    // arrange
-    // act
-    // assert
-    
     /*
      Test scenario:
      - start reachabililty
@@ -74,11 +79,8 @@
     [[mockReachability expect] stopServiceReachabilityMonitoring];
     
     [mockReachability startServiceReachabilityMonitoring];
+    
     [mockReachability verify];
-    
-    
-    NSLog(@"isServiceAvailable: %d", [mockReachability isServiceAvailable]);
-    STAssertTrue([mockReachability isServiceAvailable], @"Service reachability is not available");
 }
 
 #pragma mark - Interaction tests
@@ -103,6 +105,7 @@
     [_reachability startServiceReachabilityMonitoring];
     STAssertTrue([_reachability isServiceAvailable], @"Service reachability is not available");
     [_reachability stopServiceReachabilityMonitoring];
+    
     // TODO: investigate error reason.
     // seems we don't change status of reachability just after start, so probably stop method called just after start is now working correct also.
 }
@@ -117,7 +120,7 @@
      */
     
     // mock PubNub and PNConfiguration for this test
-    id mockPubNub = [OCMockObject mockForClass:[PubNub class]];
+    /*id mockPubNub = [OCMockObject mockForClass:[PubNub class]];
     id mockConfig = [OCMockObject mockForClass:[PNConfiguration class]];
     
     [[[mockPubNub stub] andReturn:mockConfig] configuration];
@@ -127,6 +130,7 @@
     
     [_reachability startServiceReachabilityMonitoring];
     [_reachability stopServiceReachabilityMonitoring];
+     */
     
     STAssertFalse([_reachability isServiceAvailable], @"Service is not available");
 }
