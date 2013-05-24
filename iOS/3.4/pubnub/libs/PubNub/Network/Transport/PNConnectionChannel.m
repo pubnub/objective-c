@@ -466,6 +466,7 @@
 - (void)dealloc {
     
     [self cleanUp];
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Destroyed");
 }
 
 #pragma mark -

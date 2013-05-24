@@ -1589,6 +1589,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     [self closeConnection];
     _delegate = nil;
     _proxySettings = nil;
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" destroyed", self.name);
 
     PNCFRelease(&_streamSecuritySettings);
 }
