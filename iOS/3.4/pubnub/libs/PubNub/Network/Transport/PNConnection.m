@@ -604,9 +604,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             case ENETDOWN:      // Network went down
             case ENETUNREACH:   // Network is unreachable
-            case ECONNABORTED:  // Connection was aborted by software (OS)
-            case ENETRESET:     // Network dropped connection on reset
-            case ENOTCONN:      // Socket not connected or was disconnected
             case ESHUTDOWN:     // Can't send after socket shutdown
             case EHOSTDOWN:     // Host is down
             case EHOSTUNREACH:  // Can't reach host
@@ -670,7 +667,13 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX]) {
         
         switch (CFErrorGetCode(error)) {
+            case ECONNREFUSED:  // Connection refused
+            case ECONNABORTED:  // Connection was aborted by software (OS)
+            case ENETRESET:     // Network dropped connection on reset
+            case ENOTCONN:      // Socket not connected or was disconnected
+            case ENOBUFS:       // No buffer space available
             case ECONNRESET:    // Connection reset by peer
+            case ENOENT:        // No such file or directory
                 
                 isServerError = YES;
                 break;
@@ -1383,7 +1386,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             
             if ([self isServerError:error]) {
-                
+
+                isCriticalStreamError = YES;
                 shouldCloseConnection = NO;
                 shouldNotifyDelegate = NO;
                 
