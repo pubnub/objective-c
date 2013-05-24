@@ -37,7 +37,6 @@
 - (void)tearDown
 {
     // Tear-down code here.
-    
     _reachability = nil;
     
     [[PubNub sharedInstance] setConfiguration:[PNConfiguration defaultConfiguration]];
@@ -73,11 +72,9 @@
         - start reachabililty
         - expected avaialble service
      */
-    
     id mockReachability = [OCMockObject partialMockForObject:_reachability];
     
     [[mockReachability expect] stopServiceReachabilityMonitoring];
-    
     [mockReachability startServiceReachabilityMonitoring];
     
     [mockReachability verify];
@@ -105,9 +102,6 @@
     [_reachability startServiceReachabilityMonitoring];
     STAssertTrue([_reachability isServiceAvailable], @"Service reachability is not available");
     [_reachability stopServiceReachabilityMonitoring];
-    
-    // TODO: investigate error reason.
-    // seems we don't change status of reachability just after start, so probably stop method called just after start is now working correct also.
 }
 
 - (void)testStopServiceReachabilityMonitoring {

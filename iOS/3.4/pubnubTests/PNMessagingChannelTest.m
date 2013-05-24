@@ -46,7 +46,6 @@
 - (PNChannel *)mockChannel {
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
     
-    // TODO: implement here everything we need to test PNMessageChannel
     [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isUserDefinedPresenceObservation];
     [[mockChannel stub] presenceObserver];
     [[mockChannel stub] resetUpdateTimeToken];
@@ -191,7 +190,6 @@
     [[mockChannel expect] scheduleRequest:OCMOCK_ANY
                   shouldObserveProcessing:YES];
     
-    // TODO: determine do we need to cover precense event conditions
     [mockChannel subscribeOnChannels:@[[self mockChannel]] withPresenceEvent:YES];
     
     [mockChannel verify];
