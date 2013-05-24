@@ -700,6 +700,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" configuration", self.name?self.name:self);
+
         UInt32 targetPort = kPNOriginConnectionPort;
         if (self.configuration.shouldUseSecureConnection &&
             self.sslConfigurationLevel != PNConnectionSSLConfigurationInSecure) {
@@ -760,8 +762,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         if (![self isConnecting]) {
 
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" connecting", self.name);
+
             [self openReadStream:self.socketReadStream];
             [self openWriteStream:self.socketWriteStream];
+        }
+        else {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" already connected", self.name);
+
         }
 
         isStreamOpened = YES;
@@ -770,9 +779,13 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // during previous session)
     else if (![self isReady] && ![self isConnected]) {
 
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" not configured yet", self.name);
+
         if (![self isConnecting]) {
 
             if ([self prepareStreams]) {
+
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" configured", self.name);
 
                 [self connect];
             }
@@ -780,6 +793,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 [self handleStreamSetupError];
             }
+        }
+        else {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" not configured, but tries to connect", self.name);
         }
     }
 
@@ -789,14 +806,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)reconnect {
 
-    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Reconnecting \"%@\" channel", self.name);
-
     // Marking that connection instance is reconnecting
     // now and after last connection will be closed should
     // automatically renew connection
     self.reconnecting = YES;
 
     [self disconnectStreams];
+
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Reconnecting \"%@\" channel", self.name);
 }
 
 - (void)disconnectStreams {
@@ -872,6 +889,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             
             [self handleStreamClose];
         }
+        else {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" closed read stream", self.name);
+        }
     }
 }
 
@@ -926,6 +947,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
 
         PNCFRelease(&error);
+    }
+    else {
+
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" opened read stream", self.name);
     }
 }
 
@@ -1038,6 +1063,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         PNCFRelease(&error);
     }
+    else {
+
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" opened write stream", self.name);
+    }
 }
 
 - (void)disconnectWriteStream:(CFWriteStreamRef)writeStream shouldHandleCloseEvent:(BOOL)shouldHandleCloseEvent {
@@ -1064,6 +1093,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         if (shouldHandleCloseEvent) {
             
             [self handleStreamClose];
+        }
+        else {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" closed write stream", self.name);
         }
     }
 }
@@ -1236,8 +1269,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // about connection close event
     if (self.readStreamState == PNSocketStreamNotConfigured && self.writeStreamState == PNSocketStreamNotConfigured) {
 
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" closed all streams", self.name);
+
         // Checking whether instance is reconnecting or not
         if(self.isReconnecting) {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" should reconnect", self.name);
 
             self.reconnecting = NO;
             [self connect];
