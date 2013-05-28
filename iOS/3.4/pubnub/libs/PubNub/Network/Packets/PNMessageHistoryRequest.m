@@ -36,6 +36,8 @@
 // their order in response or not
 @property (nonatomic, assign, getter = shouldRevertMessages) BOOL revertMessages;
 
+@property (nonatomic, assign, getter = shouldIncludeTimeToken) BOOL includeTimeToken;
+
 
 @end
 
@@ -59,11 +61,33 @@
                                                        limit:(NSUInteger)limit
                                               reverseHistory:(BOOL)shouldReverseMessagesInResponse {
 
+    return [self messageHistoryRequestForChannel:channel
+                                            from:startDate
+                                              to:endDate
+                                           limit:limit
+                                  reverseHistory:shouldReverseMessagesInResponse
+                                includeTimeToken:NO];
+}
+
+/**
+ * Returns reference on configured history download request
+ * which will take into account default values for certain
+ * parameters (if passed) to change itself to load full or
+ * partial history
+ */
++ (PNMessageHistoryRequest *)messageHistoryRequestForChannel:(PNChannel *)channel
+                                                        from:(PNDate *)startDate
+                                                          to:(PNDate *)endDate
+                                                       limit:(NSUInteger)limit
+                                              reverseHistory:(BOOL)shouldReverseMessagesInResponse
+                                            includeTimeToken:(BOOL)shouldIncludeTimeToken{
+    
     return [[[self class] alloc] initForChannel:channel
                                            from:startDate
                                              to:endDate
                                           limit:limit
-                                 reverseHistory:shouldReverseMessagesInResponse];
+                                 reverseHistory:shouldReverseMessagesInResponse
+                               includeTimeToken:shouldIncludeTimeToken];
 }
 
 
@@ -78,7 +102,9 @@
                 from:(PNDate *)startDate
                   to:(PNDate *)endDate
                limit:(NSUInteger)limit
-      reverseHistory:(BOOL)shouldReverseMessagesInResponse {
+      reverseHistory:(BOOL)shouldReverseMessagesInResponse
+    includeTimeToken:(BOOL)shouldIncludeTimeToken{
+
 
     // Check whether initialization successful or not
     if ((self = [super init])) {
@@ -89,6 +115,7 @@
         self.endDate = endDate;
         self.limit = limit;
         self.revertMessages = shouldReverseMessagesInResponse;
+        self.includeTimeToken = shouldIncludeTimeToken;
     }
 
 
@@ -130,7 +157,7 @@
     self.limit = self.limit > 0 ? self.limit : 100;
     [parameters appendFormat:@"&count=%u", self.limit];
     [parameters appendFormat:@"&reverse=%@", self.shouldRevertMessages?@"true":@"false"];
-
+    [parameters appendFormat:@"&include_token=%@", self.shouldIncludeTimeToken?@"true":@"false"];
 
     return [NSString stringWithFormat:@"/v2/history/sub-key/%@/channel/%@%@",
                     [PubNub sharedInstance].configuration.subscriptionKey,

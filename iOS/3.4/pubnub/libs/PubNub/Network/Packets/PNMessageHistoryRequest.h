@@ -33,6 +33,12 @@
                                                        limit:(NSUInteger)limit
                                               reverseHistory:(BOOL)shouldReverseMessagesInResponse;
 
++ (PNMessageHistoryRequest *)messageHistoryRequestForChannel:(PNChannel *)channel
+                                                        from:(PNDate *)startDate
+                                                          to:(PNDate *)endDate
+                                                       limit:(NSUInteger)limit
+                                              reverseHistory:(BOOL)shouldReverseMessagesInResponse
+                                            includeTimeToken:(BOOL)shouldIncludeTimeToken;
 
 #pragma mark - Instance methods
 
@@ -45,7 +51,8 @@
                 from:(PNDate *)startDate
                   to:(PNDate *)endDate
                limit:(NSUInteger)limit
-      reverseHistory:(BOOL)shouldReverseMessagesInResponse;
+      reverseHistory:(BOOL)shouldReverseMessagesInResponse
+    includeTimeToken:(BOOL)shouldIncludeTimeToken;
 
 
 #pragma mark -
