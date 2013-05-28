@@ -145,7 +145,7 @@
     
     //in history messages a include_timetoken is an optional input and could generate a timetoken for each message
     //we assume that no recieve date was found and there is a timetoken in the payload
-    if ([messageBody objectForKey:kMessageTimeToken] && !messagePostDate) {
+    if ([messageBody isKindOfClass:NSDictionary.class] && [messageBody objectForKey:kMessageTimeToken] && !messagePostDate) {
         message.receiveDate = [PNDate dateWithToken:[messageBody objectForKey:kMessageTimeToken]];
     }
 
