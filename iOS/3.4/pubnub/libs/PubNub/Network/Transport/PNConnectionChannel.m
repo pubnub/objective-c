@@ -328,6 +328,11 @@
     [self scheduleNextRequest];
 }
 
+- (void)connection:(PNConnection *)connection didReconnectOnErrorToHost:(NSString *)hostName {
+
+    [self.delegate connectionChannel:self didReconnectOnErrorToHost:hostName];
+}
+
 - (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
 
     // Retrieve reference on request for which this response was received

@@ -87,6 +87,10 @@ static int const kPNStreamBufferSize = 32768;
 // open connection after full close)
 @property (nonatomic, assign, getter = isReconnecting) BOOL reconnecting;
 
+// Stores whether connection instance is restoring connection
+// because of error or not
+@property (nonatomic, assign, getter = isReconnectingOnError) BOOL reconnectingOnError;
+
 // Stores reference on response deserializer which will parse
 // response into objects array and update provided data to
 // insert offset on amount of parsed data
@@ -154,6 +158,11 @@ static int const kPNStreamBufferSize = 32768;
  * Will create read/write pair streams to specific host at
  */
 - (BOOL)prepareStreams;
+
+/**
+ * Will prepare socket to be reconnected because of error
+ */
+- (void)reconnectOnError;
 
 /**
  * Will terminate any stream activity
@@ -578,7 +587,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)isConnecting {
 
-    return ((self.readStreamState == PNSocketStreamConnecting && self.writeStreamState == PNSocketStreamConnecting) || self.isReconnecting);
+    return (self.readStreamState == PNSocketStreamConnecting && self.writeStreamState == PNSocketStreamConnecting);
 }
 
 - (BOOL)isConnected {
@@ -816,6 +825,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Reconnecting \"%@\" channel", self.name);
 }
 
+- (void)reconnectOnError {
+
+    self.reconnectingOnError = YES;
+    [self reconnect];
+}
+
 - (void)disconnectStreams {
     
     [self disconnectReadStream:_socketReadStream shouldHandleCloseEvent:NO];
@@ -827,7 +842,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (void)closeConnection {
-    
+
+    self.reconnectingOnError = NO;
     self.reconnecting = NO;
     [self closeStreams];
 }
@@ -1259,7 +1275,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // delegate about successful connection
     if (self.readStreamState == PNSocketStreamConnected && self.writeStreamState == PNSocketStreamConnected) {
 
+        self.reconnecting = NO;
         [self.delegate connection:self didConnectToHost:self.configuration.origin];
+
+
+        if (self.isReconnectingOnError) {
+
+            self.reconnectingOnError = NO;
+            [self.delegate connection:self didReconnectOnErrorToHost:self.configuration.origin];
+        }
     }
 }
 
@@ -1276,7 +1300,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" should reconnect", self.name);
 
-            self.reconnecting = NO;
             [self connect];
         }
         else {
@@ -1379,7 +1402,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     self.sslConfigurationLevel = PNConnectionSSLConfigurationBarelySecure;
                     
                     // Try to reconnect with new SSL security settings
-                    [self reconnect];
+                    [self reconnectOnError];
                 }
                 // Check whether connection can fallback and use plain HTTP connection
                 // w/o SSL
@@ -1393,7 +1416,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     self.sslConfigurationLevel = PNConnectionSSLConfigurationInSecure;
                     
                     // Try to reconnect with new SSL security settings
-                    [self reconnect];
+                    [self reconnectOnError];
                 }
             }
             else {
@@ -1402,7 +1425,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 shouldCloseConnection = NO;
                 shouldNotifyDelegate = NO;
                 
-                [self reconnect];
+                [self reconnectOnError];
             }
         }
         else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX] ||
@@ -1428,7 +1451,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 shouldCloseConnection = NO;
                 shouldNotifyDelegate = NO;
                 
-                [self reconnect];
+                [self reconnectOnError];
             }
         }
 

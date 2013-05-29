@@ -1231,6 +1231,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
+- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectOnErrorToHost:(NSString *)host {
+
+    // Check whether received event from same host on which client
+    // is configured or not and client connected at this moment
+    if ([self.configuration.origin isEqualToString:host] && self.state == PNPubNubClientStateConnected) {
+
+        [self warmUpConnection:channel];
+
+
+        // Checking whether we should use logic for messaginc channel reconnection or not
+        if ([channel isEqual:self.messagingChannel]) {
+
+            [self messagingChannelDidReconnect:(PNMessagingChannel *)channel];
+        }
+    }
+}
+
 - (void)connectionChannel:(PNConnectionChannel *)channel
      connectionDidFailToOrigin:(NSString *)host
                 withError:(PNError *)error {
