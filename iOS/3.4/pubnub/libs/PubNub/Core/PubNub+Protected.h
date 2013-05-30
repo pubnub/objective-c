@@ -21,6 +21,9 @@
 #pragma mark Static
 
 typedef enum _PNPubNubClientState {
+
+    // Client instance was reset
+    PNPubNubClientStateReset,
     
     // Client instance was just created
     PNPubNubClientStateCreated,

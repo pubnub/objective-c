@@ -52,6 +52,7 @@ struct PNConnectionIdentifiersStruct PNConnectionIdentifiers = {
 // Stores reference on created connection instances
 // which can be used/reused
 static NSMutableDictionary *_connectionsPool = nil;
+static dispatch_once_t onceToken;
 
 // Default origin host connection port
 static UInt32 const kPNOriginConnectionPort = 80;
@@ -394,7 +395,6 @@ static int const kPNStreamBufferSize = 32768;
 
 + (NSMutableDictionary *)connectionsPool {
 
-    static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
 
         _connectionsPool = [NSMutableDictionary new];
@@ -402,6 +402,20 @@ static int const kPNStreamBufferSize = 32768;
 
 
     return _connectionsPool;
+}
+
++ (void)resetConnectionsPool {
+
+    onceToken = 0;
+
+    // Reset connections
+    if ([_connectionsPool count]) {
+
+        [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(setDataSource:) withObject:nil];
+        [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
+    }
+
+    _connectionsPool = nil;
 }
 
 
@@ -1382,8 +1396,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         BOOL shouldNotifyDelegate = YES;
         BOOL isCriticalStreamError = NO;
 
-        PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] GOT ERROR: %@ (CFNetwork error code: %d; connection should be close? %@)",
-              self.name, errorObject, CFErrorGetCode(error), shouldCloseConnection?@"YES":@"NO");
+        PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] GOT ERROR: %@ (CFNetwork error code: %d (Domain: %@); connection should be close? %@)",
+              self.name, errorObject, CFErrorGetCode(error), (__bridge NSString *)CFErrorGetDomain(error), shouldCloseConnection ? @"YES" : @"NO");
 
         // Check whether error is caused by SSL issues or not
         if ([self isSecurityTransportError:error]) {

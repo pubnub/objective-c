@@ -35,6 +35,7 @@
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
+static dispatch_once_t onceToken;
 
 
 #pragma mark - Private interface methods
@@ -92,6 +93,7 @@ static PubNub *_sharedInstance = nil;
 
 #pragma mark - Instance methods
 
++ (void)disconnectByUser:(BOOL)isDisconnectedByUser;
 + (void)disconnectForConfigurationChange;
 
 
@@ -213,6 +215,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (BOOL)shouldRestoreConnection;
 
 /**
+ * Check whether delegate should be notified about some runtime event
+ * (errors will be notified w/o regard to this flag)
+ */
+- (BOOL)shouldNotifyAboutEvent;
+
+/**
  * Check whether client should restore subscription to previous
  * channels or not
  */
@@ -223,12 +231,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * or not
  */
 - (BOOL)shouldRestoreSubscriptionWithLastTimeToken;
-
-/**
- * Check whether delegate should be notified about some runtime event
- * (errors will be notified w/o regard to this flag)
- */
-- (BOOL)shouldNotifyDelegate;
 
 /**
  * Retrieve request execution possibility code.
@@ -250,8 +252,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 #pragma mark - Class methods
 
 + (PubNub *)sharedInstance {
-    
-    static dispatch_once_t onceToken;
+
     dispatch_once(&onceToken, ^{
         
         _sharedInstance = [[[self class] alloc] init];
@@ -259,6 +260,28 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     
     return _sharedInstance;
+}
+
++ (void)resetClient {
+
+    // Mark that client is in resetting state, so it won't be affected by
+    // callbacks from transport classes
+    _sharedInstance.state = PNPubNubClientStateReset;
+
+    onceToken = 0;
+    [PNObservationCenter resetCenter];
+    [PNConnection resetConnectionsPool];
+    [PNChannel purgeChannelsCache];
+    [PNCryptoHelper resetHelper];
+
+    [_sharedInstance.messagingChannel terminate];
+    [_sharedInstance.serviceChannel terminate];
+    _sharedInstance.messagingChannel = nil;
+    _sharedInstance.serviceChannel = nil;
+    [_sharedInstance.reachability stopServiceReachabilityMonitoring];
+    _sharedInstance.reachability = nil;
+
+    _sharedInstance = nil;
 }
 
 
@@ -403,11 +426,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 }
 
 + (void)disconnect {
-    
+
+    [self disconnectByUser:YES];
+}
+
++ (void)disconnectByUser:(BOOL)isDisconnectedByUser {
+
     // Remove PubNub client from list which help to observe various events
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
     if ([self sharedInstance].state != PNPubNubClientStateDisconnectingOnConfigurationChange) {
-        
+
         [[PNObservationCenter defaultCenter] removeClientAsParticipantsListDownloadObserver];
         [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
         [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
@@ -435,14 +463,32 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [self sharedInstance].restoringConnection = NO;
 
 
-    // Empty connection pool after connection will
-    // be closed
-    [PNConnection closeAllConnections];
+    if (isDisconnectedByUser) {
+
+        [PNConnection resetConnectionsPool];
+
+        [_sharedInstance.messagingChannel terminate];
+        [_sharedInstance.serviceChannel terminate];
+        _sharedInstance.messagingChannel = nil;
+        _sharedInstance.serviceChannel = nil;
+
+        // Mark that client completely disconnected from origin server
+        // (synchronous disconnection was made to prevebt asynchrnonous disconnect event
+        // from overlaping on connection event)
+        [self sharedInstance].state = PNPubNubClientStateDisconnected;
+    }
+    else {
+
+        // Empty connection pool after connection will
+        // be closed
+        [PNConnection closeAllConnections];
+    }
 
 
     // Destroy communication channels
-    [[self sharedInstance].messagingChannel prepareForDestroy];
+    [[self sharedInstance].messagingChannel terminate];
     [self sharedInstance].messagingChannel = nil;
+    [[self sharedInstance].serviceChannel terminate];
     [self sharedInstance].serviceChannel = nil;
 }
 
@@ -1391,7 +1437,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         else if (self.state == PNPubNubClientStateDisconnectingOnConfigurationChange) {
             
             // Close connection to PubNub services
-            [[self class] disconnect];
+            [[self class] disconnectByUser:NO];
             
             
             // Delay connection restore to give some time internal
@@ -1637,6 +1683,13 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     return shouldRestoreSubscription;
 }
 
+- (BOOL)shouldNotifyAboutEvent {
+
+    return (self.state != PNPubNubClientStateCreated) && (self.state != PNPubNubClientStateConnecting) &&
+           (self.state != PNPubNubClientStateDisconnecting) && (self.state != PNPubNubClientStateDisconnected) &&
+           (self.state != PNPubNubClientStateReset);
+}
+
 - (BOOL)shouldRestoreSubscriptionWithLastTimeToken {
 
     BOOL shouldRestoreFromLastTimeToken = self.configuration.shouldRestoreSubscriptionFromLastTimeToken;
@@ -1647,12 +1700,6 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 
     return shouldRestoreFromLastTimeToken;
-}
-
-- (BOOL)shouldNotifyDelegate {
-
-    return (self.state != PNPubNubClientStateCreated) && (self.state != PNPubNubClientStateConnecting) &&
-           (self.state != PNPubNubClientStateDisconnecting) && (self.state != PNPubNubClientStateDisconnected);
 }
 
 - (NSInteger)requestExecutionPossibilityStatusCode {
@@ -1705,7 +1752,7 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle subscription on channel or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
@@ -1722,7 +1769,7 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle subscription restore on channels or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
@@ -1759,7 +1806,7 @@ didFailSubscribeOnChannels:(NSArray *)channels
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFromChannels:(NSArray *)channels {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle unsubscription event or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)]) {
@@ -1783,7 +1830,7 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didReceiveMessage:(PNMessage *)message {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle new message arrival or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessage:)]) {
@@ -1806,7 +1853,7 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
         [channel updateWithEvent:event];
     }
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle presence event arrival or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceivePresenceEvent:)]) {
@@ -1825,7 +1872,7 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveTimeToken:(NSNumber *)timeToken {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle time token retrieval or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveTimeToken:)]) {
@@ -1854,7 +1901,7 @@ didReceiveNetworkLatency:(double)latency
 
 - (void)serviceChannel:(PNServiceChannel *)channel willSendMessage:(PNMessage *)message {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle message sending event or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:willSendMessage:)]) {
@@ -1870,7 +1917,7 @@ didReceiveNetworkLatency:(double)latency
 
 - (void)serviceChannel:(PNServiceChannel *)channel didSendMessage:(PNMessage *)message {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle message sent event or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didSendMessage:)]) {
@@ -1894,7 +1941,7 @@ didReceiveNetworkLatency:(double)latency
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveMessagesHistory:(PNMessagesHistory *)history {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can response on history download event or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessageHistory:forChannel:startingFrom:to:)]) {
@@ -1920,7 +1967,7 @@ didReceiveNetworkLatency:(double)latency
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantsList:(PNHereNow *)participants {
 
-    if ([self shouldNotifyDelegate]) {
+    if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can response on participants list download event or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsLits:forChannel:)]) {
@@ -1941,6 +1988,14 @@ didFailParticipantsListLoadForChannel:(PNChannel *)channel
     error.associatedObject = channel;
     [self notifyDelegateAboutParticipantsListDownloadFailedWithError:error];
 
+}
+
+
+#pragma mark - Memory management
+
+- (void)dealloc {
+
+    PNLog(PNLogGeneralLevel, self, @"Destroyed");
 }
 
 #pragma mark -

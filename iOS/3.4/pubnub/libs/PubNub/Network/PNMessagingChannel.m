@@ -234,10 +234,10 @@
     return [request isKindOfClass:[PNSubscribeRequest class]];
 }
 
-- (void)prepareForDestroy {
+- (void)terminate {
     
     [self stopChannelIdleTimer];
-    [super cleanUp];
+    [super terminate];
 }
 
 

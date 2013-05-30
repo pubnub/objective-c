@@ -17,14 +17,14 @@
 #import "PNError+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNPresenceEvent.h"
-#import "PNMessage.h"
-#import "PNHereNow.h"
 
 
 #pragma mark Static
 
 // Stores reference on shared observation center instance
 static PNObservationCenter *_sharedInstance = nil;
+static dispatch_once_t onceToken;
+
 
 struct PNObservationEventsStruct {
 
@@ -131,9 +131,8 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 #pragma mark Class methods
 
-+ (id)defaultCenter {
-    
-    static dispatch_once_t onceToken;
++ (PNObservationCenter *)defaultCenter {
+
     dispatch_once(&onceToken, ^{
         
         _sharedInstance = [[[self class] alloc] init];
@@ -141,6 +140,12 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     
     
     return _sharedInstance;
+}
+
++ (void)resetCenter {
+
+    // Resetting one time observers (they bound to PubNub client instance)
+    [[self defaultCenter].oneTimeObservers removeAllObjects];
 }
 
 
@@ -153,102 +158,103 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         
         self.observers = [NSMutableDictionary dictionary];
         self.oneTimeObservers = [NSMutableDictionary dictionary];
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientConnectionStateChange:)
-                                                     name:kPNClientDidConnectToOriginNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientConnectionStateChange:)
-                                                     name:kPNClientDidDisconnectFromOriginNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientConnectionStateChange:)
-                                                     name:kPNClientConnectionDidFailWithErrorNotification
-                                                   object:nil];
-        
-        
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientConnectionStateChange:)
+                                   name:kPNClientDidConnectToOriginNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientConnectionStateChange:)
+                                   name:kPNClientDidDisconnectFromOriginNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientConnectionStateChange:)
+                                   name:kPNClientConnectionDidFailWithErrorNotification
+                                 object:nil];
+
+
         // Handle subscription events
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientSubscriptionProcess:)
-                                                     name:kPNClientSubscriptionDidCompleteNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientSubscriptionProcess:)
-                                                     name:kPNClientSubscriptionWillRestoreNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientSubscriptionProcess:)
-                                                     name:kPNClientSubscriptionDidRestoreNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientSubscriptionProcess:)
-                                                     name:kPNClientSubscriptionDidFailNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientUnsubscriptionProcess:)
-                                                     name:kPNClientUnsubscriptionDidCompleteNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientUnsubscriptionProcess:)
-                                                     name:kPNClientUnsubscriptionDidFailNotification
-                                                   object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientSubscriptionProcess:)
+                                   name:kPNClientSubscriptionDidCompleteNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientSubscriptionProcess:)
+                                   name:kPNClientSubscriptionWillRestoreNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientSubscriptionProcess:)
+                                   name:kPNClientSubscriptionDidRestoreNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientSubscriptionProcess:)
+                                   name:kPNClientSubscriptionDidFailNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientUnsubscriptionProcess:)
+                                   name:kPNClientUnsubscriptionDidCompleteNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientUnsubscriptionProcess:)
+                                   name:kPNClientUnsubscriptionDidFailNotification
+                                 object:nil];
 
 
         // Handle time token events
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientCompletedTimeTokenProcessing:)
-                                                     name:kPNClientDidReceiveTimeTokenNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientCompletedTimeTokenProcessing:)
-                                                     name:kPNClientDidFailTimeTokenReceiveNotification
-                                                   object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientCompletedTimeTokenProcessing:)
+                                   name:kPNClientDidReceiveTimeTokenNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientCompletedTimeTokenProcessing:)
+                                   name:kPNClientDidFailTimeTokenReceiveNotification
+                                 object:nil];
 
 
         // Handle message processing events
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientMessageProcessingStateChange:)
-                                                     name:kPNClientWillSendMessageNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientMessageProcessingStateChange:)
-                                                     name:kPNClientDidSendMessageNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientMessageProcessingStateChange:)
-                                                     name:kPNClientMessageSendingDidFailNotification
-                                                   object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientMessageProcessingStateChange:)
+                                   name:kPNClientWillSendMessageNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientMessageProcessingStateChange:)
+                                   name:kPNClientDidSendMessageNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientMessageProcessingStateChange:)
+                                   name:kPNClientMessageSendingDidFailNotification
+                                 object:nil];
 
         // Handle messages/presence event arrival
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientDidReceiveMessage:)
-                                                     name:kPNClientDidReceiveMessageNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientDidReceivePresenceEvent:)
-                                                     name:kPNClientDidReceivePresenceEventNotification
-                                                   object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientDidReceiveMessage:)
+                                   name:kPNClientDidReceiveMessageNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientDidReceivePresenceEvent:)
+                                   name:kPNClientDidReceivePresenceEventNotification
+                                 object:nil];
 
         // Handle message history events arrival
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientMessageHistoryProcess:)
-                                                     name:kPNClientDidReceiveMessagesHistoryNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientMessageHistoryProcess:)
-                                                     name:kPNClientHistoryDownloadFailedWithErrorNotification
-                                                   object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientMessageHistoryProcess:)
+                                   name:kPNClientDidReceiveMessagesHistoryNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientMessageHistoryProcess:)
+                                   name:kPNClientHistoryDownloadFailedWithErrorNotification
+                                 object:nil];
 
         // Handle participants list arrival
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientHereNowProcess:)
-                                                     name:kPNClientDidReceiveParticipantsListNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleClientHereNowProcess:)
-                                                     name:kPNClientParticipantsListDownloadFailedWithErrorNotification
-                                                   object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientHereNowProcess:)
+                                   name:kPNClientDidReceiveParticipantsListNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientHereNowProcess:)
+                                   name:kPNClientParticipantsListDownloadFailedWithErrorNotification
+                                 object:nil];
         
         
     }
@@ -665,9 +671,9 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     // Clean one time observers for specific event
     [self removeOneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels];
 
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
-                                                NSUInteger observerDataIdx,
-                                                BOOL *observerDataEnumeratorStop) {
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                            NSUInteger observerDataIdx,
+                                            BOOL *observerDataEnumeratorStop) {
 
         // Call handling blocks
         PNClientChannelSubscriptionHandlerBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -698,9 +704,9 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     // Clean one time observers for specific event
     [self removeOneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
 
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
-                                                NSUInteger observerDataIdx,
-                                                BOOL *observerDataEnumeratorStop) {
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                            NSUInteger observerDataIdx,
+                                            BOOL *observerDataEnumeratorStop) {
 
         // Call handling blocks
         PNClientChannelUnsubscriptionHandlerBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -741,9 +747,9 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         [self removeOneTimeObserversForEvent:PNObservationEvents.clientMessageSendCompletion];
     }
 
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
-                                                    NSUInteger observerDataIdx,
-                                                    BOOL *observerDataEnumeratorStop) {
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                            NSUInteger observerDataIdx,
+                                            BOOL *observerDataEnumeratorStop) {
 
         // Call handling blocks
         PNClientMessageProcessingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -763,7 +769,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     // Retrieving list of observers
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientReceivedMessage];
 
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
                                             NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
 
@@ -785,7 +791,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     // Retrieving list of observers
     NSArray *observers = [self observersForEvent:PNObservationEvents.clientReceivedPresenceEvent];
 
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
                                             NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
 
@@ -821,7 +827,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     // Clean one time observers for specific event
     [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedHistory];
 
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
                                             NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
 
@@ -857,7 +863,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     // Clean one time observers for specific event
     [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedParticipantsList];
 
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
                                             NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
 
@@ -889,9 +895,9 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     // Clean one time observers for specific event
     [self removeOneTimeObserversForEvent:PNObservationEvents.clientTimeTokenReceivingComplete];
 
-    [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
-                                                NSUInteger observerDataIdx,
-                                                BOOL *observerDataEnumeratorStop) {
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                            NSUInteger observerDataIdx,
+                                            BOOL *observerDataEnumeratorStop) {
 
         // Call handling blocks
         PNClientTimeTokenReceivingCompleteBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -948,6 +954,43 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 
     return allObservers;
+}
+
+
+#pragma mark - Memory management
+
+- (void)dealloc {
+
+    // Unsubscribe from all notifications
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self name:kPNClientDidConnectToOriginNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientDidDisconnectFromOriginNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientConnectionDidFailWithErrorNotification object:nil];
+
+    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientSubscriptionWillRestoreNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidRestoreNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidFailNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidCompleteNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidFailNotification object:nil];
+
+    [notificationCenter removeObserver:self name:kPNClientDidReceiveTimeTokenNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientDidFailTimeTokenReceiveNotification object:nil];
+
+    [notificationCenter removeObserver:self name:kPNClientWillSendMessageNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientDidSendMessageNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientMessageSendingDidFailNotification object:nil];
+
+    [notificationCenter removeObserver:self name:kPNClientDidReceiveMessageNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientDidReceivePresenceEventNotification object:nil];
+
+    [notificationCenter removeObserver:self name:kPNClientDidReceiveMessagesHistoryNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientHistoryDownloadFailedWithErrorNotification object:nil];
+
+    [notificationCenter removeObserver:self name:kPNClientDidReceiveParticipantsListNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientParticipantsListDownloadFailedWithErrorNotification object:nil];
+
+    PNLog(PNLogGeneralLevel, self, @"Destroyed");
 }
 
 #pragma mark -

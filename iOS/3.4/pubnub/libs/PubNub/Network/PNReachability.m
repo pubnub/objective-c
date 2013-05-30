@@ -335,6 +335,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability, SCNetworkReac
     // Clean up
     [self stopServiceReachabilityMonitoring];
     [self removeObserver:self forKeyPath:@"status"];
+
+    PNLog(PNLogGeneralLevel, self, @"Destroyed");
 }
 
 #pragma mark -

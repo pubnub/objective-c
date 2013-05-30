@@ -288,6 +288,11 @@
     [self.requestsQueue removeAllRequests];
 }
 
+- (void)terminate {
+
+    [self cleanUp];
+}
+
 - (void)startTimeoutTimerForRequest:(PNBaseRequest *)request {
 
     self.timeoutTimer = [NSTimer timerWithTimeInterval:[request timeout]
