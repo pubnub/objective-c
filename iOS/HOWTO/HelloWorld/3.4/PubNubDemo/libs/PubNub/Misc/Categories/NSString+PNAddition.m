@@ -26,9 +26,11 @@
 #pragma mark - Instance methods
 
 - (NSString *)percentEscapedString {
-    
+
+    NSString *newlineEscapedString = [self stringByReplacingOccurrencesOfString:@"\n" withString:@"%5Cn"];
+    newlineEscapedString = [newlineEscapedString stringByReplacingOccurrencesOfString:@"\r" withString:@"%5Cr"];
     CFStringRef escapedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                                        (__bridge CFStringRef)self,
+                                                                        (__bridge CFStringRef)newlineEscapedString,
                                                                         NULL,
                                                                         (CFStringRef)@":/?#[]@!$&’()*+,;=",
                                                                         kCFStringEncodingUTF8);

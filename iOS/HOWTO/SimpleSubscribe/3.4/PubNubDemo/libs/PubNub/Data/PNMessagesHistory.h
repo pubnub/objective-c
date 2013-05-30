@@ -12,7 +12,7 @@
 
 #pragma mark Class forward
 
-@class PNChannel;
+@class PNChannel, PNDate;
 
 
 @interface PNMessagesHistory : NSObject
@@ -21,10 +21,10 @@
 #pragma mark - Properties
 
 // Stores reference on history time frame start date
-@property (nonatomic, readonly, strong) NSDate *startDate;
+@property (nonatomic, readonly, strong) PNDate *startDate;
 
 // Stores reference on history time frame end date
-@property (nonatomic, readonly, strong) NSDate *endDate;
+@property (nonatomic, readonly, strong) PNDate *endDate;
 
 // Store reference on channel for which history has been
 // downloaded

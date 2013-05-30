@@ -70,10 +70,18 @@
 - (void)resubscribe;
 
 /**
+ * Returns whether messaging channel can resubscribe on channels
+ * or not.
+ * Will return YES if there is some channels on which it can resubscribe,
+ * NO in other case
+ */
+- (BOOL)canResubscribe;
+
+/**
  * Will restore channels subscription if doesn't
  * set that it should resubscribe
  */
-- (void)restoreSubscription:(BOOL)shouldResubscribe;
+- (void)restoreSubscription:(BOOL)shouldRestoreResubscriptionFromLastTimeToken;
 
 /**
  * Will resubscribe on channels to receive messages from
