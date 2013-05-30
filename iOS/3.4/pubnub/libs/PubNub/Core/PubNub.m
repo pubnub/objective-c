@@ -476,6 +476,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         // (synchronous disconnection was made to prevebt asynchrnonous disconnect event
         // from overlaping on connection event)
         [self sharedInstance].state = PNPubNubClientStateDisconnected;
+
+        [[self sharedInstance] connectionChannel:nil didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
     }
     else {
 
@@ -1331,7 +1333,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Check whether all communication channels disconnected and whether
         // client in corresponding state or not
         if (self.state == PNPubNubClientStateDisconnecting ||
-            self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+            self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+            channel == nil) {
             
             PNError *connectionError;
             PNPubNubClientState state = PNPubNubClientStateDisconnected;
@@ -1398,17 +1401,25 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 // Delay disconnection notification to give client ability
                 // to perform clean up well
                 __block __pn_desired_weak typeof(self) weakSelf = self;
-                double delayInSeconds = 1.0;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-                    
+                void(^disconnectionNotifyBlock)(void) = ^{
+
                     if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
 
                         [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host];
                     }
 
                     [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
-                });
+                };
+                if (channel == nil) {
+
+                    disconnectionNotifyBlock();
+                }
+                else {
+
+                    double delayInSeconds = 1.0;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), disconnectionNotifyBlock);
+                }
             }
             else if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
