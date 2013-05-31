@@ -72,8 +72,8 @@ We've just added a video walkthrough, along with a sample application (based on 
 end how to setup APNS with PubNub. It includes all Apple-specific setup (which appears to be the most misunderstood) as
 well as the PubNub-specific setup, along with the end product app available in [HOWTO/APNSVideo](HOWTO/APNSVideo).
 
-** NOTE:  The video walkthrough uses beta client API calls which are only available in the APNSVideo/lib/PubNub directory. 
-Be sure to use this lib path if you are following this video. It is in final beta, and will be merged to master shortly. **
+**NOTE:  The video walkthrough uses beta client API calls which are only available in the APNSVideo/lib/PubNub directory. 
+Be sure to use this lib path if you are following this video. It is in final beta, and will be merged to master shortly.**
 
 #### APNS Video HOWTO ####
 
