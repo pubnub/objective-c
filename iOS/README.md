@@ -66,6 +66,39 @@ If you've enabled your keys for APNS, you can use native PubNub publish operatio
 Refer to the [APNS documentation HOWTO](https://github.com/pubnub/objective-c/blob/master/iOS/README_FOR_APNS.md) for more information on PubNub APNS setup.
 (A more formal "PubNub APNS Hello World" document is on its way!)
 
+### Beta APNS Video and Client Library ###
+
+We've just added a video walkthrough, along with a sample application (based on the video) that shows from start to
+end how to setup APNS with PubNub. It includes all Apple-specific setup (which appears to be the most misunderstood) as
+well as the PubNub-specific setup, along with the end product app available in [HOWTO/APNSVideo](HOWTO/APNSVideo).
+
+** NOTE:  The video walkthrough uses beta client API calls which are only available in the APNSVideo/lib/PubNub directory. 
+Be sure to use this lib path if you are following this video. It is in final beta, and will be merged to master shortly. **
+
+#### APNS Video HOWTO ####
+
+Watch the following in order:
+
+[1 Creating the App ID and PEM Cert File](https://vimeo.com/67419903)
+
+[2 Create the Provisioning Profile](https://vimeo.com/67420404)
+
+[3 Create and Configure PubNub Account for APNS](https://vimeo.com/67420596)
+
+[4 Create empty PubNub App Template](https://vimeo.com/67420599)
+
+[5 Configure for PNDelegate Protocol and create didReceiveMessage delegate method](https://vimeo.com/67420597)
+
+[6 Set keys, channel, connect, and subscribe and Test Run](https://vimeo.com/67420598)
+
+[7 Enable and Test for correct APNS configuration (Apple Config)](https://vimeo.com/67423576)
+
+[8 Provision PubNub APNS](https://vimeo.com/67423577)
+
+Two files referenced from the video, [generateAPNSPemKey.sh](generateAPNSPemKey.sh) and [verifyCertWithApple.sh](verifyCertWithApple.sh) are also availble 
+
+Final product is available here: [HOWTO/APNSVideo](HOWTO/APNSVideo)
+
 ## Client configuration
 
 You can test-drive the PubNub client out-of-the-box without additional configuration changes. As you get a feel for it, you can fine tune it's behaviour by tweaking the available settings.
