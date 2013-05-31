@@ -31,6 +31,7 @@
     NSLog(@"setUp: %@", self.name);
     // Set-up code here.
     _reachability = [PNReachability serviceReachability];
+    
     STAssertNotNil(_reachability, @"Cannot initialize reachability");
 }
 
