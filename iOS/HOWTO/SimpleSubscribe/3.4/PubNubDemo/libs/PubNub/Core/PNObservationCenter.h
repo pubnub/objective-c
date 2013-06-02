@@ -111,6 +111,17 @@
                                            withBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 - (void)removeChannelParticipantsListProcessingObserver:(id)observer;
 
+#pragma mark - APNS observing
+
+/**
+ * Add/remove APNS event observing
+ */
+
+- (void)addAPNSChangeEventObserver:(id)observer
+                   withBlock:(PNClientAPNSChangeHandlingBlock)handleBlock;
+- (void)removeAPNSChangeEventObserver:(id)observer;
+
+
 #pragma mark -
 
 

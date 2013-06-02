@@ -467,6 +467,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
 
+#pragma mark - APNS methods
+
+/**
+* Add device to channel/sub-key
+*/
+
++ (void)enableAPNSOnChannel:(PNChannel *)channel
+                  forDevice:(NSString *)deviceID;
+/**
+* Same as above, but with handling block
+*/
+
++ (void)enableAPNSOnChannel:(PNChannel *)channel
+                  forDevice:(NSString *)deviceID
+        withCompletionBlock:(PNClientAPNSChangeHandlingBlock)handleBlock;
+
+
 #pragma mark - Instance methods
 
 /**

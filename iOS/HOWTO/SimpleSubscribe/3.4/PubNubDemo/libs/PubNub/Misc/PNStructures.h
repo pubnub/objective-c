@@ -121,5 +121,6 @@ typedef void (^PNClientMessageHandlingBlock)(PNMessage *);
 typedef void (^PNClientHistoryLoadHandlingBlock)(NSArray *, PNChannel *, PNDate *, PNDate *, PNError *);
 typedef void (^PNClientParticipantsHandlingBlock)(NSArray *, PNChannel *, PNError *);
 typedef void (^PNClientPresenceEventHandlingBlock)(PNPresenceEvent *);
+typedef void (^PNClientAPNSChangeHandlingBlock)(NSString *);
 
 #endif

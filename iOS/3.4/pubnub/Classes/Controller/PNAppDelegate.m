@@ -9,7 +9,6 @@
 #import "PNAppDelegate.h"
 #import "PNIdentificationViewController.h"
 #import "PNPresenceEvent.h"
-#import "PNMessage.h"
 
 
 #pragma mark Private interface methods
@@ -135,6 +134,46 @@
 
 
 #pragma mark - PubNub client delegate methods
+
+- (void)pubnubClient:(PubNub *)client didEnablePushNotificationsOnChannels:(NSArray *)channels {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client enabled push notifications on channels: %@", channels);
+}
+
+- (void)pubnubClient:(PubNub *)client pushNotificationEnableDidFailWithError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed push notification enable because of error: %@", error);
+}
+
+- (void)pubnubClient:(PubNub *)client didDisablePushNotificationsOnChannels:(NSArray *)channels {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client disabled push notifications on channels: %@", channels);
+}
+
+- (void)pubnubClient:(PubNub *)client pushNotificationDisableDidFailWithError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to disable push notifications because of error: %@", error);
+}
+
+- (void)pubnubClient:(PubNub *)client didReceivePushNotificationEnabledChannels:(NSArray *)channels {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client received push notificatino enabled channels: %@", channels);
+}
+
+- (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFailWithError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to receive list of channels because of error: %@", error);
+}
+
+- (void)pubnubClientDidRemovePushNotifications:(PubNub *)client {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client removed push notifications from all channels");
+}
+
+- (void)pubnubClient:(PubNub *)client pushNotificationsRemoveFromChannelsDidFailWithError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed remove push notifications from channels because of error: %@", error);
+}
 
 - (void)pubnubClient:(PubNub *)client error:(PNError *)error {
 

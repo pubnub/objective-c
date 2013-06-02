@@ -36,6 +36,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     .latencyMeasureMessageCallback = @"lm",
     .subscriptionCallback = @"s",
     .leaveChannelCallback = @"lv",
+    .channelPushNotificationsEnableCallback = @"cpe",
+    .channelPushNotificationsDisableCallback = @"cpd",
+    .pushNotificationEnabledChannelsCallback = @"pec",
+    .pushNotificationRemoveCallback = @"pnr",
     .sendMessageCallback = @"m",
     .timeTokenCallback = @"t",
     .messageHistoryCallback = @"h",
@@ -144,7 +148,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         self.content = content;
         self.size = responseSize;
         self.statusCode = statusCode;
-        
+
         
         NSString *decodedResponse = [self decodedResponse];
         if (decodedResponse) {
@@ -169,10 +173,14 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
                                               weakSelf.response = result;
                                           }
+                                          else {
+
+                                              self.response = result;
+                                          }
                                       }
                                            errorBlock:^(NSError *error) {
 
-                                               PNLog(PNLogGeneralLevel, weakSelf, @"ERROR: %@", error);
+                                               PNLog(PNLogGeneralLevel, weakSelf, @"JSON DECODE ERROR: %@", error);
                                                [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
         }

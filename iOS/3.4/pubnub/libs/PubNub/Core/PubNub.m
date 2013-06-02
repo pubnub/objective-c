@@ -127,6 +127,22 @@ static NSMutableArray *pendingInvocations = nil;
              andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
 
 
+#pragma mark - APNS management
+
++ (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels
+                              withDevicePushToken:(NSData *)pushToken
+                       andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+
++ (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels
+                               withDevicePushToken:(NSData *)pushToken
+                        andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+
++ (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                                 withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+
++ (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                             withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+
 #pragma mark - Presence management
 
 + (void)postponeEnablePresenceObservationForChannels:(NSArray *)channels;
@@ -211,6 +227,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)postponeMessagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel;
 
+- (void)postponeMessagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel;
+
 
 #pragma mark - Handler methods
 
@@ -225,6 +243,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * pending invocations list.
  */
 - (void)handleLockingOperationComplete:(BOOL)shouldStartNext;
+- (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext;
 
 
 #pragma mark - Misc methods
@@ -269,6 +288,28 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * unsubscription failed with error
  */
 - (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that push notification enabling failed with error
+ */
+- (void)notifyDelegateAboutPushNotificationsEnableFailedWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that push notification disabling failed with error
+ */
+- (void)notifyDelegateAboutPushNotificationsDisableFailedWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that push notification removal from all channels
+ * failed because of error
+ */
+- (void)notifyDelegateAboutPushNotificationsRemoveFailedWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that push notification enabled channels list
+ * retrieval request failed with error
+ */
+- (void)notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:(PNError *)error;
 
 /**
  * This method will notify delegate about that
@@ -1055,6 +1096,261 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 
+#pragma mark - APNS management
+
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken {
+
+    [self enablePushNotificationsOnChannel:channel withDevicePushToken:pushToken andCompletionHandlingBlock:nil];
+}
+
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+
+    [self enablePushNotificationsOnChannels:@[channel] withDevicePushToken:pushToken andCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken {
+
+    [self enablePushNotificationsOnChannels:channels withDevicePushToken:pushToken andCompletionHandlingBlock:nil];
+}
+
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels
+                      withDevicePushToken:(NSData *)pushToken
+               andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            if (handlerBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnableObserverWithBlock:[handlerBlock copy]];
+            }
+
+            PNPushNotificationsStateChangeRequest *request;
+            request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
+                                                                                 toState:PNPushNotificationsState.enable
+                                                                             forChannels:channels];
+            [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
+        }
+        // Looks like client can't send request because of some reasons
+        else {
+
+            PNError *stateChangeError = [PNError errorWithCode:statusCode];
+            stateChangeError.associatedObject = channels;
+
+            [[self sharedInstance] notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
+
+
+            if (handlerBlock) {
+
+                handlerBlock(channels, stateChangeError);
+            }
+        }
+    }
+           postponedExecutionBlock:^{
+
+        [self postponeEnablePushNotificationsOnChannels:channels
+                                    withDevicePushToken:pushToken
+                             andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+    }];
+}
+
++ (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels
+                              withDevicePushToken:(NSData *)pushToken
+                       andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+
+    SEL selector = @selector(enablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[channels, pushToken, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
+}
+
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken {
+
+    [self disablePushNotificationsOnChannel:channel withDevicePushToken:pushToken andCompletionHandlingBlock:nil];
+}
+
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+
+    [self disablePushNotificationsOnChannels:@[channel] withDevicePushToken:pushToken andCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken {
+
+    [self disablePushNotificationsOnChannels:channels withDevicePushToken:pushToken andCompletionHandlingBlock:nil];
+}
+
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels
+                       withDevicePushToken:(NSData *)pushToken
+                andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            if (handlerBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsDisableObserverWithBlock:[handlerBlock copy]];
+            }
+
+            PNPushNotificationsStateChangeRequest *request;
+            request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
+                                                                                 toState:PNPushNotificationsState.disable
+                                                                             forChannels:channels];
+            [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
+        }
+        // Looks like client can't send request because of some reasons
+        else {
+
+            PNError *stateChangeError = [PNError errorWithCode:statusCode];
+            stateChangeError.associatedObject = channels;
+
+            [[self sharedInstance] notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
+
+
+            if (handlerBlock) {
+
+                handlerBlock(channels, stateChangeError);
+            }
+        }
+    }
+           postponedExecutionBlock:^{
+
+               [self postponeDisablePushNotificationsOnChannels:channels
+                                            withDevicePushToken:pushToken
+                                     andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels
+                               withDevicePushToken:(NSData *)pushToken
+                        andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+
+    SEL selector = @selector(disablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[channels, pushToken, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
+}
+
++ (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                         withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
+
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsRemoveObserver];
+
+         // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            if (handlerBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsRemoveObserverWithBlock:[handlerBlock copy]];
+            }
+
+            [[self sharedInstance] sendRequest:[PNPushNotificationsRemoveRequest requestWithDevicePushToken:pushToken]
+                       shouldObserveProcessing:YES];
+        }
+        // Looks like client can't send request because of some reasons
+        else {
+
+            PNError *removalError = [PNError errorWithCode:statusCode];
+            [[self sharedInstance] notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
+
+
+            if (handlerBlock) {
+
+                handlerBlock(removalError);
+            }
+        }
+    }
+           postponedExecutionBlock:^{
+
+               [self postponeRemoveAllPushNotificationsForDevicePushToken:pushToken
+                                              withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                                 withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
+
+    SEL selector = @selector(removeAllPushNotificationsForDevicePushToken:withCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[pushToken, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
+}
+
++ (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                     withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
+
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnabledChannelsObserver];
+
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            if (handlerBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnabledChannelsObserverWithBlock:[handlerBlock copy]];
+            }
+
+            [[self sharedInstance] sendRequest:[PNPushNotificationsEnabledChannelsRequest requestWithDevicePushToken:pushToken]
+                       shouldObserveProcessing:YES];
+        }
+        // Looks like client can't send request because of some reasons
+        else {
+
+            PNError *listRetrieveError = [PNError errorWithCode:statusCode];
+
+            [[self sharedInstance] notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
+
+
+            if (handlerBlock) {
+
+                handlerBlock(nil, listRetrieveError);
+            }
+        }
+    }
+           postponedExecutionBlock:^{
+
+               [self postponeRequestPushNotificationEnabledChannelsForDevicePushToken:pushToken
+                                                          withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                             withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
+
+    SEL selector = @selector(requestPushNotificationEnabledChannelsForDevicePushToken:withCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[pushToken, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
+}
+
+
 #pragma mark - Presence management
 
 + (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel {
@@ -1620,7 +1916,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [request isKindOfClass:[PNTimeTokenRequest class]] ||
         [request isKindOfClass:[PNMessageHistoryRequest class]] ||
         [request isKindOfClass:[PNHereNowRequest class]] ||
-        [request isKindOfClass:[PNLatencyMeasureRequest class]]) {
+        [request isKindOfClass:[PNLatencyMeasureRequest class]] ||
+        [request isKindOfClass:[PNPushNotificationsStateChangeRequest class]] ||
+        [request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]] ||
+        [request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
         
         shouldSendOnMessageChannel = NO;
     }
@@ -1823,13 +2122,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 __block __pn_desired_weak typeof(self) weakSelf = self;
                 void(^disconnectionNotifyBlock)(void) = ^{
 
-                    if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+                    [self handleLockingOperationBlockCompletion:^{
 
-                        [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host];
+                        if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
+                            [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host];
+                        }
+
+                        [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
                     }
-
-                    [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
-                    [self handleLockingOperationComplete:YES];
+                                                shouldStartNext:YES];
                 };
                 if (channel == nil) {
 
@@ -1844,13 +2146,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
             else if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
-                if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+                [self handleLockingOperationBlockCompletion:^{
 
-                    [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
+                    if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+
+                        [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
+                    }
+
+                    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
                 }
-
-                [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
-                [self handleLockingOperationComplete:YES];
+                                            shouldStartNext:YES];
             }
         }
         // Check whether server unexpectedly closed connection
@@ -1923,22 +2228,40 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)handleLockingOperationComplete:(BOOL)shouldStartNext {
 
-    self.asyncLockingOperationInProgress = NO;
+    [self handleLockingOperationBlockCompletion:NULL shouldStartNext:shouldStartNext];
+}
 
-    if (shouldStartNext) {
+- (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext {
 
-        NSInvocation *methodInvocation = nil;
-        if ([pendingInvocations count] > 0) {
+    if (self.isAsyncLockingOperationInProgress) {
 
-            // Retrieve reference on invocation instance at the start of the list
-            // (oldest schedculed instance)
-            methodInvocation = [pendingInvocations objectAtIndex:0];
-            [pendingInvocations removeObjectAtIndex:0];
+        self.asyncLockingOperationInProgress = NO;
+
+
+        // Perform post completion block
+        // INFO: This is done to handle situation when some block may launch locking operation
+        //       and this handling block will release another one
+        if (operationPostBlock) {
+
+            operationPostBlock();
         }
 
-        if (methodInvocation) {
 
-            [methodInvocation invoke];
+        if (shouldStartNext && !self.isAsyncLockingOperationInProgress) {
+
+            NSInvocation *methodInvocation = nil;
+            if ([pendingInvocations count] > 0) {
+
+                // Retrieve reference on invocation instance at the start of the list
+                // (oldest schedculed instance)
+                methodInvocation = [pendingInvocations objectAtIndex:0];
+                [pendingInvocations removeObjectAtIndex:0];
+            }
+
+            if (methodInvocation) {
+
+                [methodInvocation invoke];
+            }
         }
     }
 }
@@ -2036,114 +2359,218 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate is able to handle subscription error
-        // or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
-                                withObject:self
-                                withObject:(id) error];
+            // Check whether delegate is able to handle subscription error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
+                                    withObject:self
+                                    withObject:(id) error];
+            }
+
+            [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
         }
-
-        [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
     }
-
-    [self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate is able to handle unsubscription error
-        // or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
-                                withObject:self
-                                withObject:(id) error];
+            // Check whether delegate is able to handle unsubscription error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
+                                    withObject:self
+                                    withObject:(id) error];
+            }
+
+            [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
         }
-
-        [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
     }
+                                shouldStartNext:YES];
+}
 
-    [self handleLockingOperationComplete:YES];
+- (void)notifyDelegateAboutPushNotificationsEnableFailedWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification enabling error
+            // or not
+            SEL selector = @selector(pubnubClient:pushNotificationEnableDidFailWithError:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:error];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationEnableDidFailNotification withObject:error];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)notifyDelegateAboutPushNotificationsDisableFailedWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification enabling error
+            // or not
+            SEL selector = @selector(pubnubClient:pushNotificationDisableDidFailWithError:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:error];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationDisableDidFailNotification withObject:error];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)notifyDelegateAboutPushNotificationsRemoveFailedWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notifications removal error
+            // or not
+            SEL selector = @selector(pubnubClient:pushNotificationsRemoveFromChannelsDidFailWithError:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:error];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationRemoveDidFailNotification withObject:error];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notifications removal error
+            // or not
+            SEL selector = @selector(pubnubClient:pushNotificationEnabledChannelsReceiveDidFailWithError:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:error];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidFailNotification withObject:error];
+        }
+    }
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutTimeTokenRetrievalFailWithError:(PNError *)error {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate is able to handle time token retriaval
-        // error or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:timeTokenReceiveDidFailWithError:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:timeTokenReceiveDidFailWithError:)
-                                withObject:self
-                                withObject:error];
+            // Check whether delegate is able to handle time token retriaval
+            // error or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:timeTokenReceiveDidFailWithError:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:timeTokenReceiveDidFailWithError:)
+                                    withObject:self
+                                    withObject:error];
+            }
+
+            [self sendNotification:kPNClientDidFailTimeTokenReceiveNotification withObject:error];
         }
-
-        [self sendNotification:kPNClientDidFailTimeTokenReceiveNotification withObject:error];
     }
-
-    [self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutMessageSendingFailedWithError:(PNError *)error {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate is able to handle message sendinf error
-        // or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailMessageSend:withError:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate pubnubClient:self didFailMessageSend:error.associatedObject withError:error];
+            // Check whether delegate is able to handle message sendinf error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailMessageSend:withError:)]) {
+
+                [self.delegate pubnubClient:self didFailMessageSend:error.associatedObject withError:error];
+            }
+
+            [self sendNotification:kPNClientMessageSendingDidFailNotification withObject:error];
         }
-
-        [self sendNotification:kPNClientMessageSendingDidFailNotification withObject:error];
     }
-
-    [self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutHistoryDownloadFailedWithError:(PNError *)error {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate us able to handle message history download error
-        // or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailHistoryDownloadForChannel:withError:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate pubnubClient:self
-       didFailHistoryDownloadForChannel:error.associatedObject
-                              withError:error];
+            // Check whether delegate us able to handle message history download error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailHistoryDownloadForChannel:withError:)]) {
+
+                [self.delegate pubnubClient:self
+           didFailHistoryDownloadForChannel:error.associatedObject
+                                  withError:error];
+            }
+
+            [self sendNotification:kPNClientHistoryDownloadFailedWithErrorNotification withObject:error];
         }
-
-        [self sendNotification:kPNClientHistoryDownloadFailedWithErrorNotification withObject:error];
     }
-
-    [self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutParticipantsListDownloadFailedWithError:(PNError *)error {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate us able to handle participants list
-        // download error or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailParticipantsListDownloadForChannel:withError:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate   pubnubClient:self
-didFailParticipantsListDownloadForChannel:error.associatedObject
-                                withError:error];
+            // Check whether delegate us able to handle participants list
+            // download error or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailParticipantsListDownloadForChannel:withError:)]) {
+
+                [self.delegate   pubnubClient:self
+    didFailParticipantsListDownloadForChannel:error.associatedObject
+                                    withError:error];
+            }
+
+            [self sendNotification:kPNClientParticipantsListDownloadFailedWithErrorNotification withObject:error];
         }
-
-        [self sendNotification:kPNClientParticipantsListDownloadFailedWithErrorNotification withObject:error];
     }
-
-    [self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutError:(PNError *)error {
@@ -2172,16 +2599,18 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 - (void)notifyDelegateClientConnectionFailedWithError:(PNError *)error {
 
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:connectionDidFailWithError:)
-                            withObject:self
-                            withObject:error];
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
+
+            [self.delegate performSelector:@selector(pubnubClient:connectionDidFailWithError:)
+                                withObject:self
+                                withObject:error];
+        }
+
+        [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
     }
-
-    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
-
-	[self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object {
@@ -2300,46 +2729,57 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate can handle subscription on channel or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
-                                withObject:self
-                                withObject:channels];
-        }
+            // Check whether delegate can handle subscription on channel or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
 
-    	[self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channels];
-	}
+                [self.delegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
+                                    withObject:self
+                                    withObject:channels];
+            }
 
-    [self handleLockingOperationComplete:YES];
+        	[self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channels];
+    	}
+    }
+                                shouldStartNext:YES];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate can handle subscription restore on channels or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)
-                                withObject:self
-                                withObject:channels];
+            // Check whether delegate can handle subscription restore on channels or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)
+                                    withObject:self
+                                    withObject:channels];
+            }
+
+
+            [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
         }
-
-
-        [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
     }
-
-	[self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)messagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {
     
     if ([messagingChannel canResubscribe]) {
-            
-        [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+
+        [[self class] performAsyncLockingBlock:^{
+
+            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+        }
+                       postponedExecutionBlock:^{
+
+                           [self postponeMessagingChannelDidReconnect:messagingChannel];
+                       }];
     }
     else {
         
@@ -2347,6 +2787,14 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
         [self handleLockingOperationComplete:YES];
     }
+}
+
+- (void)postponeMessagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {
+
+    [self postponeSelector:@selector(messagingChannelDidReconnect:)
+                 forObject:self
+            withParameters:@[messagingChannel]
+                outOfOrder:NO];
 }
 
 - (void)  messagingChannel:(PNMessagingChannel *)channel
@@ -2359,20 +2807,22 @@ didFailSubscribeOnChannels:(NSArray *)channels
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFromChannels:(NSArray *)channels {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate can handle unsubscription event or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)
-                                withObject:self
-                                withObject:channels];
+            // Check whether delegate can handle unsubscription event or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)
+                                    withObject:self
+                                    withObject:channels];
+            }
+
+            [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channels];
         }
-
-        [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channels];
     }
-
-	[self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)    messagingChannel:(PNMessagingChannel *)channel
@@ -2427,6 +2877,9 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveTimeToken:(NSNumber *)timeToken {
 
+    [self handleLockingOperationBlockCompletion:^{}
+                                shouldStartNext:YES];
+
     if ([self shouldNotifyAboutEvent]) {
 
         // Check whether delegate can handle time token retrieval or not
@@ -2449,9 +2902,125 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
     [self notifyDelegateAboutTimeTokenRetrievalFailWithError:error];
 }
 
-- (void)    serviceChannel:(PNServiceChannel *)channel
-  didReceiveNetworkLatency:(double)latency
-       andNetworkBandwidth:(double)bandwidth {
+- (void)serviceChannel:(PNServiceChannel *)channel didEnablePushNotificationsOnChannels:(NSArray *)channels {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification enabled event or not
+            SEL selector = @selector(pubnubClient:didEnablePushNotificationsOnChannels:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:channels];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationEnableDidCompleteNotification withObject:channels];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)                  serviceChannel:(PNServiceChannel *)channel
+didFailPushNotificationEnableForChannels:(NSArray *)channels
+                               withError:(PNError *)error {
+
+    error.associatedObject = channels;
+    [self notifyDelegateAboutPushNotificationsEnableFailedWithError:error];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didDisablePushNotificationsOnChannels:(NSArray *)channels {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification disable event or not
+            SEL selector = @selector(pubnubClient:didDisablePushNotificationsOnChannels:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:channels];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationDisableDidCompleteNotification withObject:channels];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)                   serviceChannel:(PNServiceChannel *)channel
+didFailPushNotificationDisableForChannels:(NSArray *)channels
+                                withError:(PNError *)error {
+
+    error.associatedObject = channels;
+    [self notifyDelegateAboutPushNotificationsDisableFailedWithError:error];
+}
+
+- (void)serviceChannelDidRemovePushNotifications:(PNServiceChannel *)channel {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check wheter delegate is able to handle successfull push notification removal from
+            // all channels or not
+            SEL selector = @selector(pubnubClientDidRemovePushNotifications:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationRemoveDidCompleteNotification withObject:nil];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationsRemoveWithError:(PNError *)error {
+
+    [self notifyDelegateAboutPushNotificationsRemoveFailedWithError:error];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didReceivePushNotificationsEnabledChannels:(NSArray *)channels {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification enabled
+            // channels retrieval or not
+            SEL selector = @selector(pubnubClient:didReceivePushNotificationEnabledChannels:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:channels];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification withObject:channels];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationEnabledChannelsReceiveWithError:(PNError *)error {
+
+    [self notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:error];
+}
+
+- (void)  serviceChannel:(PNServiceChannel *)channel
+didReceiveNetworkLatency:(double)latency
+     andNetworkBandwidth:(double)bandwidth {
 
     // TODO: NOTIFY NETWORK METER INSTANCE ABOUT ARRIVED DATA
 }
@@ -2474,20 +3043,22 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didSendMessage:(PNMessage *)message {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate can handle message sent event or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didSendMessage:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:didSendMessage:)
-                                withObject:self
-                                withObject:message];
+            // Check whether delegate can handle message sent event or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didSendMessage:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didSendMessage:)
+                                    withObject:self
+                                    withObject:message];
+            }
+
+            [self sendNotification:kPNClientDidSendMessageNotification withObject:message];
         }
-
-        [self sendNotification:kPNClientDidSendMessageNotification withObject:message];
     }
-	
-	[self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel
@@ -2500,22 +3071,24 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveMessagesHistory:(PNMessagesHistory *)history {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate can response on history download event or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessageHistory:forChannel:startingFrom:to:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate pubnubClient:self
-               didReceiveMessageHistory:history.messages
-                             forChannel:history.channel
-                           startingFrom:history.startDate
-                                     to:history.endDate];
+            // Check whether delegate can response on history download event or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessageHistory:forChannel:startingFrom:to:)]) {
+
+                [self.delegate pubnubClient:self
+                   didReceiveMessageHistory:history.messages
+                                 forChannel:history.channel
+                               startingFrom:history.startDate
+                                         to:history.endDate];
+            }
+
+            [self sendNotification:kPNClientDidReceiveMessagesHistoryNotification withObject:history];
         }
-
-        [self sendNotification:kPNClientDidReceiveMessagesHistoryNotification withObject:history];
     }
-
-	[self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)           serviceChannel:(PNServiceChannel *)serviceChannel
@@ -2528,20 +3101,22 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantsList:(PNHereNow *)participants {
 
-    if ([self shouldNotifyAboutEvent]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        // Check whether delegate can response on participants list download event or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsLits:forChannel:)]) {
+        if ([self shouldNotifyAboutEvent]) {
 
-            [self.delegate pubnubClient:self
-             didReceiveParticipantsLits:participants.participants
-                             forChannel:participants.channel];
+            // Check whether delegate can response on participants list download event or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsLits:forChannel:)]) {
+
+                [self.delegate pubnubClient:self
+                 didReceiveParticipantsLits:participants.participants
+                                 forChannel:participants.channel];
+            }
+
+            [self sendNotification:kPNClientDidReceiveParticipantsListNotification withObject:participants];
         }
-
-        [self sendNotification:kPNClientDidReceiveParticipantsListNotification withObject:participants];
     }
-
-	[self handleLockingOperationComplete:YES];
+                                shouldStartNext:YES];
 }
 
 - (void)               serviceChannel:(PNServiceChannel *)serviceChannel

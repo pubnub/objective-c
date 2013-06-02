@@ -262,6 +262,70 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
      andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
 
 
+#pragma mark - APNS management
+
+/**
+ * Enable push notifications on specified channel
+ *
+ * Only last call of this method will call completion block.
+ * If you need to track push notification enabling process from
+ * many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+
+/**
+ * Enable push notifications on specified channels list
+ *
+ * Only last call of this method will call completion block.
+ * If you need to track push notification enabling process from
+ * many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels
+                      withDevicePushToken:(NSData *)pushToken
+               andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+
+/**
+ * Disable push notifications on specified channel
+ *
+ * Only last call of this method will call completion block.
+ * If you need to track push notification disabling process from
+ * many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+
+/**
+ * Disable push notifications on specified channel list
+ *
+ * Only last call of this method will call completion block.
+ * If you need to track push notification disabling process from
+ * many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels
+                       withDevicePushToken:(NSData *)pushToken
+                andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+
+/**
+ * Disable all push notifications from channels on which they was
+ * set with specified device push token
+ */
++ (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                         withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+
+/**
+ * Receive list of channels on which push notifications was enabled
+ */
++ (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                     withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+
+
 #pragma mark - Presence management
 
 /**

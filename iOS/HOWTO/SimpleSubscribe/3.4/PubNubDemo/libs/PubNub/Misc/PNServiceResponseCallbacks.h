@@ -47,6 +47,25 @@ struct PNServiceResponseCallbacksStruct {
     // Name of the function which is used to
     // retrieve channel participants
     __unsafe_unretained NSString *channelParticipantsCallback;
+
+    // Name of the function which is used to
+    // return APNSAdd response
+    __unsafe_unretained NSString *apnsAddCallback;
+
+    // Name of the function which is used to
+    // return APNSRemoveOne response
+    __unsafe_unretained NSString *apnsRemoveOneCallback;
+
+    // Name of the function which is used to
+    // return APNSRemoveAll response
+    __unsafe_unretained NSString *apnsRemoveAllCallback;
+
+    // Name of the function which is used to
+    // return APNSListActive response
+    __unsafe_unretained NSString *apnsListActiveCallback;
+
+
+
 };
 
 extern struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks;

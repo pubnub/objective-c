@@ -128,4 +128,10 @@ static NSString * const kPNClientDidReceiveParticipantsListNotification = @"PNCl
 // (participants list) from remote service
 static NSString * const kPNClientParticipantsListDownloadFailedWithErrorNotification=@"PNClientParticipantsListDownloadFailedWithErrorNotification";
 
+// Sent when PubNub client fails to receive a positive response from an APNS operation
+static NSString * const kPNClientAPNSChangeFailedWithErrorNotification=@"PNClientAPNSFailedWithErrorNotification";
+
+// Sent when PubNub client succeeds in receiving a positive response from an APNS operation
+static NSString * const kPNClientDidReceiveAPNSChangeNotification=@"PNClientDidReceiveAPNSNotification";
+
 #endif

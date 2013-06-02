@@ -14,22 +14,28 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
 
     // amongst other things, set the sub/pub keys to demo
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
+
         PNLog(PNLogGeneralLevel, self, @"{BLOCK} PubNub client connected to: %@", origin);
 
-        // then subscribe on channel a
-        [PubNub subscribeOnChannel:[PNChannel channelWithName:@"a" shouldObservePresence:YES]];
+        // wait 1 second
+        int64_t delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 
-    }
-            // In case of an error, you always can extract the details via
-            // localizedDescription, localizedFailureReason and localizedRecoverySuggestion
-
+            // then subscribe on channel a
+            PNChannel *myChannel = [PNChannel channelWithName:@"b" shouldObservePresence:YES];
+            [PubNub subscribeOnChannel:myChannel];
+            [PubNub enableAPNSOnChannel:myChannel forDevice:@"mydeviceid"];
+        }); }
+     // In case of error you always can pull out error code and identify what happened and what you can do // additional information is stored inside error's localizedDescription, localizedFailureReason and
+     // localizedRecoverySuggestion)
                          errorBlock:^(PNError *connectionError) {
                              if (connectionError.code == kPNClientConnectionFailedOnInternetFailureError) {
                                  PNLog(PNLogGeneralLevel, self, @"Connection will be established as soon as internet connection will be restored");
@@ -48,6 +54,7 @@
 }
 
 - (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
