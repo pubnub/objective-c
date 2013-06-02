@@ -25,6 +25,10 @@
 // Stores reference on channels list
 @property (nonatomic, strong) NSArray *channels;
 
+// Stores reference on client identifier on the
+// moment of request creation
+@property (nonatomic, copy) NSString *clientIdentifier;
+
 // Stores reference on whether connection should
 // be closed before sending this message or not
 @property (nonatomic, assign, getter = shouldCloseConnection) BOOL closeConnection;
@@ -63,6 +67,7 @@
         self.sendingByUserRequest = isLeavingByUserRequest;
         self.closeConnection = YES;
         self.channels = [NSArray arrayWithArray:channels];
+        self.clientIdentifier = [PubNub escapedClientIdentifier];
     }
     
     
@@ -79,7 +84,7 @@
     return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@",
                                       [PubNub sharedInstance].configuration.subscriptionKey,
                                       [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      [PubNub escapedClientIdentifier],
+                                      self.clientIdentifier,
                                       [self callbackMethodName],
                                       self.shortIdentifier];
 }
