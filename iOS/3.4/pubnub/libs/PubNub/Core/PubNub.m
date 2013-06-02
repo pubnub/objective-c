@@ -1043,7 +1043,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             if (handlerBlock) {
 
-                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnableObserverWithBlock:handlerBlock];
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnableObserverWithBlock:[handlerBlock copy]]];
             }
 
             PNPushNotificationsStateChangeRequest *request;
@@ -1052,7 +1052,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                                                              forChannels:channels];
             [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
-                // Looks like client can't send request because of some reasons
+        // Looks like client can't send request because of some reasons
         else {
 
             PNError *stateChangeError = [PNError errorWithCode:statusCode];
@@ -1066,11 +1066,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 handlerBlock(channels, stateChangeError);
             }
         }
-    }      postponedExecutionBlock:^{
+    }
+           postponedExecutionBlock:^{
 
         [self postponeEnablePushNotificationsOnChannels:channels
                                     withDevicePushToken:pushToken
-                             andCompletionHandlingBlock:handlerBlock];
+                             andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
     }];
 }
 
@@ -1118,7 +1119,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             if (handlerBlock) {
 
-                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsDisableObserverWithBlock:handlerBlock];
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsDisableObserverWithBlock:[handlerBlock copy]];
             }
 
             PNPushNotificationsStateChangeRequest *request;
@@ -1146,7 +1147,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                [self postponeDisablePushNotificationsOnChannels:channels
                                             withDevicePushToken:pushToken
-                                     andCompletionHandlingBlock:handlerBlock];
+                                     andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
            }];
 }
 
@@ -1174,7 +1175,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             if (handlerBlock) {
 
-                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsRemoveObserverWithBlock:handlerBlock];
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsRemoveObserverWithBlock:[handlerBlock copy]];
             }
 
             [[self sharedInstance] sendRequest:[PNPushNotificationsRemoveRequest requestWithDevicePushToken:pushToken]
@@ -1196,7 +1197,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
            postponedExecutionBlock:^{
 
                [self postponeRemoveAllPushNotificationsForDevicePushToken:pushToken
-                                              withCompletionHandlingBlock:handlerBlock];
+                                              withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
            }];
 }
 
@@ -1224,7 +1225,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             if (handlerBlock) {
 
-                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnabledChannelsObserverWithBlock:handlerBlock];
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnabledChannelsObserverWithBlock:[handlerBlock copy]];
             }
 
             [[self sharedInstance] sendRequest:[PNPushNotificationsEnabledChannelsRequest requestWithDevicePushToken:pushToken]
@@ -1247,7 +1248,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
            postponedExecutionBlock:^{
 
                [self postponeRequestPushNotificationEnabledChannelsForDevicePushToken:pushToken
-                                                          withCompletionHandlingBlock:handlerBlock];
+                                                          withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
            }];
 }
 

@@ -96,33 +96,33 @@ static NSInteger const kPNCryptoUnavailableFeatureError = 118;
 
 // Developer tries to submit empty (nil) request by passing
 // no message object to PubNub service
-static NSInteger const kPNMessageObjectError = 120;
+static NSInteger const kPNMessageObjectError = 119;
 
 // Developer tried to submit message w/o text to PubNub service
-static NSInteger const kPNMessageHasNoContentError = 121;
+static NSInteger const kPNMessageHasNoContentError = 120;
 
 // Developer tried to submit message w/o target channel to
 // PubNub service
-static NSInteger const kPNMessageHasNoChannelError = 122;
+static NSInteger const kPNMessageHasNoChannelError = 121;
 
 // Developer tried to use APNS API w/o enabling push notifications
 // support on admin.punub.com
-static NSInteger const kPNPushNotificationsNotEnabledError = 123;
+static NSInteger const kPNPushNotificationsNotEnabledError = 122;
 
 
 #pragma mark - Service error (caused by remote server)
 
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 124;
+static NSInteger const kPNResponseEncodingError = 123;
 
 // Server provided response with malformed JSON in it
 // (in such casses library will try to resend request to
 // remote origin)
-static NSInteger const kPNResponseMalformedJSONError = 125;
+static NSInteger const kPNResponseMalformedJSONError = 124;
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some
 // errors
-static NSInteger const kPNConnectionErrorOnSetup = 126;
+static NSInteger const kPNConnectionErrorOnSetup = 125;
