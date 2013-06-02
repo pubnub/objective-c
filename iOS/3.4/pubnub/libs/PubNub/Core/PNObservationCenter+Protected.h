@@ -19,6 +19,15 @@
 @interface PNObservationCenter (Protected)
 
 
+#pragma mark - Class methods
+
+/**
+ * Completely reset observation center by cleaning up
+ * all subscribers and shared instance destroy
+ */
++ (void)resetCenter;
+
+
 #pragma mark - Instance methods
 
 /**

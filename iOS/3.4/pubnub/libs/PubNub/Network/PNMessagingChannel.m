@@ -209,7 +209,8 @@
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request {
 
     // Check whether 'Leave' request has been processed or not
-    if ([request isKindOfClass:[PNLeaveRequest class]]) {
+    if ([request isKindOfClass:[PNLeaveRequest class]] ||
+        [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.leaveChannelCallback]) {
 
         // Process leave request process completion
         [self handleLeaveRequestCompletionForChannels:((PNLeaveRequest *)request).channels
@@ -232,6 +233,13 @@
 
     return [request isKindOfClass:[PNSubscribeRequest class]];
 }
+
+- (void)terminate {
+    
+    [self stopChannelIdleTimer];
+    [super terminate];
+}
+
 
 #pragma mark - Connection management
 

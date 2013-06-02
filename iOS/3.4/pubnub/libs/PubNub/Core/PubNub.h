@@ -32,6 +32,12 @@
  */
 + (PubNub *)sharedInstance;
 
+/**
+ * Allow completely rest PubNub client.
+ * All caches, scheduled messages, transport layer instances will be discarded
+ */
++ (void)resetClient;
+
 
 #pragma mark - Client connection management methods
 

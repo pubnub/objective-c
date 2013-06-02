@@ -25,7 +25,7 @@
  * which manage all observers and notify them by request
  * or notification.
  */
-+ (id)defaultCenter;
++ (PNObservationCenter *)defaultCenter;
 
 
 #pragma mark - Instance methods

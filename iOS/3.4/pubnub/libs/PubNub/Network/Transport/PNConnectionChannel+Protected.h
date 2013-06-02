@@ -71,6 +71,10 @@
  */
 - (void)clearScheduledRequestsQueue;
 
+- (void)terminate;
+
+- (void)cleanUp;
+
 #pragma mark -
 
 

@@ -148,7 +148,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         
         NSString *decodedResponse = [self decodedResponse];
         if (decodedResponse) {
-
+            
+            __pn_desired_weak typeof(self) weakSelf = self;
             [PNJSONSerialization JSONObjectWithString:decodedResponse
                                       completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName){
 
@@ -158,21 +159,21 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
                                               if ([callbackMethodElements count] > 1) {
 
-                                                  self.callbackMethod = [callbackMethodElements objectAtIndex:kPNResponseCallbackMethodNameIndex];
-                                                  self.requestIdentifier = [callbackMethodElements objectAtIndex:kPNResponseRequestIdentifierIndex];
+                                                  weakSelf.callbackMethod = [callbackMethodElements objectAtIndex:kPNResponseCallbackMethodNameIndex];
+                                                  weakSelf.requestIdentifier = [callbackMethodElements objectAtIndex:kPNResponseRequestIdentifierIndex];
                                               }
                                               else {
 
-                                                  self.callbackMethod = callbackMethodName;
+                                                  weakSelf.callbackMethod = callbackMethodName;
                                               }
 
-                                              self.response = result;
+                                              weakSelf.response = result;
                                           }
                                       }
                                            errorBlock:^(NSError *error) {
 
-                                               PNLog(PNLogGeneralLevel, self, @"ERROR: %@", error);
-                                               [self handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
+                                               PNLog(PNLogGeneralLevel, weakSelf, @"ERROR: %@", error);
+                                               [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
         }
         // Looks like message can't be decoded event from RAW response
