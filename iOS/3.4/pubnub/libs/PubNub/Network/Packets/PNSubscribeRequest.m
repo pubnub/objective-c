@@ -14,6 +14,7 @@
 
 #import "PNSubscribeRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
+#import "PNBaseRequest+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNConstants.h"
 
@@ -103,14 +104,15 @@
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@",
+    return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@%@",
             kPNRequestAPIVersionPrefix,
             [PubNub sharedInstance].configuration.subscriptionKey,
             [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
             [self callbackMethodName],
             self.shortIdentifier,
             self.updateTimeToken,
-            self.clientIdentifier];
+            self.clientIdentifier,
+			([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
 @end

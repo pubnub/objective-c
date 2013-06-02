@@ -14,6 +14,7 @@
 
 #import "PNLeaveRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
+#import "PNBaseRequest+Protected.h"
 #import "PubNub+Protected.h"
 
 
@@ -81,12 +82,13 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@",
+    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@",
                                       [PubNub sharedInstance].configuration.subscriptionKey,
                                       [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
                                       self.clientIdentifier,
                                       [self callbackMethodName],
-                                      self.shortIdentifier];
+                                      self.shortIdentifier,
+                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
 #pragma mark -
