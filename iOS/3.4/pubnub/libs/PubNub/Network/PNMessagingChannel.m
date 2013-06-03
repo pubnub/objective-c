@@ -837,7 +837,7 @@
 
     // Compose filtering predicate to retrieve list of channels
     // which are not presence observing channels
-    NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"isPresenceObserver = %@", @NO];
+    NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"isPresenceObserver = NO"];
 
 
     return [channelsList filteredArrayUsingPredicate:filterPredicate];
