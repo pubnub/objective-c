@@ -83,7 +83,7 @@
 
 #pragma mark - Interaction tests
 
-- (void)testStartServiceReachabilityMonitoring {
+- (void)testStartStopServiceReachabilityMonitoring {
     /*
      Test scenario:
      - create stubs for PubNub and configuration
@@ -103,31 +103,6 @@
     [_reachability startServiceReachabilityMonitoring];
     STAssertTrue([_reachability isServiceAvailable], @"Service reachability is not available");
     [_reachability stopServiceReachabilityMonitoring];
-}
-
-- (void)testStopServiceReachabilityMonitoring {
-    /*
-     Test scenario:
-     - create stubs for PubNub and configuration
-     - start monitoring
-     - stop monitoring
-     - expected service is not available
-     */
-    
-    // mock PubNub and PNConfiguration for this test
-    /*id mockPubNub = [OCMockObject mockForClass:[PubNub class]];
-    id mockConfig = [OCMockObject mockForClass:[PNConfiguration class]];
-    
-    [[[mockPubNub stub] andReturn:mockConfig] configuration];
-    [[[mockConfig stub] andReturn:@"pubsub.pubnub.com"] origin];
-    
-    [[PubNub sharedInstance] setConfiguration:mockConfig];
-    
-    [_reachability startServiceReachabilityMonitoring];
-    [_reachability stopServiceReachabilityMonitoring];
-     */
-    
-    STAssertFalse([_reachability isServiceAvailable], @"Service is not available");
 }
 
 @end

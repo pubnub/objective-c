@@ -103,15 +103,7 @@ typedef enum _PNReachabilityStatus {
     if((self = [super init])) {
         
         self.status = PNReachabilityStatusUnknown;
-        
-        
-        // Subscribe for reachability monitor state changes observing
-        [self addObserver:self
-               forKeyPath:@"status"
-                  options:(NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew)
-                  context:nil];
     }
-    
     
     return self;
 }
@@ -239,40 +231,6 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability, SCNetworkReac
     PNLog(PNLogGeneralLevel, self, @"STOP REACHABILITY OBSERVATION");
 }
 
-
-#pragma mark - Handler methods
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context {
-    
-    // Retrieved changed values (old/new)
-    PNReachabilityStatus newStatus = (PNReachabilityStatus)[[change valueForKey:NSKeyValueChangeNewKey] intValue];
-    PNReachabilityStatus oldStatus = (PNReachabilityStatus)[[change valueForKey:NSKeyValueChangeOldKey] intValue];
-    
-    // Checking whether service reachability
-    // really changed or not
-    if(oldStatus != newStatus) {
-        
-        if (newStatus != PNReachabilityStatusUnknown) {
-            
-            PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability changed [CONNECTED? %@]", [self isServiceAvailable]?@"YES":@"NO");
-            
-            if (self.reachabilityChangeHandleBlock) {
-                
-                self.reachabilityChangeHandleBlock([self isServiceAvailable]);
-            }
-        }
-        else {
-            
-            // Reset reachability status to old
-            _status = oldStatus;
-        }
-    }
-}
-
-
 #pragma mark - Misc methods
 
 - (BOOL)isServiceReachabilityChecked {
@@ -334,10 +292,37 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability, SCNetworkReac
     
     // Clean up
     [self stopServiceReachabilityMonitoring];
-    [self removeObserver:self forKeyPath:@"status"];
 }
 
 #pragma mark -
+
+- (void)setStatus:(PNReachabilityStatus)status {
+    
+    // Retrieved changed values (old/new)
+    PNReachabilityStatus oldStatus = _status;
+    _status = status;
+    PNReachabilityStatus newStatus = _status;
+    
+    // Checking whether service reachability
+    // really changed or not
+    if(oldStatus != newStatus) {
+        
+        if (newStatus != PNReachabilityStatusUnknown) {
+            
+            PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability changed [CONNECTED? %@]", [self isServiceAvailable]?@"YES":@"NO");
+            
+            if (self.reachabilityChangeHandleBlock) {
+                
+                self.reachabilityChangeHandleBlock([self isServiceAvailable]);
+            }
+        }
+        else {
+            
+            // Reset reachability status to old
+            _status = oldStatus;
+        }
+    }
+}
 
 
 @end
