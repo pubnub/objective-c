@@ -1,3 +1,7 @@
+05-31-2013
+. adding APNSVideoDemo
+. adding APNSVideo cert concatenizer
+
 05-13-2013
 . make channel presence idempotent
 . connection and reliability improvements
