@@ -56,6 +56,18 @@
 - (void)removeClientChannelUnsubscriptionObserver:(id)observer;
 
 
+#pragma mark - Channels presence enable/disable observers
+
+/**
+ * Add/remove observer which would like to know when PubNub client
+ * presence enabling/disabling on channel
+ */
+- (void)addClientPresenceEnablingObserver:(id)observer withCallbackBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
+- (void)removeClientPresenceEnablingObserver:(id)observer;
+- (void)addClientAsPresenceDisablingObserver:(id)observer withCallbackBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
+- (void)removeClientAsPresenceDisablingObserver:(id)observer;
+
+
 #pragma mark - APNS interaction observation
 
 /**
