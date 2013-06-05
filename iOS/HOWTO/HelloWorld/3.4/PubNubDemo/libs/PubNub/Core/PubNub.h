@@ -338,21 +338,29 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * Enable presence observation for specific channel
  */
 + (void)enablePresenceObservationForChannel:(PNChannel *)channel;
++ (void)enablePresenceObservationForChannel:(PNChannel *)channel
+                withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
 
 /**
  * Enable presence observation for list of channels
  */
 + (void)enablePresenceObservationForChannels:(NSArray *)channels;
++ (void)enablePresenceObservationForChannels:(NSArray *)channels
+                 withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
 
 /**
  * Disable presence observation for specific channel
  */
 + (void)disablePresenceObservationForChannel:(PNChannel *)channel;
++ (void)disablePresenceObservationForChannel:(PNChannel *)channel
+                 withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
 
 /**
  * Disable presence observation for list of channels
  */
 + (void)disablePresenceObservationForChannels:(NSArray *)channels;
++ (void)disablePresenceObservationForChannels:(NSArray *)channels
+                  withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
 
 
 #pragma mark - Time token

@@ -107,6 +107,34 @@
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error;
 
 /**
+ * Called on delegate when client successfully enabled presence observation on
+ * set of channels
+ */
+- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels;
+
+/**
+ * Called on delegate when some kind of error occurred during
+ * presence observation enabling
+ * error - returned error will contain information about channel
+ *         on which this error occurred and possible reason of error
+ */
+- (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error;
+
+/**
+ * Called on delegate when client successfully disabled presence observation on
+ * set of channels
+ */
+- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels;
+
+/**
+ * Called on delegate when some kind of error occurred during
+ * presence observation disabling
+ * error - returned error will contain information about channel
+ *         on which this error occurred and possible reason of error
+ */
+- (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error;
+
+/**
  * Called on delegate when client successfully enabled push notifications on
  * specified list of channels
  */
@@ -220,7 +248,7 @@ didReceiveMessageHistory:(NSArray *)messages
  * for specific channel
  */
 - (void)      pubnubClient:(PubNub *)client
-didReceiveParticipantsLits:(NSArray *)participantsList
+didReceiveParticipantsList:(NSArray *)participantsList
                 forChannel:(PNChannel *)channel;
 
 /**

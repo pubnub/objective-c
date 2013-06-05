@@ -74,6 +74,28 @@
 - (void)removeClientAsUnsubscribeObserver;
 
 
+#pragma mark - Channels presence enable/disable observers
+
+/**
+ * Observing for presence enabling event on specified channel
+ * (this action will be performed only once per presence enabling).
+ * After event will be fired this observation request will be
+ * removed from queue.
+ */
+- (void)addClientAsPresenceEnablingObserverWithBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
+- (void)removeClientAsPresenceEnabling;
+
+/**
+ * Add/remove observer for presence disabling event on specified
+ * channel (this action will be performed only
+ * once per presence disabling request).
+ * After event will be fired this observation request will be
+ * removed from queue.
+ */
+- (void)addClientAsPresenceDisablingObserverWithBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
+- (void)removeClientAsPresenceDisabling;
+
+
 #pragma mark - APNS interaction observation
 
 /**
