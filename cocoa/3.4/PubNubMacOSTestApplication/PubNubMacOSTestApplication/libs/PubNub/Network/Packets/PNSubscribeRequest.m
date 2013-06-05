@@ -14,6 +14,7 @@
 
 #import "PNSubscribeRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
+#import "PNBaseRequest+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNConstants.h"
 
@@ -32,6 +33,10 @@
 // Stores recen channels/presence state update
 // time (token)
 @property (nonatomic, copy) NSString *updateTimeToken;
+
+// Stores reference on client identifier on the
+// moment of request creation
+@property (nonatomic, copy) NSString *clientIdentifier;
 
 // Stores whether leave request was sent to subscribe
 // on new channels or as result of user request
@@ -72,6 +77,7 @@
 
         self.sendingByUserRequest = isSubscribingByUserRequest;
         self.channels = [NSArray arrayWithArray:channels];
+        self.clientIdentifier = [PubNub escapedClientIdentifier];
 
         
         // Retrieve largest update time token from set of
@@ -98,14 +104,15 @@
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@",
+    return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@%@",
             kPNRequestAPIVersionPrefix,
             [PubNub sharedInstance].configuration.subscriptionKey,
             [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
             [self callbackMethodName],
             self.shortIdentifier,
             self.updateTimeToken,
-            [PubNub escapedClientIdentifier]];
+            self.clientIdentifier,
+			([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
 @end

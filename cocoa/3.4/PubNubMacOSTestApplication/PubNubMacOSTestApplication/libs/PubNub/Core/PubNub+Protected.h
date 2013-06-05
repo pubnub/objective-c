@@ -21,6 +21,9 @@
 #pragma mark Static
 
 typedef enum _PNPubNubClientState {
+
+    // Client instance was reset
+    PNPubNubClientStateReset,
     
     // Client instance was just created
     PNPubNubClientStateCreated,
@@ -62,7 +65,7 @@ typedef enum _PNPubNubClientState {
 
 // Stores reference on configuration which was used to
 // perform initial PubNub client initialization
-@property (nonatomic, copy) PNConfiguration *configuration;
+@property (nonatomic, strong) PNConfiguration *configuration;
 
 // Stores reference on current client identifier
 @property (nonatomic, strong) NSString *clientIdentifier;

@@ -107,10 +107,61 @@
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error;
 
 /**
+ * Called on delegate when client successfully enabled push notifications on
+ * specified list of channels
+ */
+- (void)pubnubClient:(PubNub *)client didEnablePushNotificationsOnChannels:(NSArray *)channels;
+
+/**
+ * Called on delegate when some kind of error occurred during
+ * push notification enabling process
+ * error - returned error will contain information about channel(s)
+ *         on which this error occurred and possible reason of error
+ */
+- (void)pubnubClient:(PubNub *)client pushNotificationEnableDidFailWithError:(PNError *)error;
+
+/**
+ * Called on delegate when client successfully disabled push notifications on
+ * specified list of channels
+ */
+- (void)pubnubClient:(PubNub *)client didDisablePushNotificationsOnChannels:(NSArray *)channels;
+
+/**
+ * Called on delegate when some kind of error occurred during
+ * push notification disabling process
+ * error - returned error will contain information about channel(s)
+ *         on which this error occurred and possible reason of error
+ */
+- (void)pubnubClient:(PubNub *)client pushNotificationDisableDidFailWithError:(PNError *)error;
+
+/**
+ * Called on delegate when PubNub client was able to remove
+ * push notification from all channels
+ */
+- (void)pubnubClientDidRemovePushNotifications:(PubNub *)client;
+
+/**
+ * Called on delegate when some kind of error occurred during
+ * push notifications removal process
+ */
+- (void)pubnubClient:(PubNub *)client pushNotificationsRemoveFromChannelsDidFailWithError:(PNError *)error;
+
+/**
+ * Called on delegate when PubNub client was able to retrieve all
+ * channels on which push notifications has been enabled
+ */
+- (void)pubnubClient:(PubNub *)client didReceivePushNotificationEnabledChannels:(NSArray *)channels;
+
+/**
+ * Called on delegate when some kind of error occurred during
+ * push notifications enabled channels list retrieval process
+ */
+- (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFailWithError:(PNError *)error;
+
+/**
  * Called on delegate when PubNub client retrieved time
  * token from PubNub service
  */
-
 - (void)pubnubClient:(PubNub *)client didReceiveTimeToken:(NSNumber *)timeToken;
 /**
  * Called on delegate when PubNub client failed to

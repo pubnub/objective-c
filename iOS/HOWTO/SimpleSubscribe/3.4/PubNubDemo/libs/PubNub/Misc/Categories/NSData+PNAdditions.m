@@ -214,6 +214,25 @@ static unsigned char decodeCharTable[256] =
     return inflatedData;
 }
 
+
+#pragma mark - APNS
+
+- (NSString *)HEXPushToken {
+
+    NSUInteger capacity = [self length];
+    NSMutableString *stringBuffer = [NSMutableString stringWithCapacity:capacity];
+    const unsigned char *dataBuffer = [self bytes];
+
+    // Iterate over the bytes
+    for (int i=0; i < [self length]; i++) {
+
+      [stringBuffer appendFormat:@"%02.2hhX", dataBuffer[i]];
+    }
+
+
+    return stringBuffer;
+}
+
 #pragma mark -
 
 

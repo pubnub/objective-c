@@ -50,6 +50,7 @@
         self.channel = channel;
     }
 
+
     return self;
 }
 
@@ -60,11 +61,12 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@?callback=%@_%@",
+    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@?callback=%@_%@%@",
                                       [PubNub sharedInstance].configuration.subscriptionKey,
                                       [self.channel escapedName],
                                       [self callbackMethodName],
-                                      self.shortIdentifier];
+                                      self.shortIdentifier,
+                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
 

@@ -19,6 +19,15 @@
 @interface PNObservationCenter (Protected)
 
 
+#pragma mark - Class methods
+
+/**
+ * Completely reset observation center by cleaning up
+ * all subscribers and shared instance destroy
+ */
++ (void)resetCenter;
+
+
 #pragma mark - Instance methods
 
 /**
@@ -63,6 +72,46 @@
  */
 - (void)addClientAsUnsubscribeObserverWithBlock:(PNClientChannelUnsubscriptionHandlerBlock)handleBlock;
 - (void)removeClientAsUnsubscribeObserver;
+
+
+#pragma mark - APNS interaction observation
+
+/**
+ * Add/remove observer for push notification enabling on specified list of channels
+ * (this action will be performed only once per enabling).
+ * After event will be fired, this observation request will be removed from
+ * queue.
+ */
+- (void)addClientAsPushNotificationsEnableObserverWithBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+- (void)removeClientAsPushNotificationsEnableObserver;
+
+/**
+ * Add/remove observer for push notification disabling on specified list of channels
+ * (this action will be performed only once per disabling).
+ * After event will be fired, this observation request will be removed from
+ * queue.
+ */
+- (void)addClientAsPushNotificationsDisableObserverWithBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+- (void)removeClientAsPushNotificationsDisableObserver;
+
+/**
+ * Add/remove observer for push notification enabled channels retrieval process
+ * change observation.
+ * (this action will be performed only once per list request).
+ * After event will be fired, this observation request will be removed from
+ * queue.
+ */
+- (void)addClientAsPushNotificationsEnabledChannelsObserverWithBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+- (void)removeClientAsPushNotificationsEnabledChannelsObserver;
+
+/**
+ * Add/remove observer for push notification removal from all channels process.
+ * (this action will be performed only once per removal request).
+ * After event will be fired, this observation request will be removed from
+ * queue.
+ */
+- (void)addClientAsPushNotificationsRemoveObserverWithBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+- (void)removeClientAsPushNotificationsRemoveObserver;
 
 
 #pragma mark - Time token observation

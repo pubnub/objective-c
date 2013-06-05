@@ -6,7 +6,6 @@
 //
 //
 
-
 #import <Foundation/Foundation.h>
 
 
@@ -44,6 +43,15 @@
  * Retrieve uncompressed GZIP data
  */
 - (NSData *)GZIPInflate;
+
+
+#pragma mark - APNS
+
+/**
+ * Extract HEX string which can be used by server
+ * for communication with APNS servers
+ */
+- (NSString *)HEXPushToken;
 
 #pragma mark -
 

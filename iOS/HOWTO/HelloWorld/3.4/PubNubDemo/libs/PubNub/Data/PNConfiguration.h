@@ -28,6 +28,10 @@
 @property (nonatomic, readonly, copy) NSString *secretKey;
 @property (nonatomic, readonly, copy) NSString *cipherKey;
 
+// Stores reference on authorization key which is used for
+// request authorization
+@property (nonatomic, copy) NSString *authorizationKey;
+
 // Stores timeout which is used for non-subscription
 // requests to report that request failed
 @property (nonatomic, assign) NSTimeInterval nonSubscriptionRequestTimeout;
@@ -82,10 +86,19 @@
 + (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
                                     subscribeKey:(NSString *)subscribeKey
                                        secretKey:(NSString *)secretKey;
++ (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
+                                    subscribeKey:(NSString *)subscribeKey
+                                       secretKey:(NSString *)secretKey
+                                authorizationKey:(NSString *)authorizationKey;
 + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
                                  publishKey:(NSString *)publishKey 
                                subscribeKey:(NSString *)subscribeKey
                                   secretKey:(NSString *)secretKey;
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
+                                 publishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey
+                                  secretKey:(NSString *)secretKey
+                           authorizationKey:(NSString *)authorizationKey;
 
 /**
  * Retrieve reference on configuration with full
@@ -96,6 +109,12 @@
                                subscribeKey:(NSString *)subscribeKey
                                   secretKey:(NSString *)secretKey
                                   cipherKey:(NSString *)cipherKey;
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
+                                 publishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey
+                                  secretKey:(NSString *)secretKey
+                                  cipherKey:(NSString *)cipherKey
+                           authorizationKey:(NSString *)authorizationKey;
 
 
 #pragma mark - Instance methods
@@ -109,6 +128,12 @@
         subscribeKey:(NSString *)subscribeKey
            secretKey:(NSString *)secretKey
            cipherKey:(NSString *)cipherKey;
+- (id)initWithOrigin:(NSString *)originHostName
+          publishKey:(NSString *)publishKey
+        subscribeKey:(NSString *)subscribeKey
+           secretKey:(NSString *)secretKey
+           cipherKey:(NSString *)cipherKey
+    authorizationKey:(NSString *)authorizationKey;
 
 #pragma mark -
 

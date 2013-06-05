@@ -25,7 +25,7 @@
  * which manage all observers and notify them by request
  * or notification.
  */
-+ (id)defaultCenter;
++ (PNObservationCenter *)defaultCenter;
 
 
 #pragma mark - Instance methods
@@ -54,6 +54,50 @@
 - (void)addClientChannelUnsubscriptionObserver:(id)observer
                              withCallbackBlock:(PNClientChannelUnsubscriptionHandlerBlock)callbackBlock;
 - (void)removeClientChannelUnsubscriptionObserver:(id)observer;
+
+
+#pragma mark - APNS interaction observation
+
+/**
+ * Add/remove observer for push notification enabling on specified list of channels
+ * (this action will be performed only once per enabling).
+ * After event will be fired, this observation request will be removed from
+ * queue.
+ */
+- (void)addClientPushNotificationsEnableObserver:(id)observer
+                               withCallbackBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+- (void)removeClientPushNotificationsEnableObserver:(id)observer;
+
+/**
+ * Add/remove observer for push notification disabling on specified list of channels
+ * (this action will be performed only once per disabling).
+ * After event will be fired, this observation request will be removed from
+ * queue.
+ */
+- (void)addClientPushNotificationsDisableObserver:(id)observer
+                                withCallbackBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+- (void)removeClientPushNotificationsDisableObserver:(id)observer;
+
+/**
+ * Add/remove observer for push notification enabled channels retrieval process
+ * change observation.
+ * (this action will be performed only once per list request).
+ * After event will be fired, this observation request will be removed from
+ * queue.
+ */
+- (void)addClientPushNotificationsEnabledChannelsObserver:(id)observer
+                                        withCallbackBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+- (void)removeClientPushNotificationsEnabledChannelsObserver:(id)observer;
+
+/**
+ * Add/remove observer for push notification removal from all channels process.
+ * (this action will be performed only once per removal request).
+ * After event will be fired, this observation request will be removed from
+ * queue.
+ */
+- (void)addClientPushNotificationsRemoveObserver:(id)observer
+                               withCallbackBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+- (void)removeClientPushNotificationsRemoveObserver:(id)observer;
 
 
 #pragma mark - Time token observation

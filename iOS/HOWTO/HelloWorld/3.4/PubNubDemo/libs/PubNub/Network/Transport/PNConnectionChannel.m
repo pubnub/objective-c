@@ -140,11 +140,11 @@
     
     // Check whether is able to connect or not
     if([self.connection connect]) {
-        
+
         self.state = PNConnectionChannelStateConnecting;
     }
     else {
-        
+
         self.state = PNConnectionChannelStateDisconnected;
     }
 }
@@ -288,6 +288,11 @@
     [self.requestsQueue removeAllRequests];
 }
 
+- (void)terminate {
+
+    [self cleanUp];
+}
+
 - (void)startTimeoutTimerForRequest:(PNBaseRequest *)request {
 
     self.timeoutTimer = [NSTimer timerWithTimeInterval:[request timeout]
@@ -328,6 +333,11 @@
     [self scheduleNextRequest];
 }
 
+- (void)connection:(PNConnection *)connection didReconnectOnErrorToHost:(NSString *)hostName {
+
+    [self.delegate connectionChannel:self didReconnectOnErrorToHost:hostName];
+}
+
 - (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
 
     // Retrieve reference on request for which this response was received
@@ -341,7 +351,6 @@
     if (self.state != PNConnectionChannelStateDisconnectingOnError) {
     
         self.state = PNConnectionChannelStateDisconnectingOnError;
-
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
@@ -442,25 +451,32 @@
 
 #pragma mark - Memory management
 
-- (void)dealloc {
+- (void)cleanUp {
     
     // Remove all requests sent by this communication
     // channel
     [self clearScheduledRequestsQueue];
-
-    [self stopTimeoutTimerForRequest:nil];
-    self.connection.dataSource = nil;
-    self.requestsQueue.delegate = nil;
-    self.requestsQueue = nil;
     
-    if (self.state == PNConnectionChannelStateConnected) {
+    [self stopTimeoutTimerForRequest:nil];
+    _connection.dataSource = nil;
+    _requestsQueue.delegate = nil;
+    _requestsQueue = nil;
+    
+    if (_state == PNConnectionChannelStateConnected) {
         
-        [self.delegate connectionChannel:self didDisconnectFromOrigin:nil];
+        [_delegate connectionChannel:self didDisconnectFromOrigin:nil];
     }
+    _state = PNConnectionChannelStateDisconnected;
+    
+    _connection.delegate = nil;
+    [PNConnection destroyConnection:_connection];
+    _connection = nil;
+}
 
-    self.connection.delegate = nil;
-    [PNConnection destroyConnection:self.connection];
-    self.connection = nil;
+- (void)dealloc {
+    
+    [self cleanUp];
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Destroyed");
 }
 
 #pragma mark -

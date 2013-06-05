@@ -11,6 +11,7 @@
 //
 //
 
+#import <Foundation/Foundation.h>
 #import "PNBaseRequest.h"
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
@@ -103,6 +104,22 @@
 - (NSUInteger)allowedRetryCount {
 
     return kPNRequestMaximumRetryCount;
+}
+
+- (NSString *)authorizationField {
+
+    NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
+    if ([authorizationKey length] > 0) {
+
+        authorizationKey = [NSString stringWithFormat:@"auth=%@", authorizationKey];
+    }
+    else {
+
+        authorizationKey = nil;
+    }
+
+
+    return authorizationKey;
 }
 
 - (NSString *)HTTPPayload {

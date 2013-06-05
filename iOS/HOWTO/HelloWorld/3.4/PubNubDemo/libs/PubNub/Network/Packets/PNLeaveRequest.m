@@ -14,6 +14,7 @@
 
 #import "PNLeaveRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
+#import "PNBaseRequest+Protected.h"
 #import "PubNub+Protected.h"
 
 
@@ -24,6 +25,10 @@
 
 // Stores reference on channels list
 @property (nonatomic, strong) NSArray *channels;
+
+// Stores reference on client identifier on the
+// moment of request creation
+@property (nonatomic, copy) NSString *clientIdentifier;
 
 // Stores reference on whether connection should
 // be closed before sending this message or not
@@ -63,6 +68,7 @@
         self.sendingByUserRequest = isLeavingByUserRequest;
         self.closeConnection = YES;
         self.channels = [NSArray arrayWithArray:channels];
+        self.clientIdentifier = [PubNub escapedClientIdentifier];
     }
     
     
@@ -76,12 +82,13 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@",
+    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@",
                                       [PubNub sharedInstance].configuration.subscriptionKey,
                                       [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      [PubNub escapedClientIdentifier],
+                                      self.clientIdentifier,
                                       [self callbackMethodName],
-                                      self.shortIdentifier];
+                                      self.shortIdentifier,
+                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
 #pragma mark -

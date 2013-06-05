@@ -36,6 +36,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     .latencyMeasureMessageCallback = @"lm",
     .subscriptionCallback = @"s",
     .leaveChannelCallback = @"lv",
+    .channelPushNotificationsEnableCallback = @"cpe",
+    .channelPushNotificationsDisableCallback = @"cpd",
+    .pushNotificationEnabledChannelsCallback = @"pec",
+    .pushNotificationRemoveCallback = @"pnr",
     .sendMessageCallback = @"m",
     .timeTokenCallback = @"t",
     .messageHistoryCallback = @"h",
@@ -144,11 +148,12 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         self.content = content;
         self.size = responseSize;
         self.statusCode = statusCode;
-        
+
         
         NSString *decodedResponse = [self decodedResponse];
         if (decodedResponse) {
-
+            
+            __pn_desired_weak typeof(self) weakSelf = self;
             [PNJSONSerialization JSONObjectWithString:decodedResponse
                                       completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName){
 
@@ -158,21 +163,25 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
                                               if ([callbackMethodElements count] > 1) {
 
-                                                  self.callbackMethod = [callbackMethodElements objectAtIndex:kPNResponseCallbackMethodNameIndex];
-                                                  self.requestIdentifier = [callbackMethodElements objectAtIndex:kPNResponseRequestIdentifierIndex];
+                                                  weakSelf.callbackMethod = [callbackMethodElements objectAtIndex:kPNResponseCallbackMethodNameIndex];
+                                                  weakSelf.requestIdentifier = [callbackMethodElements objectAtIndex:kPNResponseRequestIdentifierIndex];
                                               }
                                               else {
 
-                                                  self.callbackMethod = callbackMethodName;
+                                                  weakSelf.callbackMethod = callbackMethodName;
                                               }
+
+                                              weakSelf.response = result;
+                                          }
+                                          else {
 
                                               self.response = result;
                                           }
                                       }
                                            errorBlock:^(NSError *error) {
 
-                                               PNLog(PNLogGeneralLevel, self, @"ERROR: %@", error);
-                                               [self handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
+                                               PNLog(PNLogGeneralLevel, weakSelf, @"JSON DECODE ERROR: %@", error);
+                                               [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
         }
         // Looks like message can't be decoded event from RAW response

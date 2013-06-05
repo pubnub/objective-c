@@ -9,6 +9,7 @@
 //      - time
 //      - history
 //      - here now (list of participants)
+//      - push notification state manipulation
 //      - "ping" (latency measurement if enabled)
 //
 //  Notice: don't try to create more than

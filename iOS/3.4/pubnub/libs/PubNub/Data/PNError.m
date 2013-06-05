@@ -150,7 +150,7 @@
                 
             case kPNClientConfigurationError:
                 
-                errorDescription = @"Incomplete PubNub client configuration";
+                errorDescription = @"Incomplete PubNub client configuration. Make sure you set the configuration correctly.";
                 break;
             case kPNClientTriedConnectWhileConnectedError:
                 
