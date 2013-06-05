@@ -262,6 +262,26 @@
     PNLog(PNLogGeneralLevel, self, @"PubNub client failed to unsubscribe because of error: %@", error);
 }
 
+- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully enabled presence observation on channels: %@", channels);
+}
+
+- (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to enable presence observation because of error: %@", error);
+}
+
+- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully disabled presence observation on channels: %@", channels);
+}
+
+- (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to disable presence observation because of error: %@", error);
+}
+
 - (void)pubnubClient:(PubNub *)client didReceiveTimeToken:(NSNumber *)timeToken {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client recieved time token: %@", timeToken);
@@ -314,7 +334,7 @@ didReceiveMessageHistory:(NSArray *)messages
 }
 
 - (void)      pubnubClient:(PubNub *)client
-didReceiveParticipantsLits:(NSArray *)participantsList
+didReceiveParticipantsList:(NSArray *)participantsList
                 forChannel:(PNChannel *)channel {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client received participants list for channel %@: %@",
