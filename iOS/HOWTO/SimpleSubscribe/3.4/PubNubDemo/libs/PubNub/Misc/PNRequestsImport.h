@@ -14,6 +14,9 @@
 #ifndef PNRequestsImport_h
 #define PNRequestsImport_h
 
+#import "PNPushNotificationsEnabledChannelsRequest.h"
+#import "PNPushNotificationsStateChangeRequest.h"
+#import "PNPushNotificationsRemoveRequest.h"
 #import "PNMessagePostRequest+Protected.h"
 #import "PNSubscribeRequest+Protected.h"
 #import "PNMessagesHistory+Protected.h"
@@ -23,6 +26,5 @@
 #import "PNBaseRequest+Protected.h"
 #import "PNLatencyMeasureRequest.h"
 #import "PNTimeTokenRequest.h"
-#import "PNAPNSAddRequest.h"
 
 #endif // PNRequestsImport_h

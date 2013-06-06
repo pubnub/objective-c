@@ -10,6 +10,7 @@
 //
 //
 
+#import <Foundation/Foundation.h>
 #import "PNError+Protected.h"
 
 
@@ -94,8 +95,14 @@
             errorCode = kPNTooLongMessageError;
         }
     }
-    else {
+    // Check whether error by issue with push notifications feature on server
+    else if ([errorMessage rangeOfString:@"Push"].location != NSNotFound){
 
+        // Check whether push notifications is not enabled
+        if ([errorMessage rangeOfString:@"not enabled"].location != NSNotFound) {
+
+            errorCode = kPNPushNotificationsNotEnabledError;
+        }
     }
 
     PNError *error = nil;
@@ -143,7 +150,7 @@
                 
             case kPNClientConfigurationError:
                 
-                errorDescription = @"Incomplete PubNub client configuration";
+                errorDescription = @"Incomplete PubNub client configuration. Make sure you set the configuration correctly.";
                 break;
             case kPNClientTriedConnectWhileConnectedError:
                 
@@ -188,6 +195,10 @@
             case kPNMessageObjectError:
 
                 errorDescription = @"PubNub client can't submit message";
+                break;
+            case kPNPushNotificationsNotEnabledError:
+
+                errorDescription = @"PubNub client can't work with APNS API";
                 break;
             case kPNResponseEncodingError:
 
@@ -300,6 +311,10 @@
 
             failureReason = @"Looks like message is too large and can't be processed";
             break;
+        case kPNPushNotificationsNotEnabledError:
+
+            failureReason = @"Looks like push notifications wasn't enabled for current subscribe key on PubNub admin console";
+            break;
         case kPNResponseEncodingError:
 
             failureReason = @"Looks like remote service send message with encoding which is other than UTF8";
@@ -404,6 +419,10 @@
         case kPNTooLongMessageError:
 
             fixSuggestion = @"Please visit https://admin.pubnub.com and change maximum message size.";
+            break;
+        case kPNPushNotificationsNotEnabledError:
+
+            fixSuggestion = @"Please visit https://admin.pubnub.com and enable push notifications feature.";
             break;
         case kPNMessageObjectError:
 

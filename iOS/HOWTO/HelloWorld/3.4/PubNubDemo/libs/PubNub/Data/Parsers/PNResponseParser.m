@@ -25,6 +25,8 @@
 #import "PNErrorResponseParser.h"
 #import "PNResponse.h"
 #import "PNChannelHistoryParser.h"
+#import "PNServiceResponseCallbacks.h"
+#import "PNPushNotificationsEnabledChannelsParser.h"
 
 
 
@@ -64,36 +66,42 @@
     if ([response.response isKindOfClass:[NSArray class]]) {
 
         NSArray *responseData = response.response;
+        if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.pushNotificationEnabledChannelsCallback]) {
 
-        // Check whether there is only single item in array which will mean
-        // that this is time token
-        if([responseData count] == 1) {
-
-            parserClass = [PNTimeTokenResponseParser class];
+            parserClass = [PNPushNotificationsEnabledChannelsParser class];
         }
-        // Check whether first element in array is array as well
-        // (which will mean that response holds set of events for
-        // set of channels or at least one channel)
-        else if ([[responseData objectAtIndex:0] isKindOfClass:[NSArray class]]) {
-
-            // Check whether there is 3 elements in response array or not
-            // (depending on whether two last elements is number or not,
-            // this will mean whether response is for history or not)
-            if ([responseData count] == 3 &&
-                [[responseData objectAtIndex:1] isKindOfClass:[NSNumber class]] &&
-                [[responseData objectAtIndex:2] isKindOfClass:[NSNumber class]]) {
-
-                parserClass = [PNChannelHistoryParser class];
-            }
-            else {
-
-                parserClass = [PNChannelEventsResponseParser class];
-            }
-        }
-        // Looks like this is response with status message
         else {
 
-            parserClass = [PNOperationStatusResponseParser class];
+            // Check whether there is only single item in array which will mean
+            // that this is time token
+            if ([responseData count] == 1) {
+
+                parserClass = [PNTimeTokenResponseParser class];
+            }
+            // Check whether first element in array is array as well
+            // (which will mean that response holds set of events for
+            // set of channels or at least one channel)
+            else if ([[responseData objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+
+                // Check whether there is 3 elements in response array or not
+                // (depending on whether two last elements is number or not,
+                // this will mean whether response is for history or not)
+                if ([responseData count] == 3 &&
+                    [[responseData objectAtIndex:1] isKindOfClass:[NSNumber class]] &&
+                    [[responseData objectAtIndex:2] isKindOfClass:[NSNumber class]]) {
+
+                    parserClass = [PNChannelHistoryParser class];
+                }
+                else {
+
+                    parserClass = [PNChannelEventsResponseParser class];
+                }
+            }
+            // Looks like this is response with status message
+            else {
+
+                parserClass = [PNOperationStatusResponseParser class];
+            }
         }
     }
     else {

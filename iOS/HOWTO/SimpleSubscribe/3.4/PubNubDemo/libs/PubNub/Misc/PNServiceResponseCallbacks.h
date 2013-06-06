@@ -21,6 +21,7 @@ struct PNServiceResponseCallbacksStruct {
     // retrieve message which is used by
     // network profiler for latency calculation
     __unsafe_unretained NSString *latencyMeasureMessageCallback;
+
     // Name of the function which is used for
     // subscription and presence events for
     // set/single channel(s)
@@ -29,6 +30,26 @@ struct PNServiceResponseCallbacksStruct {
     // Name of the function which is used to
     // leave specified channel(s)
     __unsafe_unretained NSString *leaveChannelCallback;
+
+    // Name of the function which is used for
+    // push notification enabling request
+    // for channel(s)
+    __unsafe_unretained NSString *channelPushNotificationsEnableCallback;
+
+    // Name of the function which is used for
+    // push notification disabling request
+    // for channel(s)
+    __unsafe_unretained NSString *channelPushNotificationsDisableCallback;
+
+    // Name of the function which is used for
+    // push notification enabled channels retrival
+    // request
+    __unsafe_unretained NSString *pushNotificationEnabledChannelsCallback;
+
+    // Name of the function which is used for
+    // push notification removal from all channels
+    // request
+    __unsafe_unretained NSString *pushNotificationRemoveCallback;
     
     // Name of the function which is used to
     // mark response which tells client about
@@ -47,25 +68,6 @@ struct PNServiceResponseCallbacksStruct {
     // Name of the function which is used to
     // retrieve channel participants
     __unsafe_unretained NSString *channelParticipantsCallback;
-
-    // Name of the function which is used to
-    // return APNSAdd response
-    __unsafe_unretained NSString *apnsAddCallback;
-
-    // Name of the function which is used to
-    // return APNSRemoveOne response
-    __unsafe_unretained NSString *apnsRemoveOneCallback;
-
-    // Name of the function which is used to
-    // return APNSRemoveAll response
-    __unsafe_unretained NSString *apnsRemoveAllCallback;
-
-    // Name of the function which is used to
-    // return APNSListActive response
-    __unsafe_unretained NSString *apnsListActiveCallback;
-
-
-
 };
 
 extern struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks;

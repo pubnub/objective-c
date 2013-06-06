@@ -110,6 +110,12 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
     }
 }
 
+static NSNull* PNNillIfNotSet(id object);
+NSNull* PNNillIfNotSet(id object) {
+
+    return (object ? object : [NSNull null]);
+}
+
 static NSUInteger PNRandomValueInRange(NSRange valuesRange);
 NSUInteger PNRandomValueInRange(NSRange valuesRange) {
     

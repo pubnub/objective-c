@@ -33,6 +33,8 @@
  */
 + (PNCryptoHelper *)sharedInstance;
 
++ (void)resetHelper;
+
 
 #pragma mark - Instance methods
 

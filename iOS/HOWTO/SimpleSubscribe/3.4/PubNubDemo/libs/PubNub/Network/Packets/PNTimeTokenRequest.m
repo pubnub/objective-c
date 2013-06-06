@@ -14,6 +14,7 @@
 
 #import "PNTimeTokenRequest.h"
 #import "PNServiceResponseCallbacks.h"
+#import "PNBaseRequest+Protected.h"
 #import "PNConstants.h"
 
 
@@ -43,10 +44,11 @@
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"%@/time/%@_%@",
+    return [NSString stringWithFormat:@"%@/time/%@_%@%@",
             kPNRequestAPIVersionPrefix,
             [self callbackMethodName],
-            self.shortIdentifier];
+            self.shortIdentifier,
+            ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
 }
 
 #pragma mark -

@@ -54,7 +54,7 @@
 + (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel error:(PNError **)error {
 
     PNMessage *messageObject = nil;
-    object = [PNJSONSerialization stringFromJSONObject:object];
+    object = object?[PNJSONSerialization stringFromJSONObject:object]:@"";
 
     // Ensure that all parameters provided and they are valid or not
     if ([[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0 && channel != nil) {
@@ -108,6 +108,7 @@
             
             if (processingError == nil && processingErrorCode < 0) {
                 
+                __pn_desired_weak typeof(self) weakSelf = self;
                 [PNJSONSerialization JSONObjectWithString:decodedMessage
                                           completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
                                               
@@ -115,7 +116,7 @@
                                           }
                                                errorBlock:^(NSError *error) {
                                                    
-                                                   PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
+                                                   PNLog(PNLogGeneralLevel, weakSelf, @"MESSAGE DECODING ERROR: %@", error);
                                                }];
             }
         }

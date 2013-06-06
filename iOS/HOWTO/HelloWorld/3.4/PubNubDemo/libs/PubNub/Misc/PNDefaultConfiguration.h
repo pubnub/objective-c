@@ -19,6 +19,7 @@ static NSString * const kPNPublishKey = @"demo";
 static NSString * const kPNSubscriptionKey = @"demo";
 static NSString * const kPNSecretKey = nil;
 static NSString * const kPNCipherKey = nil;
+static NSString * const kPNAuthorizationKey = nil;
 static BOOL const kPNSecureConnectionRequired = YES;
 static BOOL const kPNShouldAutoReconnectClient = YES;
 static BOOL const kPNShouldResubscribeOnConnectionRestore = YES;
