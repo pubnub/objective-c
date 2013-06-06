@@ -855,7 +855,7 @@
 
         // Retrieve list of channels w/o presence channels to notify
         // user that client subscribed on new channels
-        NSArray *channels = presenceEnablingChannels;
+        NSArray *channels = nil;
         if (isEnablingPresence) {
 
             NSMutableArray *presenceEnabledChannels = [[presenceEnablingChannels valueForKey:@"observedChannel"] mutableCopy];
