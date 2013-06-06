@@ -56,7 +56,7 @@ static char * const kPNNetworkDefaultAddress = "0.0.0.0";
 
                 char *interfaceName = interface->ifa_name;
                 char *interfaceAddress = inet_ntoa(((struct sockaddr_in*)interface->ifa_addr)->sin_addr);
-                unsigned int interfaceStateFlags = (struct sockaddr_in*)interface->ifa_flags;
+                unsigned int interfaceStateFlags = (unsigned int)((struct sockaddr_in*)interface->ifa_flags);
                 BOOL isActive = !(interfaceStateFlags & IFF_LOOPBACK);
                 
                 if (isActive) {

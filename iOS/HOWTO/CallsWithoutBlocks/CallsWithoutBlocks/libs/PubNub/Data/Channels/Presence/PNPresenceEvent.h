@@ -39,9 +39,6 @@
 // is fired
 @property (nonatomic, readonly, assign) PNChannel *channel;
 
-// Stores reference on event name
-@property (nonatomic, readonly, copy) NSString *name;
-
 
 #pragma mark - Class methods
 

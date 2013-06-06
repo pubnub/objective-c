@@ -71,6 +71,28 @@ static NSString * const kPNClientUnsubscriptionDidCompleteNotification = @"PNCli
 // like NSArray)
 static NSString * const kPNClientUnsubscriptionDidFailNotification = @"PNClientUnsubscriptionDidFailNotification";
 
+// Sent when PubNub client was able to enable presence on
+// specified channel(s) (channel(s) will be passed
+// in userInfo like plain NSArray)
+static NSString * const kPNClientPresenceEnablingDidCompleteNotification = @"PNClientPresenceEnablingDidCompleteNotification";
+
+// Sent when PubNub client was unable to enable presence on
+// specified channel(s) (error will be passed in
+// userInfo and channel(s) will be passed in associatedObject
+// like NSArray)
+static NSString * const kPNClientPresenceEnablingDidFailNotification = @"PNClientPresenceEnablingDidFailNotification";
+
+// Sent when PubNub client was able to disable presence on
+// specified channel(s) (channel(s) will be passed
+// in userInfo like plain NSArray)
+static NSString * const kPNClientPresenceDisablingDidCompleteNotification = @"PNClientPresenceDisablingDidCompleteNotification";
+
+// Sent when PubNub client was unable to disable presence on
+// specified channel(s) (error will be passed in
+// userInfo and channel(s) will be passed in associatedObject
+// like NSArray)
+static NSString * const kPNClientPresenceDisablingDidFailNotification = @"PNClientPresenceDisablingDidFailNotification";
+
 // Send when PubNub client successfully enabled push notification
 // on specified channel(s) (channel(s) will be
 // passed in userInfo like plain NSArray)

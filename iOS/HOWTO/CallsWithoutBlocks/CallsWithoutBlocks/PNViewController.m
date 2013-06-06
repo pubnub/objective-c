@@ -37,6 +37,14 @@
 
     [PubNub sendMessage:@"hello ping3!" toChannel:channel_2];
 
+    // Do a HereNow call after 5 sec
+    double delayInSeconds = 5.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [PubNub requestParticipantsListForChannel:channel_2];
+    });
+
+
     //[PubNub disconnect];
 
 }
