@@ -43,13 +43,17 @@ which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd pa
 4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
 5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options
 6. In AppDelegate.h, adopt the PNDelegate protocol:
+
 ```objective-c
         @interface PNAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate>
 ```
+
 7. In AppDelegate.m (right before the return YES line works fine)
+
 ```objective-c
         [PubNub setDelegate:self] 
 ```
+
 For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
 
 ## Lets start coding now with PubNub!
