@@ -102,11 +102,7 @@
     [[mockChannel expect] scheduleRequest:OCMOCK_ANY
                   shouldObserveProcessing:YES];
     
-    // as a message we need any json object
-    NSError *error = nil;
-    id jsonObj = [NSJSONSerialization JSONObjectWithData:[NSData dataFromBase64String:@"14324234"] options:NSJSONReadingMutableContainers error:&error];
-    
-    [mockChannel sendMessage:jsonObj toChannel:mockChannel];
+    [mockChannel sendMessage:@"Message from unit-tests" toChannel:mockChannel];
     [mockChannel verify];
 }
 
