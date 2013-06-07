@@ -34,13 +34,13 @@ But until then...
 
 **JSONKit ARC NOTE:** PubNub core code is ARC-compliant.  We provide JSONKit only so you can run against older versions of iOS
 which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd party) performs all memory management on it's own
-(doesn't support ARC), we'll show you how to remove ARC warnings for it in step 4.
+(doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
 
 3. Add PNImports to your project precompile header (.pch)  
 ```objective-c
         #import "PNImports.h"
 ```
-4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
+4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m (disable ARC warnings for JSONKit)
 5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options
 6. In AppDelegate.h, adopt the PNDelegate protocol:
 
