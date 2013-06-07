@@ -115,17 +115,15 @@ the Hello World app. It is intended to be a reference application.
 ## APNS Setup
 
 If you've enabled your keys for APNS, you can use native PubNub publish operations to send messages to iPhones and iPads via iOS push notifications!
-Refer to the [APNS documentation HOWTO](https://github.com/pubnub/objective-c/blob/master/iOS/README_FOR_APNS.md) for more information on PubNub APNS setup.
-(A more formal "PubNub APNS Hello World" document is on its way!)
 
-### APNS Video and Client Library ###
+### APNS Video Walkthrough ###
 
 We've just added a video walkthrough, along with a sample application (based on the video) that shows from start to
 end how to setup APNS with PubNub. It includes all Apple-specific setup (which appears to be the most misunderstood) as
 well as the PubNub-specific setup, along with the end product app available in [HOWTO/APNSVideo](HOWTO/APNSVideo).
 
-**NOTE:  The video walkthrough uses beta client API calls which are only available in the APNSVideo/lib/PubNub directory. 
-Be sure to use this lib path if you are following this video. It is in final beta, and will be merged to master shortly.**
+If after watching the video you'd like to get a more behind-the-scenes breakdown of how PubNub and APNS work together, 
+refer to [APNS Development Notes](https://github.com/pubnub/objective-c/blob/master/iOS/README_FOR_APNS.md).
 
 #### APNS Video HOWTO ####
 
