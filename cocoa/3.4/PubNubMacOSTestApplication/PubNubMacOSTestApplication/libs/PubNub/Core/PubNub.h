@@ -32,6 +32,12 @@
  */
 + (PubNub *)sharedInstance;
 
+/**
+ * Allow completely rest PubNub client.
+ * All caches, scheduled messages, transport layer instances will be discarded
+ */
++ (void)resetClient;
+
 
 #pragma mark - Client connection management methods
 
@@ -256,6 +262,70 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
      andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
 
 
+#pragma mark - APNS management
+
+/**
+ * Enable push notifications on specified channel
+ *
+ * Only last call of this method will call completion block.
+ * If you need to track push notification enabling process from
+ * many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+
+/**
+ * Enable push notifications on specified channels list
+ *
+ * Only last call of this method will call completion block.
+ * If you need to track push notification enabling process from
+ * many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels
+                      withDevicePushToken:(NSData *)pushToken
+               andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+
+/**
+ * Disable push notifications on specified channel
+ *
+ * Only last call of this method will call completion block.
+ * If you need to track push notification disabling process from
+ * many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+
+/**
+ * Disable push notifications on specified channel list
+ *
+ * Only last call of this method will call completion block.
+ * If you need to track push notification disabling process from
+ * many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels
+                       withDevicePushToken:(NSData *)pushToken
+                andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+
+/**
+ * Disable all push notifications from channels on which they was
+ * set with specified device push token
+ */
++ (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                         withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+
+/**
+ * Receive list of channels on which push notifications was enabled
+ */
++ (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                     withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+
+
 #pragma mark - Presence management
 
 /**
@@ -268,21 +338,29 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * Enable presence observation for specific channel
  */
 + (void)enablePresenceObservationForChannel:(PNChannel *)channel;
++ (void)enablePresenceObservationForChannel:(PNChannel *)channel
+                withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
 
 /**
  * Enable presence observation for list of channels
  */
 + (void)enablePresenceObservationForChannels:(NSArray *)channels;
++ (void)enablePresenceObservationForChannels:(NSArray *)channels
+                 withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
 
 /**
  * Disable presence observation for specific channel
  */
 + (void)disablePresenceObservationForChannel:(PNChannel *)channel;
++ (void)disablePresenceObservationForChannel:(PNChannel *)channel
+                 withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
 
 /**
  * Disable presence observation for list of channels
  */
 + (void)disablePresenceObservationForChannels:(NSArray *)channels;
++ (void)disablePresenceObservationForChannels:(NSArray *)channels
+                  withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
 
 
 #pragma mark - Time token

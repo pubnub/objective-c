@@ -50,6 +50,12 @@
 - (BOOL)canRetry;
 
 /**
+ * Return reference on authorization request field
+ * (if was specified)
+ */
+- (NSString *)authorizationField;
+
+/**
  * Require from request fully prepared HTTP
  * payload which will be sent to the PubNub
  * service

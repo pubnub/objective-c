@@ -34,6 +34,12 @@
 - (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host;
 
 /**
+ * Sent to the PubNub client when connection channel successfully
+ * restored it's operation after connection error
+ */
+- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectOnErrorToHost:(NSString *)host;
+
+/**
  * Sent to the PubNub client when connection channel was unable
  * to establish connection with remote PubNub services because
  * of error

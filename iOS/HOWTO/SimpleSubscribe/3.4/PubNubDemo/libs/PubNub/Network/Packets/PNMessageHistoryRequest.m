@@ -9,6 +9,7 @@
 
 #import "PNMessageHistoryRequest.h"
 #import "PNServiceResponseCallbacks.h"
+#import "PNBaseRequest+Protected.h"
 #import "PNChannel+Protected.h"
 #import "PubNub+Protected.h"
 
@@ -132,10 +133,11 @@
     [parameters appendFormat:@"&reverse=%@", self.shouldRevertMessages?@"true":@"false"];
 
 
-    return [NSString stringWithFormat:@"/v2/history/sub-key/%@/channel/%@%@",
+    return [NSString stringWithFormat:@"/v2/history/sub-key/%@/channel/%@%@%@",
                     [PubNub sharedInstance].configuration.subscriptionKey,
                     [self.channel escapedName],
-                    parameters];
+                    parameters,
+                    ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
 #pragma mark -

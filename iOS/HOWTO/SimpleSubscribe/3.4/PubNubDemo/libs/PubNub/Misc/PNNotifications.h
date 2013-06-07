@@ -71,6 +71,67 @@ static NSString * const kPNClientUnsubscriptionDidCompleteNotification = @"PNCli
 // like NSArray)
 static NSString * const kPNClientUnsubscriptionDidFailNotification = @"PNClientUnsubscriptionDidFailNotification";
 
+// Sent when PubNub client was able to enable presence on
+// specified channel(s) (channel(s) will be passed
+// in userInfo like plain NSArray)
+static NSString * const kPNClientPresenceEnablingDidCompleteNotification = @"PNClientPresenceEnablingDidCompleteNotification";
+
+// Sent when PubNub client was unable to enable presence on
+// specified channel(s) (error will be passed in
+// userInfo and channel(s) will be passed in associatedObject
+// like NSArray)
+static NSString * const kPNClientPresenceEnablingDidFailNotification = @"PNClientPresenceEnablingDidFailNotification";
+
+// Sent when PubNub client was able to disable presence on
+// specified channel(s) (channel(s) will be passed
+// in userInfo like plain NSArray)
+static NSString * const kPNClientPresenceDisablingDidCompleteNotification = @"PNClientPresenceDisablingDidCompleteNotification";
+
+// Sent when PubNub client was unable to disable presence on
+// specified channel(s) (error will be passed in
+// userInfo and channel(s) will be passed in associatedObject
+// like NSArray)
+static NSString * const kPNClientPresenceDisablingDidFailNotification = @"PNClientPresenceDisablingDidFailNotification";
+
+// Send when PubNub client successfully enabled push notification
+// on specified channel(s) (channel(s) will be
+// passed in userInfo like plain NSArray)
+static NSString * const kPNClientPushNotificationEnableDidCompleteNotification = @"PNClientPushNotificationEnableDidCompleteNotification";
+
+// Send when PubNub client failed to enable push notification
+// on specified channel(s) (error will be passed in userInfo and
+// channel(s) will be passed in associatedObject like NSArray)
+static NSString * const kPNClientPushNotificationEnableDidFailNotification = @"PNClientPushNotificationEnableDidFailNotification";
+
+// Send when PubNub client successfully disabled push notification
+// on specified channel(s) (channel(s) will be
+// passed in userInfo like plain NSArray)
+static NSString * const kPNClientPushNotificationDisableDidCompleteNotification = @"PNClientPushNotificationDisableDidCompleteNotification";
+
+// Send when PubNub client failed to disable push notification
+// on specified channel(s) (error will be passed in userInfo and
+// channel(s) will be passed in associatedObject like NSArray)
+static NSString * const kPNClientPushNotificationDisableDidFailNotification = @"PNClientPushNotificationDisableDidFailNotification";
+
+// Send when PubNub client successfully removed push notification
+// from all previously enabled channels
+static NSString * const kPNClientPushNotificationRemoveDidCompleteNotification = @"PNClientPushNotificationRemoveDidCompleteNotification";
+
+// Send when PubNub client failed to remove push notification
+// from all previously enabled channels (error will be passed
+// in userInfo and)
+static NSString * const kPNClientPushNotificationRemoveDidFailNotification = @"PNClientPushNotificationRemoveDidFailNotification";
+
+// Send when PubNub client successfully received list of channels
+// which was previously enabled for push notifications (channel(s) will be
+// passed in userInfo like plain NSArray)
+static NSString * const kPNClientPushNotificationChannelsRetrieveDidCompleteNotification = @"PNClientPushNotificationChannelsRetrieveDidCompleteNotification";
+
+// Send when PubNub client failed to receive list of channels
+// which was previously enabled for push notification  (error
+// will be passed in userInfo and)
+static NSString * const kPNClientPushNotificationChannelsRetrieveDidFailNotification = @"PNClientPushNotificationChannelsRetrieveDidFailNotification";
+
 // Sent when PubNub client received time token
 // from PubNub service (time token value will be passed in
 // user info like plain NSString)
