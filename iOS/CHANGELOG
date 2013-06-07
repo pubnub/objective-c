@@ -1,3 +1,8 @@
+06-07-2013
+. 3.4.2 Release
+. implements producedural method calls for quick start usage of PubNub
+. fixes race conditions when connecting/disconnecting quickly
+
 05-31-2013
 . adding APNSVideoDemo
 . adding APNSVideo cert concatenizer
