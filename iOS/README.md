@@ -1,5 +1,5 @@
-# PubNub 3.4.1 for iOS (iPhone and iPad)
-PubNub 3.4.1 for iOS provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
+# PubNub 3.4.2 for iOS (iPhone and iPad)
+Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
 
@@ -9,39 +9,79 @@ All requests made by the client are asynchronous, and are handled by:
 4. Observation Center
 
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
-## Important Changes from 3.4 to 3.4.1
-Better precision for pulling history is provided client-side via the new PNDate types.
+## Important Changes from 3.4.0
+We've added better precision for pulling history via the new PNDate types.
 
-If you were previously using history in 3.4, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
+If you were previously using history in 3.4.0, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
 take PNDate arguments, not NSDate arguments. This is as easy as replacing:
 
 ```objective-c
-NSDate *startDate = [NSDate date];
+        NSDate *startDate = [NSDate date];
 ```
 with
 ```objective-c
-PNDate *startDate = [PNDate dateWithDate:[NSDate date]]; // Convert from a date
+        PNDate *startDate = [PNDate dateWithDate:[NSDate date]]; // Convert from a date
+        # or
+        PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567]; // Convert from a timetoken
 ```
-or
-```objective-c
-PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567]; // Convert from a timetoken
-```
+## Coming Soon... CocoaPod and XCode Project Template Support!
+But until then...
+
 ## Adding PubNub to your project  
 
-1. Add the JSONKit support files to your project (/libs/JSONKit)  
-2. Add the PubNub library folder to your project (/libs/PubNub)  
-3. Add PNImports to your project precompile header (.pch)  
+1. Add the PubNub library folder to your project (/libs/PubNub)  
+2. Add the JSONKit support files to your project (/libs/JSONKit)
 
+**JSONKit ARC NOTE:** PubNub core code is ARC-compliant.  We provide JSONKit only so you can run against older versions of iOS
+which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd party) performs all memory management on it's own
+(doesn't support ARC), we'll show you how to remove ARC warnings for it in step 4.
+
+3. Add PNImports to your project precompile header (.pch)  
+```objective-c
         #import "PNImports.h"
-        
+```
 4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
 5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options
-
+6. In AppDelegate.h, adopt the PNDelegate protocol:
+```objective-c
+        @interface PNAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate>
+```
+7. In AppDelegate.m (right before the return YES line works fine)
+```objective-c
+        [PubNub setDelegate:self] 
+```
 For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
 
-## Jumping Right In - Try out the Hello World and Reference Apps!
+## Lets start coding now with PubNub!
 
-There are three iOS PubNub 3.4 client demo apps available!
+If you just can't wait to start using PubNub for iOS (we totally know the feeling), after performing the steps 
+from [Adding PubNub to your Project](https://github.com/pubnub/objective-c/edit/master/iOS/README.md#adding-pubnub-to-your-project):
+
+1. In your ViewController.m, add this to viewDidLoad():
+```objective-c   
+        # Set config and connect
+        [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:@"mySecret"]];
+        [PubNub connect];
+   
+        # Define a channel
+        PNChannel *channel_1 = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
+   
+        # Subscribe on the channel
+        [PubNub subscribeOnChannel:channel_1];
+        # Publish on the channel
+        [PubNub sendMessage:@"hello from PubNub iOS!" toChannel:channel_1];
+```
+2. In your AppDelegate.m, define a didReceiveMessage delegate method:
+```objective-c
+        - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
+          NSLog([NSString stringWithFormat:@"received: %@", message.message]);
+        }
+```
+
+This results in a simple app that displays a PubNub 'Ping' message, published every second from PubNub PHP Bot.    
+
+That was just a quick and dirty demo to cut your teeth on... There are five other iOS PubNub 3.4 client demo apps available! These
+demonstrate in more detail how you can use the delegate and completion block features of the PubNub client for iOS.
 
 ### SimpleSubscribe HOWTO
 
@@ -55,6 +95,14 @@ This is the most basic example of how to wire it all up, and as such, should tak
 The [Hello World](HOWTO/HelloWorld/3.4) app references how to create a simple application using PubNub and iOS. 
 [A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf).
 
+### CallsWithoutBlocks
+
+The [CallsWithoutBlocks](HOWTO/CallsWithoutBlocks) app references how to use PubNub more procedurally than asyncronously. If you just want to make calls, without much care
+for server responses (fire and forget).
+
+### APNSDemo
+
+The [APNSVideo](HOWTO/APNSVideo) app is the companion to the APNS Tutorial Videos -- keep reading for more info on this...
 ### Deluxe iPad Full Featured Demo
 
 Once you are familiar with the [Hello World](HOWTO_3.4) app, The deluxe iPad-only app demonstrates all API functions in greater detail than
@@ -66,7 +114,7 @@ If you've enabled your keys for APNS, you can use native PubNub publish operatio
 Refer to the [APNS documentation HOWTO](https://github.com/pubnub/objective-c/blob/master/iOS/README_FOR_APNS.md) for more information on PubNub APNS setup.
 (A more formal "PubNub APNS Hello World" document is on its way!)
 
-### Beta APNS Video and Client Library ###
+### APNS Video and Client Library ###
 
 We've just added a video walkthrough, along with a sample application (based on the video) that shows from start to
 end how to setup APNS with PubNub. It includes all Apple-specific setup (which appears to be the most misunderstood) as
