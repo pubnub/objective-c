@@ -14,6 +14,7 @@
 #import "PNPushNotificationsRemoveRequest.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PubNub+Protected.h"
+#import "PNBaseRequest+Protected.h"
 
 
 #pragma mark Private interface delcaration
@@ -72,12 +73,13 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@/remove?callback=%@_%@&uuid=%@",
+    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@/remove?callback=%@_%@&uuid=%@%@",
                                       [PubNub sharedInstance].configuration.subscriptionKey,
                                       self.pushToken,
                                       [self callbackMethodName],
                                       self.shortIdentifier,
-                                      [PubNub escapedClientIdentifier]];
+                                      [PubNub escapedClientIdentifier],
+                                      ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
 }
 
 #pragma mark -

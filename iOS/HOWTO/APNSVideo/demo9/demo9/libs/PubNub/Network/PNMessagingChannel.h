@@ -45,8 +45,6 @@
 + (PNMessagingChannel *)messageChannelWithDelegate:(id<PNConnectionChannelDelegate>)delegate;
 
 
-#pragma mark - Instance methods
-
 #pragma mark - Connection management
 
 /**
@@ -59,6 +57,7 @@
 #pragma mark - Channels management
 
 - (NSArray *)subscribedChannels;
+- (NSArray *)fullSubscribedChannelsList;
 
 - (BOOL)isSubscribedForChannel:(PNChannel *)channel;
 

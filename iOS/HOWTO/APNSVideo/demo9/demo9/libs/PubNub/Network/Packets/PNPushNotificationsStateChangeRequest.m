@@ -15,6 +15,7 @@
 #import "PNPushNotificationsStateChangeRequest.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PubNub+Protected.h"
+#import "PNBaseRequest+Protected.h"
 
 
 #pragma mark Extenrs
@@ -113,14 +114,15 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@?%@=%@&callback=%@_%@&uuid=%@",
+    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@?%@=%@&callback=%@_%@&uuid=%@%@",
             [PubNub sharedInstance].configuration.subscriptionKey,
             self.pushToken,
             self.targetState,
             [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
             [self callbackMethodName],
             self.shortIdentifier,
-            [PubNub escapedClientIdentifier]];
+            [PubNub escapedClientIdentifier],
+            ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
 }
 
 #pragma mark -

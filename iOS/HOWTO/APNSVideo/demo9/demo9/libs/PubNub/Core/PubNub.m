@@ -29,13 +29,17 @@
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
 #import "PNConnectionChannel+Protected.h"
-#import "PNPushNotificationsStateChangeRequest.h"
 
 
 #pragma mark Static
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
+static dispatch_once_t onceToken;
+
+// Stores reference on list of invocation instances which is used to
+// support synchronous library methods call (connect/disconnect/subscribe/unsubscribe)
+static NSMutableArray *pendingInvocations = nil;
 
 
 #pragma mark - Private interface methods
@@ -65,6 +69,10 @@ static PubNub *_sharedInstance = nil;
 // with PubNub service
 @property (nonatomic, strong) PNMessagingChannel *messagingChannel;
 
+// Reference on channels which is used to send service
+// messages to PubNub service
+@property (nonatomic, strong) PNServiceChannel *serviceChannel;
+
 // Stores reference on client delegate
 @property (nonatomic, pn_desired_weak) id<PNDelegate> delegate;
 
@@ -72,11 +80,6 @@ static PubNub *_sharedInstance = nil;
 // (created each time when PubNub stack is configured
 // after application launch)
 @property (nonatomic, strong) NSString *launchSessionIdentifier;
-
-// Reference on channels which is used to send service
-// messages to PubNub service
-@property (nonatomic, strong) PNServiceChannel *serviceChannel;
-
 // Stores reference on configuration which was used to
 // perform initial PubNub client initialization
 @property (nonatomic, strong) PNConfiguration *configuration;
@@ -91,10 +94,97 @@ static PubNub *_sharedInstance = nil;
 // Stores current client state
 @property (nonatomic, assign) PNPubNubClientState state;
 
+// Stores whether library is performing one of async locking
+// methods or not (if yes, other calls will be placed into pending set)
+@property (nonatomic, assign, getter = isAsyncLockingOperationInProgress) BOOL asyncLockingOperationInProgress;
 
-#pragma mark - Instance methods
 
+#pragma mark - Class methods
+
+#pragma mark - Client connection management methods
+
++ (void)postponeConnectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
+                             errorBlock:(PNClientConnectionFailureBlock)failure;
++ (void)disconnectByUser:(BOOL)isDisconnectedByUser;
++ (void)postponeDisconnectByUser:(BOOL)isDisconnectedByUser;
 + (void)disconnectForConfigurationChange;
++ (void)postponeDisconnectForConfigurationChange;
+
+
+#pragma mark - Client identification
+
++ (void)postponeSetClientIdentifier:(NSString *)identifier;
+
+
+#pragma mark - Channels subscription management
+
++ (void)postponeSubscribeOnChannels:(NSArray *)channels
+                  withPresenceEvent:(BOOL)withPresenceEvent
+         andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+
++ (void)postponeUnsubscribeFromChannels:(NSArray *)channels
+                      withPresenceEvent:(BOOL)withPresenceEvent
+             andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
+
+
+#pragma mark - APNS management
+
++ (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels
+                              withDevicePushToken:(NSData *)pushToken
+                       andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+
++ (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels
+                               withDevicePushToken:(NSData *)pushToken
+                        andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+
++ (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                                 withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+
++ (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                             withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+
+#pragma mark - Presence management
+
++ (void)postponeEnablePresenceObservationForChannels:(NSArray *)channels withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
++ (void)postponeDisablePresenceObservationForChannels:(NSArray *)channels withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
+
+
+#pragma mark - Time token
+
++ (void)postponeRequestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success;
+
+
+#pragma mark - Messages processing methods
+
++ (void)postponeSendMessage:(id)message
+                  toChannel:(PNChannel *)channel
+        withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+
+#pragma mark - History methods
+
++ (void)postponeRequestHistoryForChannel:(PNChannel *)channel
+                                    from:(PNDate *)startDate
+                                      to:(PNDate *)endDate
+                                   limit:(NSUInteger)limit
+                          reverseHistory:(BOOL)shouldReverseMessageHistory
+                     withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
+
+#pragma mark - Participant methods
+
++ (void)postponeRequestParticipantsListForChannel:(PNChannel *)channel
+                              withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
+
+
+#pragma mark - Misc methods
+
+/**
+ * Allow to perform code which should lock asynchronous methods
+ * execution till it ends and in case if code itself should be
+ * postponed, corresponding block is passed.
+ */
++ (void)performAsyncLockingBlock:(void(^)(void))codeBlock postponedExecutionBlock:(void(^)(void))postponedCodeBlock;
 
 
 #pragma mark - Instance methods
@@ -133,6 +223,13 @@ static PubNub *_sharedInstance = nil;
 shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 
+#pragma mark - Message channel delegate methods
+
+- (void)postponeMessagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel;
+
+- (void)postponeMessagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel;
+
+
 #pragma mark - Handler methods
 
 /**
@@ -141,6 +238,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  */
 - (void)handleConnectionErrorOnNetworkFailure;
 
+/**
+ * Handle locking operation completino and pop new one from
+ * pending invocations list.
+ */
+- (void)handleLockingOperationComplete:(BOOL)shouldStartNext;
+- (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext;
+
 
 #pragma mark - Misc methods
 
@@ -148,6 +252,23 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * Will prepare crypto helper it is possible
  */
 - (void)prepareCryptoHelper;
+
+/**
+ * Check whether whether call to specific method should be postponed
+ * or not. This will allot to perform synchronous call on specific
+ * library methods.
+ */
+- (BOOL)shouldPostponeMethodCall;
+
+/**
+ * Place selector into list of postponed calls with corresponding parameters
+ * If 'placeOutOfOrder' is specified, selectore will be placed first in FIFO
+ * queue and will be executed as soon as it will be possible.
+ */
+- (void)postponeSelector:(SEL)calledMethodSelector
+               forObject:(id)object
+          withParameters:(NSArray *)parameters
+              outOfOrder:(BOOL)placeOutOfOrder;
 
 /**
  * This method will notify delegate about that
@@ -167,6 +288,18 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * unsubscription failed with error
  */
 - (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that
+ * presence enabling failed with error
+ */
+- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error;
+
+/**
+ * This method will notify delegate about that
+ * presence disabling failed with error
+ */
+- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error;
 
 /**
  * This method will notify delegate about that push notification enabling failed with error
@@ -226,6 +359,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * connection because of speficied error
  */
 - (void)notifyDelegateClientWillDisconnectWithError:(PNError *)error;
+- (void)notifyDelegateClientConnectionFailedWithError:(PNError *)error;
 
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object;
 
@@ -234,6 +368,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * network went down and restored now
  */
 - (BOOL)shouldRestoreConnection;
+
+/**
+ * Check whether delegate should be notified about some runtime event
+ * (errors will be notified w/o regard to this flag)
+ */
+- (BOOL)shouldNotifyAboutEvent;
 
 /**
  * Check whether client should restore subscription to previous
@@ -267,8 +407,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 #pragma mark - Class methods
 
 + (PubNub *)sharedInstance {
-    
-    static dispatch_once_t onceToken;
+
     dispatch_once(&onceToken, ^{
         
         _sharedInstance = [[[self class] alloc] init];
@@ -278,25 +417,49 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     return _sharedInstance;
 }
 
++ (void)resetClient {
+
+    // Mark that client is in resetting state, so it won't be affected by
+    // callbacks from transport classes
+    _sharedInstance.state = PNPubNubClientStateReset;
+
+    onceToken = 0;
+    [PNObservationCenter resetCenter];
+    [PNConnection resetConnectionsPool];
+    [PNChannel purgeChannelsCache];
+    [PNCryptoHelper resetHelper];
+
+    [_sharedInstance.messagingChannel terminate];
+    [_sharedInstance.serviceChannel terminate];
+    _sharedInstance.messagingChannel = nil;
+    _sharedInstance.serviceChannel = nil;
+    [_sharedInstance.reachability stopServiceReachabilityMonitoring];
+    _sharedInstance.reachability = nil;
+
+    pendingInvocations = nil;
+    _sharedInstance = nil;
+}
+
 
 #pragma mark - Client connection management methods
 
 + (void)connect {
-    
+
     [self connectWithSuccessBlock:nil errorBlock:nil];
 }
 
 + (void)connectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
                      errorBlock:(PNClientConnectionFailureBlock)failure {
-    
-    BOOL shouldAddStateObservation = NO;
-    
+
+    __block BOOL shouldAddStateObservation = NO;
+    __block BOOL methodCallPostponed = NO;
+
     // Check whether instance already connected or not
     if ([self sharedInstance].state == PNPubNubClientStateConnected ||
         [self sharedInstance].state == PNPubNubClientStateConnecting) {
 
         PNError *connectionError = [PNError errorWithCode:kPNClientTriedConnectWhileConnectedError];
-        [[self sharedInstance] notifyDelegateAboutError:connectionError];
+        [[self sharedInstance] notifyDelegateClientConnectionFailedWithError:connectionError];
         
         if (failure) {
 
@@ -341,51 +504,60 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 // connection)
                 if ([[self sharedInstance].reachability isServiceAvailable]) {
 
-                    // Notify PubNub delegate about that it will try to
-                    // establish connection with remote PubNub origin
-                    // (notify if delegate implements this method)
-                    if ([[self sharedInstance].delegate respondsToSelector:@selector(pubnubClient:willConnectToOrigin:)]) {
-                        
-                        [[self sharedInstance].delegate performSelector:@selector(pubnubClient:willConnectToOrigin:)
-                                                             withObject:[self sharedInstance]
-                                                             withObject:[self sharedInstance].configuration.origin];
+                    [self performAsyncLockingBlock:^{
+
+                        // Notify PubNub delegate about that it will try to
+                        // establish connection with remote PubNub origin
+                        // (notify if delegate implements this method)
+                        if ([[self sharedInstance].delegate respondsToSelector:@selector(pubnubClient:willConnectToOrigin:)]) {
+
+                            [[self sharedInstance].delegate performSelector:@selector(pubnubClient:willConnectToOrigin:)
+                                                                 withObject:[self sharedInstance]
+                                                                 withObject:[self sharedInstance].configuration.origin];
+                        }
+
+                        [[self sharedInstance] sendNotification:kPNClientWillConnectToOriginNotification
+                                                     withObject:[self sharedInstance].configuration.origin];
+
+
+                        // Check whether PubNub client was just created and there
+                        // is no resources for reuse or not
+                        if ([self sharedInstance].state == PNPubNubClientStateCreated ||
+                            [self sharedInstance].state == PNPubNubClientStateDisconnected) {
+
+                            [self sharedInstance].state = PNPubNubClientStateConnecting;
+
+                            // Initialize communication channels
+                            [self sharedInstance].messagingChannel = [PNMessagingChannel messageChannelWithDelegate:[self sharedInstance]];
+                            [self sharedInstance].messagingChannel.messagingDelegate = [self sharedInstance];
+                            [self sharedInstance].serviceChannel = [PNServiceChannel serviceChannelWithDelegate:[self sharedInstance]];
+                            [self sharedInstance].serviceChannel.serviceDelegate = [self sharedInstance];
+                        }
+                        else {
+
+                            [self sharedInstance].state = PNPubNubClientStateConnecting;
+
+
+                            // Reuse existing communication channels and reconnect
+                            // them to remote origin server
+                            [[self sharedInstance].messagingChannel connect];
+                            [[self sharedInstance].serviceChannel connect];
+                        }
+
+                        shouldAddStateObservation = YES;
                     }
+                           postponedExecutionBlock:^{
 
-                    [[self sharedInstance] sendNotification:kPNClientWillConnectToOriginNotification
-                                                 withObject:[self sharedInstance].configuration.origin];
-
-
-                    // Check whether PubNub client was just created and there
-                    // is no resources for reuse or not
-                    if ([self sharedInstance].state == PNPubNubClientStateCreated ||
-                        [self sharedInstance].state == PNPubNubClientStateDisconnected) {
-
-                        [self sharedInstance].state = PNPubNubClientStateConnecting;
-                        
-                        // Initialize communication channels
-                        [self sharedInstance].messagingChannel = [PNMessagingChannel messageChannelWithDelegate:[self sharedInstance]];
-                        [self sharedInstance].messagingChannel.messagingDelegate = [self sharedInstance];
-                        [self sharedInstance].serviceChannel = [PNServiceChannel serviceChannelWithDelegate:[self sharedInstance]];
-                        [self sharedInstance].serviceChannel.serviceDelegate = [self sharedInstance];
-                    }
-                    else {
-
-                        [self sharedInstance].state = PNPubNubClientStateConnecting;
-                        
-                        
-                        // Reuse existing communication channels and reconnect
-                        // them to remote origin server
-                        [[self sharedInstance].messagingChannel connect];
-                        [[self sharedInstance].serviceChannel connect];
-                    }
-                    
-                    shouldAddStateObservation = YES;
+                               [self postponeConnectWithSuccessBlock:success errorBlock:failure];
+                               methodCallPostponed = YES;
+                           }];
                 }
                 else {
                     
                     // Mark that client should try to connect when network will be available
                     // again
                     [self sharedInstance].connectOnServiceReachabilityCheck = YES;
+                    [self sharedInstance].asyncLockingOperationInProgress = YES;
                     
                     [[self sharedInstance] handleConnectionErrorOnNetworkFailure];
                     
@@ -400,7 +572,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             // (user still not configured client or just not enough time to check passed
             // since client configuration)
             else {
-                
+
+                [self sharedInstance].asyncLockingOperationInProgress = YES;
                 [self sharedInstance].connectOnServiceReachabilityCheck = YES;
                 
                 shouldAddStateObservation = YES;
@@ -408,79 +581,177 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         }
     }
 
-    // Remove PubNub client from connection state observers list
-    [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
+    if (!methodCallPostponed) {
+
+        // Remove PubNub client from connection state observers list
+        [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
 
 
-    if(shouldAddStateObservation) {
-        
-        // Subscribe and wait for client connection state change notification
-        [[self sharedInstance] setClientConnectionObservationWithSuccessBlock:success failureBlock:failure];
+        if (shouldAddStateObservation) {
+
+            // Subscribe and wait for client connection state change notification
+            [[self sharedInstance] setClientConnectionObservationWithSuccessBlock:(success?[success copy]:nil)
+                                                                     failureBlock:(failure?[failure copy]:nil)];
+        }
     }
 }
 
++ (void)postponeConnectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
+                             errorBlock:(PNClientConnectionFailureBlock)failure {
+
+    [[self sharedInstance] postponeSelector:@selector(connectWithSuccessBlock:errorBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(success), PNNillIfNotSet(failure)]
+                                 outOfOrder:[self sharedInstance].isRestoringConnection];
+}
+
 + (void)disconnect {
-    
-    // Remove PubNub client from list which help to observe various events
-    [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
-    if ([self sharedInstance].state != PNPubNubClientStateDisconnectingOnConfigurationChange) {
 
-        [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
-        [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
-        [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
-        [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
+	[self disconnectByUser:YES];
+}
 
-        [[self sharedInstance].configuration shouldKillDNSCache:NO];
++ (void)disconnectByUser:(BOOL)isDisconnectedByUser {
+
+    [self performAsyncLockingBlock:^{
+
+        BOOL isDisconnectForConfigurationChange = [self sharedInstance].state == PNPubNubClientStateDisconnectingOnConfigurationChange;
+
+        // Remove PubNub client from list which help to observe various events
+        [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
+        if ([self sharedInstance].state != PNPubNubClientStateDisconnectingOnConfigurationChange) {
+
+            [[PNObservationCenter defaultCenter] removeClientAsParticipantsListDownloadObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsHistoryDownloadObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
+
+            [[self sharedInstance].configuration shouldKillDNSCache:NO];
+        }
+
+        // Check whether client disconnected at this moment (maybe previously was
+        // disconnected because connection loss)
+        BOOL isDisconnected = ![[self sharedInstance] isConnected];
+
+        // Check whether should update state to 'disconnecting'
+        if (!isDisconnected) {
+
+            // Mark that client is disconnecting from remote PubNub services on
+            // user request (or by internal client request when updating configuration)
+            [self sharedInstance].state = PNPubNubClientStateDisconnecting;
+        }
+
+        // Reset client runtime flags and properties
+        [self sharedInstance].connectOnServiceReachabilityCheck = NO;
+        [self sharedInstance].restoringConnection = NO;
+
+
+        void(^connectionsTerminationBlock)(void) = ^{
+
+            [_sharedInstance.messagingChannel terminate];
+            [_sharedInstance.serviceChannel terminate];
+            _sharedInstance.messagingChannel = nil;
+            _sharedInstance.serviceChannel = nil;
+        };
+
+        if (isDisconnectedByUser) {
+
+            [PNConnection resetConnectionsPool];
+
+            connectionsTerminationBlock();
+
+            // Mark that client completely disconnected from origin server
+            // (synchronous disconnection was made to prevebt asynchrnonous disconnect event
+            // from overlaping on connection event)
+            [self sharedInstance].state = PNPubNubClientStateDisconnected;
+
+            [[self sharedInstance] connectionChannel:nil didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
+        }
+        else {
+
+            // Empty connection pool after connection will
+            // be closed
+            [PNConnection closeAllConnections];
+
+            connectionsTerminationBlock();
+        }
+
+
+
+        if (isDisconnectForConfigurationChange) {
+
+            // Delay connection restore to give some time internal
+            // components to complete their tasks
+            int64_t delayInSeconds = 1;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+
+                [self sharedInstance].asyncLockingOperationInProgress = NO;
+
+                [self sharedInstance].state = PNPubNubClientStateCreated;
+                [self sharedInstance].configuration =  [self sharedInstance].temporaryConfiguration;
+                [self sharedInstance].temporaryConfiguration = nil;
+
+                [[self sharedInstance] prepareCryptoHelper];
+
+
+                // Restore connection which will use new configuration
+                [self connect];
+            });
+        }
     }
+           postponedExecutionBlock:^{
 
-    // Check whether client disconnected at this moment (maybe previously was
-    // disconnected because connection loss)
-    BOOL isDisconnected = ![[self sharedInstance] isConnected];
+               [self postponeDisconnectByUser:isDisconnectedByUser];
+           }];
+}
 
-    // Check whether should update state to 'disconnecting'
-    if (!isDisconnected) {
++ (void)postponeDisconnectByUser:(BOOL)isDisconnectedByUser {
 
-        // Mark that client is disconnecting from remote PubNub services on
-        // user request (or by internal client request when updating configuration)
-        [self sharedInstance].state = PNPubNubClientStateDisconnecting;
-    }
+	BOOL outOfOrder = [self sharedInstance].state == PNPubNubClientStateDisconnectingOnConfigurationChange;
 
-    // Reset client runtime flags and properties
-    [self sharedInstance].connectOnServiceReachabilityCheck = NO;
-    [self sharedInstance].restoringConnection = NO;
-
-
-    // Empty connection pool after connection will
-    // be closed
-    [PNConnection closeAllConnections];
-    
-    
-    // Destroy communication channels
-    [self sharedInstance].messagingChannel = nil;
-    [self sharedInstance].serviceChannel = nil;
+    [[self sharedInstance] postponeSelector:@selector(disconnectByUser:)
+                                  forObject:self withParameters:@[@(isDisconnectedByUser)]
+                                 outOfOrder:outOfOrder];
 }
 
 + (void)disconnectForConfigurationChange {
 
-    // Mark that client is closing connection because of settings update
-    [self sharedInstance].state = PNPubNubClientStateDisconnectingOnConfigurationChange;
-    
-    
-    // Empty connection pool after connection will
-    // be closed
-    [PNConnection closeAllConnections];
+    [self performAsyncLockingBlock:^{
+
+        // Mark that client is closing connection because of settings update
+        [self sharedInstance].state = PNPubNubClientStateDisconnectingOnConfigurationChange;
+
+
+        // Empty connection pool after connection will
+        // be closed
+        [PNConnection closeAllConnections];
+    }
+           postponedExecutionBlock:^{
+
+               [self postponeDisconnectForConfigurationChange];
+           }];
+}
+
++ (void)postponeDisconnectForConfigurationChange {
+
+    [[self sharedInstance] postponeSelector:@selector(disconnectForConfigurationChange)
+                                  forObject:self
+                             withParameters:nil
+                                 outOfOrder:NO];
 }
 
 
 #pragma mark - Client configuration methods
 
 + (void)setConfiguration:(PNConfiguration *)configuration {
-    
+
     [self setupWithConfiguration:configuration andDelegate:[self sharedInstance].delegate];
 }
 
 + (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
-    
+
     // Ensure that configuration is valid before update/set
     // client configuration to it
     if ([configuration isValid]) {
@@ -528,7 +799,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 }
 
 + (void)setDelegate:(id<PNDelegate>)delegate {
-    
+
     [self sharedInstance].delegate = delegate;
 }
 
@@ -536,39 +807,75 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 #pragma mark - Client identification methods
 
 + (void)setClientIdentifier:(NSString *)identifier {
-
     // Check whether identifier has been changed since last
     // method call or not
-    if([[self sharedInstance] isConnected]) {
-        
+    if ([[self sharedInstance] isConnected]) {
+
         // Checking whether new identifier was provided or not
         NSString *clientIdentifier = [self sharedInstance].clientIdentifier;
-        if(![clientIdentifier isEqualToString:identifier]) {
-            
-            // Check whether user identifier was provided by
-            // user or not
-            if(![self sharedInstance].isUserProvidedClientIdentifier || clientIdentifier == nil) {
-                
-                [self sharedInstance].userProvidedClientIdentifier = NO;
-                
-                // Change user identifier before connect to the
-                // PubNub services
-                [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
-            }
-            
+        if (![clientIdentifier isEqualToString:identifier]) {
 
-            // We should resubscribe to the channels with new identifier
-            // so correct presence will be called on them and notify
-            // that user with old name leaved channel and joined with new
-            // name
-            [[self sharedInstance].messagingChannel resubscribe];
+            [self performAsyncLockingBlock:^{
+
+                [self sharedInstance].userProvidedClientIdentifier = identifier != nil;
+
+
+                NSArray *allChannels = [[self sharedInstance].messagingChannel fullSubscribedChannelsList];
+                [self unsubscribeFromChannels:allChannels
+                            withPresenceEvent:YES
+                   andCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+
+                       if (leaveError == nil) {
+
+                           // Check whether user identifier was provided by
+                           // user or not
+                           if (identifier == nil) {
+
+                               // Change user identifier before connect to the
+                               // PubNub services
+                               [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
+                           }
+                           else {
+
+                               [self sharedInstance].clientIdentifier = identifier;
+                           }
+
+                           [self sharedInstance].asyncLockingOperationInProgress = NO;
+                           [self subscribeOnChannels:allChannels
+                                   withPresenceEvent:YES
+                          andCompletionHandlingBlock:^(PNSubscriptionProcessState state,
+                                  NSArray *subscribedChannels,
+                                  PNError *subscribeError) {
+
+                              [[self sharedInstance] handleLockingOperationComplete:YES];
+                          }];
+                       }
+                       else {
+
+                           [self sharedInstance].asyncLockingOperationInProgress = NO;
+                           [self subscribeOnChannels:allChannels withPresenceEvent:NO];
+                       }
+                   }];
+            }
+                   postponedExecutionBlock:^{
+
+                       [self postponeSetClientIdentifier:identifier];
+                   }];
         }
     }
     else {
-        
+
         [self sharedInstance].clientIdentifier = identifier;
         [self sharedInstance].userProvidedClientIdentifier = identifier != nil;
     }
+}
+
++ (void)postponeSetClientIdentifier:(NSString *)identifier {
+
+    [[self sharedInstance] postponeSelector:@selector(setClientIdentifier:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(identifier)]
+                                 outOfOrder:NO];
 }
 
 + (NSString *)clientIdentifier {
@@ -654,36 +961,54 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
           withPresenceEvent:(BOOL)withPresenceEvent
  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
-    [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
-    [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
+        [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            if (handlerBlock != nil) {
+
+                [[PNObservationCenter defaultCenter] addClientAsSubscriptionObserverWithBlock:[handlerBlock copy]];
+            }
 
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
-
-        if (handlerBlock != nil) {
-
-            [[PNObservationCenter defaultCenter] addClientAsSubscriptionObserverWithBlock:handlerBlock];
+            [[self sharedInstance].messagingChannel subscribeOnChannels:channels withPresenceEvent:withPresenceEvent];
         }
+        // Looks like client can't send request because of some reasons
+        else {
+
+            PNError *subscriptionError = [PNError errorWithCode:statusCode];
+            subscriptionError.associatedObject = channels;
+
+            [[self sharedInstance] notifyDelegateAboutSubscriptionFailWithError:subscriptionError];
 
 
-        [[self sharedInstance].messagingChannel subscribeOnChannels:channels withPresenceEvent:withPresenceEvent];
-    }
-    // Looks like client can't send request because of some reasons
-    else {
+            if (handlerBlock) {
 
-        PNError *subscriptionError = [PNError errorWithCode:statusCode];
-        subscriptionError.associatedObject = channels;
-
-        [[self sharedInstance] notifyDelegateAboutSubscriptionFailWithError:subscriptionError];
-
-
-        if(handlerBlock) {
-            
-            handlerBlock(PNSubscriptionProcessNotSubscribedState, channels, subscriptionError);
+                handlerBlock(PNSubscriptionProcessNotSubscribedState, channels, subscriptionError);
+            }
         }
     }
+           postponedExecutionBlock:^{
+
+               [self postponeSubscribeOnChannels:channels
+                               withPresenceEvent:withPresenceEvent
+                      andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeSubscribeOnChannels:(NSArray *)channels
+                  withPresenceEvent:(BOOL)withPresenceEvent
+         andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
+
+    [[self sharedInstance] postponeSelector:@selector(subscribeOnChannels:withPresenceEvent:andCompletionHandlingBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(channels), @(withPresenceEvent), PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
 }
 
 + (void)unsubscribeFromChannel:(PNChannel *)channel {
@@ -731,36 +1056,54 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
               withPresenceEvent:(BOOL)withPresenceEvent
      andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
 
-    [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
-    [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
+        [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            if (handlerBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsUnsubscribeObserverWithBlock:[handlerBlock copy]];
+            }
 
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
-
-        if (handlerBlock) {
-
-            [[PNObservationCenter defaultCenter] addClientAsUnsubscribeObserverWithBlock:handlerBlock];
+            [[self sharedInstance].messagingChannel unsubscribeFromChannels:channels withPresenceEvent:withPresenceEvent];
         }
+                // Looks like client can't send request because of some reasons
+        else {
+
+            PNError *unsubscriptionError = [PNError errorWithCode:statusCode];
+            unsubscriptionError.associatedObject = channels;
+
+            [[self sharedInstance] notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError];
 
 
-        [[self sharedInstance].messagingChannel unsubscribeFromChannels:channels withPresenceEvent:withPresenceEvent];
-    }
-    // Looks like client can't send request because of some reasons
-    else {
+            if (handlerBlock) {
 
-        PNError *unsubscriptionError = [PNError errorWithCode:statusCode];
-        unsubscriptionError.associatedObject = channels;
-
-        [[self sharedInstance] notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError];
-
-
-        if (handlerBlock) {
-
-            handlerBlock(channels, unsubscriptionError);
+                handlerBlock(channels, unsubscriptionError);
+            }
         }
     }
+           postponedExecutionBlock:^{
+
+               [self postponeUnsubscribeFromChannels:channels
+                                   withPresenceEvent:withPresenceEvent
+                          andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeUnsubscribeFromChannels:(NSArray *)channels
+                      withPresenceEvent:(BOOL)withPresenceEvent
+             andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
+
+    [[self sharedInstance] postponeSelector:@selector(unsubscribeFromChannels:withPresenceEvent:andCompletionHandlingBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(channels), @(withPresenceEvent), PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
 }
 
 
@@ -787,39 +1130,59 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                       withDevicePushToken:(NSData *)pushToken
                andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
 
-    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
-    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
 
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
 
-        if (handlerBlock) {
+            if (handlerBlock) {
 
-            [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnableObserverWithBlock:handlerBlock];
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnableObserverWithBlock:[handlerBlock copy]];
+            }
+
+            PNPushNotificationsStateChangeRequest *request;
+            request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
+                                                                                 toState:PNPushNotificationsState.enable
+                                                                             forChannels:channels];
+            [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
+        // Looks like client can't send request because of some reasons
+        else {
 
-        PNPushNotificationsStateChangeRequest *request;
-        request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
-                                                                             toState:PNPushNotificationsState.enable
-                                                                         forChannels:channels];
-        [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
-    }
-    // Looks like client can't send request because of some reasons
-    else {
+            PNError *stateChangeError = [PNError errorWithCode:statusCode];
+            stateChangeError.associatedObject = channels;
 
-        PNError *stateChangeError = [PNError errorWithCode:statusCode];
-        stateChangeError.associatedObject = channels;
-
-        [[self sharedInstance] notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
+            [[self sharedInstance] notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
 
 
-        if (handlerBlock) {
+            if (handlerBlock) {
 
-            handlerBlock(channels, stateChangeError);
+                handlerBlock(channels, stateChangeError);
+            }
         }
     }
+           postponedExecutionBlock:^{
+
+        [self postponeEnablePushNotificationsOnChannels:channels
+                                    withDevicePushToken:pushToken
+                             andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+    }];
+}
+
++ (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels
+                              withDevicePushToken:(NSData *)pushToken
+                       andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+
+    SEL selector = @selector(enablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[channels, pushToken, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
 }
 
 + (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken {
@@ -843,104 +1206,159 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                        withDevicePushToken:(NSData *)pushToken
                 andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
 
-    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
-    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
 
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
 
-        if (handlerBlock) {
+            if (handlerBlock) {
 
-            [[PNObservationCenter defaultCenter] addClientAsPushNotificationsDisableObserverWithBlock:handlerBlock];
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsDisableObserverWithBlock:[handlerBlock copy]];
+            }
+
+            PNPushNotificationsStateChangeRequest *request;
+            request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
+                                                                                 toState:PNPushNotificationsState.disable
+                                                                             forChannels:channels];
+            [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
+        // Looks like client can't send request because of some reasons
+        else {
 
-        PNPushNotificationsStateChangeRequest *request;
-        request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
-                                                                             toState:PNPushNotificationsState.disable
-                                                                         forChannels:channels];
-        [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
-    }
-    // Looks like client can't send request because of some reasons
-    else {
+            PNError *stateChangeError = [PNError errorWithCode:statusCode];
+            stateChangeError.associatedObject = channels;
 
-        PNError *stateChangeError = [PNError errorWithCode:statusCode];
-        stateChangeError.associatedObject = channels;
-
-        [[self sharedInstance] notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
+            [[self sharedInstance] notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
 
 
-        if (handlerBlock) {
+            if (handlerBlock) {
 
-            handlerBlock(channels, stateChangeError);
+                handlerBlock(channels, stateChangeError);
+            }
         }
     }
+           postponedExecutionBlock:^{
+
+               [self postponeDisablePushNotificationsOnChannels:channels
+                                            withDevicePushToken:pushToken
+                                     andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels
+                               withDevicePushToken:(NSData *)pushToken
+                        andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+
+    SEL selector = @selector(disablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[channels, pushToken, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
 }
 
 + (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
                          withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
 
-    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsRemoveObserver];
+    [self performAsyncLockingBlock:^{
 
-     // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsRemoveObserver];
 
-        if (handlerBlock) {
+         // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
 
-            [[PNObservationCenter defaultCenter] addClientAsPushNotificationsRemoveObserverWithBlock:handlerBlock];
+            if (handlerBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsRemoveObserverWithBlock:[handlerBlock copy]];
+            }
+
+            [[self sharedInstance] sendRequest:[PNPushNotificationsRemoveRequest requestWithDevicePushToken:pushToken]
+                       shouldObserveProcessing:YES];
         }
+        // Looks like client can't send request because of some reasons
+        else {
 
-        [[self sharedInstance] sendRequest:[PNPushNotificationsRemoveRequest requestWithDevicePushToken:pushToken]
-                   shouldObserveProcessing:YES];
-    }
-    // Looks like client can't send request because of some reasons
-    else {
-
-        PNError *removalError = [PNError errorWithCode:statusCode];
-
-        [[self sharedInstance] notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
+            PNError *removalError = [PNError errorWithCode:statusCode];
+            [[self sharedInstance] notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
 
 
-        if (handlerBlock) {
+            if (handlerBlock) {
 
-            handlerBlock(removalError);
+                handlerBlock(removalError);
+            }
         }
     }
+           postponedExecutionBlock:^{
+
+               [self postponeRemoveAllPushNotificationsForDevicePushToken:pushToken
+                                              withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                                 withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
+
+    SEL selector = @selector(removeAllPushNotificationsForDevicePushToken:withCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[pushToken, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
 }
 
 + (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
                                      withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
 
-    [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnabledChannelsObserver];
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnabledChannelsObserver];
 
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
 
-        if (handlerBlock) {
+            if (handlerBlock) {
 
-            [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnabledChannelsObserverWithBlock:handlerBlock];
+                [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnabledChannelsObserverWithBlock:[handlerBlock copy]];
+            }
+
+            [[self sharedInstance] sendRequest:[PNPushNotificationsEnabledChannelsRequest requestWithDevicePushToken:pushToken]
+                       shouldObserveProcessing:YES];
         }
+        // Looks like client can't send request because of some reasons
+        else {
 
-        [[self sharedInstance] sendRequest:[PNPushNotificationsEnabledChannelsRequest requestWithDevicePushToken:pushToken]
-                   shouldObserveProcessing:YES];
-    }
-    // Looks like client can't send request because of some reasons
-    else {
+            PNError *listRetrieveError = [PNError errorWithCode:statusCode];
 
-        PNError *listRetrieveError = [PNError errorWithCode:statusCode];
-
-        [[self sharedInstance] notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
+            [[self sharedInstance] notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
 
 
-        if (handlerBlock) {
+            if (handlerBlock) {
 
-            handlerBlock(nil, listRetrieveError);
+                handlerBlock(nil, listRetrieveError);
+            }
         }
     }
+           postponedExecutionBlock:^{
+
+               [self postponeRequestPushNotificationEnabledChannelsForDevicePushToken:pushToken
+                                                          withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                             withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
+
+    SEL selector = @selector(requestPushNotificationEnabledChannelsForDevicePushToken:withCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[pushToken, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
 }
 
 
@@ -963,36 +1381,142 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)enablePresenceObservationForChannel:(PNChannel *)channel {
 
-    [self enablePresenceObservationForChannels:@[channel]];
+    [self enablePresenceObservationForChannel:channel withCompletionHandlingBlock:nil];
+}
+
++ (void)enablePresenceObservationForChannel:(PNChannel *)channel
+                withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
+
+    [self enablePresenceObservationForChannels:@[channel] withCompletionHandlingBlock:handlerBlock];
 }
 
 + (void)enablePresenceObservationForChannels:(NSArray *)channels {
 
-    // Enumerate over the list of channels and mark that it should observe for presence
-    [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+    [self enablePresenceObservationForChannels:channels withCompletionHandlingBlock:nil];
+}
 
-        channel.observePresence = YES;
-        channel.userDefinedPresenceObservation = YES;
-    }];
++ (void)enablePresenceObservationForChannels:(NSArray *)channels
+                 withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
 
-    [[self sharedInstance].messagingChannel enablePresenceObservationForChannels:channels];
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPresenceEnabling];
+        [[PNObservationCenter defaultCenter] removeClientAsPresenceDisabling];
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            if (handlerBlock != nil) {
+
+                [[PNObservationCenter defaultCenter] addClientAsPresenceEnablingObserverWithBlock:[handlerBlock copy]];
+            }
+
+            // Enumerate over the list of channels and mark that it should observe for presence
+            [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
+                channel.observePresence = YES;
+                channel.userDefinedPresenceObservation = YES;
+            }];
+
+            [[self sharedInstance].messagingChannel enablePresenceObservationForChannels:channels];
+        }
+        else {
+
+            PNError *presenceEnableError = [PNError errorWithCode:statusCode];
+            presenceEnableError.associatedObject = channels;
+            PNLog(PNLogGeneralLevel, self, @" Presence enabling failed because of error: %@", presenceEnableError);
+
+
+            [[self sharedInstance] notifyDelegateAboutPresenceEnablingFailWithError:presenceEnableError];
+
+            if (handlerBlock != nil) {
+
+                handlerBlock(channels, presenceEnableError);
+            }
+        }
+
+    }
+            postponedExecutionBlock:^{
+
+                [self postponeEnablePresenceObservationForChannels:channels
+                                       withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+            }];
+}
+
++ (void)postponeEnablePresenceObservationForChannels:(NSArray *)channels
+                         withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
+
+    [[self sharedInstance] postponeSelector:@selector(enablePresenceObservationForChannels:withCompletionHandlingBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(channels), PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
 }
 
 + (void)disablePresenceObservationForChannel:(PNChannel *)channel {
 
-    [self disablePresenceObservationForChannels:@[channel]];
+    [self disablePresenceObservationForChannel:channel withCompletionHandlingBlock:nil];
+}
+
++ (void)disablePresenceObservationForChannel:(PNChannel *)channel
+                 withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
+
+    [self disablePresenceObservationForChannels:@[channel] withCompletionHandlingBlock:handlerBlock];
 }
 
 + (void)disablePresenceObservationForChannels:(NSArray *)channels {
 
-    // Enumerate over the list of channels and mark that it should observe for presence
-    [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+    [self disablePresenceObservationForChannels:channels withCompletionHandlingBlock:nil];
+}
 
-        channel.observePresence = NO;
-        channel.userDefinedPresenceObservation = YES;
-    }];
++ (void)disablePresenceObservationForChannels:(NSArray *)channels
+                  withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
 
-    [[self sharedInstance].messagingChannel disablePresenceObservationForChannels:channels];
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsPresenceEnabling];
+        [[PNObservationCenter defaultCenter] removeClientAsPresenceDisabling];
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            if (handlerBlock != nil) {
+
+                [[PNObservationCenter defaultCenter] addClientAsPresenceDisablingObserverWithBlock:[handlerBlock copy]];
+            }
+
+            [[self sharedInstance].messagingChannel disablePresenceObservationForChannels:channels];
+        }
+        else {
+
+            PNError *presencedisableError = [PNError errorWithCode:statusCode];
+            presencedisableError.associatedObject = channels;
+            PNLog(PNLogGeneralLevel, self, @" Presence disabling failed because of error: %@", presencedisableError);
+
+
+            [[self sharedInstance] notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError];
+
+            if (handlerBlock != nil) {
+
+                handlerBlock(channels, presencedisableError);
+            }
+        }
+    }
+           postponedExecutionBlock:^{
+
+               [self postponeDisablePresenceObservationForChannels:channels
+                                       withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeDisablePresenceObservationForChannels:(NSArray *)channels
+                          withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
+
+    [[self sharedInstance] postponeSelector:@selector(disablePresenceObservationForChannels:withCompletionHandlingBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(channels), PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
 }
 
 
@@ -1005,31 +1529,46 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)requestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success {
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
+    [self performAsyncLockingBlock:^{
 
-        [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
-        if (success) {
-            [[PNObservationCenter defaultCenter] addClientAsTimeTokenReceivingObserverWithCallbackBlock:success];
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
+            if (success) {
+                [[PNObservationCenter defaultCenter] addClientAsTimeTokenReceivingObserverWithCallbackBlock:[success copy]];
+            }
+
+
+            [[self sharedInstance] sendRequest:[PNTimeTokenRequest new] shouldObserveProcessing:YES];
         }
+                // Looks like client can't send request because of some reasons
+        else {
+
+            PNError *timeTokenError = [PNError errorWithCode:statusCode];
+
+            [[self sharedInstance] notifyDelegateAboutTimeTokenRetrievalFailWithError:timeTokenError];
 
 
-        [[self sharedInstance] sendRequest:[PNTimeTokenRequest new] shouldObserveProcessing:YES];
-    }
-    // Looks like client can't send request because of some reasons
-    else {
+            if (success) {
 
-        PNError *timeTokenError = [PNError errorWithCode:statusCode];
-
-        [[self sharedInstance] notifyDelegateAboutTimeTokenRetrievalFailWithError:timeTokenError];
-
-
-        if(success) {
-
-            success(nil, timeTokenError);
+                success(nil, timeTokenError);
+            }
         }
     }
+           postponedExecutionBlock:^{
+
+               [self postponeRequestServerTimeTokenWithCompletionBlock:(success ? [success copy] : nil)];
+           }];
+}
+
++ (void)postponeRequestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success {
+
+    [[self sharedInstance] postponeSelector:@selector(requestServerTimeTokenWithCompletionBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(success)]
+                                 outOfOrder:NO];
 }
 
 
@@ -1044,38 +1583,56 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
-    PNMessage *messageObject = nil;
+    // Create object instance
+    PNError *error = nil;
+    PNMessage *messageObject = [PNMessage messageWithObject:message forChannel:channel error:&error];
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
+    [self performAsyncLockingBlock:^{
 
-        [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
-        if (success) {
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && error == nil) {
 
-            [[PNObservationCenter defaultCenter] addClientAsMessageProcessingObserverWithBlock:success];
+            [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
+            if (success) {
+
+                [[PNObservationCenter defaultCenter] addClientAsMessageProcessingObserverWithBlock:[success copy]];
+            }
+
+            [[self sharedInstance].serviceChannel sendMessage:messageObject];
         }
+        // Looks like client can't send request because of some reasons
+        else {
 
-        messageObject = [[self sharedInstance].serviceChannel sendMessage:message toChannel:channel];
-    }
-    // Looks like client can't send request because of some reasons
-    else {
+            PNError *sendingError = error?error:[PNError errorWithCode:statusCode];
+            sendingError.associatedObject = messageObject;
 
-        PNError *sendingError = [PNError errorWithCode:statusCode];
-        PNMessage *failedMessage = [PNMessage messageWithObject:message forChannel:channel error:nil];
-        sendingError.associatedObject = failedMessage;
-
-        [[self sharedInstance] notifyDelegateAboutMessageSendingFailedWithError:sendingError];
+            [[self sharedInstance] notifyDelegateAboutMessageSendingFailedWithError:sendingError];
 
 
-        if (success) {
+            if (success) {
 
-            success(PNMessageSendingError, sendingError);
+                success(PNMessageSendingError, sendingError);
+            }
         }
     }
+           postponedExecutionBlock:^{
+
+               [self postponeSendMessage:message toChannel:channel withCompletionBlock:(success ? [success copy] : nil)];
+           }];
 
 
     return messageObject;
+}
+
++ (void)postponeSendMessage:(id)message
+                  toChannel:(PNChannel *)channel
+        withCompletionBlock:(PNClientMessageProcessingBlock)success {
+
+    [[self sharedInstance] postponeSelector:@selector(sendMessage:toChannel:withCompletionBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(message), PNNillIfNotSet(channel), PNNillIfNotSet((id)success)]
+                                 outOfOrder:NO];
 }
 
 + (void)sendMessage:(PNMessage *)message {
@@ -1158,31 +1715,61 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                   reverseHistory:(BOOL)shouldReverseMessageHistory
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
+    [self performAsyncLockingBlock:^{
 
-        [[PNObservationCenter defaultCenter] removeClientAsHistoryDownloadObserver];
-        if (handleBlock) {
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
 
-            [[PNObservationCenter defaultCenter] addClientAsHistoryDownloadObserverWithBlock:handleBlock];
+            [[PNObservationCenter defaultCenter] removeClientAsHistoryDownloadObserver];
+            if (handleBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsHistoryDownloadObserverWithBlock:[handleBlock copy]];
+            }
+
+            PNMessageHistoryRequest *request = [PNMessageHistoryRequest messageHistoryRequestForChannel:channel
+                                                                                                   from:startDate
+                                                                                                     to:endDate
+                                                                                                  limit:limit
+                                                                                         reverseHistory:shouldReverseMessageHistory];
+            [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
+                // Looks like client can't send request because of some reasons
+        else {
 
-        PNMessageHistoryRequest *request = [PNMessageHistoryRequest messageHistoryRequestForChannel:channel
-                                                                                               from:startDate
-                                                                                                 to:endDate
-                                                                                              limit:limit
-                                                                                     reverseHistory:shouldReverseMessageHistory];
-        [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
+            PNError *sendingError = [PNError errorWithCode:statusCode];
+            sendingError.associatedObject = channel;
+
+            [[self sharedInstance] notifyDelegateAboutHistoryDownloadFailedWithError:sendingError];
+        }
     }
-    // Looks like client can't send request because of some reasons
-    else {
+           postponedExecutionBlock:^{
 
-        PNError *sendingError = [PNError errorWithCode:statusCode];
-        sendingError.associatedObject = channel;
+               [self postponeRequestHistoryForChannel:channel
+                                                 from:startDate
+                                                   to:endDate
+                                                limit:limit
+                                       reverseHistory:shouldReverseMessageHistory
+                                  withCompletionBlock:(handleBlock ? [handleBlock copy] : nil)];
+           }];
+}
 
-        [[self sharedInstance] notifyDelegateAboutHistoryDownloadFailedWithError:sendingError];
-    }
++ (void)postponeRequestHistoryForChannel:(PNChannel *)channel
+                                    from:(PNDate *)startDate
+                                      to:(PNDate *)endDate
+                                   limit:(NSUInteger)limit
+                          reverseHistory:(BOOL)shouldReverseMessageHistory
+                     withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+
+    [[self sharedInstance] postponeSelector:@selector(requestHistoryForChannel:from:to:limit:reverseHistory:withCompletionBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(channel),
+                                              PNNillIfNotSet(startDate),
+                                              PNNillIfNotSet(endDate),
+                                              @(limit),
+                                              @(shouldReverseMessageHistory),
+                                              PNNillIfNotSet(handleBlock)]
+                                 outOfOrder:NO];
 }
 
 
@@ -1196,27 +1783,68 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)requestParticipantsListForChannel:(PNChannel *)channel
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
 
-    // Check whether client is able to send request or not
-    NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-    if (statusCode == 0) {
+    [self performAsyncLockingBlock:^{
 
-        [[PNObservationCenter defaultCenter] removeClientAsParticipantsListDownloadObserver];
-        if (handleBlock) {
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
 
-            [[PNObservationCenter defaultCenter] addClientAsParticipantsListDownloadObserverWithBlock:handleBlock];
+            [[PNObservationCenter defaultCenter] removeClientAsParticipantsListDownloadObserver];
+            if (handleBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsParticipantsListDownloadObserverWithBlock:[handleBlock copy]];
+            }
+
+
+            PNHereNowRequest *request = [PNHereNowRequest whoNowRequestForChannel:channel];
+            [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
+                // Looks like client can't send request because of some reasons
+        else {
 
+            PNError *sendingError = [PNError errorWithCode:statusCode];
+            sendingError.associatedObject = channel;
 
-        PNHereNowRequest *request = [PNHereNowRequest whoNowRequestForChannel:channel];
-        [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
+            [[self sharedInstance] notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
+        }
     }
-    // Looks like client can't send request because of some reasons
+           postponedExecutionBlock:^{
+
+               [self postponeRequestParticipantsListForChannel:channel
+                                           withCompletionBlock:(handleBlock ? [handleBlock copy] : nil)];
+           }];
+}
+
++ (void)postponeRequestParticipantsListForChannel:(PNChannel *)channel
+                              withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+
+    [[self sharedInstance] postponeSelector:@selector(requestParticipantsListForChannel:withCompletionBlock:)
+                                  forObject:self
+                             withParameters:@[PNNillIfNotSet(channel), PNNillIfNotSet(handleBlock)]
+                                 outOfOrder:NO];
+}
+
+
+#pragma mark - Misc methods
+
++ (void)performAsyncLockingBlock:(void(^)(void))codeBlock postponedExecutionBlock:(void(^)(void))postponedCodeBlock {
+
+    // Checking whether code can be executed right now or should be posponed
+    if ([[self sharedInstance] shouldPostponeMethodCall]) {
+
+        if (postponedCodeBlock) {
+
+            postponedCodeBlock();
+        }
+    }
     else {
 
-        PNError *sendingError = [PNError errorWithCode:statusCode];
-        sendingError.associatedObject = channel;
+        if (codeBlock) {
 
-        [[self sharedInstance] notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
+            [self sharedInstance].asyncLockingOperationInProgress = YES;
+
+            codeBlock();
+        }
     }
 }
 
@@ -1231,6 +1859,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.state = PNPubNubClientStateCreated;
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
+        pendingInvocations = [NSMutableArray array];
         
         // Adding PubNub services availability observer
         __block __pn_desired_weak PubNub *weakSelf = self;
@@ -1241,6 +1870,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             if (weakSelf.shouldConnectOnServiceReachabilityCheck) {
 
                 if (connected) {
+
+                    weakSelf.asyncLockingOperationInProgress = NO;
 
                     [[weakSelf class] connect];
                 }
@@ -1254,6 +1885,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         // Check whether should restore connection or not
                         if([weakSelf shouldRestoreConnection]) {
 
+                            weakSelf.asyncLockingOperationInProgress = NO;
                             weakSelf.restoringConnection = YES;
                             
                             [[weakSelf class] connect];
@@ -1270,6 +1902,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             [weakSelf handleConnectionErrorOnNetworkFailure];
                         }
                         else {
+
                             PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
                             [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
                             
@@ -1303,28 +1936,28 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     // Check whether at least one of blocks has been provided and whether
     // PubNub client already subscribed on state change event or not
-    if(![[PNObservationCenter defaultCenter] isSubscribedOnClientStateChange:self] &&
-       (success || failure)) {
+    if(![[PNObservationCenter defaultCenter] isSubscribedOnClientStateChange:self] && (success || failure)) {
     
         // Subscribing PubNub client for connection state observation
         // (as soon as event will occur PubNub client will be removed
         // from observers list)
-        [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
+        __pn_desired_weak typeof(self) weakSelf = self;
+        [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:weakSelf
                                                                  oneTimeEvent:YES
-                                                            withCallbackBlock:^(NSString *origin,
+                                                            withCallbackBlock:[^(NSString *origin,
                                                                                 BOOL connected,
                                                                                 PNError *connectionError) {
                                                                 
-            // Notify subscriber via blocks
-            if (connected && success) {
-                
-                success(origin);
-            }
-            else if (!connected && failure){
-                
-                failure(connectionError);
-            }
-        }];
+                // Notify subscriber via blocks
+                if (connected && success) {
+                    
+                    success(origin);
+                }
+                else if (!connected && failure){
+                    
+                    failure(connectionError);
+                }
+            } copy]];
     }
 }
 
@@ -1357,15 +1990,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         
         shouldSendOnMessageChannel = NO;
     }
-    
-    [self sendRequest:request
-            onChannel:(shouldSendOnMessageChannel?self.messagingChannel:self.serviceChannel)
-      shouldObserveProcessing:shouldObserveProcessing];
+
+
+    [self     sendRequest:request
+                onChannel:(shouldSendOnMessageChannel ? self.messagingChannel : self.serviceChannel)
+  shouldObserveProcessing:shouldObserveProcessing];
 }
 
-- (void)sendRequest:(PNBaseRequest *)request
-          onChannel:(PNConnectionChannel *)channel
-    shouldObserveProcessing:(BOOL)shouldObserveProcessing; {
+- (void)      sendRequest:(PNBaseRequest *)request
+                onChannel:(PNConnectionChannel *)channel
+  shouldObserveProcessing:(BOOL)shouldObserveProcessing {
  
     [channel scheduleRequest:request shouldObserveProcessing:shouldObserveProcessing];
 }
@@ -1419,17 +2053,36 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                 [self.messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
             }
+        }
+        else {
 
-
+            [self handleLockingOperationComplete:YES];
         }
 
         self.restoringConnection = NO;
     }
 }
 
-- (void)connectionChannel:(PNConnectionChannel *)channel
-     connectionDidFailToOrigin:(NSString *)host
-                withError:(PNError *)error {
+- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectOnErrorToHost:(NSString *)host {
+
+    // Check whether received event from same host on which client
+    // is configured or not and client connected at this moment
+    if ([self.configuration.origin isEqualToString:host] && self.state == PNPubNubClientStateConnected) {
+
+        [self warmUpConnection:channel];
+
+
+        // Checking whether we should use logic for messaginc channel reconnection or not
+        if ([channel isEqual:self.messagingChannel]) {
+
+            [self messagingChannelDidReconnect:(PNMessagingChannel *)channel];
+        }
+    }
+}
+
+- (void)  connectionChannel:(PNConnectionChannel *)channel
+  connectionDidFailToOrigin:(NSString *)host
+                  withError:(PNError *)error {
     
     // Check whether client in corresponding state and all
     // communication channels not connected to the server
@@ -1438,19 +2091,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         [self.configuration shouldKillDNSCache:YES];
         
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
-            
-            [self.delegate performSelector:@selector(pubnubClient:connectionDidFailWithError:)
-                                withObject:self
-                                withObject:error];
-        }
-        
-        
         // Send notification to all who is interested in it
         // (observation center will track it as well)
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPNClientConnectionDidFailWithErrorNotification
-                                                            object:self
-                                                          userInfo:(id)error];
+        [self notifyDelegateClientConnectionFailedWithError:error];
     }
 }
 
@@ -1473,37 +2116,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Check whether all communication channels disconnected and whether
         // client in corresponding state or not
         if (self.state == PNPubNubClientStateDisconnecting ||
-            self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+            self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+            channel == nil) {
             
             PNError *connectionError;
             PNPubNubClientState state = PNPubNubClientStateDisconnected;
             if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
-                
+
                 state = PNPubNubClientStateDisconnectedOnNetworkError;
+                connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
             }
             self.state = state;
-
-
-            if (self.state == PNPubNubClientStateDisconnected) {
-
-                if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
-
-                    [self.delegate pubnubClient:self didDisconnectFromOrigin:host];
-                }
-
-                [self sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
-            }
-            else if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
-
-                connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
-
-                if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
-
-                    [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
-                }
-
-                [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
-            }
             
             
             // Check whether error is caused by network error or not
@@ -1525,6 +2148,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 
                 // Clean up cached data
                 [PNChannel purgeChannelsCache];
+
+                [self handleLockingOperationComplete:YES];
             }
             else {
 
@@ -1540,6 +2165,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         // Check whether should restore connection or not
                         if ([self shouldRestoreConnection]) {
 
+                            self.asyncLockingOperationInProgress = NO;
                             self.restoringConnection = YES;
 
                             // Try to restore connection to remote PubNub services
@@ -1554,6 +2180,50 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                     }
                 }
             }
+
+
+            if (self.state == PNPubNubClientStateDisconnected) {
+
+                // Delay disconnection notification to give client ability
+                // to perform clean up well
+                __block __pn_desired_weak typeof(self) weakSelf = self;
+                void(^disconnectionNotifyBlock)(void) = ^{
+
+                    [self handleLockingOperationBlockCompletion:^{
+
+                        if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
+                            [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host];
+                        }
+
+                        [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
+                    }
+                                                shouldStartNext:YES];
+                };
+                if (channel == nil) {
+
+                    disconnectionNotifyBlock();
+                }
+                else {
+
+                    double delayInSeconds = 1.0;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), disconnectionNotifyBlock);
+                }
+            }
+            else if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                [self handleLockingOperationBlockCompletion:^{
+
+                    if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+
+                        [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
+                    }
+
+                    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
+                }
+                                            shouldStartNext:YES];
+            }
         }
         // Check whether server unexpectedly closed connection
         // while client was active or not
@@ -1562,6 +2232,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             self.state = PNPubNubClientStateDisconnected;
             
             if([self shouldRestoreConnection]) {
+
+                self.asyncLockingOperationInProgress = NO;
+                self.restoringConnection = YES;
                 
                 // Try to restore connection to remote PubNub services
                 [[self class] connect];
@@ -1570,34 +2243,18 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Check whether connection has been closed because
         // PubNub client updates it's configuration
         else if (self.state == PNPubNubClientStateDisconnectingOnConfigurationChange) {
+
+            self.asyncLockingOperationInProgress = NO;
             
             // Close connection to PubNub services
-            [[self class] disconnect];
-            
-            
-            // Delay connection restore to give some time internal
-            // components to complete their tasks
-            int64_t delayInSeconds = 1;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-                
-                self.state = PNPubNubClientStateCreated;
-                self.configuration = self.temporaryConfiguration;
-                self.temporaryConfiguration = nil;
-                
-                [self prepareCryptoHelper];
-                
-                
-                // Restore connection which will use new configuration
-                [[self class] connect];
-            });
+            [[self class] disconnectByUser:NO];
         }
     }
 }
 
-- (void)connectionChannel:(PNConnectionChannel *)channel
-    willDisconnectFromOrigin:(NSString *)host
-                withError:(PNError *)error {
+- (void) connectionChannel:(PNConnectionChannel *)channel
+  willDisconnectFromOrigin:(NSString *)host
+                 withError:(PNError *)error {
     
     if (self.state == PNPubNubClientStateConnected && [self.configuration.origin isEqualToString:host]) {
         
@@ -1632,17 +2289,47 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     if (self.state == PNPubNubClientStateConnecting) {
 
         PNError *networkError = [PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError];
+        [self notifyDelegateClientConnectionFailedWithError:networkError];
+    }
+}
 
-        // Notify delegate about connection error if delegate
-        // implemented error handling delegate method
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
+- (void)handleLockingOperationComplete:(BOOL)shouldStartNext {
 
-            [self.delegate performSelector:@selector(pubnubClient:connectionDidFailWithError:)
-                                withObject:self
-                                withObject:networkError];
+    [self handleLockingOperationBlockCompletion:NULL shouldStartNext:shouldStartNext];
+}
+
+- (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext {
+
+    if (self.isAsyncLockingOperationInProgress) {
+
+        self.asyncLockingOperationInProgress = NO;
+
+
+        // Perform post completion block
+        // INFO: This is done to handle situation when some block may launch locking operation
+        //       and this handling block will release another one
+        if (operationPostBlock) {
+
+            operationPostBlock();
         }
 
-        [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:networkError];
+
+        if (shouldStartNext && !self.isAsyncLockingOperationInProgress) {
+
+            NSInvocation *methodInvocation = nil;
+            if ([pendingInvocations count] > 0) {
+
+                // Retrieve reference on invocation instance at the start of the list
+                // (oldest schedculed instance)
+                methodInvocation = [pendingInvocations objectAtIndex:0];
+                [pendingInvocations removeObjectAtIndex:0];
+            }
+
+            if (methodInvocation) {
+
+                [methodInvocation invoke];
+            }
+        }
     }
 }
 
@@ -1664,6 +2351,66 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
+- (BOOL)shouldPostponeMethodCall {
+
+    return self.isAsyncLockingOperationInProgress;
+}
+
+- (void)postponeSelector:(SEL)calledMethodSelector
+               forObject:(id)object
+          withParameters:(NSArray *)parameters
+              outOfOrder:(BOOL)placeOutOfOrder{
+
+    // Initialze variables required to perform postponed method call
+    int signatureParameterOffset = 2;
+    NSMethodSignature *methodSignature = [object methodSignatureForSelector:calledMethodSelector];
+    NSInvocation *methodInvocation = [NSInvocation invocationWithMethodSignature:methodSignature];
+
+    // Configure invocation instance
+    methodInvocation.selector = calledMethodSelector;
+    [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger parameterIdx, BOOL *parametersEnumeratorStop) {
+
+        NSUInteger parameterIndex = (parameterIdx + signatureParameterOffset);
+        parameter = [parameter isKindOfClass:[NSNull class]] ? nil : parameter;
+        const char *parameterType = [methodSignature getArgumentTypeAtIndex:parameterIndex];
+        if ([parameter isKindOfClass:[NSNumber class]]) {
+
+            if (strcmp(parameterType, @encode(BOOL)) == 0) {
+
+                BOOL flagValue = [(NSNumber *) parameter boolValue];
+                [methodInvocation setArgument:&flagValue atIndex:parameterIndex];
+            }
+            else if (strcmp(parameterType, @encode(NSUInteger)) == 0) {
+
+                NSUInteger unsignedInteger = [(NSNumber *) parameter unsignedIntegerValue];
+                [methodInvocation setArgument:&unsignedInteger atIndex:parameterIndex];
+            }
+        }
+        else {
+
+            if (parameter != nil) {
+
+                [methodInvocation setArgument:&parameter atIndex:parameterIndex];
+            }
+        }
+    }];
+    methodInvocation.target = object;
+    [methodInvocation retainArguments];
+
+
+    // Place invocation instance into mending invocations set for future usage
+    if (placeOutOfOrder) {
+
+        // Placing method invocation at first index, so it will be called as soon
+        // as possible
+        [pendingInvocations insertObject:methodInvocation atIndex:0];
+    }
+    else {
+
+        [pendingInvocations addObject:methodInvocation];
+    }
+}
+
 - (void)notifyDelegateAboutConnectionToOrigin:(NSString *)originHostName {
 
     // Check whether delegate able to handle connection completion
@@ -1679,149 +2426,260 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error {
 
-    // Check whether delegate is able to handle subscription error
-    // or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
-                            withObject:self
-                            withObject:(id)error];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle subscription error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
+                                    withObject:self
+                                    withObject:(id) error];
+            }
+
+            [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
-
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error {
 
-    // Check whether delegate is able to handle unsubscription error
-    // or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
-                            withObject:self
-                            withObject:(id)error];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle unsubscription error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
+                                    withObject:self
+                                    withObject:(id) error];
+            }
+
+            [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
+        }
     }
+                                shouldStartNext:YES];
+}
 
-    [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
+- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle unsubscription error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:presenceObservationEnablingDidFailWithError:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:presenceObservationEnablingDidFailWithError:)
+                                    withObject:self
+                                    withObject:(id) error];
+            }
+
+            [self sendNotification:kPNClientPresenceEnablingDidFailNotification withObject:error];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle unsubscription error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:presenceObservationDisablingDidFailWithError:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:presenceObservationDisablingDidFailWithError:)
+                                    withObject:self
+                                    withObject:(id) error];
+            }
+
+            [self sendNotification:kPNClientPresenceDisablingDidFailNotification withObject:error];
+        }
+    }
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutPushNotificationsEnableFailedWithError:(PNError *)error {
 
-    // Check whether delegate is able to handle push notification enabling error
-    // or not
-    SEL selector = @selector(pubnubClient:pushNotificationEnableDidFailWithError:);
-    if ([self.delegate respondsToSelector:selector]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self withObject:error];
-        #pragma clang diagnostic pop
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification enabling error
+            // or not
+            SEL selector = @selector(pubnubClient:pushNotificationEnableDidFailWithError:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:error];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationEnableDidFailNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientPushNotificationEnableDidFailNotification withObject:error];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutPushNotificationsDisableFailedWithError:(PNError *)error {
 
-    // Check whether delegate is able to handle push notification enabling error
-    // or not
-    SEL selector = @selector(pubnubClient:pushNotificationDisableDidFailWithError:);
-    if ([self.delegate respondsToSelector:selector]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self withObject:error];
-        #pragma clang diagnostic pop
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification enabling error
+            // or not
+            SEL selector = @selector(pubnubClient:pushNotificationDisableDidFailWithError:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:error];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationDisableDidFailNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientPushNotificationDisableDidFailNotification withObject:error];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutPushNotificationsRemoveFailedWithError:(PNError *)error {
 
-    // Check whether delegate is able to handle push notifications removal error
-    // or not
-    SEL selector = @selector(pubnubClient:pushNotificationsRemoveFromChannelsDidFailWithError:);
-    if ([self.delegate respondsToSelector:selector]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self withObject:error];
-        #pragma clang diagnostic pop
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notifications removal error
+            // or not
+            SEL selector = @selector(pubnubClient:pushNotificationsRemoveFromChannelsDidFailWithError:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:error];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationRemoveDidFailNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientPushNotificationRemoveDidFailNotification withObject:error];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:(PNError *)error {
 
-    // Check whether delegate is able to handle push notifications removal error
-    // or not
-    SEL selector = @selector(pubnubClient:pushNotificationEnabledChannelsReceiveDidFailWithError:);
-    if ([self.delegate respondsToSelector:selector]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self withObject:error];
-        #pragma clang diagnostic pop
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notifications removal error
+            // or not
+            SEL selector = @selector(pubnubClient:pushNotificationEnabledChannelsReceiveDidFailWithError:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:error];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidFailNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidFailNotification withObject:error];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutTimeTokenRetrievalFailWithError:(PNError *)error {
 
-    // Check whether delegate is able to handle time token retriaval
-    // error or not
-    if([self.delegate respondsToSelector:@selector(pubnubClient:timeTokenReceiveDidFailWithError:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:timeTokenReceiveDidFailWithError:)
-                            withObject:self
-                            withObject:error];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle time token retriaval
+            // error or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:timeTokenReceiveDidFailWithError:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:timeTokenReceiveDidFailWithError:)
+                                    withObject:self
+                                    withObject:error];
+            }
+
+            [self sendNotification:kPNClientDidFailTimeTokenReceiveNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientDidFailTimeTokenReceiveNotification withObject:error];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutMessageSendingFailedWithError:(PNError *)error {
 
-    // Check whether delegate is able to handle message sendinf error
-    // or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailMessageSend:withError:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate pubnubClient:self didFailMessageSend:error.associatedObject withError:error];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle message sendinf error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailMessageSend:withError:)]) {
+
+                [self.delegate pubnubClient:self didFailMessageSend:error.associatedObject withError:error];
+            }
+
+            [self sendNotification:kPNClientMessageSendingDidFailNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientMessageSendingDidFailNotification withObject:error];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutHistoryDownloadFailedWithError:(PNError *)error {
 
-    // Check whether delegate us able to handle message history download error
-    // or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailHistoryDownloadForChannel:withError:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate pubnubClient:self
-   didFailHistoryDownloadForChannel:error.associatedObject
-                          withError:error];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate us able to handle message history download error
+            // or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailHistoryDownloadForChannel:withError:)]) {
+
+                [self.delegate pubnubClient:self
+           didFailHistoryDownloadForChannel:error.associatedObject
+                                  withError:error];
+            }
+
+            [self sendNotification:kPNClientHistoryDownloadFailedWithErrorNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientHistoryDownloadFailedWithErrorNotification withObject:error];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutParticipantsListDownloadFailedWithError:(PNError *)error {
 
-    // Check whether delegate us able to handle participants list
-    // download error or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailParticipantsListDownloadForChannel:withError:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate       pubnubClient:self
-didFailParticipantsListDownloadForChannel:error.associatedObject
-                                withError:error];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate us able to handle participants list
+            // download error or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailParticipantsListDownloadForChannel:withError:)]) {
+
+                [self.delegate   pubnubClient:self
+    didFailParticipantsListDownloadForChannel:error.associatedObject
+                                    withError:error];
+            }
+
+            [self sendNotification:kPNClientParticipantsListDownloadFailedWithErrorNotification withObject:error];
+        }
     }
-
-    [self sendNotification:kPNClientParticipantsListDownloadFailedWithErrorNotification withObject:error];
+                                shouldStartNext:YES];
 }
 
 - (void)notifyDelegateAboutError:(PNError *)error {
@@ -1846,6 +2704,22 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
     }
 
     [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+}
+
+- (void)notifyDelegateClientConnectionFailedWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
+
+            [self.delegate performSelector:@selector(pubnubClient:connectionDidFailWithError:)
+                                withObject:self
+                                withObject:error];
+        }
+
+        [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+    }
+                                shouldStartNext:YES];
 }
 
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object {
@@ -1878,6 +2752,13 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 
     return shouldRestoreSubscription;
+}
+
+- (BOOL)shouldNotifyAboutEvent {
+
+    return (self.state != PNPubNubClientStateCreated) && (self.state != PNPubNubClientStateConnecting) &&
+           (self.state != PNPubNubClientStateDisconnecting) && (self.state != PNPubNubClientStateDisconnected) &&
+           (self.state != PNPubNubClientStateReset);
 }
 
 - (BOOL)shouldRestoreSubscriptionWithLastTimeToken {
@@ -1918,66 +2799,111 @@ didFailParticipantsListDownloadForChannel:error.associatedObject
 
 - (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
 
-    if ([messagingChannel canResubscribe]) {
+    [[self class] performAsyncLockingBlock:^{
 
-        // Check whether user want to resubscribe on previously subscribed channels or not
-        if ([self shouldRestoreSubscription]) {
+        if ([messagingChannel canResubscribe]) {
 
-            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+            // Check whether user want to resubscribe on previously subscribed channels or not
+            if ([self shouldRestoreSubscription]) {
+
+                [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+            }
+            // Looks like developer doesn't want to restore subscription on previously
+            // subscribed channels, flush channels
+            else {
+
+                [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+            }
         }
-        // Looks like developer doesn't want to restore subscription on previously
-        // subscribed channels, flush channels
+        // Looks like there is no channels on which client can resubscribe
+        // reconnect messaging channel
         else {
 
-            [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
+            [messagingChannel reconnect];
         }
     }
-    // Looks like there is no channels on which client can resubscribe
-    // reconnect messaging channel
-    else {
+                   postponedExecutionBlock:^{
 
-        [messagingChannel reconnect];
-    }
+                       [self postponeMessagingChannelIdleTimeout:messagingChannel];
+                   }];
+}
+
+- (void)postponeMessagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
+
+    [self postponeSelector:@selector(messagingChannelIdleTimeout:)
+                 forObject:self
+            withParameters:@[messagingChannel]
+                outOfOrder:NO];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
 
-    // Check whether delegate can handle subscription on channel or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
-                            withObject:self
-                            withObject:channels];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can handle subscription on channel or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
+                                    withObject:self
+                                    withObject:channels];
+            }
+
+        	[self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channels];
+    	}
     }
-
-
-    [self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channels];
+                                shouldStartNext:YES];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels {
 
-    // Check whether delegate can handle subscription restore on channels or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)
-                            withObject:self
-                            withObject:channels];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can handle subscription restore on channels or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)
+                                    withObject:self
+                                    withObject:channels];
+            }
+
+
+            [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
+        }
     }
-
-
-    [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
+                                shouldStartNext:YES];
 }
 
 - (void)messagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {
     
     if ([messagingChannel canResubscribe]) {
-            
-        [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+
+        [[self class] performAsyncLockingBlock:^{
+
+            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+        }
+                       postponedExecutionBlock:^{
+
+                           [self postponeMessagingChannelDidReconnect:messagingChannel];
+                       }];
     }
     else {
         
         [self warmUpConnection:messagingChannel];
+
+        [self handleLockingOperationComplete:YES];
     }
+}
+
+- (void)postponeMessagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {
+
+    [self postponeSelector:@selector(messagingChannelDidReconnect:)
+                 forObject:self
+            withParameters:@[messagingChannel]
+                outOfOrder:NO];
 }
 
 - (void)  messagingChannel:(PNMessagingChannel *)channel
@@ -1990,15 +2916,22 @@ didFailSubscribeOnChannels:(NSArray *)channels
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFromChannels:(NSArray *)channels {
 
-    // Check whether delegate can handle unsubscription event or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)
-                            withObject:self
-                            withObject:channels];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can handle unsubscription event or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)
+                                    withObject:self
+                                    withObject:channels];
+            }
+
+            [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channels];
+        }
     }
-
-    [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channels];
+                                shouldStartNext:YES];
 }
 
 - (void)    messagingChannel:(PNMessagingChannel *)channel
@@ -2009,17 +2942,76 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
     [self notifyDelegateAboutUnsubscriptionFailWithError:error];
 }
 
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOnChannels:(NSArray *)channels {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can handle new message arrival or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)
+                                    withObject:self
+                                    withObject:channels];
+            }
+
+            [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channels];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)         messagingChannel:(PNMessagingChannel *)messagingChannel
+didFailPresenceEnablingOnChannels:(NSArray *)channels
+                        withError:(PNError *)error {
+
+    error.associatedObject = channels;
+    [self notifyDelegateAboutPresenceEnablingFailWithError:error];
+}
+
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOnChannels:(NSArray *)channels {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can handle new message arrival or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)
+                                    withObject:self
+                                    withObject:channels];
+            }
+
+            [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channels];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)          messagingChannel:(PNMessagingChannel *)messagingChannel
+didFailPresenceDisablingOnChannels:(NSArray *)channels
+                         withError:(PNError *)error {
+
+    error.associatedObject = channels;
+    [self notifyDelegateAboutPresenceDisablingFailWithError:error];
+}
+
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didReceiveMessage:(PNMessage *)message {
 
-    // Check whether delegate can handle new message arrival or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessage:)]) {
+    if ([self shouldNotifyAboutEvent]) {
 
-        [self.delegate performSelector:@selector(pubnubClient:didReceiveMessage:)
-                            withObject:self
-                            withObject:message];
+        // Check whether delegate can handle new message arrival or not
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessage:)]) {
+
+            [self.delegate performSelector:@selector(pubnubClient:didReceiveMessage:)
+                                withObject:self
+                                withObject:message];
+        }
+
+        [self sendNotification:kPNClientDidReceiveMessageNotification withObject:message];
     }
-
-    [self sendNotification:kPNClientDidReceiveMessageNotification withObject:message];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didReceiveEvent:(PNPresenceEvent *)event {
@@ -2031,15 +3023,18 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
         [channel updateWithEvent:event];
     }
 
-    // Check whether delegate can handle presence event arrival or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceivePresenceEvent:)]) {
+    if ([self shouldNotifyAboutEvent]) {
 
-        [self.delegate performSelector:@selector(pubnubClient:didReceivePresenceEvent:)
-                            withObject:self
-                            withObject:event];
+        // Check whether delegate can handle presence event arrival or not
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceivePresenceEvent:)]) {
+
+            [self.delegate performSelector:@selector(pubnubClient:didReceivePresenceEvent:)
+                                withObject:self
+                                withObject:event];
+        }
+
+        [self sendNotification:kPNClientDidReceivePresenceEventNotification withObject:event];
     }
-
-    [self sendNotification:kPNClientDidReceivePresenceEventNotification withObject:event];
 }
 
 
@@ -2047,15 +3042,23 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveTimeToken:(NSNumber *)timeToken {
 
-    // Check whether delegate can handle time token retrieval or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveTimeToken:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:didReceiveTimeToken:)
-                            withObject:self
-                            withObject:timeToken];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can handle time token retrieval or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveTimeToken:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didReceiveTimeToken:)
+                                    withObject:self
+                                    withObject:timeToken];
+            }
+
+
+            [self sendNotification:kPNClientDidReceiveTimeTokenNotification withObject:timeToken];
+        }
     }
-
-    [self sendNotification:kPNClientDidReceiveTimeTokenNotification withObject:timeToken];
+                                shouldStartNext:YES];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel receiveTimeTokenDidFailWithError:(PNError *)error {
@@ -2065,17 +3068,24 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didEnablePushNotificationsOnChannels:(NSArray *)channels {
 
-    // Check whether delegate is able to handle push notification enabled event or not
-    SEL selector = @selector(pubnubClient:didEnablePushNotificationsOnChannels:);
-    if ([self.delegate respondsToSelector:selector]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self withObject:channels];
-        #pragma clang diagnostic pop
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification enabled event or not
+            SEL selector = @selector(pubnubClient:didEnablePushNotificationsOnChannels:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:channels];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationEnableDidCompleteNotification withObject:channels];
+        }
     }
-
-    [self sendNotification:kPNClientPushNotificationEnableDidCompleteNotification withObject:channels];
+                                shouldStartNext:YES];
 }
 
 - (void)                  serviceChannel:(PNServiceChannel *)channel
@@ -2088,17 +3098,24 @@ didFailPushNotificationEnableForChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didDisablePushNotificationsOnChannels:(NSArray *)channels {
 
-    // Check whether delegate is able to handle push notification disable event or not
-    SEL selector = @selector(pubnubClient:didDisablePushNotificationsOnChannels:);
-    if ([self.delegate respondsToSelector:selector]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self withObject:channels];
-        #pragma clang diagnostic pop
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification disable event or not
+            SEL selector = @selector(pubnubClient:didDisablePushNotificationsOnChannels:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:channels];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationDisableDidCompleteNotification withObject:channels];
+        }
     }
-
-    [self sendNotification:kPNClientPushNotificationDisableDidCompleteNotification withObject:channels];
+                                shouldStartNext:YES];
 }
 
 - (void)                   serviceChannel:(PNServiceChannel *)channel
@@ -2111,18 +3128,25 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
 
 - (void)serviceChannelDidRemovePushNotifications:(PNServiceChannel *)channel {
 
-    // Check wheter delegate is able to handle successfull push notification removal from
-    // all channels or not
-    SEL selector = @selector(pubnubClientDidRemovePushNotifications:);
-    if ([self.delegate respondsToSelector:selector]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self];
-        #pragma clang diagnostic pop
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check wheter delegate is able to handle successfull push notification removal from
+            // all channels or not
+            SEL selector = @selector(pubnubClientDidRemovePushNotifications:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationRemoveDidCompleteNotification withObject:nil];
+        }
     }
-
-    [self sendNotification:kPNClientPushNotificationRemoveDidCompleteNotification withObject:nil];
+                                shouldStartNext:YES];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationsRemoveWithError:(PNError *)error {
@@ -2132,18 +3156,25 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceivePushNotificationsEnabledChannels:(NSArray *)channels {
 
-    // Check whether delegate is able to handle push notification enabled
-    // channels retrieval or not
-    SEL selector = @selector(pubnubClient:didReceivePushNotificationEnabledChannels:);
-    if ([self.delegate respondsToSelector:selector]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:selector withObject:self withObject:channels];
-        #pragma clang diagnostic pop
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate is able to handle push notification enabled
+            // channels retrieval or not
+            SEL selector = @selector(pubnubClient:didReceivePushNotificationEnabledChannels:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:channels];
+                #pragma clang diagnostic pop
+            }
+
+            [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification withObject:channels];
+        }
     }
-
-    [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification withObject:channels];
+                                shouldStartNext:YES];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationEnabledChannelsReceiveWithError:(PNError *)error {
@@ -2160,28 +3191,38 @@ didReceiveNetworkLatency:(double)latency
 
 - (void)serviceChannel:(PNServiceChannel *)channel willSendMessage:(PNMessage *)message {
 
-    // Check whether delegate can handle message sending event or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:willSendMessage:)]) {
+    if ([self shouldNotifyAboutEvent]) {
 
-        [self.delegate performSelector:@selector(pubnubClient:willSendMessage:)
-                            withObject:self
-                            withObject:message];
+        // Check whether delegate can handle message sending event or not
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:willSendMessage:)]) {
+
+            [self.delegate performSelector:@selector(pubnubClient:willSendMessage:)
+                                withObject:self
+                                withObject:message];
+        }
+
+        [self sendNotification:kPNClientWillSendMessageNotification withObject:message];
     }
-
-    [self sendNotification:kPNClientWillSendMessageNotification withObject:message];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didSendMessage:(PNMessage *)message {
 
-    // Check whether delegate can handle message sent event or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didSendMessage:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate performSelector:@selector(pubnubClient:didSendMessage:)
-                            withObject:self
-                            withObject:message];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can handle message sent event or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didSendMessage:)]) {
+
+                [self.delegate performSelector:@selector(pubnubClient:didSendMessage:)
+                                    withObject:self
+                                    withObject:message];
+            }
+
+            [self sendNotification:kPNClientDidSendMessageNotification withObject:message];
+        }
     }
-
-    [self sendNotification:kPNClientDidSendMessageNotification withObject:message];
+                                shouldStartNext:YES];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel
@@ -2194,22 +3235,29 @@ didReceiveNetworkLatency:(double)latency
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveMessagesHistory:(PNMessagesHistory *)history {
 
-    // Check whether delegate can response on history download event or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessageHistory:forChannel:startingFrom:to:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate pubnubClient:self
-           didReceiveMessageHistory:history.messages
-                         forChannel:history.channel
-                       startingFrom:history.startDate
-                                 to:history.endDate];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can response on history download event or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessageHistory:forChannel:startingFrom:to:)]) {
+
+                [self.delegate pubnubClient:self
+                   didReceiveMessageHistory:history.messages
+                                 forChannel:history.channel
+                               startingFrom:history.startDate
+                                         to:history.endDate];
+            }
+
+            [self sendNotification:kPNClientDidReceiveMessagesHistoryNotification withObject:history];
+        }
     }
-
-    [self sendNotification:kPNClientDidReceiveMessagesHistoryNotification withObject:history];
+                                shouldStartNext:YES];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)serviceChannel
-        didFailHisoryDownloadForChannel:(PNChannel *)channel
-        withError:(PNError*)error {
+- (void)           serviceChannel:(PNServiceChannel *)serviceChannel
+  didFailHisoryDownloadForChannel:(PNChannel *)channel
+                        withError:(PNError *)error {
 
     error.associatedObject = channel;
     [self notifyDelegateAboutHistoryDownloadFailedWithError:error];
@@ -2217,15 +3265,22 @@ didReceiveNetworkLatency:(double)latency
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantsList:(PNHereNow *)participants {
 
-    // Check whether delegate can response on participants list download event or not
-    if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsLits:forChannel:)]) {
+    [self handleLockingOperationBlockCompletion:^{
 
-        [self.delegate pubnubClient:self
-         didReceiveParticipantsLits:participants.participants
-                         forChannel:participants.channel];
+        if ([self shouldNotifyAboutEvent]) {
+
+            // Check whether delegate can response on participants list download event or not
+            if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsList:forChannel:)]) {
+
+                [self.delegate pubnubClient:self
+                 didReceiveParticipantsList:participants.participants
+                                 forChannel:participants.channel];
+            }
+
+            [self sendNotification:kPNClientDidReceiveParticipantsListNotification withObject:participants];
+        }
     }
-
-    [self sendNotification:kPNClientDidReceiveParticipantsListNotification withObject:participants];
+                                shouldStartNext:YES];
 }
 
 - (void)               serviceChannel:(PNServiceChannel *)serviceChannel
@@ -2235,6 +3290,14 @@ didFailParticipantsListLoadForChannel:(PNChannel *)channel
     error.associatedObject = channel;
     [self notifyDelegateAboutParticipantsListDownloadFailedWithError:error];
 
+}
+
+
+#pragma mark - Memory management
+
+- (void)dealloc {
+
+    PNLog(PNLogGeneralLevel, self, @"Destroyed");
 }
 
 #pragma mark -

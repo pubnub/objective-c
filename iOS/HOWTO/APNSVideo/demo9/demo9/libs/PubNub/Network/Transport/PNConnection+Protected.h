@@ -31,3 +31,16 @@ struct PNConnectionIdentifiersStruct {
 };
 
 extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;
+
+
+@interface PNConnection (Protected)
+
+
+#pragma mark - Class methods
+
++ (void)resetConnectionsPool;
+
+#pragma mark -
+
+
+@end

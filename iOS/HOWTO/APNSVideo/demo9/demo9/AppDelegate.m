@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "PNMessage+Protected.h"
 
 @implementation AppDelegate
 @synthesize apnsID, dToken;
@@ -37,7 +38,26 @@
     
     return YES;
 }
-							
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSString *message = nil;
+    id alert = [userInfo objectForKey:@"aps"];
+    if ([alert isKindOfClass:[NSString class]]) {
+        message = alert;
+    } else if ([alert isKindOfClass:[NSDictionary class]]) {
+        message = [alert objectForKey:@"alert"];
+    }
+    if (alert) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:message
+                                                            message:@"is the message."  delegate:self
+                                                  cancelButtonTitle:@"Yeah PubNub!"
+                                                  otherButtonTitles:@"Cool PubNub!", nil];
+        [alertView show];
+    }
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

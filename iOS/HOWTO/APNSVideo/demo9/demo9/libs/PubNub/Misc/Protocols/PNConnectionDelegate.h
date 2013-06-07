@@ -30,6 +30,12 @@
 - (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName;
 
 /**
+ * Sent to the delegate when both streams (read/write)
+ * was reconnected after receiving error
+ */
+- (void)connection:(PNConnection *)connection didReconnectOnErrorToHost:(NSString *)hostName;
+
+/**
  * Sent to the delegate each time when new response
  * arrives via socket from remote server
  */

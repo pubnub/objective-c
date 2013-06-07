@@ -67,6 +67,34 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
                    withError:(PNError *)error;
 
 /**
+ * Sent to the delegate when client successfully enabled
+ * presence observation on set of channels
+ */
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOnChannels:(NSArray *)channels;
+
+/**
+ * Sent to the delegate when client failed to enable presence
+ * on channels because of error
+ */
+- (void)         messagingChannel:(PNMessagingChannel *)messagingChannel
+didFailPresenceEnablingOnChannels:(NSArray *)channels
+                        withError:(PNError *)error;
+
+/**
+ * Sent to the delegate when client successfully disabled
+ * presence observation on set of channels
+ */
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOnChannels:(NSArray *)channels;
+
+/**
+ * Sent to the delegate when client failed to disable presence
+ * on channels because of error
+ */
+- (void)          messagingChannel:(PNMessagingChannel *)messagingChannel
+didFailPresenceDisablingOnChannels:(NSArray *)channels
+                         withError:(PNError *)error;
+
+/**
  * Sent to delegate when client received message from channel
  * on which it subscribed
  */

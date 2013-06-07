@@ -12,9 +12,6 @@
 #import "PNCryptoHelper.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "NSString+PNAddition.h"
-#import "NSData+PNAdditions.h"
-#import "PNConfiguration.h"
-#import "PNError.h"
 
 
 #pragma mark Types
@@ -28,20 +25,18 @@ typedef enum _PNCryptorType {
 
 #pragma mark Static
 
-/**
- * Stores reference on recent configuration which
- * was used for crypto helper
- */
+static PNCryptoHelper *_sharedInstance;
+static dispatch_once_t onceToken;
+
+
+// Stores reference on recent configuration which
+// was used for crypto helper
 static PNConfiguration *_configuration = nil;
 
-/**
- * Stores reference on initialization vector
- */
+// Stores reference on initialization vector
 static NSData *_cryptorInitializationVectorData = nil;
 
-/**
- * Stores reference on prepared cipher key
- */
+// Stores reference on prepared cipher key
 static NSData *_cryptorKeyData = nil;
 
 
@@ -106,9 +101,7 @@ static NSData *_cryptorKeyData = nil;
 #pragma mark - Class methods
 
 + (PNCryptoHelper *)sharedInstance {
-    
-    static PNCryptoHelper *_sharedInstance;
-    static dispatch_once_t onceToken;
+
     dispatch_once(&onceToken, ^{
         
         _sharedInstance = [self new];
@@ -116,6 +109,16 @@ static NSData *_cryptorKeyData = nil;
     
     
     return _sharedInstance;
+}
+
++ (void)resetHelper {
+
+    onceToken = 0;
+    _configuration = nil;
+    _cryptorInitializationVectorData = nil;
+    _cryptorKeyData = nil;
+
+    _sharedInstance = nil;
 }
 
 
@@ -387,6 +390,14 @@ static NSData *_cryptorKeyData = nil;
 
 
     return errorCode;
+}
+
+
+#pragma mark - Memory management
+
+- (void)dealloc {
+
+    PNLog(PNLogGeneralLevel, self, @"Destroyed");
 }
 
 #pragma mark -
