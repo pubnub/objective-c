@@ -20,6 +20,7 @@
 
     // Setting Auth to "sergey" should work as expected
     // Setting to nil or "foo" should cause an access denied
+    // Must use ULS test domain uls-test.pubnub.co (not com)
 
     PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"uls-test.pubnub.co"
                                                              publishKey:@"pub-c-a2650a22-deb1-44f5-aa87-1517049411d5"
