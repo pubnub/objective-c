@@ -59,7 +59,7 @@ For a more detailed walkthrough of the above steps, be sure to follow the [Hello
 ## Lets start coding now with PubNub!
 
 If you just can't wait to start using PubNub for iOS (we totally know the feeling), after performing the steps 
-from [Adding PubNub to your Project](https://github.com/pubnub/objective-c/edit/master/iOS/README.md#adding-pubnub-to-your-project):
+from [Adding PubNub to your Project](#adding-pubnub-to-your-project):
 
 1. In your ViewController.m, add this to viewDidLoad():
 ```objective-c   
