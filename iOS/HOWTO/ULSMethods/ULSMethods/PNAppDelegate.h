@@ -10,7 +10,7 @@
 
 @class PNViewController;
 
-@interface PNAppDelegate : UIResponder <UIApplicationDelegate>
+@interface PNAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

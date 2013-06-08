@@ -9,9 +9,16 @@
 #import "PNAppDelegate.h"
 
 #import "PNViewController.h"
+#import "PNMessage+Protected.h"
 
 @implementation PNAppDelegate
 
+- (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
+    NSLog(message.message);
+}
+
+- (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(PNError *)error {
+}
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -19,6 +26,7 @@
     self.viewController = [[PNViewController alloc] initWithNibName:@"PNViewController" bundle:nil];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    [PubNub setDelegate:self];
     return YES;
 }
 
