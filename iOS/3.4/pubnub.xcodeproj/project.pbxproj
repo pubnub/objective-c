@@ -110,7 +110,6 @@
 		9645C117174FDA7D00F82D09 /* PNBaseRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FC174FDA7D00F82D09 /* PNBaseRequestTest.m */; };
 		9645C118174FDA7D00F82D09 /* PNHereNowRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FE174FDA7D00F82D09 /* PNHereNowRequestTest.m */; };
 		9645C119174FDA7D00F82D09 /* PNLatencyMeasureRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C100174FDA7D00F82D09 /* PNLatencyMeasureRequestTest.m */; };
-		9645C11A174FDA7D00F82D09 /* PNLeaveRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C102174FDA7D00F82D09 /* PNLeaveRequestTest.m */; };
 		9645C11B174FDA7D00F82D09 /* PNLeaveRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C104174FDA7D00F82D09 /* PNLeaveRequestTest.m */; };
 		9645C11C174FDA7D00F82D09 /* PNMessageHistoryRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C106174FDA7D00F82D09 /* PNMessageHistoryRequestTest.m */; };
 		9645C11D174FDA7D00F82D09 /* PNMessagePostRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C108174FDA7D00F82D09 /* PNMessagePostRequestTest.m */; };
@@ -334,8 +333,6 @@
 		9645C0FE174FDA7D00F82D09 /* PNHereNowRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHereNowRequestTest.m; sourceTree = "<group>"; };
 		9645C0FF174FDA7D00F82D09 /* PNLatencyMeasureRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLatencyMeasureRequestTest.h; sourceTree = "<group>"; };
 		9645C100174FDA7D00F82D09 /* PNLatencyMeasureRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLatencyMeasureRequestTest.m; sourceTree = "<group>"; };
-		9645C101174FDA7D00F82D09 /* PNLeaveRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNLeaveRequest\U0010Test.h"; sourceTree = "<group>"; };
-		9645C102174FDA7D00F82D09 /* PNLeaveRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PNLeaveRequest\U0010Test.m"; sourceTree = "<group>"; };
 		9645C103174FDA7D00F82D09 /* PNLeaveRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLeaveRequestTest.h; sourceTree = "<group>"; };
 		9645C104174FDA7D00F82D09 /* PNLeaveRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLeaveRequestTest.m; sourceTree = "<group>"; };
 		9645C105174FDA7D00F82D09 /* PNMessageHistoryRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessageHistoryRequestTest.h; sourceTree = "<group>"; };
@@ -964,8 +961,6 @@
 				9645C0FE174FDA7D00F82D09 /* PNHereNowRequestTest.m */,
 				9645C0FF174FDA7D00F82D09 /* PNLatencyMeasureRequestTest.h */,
 				9645C100174FDA7D00F82D09 /* PNLatencyMeasureRequestTest.m */,
-				9645C101174FDA7D00F82D09 /* PNLeaveRequestTest.h */,
-				9645C102174FDA7D00F82D09 /* PNLeaveRequestTest.m */,
 				9645C103174FDA7D00F82D09 /* PNLeaveRequestTest.h */,
 				9645C104174FDA7D00F82D09 /* PNLeaveRequestTest.m */,
 				9645C105174FDA7D00F82D09 /* PNMessageHistoryRequestTest.h */,
@@ -1291,7 +1286,6 @@
 				9645C117174FDA7D00F82D09 /* PNBaseRequestTest.m in Sources */,
 				9645C118174FDA7D00F82D09 /* PNHereNowRequestTest.m in Sources */,
 				9645C119174FDA7D00F82D09 /* PNLatencyMeasureRequestTest.m in Sources */,
-				9645C11A174FDA7D00F82D09 /* PNLeaveRequestTest.m in Sources */,
 				9645C11B174FDA7D00F82D09 /* PNLeaveRequestTest.m in Sources */,
 				9645C11C174FDA7D00F82D09 /* PNMessageHistoryRequestTest.m in Sources */,
 				9645C11D174FDA7D00F82D09 /* PNMessagePostRequestTest.m in Sources */,
