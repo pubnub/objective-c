@@ -11,7 +11,7 @@
 //
 //
 
-//#import "JSONKit.h"
+#import "JSONKit.h"
 
 
 #pragma mark Private interface methods
@@ -74,8 +74,8 @@
     // Fallback to JSONKit usage
     else {
         
-        //result = [[jsonString dataUsingEncoding:NSUTF8StringEncoding] objectFromJSONDataWithParseOptions:JKParseOptionNone
-        //                                                                                           error:&parsingError];
+        result = [[jsonString dataUsingEncoding:NSUTF8StringEncoding] objectFromJSONDataWithParseOptions:JKParseOptionNone
+                                                                                                   error:&parsingError];
     }
     
     
@@ -122,7 +122,7 @@
         }
         else {
 
-            //JSONString = [object JSONString];
+            JSONString = [object JSONString];
         }
     }
     else {

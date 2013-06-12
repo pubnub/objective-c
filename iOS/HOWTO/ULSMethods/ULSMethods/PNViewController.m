@@ -22,11 +22,26 @@
     // Setting to nil or "foo" should cause an access denied
     // Must use ULS test domain uls-test.pubnub.co (not com)
 
+
+
+
+    // If ULS is on, and you dont try to connect with an auth key, you should t
+    // error code 112 (401, auth requir)
+
+//    PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"uls-test.pubnub.co"
+//                                                             publishKey:@"pub-c-a2650a22-deb1-44f5-aa87-1517049411d5"
+//                                                           subscribeKey:@"sub-c-a478dd2a-c33d-11e2-883f-02ee2ddab7fe"
+//                                                              secretKey:@"sec-c-YjFmNzYzMGMtYmI3NC00NzJkLTlkYzYtY2MwMzI4YTJhNDVh"
+//                                                         authorizationKey:nil];
+
+
+    // If ULS is on, and you dont try to connect with an auth key, you should get
+    // error code 113 (403, auth incorrect)
     PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"uls-test.pubnub.co"
                                                              publishKey:@"pub-c-a2650a22-deb1-44f5-aa87-1517049411d5"
-                                                             subscribeKey:@"sub-c-a478dd2a-c33d-11e2-883f-02ee2ddab7fe"
-                                                                secretKey:@"sec-c-YjFmNzYzMGMtYmI3NC00NzJkLTlkYzYtY2MwMzI4YTJhNDVh"
-                                                         authorizationKey:@"sergey"];
+                                                           subscribeKey:@"sub-c-a478dd2a-c33d-11e2-883f-02ee2ddab7fe"
+                                                              secretKey:@"sec-c-YjFmNzYzMGMtYmI3NC00NzJkLTlkYzYtY2MwMzI4YTJhNDVh"
+                                                       authorizationKey:@"geremy"];
 
     [PubNub setConfiguration:myConfig];
 

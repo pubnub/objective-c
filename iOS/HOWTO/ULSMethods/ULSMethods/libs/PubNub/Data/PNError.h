@@ -38,6 +38,7 @@ static NSString * const kPNServiceErrorDomain = @"com.pubnub.remote-service";
 
 #pragma mark - Class methods
 
++ (PNError *)errorWithHTTPStatusCode:(NSUInteger)statusCode;
 + (PNError *)errorWithResponseErrorMessage:(NSString *)errorMessage;
 + (PNError *)errorWithMessage:(NSString *)errorMessage code:(NSInteger)errorCode;
 + (PNError *)errorWithCode:(NSInteger)errorCode;
