@@ -1941,7 +1941,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Subscribing PubNub client for connection state observation
         // (as soon as event will occur PubNub client will be removed
         // from observers list)
-        __pn_desired_weak typeof(self) weakSelf = self;
+        __pn_desired_weak __typeof__(self) weakSelf = self;
         [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:weakSelf
                                                                  oneTimeEvent:YES
                                                             withCallbackBlock:[^(NSString *origin,
@@ -2186,7 +2186,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                 // Delay disconnection notification to give client ability
                 // to perform clean up well
-                __block __pn_desired_weak typeof(self) weakSelf = self;
+                __block __pn_desired_weak __typeof__(self) weakSelf = self;
                 void(^disconnectionNotifyBlock)(void) = ^{
 
                     [self handleLockingOperationBlockCompletion:^{

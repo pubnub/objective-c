@@ -70,7 +70,7 @@ static PNDataManager *_sharedInstance = nil;
         self.configuration = [PNConfiguration defaultConfiguration];
         self.subscribedChannelsList = [NSMutableArray array];
 
-        __pn_desired_weak typeof(self) weakSelf = self;
+        __pn_desired_weak __typeof__(self) weakSelf = self;
         [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:weakSelf
                                                                      withCallbackBlock:^(PNSubscriptionProcessState state,
                                                                                          NSArray *channels,
