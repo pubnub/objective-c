@@ -210,6 +210,8 @@ You can use few class methods to intialise and update instance properties:
 
              (getter = shouldRestoreSubscriptionFromLastTimeToken) restoreSubscriptionFromLastTimeToken
          __Default:__ YES (_kPNShouldRestoreSubscriptionFromLastTimeToken key in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))
+         
+         This can also be controlled via returning __YES__ or __NO__ via the __shouldRestoreSubscriptionFromLastTimeToken__ delegate.
 
     6.  Should the PubNub client establish the connection to PubNub using SSL?
       
