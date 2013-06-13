@@ -1707,12 +1707,28 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                     reverseHistory:shouldReverseMessageHistory
                withCompletionBlock:nil];
 }
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                              to:(PNDate *)endDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel
+                              from:startDate
+                                to:endDate
+                             limit:limit
+                    reverseHistory:shouldReverseMessageHistory
+                  includeTimeToken:NO
+               withCompletionBlock:handleBlock];
+}
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
                               to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory
+                includeTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
     [self performAsyncLockingBlock:^{
@@ -1731,7 +1747,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                                                                                    from:startDate
                                                                                                      to:endDate
                                                                                                   limit:limit
-                                                                                         reverseHistory:shouldReverseMessageHistory];
+                                                                                         reverseHistory:shouldReverseMessageHistory
+                                                                                       includeTimeToken:shouldIncludeTimeToken];
             [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
                 // Looks like client can't send request because of some reasons
