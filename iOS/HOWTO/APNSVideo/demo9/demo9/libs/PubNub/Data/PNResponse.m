@@ -153,7 +153,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         NSString *decodedResponse = [self decodedResponse];
         if (decodedResponse) {
             
-            __pn_desired_weak typeof(self) weakSelf = self;
+            __pn_desired_weak __typeof__(self) weakSelf = self;
             [PNJSONSerialization JSONObjectWithString:decodedResponse
                                       completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName){
 

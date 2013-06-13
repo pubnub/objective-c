@@ -19,7 +19,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
 
-    PNConfiguration *myConfig = [PNConfiguration configurationWithPublishKey:@"pub-c-6d82cd87-cd15-461c-8de6-d0330419f439" subscribeKey:@"sub-c-e0d8405a-b823-11e2-89ba-02ee2ddab7fe" secretKey:@"sec-c-ODgxMDA0NWYtOThkNC00MjgyLWFlOWYtYzdiMGM5NTU2NTlk"];
+    PNConfiguration *myConfig = [PNConfiguration configurationWithPublishKey:@"pub-c-6d82cd87-cd15-461c-8de6-d0330419f439" subscribeKey:@"sub-c-e0d8405a-b823-11e2-89ba-02ee2ddab7fe" secretKey:@"sec-ODgxMDA0NWYtOThkNC00MjgyLWFlOWYtYzdiMGM5NTU2NTlk"];
     [PubNub setConfiguration:myConfig];
 
     PNChannel *myChannel = [PNChannel channelWithName:@"hello_world"];
