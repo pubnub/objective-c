@@ -574,8 +574,8 @@
 			children = (
 				D94769B116D62CF00093C0D7 /* PubNubDemo-Info.plist */,
 				D94769B216D62CF00093C0D7 /* InfoPlist.strings */,
-				D94769B516D62CF00093C0D7 /* main.m */,
 				D94769B716D62CF00093C0D7 /* PubNubDemo-Prefix.pch */,
+				D94769B516D62CF00093C0D7 /* main.m */,
 				D94769BB16D62CF00093C0D7 /* Default.png */,
 				D94769BD16D62CF00093C0D7 /* Default@2x.png */,
 				D94769BF16D62CF00093C0D7 /* Default-568h@2x.png */,
