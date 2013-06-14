@@ -707,3 +707,21 @@ Logging can be controlled via the following booleans:
 in [3.4/pubnub/libs/PubNub/Misc/PNMacro.h](3.4/pubnub/libs/PubNub/Misc/PNMacro.h#L37)
 
 In the above example, all logging is disabled. By default, all logging is enabled.
+
+
+### Tests with OCUnit and OCMock
+
+Unit-tests integrated in XCode allow the developer to easily start them anytime during development. 
+
+#### Running
+
+1. Choose pubnubTests from Product -> Scheme
+2. Run -> Test or Product -> Test or CMD+U
+
+#### Configuring
+
+Unit-tests for each class are grouped by class. To configure the test scheme further:
+
+1. Product -> Scheme -> pubnubTests -> Edit
+2. Select the test item from the left menu
+3. Select tests to run as wanted from right menu
