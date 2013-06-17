@@ -2075,6 +2075,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Checking whether we should use logic for messaginc channel reconnection or not
         if ([channel isEqual:self.messagingChannel]) {
 
+            self.asyncLockingOperationInProgress = NO;
             [self messagingChannelDidReconnect:(PNMessagingChannel *)channel];
         }
     }
