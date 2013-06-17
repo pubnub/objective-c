@@ -30,7 +30,7 @@
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 
             // then subscribe on channel a
-            PNChannel *myChannel = [PNChannel channelWithName:@"b" shouldObservePresence:YES];
+            PNChannel *myChannel = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
             [PubNub subscribeOnChannel:myChannel];
 
         }); }
