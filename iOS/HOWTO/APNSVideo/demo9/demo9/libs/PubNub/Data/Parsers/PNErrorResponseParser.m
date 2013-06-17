@@ -10,6 +10,7 @@
 #import "PNErrorResponseParser.h"
 #import "PNErrorResponseParser+Protected.h"
 #import "PNResponse.h"
+#import "PNError+Protected.h"
 
 
 #pragma mark - Private interface methods
@@ -49,7 +50,22 @@
 
         NSDictionary *responseData = response.response;
 
-        self.error = [PNError errorWithResponseErrorMessage:[responseData valueForKey:kPNResponseErrorMessageKey]];
+        PNError *error;
+        if ([responseData objectForKey:kPNResponseErrorPayloadKey] != nil &&
+            (response.statusCode == 401 || response.statusCode == 403)) {
+
+            error = [PNError errorWithHTTPStatusCode:response.statusCode];
+            NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@", kPNResponseErrorPayloadKey, kPNResponseErrorChannelsKey];
+            if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
+
+                error.associatedObject = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
+            }
+        }
+        else {
+
+            error = [PNError errorWithResponseErrorMessage:[responseData valueForKey:kPNResponseErrorMessageKey]];
+        }
+        self.error = error;
     }
 
 
