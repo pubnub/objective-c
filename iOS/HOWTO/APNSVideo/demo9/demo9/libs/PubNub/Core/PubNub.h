@@ -457,6 +457,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * Fetch history for specified channel in defined
  * time frame
  */
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate;
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate;
 
 /**
@@ -470,6 +471,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
                               to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
@@ -477,6 +481,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * Fetch history for specified channel in defined
  * time frame with specified limits
  */
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                           limit:(NSUInteger)limit;
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
                               to:(PNDate *)endDate
@@ -493,6 +500,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
+                           limit:(NSUInteger)limit
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
                               to:(PNDate *)endDate
                            limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -502,6 +513,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * time frame, limit and whether response should
  * be inverted or not
  */
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory;
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
                               to:(PNDate *)endDate
@@ -517,6 +532,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  * If you need to track history loading events from many places, use
  * PNObservationCenter methods for this purpose.
  */
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
                               to:(PNDate *)endDate
