@@ -1,3 +1,7 @@
+06-18-2013
+. added ULS methods
+. fix for subscribe bug on sleep resume after lock/sleep
+
 06-07-2013
 . 3.4.2 Release
 . implements producedural method calls for quick start usage of PubNub
