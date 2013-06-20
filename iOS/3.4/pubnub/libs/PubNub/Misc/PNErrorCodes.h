@@ -61,34 +61,42 @@ static NSInteger const kPNTooLongMessageError = 110;
 // used in channel name and request can't be processed
 static NSInteger const kPNRestrictedCharacterInChannelNameError = 111;
 
+// PubNub service reported that there is no authorization key specified
+// and resource not available w/o it
+static NSInteger const kPNAPIUnauthorizedAccessError = 112;
+
+// PubNub service reported that wrong authorization has been
+// used for request
+static NSInteger const kPNAPIAccessForbiddenError = 113;
+
 
 #pragma mark - Cryptography error
 
 // Developer tried to initalize Cryptor helper with configuraiton
 // which doesn't has cipher key in it
-static NSInteger const kPNCryptoEmptyCipherKeyError = 112;
+static NSInteger const kPNCryptoEmptyCipherKeyError = 114;
 
 // Error occured during cryptor initialization because of error
 // in provided paramteres
-static NSInteger const kPNCryptoIllegalInitializationParametersError = 113;
+static NSInteger const kPNCryptoIllegalInitializationParametersError = 115;
 
 // Error occured because buffer with insufficient size was
 // provided for encrypted/decrypted data output
-static NSInteger const kPNCryptoInsufficentBufferSizeError = 114;
+static NSInteger const kPNCryptoInsufficentBufferSizeError = 116;
 
 // Error occure in case if during cryptor operation there was not enough
 // memory for it's operation
-static NSInteger const kPNCryptoInsufficentMemoryError = 115;
+static NSInteger const kPNCryptoInsufficentMemoryError = 117;
 
 // Error occured because input data wasn't properly alligned
-static NSInteger const kPNCryptoAligmentInputDataError = 116;
+static NSInteger const kPNCryptoAligmentInputDataError = 118;
 
 // Error occured during input data encode/decode process
-static NSInteger const kPNCryptoInputDataProcessingError = 117;
+static NSInteger const kPNCryptoInputDataProcessingError = 119;
 
 // Error occure if developer try to use one of features which is not
 // available in specified algorithm
-static NSInteger const kPNCryptoUnavailableFeatureError = 118;
+static NSInteger const kPNCryptoUnavailableFeatureError = 120;
 
 
 
@@ -96,37 +104,37 @@ static NSInteger const kPNCryptoUnavailableFeatureError = 118;
 
 // Developer tries to submit empty (nil) request by passing
 // no message object to PubNub service
-static NSInteger const kPNMessageObjectError = 119;
+static NSInteger const kPNMessageObjectError = 121;
 
 // Developer tried to submit message w/o text to PubNub service
-static NSInteger const kPNMessageHasNoContentError = 120;
+static NSInteger const kPNMessageHasNoContentError = 122;
 
 // Developer tried to submit message w/o target channel to
 // PubNub service
-static NSInteger const kPNMessageHasNoChannelError = 121;
+static NSInteger const kPNMessageHasNoChannelError = 123;
 
 // Developer tried to use APNS API w/o enabling push notifications
 // support on admin.punub.com
-static NSInteger const kPNPushNotificationsNotEnabledError = 122;
+static NSInteger const kPNPushNotificationsNotEnabledError = 124;
 
 // Developer tried to use empty device push notification to enable
 // push notification on specified channel
-static NSInteger const kPNDevicePushTokenIsEmptyError = 123;
+static NSInteger const kPNDevicePushTokenIsEmptyError = 125;
 
 
 #pragma mark - Service error (caused by remote server)
 
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 124;
+static NSInteger const kPNResponseEncodingError = 126;
 
 // Server provided response with malformed JSON in it
 // (in such casses library will try to resend request to
 // remote origin)
-static NSInteger const kPNResponseMalformedJSONError = 125;
+static NSInteger const kPNResponseMalformedJSONError = 127;
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some
 // errors
-static NSInteger const kPNConnectionErrorOnSetup = 126;
+static NSInteger const kPNConnectionErrorOnSetup = 128;

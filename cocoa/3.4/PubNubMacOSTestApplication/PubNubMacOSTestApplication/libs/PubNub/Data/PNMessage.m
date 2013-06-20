@@ -108,7 +108,7 @@
             
             if (processingError == nil && processingErrorCode < 0) {
                 
-                __pn_desired_weak typeof(self) weakSelf = self;
+                __pn_desired_weak __typeof__(self) weakSelf = self;
                 [PNJSONSerialization JSONObjectWithString:decodedMessage
                                           completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
                                               

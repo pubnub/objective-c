@@ -1659,9 +1659,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self requestHistoryForChannel:channel from:nil to:nil withCompletionBlock:handleBlock];
 }
 
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate {
+    
+    [self requestHistoryForChannel:channel from:nil to:startDate];
+}
+
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:nil to:startDate withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
@@ -1674,10 +1686,25 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
+                           limit:(NSUInteger)limit {
+    
+    [self requestHistoryForChannel:channel from:nil to:startDate limit:limit];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
                               to:(PNDate *)endDate
                            limit:(NSUInteger)limit {
 
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                           limit:(NSUInteger)limit
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:nil to:startDate limit:limit withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
@@ -1696,6 +1723,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
                             from:(PNDate *)startDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory {
+    
+    [self requestHistoryForChannel:channel from:nil to:startDate limit:limit reverseHistory:shouldReverseMessageHistory];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
                               to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory {
@@ -1706,6 +1741,20 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                              limit:limit
                     reverseHistory:shouldReverseMessageHistory
                withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel
+                            from:(PNDate *)startDate
+                           limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel
+                              from:nil
+                                to:startDate
+                             limit:limit
+                    reverseHistory:shouldReverseMessageHistory
+               withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
@@ -1941,7 +1990,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Subscribing PubNub client for connection state observation
         // (as soon as event will occur PubNub client will be removed
         // from observers list)
-        __pn_desired_weak typeof(self) weakSelf = self;
+        __pn_desired_weak __typeof__(self) weakSelf = self;
         [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:weakSelf
                                                                  oneTimeEvent:YES
                                                             withCallbackBlock:[^(NSString *origin,
@@ -2075,6 +2124,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Checking whether we should use logic for messaginc channel reconnection or not
         if ([channel isEqual:self.messagingChannel]) {
 
+            self.asyncLockingOperationInProgress = NO;
             [self messagingChannelDidReconnect:(PNMessagingChannel *)channel];
         }
     }
@@ -2186,7 +2236,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                 // Delay disconnection notification to give client ability
                 // to perform clean up well
-                __block __pn_desired_weak typeof(self) weakSelf = self;
+                __block __pn_desired_weak __typeof__(self) weakSelf = self;
                 void(^disconnectionNotifyBlock)(void) = ^{
 
                     [self handleLockingOperationBlockCompletion:^{

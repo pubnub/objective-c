@@ -51,6 +51,19 @@
     return [self errorWithMessage:nil code:errorCode];
 }
 
++ (PNError *)errorWithHTTPStatusCode:(NSUInteger)statusCode {
+
+    NSInteger errorCode = kPNAPIUnauthorizedAccessError;
+
+    if (statusCode  == 403) {
+
+        errorCode = kPNAPIAccessForbiddenError;
+    }
+
+
+    return [self errorWithCode:errorCode];;
+}
+
 + (PNError *)errorWithResponseErrorMessage:(NSString *)errorMessage {
 
     NSInteger errorCode = kPNUnknownError;
@@ -139,6 +152,15 @@
     return self;
 }
 
+- (void)setAssociatedObject:(id)associatedObject {
+
+    // Prevent ability to change associated object if it was set before
+    if (_associatedObject == nil) {
+
+        _associatedObject = associatedObject;
+    }
+}
+
 - (NSString *)localizedDescription {
     
     NSString *errorDescription = self.errorMessage;
@@ -188,6 +210,11 @@
             case kPNRestrictedCharacterInChannelNameError:
 
                 errorDescription = @"PubNub service process request for channel";
+                break;
+            case kPNAPIUnauthorizedAccessError:
+            case kPNAPIAccessForbiddenError:
+
+                errorDescription = @"PubNub API access denied";
                 break;
             case kPNMessageHasNoContentError:
             case kPNMessageHasNoChannelError:
@@ -298,6 +325,14 @@
         case kPNRestrictedCharacterInChannelNameError:
 
             failureReason = @"Looks like one of reqests used restricted characters in channel name";
+            break;
+        case kPNAPIUnauthorizedAccessError:
+
+            failureReason = @"Looks like API required 'auth' key";
+            break;
+        case kPNAPIAccessForbiddenError:
+
+            failureReason = @"Looks like specified wrong 'auth' key or you don't have permissions";
             break;
         case kPNMessageHasNoContentError:
 
@@ -416,6 +451,14 @@
 
             fixSuggestion = @"Ensure that you don't use in channel name next characters: ','";
             break;
+        case kPNAPIUnauthorizedAccessError:
+
+            fixSuggestion = @"Specify 'authorizationKey' for configuration instance used to setup PubNub client";
+            break;
+        case kPNAPIAccessForbiddenError:
+
+            fixSuggestion = @"Ensure that you specified correct 'authorizationKey'. If key is correct, than access denied with ULS.";
+            break;
         case kPNMessageHasNoContentError:
 
             fixSuggestion = @"Ensure that you are not sending empty message (maybe there only spaces in it).";
@@ -484,6 +527,17 @@
     
     
     return fixSuggestion;
+}
+
+- (NSString *)description {
+
+    return [NSString stringWithFormat:@"Domain=%@; Code=%i; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\"; Associated object=%@",
+                                      self.domain,
+                                      self.code,
+                                      [self localizedDescription],
+                                      [self localizedFailureReason],
+                                      [self localizedRecoverySuggestion],
+                                      self.associatedObject];
 }
 
 - (NSString *)domainForError:(NSInteger)errorCode {

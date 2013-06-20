@@ -631,7 +631,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             case EHOSTDOWN:     // Host is down
             case EHOSTUNREACH:  // Can't reach host
             case ETIMEDOUT:     // Socket timeout
-            case EPIPE:         // Something went wrong and pipe was dameged
 
                 isConnectionIssue = YES;
                 break;
@@ -697,6 +696,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             case ENOBUFS:       // No buffer space available
             case ECONNRESET:    // Connection reset by peer
             case ENOENT:        // No such file or directory
+            case EPIPE:         // Something went wrong and pipe was dameged
                 
                 isServerError = YES;
                 break;

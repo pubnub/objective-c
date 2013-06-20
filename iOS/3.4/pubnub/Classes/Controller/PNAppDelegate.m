@@ -61,7 +61,7 @@
 
     // Subscribe application delegate on subscription updates
     // (events when client subscribe on some channel)
-    __pn_desired_weak typeof(self) weakSelf = self;
+    __pn_desired_weak __typeof__(self) weakSelf = self;
     [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:weakSelf
                                                                  withCallbackBlock:^(PNSubscriptionProcessState state,
                                                                                      NSArray *channels,
