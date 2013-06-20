@@ -52,6 +52,37 @@ static NSData *_cryptorKeyData = nil;
 
 #pragma mark - Instance methods
 
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+/**
+ * Returns reference on array with encrypted values
+ * from original array in it.
+ * In case of encryption error message will be generated.
+ */
+- (NSArray *)arrayOfEnryptedValues:(NSArray *)arrayForEncryption error:(PNError *__autoreleasing *)error;
+
+/**
+ * Returns reference on dictionary with encrypted values
+ * from original dictionary in it.
+ * In case of encryption error message will be generated.
+ */
+- (NSDictionary *)dictionaryOfEnryptedValues:(NSDictionary *)dictionaryForEncryption
+                                       error:(PNError *__autoreleasing *)error;
+/**
+ * Returns reference array with decrypted values
+ * from original array in it.
+ * In case of encryption error message will be generated.
+ */
+- (NSArray *)arrayOfDecryptedValues:(NSArray *)arrayForDecryption error:(PNError *__autoreleasing *)error;
+
+/**
+ * Returns reference dictionary with decrypted values
+ * from original dictionary in it.
+ * In case of encryption error message will be generated.
+ */
+- (NSDictionary *)dictionaryOfDecryptedValues:(NSDictionary *)dictionaryForDecryption
+                                        error:(PNError *__autoreleasing *)error;
+#endif
+
 /**
  * Process data with specified cryptor and input data
  */
@@ -190,10 +221,146 @@ static NSData *_cryptorKeyData = nil;
     return [self processString:plainString cryptorType:PNCryptorEncrypt error:error];
 }
 
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+- (id)encryptedObjectFromObject:(id)objectForEncryption error:(PNError *__autoreleasing *)error {
+
+    id encryptedMessage = nil;
+
+    if ([objectForEncryption isKindOfClass:[NSString class]]) {
+
+        encryptedMessage = [self encryptedStringFromString:objectForEncryption error:error];
+    }
+    else if ([objectForEncryption isKindOfClass:[NSArray class]]) {
+
+        encryptedMessage = [self arrayOfEnryptedValues:objectForEncryption error:error];
+    }
+    else if ([objectForEncryption isKindOfClass:[NSDictionary class]]) {
+
+        encryptedMessage = [self dictionaryOfEnryptedValues:objectForEncryption error:error];
+    }
+
+
+    return encryptedMessage;
+}
+
+- (NSArray *)arrayOfEnryptedValues:(NSArray *)arrayForEncryption error:(PNError *__autoreleasing *)error {
+
+    NSMutableArray *messages = [NSMutableArray arrayWithCapacity:[arrayForEncryption count]];
+    [arrayForEncryption enumerateObjectsUsingBlock:^(id objectForEncryption,
+                                                     NSUInteger objectIndex,
+                                                     BOOL *objectEnumeratorStop) {
+
+        id encryptedObject = [self encryptedObjectFromObject:objectForEncryption error:error];
+        if ((error != NULL && *error == NULL) && encryptedObject != nil) {
+
+            [messages addObject:encryptedObject];
+        }
+        else {
+
+            *objectEnumeratorStop = YES;
+        }
+    }];
+
+
+    return messages;
+}
+
+- (NSDictionary *)dictionaryOfEnryptedValues:(NSDictionary *)dictionaryForEncryption
+                                       error:(PNError *__autoreleasing *)error {
+
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[dictionaryForEncryption count]];
+    [dictionaryForEncryption enumerateKeysAndObjectsUsingBlock:^(id key,
+                                                                 id objectForEncryption,
+                                                                 BOOL *objectEnumeratorStop) {
+
+        id encryptedObject = [self encryptedObjectFromObject:objectForEncryption error:error];
+        if ((error != NULL && *error == NULL) && encryptedObject != nil) {
+
+            [dictionary setValue:encryptedObject forKey:key];
+        }
+        else {
+
+            *objectEnumeratorStop = YES;
+        }
+    }];
+
+
+    return dictionary;
+}
+#endif
+
 - (NSString *)decryptedStringFromString:(NSString *)encodedString error:(PNError **)error {
 
     return [self processString:encodedString cryptorType:PNCryptorDecrypt error:error];
 }
+
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+- (id)decryptedObjectFromObject:(id)encodedObject error:(PNError *__autoreleasing *)error {
+
+    id decryptedMessage = nil;
+
+    if ([encodedObject isKindOfClass:[NSString class]]) {
+
+        decryptedMessage = [self decryptedStringFromString:encodedObject error:error];
+    }
+    else if ([encodedObject isKindOfClass:[NSArray class]]) {
+
+        decryptedMessage = [self arrayOfDecryptedValues:encodedObject error:error];
+    }
+    else if ([encodedObject isKindOfClass:[NSDictionary class]]) {
+
+        decryptedMessage = [self dictionaryOfDecryptedValues:encodedObject error:error];
+    }
+
+
+    return decryptedMessage;
+}
+
+- (NSArray *)arrayOfDecryptedValues:(NSArray *)arrayForDecryption error:(PNError *__autoreleasing *)error {
+
+    NSMutableArray *messages = [NSMutableArray arrayWithCapacity:[arrayForDecryption count]];
+    [arrayForDecryption enumerateObjectsUsingBlock:^(id objectForDecryption,
+                                                     NSUInteger objectIndex,
+                                                     BOOL *objectEnumeratorStop) {
+
+        id decryptedObject = [self decryptedObjectFromObject:objectForDecryption error:error];
+        if ((error != NULL && *error == NULL) && decryptedObject != nil) {
+
+            [messages addObject:decryptedObject];
+        }
+        else {
+
+            *objectEnumeratorStop = YES;
+        }
+    }];
+
+
+    return messages;
+}
+
+- (NSDictionary *)dictionaryOfDecryptedValues:(NSDictionary *)dictionaryForDecryption
+                                        error:(PNError *__autoreleasing *)error {
+
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[dictionaryForDecryption count]];
+    [dictionaryForDecryption enumerateKeysAndObjectsUsingBlock:^(id key,
+                                                                 id objectForDecryption,
+                                                                 BOOL *objectEnumeratorStop) {
+
+        id decryptedObject = [self decryptedObjectFromObject:objectForDecryption error:error];
+        if ((error != NULL && *error == NULL) && decryptedObject != nil) {
+
+            [dictionary setValue:decryptedObject forKey:key];
+        }
+        else {
+
+            *objectEnumeratorStop = YES;
+        }
+    }];
+
+
+    return dictionary;
+}
+#endif
 
 - (CCCryptorStatus)getProcessedData:(NSData * __autoreleasing *)outputData
                       fromInputData:(NSData *)inputData
@@ -329,11 +496,15 @@ static NSData *_cryptorKeyData = nil;
 
         // Prepare cryptor initialization vector
         _cryptorInitializationVectorData = [@"0123456789012345" dataUsingEncoding:NSUTF8StringEncoding];
-
     }
 
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
     // Update cryptor key
     _cryptorKeyData = [[_configuration.cipherKey sha256HEXString] dataUsingEncoding:NSUTF8StringEncoding];
+#else
+    // Update cryptor key
+    _cryptorKeyData = [_configuration.cipherKey md5Data];
+#endif
 }
 
 - (CCCryptorStatus)getCryptor:(CCCryptorRef *)cryptor

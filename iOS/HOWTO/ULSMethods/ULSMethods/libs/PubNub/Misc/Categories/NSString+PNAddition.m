@@ -13,6 +13,7 @@
 
 @interface NSString (PNAdditionPrivate)
 
+- (NSString *)percentEscapedStringWithEscapeString:(NSString *)stringWithCharsForEscape;
 - (NSString *)ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes;
 
 @end
@@ -27,15 +28,27 @@
 
 - (NSString *)percentEscapedString {
 
+    return [self percentEscapedStringWithEscapeString:@":/?#[]@!$&’()*+,;="];
+}
+
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+- (NSString *)nonStringPercentEscapedString {
+
+    return [self percentEscapedStringWithEscapeString:@":/?#[]@!$&’()*+;="];
+}
+#endif
+
+- (NSString *)percentEscapedStringWithEscapeString:(NSString *)stringWithCharsForEscape {
+
     NSString *newlineEscapedString = [self stringByReplacingOccurrencesOfString:@"\n" withString:@"%5Cn"];
     newlineEscapedString = [newlineEscapedString stringByReplacingOccurrencesOfString:@"\r" withString:@"%5Cr"];
     CFStringRef escapedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
                                                                         (__bridge CFStringRef)newlineEscapedString,
                                                                         NULL,
-                                                                        (CFStringRef)@":/?#[]@!$&’()*+,;=",
+                                                                        (CFStringRef)stringWithCharsForEscape,
                                                                         kCFStringEncodingUTF8);
-    
-    
+
+
     return CFBridgingRelease(escapedString);
 }
 
@@ -85,6 +98,18 @@
 
     return [NSString stringWithUTF8String:[[NSData dataFromBase64String:self] bytes]];
 }
+
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+- (NSData *)md5Data {
+
+    const char *src = [self UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(src, strlen(src), result);
+
+
+    return [NSData dataWithBytes:result length:CC_MD5_DIGEST_LENGTH];
+}
+#endif
 
 #pragma mark -
 

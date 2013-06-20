@@ -33,7 +33,6 @@
 @property (nonatomic, copy) NSString *publishKey;
 @property (nonatomic, copy) NSString *subscriptionKey;
 @property (nonatomic, copy) NSString *secretKey;
-@property (nonatomic, copy) NSString *cipherKey;
 
 
 @end

@@ -227,6 +227,10 @@
 
                 errorDescription = @"PubNub client can't work with APNS API";
                 break;
+            case kPNDevicePushTokenIsEmptyError:
+                
+                errorDescription = @"PubNub client can't enable push notification";
+                break;
             case kPNResponseEncodingError:
 
                 errorDescription = @"PubNub client can't decode response";
@@ -350,6 +354,10 @@
 
             failureReason = @"Looks like push notifications wasn't enabled for current subscribe key on PubNub admin console";
             break;
+        case kPNDevicePushTokenIsEmptyError:
+            
+            failureReason = @"Looks like device push notification is nil";
+            break;
         case kPNResponseEncodingError:
 
             failureReason = @"Looks like remote service send message with encoding which is other than UTF8";
@@ -466,6 +474,10 @@
         case kPNPushNotificationsNotEnabledError:
 
             fixSuggestion = @"Please visit https://admin.pubnub.com and enable push notifications feature.";
+            break;
+        case kPNDevicePushTokenIsEmptyError:
+            
+            fixSuggestion = @"Ensure that you provided correct non nil device push token";
             break;
         case kPNMessageObjectError:
 

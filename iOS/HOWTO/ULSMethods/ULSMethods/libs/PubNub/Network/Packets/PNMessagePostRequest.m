@@ -115,7 +115,11 @@
 
         // Encode message with % so it will be delivered w/o damages to
         // the PubNub service
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
         self.preparedMessage = [message percentEscapedString];
+#else
+        self.preparedMessage = [message nonStringPercentEscapedString];
+#endif
     }
 
 
@@ -134,10 +138,18 @@
 
 - (NSString *)encryptedMessageWithError:(PNError **)encryptionError {
 
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
     NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:self.message.message
                                                                                           error:encryptionError];
 
     return [NSString stringWithFormat:@"\"%@\"", encryptedData];
+#else
+    id encryptedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:self.message.message
+                                                                                       error:encryptionError];
+    NSString *encryptedData = [PNJSONSerialization stringFromJSONObject:encryptedMessage];
+
+    return [NSString stringWithFormat:@"%@", encryptedData];
+#endif
 }
 
 - (NSString *)signature {

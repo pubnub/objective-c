@@ -15,6 +15,9 @@
 #pragma mark Instance methods
 
 - (NSString *)percentEscapedString;
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+- (NSString *)nonStringPercentEscapedString;
+#endif
 
 /**
  * Generate string which is composed of ASCII char
@@ -34,6 +37,10 @@
 - (NSData *)sha256Data;
 - (NSString *)sha256HEXString;
 - (NSString *)base64DecodedString;
+
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+- (NSData *)md5Data;
+#endif
 
 #pragma mark -
 

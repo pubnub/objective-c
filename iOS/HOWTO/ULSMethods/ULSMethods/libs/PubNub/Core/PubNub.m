@@ -1138,7 +1138,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-        if (statusCode == 0) {
+        if (statusCode == 0 && pushToken != nil) {
 
             if (handlerBlock) {
 
@@ -1153,7 +1153,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         }
         // Looks like client can't send request because of some reasons
         else {
-
+            
+            if (pushToken == nil) {
+                
+                statusCode = kPNDevicePushTokenIsEmptyError;
+            }
             PNError *stateChangeError = [PNError errorWithCode:statusCode];
             stateChangeError.associatedObject = channels;
 
@@ -1181,7 +1185,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     SEL selector = @selector(enablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
                                   forObject:self
-                             withParameters:@[channels, pushToken, PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[channels, PNNillIfNotSet(pushToken), PNNillIfNotSet(handlerBlock)]
                                  outOfOrder:NO];
 }
 

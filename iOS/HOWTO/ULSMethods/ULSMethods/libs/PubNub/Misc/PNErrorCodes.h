@@ -117,20 +117,24 @@ static NSInteger const kPNMessageHasNoChannelError = 123;
 // support on admin.punub.com
 static NSInteger const kPNPushNotificationsNotEnabledError = 124;
 
+// Developer tried to use empty device push notification to enable
+// push notification on specified channel
+static NSInteger const kPNDevicePushTokenIsEmptyError = 125;
+
 
 #pragma mark - Service error (caused by remote server)
 
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 125;
+static NSInteger const kPNResponseEncodingError = 126;
 
 // Server provided response with malformed JSON in it
 // (in such casses library will try to resend request to
 // remote origin)
-static NSInteger const kPNResponseMalformedJSONError = 126;
+static NSInteger const kPNResponseMalformedJSONError = 127;
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some
 // errors
-static NSInteger const kPNConnectionErrorOnSetup = 127;
+static NSInteger const kPNConnectionErrorOnSetup = 128;
