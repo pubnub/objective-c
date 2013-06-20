@@ -26,7 +26,7 @@
 @property (nonatomic, readonly, copy) NSString *publishKey;
 @property (nonatomic, readonly, copy) NSString *subscriptionKey;
 @property (nonatomic, readonly, copy) NSString *secretKey;
-@property (nonatomic, readonly, copy) NSString *cipherKey;
+@property (nonatomic, copy) NSString *cipherKey;
 
 // Stores reference on authorization key which is used for
 // request authorization
