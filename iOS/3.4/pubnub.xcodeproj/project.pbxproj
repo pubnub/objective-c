@@ -87,6 +87,7 @@
 		79DA9A5416AC101D000AE3A1 /* red-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 79DA9A5216AC101D000AE3A1 /* red-button.png */; };
 		79DA9A5A16AC1172000AE3A1 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 79DA9A5916AC1172000AE3A1 /* background.png */; };
 		79DA9A5B16AC1172000AE3A1 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 79DA9A5916AC1172000AE3A1 /* background.png */; };
+		79DC83611773A8680061A76C /* PNCryptoHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DC83601773A8680061A76C /* PNCryptoHelperTest.m */; };
 		79EB391E1681E58300696025 /* PNResponseDeserialize.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EB391D1681E58300696025 /* PNResponseDeserialize.m */; };
 		79EB391F1681E58300696025 /* PNResponseDeserialize.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EB391D1681E58300696025 /* PNResponseDeserialize.m */; };
 		79EB392616835B7D00696025 /* PNResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EB392516835B7C00696025 /* PNResponse.m */; };
@@ -304,6 +305,8 @@
 		79DA9A3A16AC0DF7000AE3A1 /* PNIdentificationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PNIdentificationViewController.xib; sourceTree = "<group>"; };
 		79DA9A5216AC101D000AE3A1 /* red-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red-button.png"; sourceTree = "<group>"; };
 		79DA9A5916AC1172000AE3A1 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
+		79DC835F1773A8680061A76C /* PNCryptoHelperTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCryptoHelperTest.h; sourceTree = "<group>"; };
+		79DC83601773A8680061A76C /* PNCryptoHelperTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHelperTest.m; sourceTree = "<group>"; };
 		79EB391C1681E58300696025 /* PNResponseDeserialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponseDeserialize.h; sourceTree = "<group>"; };
 		79EB391D1681E58300696025 /* PNResponseDeserialize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponseDeserialize.m; sourceTree = "<group>"; };
 		79EB392416835B7C00696025 /* PNResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponse.h; sourceTree = "<group>"; };
@@ -664,6 +667,8 @@
 			isa = PBXGroup;
 			children = (
 				9645C0FA174FDA7D00F82D09 /* RequestTests */,
+				79DC835F1773A8680061A76C /* PNCryptoHelperTest.h */,
+				79DC83601773A8680061A76C /* PNCryptoHelperTest.m */,
 				9645C114174FDA7D00F82D09 /* PNReachabilityTest.h */,
 				9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */,
 				9645C10F174FDA7D00F82D09 /* PNConnectionChannelTest.h */,
@@ -1301,6 +1306,7 @@
 				DD71B5FDE33189422F9920F6 /* PNPushNotificationsRemoveRequest.m in Sources */,
 				DD71B157DE33BBCD15629532 /* NSArray+PNAdditions.m in Sources */,
 				DD71B453EB73756A3D311356 /* NSInvocation+PNAdditions.m in Sources */,
+				79DC83611773A8680061A76C /* PNCryptoHelperTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1394,7 +1400,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pubnub/pubnub-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/pubnub/Resources/General/pubnub-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -1411,7 +1417,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pubnub/pubnub-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/pubnub/Resources/General/pubnub-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

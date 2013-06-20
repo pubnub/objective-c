@@ -54,10 +54,16 @@
 + (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel error:(PNError **)error {
 
     PNMessage *messageObject = nil;
+    BOOL isValidMessage = NO;
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
     object = object?[PNJSONSerialization stringFromJSONObject:object]:@"";
+    isValidMessage = [[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0;
+#else
+    isValidMessage = object != nil;
+#endif
 
     // Ensure that all parameters provided and they are valid or not
-    if ([[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0 && channel != nil) {
+    if (isValidMessage && channel != nil) {
 
         messageObject = [[[self class] alloc] initWithObject:object forChannel:channel];
     }
@@ -68,7 +74,7 @@
         if (error != NULL) {
 
             // Check whether user tried to send empty object or not
-            if ([[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] == 0) {
+            if (!isValidMessage) {
 
                 *error = [PNError errorWithCode:kPNMessageHasNoContentError];
             }
@@ -96,29 +102,43 @@
         
         // Check whether arrived message is string and should be
         // encrypted
-        if ([message.message isKindOfClass:[NSString class]]) {
-            
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+        BOOL isExpectedDataType = [message.message isKindOfClass:[NSString class]];
+#else
+        BOOL isExpectedDataType = [message.message isKindOfClass:[NSString class]] ||
+                                  [message.message isKindOfClass:[NSArray class]] ||
+                                  [message.message isKindOfClass:[NSDictionary class]];
+#endif
+        if (isExpectedDataType) {
+
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
             NSString *decodedMessage = [[PNCryptoHelper sharedInstance] decryptedStringFromString:message.message
                                                                                             error:&processingError];
+#else
+            id decodedMessage = [[PNCryptoHelper sharedInstance] decryptedObjectFromObject:message.message
+                                                                                     error:&processingError];
+#endif
             
             if (decodedMessage == nil && processingError == nil) {
                 
                 processingErrorCode = kPNCryptoInputDataProcessingError;
             }
-            
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
             if (processingError == nil && processingErrorCode < 0) {
-                
-                __pn_desired_weak __typeof__(self) weakSelf = self;
+
                 [PNJSONSerialization JSONObjectWithString:decodedMessage
                                           completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
-                                              
+
                                               message.message = result;
                                           }
                                                errorBlock:^(NSError *error) {
-                                                   
-                                                   PNLog(PNLogGeneralLevel, weakSelf, @"MESSAGE DECODING ERROR: %@", error);
+
+                                                   PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
                                                }];
             }
+#else
+            message.message = decodedMessage;
+#endif
         }
         else {
             
@@ -154,8 +174,11 @@
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
-
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
         self.message = [PNJSONSerialization stringFromJSONObject:object];
+#else
+        self.message = object;
+#endif
         self.channel = channel;
     }
 

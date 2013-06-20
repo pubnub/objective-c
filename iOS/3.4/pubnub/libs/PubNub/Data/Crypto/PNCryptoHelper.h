@@ -51,12 +51,30 @@
  */
 - (NSString *)encryptedStringFromString:(NSString *)plainString error:(PNError *__autoreleasing *)error;
 
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+/**
+ * Returns reference on encrypted object which was retrieved
+ * from object.
+ * In case of encryption error message will be generated.
+ */
+- (id)encryptedObjectFromObject:(id)objectForEncryption error:(PNError *__autoreleasing *)error;
+#endif
+
 /**
  * Returns reference on decrypted string which received from 
  * encoded server response
  * In case of decryption error message will be generated.
  */
 - (NSString *)decryptedStringFromString:(NSString *)encodedString error:(PNError *__autoreleasing *)error;
+
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+/**
+ * Returns reference on decrypted object which received from
+ * encoded server response.
+ * In case of encryption error message will be generated.
+ */
+- (id)decryptedObjectFromObject:(id)encodedObject error:(PNError *__autoreleasing *)error;
+#endif
 
 #pragma mark -
 
