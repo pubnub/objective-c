@@ -578,6 +578,39 @@ If you have enabled the history feature for your account, the following methods 
 	             
 The first two methods will receive the full message history for a specified channel.  ***Be careful, this could be a lot of messages, and consequently, a very long process!***
   
+If you set **from** or **to** as nil, that argument will be ignored.  For example:
+
+```objective-c
+requestHistoryForChannel:(myChannel)  
+                            from:(nil)
+                              to:(myEndDate)
+                           limit:(NSUInteger)100  
+                  reverseHistory:(YES);
+```
+
+the **start** value will be omitted from the server request. Likewise with:
+
+```objective-c
+requestHistoryForChannel:(myChannel)  
+                            from:(myStartDate)
+                              to:(nil)
+                           limit:(NSUInteger)100  
+                  reverseHistory:(YES);
+```
+
+the **end** value will be omitted from the server request.  Setting both start and end to nil:
+
+```objective-c
+
+requestHistoryForChannel:(myChannel)  
+                            from:(nil)
+                              to:(nil)
+                           limit:(NSUInteger)100  
+                  reverseHistory:(YES);
+```
+
+Will omit both from the server request, thus simply returning the last **[limit]** results from history.
+
 In the following example, we pull history for the `iosdev` channel within the specified time frame, limiting the maximum number of messages returned to 34:
     
     PNDate *startDate = [PNDate dateWithDate:[NSDate dateWithTimeIntervalSinceNow:(-3600.0f)]];  
