@@ -180,8 +180,6 @@ You can use few class methods to intialise and update instance properties:
                                           secretKey:(NSString *)secretKey  
                                           cipherKey:(NSString *)cipherKey;  // To initialize with encryption, use cipherKey
 
-***NOTE:  When encryption is enabled, and non-encrypted messages will be passed through as the string "DECRYPTION_ERROR".**
-
 3. Update the configuration instance using this next set of parameters:  
 
     1.  Timeout after which the library will report any ***non-subscription-related*** request (here now, leave, message history, message post, time token) or execution failure.  
@@ -258,6 +256,41 @@ To access the client configuration and state, the following methods are provided
     + (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel;  
     
     - (BOOL)isConnected;  
+
+### Encryption Notes
+
+This client supports the PubNub AES Encryption standard, which enables this client to speak with all other PubNub 3.4+ clients securely via AES.
+
+When encryption is enabled, non-encrypted messages, or messages encrypted with the wrong key will be passed through as the string "DECRYPTION_ERROR".
+
+To initialize with encryption enabled:
+
+```objective-c
+
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName  
+                                 publishKey:(NSString *)publishKey  
+                               subscribeKey:(NSString *)subscribeKey  
+                                  secretKey:(NSString *)secretKey  
+                                  cipherKey:(NSString *)cipherKey;  // To initialize with encryption, use cipherKey
+```
+
+To dynamically change the encryption key during runtime, you can run 
+
+```objective-c
+    [myConfiguration setCipherKey]
+    [PubNub setConfiguration:myConfiguration]
+```
+
+To enable backwards compatibility with PubNub iOS 3.3, add this line to your .pch:
+
+```objective-c
+    #define CRYPTO_BACKWARD_COMPATIBILITY_MODE 1
+```
+
+The above directive will allow this current PubNub iOS client to speak with earlier PubNub iOS 3.3 clients.
+
+It is advised for security and network/battery/power considerations to upgrade all clients to 3.4+ encryption as soon as possible, and to only use this
+backward compatibility mode if absolutely neccesary.
 
 ## PubNub client methods  
 
