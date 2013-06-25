@@ -1933,6 +1933,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 
                 if (connected) {
                     
+                    // In case if client is in 'disconnecting on network error' state when connection become available
+                    // force client to change it state to "completed" stage of disconnection on network error
+                    if (weakSelf.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+                        
+                        weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
+                    }
+                    
                     if (weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError) {
                         
                         // Check whether should restore connection or not
