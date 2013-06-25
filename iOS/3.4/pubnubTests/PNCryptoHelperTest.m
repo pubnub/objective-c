@@ -20,8 +20,12 @@
     NSLog(@"Start %@ test", self.name);
     
     PNError *helperInitializationError = nil;
-    [[PNCryptoHelper sharedInstance] updateWithConfiguration:[PNConfiguration defaultConfiguration]
-                                                   withError:&helperInitializationError];
+    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:nil
+                                                                  publishKey:nil
+                                                                subscribeKey:nil
+                                                                   secretKey:nil
+                                                                   cipherKey:@"enigma"];
+    [[PNCryptoHelper sharedInstance] updateWithConfiguration:configuration withError:&helperInitializationError];
     if (helperInitializationError) {
 
         NSLog(@"%@ setup error: %@", self.name, helperInitializationError);
