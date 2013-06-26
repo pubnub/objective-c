@@ -1,3 +1,7 @@
+06-25-2013
+. fixed connection issue on race condition when switching between networks
+. added paging history demo to demo iPad app
+
 06-20-2013
 . nil deviceToken handling on APNS methods
 . added iOS 3.3 encryption handling support

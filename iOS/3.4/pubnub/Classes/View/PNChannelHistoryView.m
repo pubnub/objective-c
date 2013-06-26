@@ -199,7 +199,7 @@ typedef enum _PNHistoryViewPagingDirection {
     
     self.endDateTextField.enabled = self.viewMode == PNHistoryViewDefault;
     self.endDateTextField.backgroundColor = self.endDateTextField.isEnabled ? [UIColor clearColor] : [UIColor lightGrayColor];
-    [self.modeSwitchButton setTitle:(self.viewMode == PNHistoryViewDefault ? @"Paged" : @"Full") forState:UIControlStateNormal];
+    [self.modeSwitchButton setTitle:(self.viewMode == PNHistoryViewDefault ? @"Paging Mode" : @"Non-Paging Mode") forState:UIControlStateNormal];
     if ([self.historyTextView.text length] == 0 && self.viewMode == PNHistoryViewPaged) {
         
         NSString *limitCount = [self.limitTextField.text length] > 0 ? self.limitTextField.text : @"100";
