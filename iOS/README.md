@@ -120,6 +120,8 @@ This results in a simple app that displays a PubNub 'Ping' message, published ev
 That was just a quick and dirty demo to cut your teeth on... There are five other iOS PubNub 3.4 client demo apps available! These
 demonstrate in more detail how you can use the delegate and completion block features of the PubNub client for iOS.
 
+The demo app located in the 3.4 folder is an iPad only demo app!
+
 ### SimpleSubscribe HOWTO
 
 The [SimpleSubscribe](HOWTO/SimpleSubscribe/3.4) app references how to create a simple subscribe-only, non-ui application using PubNub and iOS. 
