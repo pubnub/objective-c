@@ -111,7 +111,7 @@ from [Adding PubNub to your Project](#adding-pubnub-to-your-project):
 2. In your AppDelegate.m, define a didReceiveMessage delegate method:
 ```objective-c
         - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
-          NSLog([NSString stringWithFormat:@"received: %@", message.message]);
+               NSLog(@"%@", [NSString stringWithFormat:@"received: %@", message.message]);
         }
 ```
 
