@@ -2241,8 +2241,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 
                 // Clean up cached data
                 [PNChannel purgeChannelsCache];
-                
-                [self handleLockingOperationComplete:YES];
             }
             else {
                 

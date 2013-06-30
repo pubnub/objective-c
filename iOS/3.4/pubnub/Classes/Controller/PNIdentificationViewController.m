@@ -187,7 +187,6 @@
                                                                      [PNDataManager sharedInstance].configuration.origin,
                                                                      [PubNub clientIdentifier],
                                                                      [PNDataManager sharedInstance].configuration.shouldUseSecureConnection ? @"YES" : @"NO"]];
-    [PubNub sendMessage:@"Hello world" toChannel:[PNChannel channelWithName:@"iosdev"]];
 }
 
 - (IBAction)sslModeSwitchChanged:(id)sender {
