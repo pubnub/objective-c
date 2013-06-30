@@ -558,9 +558,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     // again
                     [self sharedInstance].connectOnServiceReachabilityCheck = YES;
                     [self sharedInstance].connectOnServiceReachability = YES;
-                    [self sharedInstance].asyncLockingOperationInProgress = YES;
                     
                     [[self sharedInstance] handleConnectionErrorOnNetworkFailure];
+                    [self sharedInstance].asyncLockingOperationInProgress = YES;
                     
                     if (![[PNObservationCenter defaultCenter] isSubscribedOnClientStateChange:[self sharedInstance]]) {
                         
@@ -1943,6 +1943,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                     
                     weakSelf.connectOnServiceReachability = YES;
                     [weakSelf handleConnectionErrorOnNetworkFailure];
+                    weakSelf.asyncLockingOperationInProgress = YES;
                 }
             }
             else {
@@ -1962,7 +1963,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         if([weakSelf shouldRestoreConnection] || weakSelf.shouldConnectOnServiceReachability) {
                             
                             weakSelf.asyncLockingOperationInProgress = NO;
-                            weakSelf.restoringConnection = YES;
+                            if(!weakSelf.shouldConnectOnServiceReachability){
+                                
+                                weakSelf.restoringConnection = YES;
+                            }
                             
                             [[weakSelf class] connect];
                         }
@@ -2797,6 +2801,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)notifyDelegateClientConnectionFailedWithError:(PNError *)error {
     
+    BOOL shouldStartNextPostponedOperation = !self.shouldConnectOnServiceReachability;
+    
     [self handleLockingOperationBlockCompletion:^{
         
         if ([self.delegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
@@ -2808,7 +2814,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         
         [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
     }
-                                shouldStartNext:YES];
+                                shouldStartNext:shouldStartNextPostponedOperation];
 }
 
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object {
