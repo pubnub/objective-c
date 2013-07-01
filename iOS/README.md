@@ -24,10 +24,40 @@ with
         # or
         PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567]; // Convert from a timetoken
 ```
-## Coming Soon... CocoaPod and XCode Project Template Support!
+## Coming Soon... XCode Project Template Support!
 But until then...
 
-## Adding PubNub to your project  
+## Adding PubNub to your project via CocoaPods
+
+[These steps are documented in our Emmy-winning CocoaPod's Setup Video, check it out here!](https://vimeo.com/69284108)
+
+By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.4.2**
+
++   Create an empty XCode Project
++   Add the following to your project's Podfile:
+
+```
+pod 'PubNub', '3.4.2'
+```
+
++   Run
+
+```
+pod install
+```
+
++   Open the resulting workspace.
++   Add
+
+```
+#import "PNImports.h"
+```
+
+To your project's .pch file. **It must be the first import in your pch, or it will not work correctly.**
+
+[Finish up by setting up your delegate](#finishing-up-configuration-common-to-manual-and-cocoapods-setup)
+
+## Adding PubNub to your project manually
 
 1. Add the PubNub library folder to your project (/libs/PubNub)  
 2. Add the JSONKit support files to your project (/libs/JSONKit)
@@ -42,13 +72,16 @@ which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd pa
 ```
 4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m (disable ARC warnings for JSONKit)
 5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options
-6. In AppDelegate.h, adopt the PNDelegate protocol:
+
+## Finishing up configuration (Common to Manual and CocoaPods setup)
+
+1. In AppDelegate.h, adopt the PNDelegate protocol:
 
 ```objective-c
         @interface PNAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate>
 ```
 
-7. In AppDelegate.m (right before the return YES line works fine)
+2. In AppDelegate.m (right before the return YES line works fine)
 
 ```objective-c
         [PubNub setDelegate:self] 
@@ -78,7 +111,7 @@ from [Adding PubNub to your Project](#adding-pubnub-to-your-project):
 2. In your AppDelegate.m, define a didReceiveMessage delegate method:
 ```objective-c
         - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
-          NSLog([NSString stringWithFormat:@"received: %@", message.message]);
+               NSLog(@"%@", [NSString stringWithFormat:@"received: %@", message.message]);
         }
 ```
 
