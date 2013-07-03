@@ -38,7 +38,7 @@
 @property (nonatomic, strong) NSMutableDictionary *observedRequests;
 
 // Stores reference on all requests which was required to be stored
-// because of some resons (for example re-schedule request in case
+// because of some reasons (for example re-schedule request in case
 // of error)
 @property (nonatomic, strong) NSMutableDictionary *storedRequests;
 
@@ -152,6 +152,11 @@
 - (BOOL)isConnected {
     
     return self.state == PNConnectionChannelStateConnected;
+}
+
+- (BOOL)isSendingData {
+
+    return [self.connection isSendingData];
 }
 
 - (void)disconnect {
