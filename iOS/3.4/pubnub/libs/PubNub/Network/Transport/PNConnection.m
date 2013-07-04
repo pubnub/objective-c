@@ -688,12 +688,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     
     BOOL isServerError = NO;
     
-    
+    CFIndex errorCode = CFErrorGetCode(error);
     NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
     
     if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX]) {
         
-        switch (CFErrorGetCode(error)) {
+        switch (errorCode) {
             case ECONNREFUSED:  // Connection refused
             case ECONNABORTED:  // Connection was aborted by software (OS)
             case ENETRESET:     // Network dropped connection on reset
@@ -706,6 +706,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 isServerError = YES;
                 break;
         }
+    }
+    else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
+
+        isServerError = (kCFNetServiceErrorDNSServiceFailure <= errorCode) && (errorCode <= kCFNetServiceErrorUnknown);
     }
     
     
