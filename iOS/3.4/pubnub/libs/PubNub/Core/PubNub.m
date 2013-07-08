@@ -239,7 +239,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)handleConnectionErrorOnNetworkFailure;
 
 /**
- * Handle locking operation completino and pop new one from
+ * Handle locking operation completion and pop new one from
  * pending invocations list.
  */
 - (void)handleLockingOperationComplete:(BOOL)shouldStartNext;
@@ -662,8 +662,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             connectionsTerminationBlock();
 
             // Mark that client completely disconnected from origin server
-            // (synchronous disconnection was made to prevebt asynchrnonous disconnect event
-            // from overlaping on connection event)
+            // (synchronous disconnection was made to prevent asynchronous disconnect event
+            // from overlapping on connection event)
             [self sharedInstance].state = PNPubNubClientStateDisconnected;
 
             [[self sharedInstance] connectionChannel:nil didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
@@ -2132,10 +2132,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [self warmUpConnection:channel];
 
 
-        // Checking whether we should use logic for messaginc channel reconnection or not
+        // Checking whether we should use logic for messaging channel reconnection or not
         if ([channel isEqual:self.messagingChannel]) {
 
-            self.asyncLockingOperationInProgress = NO;
             [self messagingChannelDidReconnect:(PNMessagingChannel *)channel];
         }
     }
@@ -2346,7 +2345,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)handleConnectionErrorOnNetworkFailure {
 
-    // Check whether client is connectig currently or not
+    // Check whether client is connecting currently or not
     if (self.state == PNPubNubClientStateConnecting) {
 
         PNError *networkError = [PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError];
@@ -2361,35 +2360,32 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext {
 
-    if (self.isAsyncLockingOperationInProgress) {
-
-        self.asyncLockingOperationInProgress = NO;
+    self.asyncLockingOperationInProgress = NO;
 
 
-        // Perform post completion block
-        // INFO: This is done to handle situation when some block may launch locking operation
-        //       and this handling block will release another one
-        if (operationPostBlock) {
+    // Perform post completion block
+    // INFO: This is done to handle situation when some block may launch locking operation
+    //       and this handling block will release another one
+    if (operationPostBlock) {
 
-            operationPostBlock();
+        operationPostBlock();
+    }
+
+
+    if (shouldStartNext && !self.isAsyncLockingOperationInProgress) {
+
+        NSInvocation *methodInvocation = nil;
+        if ([pendingInvocations count] > 0) {
+
+            // Retrieve reference on invocation instance at the start of the list
+            // (oldest scheduled instance)
+            methodInvocation = [pendingInvocations objectAtIndex:0];
+            [pendingInvocations removeObjectAtIndex:0];
         }
 
+        if (methodInvocation) {
 
-        if (shouldStartNext && !self.isAsyncLockingOperationInProgress) {
-
-            NSInvocation *methodInvocation = nil;
-            if ([pendingInvocations count] > 0) {
-
-                // Retrieve reference on invocation instance at the start of the list
-                // (oldest schedculed instance)
-                methodInvocation = [pendingInvocations objectAtIndex:0];
-                [pendingInvocations removeObjectAtIndex:0];
-            }
-
-            if (methodInvocation) {
-
-                [methodInvocation invoke];
-            }
+            [methodInvocation invoke];
         }
     }
 }
@@ -2941,6 +2937,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)messagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {
     
     if ([messagingChannel canResubscribe]) {
+
+        self.asyncLockingOperationInProgress = NO;
 
         [[self class] performAsyncLockingBlock:^{
 

@@ -614,6 +614,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     return (self.readStreamState == PNSocketStreamNotConfigured && self.writeStreamState == PNSocketStreamNotConfigured);
 }
 
+- (BOOL)isSendingData {
+
+    return [self isConnected] && (self.writeBuffer != nil && [self.writeBuffer hasData] && [self.writeBuffer hasData]);
+}
+
 - (BOOL)isConnectionIssuesError:(CFErrorRef)error {
 
     BOOL isConnectionIssue = NO;
@@ -683,12 +688,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     
     BOOL isServerError = NO;
     
-    
+    CFIndex errorCode = CFErrorGetCode(error);
     NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
     
     if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX]) {
         
-        switch (CFErrorGetCode(error)) {
+        switch (errorCode) {
             case ECONNREFUSED:  // Connection refused
             case ECONNABORTED:  // Connection was aborted by software (OS)
             case ENETRESET:     // Network dropped connection on reset
@@ -696,11 +701,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             case ENOBUFS:       // No buffer space available
             case ECONNRESET:    // Connection reset by peer
             case ENOENT:        // No such file or directory
-            case EPIPE:         // Something went wrong and pipe was dameged
+            case EPIPE:         // Something went wrong and pipe was damaged
                 
                 isServerError = YES;
                 break;
         }
+    }
+    else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
+
+        isServerError = (kCFNetServiceErrorDNSServiceFailure <= errorCode) && (errorCode <= kCFNetServiceErrorUnknown);
     }
     
     
