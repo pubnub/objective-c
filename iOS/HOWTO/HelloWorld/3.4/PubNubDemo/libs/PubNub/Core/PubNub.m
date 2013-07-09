@@ -1665,7 +1665,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate {
     
-    [self requestHistoryForChannel:channel from:nil to:startDate];
+    [self requestHistoryForChannel:channel from:startDate to:nil];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate {
@@ -1677,7 +1677,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             from:(PNDate *)startDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
     
-    [self requestHistoryForChannel:channel from:nil to:startDate withCompletionBlock:handleBlock];
+    [self requestHistoryForChannel:channel from:startDate to:nil withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
@@ -1692,7 +1692,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             from:(PNDate *)startDate
                            limit:(NSUInteger)limit {
     
-    [self requestHistoryForChannel:channel from:nil to:startDate limit:limit];
+    [self requestHistoryForChannel:channel from:startDate to:nil limit:limit];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
@@ -1708,7 +1708,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                            limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
     
-    [self requestHistoryForChannel:channel from:nil to:startDate limit:limit withCompletionBlock:handleBlock];
+    [self requestHistoryForChannel:channel from:startDate to:nil limit:limit withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
@@ -1730,7 +1730,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory {
     
-    [self requestHistoryForChannel:channel from:nil to:startDate limit:limit reverseHistory:shouldReverseMessageHistory];
+    [self requestHistoryForChannel:channel from:startDate to:nil limit:limit reverseHistory:shouldReverseMessageHistory];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel
@@ -1754,8 +1754,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
     
     [self requestHistoryForChannel:channel
-                              from:nil
-                                to:startDate
+                              from:startDate
+                                to:nil
                              limit:limit
                     reverseHistory:shouldReverseMessageHistory
                withCompletionBlock:handleBlock];
@@ -1932,6 +1932,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             else {
                 
                 if (connected) {
+                    
+                    // In case if client is in 'disconnecting on network error' state when connection become available
+                    // force client to change it state to "completed" stage of disconnection on network error
+                    if (weakSelf.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+                        
+                        weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
+                    }
                     
                     if (weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError) {
                         
