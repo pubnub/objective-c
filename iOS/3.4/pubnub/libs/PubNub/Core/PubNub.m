@@ -451,60 +451,59 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 + (void)connectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
                      errorBlock:(PNClientConnectionFailureBlock)failure {
 
-    __block BOOL shouldAddStateObservation = NO;
-    __block BOOL methodCallPostponed = NO;
+    [self performAsyncLockingBlock:^{
 
-    // Check whether instance already connected or not
-    if ([self sharedInstance].state == PNPubNubClientStateConnected ||
-        [self sharedInstance].state == PNPubNubClientStateConnecting) {
+        __block BOOL shouldAddStateObservation = NO;
 
-        PNError *connectionError = [PNError errorWithCode:kPNClientTriedConnectWhileConnectedError];
-        [[self sharedInstance] notifyDelegateClientConnectionFailedWithError:connectionError];
-        
-        if (failure) {
+        // Check whether instance already connected or not
+        if ([self sharedInstance].state == PNPubNubClientStateConnected ||
+                [self sharedInstance].state == PNPubNubClientStateConnecting) {
 
-            failure(connectionError);
-        }
-    }
-    else {
-        
-        // Check whether client configuration was provided
-        // or not
-        if ([self sharedInstance].configuration == nil) {
+            PNError *connectionError = [PNError errorWithCode:kPNClientTriedConnectWhileConnectedError];
+            [[self sharedInstance] notifyDelegateClientConnectionFailedWithError:connectionError];
 
-            PNError *connectionError = [PNError errorWithCode:kPNClientConfigurationError];
-            [[self sharedInstance] notifyDelegateAboutError:connectionError];
-            
-            
-            if(failure) {
-                
+            if (failure) {
+
                 failure(connectionError);
             }
         }
         else {
-            
-            // Check whether user identifier was provided by
-            // user or not
-            if(![self sharedInstance].isUserProvidedClientIdentifier) {
-                
-                // Change user identifier before connect to the
-                // PubNub services
-                [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
+
+            // Check whether client configuration was provided
+            // or not
+            if ([self sharedInstance].configuration == nil) {
+
+                PNError *connectionError = [PNError errorWithCode:kPNClientConfigurationError];
+                [[self sharedInstance] notifyDelegateAboutError:connectionError];
+
+
+                if (failure) {
+
+                    failure(connectionError);
+                }
             }
-            
-            
-            [self sharedInstance].connectOnServiceReachabilityCheck = NO;
-            
-            
-            // Check whether services are available or not
-            if ([[self sharedInstance].reachability isServiceReachabilityChecked]) {
+            else {
 
-                // Checking whether remote PubNub services is reachable or not
-                // (if they are not reachable, this mean that probably there is no
-                // connection)
-                if ([[self sharedInstance].reachability isServiceAvailable]) {
+                // Check whether user identifier was provided by
+                // user or not
+                if (![self sharedInstance].isUserProvidedClientIdentifier) {
 
-                    [self performAsyncLockingBlock:^{
+                    // Change user identifier before connect to the
+                    // PubNub services
+                    [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
+                }
+
+
+                [self sharedInstance].connectOnServiceReachabilityCheck = NO;
+
+
+                // Check whether services are available or not
+                if ([[self sharedInstance].reachability isServiceReachabilityChecked]) {
+
+                    // Checking whether remote PubNub services is reachable or not
+                    // (if they are not reachable, this mean that probably there is no
+                    // connection)
+                    if ([[self sharedInstance].reachability isServiceAvailable]) {
 
                         // Notify PubNub delegate about that it will try to
                         // establish connection with remote PubNub origin
@@ -523,7 +522,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         // Check whether PubNub client was just created and there
                         // is no resources for reuse or not
                         if ([self sharedInstance].state == PNPubNubClientStateCreated ||
-                            [self sharedInstance].state == PNPubNubClientStateDisconnected) {
+                                [self sharedInstance].state == PNPubNubClientStateDisconnected) {
 
                             [self sharedInstance].state = PNPubNubClientStateConnecting;
 
@@ -546,42 +545,34 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                         shouldAddStateObservation = YES;
                     }
-                           postponedExecutionBlock:^{
+                    else {
 
-                               [self postponeConnectWithSuccessBlock:success errorBlock:failure];
-                               methodCallPostponed = YES;
-                           }];
-                }
-                else {
-                    
-                    // Mark that client should try to connect when network will be available
-                    // again
-                    [self sharedInstance].connectOnServiceReachabilityCheck = YES;
-                    [self sharedInstance].asyncLockingOperationInProgress = YES;
-                    
-                    [[self sharedInstance] handleConnectionErrorOnNetworkFailure];
-                    
-                    
-                    if(failure) {
-                        
-                        failure([PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]);
+                        // Mark that client should try to connect when network will be available
+                        // again
+                        [self sharedInstance].connectOnServiceReachabilityCheck = YES;
+                        [self sharedInstance].asyncLockingOperationInProgress = YES;
+
+                        [[self sharedInstance] handleConnectionErrorOnNetworkFailure];
+
+
+                        if (failure) {
+
+                            failure([PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]);
+                        }
                     }
                 }
-            }
-            // Looks like reachability manager was unable to check services reachability
-            // (user still not configured client or just not enough time to check passed
-            // since client configuration)
-            else {
+                        // Looks like reachability manager was unable to check services reachability
+                        // (user still not configured client or just not enough time to check passed
+                        // since client configuration)
+                else {
 
-                [self sharedInstance].asyncLockingOperationInProgress = YES;
-                [self sharedInstance].connectOnServiceReachabilityCheck = YES;
-                
-                shouldAddStateObservation = YES;
+                    [self sharedInstance].asyncLockingOperationInProgress = YES;
+                    [self sharedInstance].connectOnServiceReachabilityCheck = YES;
+
+                    shouldAddStateObservation = YES;
+                }
             }
         }
-    }
-
-    if (!methodCallPostponed) {
 
         // Remove PubNub client from connection state observers list
         [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self oneTimeEvent:YES];
@@ -590,10 +581,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if (shouldAddStateObservation) {
 
             // Subscribe and wait for client connection state change notification
-            [[self sharedInstance] setClientConnectionObservationWithSuccessBlock:(success?[success copy]:nil)
-                                                                     failureBlock:(failure?[failure copy]:nil)];
+            [[self sharedInstance] setClientConnectionObservationWithSuccessBlock:(success ? [success copy] : nil)
+                                                                     failureBlock:(failure ? [failure copy] : nil)];
         }
     }
+           postponedExecutionBlock:^{
+
+               [self postponeConnectWithSuccessBlock:success errorBlock:failure];
+           }];
 }
 
 + (void)postponeConnectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
@@ -662,7 +657,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             connectionsTerminationBlock();
 
             // Mark that client completely disconnected from origin server
-            // (synchronous disconnection was made to prevebt asynchrnonous disconnect event
+            // (synchronous disconnection was made to prevent asynchronous disconnect event
             // from overlaping on connection event)
             [self sharedInstance].state = PNPubNubClientStateDisconnected;
 
@@ -2172,7 +2167,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     // Check whether received event from same host on which client
     // is configured or not and all communication channels are closed
     if([self.configuration.origin isEqualToString:host] &&
-       ![self.messagingChannel isConnected] && ![self.serviceChannel isConnected]) {
+       ![self.messagingChannel isConnected] && ![self.serviceChannel isConnected]  &&
+       self.state != PNPubNubClientStateDisconnected && self.state != PNPubNubClientStateDisconnectedOnNetworkError) {
         
         // Check whether all communication channels disconnected and whether
         // client in corresponding state or not
@@ -2205,14 +2201,54 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
             
             
-            if(self.state == PNPubNubClientStateDisconnected) {
+            if(state == PNPubNubClientStateDisconnected) {
                 
                 // Clean up cached data
                 [PNChannel purgeChannelsCache];
 
-                [self handleLockingOperationComplete:YES];
+                // Delay disconnection notification to give client ability
+                // to perform clean up well
+                __block __pn_desired_weak __typeof__(self) weakSelf = self;
+                void(^disconnectionNotifyBlock)(void) = ^{
+
+                    if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
+                        [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host];
+                    }
+
+                    [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
+                    [self handleLockingOperationComplete:YES];
+                };
+                if (channel == nil) {
+
+                    disconnectionNotifyBlock();
+                }
+                else {
+
+                    double delayInSeconds = 1.0;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), disconnectionNotifyBlock);
+                }
             }
             else {
+
+                __block __pn_desired_weak __typeof__ (self) weakSelf = self;
+                void(^disconnectionNotifyBlock)(void) = ^{
+
+                    if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                        [weakSelf handleLockingOperationBlockCompletion:^{
+
+                            if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+
+                                [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host withError:connectionError];
+                            }
+
+                            [weakSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
+                        }
+                                                    shouldStartNext:YES];
+                    }
+                };
 
                 // Check whether service is available
                 // (this event may arrive after device was unlocked
@@ -2232,58 +2268,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             // Try to restore connection to remote PubNub services
                             [[self class] connect];
                         }
+                        else {
+
+                            disconnectionNotifyBlock();
+                        }
                     }
                     // In case if there is no connection check whether clint
                     // should restore connection or not.
                     else if(![self shouldRestoreConnection]) {
 
                         self.state = PNPubNubClientStateDisconnected;
+                        disconnectionNotifyBlock();
                     }
                 }
-            }
-
-
-            if (self.state == PNPubNubClientStateDisconnected) {
-
-                // Delay disconnection notification to give client ability
-                // to perform clean up well
-                __block __pn_desired_weak __typeof__(self) weakSelf = self;
-                void(^disconnectionNotifyBlock)(void) = ^{
-
-                    [self handleLockingOperationBlockCompletion:^{
-
-                        if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
-
-                            [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host];
-                        }
-
-                        [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
-                    }
-                                                shouldStartNext:YES];
-                };
-                if (channel == nil) {
-
-                    disconnectionNotifyBlock();
-                }
-                else {
-
-                    double delayInSeconds = 1.0;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
-                    dispatch_after(popTime, dispatch_get_main_queue(), disconnectionNotifyBlock);
-                }
-            }
-            else if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
-
-                [self handleLockingOperationBlockCompletion:^{
-
-                    if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
-
-                        [self.delegate pubnubClient:self didDisconnectFromOrigin:host withError:connectionError];
-                    }
-
-                    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
-                }
-                                            shouldStartNext:YES];
             }
         }
         // Check whether server unexpectedly closed connection
@@ -2361,35 +2358,31 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext {
 
-    if (self.isAsyncLockingOperationInProgress) {
+    self.asyncLockingOperationInProgress = NO;
 
-        self.asyncLockingOperationInProgress = NO;
+    // Perform post completion block
+    // INFO: This is done to handle situation when some block may launch locking operation
+    //       and this handling block will release another one
+    if (operationPostBlock) {
+
+        operationPostBlock();
+    }
 
 
-        // Perform post completion block
-        // INFO: This is done to handle situation when some block may launch locking operation
-        //       and this handling block will release another one
-        if (operationPostBlock) {
+    if (shouldStartNext && !self.isAsyncLockingOperationInProgress) {
 
-            operationPostBlock();
+        NSInvocation *methodInvocation = nil;
+        if ([pendingInvocations count] > 0) {
+
+            // Retrieve reference on invocation instance at the start of the list
+            // (oldest schedculed instance)
+            methodInvocation = [pendingInvocations objectAtIndex:0];
+            [pendingInvocations removeObjectAtIndex:0];
         }
 
+        if (methodInvocation) {
 
-        if (shouldStartNext && !self.isAsyncLockingOperationInProgress) {
-
-            NSInvocation *methodInvocation = nil;
-            if ([pendingInvocations count] > 0) {
-
-                // Retrieve reference on invocation instance at the start of the list
-                // (oldest schedculed instance)
-                methodInvocation = [pendingInvocations objectAtIndex:0];
-                [pendingInvocations removeObjectAtIndex:0];
-            }
-
-            if (methodInvocation) {
-
-                [methodInvocation invoke];
-            }
+            [methodInvocation invoke];
         }
     }
 }
