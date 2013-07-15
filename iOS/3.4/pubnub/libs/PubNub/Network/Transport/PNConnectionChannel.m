@@ -461,12 +461,13 @@
     _connection.dataSource = nil;
     _requestsQueue.delegate = nil;
     _requestsQueue = nil;
-    
-    if (_state == PNConnectionChannelStateConnected) {
+
+    BOOL isConnected = _state == PNConnectionChannelStateConnected;
+    _state = PNConnectionChannelStateDisconnected;
+    if (isConnected) {
         
         [_delegate connectionChannel:self didDisconnectFromOrigin:nil];
     }
-    _state = PNConnectionChannelStateDisconnected;
     
     _connection.delegate = nil;
     [PNConnection destroyConnection:_connection];

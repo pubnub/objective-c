@@ -420,7 +420,7 @@
             // server side before subscribe on new channels
             resubscribeRequest.closeConnection = YES;
         }
-        [self scheduleRequest:resubscribeRequest shouldObserveProcessing:shouldRestoreResubscriptionFromLastTimeToken];
+        [self scheduleRequest:resubscribeRequest shouldObserveProcessing:!shouldRestoreResubscriptionFromLastTimeToken];
 
     }
 }
