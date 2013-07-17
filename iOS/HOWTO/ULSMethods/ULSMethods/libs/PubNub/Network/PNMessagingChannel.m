@@ -420,7 +420,7 @@
             // server side before subscribe on new channels
             resubscribeRequest.closeConnection = YES;
         }
-        [self scheduleRequest:resubscribeRequest shouldObserveProcessing:shouldRestoreResubscriptionFromLastTimeToken];
+        [self scheduleRequest:resubscribeRequest shouldObserveProcessing:!shouldRestoreResubscriptionFromLastTimeToken];
 
     }
 }
@@ -431,8 +431,6 @@
 }
 
 - (void)updateSubscriptionForChannels:(NSArray *)channels {
-
-    self.restoringSubscription = NO;
 
     // Ensure that client connected to at least one channel
     if ([channels count] > 0) {
@@ -1150,9 +1148,10 @@
     [super requestsQueue:queue didSendRequest:request];
 
 
-    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" DID SEND REQUEST: %@ [BODY: %@]",
-          request,
-          request.resourcePath);
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" DID SEND REQUEST: %@ [BODY: %@][WAITING FOR COMPLETION? %@]",
+            request,
+            request.resourcePath,
+            [self isWaitingRequestCompletion:request.shortIdentifier] ? @"YES" : @"NO");
 
 
     // If we are not waiting for request completion, inform delegate

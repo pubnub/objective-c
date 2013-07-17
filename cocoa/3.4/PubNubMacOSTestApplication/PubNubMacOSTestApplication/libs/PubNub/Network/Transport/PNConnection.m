@@ -614,6 +614,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     return (self.readStreamState == PNSocketStreamNotConfigured && self.writeStreamState == PNSocketStreamNotConfigured);
 }
 
+- (BOOL)isSendingData {
+
+    return [self isConnected] && (self.writeBuffer != nil && [self.writeBuffer hasData] && [self.writeBuffer hasData]);
+}
+
 - (BOOL)isConnectionIssuesError:(CFErrorRef)error {
 
     BOOL isConnectionIssue = NO;
@@ -683,12 +688,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     
     BOOL isServerError = NO;
     
-    
+    CFIndex errorCode = CFErrorGetCode(error);
     NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
     
     if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX]) {
         
-        switch (CFErrorGetCode(error)) {
+        switch (errorCode) {
             case ECONNREFUSED:  // Connection refused
             case ECONNABORTED:  // Connection was aborted by software (OS)
             case ENETRESET:     // Network dropped connection on reset
@@ -696,11 +701,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             case ENOBUFS:       // No buffer space available
             case ECONNRESET:    // Connection reset by peer
             case ENOENT:        // No such file or directory
-            case EPIPE:         // Something went wrong and pipe was dameged
+            case EPIPE:         // Something went wrong and pipe was damaged
                 
                 isServerError = YES;
                 break;
         }
+    }
+    else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
+
+        isServerError = (kCFNetServiceErrorDNSServiceFailure <= errorCode) && (errorCode <= kCFNetServiceErrorUnknown);
     }
     
     
@@ -835,17 +844,19 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     self.reconnecting = YES;
 
     [self disconnectStreams];
-
-    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Reconnecting \"%@\" channel", self.name);
 }
 
 - (void)reconnectOnError {
+
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Reconnecting \"%@\" channel because of error", self.name);
 
     self.reconnectingOnError = YES;
     [self reconnect];
 }
 
 - (void)disconnectStreams {
+
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" is disconnecting connections", self.name);
     
     [self disconnectReadStream:_socketReadStream shouldHandleCloseEvent:NO];
     [self disconnectWriteStream:_socketWriteStream shouldHandleCloseEvent:NO];
@@ -856,6 +867,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (void)closeConnection {
+
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" is closing connection", self.name);
 
     self.reconnectingOnError = NO;
     self.reconnecting = NO;
@@ -1303,6 +1316,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleStreamClose {
 
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" channel stream states: %d / %d",
+            self.name, self.readStreamState, self.writeStreamState);
+
     // Ensure that both read and write streams reset before notify delegate
     // about connection close event
     if (self.readStreamState == PNSocketStreamNotConfigured && self.writeStreamState == PNSocketStreamNotConfigured) {
@@ -1317,6 +1333,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             [self connect];
         }
         else {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" Notify delegate that \"%@\" disconnected", self.name);
 
             [self.delegate connection:self didDisconnectFromHost:self.configuration.origin];
         }
@@ -1402,7 +1420,16 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Check whether error is caused by SSL issues or not
         if ([self isSecurityTransportError:error]) {
 
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] SSL ERROR OCCURRED", self.name);
+
             if (![self isInternalSecurityTransportError:error]) {
+
+                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] IS SECURITY LEVEL REDUCTION ALLOWED? %@",
+                        self.name, self.configuration.shouldReduceSecurityLevelOnError ? @"YES" : @"NO");
+                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] IS IT ALLOWED TO DISCARD SECURITY SETTINGS? %@",
+                        self.name, self.configuration.canIgnoreSecureConnectionRequirement ? @"YES" : @"NO");
+                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] CURRENT SSL CONFIGURATION LEVEL: %d",
+                        self.name, self.sslConfigurationLevel);
                 
                 // Checking whether user allowed to decrease security options
                 // and we can do it
@@ -1434,6 +1461,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 }
             }
             else {
+
+                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] INTERNAL SSL ERROR OCCURRED", self.name);
                 
                 isCriticalStreamError = YES;
                 shouldCloseConnection = NO;
@@ -1444,6 +1473,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX] ||
                 [errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] SOCKET GENERAL ERROR OCCURRED", self.name);
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] SOCKET GENERAL ERROR BECAUSE OF INTERNET? %@",
+                    self.name, [self isConnectionIssuesError:error] ? @"YES" : @"NO");
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] SOCKET GENERAL ERROR BECAUSE OF SERVER? %@",
+                    self.name, [self isServerError:error] ? @"YES" : @"NO");
 
             // Check whether connection should be reconnected
             // because of critical error
@@ -1494,6 +1529,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
             
         if (shouldCloseConnection && !self.isClosingConnection) {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" \"%@\" closing streams because of error", self.name);
                 
             [self closeStreams];
         }

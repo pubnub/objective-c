@@ -1,3 +1,7 @@
+07-17-2013
+. fixed bug of publish resume on reconnect
+. misc networking reconnect issues under various network switching scenarios
+
 06-25-2013
 . fixed connection issue on race condition when switching between networks
 . added paging history demo to demo iPad app
