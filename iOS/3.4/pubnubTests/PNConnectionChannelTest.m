@@ -26,9 +26,7 @@
 
 @end
 
-@interface PNConnectionChannelTest ()
-
-<PNConnectionChannelDelegate>
+@interface PNConnectionChannelTest () <PNConnectionChannelDelegate>
 
 @end
 
@@ -170,7 +168,11 @@
 
 #pragma mark - PNConnectionChannel Delegate
 
-- (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host {}
+- (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host {
+}
+
+- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectOnErrorToHost:(NSString *)host {
+}
 
 - (void)connectionChannel:(PNConnectionChannel *)channel
 connectionDidFailToOrigin:(NSString *)host
