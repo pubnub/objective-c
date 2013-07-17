@@ -282,6 +282,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)notifyDelegateAboutConnectionToOrigin:(NSString *)originHostName;
 
 /**
+ * This method will notify delegate that client is about
+ * to restore subscription to specified set of channels
+ * and send notification about it.
+ */
+- (void)notifyDelegateAboutResubscribeWillStartOnChannels:(NSArray *)channels;
+
+/**
  * This method will notify delegate about that
  * subscription failed with error
  */
@@ -688,7 +695,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             int64_t delayInSeconds = 1;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-                
+
                 [self sharedInstance].asyncLockingOperationInProgress = NO;
                 
                 [self sharedInstance].state = PNPubNubClientStateCreated;
@@ -841,7 +848,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                
                                [self sharedInstance].clientIdentifier = identifier;
                            }
-                           
+
                            [self sharedInstance].asyncLockingOperationInProgress = NO;
                            [self subscribeOnChannels:allChannels
                                    withPresenceEvent:YES
@@ -853,7 +860,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                           }];
                        }
                        else {
-                           
+
                            [self sharedInstance].asyncLockingOperationInProgress = NO;
                            [self subscribeOnChannels:allChannels withPresenceEvent:NO];
                        }
@@ -1884,16 +1891,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)performAsyncLockingBlock:(void(^)(void))codeBlock postponedExecutionBlock:(void(^)(void))postponedCodeBlock {
     
-    // Checking whether code can be executed right now or should be posponed
+    // Checking whether code can be executed right now or should be postponed
     if ([[self sharedInstance] shouldPostponeMethodCall]) {
-        
+
         if (postponedCodeBlock) {
             
             postponedCodeBlock();
         }
     }
     else {
-        
+
         if (codeBlock) {
             
             [self sharedInstance].asyncLockingOperationInProgress = YES;
@@ -1926,13 +1933,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 
                 weakSelf.connectOnServiceReachabilityCheck = NO;
                 if (connected) {
-                    
+
                     weakSelf.asyncLockingOperationInProgress = NO;
                     
                     [[weakSelf class] connect];
                 }
                 else {
-                    
+
                     weakSelf.connectOnServiceReachability = YES;
                     [weakSelf handleConnectionErrorOnNetworkFailure];
                     weakSelf.asyncLockingOperationInProgress = YES;
@@ -1953,7 +1960,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         
                         // Check whether should restore connection or not
                         if([weakSelf shouldRestoreConnection] || weakSelf.shouldConnectOnServiceReachability) {
-                            
+
                             weakSelf.asyncLockingOperationInProgress = NO;
                             if(!weakSelf.shouldConnectOnServiceReachability){
                                 
@@ -2104,26 +2111,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [self notifyDelegateAboutConnectionToOrigin:host];
         
         if (self.isRestoringConnection) {
-            
-            NSArray *channels = [self.messagingChannel subscribedChannels];
-            
-            if ([channels count] > 0) {
-                
-                // Notify delegate that client is about to restore subscription
-                // on previously subscribed channels
-                if ([self.delegate respondsToSelector:@selector(pubnubClient:willRestoreSubscriptionOnChannels:)]) {
-                    
-                    [self.delegate performSelector:@selector(pubnubClient:willRestoreSubscriptionOnChannels:)
-                                        withObject:self
-                                        withObject:channels];
-                }
-                
-                [self sendNotification:kPNClientSubscriptionWillRestoreNotification withObject:channels];
-            }
-            
-            
-            // Check whethr user want to resubscribe on previously subscribed channels or not
+
+            // Check whether user want to resubscribe on previously subscribed channels or not
             if ([self shouldRestoreSubscription]) {
+
+                [self notifyDelegateAboutResubscribeWillStartOnChannels:[self.messagingChannel subscribedChannels]];
                 
                 [self.messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
             }
@@ -2289,7 +2281,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         
                         // Check whether should restore connection or not
                         if ([self shouldRestoreConnection]) {
-                            
+
                             self.asyncLockingOperationInProgress = NO;
                             self.restoringConnection = YES;
                             
@@ -2318,7 +2310,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             self.state = PNPubNubClientStateDisconnected;
             
             if([self shouldRestoreConnection]) {
-                
+
                 self.asyncLockingOperationInProgress = NO;
                 self.restoringConnection = YES;
                 
@@ -2329,7 +2321,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Check whether connection has been closed because
         // PubNub client updates it's configuration
         else if (self.state == PNPubNubClientStateDisconnectingOnConfigurationChange) {
-            
+
             self.asyncLockingOperationInProgress = NO;
             
             // Close connection to PubNub services
@@ -2343,7 +2335,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                  withError:(PNError *)error {
     
     if (self.state == PNPubNubClientStateConnected && [self.configuration.origin isEqualToString:host]) {
-        
+
         self.state = PNPubNubClientStateDisconnecting;
         BOOL disconnectedOnNetworkError = ![self.reachability isServiceAvailable];
         if(!disconnectedOnNetworkError) {
@@ -2370,7 +2362,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 #pragma mark - Handler methods
 
 - (void)handleConnectionErrorOnNetworkFailure {
-    
+
     // Check whether client is connecting currently or not
     if (self.state == PNPubNubClientStateConnecting || self.shouldConnectOnServiceReachability) {
         
@@ -2505,6 +2497,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
     
     [self sendNotification:kPNClientDidConnectToOriginNotification withObject:originHostName];
+}
+
+- (void)notifyDelegateAboutResubscribeWillStartOnChannels:(NSArray *)channels {
+
+    if ([channels count] > 0) {
+
+        // Notify delegate that client is about to restore subscription
+        // on previously subscribed channels
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:willRestoreSubscriptionOnChannels:)]) {
+
+            [self.delegate performSelector:@selector(pubnubClient:willRestoreSubscriptionOnChannels:)
+                                withObject:self
+                                withObject:channels];
+        }
+
+        [self sendNotification:kPNClientSubscriptionWillRestoreNotification withObject:channels];
+    }
 }
 
 - (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error {
@@ -2883,15 +2892,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 #pragma mark - Message channel delegate methods
 
 - (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
-    
+
+    __block __pn_desired_weak PubNub *weakSelf = self;
     [[self class] performAsyncLockingBlock:^{
         
         if ([messagingChannel canResubscribe]) {
             
             // Check whether user want to resubscribe on previously subscribed channels or not
-            if ([self shouldRestoreSubscription]) {
-                
-                [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
+            if ([weakSelf shouldRestoreSubscription]) {
+
+                [weakSelf notifyDelegateAboutResubscribeWillStartOnChannels:[messagingChannel subscribedChannels]];
+                [messagingChannel restoreSubscription:[weakSelf shouldRestoreSubscriptionWithLastTimeToken]];
             }
             // Looks like developer doesn't want to restore subscription on previously
             // subscribed channels, flush channels
