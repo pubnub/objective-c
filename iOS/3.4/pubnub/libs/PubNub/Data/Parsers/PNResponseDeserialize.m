@@ -287,6 +287,8 @@ static NSString * const kPNContentLengthHeaderFieldName = @"Content-Length";
                          ofData:(NSData *)data
              incompleteResponse:(BOOL *)isIncompleteResponse {
 
+    NSLog(@">>>> HTTP PAYLOAD: %@", [[NSString alloc] initWithData:[data subdataWithRange:responseRange] encoding:NSASCIIStringEncoding]);
+
     // Mark that request is incomplete because from the start we don't know for sure
     // (also this make code cleaner)
     *isIncompleteResponse = YES;
@@ -346,6 +348,14 @@ static NSString * const kPNContentLengthHeaderFieldName = @"Content-Length";
                 if (isFullBody) {
 
                     responseBody = [responseBody subdataWithRange:NSMakeRange(0, contentEndRange.location)];
+                }
+            }
+            if (isResponseCompressed) {
+
+                if (!isResponseChunked) {
+
+                    NSLog(@"\n\n\n\n>>>> MESSAGE COMPRESSED WITH COMPRESSION >><< IS FULL BODY? %@ (CONTENT LENGTH: %d | BODY LENGTH: %d) <<<<\n\n\n\n",
+                          isFullBody?@"YES":@"NO", contentLength, contentSize);
                 }
             }
 
