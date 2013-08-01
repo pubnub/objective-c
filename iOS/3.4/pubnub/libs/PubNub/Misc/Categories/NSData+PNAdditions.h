@@ -44,6 +44,11 @@
  */
 - (NSData *)GZIPInflate;
 
+/**
+ * Retrieve uncompressed deflated data
+ */
+- (NSData *)inflate;
+
 
 #pragma mark - APNS
 
