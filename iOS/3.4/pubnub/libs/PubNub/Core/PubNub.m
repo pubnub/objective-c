@@ -2052,8 +2052,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)warmUpConnection:(PNConnectionChannel *)connectionChannel {
-    
-    [self sendRequest:[PNTimeTokenRequest new] onChannel:connectionChannel shouldObserveProcessing:NO];
+
+    PNTimeTokenRequest *request = [PNTimeTokenRequest new];
+    request.sendingByUserRequest = NO;
+
+    [self sendRequest:request onChannel:connectionChannel shouldObserveProcessing:NO];
 }
 
 - (void)sendRequest:(PNBaseRequest *)request shouldObserveProcessing:(BOOL)shouldObserveProcessing {

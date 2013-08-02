@@ -18,14 +18,10 @@
 
 #pragma mark Static
 
-// Stores index of callback method name in array
-// which was created by splitting callback method
-// from JSONP by '_' sign
+// Stores index of callback method name in array which was created by splitting callback method from JSONP by '_' sign
 static NSUInteger const kPNResponseCallbackMethodNameIndex = 0;
 
-// Stores index of request identifier in array
-// which was created by splitting callback method
-// from JSONP by '_' sign
+// Stores index of request identifier in array which was created by splitting callback method from JSONP by '_' sign
 static NSUInteger const kPNResponseRequestIdentifierIndex = 1;
 
 
@@ -54,32 +50,13 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 #pragma mark - Properties
 
-// Stores binary response from PubNub services
 @property (nonatomic, strong) NSData *content;
-
-// Stores HTTP status code which was returned
-// on sent request
 @property (nonatomic, assign) NSInteger statusCode;
-
-// Stores response size (including HTTP header
-// fields)
 @property (nonatomic, assign) NSUInteger size;
-
-// Stores reference on error object which will hold
-// any information about parsing error
 @property (nonatomic, strong) PNError *error;
-
-// Stores reference on request small identifier
-// hash which will be used to find request
-// which sent this request
 @property (nonatomic, copy) NSString *requestIdentifier;
-
-// Stores reference on callback function name
-// which will be returned in JSONP response
 @property (nonatomic, copy) NSString *callbackMethod;
-
-// Stores reference on response body object
-// (array in most of cases)
+@property (nonatomic, assign, getter = isLastResponseOnConnection) BOOL lastResponseOnConnection;
 @property (nonatomic, strong) id response;
 
 
@@ -88,8 +65,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 #pragma mark - Handler methods
 
 /**
- * Handle JSON encoding error and try perform additional tasks
- * to silently fallback this error
+ * Handle JSON encoding error and try perform additional tasks to silently fallback this error
  */
 - (void)handleJSONDecodeErrorWithCode:(NSUInteger)errorCode;
 
@@ -97,15 +73,13 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 #pragma mark - Misc methods
 
 /**
- * If user is using cypher key to send request
- * than it will be used to decode server response
+ * If user is using cypher key to send request than it will be used to decode server response
  */
 - (NSString *)decodedResponse;
 
 /**
- * In case of JSON parsing error, this method will
- * allow to pull out information about request and
- * callback function from partial response
+ * In case of JSON parsing error, this method will allow to pull out information about request and callback
+ * function from partial response
  */
 - (void)getCallbackFunction:(NSString **)callback
           requestIdentifier:(NSString **)identifier
@@ -123,24 +97,30 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 #pragma mark Class methods
 
 /**
- * Retrieve instance which will hold information about
- * HTTP response body and size of whole response
+ * Retrieve instance which will hold information about HTTP response body and size of whole response
  * (including HTTP headers)
  */
-+ (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode {
++ (PNResponse *)responseWithContent:(NSData *)content
+                               size:(NSUInteger)responseSize
+                               code:(NSInteger)statusCode
+           lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
     
-    return [[[self class] alloc] initWithContent:content size:responseSize code:statusCode];
+    return [[[self class] alloc] initWithContent:content
+                                            size:responseSize
+                                            code:statusCode
+                        lastResponseOnConnection:isLastResponseOnConnection];
 }
 
 
 #pragma mark - Instance methods
 
 /**
- * Initialize response instance with response
- * body content data, response size and status
- * code (HTTP status code)
+ * Initialize response instance with response body content data, response size and status code (HTTP status code)
  */
-- (id)initWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode {
+- (id)initWithContent:(NSData *)content
+                 size:(NSUInteger)responseSize
+                 code:(NSInteger)statusCode
+        lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
     
     // Check whether initialization was successful or not
     if((self = [super init])) {
@@ -148,6 +128,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         self.content = content;
         self.size = responseSize;
         self.statusCode = statusCode;
+        self.lastResponseOnConnection = isLastResponseOnConnection;
 
         
         NSString *decodedResponse = [self decodedResponse];
@@ -198,17 +179,11 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     return self;
 }
 
-- (BOOL)isCorrectResponse {
-
-    return (self.size > 0 && self.statusCode == 200);
-}
-
 #pragma mark - Handler methods
 
 - (void)handleJSONDecodeErrorWithCode:(NSUInteger)errorCode {
 
     // Mark that request is failed to be processed correctly
-    self.statusCode = errorCode;
     self.size = 0;
 
     self.error = [PNError errorWithCode:errorCode];
@@ -277,14 +252,15 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %i\nRESPONSE SIZE: %i\nRESPONSE CONTENT SIZE: %i\nIS JSONP: %@\nCALLBACK METHOD: %@\nREQUEST IDENTIFIER: %@\nRESPONSE: %@\n",
-            self.statusCode,
-            [self.content length],
-            self.size,
-            self.callbackMethod?@"YES":@"NO",
-            self.callbackMethod,
-            self.requestIdentifier,
-            self.response];
+    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %i\nCONNECTION WILL BE CLOSE? %@\nRESPONSE SIZE: %i\nRESPONSE CONTENT SIZE: %i\nIS JSONP: %@\nCALLBACK METHOD: %@\nREQUEST IDENTIFIER: %@\nRESPONSE: %@\n",
+                                      self.statusCode,
+                                      self.isLastResponseOnConnection ? @"YES" : @"NO",
+                                      [self.content length],
+                                      self.size,
+                                      self.callbackMethod ? @"YES" : @"NO",
+                                      self.callbackMethod,
+                                      self.requestIdentifier,
+                                      self.response];
 }
 
 #pragma mark -

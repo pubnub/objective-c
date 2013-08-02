@@ -68,15 +68,6 @@
 
 #pragma mark - Instance methods
 
-/**
- * Check whether response should be processed on
- * this communication channel or not
- */
-- (BOOL)shouldHandleResponse:(PNResponse *)response;
-
-- (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;
-
-
 #pragma mark - Presence observation management
 
 - (void)disablePresenceObservationForChannels:(NSArray *)channels sendRequest:(BOOL)shouldSendRequest;
@@ -263,7 +254,14 @@
 
 - (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
 
-    return [request isKindOfClass:[PNSubscribeRequest class]];
+    BOOL shouldStoreRequest = [request isKindOfClass:[PNSubscribeRequest class]];
+    if (!shouldStoreRequest && [request isKindOfClass:[PNTimeTokenRequest class]]) {
+
+        shouldStoreRequest = request.isSendingByUserRequest;
+    }
+
+
+    return shouldStoreRequest;
 }
 
 - (void)terminate {
@@ -1053,57 +1051,9 @@
 
 - (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
 
-    if ([self shouldHandleResponse:response]) {
+    [super connection:connection didReceiveResponse:response];
 
-        [super connection:connection didReceiveResponse:response];
-
-        
-        BOOL shouldResendRequest = response.error.code == kPNResponseMalformedJSONError;
-
-        // Retrieve reference on observer request
-        PNBaseRequest *request = [self observedRequestWithIdentifier:response.requestIdentifier];
-        BOOL shouldObserveExecution = request != nil;
-
-
-        // Check whether response is valid or not
-        if (shouldResendRequest) {
-
-            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" RECEIVED MALFORMED RESPONSE: %@", response);
-
-            if (request == nil) {
-
-                request = [super storedRequestWithIdentifier:response.requestIdentifier];
-            }
-            [request reset];
-
-            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RESCHEDULING REQUEST: %@", request);
-        }
-        // Looks like response is valid (continue)
-        else {
-
-            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RECIEVED RESPONSE: %@", response);
-
-            [self destroyRequest:request];
-            [self processResponse:response forRequest:request];
-        }
-
-
-        // Check whether connection available or not
-        if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
-            
-            if (shouldResendRequest) {
-                
-                [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution];
-            }
-            else {
-                
-                // Asking to schedule next request
-                [self scheduleNextRequest];
-            }
-        }
-
-        [self startChannelIdleTimer];
-    }
+    [self startChannelIdleTimer];
 }
 
 - (void)connection:(PNConnection *)connection didDisconnectFromHost:(NSString *)hostName {

@@ -22,6 +22,8 @@
 
 #pragma mark - Instance methods
 
+- (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;
+
 /**
  * Returns whether communication channel is waiting for
  * request processing completion from backebd or not

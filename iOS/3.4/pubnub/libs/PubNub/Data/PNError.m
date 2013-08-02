@@ -51,7 +51,7 @@
     return [self errorWithMessage:nil code:errorCode];
 }
 
-+ (PNError *)errorWithHTTPStatusCode:(NSUInteger)statusCode {
++ (PNError *)errorWithHTTPStatusCode:(NSInteger)statusCode {
 
     NSInteger errorCode = kPNAPIUnauthorizedAccessError;
 
