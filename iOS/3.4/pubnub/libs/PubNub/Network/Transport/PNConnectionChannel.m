@@ -409,7 +409,7 @@
     // Check whether connection available or not
     if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
 
-        if (shouldResendRequest) {
+        if (shouldResendRequest && request) {
 
             [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution];
         }
