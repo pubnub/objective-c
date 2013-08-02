@@ -59,7 +59,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 // Stores HTTP status code which was returned
 // on sent request
-@property (nonatomic, assign) NSUInteger statusCode;
+@property (nonatomic, assign) NSInteger statusCode;
 
 // Stores response size (including HTTP header
 // fields)
@@ -127,7 +127,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
  * HTTP response body and size of whole response
  * (including HTTP headers)
  */
-+ (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSUInteger)statusCode {
++ (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode {
     
     return [[[self class] alloc] initWithContent:content size:responseSize code:statusCode];
 }
@@ -140,7 +140,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
  * body content data, response size and status
  * code (HTTP status code)
  */
-- (id)initWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSUInteger)statusCode {
+- (id)initWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode {
     
     // Check whether initialization was successful or not
     if((self = [super init])) {
