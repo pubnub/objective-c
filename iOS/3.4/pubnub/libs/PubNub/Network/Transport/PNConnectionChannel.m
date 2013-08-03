@@ -48,6 +48,12 @@
 #pragma mark - Instance methods
 
 /**
+ * Check whether response should be processed on
+ * this communication channel or not
+ */
+- (BOOL)shouldHandleResponse:(PNResponse *)response;
+
+/**
  * Launch/stop request timeout timer which will be fired if
  * no response will arrive from service along specified
  * timeout in seconds
@@ -164,6 +170,11 @@
     self.state = PNConnectionChannelStateDisconnecting;
     
     [self.connection closeConnection];
+}
+
+- (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request {
+
+    NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
 
 - (BOOL)isWaitingRequestCompletion:(NSString *)requestIdentifier {
@@ -298,6 +309,14 @@
     [self cleanUp];
 }
 
+- (BOOL)shouldHandleResponse:(PNResponse *)response {
+
+    NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
+
+
+    return YES;
+}
+
 - (void)startTimeoutTimerForRequest:(PNBaseRequest *)request {
 
     self.timeoutTimer = [NSTimer timerWithTimeInterval:[request timeout]
@@ -348,7 +367,58 @@
     // Retrieve reference on request for which this response was received
     PNBaseRequest *request = [self observedRequestWithIdentifier:response.requestIdentifier];
 
+    // Check whether request successfully received and can be used or not
+    BOOL shouldResendRequest = response.error.code == kPNResponseMalformedJSONError || response.statusCode >= 500;
+    BOOL shouldObserveExecution = request != nil;
+    BOOL isRequestSentByUser = request == nil || request.isSendingByUserRequest;
+    BOOL shouldHandleResponse = [self shouldHandleResponse:response];
+
     [self stopTimeoutTimerForRequest:request];
+
+
+    // Check whether response is valid or not
+    if (shouldResendRequest) {
+
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" RECEIVED MALFORMED RESPONSE: %@", response);
+
+        if (request == nil) {
+
+            request = [self storedRequestWithIdentifier:response.requestIdentifier];
+        }
+        [request reset];
+
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RESCHEDULING REQUEST: %@", request);
+    }
+    // Looks like response is valid (continue)
+    else {
+
+        if (shouldHandleResponse && isRequestSentByUser) {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RECIEVED RESPONSE: %@", response);
+        }
+
+        [self destroyRequest:request];
+
+        if (shouldHandleResponse) {
+
+            [self processResponse:response forRequest:request];
+        }
+    }
+
+
+    // Check whether connection available or not
+    if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
+
+        if (shouldResendRequest && request) {
+
+            [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution];
+        }
+        else {
+
+            // Asking to schedule next request
+            [self scheduleNextRequest];
+        }
+    }
 }
 
 - (void)connection:(PNConnection *)connection willDisconnectFromHost:(NSString *)host withError:(PNError *)error {
