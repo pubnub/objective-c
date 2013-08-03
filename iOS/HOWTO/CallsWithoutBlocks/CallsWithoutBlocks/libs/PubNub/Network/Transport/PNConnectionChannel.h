@@ -119,6 +119,12 @@ typedef enum _PNConnectionChannelState {
 - (BOOL)isConnected;
 
 /**
+ * Check whether connection has active request which should be
+ * sent or not
+ */
+- (BOOL)isSendingData;
+
+/**
  * Closing connection to the server.
  * Requests queue won't be flushed
  */
