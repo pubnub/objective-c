@@ -21,6 +21,30 @@
 
 #pragma mark Structures
 
+typedef NS_OPTIONS(NSUInteger , PNConnectionStateFlag)  {
+
+    // Flag which allow to set whether read stream configured or not
+    PNReadStreamConfigured = 1 << 0,
+
+    // Flag which allow to set whether write stream configured or not
+    PNWriteStreamConfigured = 1 << 1,
+
+    // Flag which allow to set whether connection configured or not
+    PNConnectionConfigured = (PNReadStreamConfigured | PNWriteStreamConfigured),
+
+    // Flag which allow to set whether read stream is connecting right now or not
+    PNReadStreamConnecting = 1 << 2,
+
+    // Flag which allow to set whether write stream is connecting right now or not
+    PNWriteStreamConnecting = 1 << 3,
+
+    // Flag which allow to set whether client is connecting at this moment or not
+    PNConnectionConnecting = (PNReadStreamConnecting | PNWriteStreamConnecting),
+
+    // Flag which allow to set whether client is connected or not
+    PNConnectionConnected = 1 << 3
+};
+
 typedef enum _PNConnectionSSLConfigurationLevel {
 
     // This option will check all information on
@@ -110,6 +134,9 @@ static int const kPNStreamBufferSize = 32768;
 // the PubNub service via socket
 @property (nonatomic, strong) PNWriteBuffer *writeBuffer;
 
+// Stores connection channel state
+@property (nonatomic, assign) uint32_t state;
+
 // Socket streams and state
 @property (nonatomic, assign) CFReadStreamRef socketReadStream;
 @property (nonatomic, assign) PNSocketStreamState readStreamState;
@@ -184,11 +211,8 @@ static int const kPNStreamBufferSize = 32768;
  * settings.
  */
 - (void)configureReadStream:(CFReadStreamRef)readStream;
-
 - (void)openReadStream:(CFReadStreamRef)readStream;
-
 - (void)disconnectReadStream:(CFReadStreamRef)readStream shouldHandleCloseEvent:(BOOL)shouldHandleCloseEvent;
-
 - (void)destroyReadStream:(CFReadStreamRef)readStream;
 
 /**
@@ -211,11 +235,8 @@ static int const kPNStreamBufferSize = 32768;
  * settings.
  */
 - (void)configureWriteStream:(CFWriteStreamRef)writeStream;
-
 - (void)openWriteStream:(CFWriteStreamRef)writeStream;
-
 - (void)disconnectWriteStream:(CFWriteStreamRef)writeStream shouldHandleCloseEvent:(BOOL)shouldHandleCloseEvent;
-
 - (void)destroyWriteStream:(CFWriteStreamRef)writeStream;
 
 /**
@@ -267,11 +288,8 @@ static int const kPNStreamBufferSize = 32768;
 - (NSString *)stringifyStreamStatus:(CFStreamStatus)status;
 
 - (void)handleStreamError:(CFErrorRef)error;
-
 - (void)handleStreamError:(CFErrorRef)error shouldCloseConnection:(BOOL)shouldCloseConnection;
-
 - (void)handleStreamSetupError;
-
 - (void)handleRequestProcessingError:(CFErrorRef)error;
 
 
@@ -296,9 +314,7 @@ static int const kPNStreamBufferSize = 32768;
  * Connection state retrieval
  */
 - (BOOL)isConfigured;
-
 - (BOOL)isConnecting;
-
 - (BOOL)isReady;
 
 - (CFStreamClientContext)streamClientContext;
@@ -431,7 +447,10 @@ static int const kPNStreamBufferSize = 32768;
         self.deserializer = [PNResponseDeserialize new];
 
         // Perform streams initial options and security initializations
-        [self prepareStreams];
+        if (![self prepareStreams]) {
+
+            PNBitClear(&_state);
+        }
     }
 
 

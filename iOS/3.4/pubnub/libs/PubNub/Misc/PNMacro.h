@@ -176,6 +176,77 @@ void PNLog(PNLogLevels level, id sender, ...) {
     }
 }
 
+static uint32_t PNBitCompound(va_list masksList);
+uint32_t PNBitCompound(va_list masksList) {
+
+    uint32_t compoundMask = 0;
+    uint32_t mask = va_arg(masksList, uint32_t);
+    while (mask != 0) {
+
+        compoundMask |= mask;
+        mask = va_arg(masksList, uint32_t);
+    }
+    va_end(masksList);
+
+
+    return compoundMask;
+}
+
+static BOOL PNBitClear(uint32_t *flag);
+BOOL PNBitClear(uint32_t *flag) {
+
+    *flag = 0;
+}
+
+static BOOL PNBitIsOn(uint32_t flag, uint32_t mask);
+BOOL PNBitIsOn(uint32_t flag, uint32_t mask) {
+
+    return (flag & mask) != 0;
+}
+
+static BOOL PNBitsIsOn(uint32_t flag, BOOL allMasksRequired, ...);
+BOOL PNBitsIsOn(uint32_t flag, BOOL allMasksRequired, ...) {
+
+    va_list bits;
+    va_start(bits, allMasksRequired);
+    uint32_t compoundMask = PNBitCompound(bits);
+
+
+    return allMasksRequired ? (flag & compoundMask) == compoundMask : PNBitIsOn(flag, compoundMask);
+}
+
+static void PNBitOn(uint32_t *flag, uint32_t mask);
+void PNBitOn(uint32_t *flag, uint32_t mask) {
+
+    *flag |= mask;
+}
+
+static void PNBitsOn(uint32_t *flag, ...);
+void PNBitsOn(uint32_t *flag, ...) {
+
+    va_list bits;
+    va_start(bits, *flag);
+    uint32_t compoundMask = PNBitCompound(bits);
+
+    PNBitOn(flag, compoundMask);
+}
+
+static void PNBitOff(uint32_t *flag, uint32_t mask);
+void PNBitOff(uint32_t *flag, uint32_t mask) {
+
+    *flag &= ~mask;
+}
+
+static void PNBitsOff(uint32_t *flag, ...);
+void PNBitsOff(uint32_t *flag, ...) {
+
+    va_list bits;
+    va_start(bits, *flag);
+    uint32_t compoundMask = PNBitCompound(bits);
+
+    PNBitOff(flag, compoundMask);
+}
+
 static void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject);
 void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
     if (CFObject != NULL) {
