@@ -25,7 +25,7 @@
 
 // Stores HTTP status code which was returned
 // on sent request
-@property (nonatomic, readonly, assign) NSUInteger statusCode;
+@property (nonatomic, readonly, assign) NSInteger statusCode;
 
 // Stores response size (including HTTP header
 // fields)
@@ -56,7 +56,7 @@
  * HTTP response body and size of whole response
  * (including HTTP headers)
  */
-+ (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSUInteger)statusCode;
++ (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode;
 
 
 #pragma mark - Instance methods
@@ -66,7 +66,7 @@
  * body content data, response size and status
  * code (HTTP status code)
  */
-- (id)initWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSUInteger)statusCode;
+- (id)initWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode;
 
 /**
  * Return whether request has been processed correctly or not

@@ -13,6 +13,8 @@
 
 #pragma mark Static
 
+static NSUInteger GZIPWindowBits = 47;
+static NSUInteger DeflateWindowBits = -15;
 static const char encodeCharTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 static unsigned char decodeCharTable[256] =
@@ -34,6 +36,21 @@ static unsigned char decodeCharTable[256] =
     65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,
     65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,
 };
+
+
+#pragma mark - Private interface declaration
+
+@interface NSData (PNAdditionPrivate)
+
+
+#pragma mark - Instance methods
+
+- (NSData *)inflateWithWindow:(NSUInteger)windowBits;
+
+
+#pragma mark -
+
+@end
 
 
 #pragma mark - Public interface methods
@@ -156,6 +173,17 @@ static unsigned char decodeCharTable[256] =
 
 - (NSData *)GZIPInflate {
 
+    return [self inflateWithWindow:GZIPWindowBits];
+}
+
+- (NSData *)inflate {
+
+    return [self inflateWithWindow:DeflateWindowBits];
+}
+
+
+- (NSData *)inflateWithWindow:(NSUInteger)windowBits {
+
     NSData *inflatedData = nil;
 
     if ([self length] == 0) {
@@ -176,7 +204,7 @@ static unsigned char decodeCharTable[256] =
         stream.total_out = 0;
         stream.zalloc = Z_NULL;
         stream.zfree = Z_NULL;
-        if (inflateInit2(&stream, (15 + 32)) == Z_OK) {
+        if (inflateInit2(&stream, windowBits) == Z_OK) {
 
             while (!done) {
 
