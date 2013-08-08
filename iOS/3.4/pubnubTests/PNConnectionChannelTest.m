@@ -171,7 +171,7 @@
 - (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host {
 }
 
-- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectOnErrorToHost:(NSString *)host {
+- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectToHost:(NSString *)host {
 }
 
 - (void)connectionChannel:(PNConnectionChannel *)channel

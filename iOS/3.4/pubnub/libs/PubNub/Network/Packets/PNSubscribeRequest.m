@@ -15,6 +15,7 @@
 #import "PNSubscribeRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
+#import "PNChannel+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNConstants.h"
 
@@ -83,13 +84,16 @@
         // Retrieve largest update time token from set of
         // channels (sorting to make larger token to be at
         // the end of the list
-        NSSortDescriptor *tokenSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updateTimeToken" ascending:YES];
-        NSArray *timeTokens = [[channels sortedArrayUsingDescriptors:@[tokenSortDescriptor]] valueForKey:@"updateTimeToken"];
-        self.updateTimeToken = [timeTokens lastObject];
+        self.updateTimeToken = [PNChannel largestTimetokenFromChannels:channels];
     }
     
     
     return self;
+}
+
+- (BOOL)isInitialSubscription {
+
+    return [self.updateTimeToken isEqualToString:@"0"];
 }
 
 - (NSTimeInterval)timeout {
@@ -114,5 +118,8 @@
             self.clientIdentifier,
 			([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
+
+#pragma mark -
+
 
 @end

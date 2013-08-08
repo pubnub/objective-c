@@ -41,4 +41,10 @@
 - (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest;
 - (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest;
 
+/**
+ * Check whether this is initial subscription request which will mean that it's update time token is '0'
+ * and client is waiting for updated time token
+ */
+- (BOOL)isInitialSubscription;
+
 @end

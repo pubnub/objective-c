@@ -14,9 +14,13 @@
 
 #import "PubNub+Protected.h"
 #import "PNObservationCenter+Protected.h"
+#import "PNConnectionChannel+Protected.h"
 #import "PNConnectionChannelDelegate.h"
 #import "PNPresenceEvent+Protected.h"
 #import "PNConfiguration+Protected.h"
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import "UIApplication+PNAdditions.h"
+#endif
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
 #import "PNHereNow+Protected.h"
@@ -28,7 +32,6 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
-#import "PNConnectionChannel+Protected.h"
 
 
 #pragma mark Static
@@ -37,8 +40,8 @@
 static PubNub *_sharedInstance = nil;
 static dispatch_once_t onceToken;
 
-// Stores reference on list of invocation instances which is used to
-// support synchronous library methods call (connect/disconnect/subscribe/unsubscribe)
+// Stores reference on list of invocation instances which is used to support synchronous library methods call
+// (connect/disconnect/subscribe/unsubscribe)
 static NSMutableArray *pendingInvocations = nil;
 
 
@@ -49,47 +52,38 @@ static NSMutableArray *pendingInvocations = nil;
 
 #pragma mark - Properties
 
-// Stores reference on flag which specufy whether client
-// identifier was passed by user or generated on demand
+// Stores reference on flag which specify whether client identifier was passed by user or generated on demand
 @property (nonatomic, assign, getter = isUserProvidedClientIdentifier) BOOL userProvidedClientIdentifier;
 
-// Stores whether client should connect as soon as services
-// will be checked for reachability
+// Stores whether client should connect as soon as services will be checked for reachability
 @property (nonatomic, assign, getter = shouldConnectOnServiceReachabilityCheck) BOOL connectOnServiceReachabilityCheck;
 
-// Stores whether client should perform initial connection
-// (connection which is initialized after client configuration)
+// Stores whether client should perform initial connection (connection which is initialized after client configuration)
 @property (nonatomic, assign, getter = shouldConnectOnServiceReachability) BOOL connectOnServiceReachability;
 
-// Stores whether client is restoring connection after
-// network failure or not
+// Stores whether client is restoring connection after network failure or not
 @property (nonatomic, assign, getter = isRestoringConnection) BOOL restoringConnection;
 
-// Stores reference on configuration which was used to
-// perform initial PubNub client initialization
+// Stores reference on configuration which was used to perform initial PubNub client initialization
 @property (nonatomic, strong) PNConfiguration *temporaryConfiguration;
 
-// Reference on channels which is used to communicate
-// with PubNub service
+// Reference on channels which is used to communicate with PubNub service
 @property (nonatomic, strong) PNMessagingChannel *messagingChannel;
 
-// Reference on channels which is used to send service
-// messages to PubNub service
+// Reference on channels which is used to send service messages to PubNub service
 @property (nonatomic, strong) PNServiceChannel *serviceChannel;
 
 // Stores reference on client delegate
 @property (nonatomic, pn_desired_weak) id<PNDelegate> delegate;
 
-// Stores unique client initialization session identifier
-// (created each time when PubNub stack is configured
+// Stores unique client initialization session identifier (created each time when PubNub stack is configured
 // after application launch)
 @property (nonatomic, strong) NSString *launchSessionIdentifier;
-// Stores reference on configuration which was used to
-// perform initial PubNub client initialization
+
+// Stores reference on configuration which was used to perform initial PubNub client initialization
 @property (nonatomic, strong) PNConfiguration *configuration;
 
-// Stores reference on service reachability monitoring
-// instance
+// Stores reference on service reachability monitoring instance
 @property (nonatomic, strong) PNReachability *reachability;
 
 // Stores reference on current client identifier
@@ -98,8 +92,8 @@ static NSMutableArray *pendingInvocations = nil;
 // Stores current client state
 @property (nonatomic, assign) PNPubNubClientState state;
 
-// Stores whether library is performing one of async locking
-// methods or not (if yes, other calls will be placed into pending set)
+// Stores whether library is performing one of async locking methods or not (if yes, other calls will be placed
+// into pending set)
 @property (nonatomic, assign, getter = isAsyncLockingOperationInProgress) BOOL asyncLockingOperationInProgress;
 
 
@@ -184,27 +178,30 @@ static NSMutableArray *pendingInvocations = nil;
 #pragma mark - Misc methods
 
 /**
- * Allow to perform code which should lock asynchronous methods
- * execution till it ends and in case if code itself should be
- * postponed, corresponding block is passed.
+ * Allow to perform code which should lock asynchronous methods execution till it ends and in case if code itself
+ * should be postponed, corresponding block is passed.
  */
 + (void)performAsyncLockingBlock:(void(^)(void))codeBlock postponedExecutionBlock:(void(^)(void))postponedCodeBlock;
 
 
 #pragma mark - Instance methods
 
+/**
+ * On whether 'immediately' is set, request can be placed out of order into requests queue
+ */
+- (void)restoreSubscriptionOnMessageChannel:(PNMessagingChannel *)messagingChannel immediately:(BOOL)shouldRestoreImmediately;
+
+
 #pragma mark - Client connection management methods
 
 /**
- * Configure client connection state observer with
- * handling blocks
+ * Configure client connection state observer with handling blocks
  */
 - (void)setClientConnectionObservationWithSuccessBlock:(PNClientConnectionSuccessBlock)success
                                           failureBlock:(PNClientConnectionFailureBlock)failure;
 
 /**
- * This method allow to schedule initial requests on
- * connections to tell server that we are really
+ * This method allow to schedule initial requests on connections to tell server that we are really
  * interested in persistent connection
  */
 - (void)warmUpConnections;
@@ -214,8 +211,7 @@ static NSMutableArray *pendingInvocations = nil;
 #pragma mark - Requests management methods
 
 /**
- * Sends message over corresponding communication
- * channel
+ * Sends message over corresponding communication channel
  */
 - (void)sendRequest:(PNBaseRequest *)request shouldObserveProcessing:(BOOL)shouldObserveProcessing;;
 
@@ -236,15 +232,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 #pragma mark - Handler methods
 
+- (void)handleApplicationDidEnterBackgroundState:(NSNotification *)notification;
+- (void)handleApplicationDidEnterForegroundState:(NSNotification *)notification;
+
 /**
- * Handling error which occurred while PubNub client
- * tried establish connection and lost internet connection
+ * Handling error which occurred while PubNub client tried establish connection and lost internet connection
  */
 - (void)handleConnectionErrorOnNetworkFailure;
 
 /**
- * Handle locking operation completion and pop new one from
- * pending invocations list.
+ * Handle locking operation completion and pop new one from pending invocations list.
  */
 - (void)handleLockingOperationComplete:(BOOL)shouldStartNext;
 - (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext;
@@ -258,16 +255,22 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)prepareCryptoHelper;
 
 /**
- * Check whether whether call to specific method should be postponed
- * or not. This will allot to perform synchronous call on specific
- * library methods.
+ * Will help to subscribe/unsubscribe on/from all critical application-wide notifications which may affect
+ * client operation
+ */
+- (void)subscribeForNotifications;
+- (void)unsubscribeFromNotifications;
+
+
+/**
+ * Check whether whether call to specific method should be postponed or not. This will allot to perform synchronous
+ * call on specific library methods.
  */
 - (BOOL)shouldPostponeMethodCall;
 
 /**
- * Place selector into list of postponed calls with corresponding parameters
- * If 'placeOutOfOrder' is specified, selectore will be placed first in FIFO
- * queue and will be executed as soon as it will be possible.
+ * Place selector into list of postponed calls with corresponding parameters If 'placeOutOfOrder' is specified,
+ * selector will be placed first in FIFO queue and will be executed as soon as it will be possible.
  */
 - (void)postponeSelector:(SEL)calledMethodSelector
                forObject:(id)object
@@ -275,40 +278,34 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
               outOfOrder:(BOOL)placeOutOfOrder;
 
 /**
- * This method will notify delegate about that
- * connection to the PubNub service is established
- * and send notification about it
+ * This method will notify delegate about that connection to the PubNub service is established and send notification
+ * about it
  */
 - (void)notifyDelegateAboutConnectionToOrigin:(NSString *)originHostName;
 
 /**
- * This method will notify delegate that client is about
- * to restore subscription to specified set of channels
+ * This method will notify delegate that client is about to restore subscription to specified set of channels
  * and send notification about it.
  */
 - (void)notifyDelegateAboutResubscribeWillStartOnChannels:(NSArray *)channels;
 
 /**
- * This method will notify delegate about that
- * subscription failed with error
+ * This method will notify delegate about that subscription failed with error
  */
 - (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that
- * unsubscription failed with error
+ * This method will notify delegate about that unsubscription failed with error
  */
 - (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that
- * presence enabling failed with error
+ * This method will notify delegate about that presence enabling failed with error
  */
 - (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that
- * presence disabling failed with error
+ * This method will notify delegate about that presence disabling failed with error
  */
 - (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error;
 
@@ -323,51 +320,42 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)notifyDelegateAboutPushNotificationsDisableFailedWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that push notification removal from all channels
- * failed because of error
+ * This method will notify delegate about that push notification removal from all channels failed because of error
  */
 - (void)notifyDelegateAboutPushNotificationsRemoveFailedWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that push notification enabled channels list
- * retrieval request failed with error
+ * This method will notify delegate about that push notification enabled channels list retrieval request failed with error
  */
 - (void)notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that
- * time token retrieval failed because of error
+ * This method will notify delegate about that time token retrieval failed because of error
  */
 - (void)notifyDelegateAboutTimeTokenRetrievalFailWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that
- * message sending failed because of error
+ * This method will notify delegate about that message sending failed because of error
  */
 - (void)notifyDelegateAboutMessageSendingFailedWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that
- * history loading error occurred
+ * This method will notify delegate about that history loading error occurred
  */
 - (void)notifyDelegateAboutHistoryDownloadFailedWithError:(PNError *)error;
 
 /**
- * This method will notify delegate about that
- * participants list download error occurred
+ * This method will notify delegate about that participants list download error occurred
  */
 - (void)notifyDelegateAboutParticipantsListDownloadFailedWithError:(PNError *)error;
 
 /**
- * This method allow to ensure that delegate can
- * process errors and will send error to the
- * delegate
+ * This method allow to ensure that delegate can process errors and will send error to the delegate
  */
 - (void)notifyDelegateAboutError:(PNError *)error;
 
 /**
- * This method allow notify delegate that client is about to close
- * connection because of speficied error
+ * This method allow notify delegate that client is about to close connection because of specified error
  */
 - (void)notifyDelegateClientWillDisconnectWithError:(PNError *)error;
 - (void)notifyDelegateClientConnectionFailedWithError:(PNError *)error;
@@ -375,34 +363,28 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object;
 
 /**
- * Check whether client should restore connection after
- * network went down and restored now
+ * Check whether client should restore connection after network went down and restored now
  */
 - (BOOL)shouldRestoreConnection;
 
 /**
- * Check whether delegate should be notified about some runtime event
- * (errors will be notified w/o regard to this flag)
+ * Check whether delegate should be notified about some runtime event (errors will be notified w/o regard to this flag)
  */
 - (BOOL)shouldNotifyAboutEvent;
 
 /**
- * Check whether client should restore subscription to previous
- * channels or not
+ * Check whether client should restore subscription to previous channels or not
  */
 - (BOOL)shouldRestoreSubscription;
 
 /**
- * Check whether client should restore subscription with last time token
- * or not
+ * Check whether client should restore subscription with last time token or not
  */
 - (BOOL)shouldRestoreSubscriptionWithLastTimeToken;
 
 /**
- * Retrieve request execution possibility code.
- * If everything is fine, than 0 will be returned, in
- * other case it will be treated as error and mean
- * that request execution is impossible
+ * Retrieve request execution possibility code. If everything is fine, than 0 will be returned, in other case it will
+ * be treated as error and mean that request execution is impossible
  */
 - (NSInteger)requestExecutionPossibilityStatusCode;
 
@@ -448,6 +430,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     _sharedInstance.reachability = nil;
     
     pendingInvocations = nil;
+    [_sharedInstance unsubscribeFromNotifications];
     _sharedInstance = nil;
 }
 
@@ -667,15 +650,22 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if (isDisconnectedByUser) {
             
             [PNConnection resetConnectionsPool];
-            
+
             connectionsTerminationBlock();
-            
-            // Mark that client completely disconnected from origin server
-            // (synchronous disconnection was made to prevent asynchronous disconnect event
-            // from overlapping on connection event)
-            [self sharedInstance].state = PNPubNubClientStateDisconnected;
-            
-            [[self sharedInstance] connectionChannel:nil didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
+
+            if ([self sharedInstance].state != PNPubNubClientStateDisconnected) {
+
+                // Mark that client completely disconnected from origin server
+                // (synchronous disconnection was made to prevent asynchronous disconnect event
+                // from overlapping on connection event)
+                [self sharedInstance].state = PNPubNubClientStateDisconnected;
+
+                [[self sharedInstance] connectionChannel:nil didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
+            }
+            else {
+
+                [[self sharedInstance] handleLockingOperationComplete:YES];
+            }
         }
         else {
             
@@ -1981,9 +1971,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             [weakSelf handleConnectionErrorOnNetworkFailure];
                         }
                         else {
-                            
-                            PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
-                            [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
+
+                            if (![weakSelf shouldRestoreConnection]) {
+
+                                PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
+                                [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
+                            }
                             
                             weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
                             
@@ -1996,10 +1989,36 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 }
             }
         };
+
+        [self subscribeForNotifications];
     }
     
     
     return self;
+}
+
+- (void)restoreSubscriptionOnMessageChannel:(PNMessagingChannel *)messagingChannel immediately:(BOOL)shouldRestoreImmediately {
+
+    if ([messagingChannel canResubscribe]) {
+
+        self.asyncLockingOperationInProgress = NO;
+
+        [[self class] performAsyncLockingBlock:^{
+
+            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]
+                               restoreImmediately:shouldRestoreImmediately];
+        }
+                       postponedExecutionBlock:^{
+
+                           [self postponeMessagingChannelDidReconnect:messagingChannel];
+                       }];
+    }
+    else {
+
+        [self warmUpConnection:messagingChannel];
+
+        [self handleLockingOperationComplete:YES];
+    }
 }
 
 
@@ -2094,12 +2113,18 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 #pragma mark - Connection channel delegate methods
 
+- (void)connectionChannelConfigurationDidFail:(PNConnectionChannel *)channel {
+
+    //TODO: Disconnect all channels and report client error
+}
+
 - (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host {
+
+    BOOL isChannelsConnected = [self.messagingChannel isConnected] && [self.serviceChannel isConnected];
+    BOOL isCorrectRemoteHost = [self.configuration.origin isEqualToString:host];
     
-    // Check whether all communication channels connected and whether
-    // client in corresponding state or not
-    if ([self.messagingChannel isConnected] && [self.serviceChannel isConnected] &&
-        self.state == PNPubNubClientStateConnecting && [self.configuration.origin isEqualToString:host]) {
+    // Check whether all communication channels connected and whether client in corresponding state or not
+    if (isChannelsConnected && isCorrectRemoteHost && self.state == PNPubNubClientStateConnecting) {
         
         self.connectOnServiceReachabilityCheck = NO;
         self.connectOnServiceReachability = NO;
@@ -2138,7 +2163,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
-- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectOnErrorToHost:(NSString *)host {
+- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectToHost:(NSString *)host {
     
     // Check whether received event from same host on which client
     // is configured or not and client connected at this moment
@@ -2361,8 +2386,61 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+- (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel {
+
+    //TODO: USE IT IF REQUIRED
+}
+
+- (void)connectionChannelDidSuspend:(PNConnectionChannel *)channel {
+
+    //TODO: USE IT IF REQUIRED
+}
+
+- (void)connectionChannelWillResume:(PNConnectionChannel *)channel {
+
+    if ([channel isKindOfClass:[PNMessagingChannel class]]) {
+
+        [self restoreSubscriptionOnMessageChannel:(PNMessagingChannel *)channel immediately:YES];
+    }
+}
+
+- (void)connectionChannelDidResume:(PNConnectionChannel *)channel {
+
+    if (![channel isKindOfClass:[PNMessagingChannel class]]) {
+
+        [self warmUpConnection:channel];
+    }
+}
+
+#endif
+
 
 #pragma mark - Handler methods
+
+- (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
+
+    BOOL canRunInBackground = [self canRunInBackground];
+    if (!canRunInBackground) {
+
+        PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED BACKGROUND. SUSPEND.");
+
+        [self.messagingChannel suspend];
+        [self.serviceChannel suspend];
+    }
+}
+- (void)handleApplicationDidEnterForegroundState:(NSNotification *)__unused notification  {
+
+    [self.reachability refreshReachabilityState];
+
+    if ([self.reachability isServiceAvailable]) {
+
+        PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND. RESUME.");
+
+        [self.messagingChannel resume];
+        [self.serviceChannel resume];
+    }
+}
 
 - (void)handleConnectionErrorOnNetworkFailure {
 
@@ -2427,6 +2505,25 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                   helperInitializationError);
         }
     }
+}
+
+- (void)subscribeForNotifications {
+
+    [self unsubscribeFromNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleApplicationDidEnterBackgroundState:)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleApplicationDidEnterForegroundState:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)unsubscribeFromNotifications {
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (BOOL)shouldPostponeMethodCall {
@@ -2826,6 +2923,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self userInfo:object];
 }
 
+- (BOOL)canRunInBackground {
+
+    BOOL canRunInBackground = [UIApplication canRunInBackground];
+
+    if ([self.delegate respondsToSelector:@selector(shouldRunClientInBackground)]) {
+
+        canRunInBackground = [self.delegate shouldRunClientInBackground];
+    }
+
+
+    return canRunInBackground;
+}
+
 - (BOOL)shouldRestoreConnection {
     
     BOOL shouldRestoreConnection = self.configuration.shouldAutoReconnectClient;
@@ -2894,6 +3004,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 #pragma mark - Message channel delegate methods
 
+- (BOOL)shouldMessagingChannelRestoreSubscription:(PNMessagingChannel *)messagingChannel {
+
+    return [self shouldRestoreSubscription];
+}
+
+- (BOOL)shouldMessagingChannelRestoreWithLastTimeToken:(PNMessagingChannel *)messagingChannel {
+
+    return [self shouldRestoreSubscriptionWithLastTimeToken];
+}
+
 - (void)messagingChannelIdleTimeout:(PNMessagingChannel *)messagingChannel {
 
     __block __pn_desired_weak PubNub *weakSelf = self;
@@ -2907,15 +3027,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 [weakSelf notifyDelegateAboutResubscribeWillStartOnChannels:[messagingChannel subscribedChannels]];
                 [messagingChannel restoreSubscription:[weakSelf shouldRestoreSubscriptionWithLastTimeToken]];
             }
-            // Looks like developer doesn't want to restore subscription on previously
-            // subscribed channels, flush channels
+            // Looks like developer doesn't want to restore subscription on previously subscribed channels,
+            // flush channels
             else {
                 
                 [messagingChannel unsubscribeFromChannelsWithPresenceEvent:NO];
             }
         }
-        // Looks like there is no channels on which client can resubscribe
-        // reconnect messaging channel
+        // Looks like there is no channels on which client can resubscribe reconnect messaging channel
         else {
             
             [messagingChannel reconnect];
@@ -2977,26 +3096,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)messagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {
-    
-    if ([messagingChannel canResubscribe]) {
 
-        self.asyncLockingOperationInProgress = NO;
-
-        [[self class] performAsyncLockingBlock:^{
-            
-            [messagingChannel restoreSubscription:[self shouldRestoreSubscriptionWithLastTimeToken]];
-        }
-                       postponedExecutionBlock:^{
-                           
-                           [self postponeMessagingChannelDidReconnect:messagingChannel];
-                       }];
-    }
-    else {
-        
-        [self warmUpConnection:messagingChannel];
-        
-        [self handleLockingOperationComplete:YES];
-    }
+    [self restoreSubscriptionOnMessageChannel:messagingChannel immediately:NO];
 }
 
 - (void)postponeMessagingChannelDidReconnect:(PNMessagingChannel *)messagingChannel {

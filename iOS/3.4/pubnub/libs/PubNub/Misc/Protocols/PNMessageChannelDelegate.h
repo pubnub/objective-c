@@ -21,6 +21,17 @@
 @protocol PNMessageChannelDelegate <NSObject>
 
 /**
+ * Sent to the delegate when messaging channel would like to know on whether it should restore subscription or not
+ */
+- (BOOL)shouldMessagingChannelRestoreSubscription:(PNMessagingChannel *)messagingChannel;
+
+/**
+ * Sent to the delegate when messaging channel would like to know on whether it should use last time token for
+ * subscription or not
+ */
+- (BOOL)shouldMessagingChannelRestoreWithLastTimeToken:(PNMessagingChannel *)messagingChannel;
+
+/**
  * Sent to delegate when message channel is in idle state
  * for long enough time
  */

@@ -2,15 +2,13 @@
 //  PNMessagingChannel.m
 //  pubnub
 //
-//  This channel instance is required for
-//  messages exchange between client and
+//  This channel instance is required for messages exchange between client and
 //  PubNub service:
 //      - channels messages (subscribe)
 //      - channels presence events
 //      - leave
 //
-//  Notice: don't try to create more than
-//          one messaging channel on MacOS
+//  Notice: don't try to create more than one messaging channel on MacOS
 //
 //
 //  Created by Sergey Mamontov on 12/12/12.
@@ -34,6 +32,46 @@
 #import "PNResponse.h"
 
 
+#pragma mark Statics
+
+typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
+
+    // Channel currently tries to retrieve next subscription token which should be used for
+    // long-poll subscription request
+    PNSubscriptionTimeTokenRetrieve = 1 << 0,
+
+    // Channel scheduled long-poll request and waiting for new events from channel on which it is subscribed
+    PNSubsctiptionWaitingForEvents = 1 << 1,
+
+    // Channel reconnecting with same settings which was used during initialization
+    PNConnectionReconnecting = 1 << 1,
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    // Channel is resuming it's operation state
+    PNConnectionResuming = 1 << 2,
+#endif
+
+    // Channel is ready for work (connections established and requests queue is ready)
+    PNConnectionConnected = 1 << 3,
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    // Channel is transferring to suspended state
+    PNConnectionSuspending = 1 << 4,
+
+    // Channel is in suspended state
+    PNConnectionSuspended = 1 << 5,
+#endif
+
+    // Channel is disconnecting on user request (for example: leave request for all channels)
+    PNConnectionDisconnecting = 1 << 6,
+
+    // Channel is ready, but was disconnected and waiting command for connection (or was unable to connect during
+    // initialization). All requests queue is alive (if they wasn't flushed by user)
+    PNConnectionDisconnected = 1 << 7
+};
+
+
+
 #pragma mark - Private interface methods
 
 @interface PNMessagingChannel ()
@@ -41,27 +79,26 @@
 
 #pragma mark - Properties
 
-// Stores list of channels (including presence)
-// on which this client is subscribed now
+// Stores list of channels (including presence) on which this client is subscribed now
 @property (nonatomic, strong) NSMutableSet *subscribedChannelsSet;
 
-// Stores list of channels (including presence)
-// from which client should unsubscribe w/o presence
+// Stores list of channels (including presence) from which client should unsubscribe w/o presence
 @property (nonatomic, strong) NSSet *presenceDisablingChannelsSet;
 
-// Stores list of channels (including presence)
-// on which client should enable presence
+// Stores list of channels (including presence) on which client should enable presence
 @property (nonatomic, strong) NSSet *presenceEnablingChannelsSet;
 
-// Stores flag on whether messaging channel is restoring
-// subscription on previous channels or not
+// Stores current messaging channel state
+@property (nonatomic, assign) NSUInteger messagingState;
+
+// Stores flag on whether messaging channel is restoring subscription on previous channels or not
 @property (nonatomic, assign, getter = isRestoringSubscription) BOOL restoringSubscription;
-
 @property (nonatomic, assign, getter = isDisablingPresence) BOOL disablingPresence;
-
 @property (nonatomic, assign, getter = isEnablingPresence) BOOL enablingPresence;
 
 @property (nonatomic, strong) NSTimer *idleTimer;
+@property (nonatomic, strong) NSDate *idleTimerFireDate;
+@property (nonatomic, strong) NSDate *channelSuspensionDate;
 
 @property (nonatomic, assign, getter = isReconnecting) BOOL reconnecting;
 
@@ -76,8 +113,8 @@
 #pragma mark - Connection management
 
 /**
- * Allow to reconnect message channel and in case if 'shouldHandleReconnectEvent'
- * is set to 'YES' it will notify delegate about successful reconnection
+ * Allow to reconnect message channel and in case if 'shouldHandleReconnectEvent' is set to 'YES' it will notify
+ * delegate about successful reconnection
  */
 - (void)reconnect:(BOOL)shouldHandleReconnectEvent;
 
@@ -85,25 +122,33 @@
 #pragma mark - Channels management
 
 /**
- * Same function as -unsubscribeFromChannelsWithPresenceEvent:
- * but also allow to specify whether leave was triggered by user
- * or not
+ * Will try to resubscribe on channels to which it was subscribed before (mostly this method will be used to restore
+ * subscription because of new request failure)
+ */
+- (void)subscribeOnPreviousChannels;
+
+/**
+ * Allow to clean up accumulated queue from subscribe requests
+ */
+- (void)cleanPreservedRequestsFromDuplications;
+
+/**
+ * Same function as -unsubscribeFromChannelsWithPresenceEvent: but also allow to specify whether leave was
+ * triggered by user or not
  */
 - (NSArray *)unsubscribeFromChannelsWithPresenceEvent:(BOOL)withPresenceEvent
                                         byUserRequest:(BOOL)isLeavingByUserRequest;
 
 /**
- * Same function as -unsubscribeFromChannels:withPresenceEvent:
- * but also allow to specify whether leave was triggered by user
- * or not
+ * Same function as -unsubscribeFromChannels:withPresenceEvent: but also allow to specify whether leave was
+ * triggered by user or not
  */
 - (void)unsubscribeFromChannels:(NSArray *)channels
               withPresenceEvent:(BOOL)withPresenceEvent
                   byUserRequest:(BOOL)isLeavingByUserRequest;
 
 /**
- * Same as -updateSubscription but allow to specify on which
- * channels subscription should be updated
+ * Same as -updateSubscription but allow to specify on which channels subscription should be updated
  */
 - (void)updateSubscriptionForChannels:(NSArray *)channels;
 
@@ -111,12 +156,9 @@
 #pragma mark - Presence management
 
 /**
- * Send leave event to all channels to which
- * client subscribed at this moment
+ * Send leave event to all channels to which client subscribed at this moment
  *
- * As soon as client will receive leave request
- * confirmation all messages from unsubscribed
- * channels will be ignored
+ * As soon as client will receive leave request confirmation all messages from unsubscribed channels will be ignored
  */
 - (void)leaveSubscribedChannelsByUserRequest:(BOOL)isLeavingByUserRequest;
 
@@ -126,16 +168,14 @@
 #pragma mark - Handler methods
 
 /**
- * Called every time when client complete
- * leave request processing
+ * Called every time when client complete leave request processing
  */
 - (void)handleLeaveRequestCompletionForChannels:(NSArray *)channels
                                    withResponse:(PNResponse *)response
                                   byUserRequest:(BOOL)isLeavingByUserRequest;
 
 /**
- * Called every time when one of events occur on
- * channels:
+ * Called every time when one of events occur on channels:
  *     - initial subscribe
  *     - message
  *     - presence event
@@ -143,8 +183,7 @@
 - (void)handleEventOnChannelsForRequest:(PNSubscribeRequest *)request withResponse:(PNResponse *)response;
 
 /**
- * Called every time when subscribe/unsubscribe
- * request processing is completed
+ * Called every time when subscribe/unsubscribe request processing is completed
  */
 - (void)handleSubscribeUnsubscribeRequestCompletion:(PNBaseRequest *)request;
 
@@ -172,22 +211,21 @@
 #pragma mark - Misc methods
 
 /**
- * Start/stop channel idle handler timer.
- * This timer allow to detect situation when client is in idle state
+ * Start/stop channel idle handler timer. This timer allow to detect situation when client is in idle state
  * longer than this is allowed.
  */
 - (void)startChannelIdleTimer;
 - (void)stopChannelIdleTimer;
+- (void)pauseChannelIdleTimer;
+- (void)resumeChannelIdleTimer;
 
 /**
- * Retrieve full list of channels on which channel should subscribe
- * including presence observing channels
+ * Retrieve full list of channels on which channel should subscribe including presence observing channels
  */
 - (NSSet *)channelsWithPresenceFromList:(NSArray *)channelsList forSubscribe:(BOOL)listForSubscribe;
 
 /**
- * Retrieve list of channels which is cleared from presence observing
- * instances
+ * Retrieve list of channels which is cleared from presence observing instances
  */
 - (NSArray *)channelsWithOutPresenceFromList:(NSArray *)channelsList;
 
@@ -204,14 +242,13 @@
 
 + (PNMessagingChannel *)messageChannelWithDelegate:(id<PNConnectionChannelDelegate>)delegate {
 
-    return [super connectionChannelWithType:PNConnectionChannelMessaging andDelegate:delegate];
+    return (PNMessagingChannel *)[super connectionChannelWithType:PNConnectionChannelMessaging andDelegate:delegate];
 }
 
 
 #pragma mark - Instance methods
 
-- (id)initWithType:(PNConnectionChannelType)connectionChannelType
-       andDelegate:(id<PNConnectionChannelDelegate>)delegate {
+- (id)initWithType:(PNConnectionChannelType)connectionChannelType andDelegate:(id<PNConnectionChannelDelegate>)delegate {
 
     // Check whether initialization was successful or not
     if ((self = [super initWithType:PNConnectionChannelMessaging andDelegate:delegate])) {
@@ -240,8 +277,7 @@
                                          withResponse:response
                                         byUserRequest:[request isSendingByUserRequest]];
 
-        // Remove request from queue to unblock it (subscribe events and message post
-        // requests was blocked)
+        // Remove request from queue to unblock it (subscribe events and message post requests was blocked)
         [self destroyRequest:request];
     }
     // Check whether 'Subscription'/'Presence'/'Events' request has been processed or not
@@ -282,7 +318,7 @@
     
     self.reconnecting = shouldHandleReconnectEvent;
     
-    // Forward to ther super class
+    // Forward to the super class
     [super reconnect];
 }
 
@@ -306,20 +342,47 @@
     }
 }
 
+- (BOOL)suspend {
+
+    BOOL canSuspend = NO;
+
+    if ([super suspend]) {
+
+        canSuspend = YES;
+        [self pauseChannelIdleTimer];
+        [self cleanPreservedRequestsFromDuplications];
+    }
+
+
+    return canSuspend;
+}
+
+- (BOOL)resume {
+
+    BOOL canResume = NO;
+
+    if ([super resume]) {
+
+        canResume = YES;
+        [self resumeChannelIdleTimer];
+    }
+
+
+    return canResume;
+}
+
 
 #pragma mark - Presence management
 
 - (void)leaveSubscribedChannelsByUserRequest:(BOOL)isLeavingByUserRequest {
 
-    // Check whether there some channels which
-    // user can leave
+    // Check whether there some channels which user can leave
     if ([self.subscribedChannelsSet count] > 0) {
 
         // Reset last update time token for channels in list
         [self.subscribedChannelsSet makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
 
-        // Schedule request to be processed as soon as
-        // queue will be processed
+        // Schedule request to be processed as soon as queue will be processed
         [self scheduleRequest:[PNLeaveRequest leaveRequestForChannels:[self.subscribedChannelsSet allObjects]
                                                         byUserRequest:isLeavingByUserRequest]
       shouldObserveProcessing:YES];
@@ -328,8 +391,7 @@
 
 - (void)leaveChannels:(NSArray *)channels byUserRequest:(BOOL)isLeavingByUserRequest {
 
-    // Check whether specified channels set contains channels
-    // on which client not subscribed
+    // Check whether specified channels set contains channels on which client not subscribed
     NSSet *channelsSet = [NSSet setWithArray:channels];
     if (![self.subscribedChannelsSet intersectsSet:channelsSet]) {
 
@@ -338,8 +400,7 @@
         channelsSet = filteredChannels;
     }
 
-    // Retrieve set of channels (including presence observers) from
-    // which client should unsubscribe
+    // Retrieve set of channels (including presence observers) from which client should unsubscribe
     NSArray *channelsForUnsubscribe = [[self channelsWithPresenceFromList:[channelsSet allObjects] forSubscribe:NO] allObjects];
     if ([channelsForUnsubscribe count] > 0) {
 
@@ -381,8 +442,7 @@
     // Ensure that client connected to at least one channel
     if ([self.subscribedChannelsSet count] > 0) {
 
-        // Unsubscribe from all channels with 'leave' presence
-        // event generation
+        // Unsubscribe from all channels with 'leave' presence event generation
         NSArray *oldChannels = [self unsubscribeFromChannelsWithPresenceEvent:YES byUserRequest:YES];
 
         [self scheduleRequest:[PNSubscribeRequest subscribeRequestForChannels:oldChannels byUserRequest:YES]
@@ -397,29 +457,33 @@
 
 - (void)restoreSubscription:(BOOL)shouldRestoreResubscriptionFromLastTimeToken {
 
-    if ([self.subscribedChannelsSet count]) {
+    [self restoreSubscription:shouldRestoreResubscriptionFromLastTimeToken restoreImmediately:NO];
+}
 
-        if (!shouldRestoreResubscriptionFromLastTimeToken) {
+- (void)restoreSubscription:(BOOL)shouldRestoreResubscriptionFromLastTimeToken
+         restoreImmediately:(BOOL)shouldRestoreImmediately {
 
-            // Reset last update time token for channels in list
-            [self.subscribedChannelsSet makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
+    if (!PNBitIsOn(self.messagingState, PNSubsctiptionWaitingForEvents)) {
+
+        if ([self.subscribedChannelsSet count]) {
+
+            if (!shouldRestoreResubscriptionFromLastTimeToken) {
+
+                // Reset last update time token for channels in list
+                [self.subscribedChannelsSet makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
+            }
+
+            self.restoringSubscription = !shouldRestoreImmediately && shouldRestoreResubscriptionFromLastTimeToken;
+
+
+            PNSubscribeRequest *resubscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
+                                                                            byUserRequest:YES];
+
+            [self scheduleRequest:resubscribeRequest
+          shouldObserveProcessing:[resubscribeRequest isInitialSubscription]
+                       outOfOrder:shouldRestoreImmediately];
+
         }
-
-        self.restoringSubscription = YES;
-
-
-        PNSubscribeRequest *resubscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
-                                                                        byUserRequest:YES];
-
-        // Check whether messaging channel is connected or not
-        if ([self isConnected]) {
-
-            // Mark that we should close connection to terminate long-poll request on
-            // server side before subscribe on new channels
-            resubscribeRequest.closeConnection = YES;
-        }
-        [self scheduleRequest:resubscribeRequest shouldObserveProcessing:!shouldRestoreResubscriptionFromLastTimeToken];
-
     }
 }
 
@@ -435,8 +499,10 @@
 
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" UPDATE CHANNELS SUBSCRIPTION");
 
-        [self scheduleRequest:[PNSubscribeRequest subscribeRequestForChannels:channels byUserRequest:YES]
-      shouldObserveProcessing:NO];
+        PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channels byUserRequest:YES];
+        subscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNSubsctiptionWaitingForEvents);
+
+        [self scheduleRequest:subscribeRequest shouldObserveProcessing:NO];
     }
 
 }
@@ -450,8 +516,7 @@
 
     self.restoringSubscription = NO;
 
-    // Checking whether client already subscribed on one of
-    // channels from set or not
+    // Checking whether client already subscribed on one of channels from set or not
     NSMutableSet *channelsSet = [[self channelsWithPresenceFromList:channels forSubscribe:YES] mutableCopy];
     if ([self.subscribedChannelsSet intersectsSet:channelsSet]) {
 
@@ -468,15 +533,7 @@
         }
     }
 
-    // Check whether client already was subscribed on channels before
-    BOOL shouldReconnect = [self.subscribedChannelsSet count] > 0 && !self.isRestoringSubscription;
-    if (([self.subscribedChannelsSet count] > 0 && withPresenceEvent) || !withPresenceEvent) {
-
-        shouldReconnect = NO;
-    }
-
-    // In case if client currently connected to
-    // PubNub services, we should send leave event
+    // In case if client currently connected to PubNub services, we should send leave event
     NSMutableArray *subscriptionChannels = [[self unsubscribeFromChannelsWithPresenceEvent:withPresenceEvent
                                                                              byUserRequest:NO] mutableCopy];
 
@@ -491,8 +548,52 @@
     }
 
     PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:subscriptionChannels byUserRequest:YES];
-    subscribeRequest.closeConnection = shouldReconnect;
+    subscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNSubsctiptionWaitingForEvents);
     [self scheduleRequest:subscribeRequest shouldObserveProcessing:YES];
+}
+
+- (void)subscribeOnPreviousChannels {
+
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBE ON PREVIOUS CHANNELS\n%@", self, [NSThread callStackSymbols]);
+
+    NSArray *channelsList = [self.subscribedChannelsSet allObjects];
+    BOOL shouldObserve = [[PNChannel largestTimetokenFromChannels:channelsList] isEqualToString:@"0"];
+    PNSubscribeRequest *resubscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channelsList byUserRequest:NO];
+
+    // Check whether messaging channel is connected or not
+    if ([self isConnected]) {
+
+        // Mark that we should close connection to terminate long-poll request on server side before subscribe on new channels
+        resubscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNSubsctiptionWaitingForEvents);
+    }
+    [self scheduleRequest:resubscribeRequest shouldObserveProcessing:shouldObserve outOfOrder:YES];
+}
+
+- (void)cleanPreservedRequestsFromDuplications {
+
+    PNBaseRequest *nextWaitingForResponseRequest = [self nextRequestWaitingForResponse];
+    if ([nextWaitingForResponseRequest isKindOfClass:[PNSubscribeRequest class]]) {
+
+        if ([self canResubscribe] && [self.messagingDelegate shouldMessagingChannelRestoreSubscription:self]) {
+
+            BOOL shouldRemovePreviousSubscribeRequest = NO;
+            NSString *oldTimeToken = [PNChannel largestTimetokenFromChannels:((PNSubscribeRequest *) nextWaitingForResponseRequest).channels];
+            NSString *currentTimeToken = [PNChannel largestTimetokenFromChannels:[self.subscribedChannelsSet allObjects]];
+            if (![self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self]) {
+
+                shouldRemovePreviousSubscribeRequest = YES;
+            }
+            else if ([oldTimeToken compare:currentTimeToken] != NSOrderedDescending) {
+
+                shouldRemovePreviousSubscribeRequest = YES;
+            }
+
+            if (shouldRemovePreviousSubscribeRequest) {
+
+                [self destroyRequest:nextWaitingForResponseRequest];
+            }
+        }
+    }
 }
 
 - (NSArray *)unsubscribeFromChannelsWithPresenceEvent:(BOOL)withPresenceEvent {
@@ -506,8 +607,7 @@
     self.restoringSubscription = NO;
     NSArray *subscribedChannels = [self.subscribedChannelsSet allObjects];
 
-    // Check whether should generate 'leave' presence event
-    // or not
+    // Check whether should generate 'leave' presence event or not
     if (withPresenceEvent) {
 
         [self leaveSubscribedChannelsByUserRequest:isLeavingByUserRequest];
@@ -576,10 +676,10 @@
 
         PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[currentlySubscribedChannels allObjects]
                                                                                  byUserRequest:isLeavingByUserRequest];
-        subscribeRequest.closeConnection = !withPresenceEvent;
+        subscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNSubsctiptionWaitingForEvents);
 
         // Resubscribe on rest of channels which is left after unsubscribe
-        [self scheduleRequest:subscribeRequest shouldObserveProcessing:NO];
+        [self scheduleRequest:subscribeRequest shouldObserveProcessing:[subscribeRequest isInitialSubscription]];
     }
     else if(!withPresenceEvent) {
 
@@ -663,11 +763,10 @@
         PNResponseParser *parser = [PNResponseParser parserForResponse:response];
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" LEAVE REQUEST RESULT: %@", parser);
 
-        // Ensure that parsed data has numeric data, which will
-        // mean that this is status code or event enum value
+        // Ensure that parsed data has numeric data, which will mean that this is status code or event enum value
         if ([[parser parsedData] isKindOfClass:[NSNumber class]]) {
 
-            PNOperationResultEvent result = [[parser parsedData] intValue];
+            PNOperationResultEvent result = (PNOperationResultEvent)[[parser parsedData] intValue];
 
             shouldRemoveChannels = result == PNOperationResultLeave;
         }
@@ -733,8 +832,7 @@
         [request.channels makeObjectsPerformSelector:@selector(setUpdateTimeToken:) withObject:timeToken];
 
 
-        // Check whether events arrived from PubNub service
-        // (messages, presence)
+        // Check whether events arrived from PubNub service (messages, presence)
         if ([events.events count] > 0) {
 
             NSArray *channels = [self channelsWithOutPresenceFromList:[self.subscribedChannelsSet allObjects]];
@@ -753,9 +851,8 @@
 
                 if ([event isKindOfClass:[PNPresenceEvent class]]) {
 
-                    // Check whether channel was assigned to presence event or not
-                    // (channel may not arrive with server response if client
-                    // subscribed only for single channel)
+                    // Check whether channel was assigned to presence event or not (channel may not arrive with
+                    // server response if client subscribed only for single channel)
                     if (((PNPresenceEvent *)event).channel == nil) {
 
                         ((PNPresenceEvent *)event).channel = channel;
@@ -765,9 +862,8 @@
                 }
                 else {
 
-                    // Check whether channel was assigned to message or not
-                    // (channel may not arrive with server response if client
-                    // subscribed only for single channel)
+                    // Check whether channel was assigned to message or not (channel may not arrive with server
+                    // response if client subscribed only for single channel)
                     if (((PNMessage *)event).channel == nil) {
 
                         ((PNMessage *)event).channel = channel;
@@ -785,8 +881,7 @@
 
 - (void)handleSubscribeUnsubscribeRequestCompletion:(PNBaseRequest *)request {
 
-    // Check whether channel is restoring subscription on previously
-    // subscribed channels or not
+    // Check whether channel is restoring subscription on previously subscribed channels or not
     if (self.isRestoringSubscription) {
 
         self.restoringSubscription = NO;
@@ -803,8 +898,7 @@
     self.presenceEnablingChannelsSet = nil;
 
 
-    // Prepare selectors which will be pulled on delegate and
-    // list of subscribed channels
+    // Prepare selectors which will be pulled on delegate and list of subscribed channels
     SEL delegateSelector = @selector(messagingChannel:didSubscribeOnChannels:);
     SEL dataUpdateSelector = @selector(unionSet:);
 
@@ -879,6 +973,8 @@
 
 - (void)handleSubscribeDidFailForChannels:(NSArray *)channels withError:(PNError *)error {
 
+    PNBitOff(&_messagingState, PNSubsctiptionWaitingForEvents);
+
     if (self.isEnablingPresence) {
 
         self.enablingPresence = NO;
@@ -895,6 +991,8 @@
 }
 
 - (void)handleUnsubscribeDidFailForChannels:(NSArray *)channels withError:(PNError *)error {
+
+    PNBitOff(&_messagingState, PNSubsctiptionWaitingForEvents);
 
     if (self.isDisablingPresence) {
 
@@ -948,6 +1046,8 @@
         [self handleSubscribeDidFailForChannels:((PNSubscribeRequest *) request).channels withError:error];
     }
 
+    [self subscribeOnPreviousChannels];
+
 
     [self destroyRequest:request];
 
@@ -962,6 +1062,7 @@
 
 - (void)handleIdleTimer:(NSTimer *)timer {
 
+    PNBitOff(&_messagingState, PNSubsctiptionWaitingForEvents);
     [self.messagingDelegate messagingChannelIdleTimeout:self];
 }
 
@@ -986,6 +1087,43 @@
 
         [self.idleTimer invalidate];
         self.idleTimer = nil;
+    }
+}
+
+- (void)pauseChannelIdleTimer {
+
+    if ([self.idleTimer isValid]) {
+
+        self.idleTimerFireDate = self.idleTimer.fireDate;
+        self.channelSuspensionDate = [NSDate date];
+        [self.idleTimer invalidate];
+        self.idleTimer = nil;
+    }
+    else {
+
+        self.idleTimerFireDate = nil;
+        self.channelSuspensionDate = nil;
+    }
+}
+
+- (void)resumeChannelIdleTimer {
+
+    if (self.idleTimerFireDate) {
+
+        NSTimeInterval timeLeftBeforeSuspension = ABS([self.channelSuspensionDate timeIntervalSinceDate:self.idleTimerFireDate]);
+
+        // Adding some time to let connection channel awake from suspension
+        timeLeftBeforeSuspension += 10.0f;
+
+        self.idleTimer = [NSTimer timerWithTimeInterval:timeLeftBeforeSuspension
+                                                 target:self
+                                               selector:@selector(handleIdleTimer:)
+                                               userInfo:nil
+                                                repeats:NO];
+        [[NSRunLoop currentRunLoop] addTimer:self.idleTimer forMode:NSRunLoopCommonModes];
+
+        self.idleTimerFireDate = nil;
+        self.channelSuspensionDate = nil;
     }
 }
 
@@ -1027,6 +1165,7 @@
 
 - (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName {
 
+    [self cleanPreservedRequestsFromDuplications];
     [self startChannelIdleTimer];
     
     // Forward to the super class
@@ -1056,8 +1195,17 @@
     [self startChannelIdleTimer];
 }
 
+- (void)connection:(PNConnection *)connection didReconnectToHost:(NSString *)hostName {
+
+    [self cleanPreservedRequestsFromDuplications];
+    [self startChannelIdleTimer];
+
+    [super connection:connection didReconnectToHost:hostName];
+}
+
 - (void)connection:(PNConnection *)connection didDisconnectFromHost:(NSString *)hostName {
-    
+
+    PNBitOff(&_messagingState, PNSubsctiptionWaitingForEvents);
     [self stopChannelIdleTimer];
 
     // Forward to the super class
@@ -1104,6 +1252,8 @@
             [self isWaitingRequestCompletion:request.shortIdentifier] ? @"YES" : @"NO");
 
 
+    PNBitOff(&_messagingState, PNSubsctiptionWaitingForEvents);
+
     // If we are not waiting for request completion, inform delegate
     // immediately
     if (![self isWaitingRequestCompletion:request.shortIdentifier]) {
@@ -1121,12 +1271,21 @@
             [self handleSubscribeUnsubscribeRequestCompletion:request];
         }
     }
+    else {
+
+        PNBitOn(&_messagingState, PNSubsctiptionWaitingForEvents);
+    }
 
 
     [self scheduleNextRequest];
 }
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didFailRequestSend:(PNBaseRequest *)request withError:(PNError *)error {
+
+    if ([request isKindOfClass:[PNSubscribeRequest class]] && ![(PNSubscribeRequest *)request isInitialSubscription]) {
+
+        PNBitOff(&_messagingState, PNSubsctiptionWaitingForEvents);
+    }
 
     // Forward to the super class
     [super requestsQueue:queue didFailRequestSend:request withError:error];
@@ -1185,8 +1344,12 @@
     }
 }
 
-- (void)requestsQueue:(PNRequestsQueue *)queue
-     didCancelRequest:(PNBaseRequest *)request {
+- (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
+
+    if ([request isKindOfClass:[PNSubscribeRequest class]] && ![(PNSubscribeRequest *)request isInitialSubscription]) {
+
+        PNBitOff(&_messagingState, PNSubsctiptionWaitingForEvents);
+    }
 
     // Forward to the super class
     [super requestsQueue:queue didCancelRequest:request];

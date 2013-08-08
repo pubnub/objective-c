@@ -179,6 +179,7 @@
                 errorDescription = @"PubNub client already connected to origin";
                 break;
             case kPNClientConnectionFailedOnInternetFailureError:
+            case kPNClientConnectionClosedOnSSLNegotiationFailureError:
                 
                 errorDescription = @"PubNub client connection failed";
                 break;
@@ -292,6 +293,10 @@
         case kPNClientConnectionFailedOnInternetFailureError:
             
             failureReason = @"Looks like client lost connection while trying to connect to remote PubNub service";
+            break;
+        case kPNClientConnectionClosedOnSSLNegotiationFailureError:
+
+            failureReason = @"Looks like client was unable to connect to remote PubNub services becuase of security issues (SSL)";
             break;
         case kPNRequestExecutionFailedOnInternetFailureError:
         case kPNClientConnectionClosedOnInternetFailureError:
@@ -422,6 +427,10 @@
         case kPNRequestExecutionFailedOnInternetFailureError:
             
             fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again";
+            break;
+        case kPNClientConnectionClosedOnSSLNegotiationFailureError:
+
+            fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again. If this issue still persist, please contact with support team at support@pubnub.com to ask them investigate issue with SSL certificates on servers.";
             break;
         case kPNConnectionErrorOnSetup:
             

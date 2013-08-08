@@ -17,16 +17,13 @@
 
 #pragma mark - Structures
 
-// Structure describes list of available
-// connection identifiers
+// Structure describes list of available connection identifiers
 struct PNConnectionIdentifiersStruct {
     
-    // Used to identify connection which is used
-    // for: subscriptions and presence observing
+    // Used to identify connection which is used for: subscriptions and presence observing
     __unsafe_unretained NSString *messagingConnection;
     
-    // Used for another set of calls to the PubNub
-    // service
+    // Used for another set of calls to the PubNub service
     __unsafe_unretained NSString *serviceConnection;
 };
 
@@ -39,6 +36,19 @@ extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;
 #pragma mark - Class methods
 
 + (void)resetConnectionsPool;
+
+
+#pragma mark - Instance methods
+
+/**
+ * Open connection from name of the user (if flag is set to 'YES')
+ */
+- (BOOL)connectByUserRequest:(BOOL)byUserRequest;
+
+/**
+ * Disconnect from name of the user (if flag is set to 'YES')
+ */
+- (void)disconnectByUserRequest:(BOOL)byUserRequest;
 
 #pragma mark -
 

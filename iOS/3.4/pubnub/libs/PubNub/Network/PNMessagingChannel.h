@@ -45,6 +45,8 @@
 + (PNMessagingChannel *)messageChannelWithDelegate:(id<PNConnectionChannelDelegate>)delegate;
 
 
+#pragma mark - Instance methods
+
 #pragma mark - Connection management
 
 /**
@@ -81,6 +83,8 @@
  * set that it should resubscribe
  */
 - (void)restoreSubscription:(BOOL)shouldRestoreResubscriptionFromLastTimeToken;
+- (void)restoreSubscription:(BOOL)shouldRestoreResubscriptionFromLastTimeToken
+         restoreImmediately:(BOOL)shouldRestoreImmediately;
 
 /**
  * Will resubscribe on channels to receive messages from
