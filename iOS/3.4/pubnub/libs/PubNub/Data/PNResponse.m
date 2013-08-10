@@ -277,10 +277,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %i\nRESPONSE SIZE: %i\nRESPONSE CONTENT SIZE: %i\nIS JSONP: %@\nCALLBACK METHOD: %@\nREQUEST IDENTIFIER: %@\nRESPONSE: %@\n",
-            self.statusCode,
-            [self.content length],
-            self.size,
+    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %li\nRESPONSE SIZE: %lu\nRESPONSE CONTENT SIZE: %lu\nIS JSONP: %@\nCALLBACK METHOD: %@\nREQUEST IDENTIFIER: %@\nRESPONSE: %@\n",
+            (long)self.statusCode,
+            (unsigned long)[self.content length],
+            (unsigned long)self.size,
             self.callbackMethod?@"YES":@"NO",
             self.callbackMethod,
             self.requestIdentifier,

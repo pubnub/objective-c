@@ -122,8 +122,8 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     }
 
 
-    return [NSString stringWithFormat:@"%@ \nEVENT: %@\nUSER IDENTIFIER: %@\nDATE: %@\nOCCUPANCY: %d\nCHANNEL: %@",
-                    NSStringFromClass([self class]), action, self.uuid, self.date, self.occupancy, self.channel];
+        return [NSString stringWithFormat:@"%@ \nEVENT: %@\nUSER IDENTIFIER: %@\nDATE: %@\nOCCUPANCY: %lu\nCHANNEL: %@",
+                    NSStringFromClass([self class]), action, self.uuid, self.date, (unsigned long)self.occupancy, self.channel];
 }
 
 #pragma mark -

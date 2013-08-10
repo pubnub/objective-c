@@ -531,9 +531,9 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"Domain=%@; Code=%i; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\"; Associated object=%@",
+    return [NSString stringWithFormat:@"Domain=%@; Code=%li; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\"; Associated object=%@",
                                       self.domain,
-                                      self.code,
+                                      (long)self.code,
                                       [self localizedDescription],
                                       [self localizedFailureReason],
                                       [self localizedRecoverySuggestion],
