@@ -129,7 +129,7 @@
 
     // Check whether user specified limit or not
     self.limit = self.limit > 0 ? self.limit : 100;
-    [parameters appendFormat:@"&count=%u", self.limit];
+    [parameters appendFormat:@"&count=%lu", (unsigned long)self.limit];
     [parameters appendFormat:@"&reverse=%@", self.shouldRevertMessages?@"true":@"false"];
 
 

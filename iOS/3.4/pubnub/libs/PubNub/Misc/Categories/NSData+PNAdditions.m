@@ -164,7 +164,7 @@ static unsigned char decodeCharTable[256] =
     // Iterate over the bytes
     for (int i=0; i < [self length]*0.5f; ++i) {
 
-      [stringBuffer appendFormat:@"%02X", (NSUInteger)dataBuffer[i]];
+      [stringBuffer appendFormat:@"%02lX", (unsigned long)dataBuffer[i]];
     }
 
 
