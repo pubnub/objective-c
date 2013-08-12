@@ -66,6 +66,11 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     return self;
 }
 
+- (NSArray *)requestsQueue {
+
+    return self.query;
+}
+
 
 #pragma mark - Queue management
 
@@ -152,6 +157,11 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 - (NSString *)nextRequestIdentifierForConnection:(PNConnection *)connection {
     
     return [self nextRequestIdentifier];
+}
+
+- (PNBaseRequest *)nextRequestForConnection:(PNConnection *)connection {
+
+    return [self dequeRequestWithIdentifier:[self nextRequestIdentifierForConnection:connection]];
 }
 
 - (PNWriteBuffer *)connection:(PNConnection *)connection requestDataForIdentifier:(NSString *)requestIdentifier {

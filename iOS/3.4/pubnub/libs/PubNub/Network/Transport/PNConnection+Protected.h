@@ -44,11 +44,20 @@ extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;
  * Open connection from name of the user (if flag is set to 'YES')
  */
 - (BOOL)connectByUserRequest:(BOOL)byUserRequest;
+- (BOOL)isConnecting;
+- (BOOL)isReconnecting;
+- (BOOL)shouldReconnect;
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+- (BOOL)isSuspending;
+- (BOOL)isResuming;
+#endif
 
 /**
  * Disconnect from name of the user (if flag is set to 'YES')
  */
 - (void)disconnectByUserRequest:(BOOL)byUserRequest;
+- (BOOL)isDisconnecting;
 
 #pragma mark -
 

@@ -28,6 +28,9 @@
 // Stores reference on connection delegate which also will be packet provider for connection
 @property (nonatomic, pn_desired_weak) id<PNRequestsQueueDelegate> delegate;
 
+// Stores list of scheduled queries
+@property (nonatomic, readonly) NSArray *requestsQueue;
+
 
 #pragma mark - Instance methods
 

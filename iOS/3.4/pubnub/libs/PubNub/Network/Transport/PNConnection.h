@@ -63,6 +63,8 @@
 #pragma mark - Connection management
 
 - (BOOL)connect;
+- (BOOL)isConnected;
+
 - (void)disconnect;
 - (BOOL)isDisconnected;
 
@@ -76,6 +78,7 @@
  * Suspend sockets (basically they will be closed w/o PNConnection instance destroy)
  */
 - (void)suspend;
+- (BOOL)isSuspended;
 
 /**
  * Restore default sockets functions (sockets connection will be up again)

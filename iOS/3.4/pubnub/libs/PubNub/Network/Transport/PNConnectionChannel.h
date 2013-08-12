@@ -82,16 +82,24 @@ typedef enum _PNConnectionChannelType {
  */
 - (void)disconnect;
 
+/**
+ * Check whether connection channel disconnected
+ */
+- (BOOL)isDisconnected;
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  * Stop any channel activity by request
  */
-- (BOOL)suspend;
+- (void)suspend;
+- (BOOL)isSuspending;
+- (BOOL)isSuspended;
 
 /**
  * Resume channel activity and proceed execution of all suspended tasks
  */
-- (BOOL)resume;
+- (void)resume;
+- (BOOL)isResuming;
 #endif
 
 
@@ -110,7 +118,8 @@ typedef enum _PNConnectionChannelType {
  */
 - (void)scheduleRequest:(PNBaseRequest *)request
 shouldObserveProcessing:(BOOL)shouldObserveProcessing
-             outOfOrder:(BOOL)shouldEnqueueRequestOutOfOrder;
+             outOfOrder:(BOOL)shouldEnqueueRequestOutOfOrder
+       launchProcessing:(BOOL)shouldLaunchRequestsProcessing;
 
 /**
  * Triggering requests queue execution (maybe it was locked with previous request and waited)

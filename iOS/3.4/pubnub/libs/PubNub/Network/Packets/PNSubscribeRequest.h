@@ -25,9 +25,12 @@
 
 #pragma mark - Properties
 
-// Stores reference on list of channels on which client
-// should subscribe
+// Stores reference on list of channels on which client should subscribe
 @property (nonatomic, readonly, strong) NSArray *channels;
+
+// Stores reference on list of channels for which presence should be enabled/disabled
+@property (nonatomic, readonly, strong) NSArray *channelsForPresenceEnabling;
+@property (nonatomic, readonly, strong) NSArray *channelsForPresenceDisabling;
 
 
 #pragma mark - Class methods

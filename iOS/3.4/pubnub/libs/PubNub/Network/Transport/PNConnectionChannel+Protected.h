@@ -13,6 +13,7 @@
 
 
 @class PNBaseRequest;
+@class PNRequestsQueue;
 
 
 @interface PNConnectionChannel (Protected)
@@ -34,7 +35,7 @@
 
 /**
  * Retrieve reference on request instance which is stored in one of "observed", "stored", "waiting for response"
- * storages
+ * storage
  */
 - (PNBaseRequest *)requestWithIdentifier:(NSString *)identifier;
 
@@ -53,34 +54,52 @@
  * Retrieve reference on request which was stored by communication channel by it's identifier
  */
 - (PNBaseRequest *)storedRequestWithIdentifier:(NSString *)identifier;
+- (PNBaseRequest *)nextStoredRequest;
+- (PNBaseRequest *)nextStoredRequestAfter:(PNBaseRequest *)request;
+- (PNBaseRequest *)lastStoredRequest;
 - (BOOL)isWaitingStoredRequestCompletion:(NSString *)identifier;
 - (void)removeStoredRequest:(PNBaseRequest *)request;
-
-/**
- * Retrieve reference on request which is waiting for response from server by it's identifier
- */
-- (PNBaseRequest *)responseWaitingRequestWithIdentifier:(NSString *)identifier;
-- (PNBaseRequest *)nextRequestWaitingForResponse;
-- (BOOL)isWaitingResponseWaitingRequestCompletion:(NSString *)identifier;
-- (void)removeResponseWaitingRequest:(PNBaseRequest *)request;
 
 /**
  * Completely destroys request by removing it from queue and requests observation list
  */
 - (void)destroyRequest:(PNBaseRequest *)request;
+- (void)destroyByRequestClass:(Class)requestClass;
+
+/**
+ * Allow to check whether requests with specified class already placed into storage
+ */
+- (BOOL)hasRequestsWithClass:(Class)requestClass;
 
 /**
  * Reconnect main communication channel on which this communication channel is working
  */
 - (void)reconnect;
 
+
+#pragma mark - Misc methods
+
+- (BOOL)isConnecting;
+- (BOOL)isReconnecting;
+- (BOOL)isDisconnecting;
+
+/**
+ * Check whether connection channel should handle connection notification or not
+ * (when client connected to specified host)
+ */
+- (BOOL)shouldHandleConnectionToHost;
+
+/**
+ * Check whether connection channel should handle re-connection notification or not
+ * (when client connected to specified host)
+ */
+- (BOOL)shouldHandleReconnectionToHost;
+
 /**
  * Clear communication channel request pool
  */
 - (void)clearScheduledRequestsQueue;
-
 - (void)terminate;
-
 - (void)cleanUp;
 
 #pragma mark -

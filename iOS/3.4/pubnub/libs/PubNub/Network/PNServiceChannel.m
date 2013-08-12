@@ -282,6 +282,36 @@
     }
 }
 
+- (void)rescheduleStoredRequests:(NSArray *)requestsList {
+
+    if ([requestsList count] > 0) {
+
+        [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
+                                       usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+                                                    BOOL *requestIdentifierEnumeratorStop) {
+
+               PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+
+               [request reset];
+               request.closeConnection = NO;
+
+               // Check whether client is waiting for request completion
+               BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+
+               // Clean up query (if request has been stored in it)
+               [self destroyRequest:request];
+
+               // Send request back into queue with higher priority among other requests
+               [self scheduleRequest:request
+             shouldObserveProcessing:isWaitingForCompletion
+                          outOfOrder:YES
+                    launchProcessing:NO];
+           }];
+
+        [self scheduleNextRequest];
+    }
+}
+
 - (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
 
     BOOL shouldStoreRequest = YES;
