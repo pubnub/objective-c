@@ -250,7 +250,9 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 }
 
 - (void)refreshReachabilityState {
-    
+
+    PNReachabilityStatus oldStatus = _status;
+
     SCNetworkConnectionFlags reachabilityFlags;
     SCNetworkReachabilityRef internerReachability = [[self class] newReachabilityForWiFi:NO];
     SCNetworkReachabilityGetFlags(internerReachability, &reachabilityFlags);
@@ -265,8 +267,32 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     self.reachabilityFlags = reachabilityFlags;
     CFRelease(internerReachability);
     
-    
-    _status = PNReachabilityStatusForFlags(self.reachabilityFlags);
+
+    PNReachabilityStatus updatedStatus = PNReachabilityStatusForFlags(self.reachabilityFlags);
+
+
+    // Check whether data channel route changed (WiFi <-> Cellular)
+    if (oldStatus != PNReachabilityStatusUnknown && oldStatus != PNReachabilityStatusNotReachable &&
+        updatedStatus != PNReachabilityStatusUnknown && updatedStatus != PNReachabilityStatusNotReachable &&
+        oldStatus != updatedStatus) {
+
+        // Simulate disconnection to trigger all required disconnection processes inside library
+        // (sockets will be closed and so on)
+        self.status = PNReachabilityStatusNotReachable;
+
+        // Give some time before report that connection available, so all asynchronous operations will be able to
+        // complete
+        __pn_desired_weak __typeof__ (self) weakSelf = self;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^{
+
+            weakSelf.status = updatedStatus;
+        });
+    }
+    else {
+
+        _status = PNReachabilityStatusForFlags(self.reachabilityFlags);
+    }
 }
 
 - (void)updateReachabilityFromError:(PNError *)error {

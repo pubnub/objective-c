@@ -173,7 +173,7 @@ void PNLogDumpOutputToFile(NSString *output) {
     }
 }
 
-#if PNLOG_LOGGING_ENABLED == 1
+
 static void PNLog(PNLogLevels level, id sender, ...);
 void PNLog(PNLogLevels level, id sender, ...) {
 
@@ -231,13 +231,12 @@ void PNLog(PNLogLevels level, id sender, ...) {
     if(formattedLog != nil && additionalData != nil) {
 
         NSString *consoleString = [NSString stringWithFormat:@"%@%@", [NSString stringWithFormat:formattedLog, additionalData], formattedLogString];
+#if PNLOG_LOGGING_ENABLED == 1
         NSLog(@"%@", consoleString);
+#endif
         PNLogDumpOutputToFile(consoleString);
     }
 }
-#else
-#define PNLog
-#endif
 
 static void PNDispatchRetain(dispatch_object_t object);
 void PNDispatchRetain(dispatch_object_t object) {
