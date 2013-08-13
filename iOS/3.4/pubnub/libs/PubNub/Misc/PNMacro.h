@@ -35,19 +35,19 @@
 #endif // pn_desired_weak
 
 #ifndef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
-    #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS NO
+    #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 0
 
     #if __IPHONE_OS_VERSION_MIN_REQUIRED
         // Only starting from iOS 6.x GCD structures treated as objects and handled by ARC
         #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
             #undef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
-            #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS YES
+            #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 1
         #endif // __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
     #else
         // Only starting from Mac OS X 10.8.x GCD structures treated as objects and handled by ARC
         #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1080
             #undef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
-            #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS YES
+            #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 1
         #endif // MAC_OS_X_VERSION_MIN_REQUIRED >= 1080
     #endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 #endif // PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
@@ -60,6 +60,18 @@
         #define pn_dispatch_property_ownership strong
     #endif // PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
 #endif // pn_dispatch_property_ownership
+
+#ifndef pn_dispatch_object_memory_management
+    #define pn_dispatch_object_memory_management
+
+    #if PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
+        #define pn_dispatch_object_retain(__OBJECT__)
+        #define pn_dispatch_object_release(__OBJECT__)
+    #else
+        #define pn_dispatch_object_retain(__OBJECT__) dispatch_retain(__OBJECT__)
+        #define pn_dispatch_object_release(__OBJECT__) dispatch_release(__OBJECT__)
+    #endif // PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
+#endif // pn_dispatch_object_memory_management
 
 
 #pragma mark - Logging
@@ -241,19 +253,13 @@ void PNLog(PNLogLevels level, id sender, ...) {
 static void PNDispatchRetain(dispatch_object_t object);
 void PNDispatchRetain(dispatch_object_t object) {
 
-    if (!PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS) {
-
-        dispatch_retain(object);
-    }
+    pn_dispatch_object_retain(object);
 }
 
 static void PNDispatchRelease(dispatch_object_t object);
 void PNDispatchRelease(dispatch_object_t object) {
 
-    if (!PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS) {
-
-        dispatch_release(object);
-    }
+    pn_dispatch_object_release(object);
 }
 
 static uint32_t PNBitCompound(va_list masksList);
