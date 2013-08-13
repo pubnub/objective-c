@@ -1905,7 +1905,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.reachability.reachabilityChangeHandleBlock = ^(BOOL connected) {
             
             PNLog(PNLogGeneralLevel, weakSelf, @"IS CONNECTED? %@ (STATE: %i)", connected?@"YES":@"NO", weakSelf.state);
-            
+
             if (weakSelf.shouldConnectOnServiceReachabilityCheck) {
                 
                 weakSelf.connectOnServiceReachabilityCheck = NO;
@@ -1932,8 +1932,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         
                         weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
                     }
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+                    BOOL isSuspended = weakSelf.state == PNPubNubClientStateSuspended;
+#else
+                    BOOL isSuspended = NO;
+#endif
+
                     
-                    if (weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError || weakSelf.shouldConnectOnServiceReachability) {
+                    if (weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError ||
+                        weakSelf.shouldConnectOnServiceReachability || isSuspended) {
                         
                         // Check whether should restore connection or not
                         if([weakSelf shouldRestoreConnection] || weakSelf.shouldConnectOnServiceReachability) {
@@ -1943,8 +1950,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                 
                                 weakSelf.restoringConnection = YES;
                             }
-                            
-                            [[weakSelf class] connect];
+
+                            if (isSuspended) {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+                                weakSelf.state = PNPubNubClientStateConnected;
+
+                                [weakSelf.messagingChannel resume];
+                                [weakSelf.serviceChannel resume];
+#endif
+                            }
+                            else {
+
+                                [[weakSelf class] connect];
+                            }
                         }
                     }
                 }
@@ -2358,8 +2376,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED BACKGROUND. SUSPEND.");
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
         [self.messagingChannel suspend];
         [self.serviceChannel suspend];
+
+        self.state = PNPubNubClientStateSuspended;
+#endif
     }
 }
 - (void)handleApplicationDidEnterForegroundState:(NSNotification *)__unused notification  {
@@ -2369,9 +2391,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     if ([self.reachability isServiceAvailable]) {
 
         PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND. RESUME.");
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        self.state = PNPubNubClientStateConnected;
 
         [self.messagingChannel resume];
         [self.serviceChannel resume];
+#endif
     }
 }
 
