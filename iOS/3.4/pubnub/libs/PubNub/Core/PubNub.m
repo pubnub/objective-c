@@ -2422,8 +2422,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
 
-    BOOL canRunInBackground = [self canRunInBackground];
-    if (!canRunInBackground) {
+    if (![self canRunInBackground]) {
 
         // Check whether application connected or not
         if ([self isConnected]) {
@@ -2443,7 +2442,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     [self.reachability refreshReachabilityState];
 
-    if ([self.reachability isServiceAvailable]) {
+    if ([self.reachability isServiceAvailable] && ![self canRunInBackground]) {
 
         // Check whether application is suspended
         if (self.state == PNPubNubClientStateSuspended) {
