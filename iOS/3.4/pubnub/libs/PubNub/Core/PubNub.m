@@ -613,6 +613,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             
             [[self sharedInstance].configuration shouldKillDNSCache:NO];
         }
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        // Check whether application has been suspended or not
+        if ([self sharedInstance].state == PNPubNubClientStateSuspended) {
+
+            [self sharedInstance].state = PNPubNubClientStateConnected;
+        }
+#endif
         
         // Check whether client disconnected at this moment (maybe previously was
         // disconnected because connection loss)
@@ -2382,12 +2390,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     BOOL canRunInBackground = [self canRunInBackground];
     if (!canRunInBackground) {
 
-        PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED BACKGROUND. SUSPEND.");
+        // Check whether application connected or not
+        if ([self isConnected]) {
 
-        [self.messagingChannel suspend];
-        [self.serviceChannel suspend];
+            PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED BACKGROUND. SUSPEND.");
 
-        self.state = PNPubNubClientStateSuspended;
+
+            self.state = PNPubNubClientStateSuspended;
+
+            [self.messagingChannel suspend];
+            [self.serviceChannel suspend];
+        }
     }
 }
 
@@ -2397,11 +2410,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     if ([self.reachability isServiceAvailable]) {
 
-        PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND. RESUME.");
-        self.state = PNPubNubClientStateConnected;
+        // Check whether application is suspended
+        if (self.state == PNPubNubClientStateSuspended) {
 
-        [self.messagingChannel resume];
-        [self.serviceChannel resume];
+            PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND. RESUME.");
+
+
+            self.state = PNPubNubClientStateConnected;
+
+            [self.messagingChannel resume];
+            [self.serviceChannel resume];
+        }
     }
 }
 #endif
