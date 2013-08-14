@@ -1904,7 +1904,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
         BOOL isResuming = [self isResuming];
 #else
-        BOOL isResuming = NO
+        BOOL isResuming = NO;
 #endif
 
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnecting, PNConnectionDisconnected,

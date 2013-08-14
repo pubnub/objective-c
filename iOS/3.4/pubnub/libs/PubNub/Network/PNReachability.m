@@ -79,7 +79,7 @@ typedef enum _PNReachabilityStatus {
     
     struct sockaddr_in address;
     bzero(&address, sizeof(address));
-    address.sin_len = sizeof(address);
+    address.sin_len = (__uint8_t)sizeof(address);
     address.sin_family = AF_INET;
     
     if (wifiReachability) {
@@ -126,8 +126,10 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
 
                 status = PNReachabilityStatusReachableViaWiFi;
 
-                PNBitsOff(&flags, kSCNetworkReachabilityFlagsReachable, kSCNetworkReachabilityFlagsIsDirect,
-                                  kSCNetworkReachabilityFlagsIsLocalAddress, 0);
+                unsigned long flagsForCleanUp = (unsigned long)flags;
+                PNBitsOff(&flagsForCleanUp, kSCNetworkReachabilityFlagsReachable, kSCNetworkReachabilityFlagsIsDirect,
+                                            kSCNetworkReachabilityFlagsIsLocalAddress, 0);
+                flags = (SCNetworkReachabilityFlags)flagsForCleanUp;
 
                 if (flags != 0) {
 

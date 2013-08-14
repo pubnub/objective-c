@@ -353,6 +353,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)suspend {
 
     PNBitClear(&_messagingState);
@@ -376,6 +377,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     [self resumeChannelIdleTimer];
 }
+#endif
 
 
 #pragma mark - Presence management

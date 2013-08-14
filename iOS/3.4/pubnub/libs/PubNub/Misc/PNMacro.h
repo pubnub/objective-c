@@ -262,11 +262,11 @@ void PNDispatchRelease(dispatch_object_t object) {
     pn_dispatch_object_release(object);
 }
 
-static uint32_t PNBitCompound(va_list masksList);
-uint32_t PNBitCompound(va_list masksList) {
+static NSUInteger PNBitCompound(va_list masksList);
+NSUInteger PNBitCompound(va_list masksList) {
 
-    uint32_t compoundMask = 0;
-    uint32_t mask = va_arg(masksList, NSUInteger);
+    NSUInteger compoundMask = 0;
+    NSUInteger mask = va_arg(masksList, NSUInteger);
     while (mask != 0) {
 
         compoundMask |= mask;
@@ -302,7 +302,7 @@ BOOL PNBitsIsOn(NSUInteger flag, BOOL allMasksRequired, ...) {
 
     va_list bits;
     va_start(bits, allMasksRequired);
-    uint32_t compoundMask = PNBitCompound(bits);
+    NSUInteger compoundMask = PNBitCompound(bits);
 
 
     return allMasksRequired ? (flag & compoundMask) == compoundMask : (flag & compoundMask) != 0;
@@ -319,7 +319,7 @@ void PNBitsOn(NSUInteger *flag, ...) {
 
     va_list bits;
     va_start(bits, flag);
-    uint32_t compoundMask = PNBitCompound(bits);
+    NSUInteger compoundMask = PNBitCompound(bits);
 
     PNBitOn(flag, compoundMask);
 }
@@ -335,7 +335,7 @@ void PNBitsOff(NSUInteger *flag, ...) {
 
     va_list bits;
     va_start(bits, flag);
-    uint32_t compoundMask = PNBitCompound(bits);
+    NSUInteger compoundMask = PNBitCompound(bits);
 
     PNBitOff(flag, compoundMask);
 }
