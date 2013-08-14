@@ -252,11 +252,11 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %i\nCONNECTION WILL BE CLOSE? %@\nRESPONSE SIZE: %i\nRESPONSE CONTENT SIZE: %i\nIS JSONP: %@\nCALLBACK METHOD: %@\nREQUEST IDENTIFIER: %@\nRESPONSE: %@\n",
-                                      self.statusCode,
+    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %ld\nCONNECTION WILL BE CLOSE? %@\nRESPONSE SIZE: %ld\nRESPONSE CONTENT SIZE: %ld\nIS JSONP: %@\nCALLBACK METHOD: %@\nREQUEST IDENTIFIER: %@\nRESPONSE: %@\n",
+                                      (long)self.statusCode,
                                       self.isLastResponseOnConnection ? @"YES" : @"NO",
-                                      [self.content length],
-                                      self.size,
+                                      (unsigned long)[self.content length],
+                                      (unsigned long)self.size,
                                       self.callbackMethod ? @"YES" : @"NO",
                                       self.callbackMethod,
                                       self.requestIdentifier,
