@@ -461,7 +461,6 @@ static NSUInteger const kPNMaximumRetryCount = 3;
 
 @implementation PNConnection
 
-
 #pragma mark - Class methods
 
 + (PNConnection *)connectionWithIdentifier:(NSString *)identifier {

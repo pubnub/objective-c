@@ -119,15 +119,15 @@
     [mockConnenction verify];
 }
 
-- (void)testCloseConnection {
+- (void)testDisconnectConnection {
     PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
     
     id mockConnenction = [OCMockObject partialMockForObject:connection];
     
     [[mockConnenction expect] setReconnecting:(BOOL)NO];
-    [[mockConnenction expect] closeStreams];
+    [[mockConnenction expect] disconnectByUserRequest:(BOOL)YES];
     
-    [mockConnenction closeConnection];
+    [mockConnenction disconnect];
     
     [mockConnenction verify];
 }
