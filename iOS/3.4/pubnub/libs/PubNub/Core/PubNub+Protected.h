@@ -70,8 +70,10 @@ typedef enum _PNPubNubClientState {
 // after application launch)
 @property (nonatomic, strong) NSString *launchSessionIdentifier;
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 // Stores whether application is able to work in background or not
 @property (nonatomic, readonly, getter = canRunInBackground) BOOL runInBackground;
+#endif
 
 
 #pragma mark - Class methods

@@ -219,8 +219,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 #pragma mark - Handler methods
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)notification;
 - (void)handleApplicationDidEnterForegroundState:(NSNotification *)notification;
+#endif
 
 /**
  * Handling error which occurred while PubNub client tried establish connection and lost internet connection
@@ -241,12 +243,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  */
 - (void)prepareCryptoHelper;
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  * Will help to subscribe/unsubscribe on/from all critical application-wide notifications which may affect
  * client operation
  */
 - (void)subscribeForNotifications;
 - (void)unsubscribeFromNotifications;
+#endif
 
 
 /**
@@ -393,7 +397,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         _sharedInstance = [[[self class] alloc] init];
     });
     
-    
+
     return _sharedInstance;
 }
 
@@ -417,7 +421,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     _sharedInstance.reachability = nil;
     
     pendingInvocations = nil;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
     [_sharedInstance unsubscribeFromNotifications];
+#endif
     _sharedInstance = nil;
 }
 
@@ -607,6 +613,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             
             [[self sharedInstance].configuration shouldKillDNSCache:NO];
         }
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        // Check whether application has been suspended or not
+        if ([self sharedInstance].state == PNPubNubClientStateSuspended) {
+
+            [self sharedInstance].state = PNPubNubClientStateConnected;
+        }
+#endif
         
         // Check whether client disconnected at this moment (maybe previously was
         // disconnected because connection loss)
@@ -1994,8 +2008,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 }
             }
         };
-
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
         [self subscribeForNotifications];
+#endif
     }
     
     
@@ -2369,36 +2384,46 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 #pragma mark - Handler methods
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
 
     BOOL canRunInBackground = [self canRunInBackground];
     if (!canRunInBackground) {
 
-        PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED BACKGROUND. SUSPEND.");
+        // Check whether application connected or not
+        if ([self isConnected]) {
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-        [self.messagingChannel suspend];
-        [self.serviceChannel suspend];
+            PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED BACKGROUND. SUSPEND.");
 
-        self.state = PNPubNubClientStateSuspended;
-#endif
+
+            self.state = PNPubNubClientStateSuspended;
+
+            [self.messagingChannel suspend];
+            [self.serviceChannel suspend];
+        }
     }
 }
+
 - (void)handleApplicationDidEnterForegroundState:(NSNotification *)__unused notification  {
 
     [self.reachability refreshReachabilityState];
 
     if ([self.reachability isServiceAvailable]) {
 
-        PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND. RESUME.");
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-        self.state = PNPubNubClientStateConnected;
+        // Check whether application is suspended
+        if (self.state == PNPubNubClientStateSuspended) {
 
-        [self.messagingChannel resume];
-        [self.serviceChannel resume];
-#endif
+            PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND. RESUME.");
+
+
+            self.state = PNPubNubClientStateConnected;
+
+            [self.messagingChannel resume];
+            [self.serviceChannel resume];
+        }
     }
 }
+#endif
 
 - (void)handleConnectionErrorOnNetworkFailure {
 
@@ -2465,6 +2490,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)subscribeForNotifications {
 
     [self unsubscribeFromNotifications];
@@ -2483,6 +2509,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
 }
+#endif
 
 - (BOOL)shouldPostponeMethodCall {
     
@@ -2881,6 +2908,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self userInfo:object];
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (BOOL)canRunInBackground {
 
     BOOL canRunInBackground = [UIApplication canRunInBackground];
@@ -2893,6 +2921,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     return canRunInBackground;
 }
+#endif
 
 - (BOOL)shouldRestoreConnection {
     
