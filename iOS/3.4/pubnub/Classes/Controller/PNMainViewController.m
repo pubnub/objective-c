@@ -522,7 +522,7 @@ static NSUInteger const inChatMessageLabelTag = 878;
     UILabel *messageLabel = [[UILabel alloc] initWithFrame:(CGRect){.size=inChatMessageSize}];
     messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:17.0f];
     messageLabel.tag = inChatMessageLabelTag;
-    messageLabel.textAlignment = UITextAlignmentCenter;
+    messageLabel.textAlignment = NSTextAlignmentCenter;
     messageLabel.backgroundColor = [UIColor clearColor];
     messageLabel.textColor = [UIColor darkGrayColor];
     messageLabel.shadowColor = [UIColor colorWithWhite:0.0f alpha:0.3f];

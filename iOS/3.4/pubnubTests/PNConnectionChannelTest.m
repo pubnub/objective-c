@@ -168,17 +168,24 @@
 
 #pragma mark - PNConnectionChannel Delegate
 
-- (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host {
-}
+- (void)connectionChannelConfigurationDidFail:(PNConnectionChannel *)channel {}
+- (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel {}
+- (void)connectionChannelWillResume:(PNConnectionChannel *)channel {}
+- (void)connectionChannelDidSuspend:(PNConnectionChannel *)channel {}
+- (void)connectionChannelDidResume:(PNConnectionChannel *)channel {}
 
-- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectToHost:(NSString *)host {
-}
+- (void)connectionChannel:(PNConnectionChannel *)channel
+         didConnectToHost:(NSString *)host {}
+
+- (void)connectionChannel:(PNConnectionChannel *)channel
+       didReconnectToHost:(NSString *)host {}
 
 - (void)connectionChannel:(PNConnectionChannel *)channel
 connectionDidFailToOrigin:(NSString *)host
                 withError:(PNError *)error {}
 
-- (void)connectionChannel:(PNConnectionChannel *)channel didDisconnectFromOrigin:(NSString *)host {}
+- (void)connectionChannel:(PNConnectionChannel *)channel
+  didDisconnectFromOrigin:(NSString *)host {}
 
 - (void)connectionChannel:(PNConnectionChannel *)channel
  willDisconnectFromOrigin:(NSString *)host
