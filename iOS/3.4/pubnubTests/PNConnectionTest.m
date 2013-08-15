@@ -18,11 +18,9 @@
 + (NSMutableDictionary *)connectionsPool;
 + (PNConnection *)connectionFromPoolWithIdentifier:(NSString *)identifier;
 + (void)storeConnection:(PNConnection *)connection withIdentifier:(NSString *)identifier;
-
-- (BOOL)shouldProcessNextRequest;
-- (void)setReconnecting:(BOOL)value;
-- (void)disconnectStreams;
 - (void)closeStreams;
+- (void)resumeWakeUpTimer;
+- (void)handleRequestSendingCancelation;
 
 @end
 
@@ -70,7 +68,7 @@
 - (void)testIsDisconnected {
     PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
     
-    STAssertFalse([connection isDisconnected], @"Shouldn't be disconnected by default");
+    STAssertTrue([connection isDisconnected], @"Should beDisconnected after initializing");
 }
 
 #pragma mark - Interaction tests
@@ -102,21 +100,24 @@
 
 - (void)testUnscheduleRequestsExecution {
     PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
-    [connection unscheduleRequestsExecution];
-    STAssertFalse([connection shouldProcessNextRequest], @"Shouldn't process next request");
+    
+    id mockConnection = [OCMockObject partialMockForObject:connection];
+    
+    [[mockConnection expect] handleRequestSendingCancelation];
+    
+    [mockConnection unscheduleRequestsExecution];
+    [mockConnection verify];
 }
 
 - (void)testReconnect {
     PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
     
-    id mockConnenction = [OCMockObject partialMockForObject:connection];
+    id mockConnection = [OCMockObject partialMockForObject:connection];
     
-    [[mockConnenction expect] setReconnecting:(BOOL)YES];
-    [[mockConnenction expect] disconnectStreams];
+    [[mockConnection expect] resumeWakeUpTimer];
     
-    [mockConnenction reconnect];
-    
-    [mockConnenction verify];
+    [mockConnection reconnect];
+    [mockConnection verify];
 }
 
 - (void)testDisconnectConnection {
@@ -124,7 +125,6 @@
     
     id mockConnenction = [OCMockObject partialMockForObject:connection];
     
-    [[mockConnenction expect] setReconnecting:(BOOL)NO];
     [[mockConnenction expect] disconnectByUserRequest:(BOOL)YES];
     
     [mockConnenction disconnect];
