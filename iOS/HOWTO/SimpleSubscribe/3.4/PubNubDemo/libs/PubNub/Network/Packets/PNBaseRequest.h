@@ -35,7 +35,7 @@
 // processed by connection or not
 @property (nonatomic, assign) BOOL processing;
 
-// Stores whether this request already prcessed
+// Stores whether this request already processed
 // or not
 @property (nonatomic, assign) BOOL processed;
 
