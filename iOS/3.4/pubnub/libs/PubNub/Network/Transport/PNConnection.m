@@ -1973,6 +1973,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RECONNECTED BECAUSE OF %@ (STATE: %d)",
                       self.name ? self.name : self, eventSource, self.state);
+
+                [self.delegate connection:self didReconnectToHostAfterError:self.configuration.origin];
             }
             // Check whether connection has been reconnected by request or not
             else if (isReconnecting) {
