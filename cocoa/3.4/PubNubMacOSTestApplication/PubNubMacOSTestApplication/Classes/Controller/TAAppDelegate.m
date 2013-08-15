@@ -13,7 +13,7 @@
 #pragma mark Static
 
 // Stores reference on list of channels on which library should subscribe
-static NSString * const kTAChannelName = @"macosdev";
+static NSString * const kTAChannelName = @"hello_world";
 
 
 #pragma mark - Private interface declaration
