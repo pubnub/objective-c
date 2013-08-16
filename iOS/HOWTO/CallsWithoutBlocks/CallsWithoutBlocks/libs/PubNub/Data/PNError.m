@@ -51,7 +51,7 @@
     return [self errorWithMessage:nil code:errorCode];
 }
 
-+ (PNError *)errorWithHTTPStatusCode:(NSUInteger)statusCode {
++ (PNError *)errorWithHTTPStatusCode:(NSInteger)statusCode {
 
     NSInteger errorCode = kPNAPIUnauthorizedAccessError;
 
@@ -179,6 +179,7 @@
                 errorDescription = @"PubNub client already connected to origin";
                 break;
             case kPNClientConnectionFailedOnInternetFailureError:
+            case kPNClientConnectionClosedOnSSLNegotiationFailureError:
                 
                 errorDescription = @"PubNub client connection failed";
                 break;
@@ -292,6 +293,10 @@
         case kPNClientConnectionFailedOnInternetFailureError:
             
             failureReason = @"Looks like client lost connection while trying to connect to remote PubNub service";
+            break;
+        case kPNClientConnectionClosedOnSSLNegotiationFailureError:
+
+            failureReason = @"Looks like client was unable to connect to remote PubNub services becuase of security issues (SSL)";
             break;
         case kPNRequestExecutionFailedOnInternetFailureError:
         case kPNClientConnectionClosedOnInternetFailureError:
@@ -423,6 +428,10 @@
             
             fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again";
             break;
+        case kPNClientConnectionClosedOnSSLNegotiationFailureError:
+
+            fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again. If this issue still persist, please contact with support team at support@pubnub.com to ask them investigate issue with SSL certificates on servers.";
+            break;
         case kPNConnectionErrorOnSetup:
             
             fixSuggestion = @"Check whether client was configured to use secure connection and whether remote origin has valid certificate.\nIf remote origin doesn't provide correct SSL certificate, you can set kPNShouldReduceSecurityLevelOnError to YES in PNDefaultConfiguration.h or provide YES when initializing PNConfiguration instance.";
@@ -531,9 +540,10 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"Domain=%@; Code=%i; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\"; Associated object=%@",
+    return [NSString stringWithFormat:@"Domain=%@; Code=%ld; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\";"
+                                              " Associated object=%@",
                                       self.domain,
-                                      self.code,
+                                      (long)self.code,
                                       [self localizedDescription],
                                       [self localizedFailureReason],
                                       [self localizedRecoverySuggestion],

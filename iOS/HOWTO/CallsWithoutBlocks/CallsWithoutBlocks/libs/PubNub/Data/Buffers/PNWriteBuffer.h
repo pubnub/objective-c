@@ -26,19 +26,16 @@
 
 #pragma mark - Properties
 
-// Stores reference on object which is required
-// this buffer using it's identifier
+// Stores reference on object which is required this buffer using it's identifier
 @property (nonatomic, copy) NSString *requestIdentifier;
 
-// Stores whether buffer sending initialized or not
-// (write buffer bytes readout started)
+// Stores whether buffer sending initialized or not (write buffer bytes readout started)
 @property  (nonatomic, assign, getter = isSendingBytes) BOOL sendingBytes;
 
-// Stores reference on how long packet payload which should
-// be sent over the socket
+// Stores reference on how long packet payload which should be sent over the socket
 @property (nonatomic, readonly, assign) CFIndex length;
 
-// Stores offest for data which already sent via socket
+// Stores offset for data which already sent via socket
 @property (nonatomic, assign) CFIndex offset;
 
 
@@ -58,28 +55,29 @@
 - (id)initWithRequest:(PNBaseRequest *)request;
 
 /**
- * Return whether buffer has any data which can be 
- * sent (calculations based on offset and total length
+ * Return whether buffer has any data which can be sent (calculations based on offset and total length
  */
 - (BOOL)hasData;
 
 /**
- * Returns whether buffer already sent some portion
- * of data for processing or not
+ * Returns whether buffer already sent some portion of data for processing or not
  */
 - (BOOL)isPartialDataSent;
 
 /**
- * Retrieve reference on buffer which take into
- * account number of sent bytes
+ * Retrieve reference on buffer which take into account number of sent bytes
  */
 - (UInt8 *)buffer;
 
 /**
- * Retrieve size of the buffer which should be
- * used when writting content into sokect stream
+ * Retrieve size of the buffer which should be used when writing content into socket stream
  */
 - (CFIndex)bufferLength;
+
+/**
+ * Reset data pointers so packet can be processed once more from the beginning
+ */
+- (void)reset;
 
 #pragma mark -
 
