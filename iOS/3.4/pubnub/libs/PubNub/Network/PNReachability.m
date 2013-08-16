@@ -126,7 +126,7 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
 
                 status = PNReachabilityStatusReachableViaWiFi;
 
-                unsigned long flagsForCleanUp = (unsigned long)flags;
+                unsigned int flagsForCleanUp = (unsigned int)flags;
                 PNBitsOff(&flagsForCleanUp, kSCNetworkReachabilityFlagsReachable, kSCNetworkReachabilityFlagsIsDirect,
                                             kSCNetworkReachabilityFlagsIsLocalAddress, 0);
                 flags = (SCNetworkReachabilityFlags)flagsForCleanUp;
