@@ -346,7 +346,6 @@
         [self.serviceDelegate serviceChannel:self didFailMessageSend:messageObject withError:error];
     }
 
-
     return messageObject;
 }
 
@@ -358,7 +357,6 @@
         [self sendMessage:message.message toChannel:message.channel];
     }
 }
-
 
 #pragma mark - Handler methods
 

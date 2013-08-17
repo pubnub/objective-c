@@ -566,8 +566,8 @@ static NSUInteger const kPNMaximumRetryCount = 3;
         self.deserializer = [PNResponseDeserialize new];
 
         // Set initial connectino state
-        PNBitOff(&_state, PNConnectionDisconnected);
-
+        PNBitOn(&_state, PNConnectionDisconnected);
+        
         // Perform streams initial options and security initializations
         [self prepareStreams];
     }
@@ -996,10 +996,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)connectByUserRequest:(BOOL)byUserRequest {
 
-    PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@)"
-            "(STATE: %d)",
-          self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
-
+    NSUInteger oldStatus = self.state;
     __block BOOL isStreamOpened = NO;
 
     if (byUserRequest) {
@@ -1016,6 +1013,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         PNBitOff(&_state, PNByUserRequest);
     }
+    
+    PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@)"
+          "(STATE: %d/%d)",
+          self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state, oldStatus);
 
     PNBitOn(&_state, PNConnectionPrepareToConnect);
 
@@ -2192,7 +2193,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, 0);
 #endif
-    PNBitsOn(&_state, PNConnectionDisconnected, 0);
+    PNBitOn(&_state, PNConnectionDisconnected);
 
     [self reconnect];
 }
@@ -2441,6 +2442,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (void)handleStreamSetupError {
+    
+    PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] HANDLE STREAM CONFIGURATION FAILURE (STATE: %d)",
+          self.name ? self.name : self, self.state);
 
     // Check whether error occurred while connection attempted to connect to remote services w/o configuration on
     // user request or not
@@ -2468,8 +2472,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether connection is still in bad state before issue connection
             if (PNBitIsOn(weakSelf.state, PNConnectionConfiguring)) {
 
-
                 if (weakSelf.retryCount + 1 < kPNMaximumRetryCount) {
+                    
+                    PNLog(PNLogConnectionLayerErrorLevel, weakSelf, @"[CONNECTION::%@] RETRY CONFIGURATION ATTEMPT... (STATE: %d)",
+                          weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state);
 
                     weakSelf.retryCount++;
 
@@ -2485,6 +2491,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 }
                 // Looks like connection instance can't retry anymore because it reached maximum retry count
                 else {
+                    
+                    PNLog(PNLogConnectionLayerErrorLevel, weakSelf, @"[CONNECTION::%@] CONFIGURATION RETRY COUNT EXCEEDED LIMIT. CANCEL. (STATE: %d)",
+                          weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state);
 
                     weakSelf.retryCount = 0;
 
