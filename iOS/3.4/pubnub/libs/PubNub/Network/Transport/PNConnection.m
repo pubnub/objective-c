@@ -1541,6 +1541,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Check whether connection stored some response in temporary storage or not
     if ([_temporaryRetrievedData length] > 0) {
 
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] THERE IS %d BYTES IN TEMPORARY BUFFER. "
+                "PROCESS... (STATE: %d)",
+              self.name ? self.name : self, [_temporaryRetrievedData length], self.state);
+
         [self.retrievedData appendData:_temporaryRetrievedData];
         _temporaryRetrievedData = nil;
 
@@ -1551,7 +1555,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         // Check whether client is still connected and there is request from server side to close connection.
         // Connection will be restored after full disconnection
-        if ([self isConnected] && PNBitIsOn(self.state, PNByServerRequest)) {
+        if ([self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
+            PNBitIsOn(self.state, PNByServerRequest)) {
 
             [self disconnectByUserRequest:NO];
         }
