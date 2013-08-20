@@ -104,6 +104,8 @@ typedef enum _PNLogLevels {
 } PNLogLevels;
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
 static BOOL PNLoggingEnabledForLevel(PNLogLevels level);
 BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
 
@@ -492,5 +494,6 @@ NSInteger PNRandomInteger() {
     return (arc4random() %(INT32_MAX)-1);
 }
 
+#pragma clang diagnostic pop
 
 #endif
