@@ -612,7 +612,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     [self performAsyncLockingBlock:^{
         PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#23} TURN ON (%s)", __PRETTY_FUNCTION__);
-        
+
+        if (isDisconnectedByUser) {
+
+            [self sharedInstance].state = PNPubNubClientStateConnected;
+        }
+
         BOOL isDisconnectForConfigurationChange = [self sharedInstance].state == PNPubNubClientStateDisconnectingOnConfigurationChange;
         
         // Remove PubNub client from list which help to observe various events
@@ -676,7 +681,19 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 // from overlapping on connection event)
                 [self sharedInstance].state = PNPubNubClientStateDisconnected;
 
-                [[self sharedInstance] connectionChannel:nil didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
+                // Clean up cached data
+                [PNChannel purgeChannelsCache];
+
+                if ([[self sharedInstance].delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
+                    [[self sharedInstance].delegate pubnubClient:[self sharedInstance]
+                                         didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
+                }
+
+                PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#NN} TURN OFF (%s)", __PRETTY_FUNCTION__);
+                [[self sharedInstance] sendNotification:kPNClientDidDisconnectFromOriginNotification
+                                             withObject:[self sharedInstance].configuration.origin];
+                [[self sharedInstance] handleLockingOperationComplete:YES];
             }
             else {
 
@@ -2424,6 +2441,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)connectionChannelDidResume:(PNConnectionChannel *)channel {
 
     [self warmUpConnection:channel];
+
+    // Check whether on resume there is no async locking operation is running
+    if (!self.asyncLockingOperationInProgress) {
+
+        [self handleLockingOperationComplete:YES];
+    }
 }
 #endif
 
@@ -2443,6 +2466,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             self.state = PNPubNubClientStateSuspended;
 
+            self.asyncLockingOperationInProgress = NO;
             [self.messagingChannel suspend];
             [self.serviceChannel suspend];
         }
@@ -2467,6 +2491,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             self.state = PNPubNubClientStateConnected;
 
+            self.asyncLockingOperationInProgress = NO;
             [self.messagingChannel resume];
             [self.serviceChannel resume];
         }
