@@ -397,11 +397,6 @@ static NSData *_cryptorKeyData = nil;
                 size_t remainingUnprocessedDataLength;
                 processingStatus = CCCryptorFinal(cryptor, processedDataEndPointer, unfilledSize, &remainingUnprocessedDataLength);
                 [processedData setLength:(updatedProcessedDataLength+remainingUnprocessedDataLength)];
-                
-                if (unfilledSize > 0 && remainingUnprocessedDataLength == 0) {
-                    
-                    processingStatus = kCCDecodeError;
-                }
             }
 
 

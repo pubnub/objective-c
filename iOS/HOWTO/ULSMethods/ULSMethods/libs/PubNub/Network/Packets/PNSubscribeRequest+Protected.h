@@ -21,9 +21,12 @@
 
 #pragma mark - Properties
 
-// Stores whether leave request was sent to subscribe
-// on new channels or as result of user request
+// Stores whether leave request was sent to subscribe on new channels or as result of user request
 @property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;
+
+// Stores reference on list of channels for which presence should be enabled/disabled
+@property (nonatomic, strong) NSArray *channelsForPresenceEnabling;
+@property (nonatomic, strong) NSArray *channelsForPresenceDisabling;
 
 #pragma mark -
 

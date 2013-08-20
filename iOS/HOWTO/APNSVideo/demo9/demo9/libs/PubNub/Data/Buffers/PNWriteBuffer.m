@@ -96,6 +96,12 @@ static NSUInteger const kPNWriteBufferSize = 4096;
     return MIN(kPNWriteBufferSize, self.length);
 }
 
+- (void)reset {
+
+    self.sendingBytes = NO;
+    self.offset = 0;
+}
+
 - (NSString *)description {
 
     return [NSString stringWithFormat:@"WRITE BUFFER CONTENT: %@", [[NSString alloc] initWithBytes:buffer

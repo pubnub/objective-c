@@ -91,7 +91,7 @@
     /*
      Test scenario:
      - initService with some delegate object
-     - send a message
+     - send a message to specific channel
      - expect scheduleRequest method of channel ivoked
      */
     

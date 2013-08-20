@@ -148,6 +148,15 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     return _channelsCache;
 }
 
++ (NSString *)largestTimetokenFromChannels:(NSArray *)channels {
+
+    NSSortDescriptor *tokenSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updateTimeToken" ascending:YES];
+    NSArray *timeTokens = [[channels sortedArrayUsingDescriptors:@[tokenSortDescriptor]] valueForKey:@"updateTimeToken"];
+
+
+    return [timeTokens lastObject];
+}
+
 
 #pragma mark - Instance methods
 
