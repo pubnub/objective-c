@@ -260,6 +260,18 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
                                 withError:(PNError *)error;
 
 
+#pragma mark - Misc methods
+
+/**
+ * This method is pulled by PubNub client when checking whether it should run in background mode when
+ * application is pushed into background context.
+ * If this method not implemented by delegate, than client will check whether there is background mode
+ * keys in application information Property List and whether they is supported for persistent background
+ * execution or not.
+ */
+- (BOOL)shouldRunClientInBackground;
+
+
 #pragma mark - Configuration override delegate methods
 
 /**

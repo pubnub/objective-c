@@ -128,7 +128,7 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
 
                 unsigned int flagsForCleanUp = (unsigned int)flags;
                 PNBitsOff(&flagsForCleanUp, kSCNetworkReachabilityFlagsReachable, kSCNetworkReachabilityFlagsIsDirect,
-                                            kSCNetworkReachabilityFlagsIsLocalAddress, 0);
+                                            kSCNetworkReachabilityFlagsIsLocalAddress, BITS_LIST_TERMINATOR);
                 flags = (SCNetworkReachabilityFlags)flagsForCleanUp;
 
                 if (flags != 0) {

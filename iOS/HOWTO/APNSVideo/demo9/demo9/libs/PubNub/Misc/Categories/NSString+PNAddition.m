@@ -83,7 +83,7 @@
 
     unsigned char hashedData[CC_SHA256_DIGEST_LENGTH];
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
-    CC_SHA256([data bytes], [data length], hashedData);
+    CC_SHA256([data bytes], (CC_LONG)[data length], hashedData);
 
 
     return [NSData dataWithBytes:hashedData length:CC_SHA256_DIGEST_LENGTH];

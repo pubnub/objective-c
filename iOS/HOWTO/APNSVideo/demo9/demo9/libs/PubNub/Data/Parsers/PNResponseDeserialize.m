@@ -30,6 +30,9 @@ static NSString * const kPNDeflateCompressedContentEncodingHeaderFieldValue = @"
 
 static NSString * const kPNContentLengthHeaderFieldName = @"Content-Length";
 
+static NSString * const kPNConnectionTypeFieldName = @"Connection";
+static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
+
 
 #pragma mark Private interface methods
 
@@ -61,6 +64,7 @@ static NSString * const kPNContentLengthHeaderFieldName = @"Content-Length";
 - (BOOL)isCompressedTransfer:(NSDictionary *)httpResponseHeaders;
 - (BOOL)isGZIPCompressedTransfer:(NSDictionary *)httpResponseHeaders;
 - (BOOL)isDeflateCompressedTransfer:(NSDictionary *)httpResponseHeaders;
+- (BOOL)isKeepAliveConnectionType:(NSDictionary *)httpResponseHeaders;
 - (NSUInteger)contentLength:(NSDictionary *)httpResponseHeaders;
 - (NSString *)contentCompressionType:(NSDictionary *)httpResponseHeaders;
 
@@ -265,6 +269,15 @@ static NSString * const kPNContentLengthHeaderFieldName = @"Content-Length";
     return contentEncoding && result == NSOrderedSame;
 }
 
+- (BOOL)isKeepAliveConnectionType:(NSDictionary *)httpResponseHeaders {
+
+    NSString *connectionType = [httpResponseHeaders objectForKey:kPNConnectionTypeFieldName];
+    NSComparisonResult result = [connectionType caseInsensitiveCompare:kPNCloseConnectionTypeFieldValue];
+
+
+    return connectionType && result != NSOrderedSame;
+}
+
 - (NSUInteger)contentLength:(NSDictionary *)httpResponseHeaders {
 
     NSString *contentLength = [httpResponseHeaders objectForKey:kPNContentLengthHeaderFieldName];
@@ -311,6 +324,9 @@ static NSString * const kPNContentLengthHeaderFieldName = @"Content-Length";
 
         // Check whether response is archived or not
         BOOL isResponseCompressed = [self isCompressedTransfer:headers];
+
+        // Check whether server want to close connection right after this response or keep it alive
+        BOOL isKeepAliveConnection = [self isKeepAliveConnectionType:headers];
 
         // Retrieve response body length (from header field)
         NSUInteger contentLength = [self contentLength:headers];
@@ -372,7 +388,10 @@ static NSString * const kPNContentLengthHeaderFieldName = @"Content-Length";
 
                 PNLog(PNLogDeserializerInfoLevel, self, @" RAW DATA: %@",
                       [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding]);
-                response = [PNResponse responseWithContent:responseBody size:responseSubdata.length code:statusCode];
+                response = [PNResponse responseWithContent:responseBody
+                                                      size:responseSubdata.length
+                                                      code:statusCode
+                                  lastResponseOnConnection:!isKeepAliveConnection];
             }
         }
     }

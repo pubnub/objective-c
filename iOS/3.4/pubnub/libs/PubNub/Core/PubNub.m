@@ -457,6 +457,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         }
         else {
 
+            // Check whether user has been faster to call connect than library was able to resume connection
+            if ([self sharedInstance].state == PNPubNubClientStateSuspended) {
+                PNLog(PNLogGeneralLevel, self, @">>>>>> TRIED TO CONNECT WHILE WAS SUSPENDED (LIBRARY DOESN'T HAVE ENOUGH TIME TO RESTORE)");
+
+                [_sharedInstance.messagingChannel terminate];
+                [_sharedInstance.serviceChannel terminate];
+                _sharedInstance.messagingChannel = nil;
+                _sharedInstance.serviceChannel = nil;
+            }
+
             // Check whether client configuration was provided
             // or not
             if ([self sharedInstance].configuration == nil) {
@@ -1070,41 +1080,42 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
               withPresenceEvent:(BOOL)withPresenceEvent
      andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
 
-        [self performAsyncLockingBlock:^{
+    [self performAsyncLockingBlock:^{
         PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#35} TURN ON (%s)", __PRETTY_FUNCTION__);
-        
+
         [[PNObservationCenter defaultCenter] removeClientAsSubscriptionObserver];
         [[PNObservationCenter defaultCenter] removeClientAsUnsubscribeObserver];
-        
+
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
         if (statusCode == 0) {
-            
+
             if (handlerBlock) {
-                
+
                 [[PNObservationCenter defaultCenter] addClientAsUnsubscribeObserverWithBlock:[handlerBlock copy]];
             }
-            
-            
-            [[self sharedInstance].messagingChannel unsubscribeFromChannels:channels withPresenceEvent:withPresenceEvent];
+
+
+            [[self sharedInstance].messagingChannel unsubscribeFromChannels:channels
+                                                          withPresenceEvent:withPresenceEvent];
         }
         // Looks like client can't send request because of some reasons
         else {
-            
+
             PNError *unsubscriptionError = [PNError errorWithCode:statusCode];
             unsubscriptionError.associatedObject = channels;
-            
+
             [[self sharedInstance] notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError];
-            
-            
+
+
             if (handlerBlock) {
-                
+
                 handlerBlock(channels, unsubscriptionError);
             }
         }
     }
            postponedExecutionBlock:^{
-               
+
                [self postponeUnsubscribeFromChannels:channels
                                    withPresenceEvent:withPresenceEvent
                           andCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
@@ -2442,12 +2453,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     [self.reachability refreshReachabilityState];
 
-    if ([self.reachability isServiceAvailable] && ![self canRunInBackground]) {
+    PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND.");
+
+    if ([self.reachability isServiceAvailable]) {
+
+        PNLog(PNLogGeneralLevel, self, @" CONNECTION AVAILABLE");
 
         // Check whether application is suspended
         if (self.state == PNPubNubClientStateSuspended) {
 
-            PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND. RESUME.");
+            PNLog(PNLogGeneralLevel, self, @" RESUME...");
 
 
             self.state = PNPubNubClientStateConnected;
@@ -2503,6 +2518,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         if (methodInvocation) {
 
+            NSLog(@">>>>>> {RESUME} METHOD: %@", NSStringFromSelector(methodInvocation.selector));
             [methodInvocation invoke];
         }
     }
@@ -2556,8 +2572,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                forObject:(id)object
           withParameters:(NSArray *)parameters
               outOfOrder:(BOOL)placeOutOfOrder{
+
+    NSLog(@">>>>>> {POSTPONE} METHOD: %@", NSStringFromSelector(calledMethodSelector));
     
-    // Initialze variables required to perform postponed method call
+    // Initialize variables required to perform postponed method call
     int signatureParameterOffset = 2;
     NSMethodSignature *methodSignature = [object methodSignatureForSelector:calledMethodSelector];
     NSInvocation *methodInvocation = [NSInvocation invocationWithMethodSignature:methodSignature];
