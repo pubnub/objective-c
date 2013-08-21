@@ -112,6 +112,7 @@ PNChannel *channel_1 = [PNChannel channelWithName:@"a" shouldObservePresence:YES
 ```
 
 2. In your AppDelegate.m, define a didReceiveMessage delegate method:
+
 ```obj-c
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
    NSLog( @"%@", [NSString stringWithFormat:@"received: %@", message.message] );
