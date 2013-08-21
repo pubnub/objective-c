@@ -649,8 +649,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         // Append channels on which client should subscribe
         [subscriptionChannels addObjectsFromArray:[channelsSet allObjects]];
-
-        isAbleToSendRequest = [subscriptionChannels count] > 0;
     }
 
 

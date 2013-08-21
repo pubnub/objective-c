@@ -546,6 +546,7 @@ static NSUInteger const kPNMaximumRetryCount = 3;
     // Reset connections
     if ([_connectionsPool count]) {
 
+        [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(prepareForTermination) withObject:nil];
         [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(setDataSource:) withObject:nil];
         [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
     }
@@ -565,7 +566,7 @@ static NSUInteger const kPNMaximumRetryCount = 3;
         self.configuration = configuration;
         self.deserializer = [PNResponseDeserialize new];
 
-        // Set initial connectino state
+        // Set initial connection state
         PNBitOn(&_state, PNConnectionDisconnected);
         
         // Perform streams initial options and security initializations
@@ -1399,7 +1400,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
-        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] OPEN IS SCHEDUELD (STATE: %d)",
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] OPEN IS SCHEDULED (STATE: %d)",
               self.name ? self.name : self, self.state);
     }
 }
@@ -1957,10 +1958,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether connection is resuming after it was suspended or not
             if (isResuming) {
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RESUMED (STATE: %d)",
                       self.name ? self.name : self, self.state);
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
                 [self.delegate connectionDidResume:self];
 #endif
             }
@@ -2625,7 +2625,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (self.wakeUpTimer != NULL) {
 
-        [self suspendWakeUpTimer];
+        if (self.isWakeUpTimerSuspended) {
+
+            [self resumeWakeUpTimer];
+        }
         dispatch_source_cancel(self.wakeUpTimer);
     }
 }
@@ -2864,6 +2867,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 
 #pragma mark - Memory management
+
+- (void)prepareForTermination {
+
+    [self stopWakeUpTimer];
+}
 
 - (void)dealloc {
 

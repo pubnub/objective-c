@@ -683,23 +683,19 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                 // Clean up cached data
                 [PNChannel purgeChannelsCache];
-
-                if ([[self sharedInstance].delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
-
-                    [[self sharedInstance].delegate pubnubClient:[self sharedInstance]
-                                         didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
-                }
-
-                PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#NN} TURN OFF (%s)", __PRETTY_FUNCTION__);
-                [[self sharedInstance] sendNotification:kPNClientDidDisconnectFromOriginNotification
-                                             withObject:[self sharedInstance].configuration.origin];
-                [[self sharedInstance] handleLockingOperationComplete:YES];
             }
-            else {
 
-                PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#38} TURN OFF (%s)", __PRETTY_FUNCTION__);
-                [[self sharedInstance] handleLockingOperationComplete:YES];
+
+            if ([[self sharedInstance].delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
+                [[self sharedInstance].delegate pubnubClient:[self sharedInstance]
+                                     didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
             }
+
+            PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#NN} TURN OFF (%s)", __PRETTY_FUNCTION__);
+            [[self sharedInstance] sendNotification:kPNClientDidDisconnectFromOriginNotification
+                                         withObject:[self sharedInstance].configuration.origin];
+            [[self sharedInstance] handleLockingOperationComplete:YES];
         }
         else {
             
@@ -2543,7 +2539,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         if (methodInvocation) {
 
-            NSLog(@">>>>>> {RESUME} METHOD: %@", NSStringFromSelector(methodInvocation.selector));
+            PNLog(PNLogGeneralLevel, self, @">>>>>> {RESUME} METHOD: %@", NSStringFromSelector(methodInvocation.selector));
             [methodInvocation invoke];
         }
     }
@@ -2598,7 +2594,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
           withParameters:(NSArray *)parameters
               outOfOrder:(BOOL)placeOutOfOrder{
 
-    NSLog(@">>>>>> {POSTPONE} METHOD: %@", NSStringFromSelector(calledMethodSelector));
+    PNLog(PNLogGeneralLevel, self, @">>>>>> {POSTPONE} METHOD: %@", NSStringFromSelector(calledMethodSelector));
     
     // Initialize variables required to perform postponed method call
     int signatureParameterOffset = 2;
