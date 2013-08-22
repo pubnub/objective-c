@@ -543,6 +543,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                                 failure([PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]);
                             }
+
+                            shouldAddStateObservation = YES;
                         }
                     }
                 }
@@ -685,8 +687,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
         if (isDisconnectForConfigurationChange) {
             
-            // Delay connection restore to give some time internal
-            // components to complete their tasks
+            // Delay connection restore to give some time internal components to complete their tasks
             int64_t delayInSeconds = 1;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
