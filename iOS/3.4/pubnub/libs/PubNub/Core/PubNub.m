@@ -529,10 +529,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     }
                     else {
 
-                        // Mark that client should try to connect when network will be available
-                        // again
-                        [self sharedInstance].connectOnServiceReachabilityCheck = YES;
+                        // Mark that client should try to connect when network will be available again
+                        [self sharedInstance].connectOnServiceReachabilityCheck = NO;
                         [self sharedInstance].asyncLockingOperationInProgress = YES;
+                        [self sharedInstance].connectOnServiceReachability = YES;
 
                         [[self sharedInstance] handleConnectionErrorOnNetworkFailure];
                         [self sharedInstance].asyncLockingOperationInProgress = YES;
@@ -546,9 +546,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         }
                     }
                 }
-                // Looks like reachability manager was unable to check services reachability
-                // (user still not configured client or just not enough time to check passed
-                // since client configuration)
+                // Looks like reachability manager was unable to check services reachability (user still not
+                // configured client or just not enough time to check passed since client configuration)
                 else {
 
                     [self sharedInstance].asyncLockingOperationInProgress = YES;
@@ -660,13 +659,18 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 // (synchronous disconnection was made to prevent asynchronous disconnect event
                 // from overlapping on connection event)
                 [self sharedInstance].state = PNPubNubClientStateDisconnected;
-
-                [[self sharedInstance] connectionChannel:nil didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
             }
-            else {
 
-                [[self sharedInstance] handleLockingOperationComplete:YES];
+
+            if ([[self sharedInstance].delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
+                [[self sharedInstance].delegate pubnubClient:[self sharedInstance]
+                                     didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
             }
+
+            [[self sharedInstance] sendNotification:kPNClientDidDisconnectFromOriginNotification
+                                         withObject:[self sharedInstance].configuration.origin];
+            [[self sharedInstance] handleLockingOperationComplete:YES];
         }
         else {
             
@@ -3009,7 +3013,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel willSubscribeOnChannels:(NSArray *)channels {
 
     PNLog(PNLogGeneralLevel, self, @" WILL SUBSCRIBE ON: %@", channels);
-    self.asyncLockingOperationInProgress = YES;
+
+    if ([self isConnected]) {
+
+        self.asyncLockingOperationInProgress = YES;
+    }
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
@@ -3035,7 +3043,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannels:(NSArray *)channels {
 
     PNLog(PNLogGeneralLevel, self, @" WILL RESTORE SUBSCRIPTION ON: %@", channels);
-    self.asyncLockingOperationInProgress = YES;
+
+    if ([self isConnected]) {
+        
+        self.asyncLockingOperationInProgress = YES;
+    }
 
     [self notifyDelegateAboutResubscribeWillStartOnChannels:channels];
 }
