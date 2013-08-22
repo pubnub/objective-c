@@ -114,7 +114,7 @@ typedef enum _PNReachabilityStatus {
 static PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags);
 PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     
-    PNReachabilityStatus status = (flags == 0) ? PNReachabilityStatusUnknown : PNReachabilityStatusNotReachable;
+    PNReachabilityStatus status = PNReachabilityStatusNotReachable;
     BOOL isServiceReachable = PNBitIsOn(flags, kSCNetworkReachabilityFlagsReachable);
     if (isServiceReachable) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -128,7 +128,7 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
 
                 unsigned long flagsForCleanUp = (unsigned long)flags;
                 PNBitsOff(&flagsForCleanUp, kSCNetworkReachabilityFlagsReachable, kSCNetworkReachabilityFlagsIsDirect,
-                                            kSCNetworkReachabilityFlagsIsLocalAddress, 0);
+                                            kSCNetworkReachabilityFlagsIsLocalAddress, BITS_LIST_TERMINATOR);
                 flags = (SCNetworkReachabilityFlags)flagsForCleanUp;
 
                 if (flags != 0) {
@@ -168,8 +168,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Verify that reachability callback was called for correct client
     NSCAssert([(__bridge NSObject *)info isKindOfClass:[PNReachability class]],
               @"Wrong instance has been sent as reachability observer");
-    
-    
+
     // Retrieve reference on reachability monitor and update it's state
     PNReachability *reachabilityMonitor = (__bridge PNReachability *)info;
     reachabilityMonitor.reachabilityFlags = flags;

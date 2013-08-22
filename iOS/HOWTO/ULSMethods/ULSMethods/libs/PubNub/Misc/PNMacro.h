@@ -34,6 +34,9 @@
     #endif // __has_feature(objc_arc_weak)
 #endif // pn_desired_weak
 
+
+#pragma mark - GCD helper macro
+
 #ifndef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
     #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 0
 
@@ -101,6 +104,8 @@ typedef enum _PNLogLevels {
 } PNLogLevels;
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
 static BOOL PNLoggingEnabledForLevel(PNLogLevels level);
 BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
 
@@ -250,6 +255,9 @@ void PNLog(PNLogLevels level, id sender, ...) {
     }
 }
 
+
+#pragma mark - GCD helper functions
+
 static void PNDispatchRetain(dispatch_object_t object);
 void PNDispatchRetain(dispatch_object_t object) {
 
@@ -262,12 +270,18 @@ void PNDispatchRelease(dispatch_object_t object) {
     pn_dispatch_object_release(object);
 }
 
+
+#pragma mark - Bitwise helper functions
+
+#define BITS_LIST_TERMINATOR ((NSUInteger)0)
+
+
 static NSUInteger PNBitCompound(va_list masksList);
 NSUInteger PNBitCompound(va_list masksList) {
 
     NSUInteger compoundMask = 0;
     NSUInteger mask = va_arg(masksList, NSUInteger);
-    while (mask != 0) {
+    while (mask != BITS_LIST_TERMINATOR) {
 
         compoundMask |= mask;
         mask = va_arg(masksList, NSUInteger);
@@ -340,6 +354,9 @@ void PNBitsOff(NSUInteger *flag, ...) {
     PNBitOff(flag, compoundMask);
 }
 
+
+#pragma mark - CoreFoundation helper functions
+
 static void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject);
 void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
     if (CFObject != NULL) {
@@ -358,6 +375,9 @@ NSNull* PNNillIfNotSet(id object) {
 
     return (object ? object : [NSNull null]);
 }
+
+
+#pragma mark - Misc functions
 
 static NSUInteger PNRandomValueInRange(NSRange valuesRange);
 NSUInteger PNRandomValueInRange(NSRange valuesRange) {
@@ -474,5 +494,6 @@ NSInteger PNRandomInteger() {
     return (arc4random() %(INT32_MAX)-1);
 }
 
+#pragma clang diagnostic pop
 
 #endif
