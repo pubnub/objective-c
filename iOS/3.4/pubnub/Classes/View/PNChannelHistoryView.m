@@ -340,7 +340,14 @@ typedef enum _PNHistoryViewPagingDirection {
 
     UIDatePicker *datePicker = [[UIDatePicker alloc] init];
     datePicker.datePickerMode = UIDatePickerModeDateAndTime;
-    datePicker.date = self.isConfiguringStartDate ? self.startDate.date : self.endDate.date;
+    
+    NSDate *date = self.isConfiguringStartDate ? self.startDate.date : self.endDate.date;
+    if (!date) {
+        date = [NSDate new];
+    }
+    
+    datePicker.date = date;
+    
     [datePicker addTarget:self action:@selector(datePickerChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     UIViewController *datePickerViewController = [UIViewController new];
