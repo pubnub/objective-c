@@ -540,10 +540,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     }
                     else {
 
-                        // Mark that client should try to connect when network will be available
-                        // again
-                        [self sharedInstance].connectOnServiceReachabilityCheck = YES;
+                        // Mark that client should try to connect when network will be available again
+                        [self sharedInstance].connectOnServiceReachabilityCheck = NO;
                         [self sharedInstance].asyncLockingOperationInProgress = YES;
+                        [self sharedInstance].connectOnServiceReachability = YES;
 
                         PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#1} TURN ON (%s)", __PRETTY_FUNCTION__);
                         [[self sharedInstance] handleConnectionErrorOnNetworkFailure];
@@ -556,11 +556,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                                 failure([PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]);
                             }
+
+                            shouldAddStateObservation = YES;
                         }
                     }
                 }
-                // Looks like reachability manager was unable to check services reachability
-                // (user still not configured client or just not enough time to check passed
+                // Looks like reachability manager was unable to check services reachability (user still not
+                // configured client or just not enough time to check passed
                 // since client configuration)
                 else {
 
@@ -3098,8 +3100,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel willSubscribeOnChannels:(NSArray *)channels {
 
     PNLog(PNLogGeneralLevel, self, @" WILL SUBSCRIBE ON: %@", channels);
-    self.asyncLockingOperationInProgress = YES;
-    PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#15} TURN ON (%s)", __PRETTY_FUNCTION__);
+
+    if ([self isConnected]) {
+
+        self.asyncLockingOperationInProgress = YES;
+        PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#15} TURN ON (%s)", __PRETTY_FUNCTION__);
+    }
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
@@ -3126,8 +3132,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannels:(NSArray *)channels {
 
     PNLog(PNLogGeneralLevel, self, @" WILL RESTORE SUBSCRIPTION ON: %@", channels);
-    self.asyncLockingOperationInProgress = YES;
-    PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#16} TURN ON (%s)", __PRETTY_FUNCTION__);
+
+    if ([self isConnected]) {
+
+        self.asyncLockingOperationInProgress = YES;
+        PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#16} TURN ON (%s)", __PRETTY_FUNCTION__);
+    }
 
     [self notifyDelegateAboutResubscribeWillStartOnChannels:channels];
 }

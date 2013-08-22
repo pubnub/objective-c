@@ -114,7 +114,7 @@ typedef enum _PNReachabilityStatus {
 static PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags);
 PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     
-    PNReachabilityStatus status = (flags == 0) ? PNReachabilityStatusUnknown : PNReachabilityStatusNotReachable;
+    PNReachabilityStatus status = PNReachabilityStatusNotReachable;
     BOOL isServiceReachable = PNBitIsOn(flags, kSCNetworkReachabilityFlagsReachable);
     if (isServiceReachable) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
