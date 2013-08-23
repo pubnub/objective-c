@@ -1730,6 +1730,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                             PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] RESTORES SUBSCRIPTION ON CHANNELS: %@\n(STATE: %d)",
                                     self, channels, self.messagingState);
 
+                            PNBitOff(&_messagingState, PNMessagingChannelRestoringSubscription);
+
                             [self.messagingDelegate messagingChannel:self didRestoreSubscriptionOnChannels:channels];
                         }
                         else if (changed) {
