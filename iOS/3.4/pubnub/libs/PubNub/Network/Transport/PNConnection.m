@@ -2516,6 +2516,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         dispatch_source_set_cancel_handler(self.wakeUpTimer, ^{
 
             PNDispatchRelease(timerSource);
+            weakSelf.wakeUpTimerSuspended = NO;
             weakSelf.wakeUpTimer = NULL;
         });
 
@@ -2564,6 +2565,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     if (self.wakeUpTimer != NULL) {
 
         [self resumeWakeUpTimer];
+        self.wakeUpTimerSuspended = NO;
         dispatch_source_cancel(self.wakeUpTimer);
     }
 }
