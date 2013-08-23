@@ -1480,19 +1480,29 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] READED %d BYTES (STATE: %d)",
                   self.name ? self.name : self, readedBytesCount, self.state);
 
-            if (readedBytesCount == 305) {
 
-                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] >>>>>> READED STRANGE AMOUNT OF "
-                        "DATA", self.name ? self.name : self);
+            // Check whether debugging options is enabled to show received response or not
+            if (PNLoggingEnabledForLevel(PNLogConnectionLayerHTTPLoggingLevel) || PNHTTPDumpOutputToFileEnabled()) {
+
                 NSData *tempData = [NSData dataWithBytes:buffer length:(NSUInteger)readedBytesCount];
-                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] >>>>>> DATA: %@",
-                      self.name ? self.name : self, tempData);
-                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] >>>>>> UTF8 STRING: %@",
-                      self.name ? self.name : self, [[NSString alloc] initWithData:tempData
-                                                                          encoding:NSUTF8StringEncoding]);
-                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] >>>>>> ASCII STRING: %@",
-                      self.name ? self.name : self, [[NSString alloc] initWithData:tempData
-                                                                          encoding:NSASCIIStringEncoding]);
+
+                if (PNLoggingEnabledForLevel(PNLogConnectionLayerHTTPLoggingLevel)) {
+
+                    NSString *responseString = [[NSString alloc] initWithData:tempData encoding:NSUTF8StringEncoding];
+                    if (!responseString) {
+
+                        responseString = [[NSString alloc] initWithData:tempData encoding:NSASCIIStringEncoding];
+                    }
+                    if (!responseString) {
+
+                        responseString = @"Can't striongify response. Try check response dump on file system (if enabled)";
+                    }
+
+                    PNLog(PNLogConnectionLayerHTTPLoggingLevel, self, @"[CONNECTION::%@::READ] RESPONSE: %@",
+                                          self.name ? self.name : self, responseString);
+                }
+
+                PNHTTPDumpOutputToFile(tempData);
             }
 
             // Check whether working on data deserialization or not
