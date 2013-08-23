@@ -67,8 +67,6 @@
     willDisconnectFromOrigin:(NSString *)host
                 withError:(PNError *)error;
 
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  * Sent to the PubNub client when connection channel is about to suspend it's operation
  */
@@ -89,7 +87,6 @@
  * and ready to process requests
  */
 - (void)connectionChannelDidResume:(PNConnectionChannel *)channel;
-#endif
 
 #pragma mark -
 

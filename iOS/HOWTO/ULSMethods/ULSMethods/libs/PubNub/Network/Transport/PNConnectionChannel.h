@@ -87,7 +87,6 @@ typedef enum _PNConnectionChannelType {
  */
 - (BOOL)isDisconnected;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  * Stop any channel activity by request
  */
@@ -100,7 +99,6 @@ typedef enum _PNConnectionChannelType {
  */
 - (void)resume;
 - (BOOL)isResuming;
-#endif
 
 
 #pragma mark - Requests queue management methods

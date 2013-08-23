@@ -222,6 +222,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)notification;
 - (void)handleApplicationDidEnterForegroundState:(NSNotification *)notification;
+#else
+- (void)handleWorkspaceWillSleep:(NSNotification *)notification;
+- (void)handleWorkspaceDidWake:(NSNotification *)notification;
 #endif
 
 /**
@@ -243,14 +246,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  */
 - (void)prepareCryptoHelper;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  * Will help to subscribe/unsubscribe on/from all critical application-wide notifications which may affect
  * client operation
  */
 - (void)subscribeForNotifications;
 - (void)unsubscribeFromNotifications;
-#endif
 
 
 /**
@@ -421,9 +422,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     _sharedInstance.reachability = nil;
     
     pendingInvocations = nil;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
     [_sharedInstance unsubscribeFromNotifications];
-#endif
     _sharedInstance = nil;
 }
 
@@ -615,13 +615,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             [[self sharedInstance].configuration shouldKillDNSCache:NO];
         }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         // Check whether application has been suspended or not
         if ([self sharedInstance].state == PNPubNubClientStateSuspended) {
 
             [self sharedInstance].state = PNPubNubClientStateConnected;
         }
-#endif
         
         // Check whether client disconnected at this moment (maybe previously was
         // disconnected because connection loss)
@@ -1951,13 +1949,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         
                         weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
                     }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-                    BOOL isSuspended = weakSelf.state == PNPubNubClientStateSuspended;
-#else
-                    BOOL isSuspended = NO;
-#endif
 
-                    
+                    BOOL isSuspended = weakSelf.state == PNPubNubClientStateSuspended;
+
                     if (weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError ||
                         weakSelf.shouldConnectOnServiceReachability || isSuspended) {
                         
@@ -1971,12 +1965,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             }
 
                             if (isSuspended) {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
                                 weakSelf.state = PNPubNubClientStateConnected;
 
                                 [weakSelf.messagingChannel resume];
                                 [weakSelf.serviceChannel resume];
-#endif
                             }
                             else {
 
@@ -2013,9 +2006,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 }
             }
         };
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
         [self subscribeForNotifications];
-#endif
     }
     
     
@@ -2364,7 +2356,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
 - (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel {
 
     //
@@ -2384,7 +2376,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     [self warmUpConnection:channel];
 }
-#endif
 
 
 #pragma mark - Handler methods
@@ -2410,6 +2401,41 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)handleApplicationDidEnterForegroundState:(NSNotification *)__unused notification  {
+
+    [self.reachability refreshReachabilityState];
+
+    if ([self.reachability isServiceAvailable]) {
+
+        // Check whether application is suspended
+        if (self.state == PNPubNubClientStateSuspended) {
+
+            PNLog(PNLogGeneralLevel, self, @" HANDLE APPLICATION ENTERED FOREGROUND. RESUME.");
+
+
+            self.state = PNPubNubClientStateConnected;
+
+            [self.messagingChannel resume];
+            [self.serviceChannel resume];
+        }
+    }
+}
+#else
+- (void)handleWorkspaceWillSleep:(NSNotification *)notification {
+
+        // Check whether application connected or not
+        if ([self isConnected]) {
+
+            PNLog(PNLogGeneralLevel, self, @" HANDLE WORKSPACE WILL SLEEP. SUSPEND.");
+
+
+            self.state = PNPubNubClientStateSuspended;
+
+            [self.messagingChannel suspend];
+            [self.serviceChannel suspend];
+        }
+}
+
+- (void)handleWorkspaceDidWake:(NSNotification *)notification {
 
     [self.reachability refreshReachabilityState];
 
@@ -2495,10 +2521,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
 - (void)subscribeForNotifications {
 
     [self unsubscribeFromNotifications];
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleApplicationDidEnterBackgroundState:)
                                                  name:UIApplicationDidEnterBackgroundNotification
@@ -2507,14 +2535,38 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                              selector:@selector(handleApplicationDidEnterForegroundState:)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
+#else
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                           selector:@selector(handleWorkspaceWillSleep:)
+                                                               name:NSWorkspaceWillSleepNotification
+                                                             object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                           selector:@selector(handleWorkspaceWillSleep:)
+                                                               name:NSWorkspaceSessionDidResignActiveNotification
+                                                             object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                           selector:@selector(handleWorkspaceDidWake:)
+                                                               name:NSWorkspaceDidWakeNotification
+                                                             object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                           selector:@selector(handleWorkspaceDidWake:)
+                                                               name:NSWorkspaceSessionDidBecomeActiveNotification
+                                                             object:nil];
+#endif
 }
 
 - (void)unsubscribeFromNotifications {
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
-}
+#else
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWorkspaceDidWakeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWorkspaceSessionDidBecomeActiveNotification object:nil];
 #endif
+}
 
 - (BOOL)shouldPostponeMethodCall {
     

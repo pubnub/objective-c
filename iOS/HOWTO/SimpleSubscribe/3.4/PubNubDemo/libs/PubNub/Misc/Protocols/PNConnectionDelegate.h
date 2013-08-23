@@ -39,7 +39,6 @@
  */
 - (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  * Send to the delegate when both streams (read/write) suspended
  */
@@ -49,7 +48,6 @@
  * Send to the delegate when both streams (read/write) resumed after suspension
  */
 - (void)connectionDidResume:(PNConnection *)connection;
-#endif
 
 /**
  * Sent to the delegate each timer when connection want to ensure on whether it should resume it's operation

@@ -99,10 +99,8 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
     // Flag which allow to set whether client is connected or not
     PNConnectionConnected = (PNReadStreamConnected | PNWriteStreamConnected),
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     // Flag which allow to set whether connection is suspended or not or not
     PNConnectionResuming = 1 << 18,
-#endif
 
     // Flag which allow to set whether read stream is disconnecting right now or not
     PNReadStreamDisconnecting = 1 << 19,
@@ -113,10 +111,8 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
     // Flag which allow to set whether client is disconnecting at this moment or not
     PNConnectionDisconnecting = (PNReadStreamDisconnecting | PNWriteStreamDisconnecting),
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     // Flag which allow to set whether connection is suspending or not or not
     PNConnectionSuspending = 1 << 21,
-#endif
 
     // Flag which allow to set whether read stream is disconnected right now or not
     PNReadStreamDisconnected = 1 << 22,
@@ -130,10 +126,8 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
     // Flag which stores all states which is responsible for connection 'reconnect' state
     PNConnectionReconnection = (PNConnectionReconnect | PNConnectionReconnectOnDisconnect),
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     // Flag which allow to set whether connection is suspended or not or not
     PNConnectionSuspended = 1 << 24,
-#endif
 
     // Flag which allow to set whether connection should schedule next requests or not
     PNConnectionProcessingRequests = 1 << 25
@@ -783,9 +777,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (BOOL)isDisconnected {
 
     BOOL isDisconnected = PNBitStrictIsOn(self.state, PNConnectionDisconnected);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     isDisconnected = isDisconnected || PNBitIsOn(self.state, PNConnectionSuspended);
-#endif
 
     isDisconnected = isDisconnected && ![self isConnecting];
 
@@ -926,12 +918,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             state = @"CONNECTED.";
         }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         if ([self isResuming]) {
 
             state = @"RESUMING...";
         }
-#endif
         PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] STREAMS ALREADY CONFIGURATED%@ (STATE: %d)",
               self.name ? self.name : self,
               [state length] ? [NSString stringWithFormat:@" AND %@", state] : @".",
@@ -1004,9 +994,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnect, PNConnectionErrorCleanAll,
                            PNByInternalRequest, PNByServerRequest, PNConnectionWakeUpTimer, PNConnectionSSL,
                            PNConnectionSocket, BITS_LIST_TERMINATOR);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
         PNBitOn(&_state, PNByUserRequest);
     }
     else {
@@ -1027,16 +1015,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         PNBitOff(&_state, PNConnectionPrepareToConnect);
 
         BOOL isAbleToConnect = ![self isConnecting] && ![self isReconnecting] && ![self isConnected] && ![self isDisconnecting];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         isAbleToConnect = isAbleToConnect && ![self isResuming];
-#endif
+
         if (isAbleToConnect) {
 
             // Mark that connection currently doesn't connected to the server
             PNBitOn(&_state, PNConnectionDisconnected);
 
             NSString *action = @"";
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
             // Check whether connection has been suspended before or not
             if (PNBitIsOn(self.state, PNConnectionSuspended)) {
 
@@ -1047,12 +1034,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 action = @"RESUMING";
             }
-#endif
-            if ([action length] == 0 && !PNBitStrictIsOn(self.state, PNConnectionConnected)) {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+            else if (!PNBitStrictIsOn(self.state, PNConnectionConnected)) {
+
                 PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming,
                                    BITS_LIST_TERMINATOR);
-#endif
                 action = [self shouldReconnect] ? @"RECONNECTING" : @"CONNECTING";
             }
 
@@ -1089,9 +1074,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 // This condition take into account state of both streams at same time. If one of the stream has
                 // different state, this mean that connection probably in some wrong (messed) state
                 BOOL isConnecting = [self isConnecting] || [self isReconnecting] || [self isConnected];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
                 isConnecting = isConnecting || [self isResuming];
-#endif
+
                 if (isConnecting) {
 
                     NSString *state = @"CONNECTING...";
@@ -1193,18 +1177,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING DISCONNECT... (BY USER REQUEST? %@)(STATE: %d)",
           self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
 
-    PNBitsOff(&_state, PNConnectionConnecting, PNConnectionPrepareToConnect, BITS_LIST_TERMINATOR);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    PNBitOff(&_state, PNConnectionResuming);
-#endif
+    PNBitsOff(&_state, PNConnectionConnecting, PNConnectionPrepareToConnect, PNConnectionResuming, BITS_LIST_TERMINATOR);
+
     if (byUserRequest) {
 
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnect, PNConnectionErrorCleanAll,
                            PNByInternalRequest, PNByServerRequest, PNConnectionWakeUpTimer, PNConnectionSSL,
                            PNConnectionSocket, BITS_LIST_TERMINATOR);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
         PNBitOn(&_state, PNByUserRequest);
     }
 
@@ -1255,7 +1235,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)suspend {
 
     // Check whether connection established to the remote host or not
@@ -1312,7 +1291,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     return PNBitsIsOn(self.state, YES, PNConnectionConnecting, PNConnectionResuming, BITS_LIST_TERMINATOR);
 }
-#endif
 
 
 #pragma mark - Read stream lifecycle management methods
@@ -1692,10 +1670,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     BOOL shouldPrepareData = [self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
                              !PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
                                                           BITS_LIST_TERMINATOR);
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     shouldPrepareData = shouldPrepareData && ![self isResuming];
-#endif
+
     if (shouldPrepareData) {
 
         // Check whether data source can provide some data right after connection is established or not
@@ -1715,9 +1691,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                            !PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
                                                         BITS_LIST_TERMINATOR) &&
                            self.writeBuffer != nil && self.isWriteStreamCanHandleData;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         canSendData = canSendData && ![self isResuming];
-#endif
 
         return canSendData;
     };
@@ -1908,11 +1882,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         BOOL connectedAfterError = PNBitIsOn(self.state, PNConnectionError);
         BOOL isByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
         BOOL isReconnecting = [self isReconnecting];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         BOOL isResuming = [self isResuming];
-#else
-        BOOL isResuming = NO;
-#endif
 
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnecting, PNConnectionDisconnected,
                            PNConnectionDisconnect, PNConnectionConnecting, PNByServerRequest, PNByInternalRequest,
@@ -1931,18 +1901,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         else {
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
             PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
+
             // Check whether connection is resuming after it was suspended or not
             if (isResuming) {
 
                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RESUMED (STATE: %d)",
                       self.name ? self.name : self, self.state);
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
                 [self.delegate connectionDidResume:self];
-#endif
             }
             // Check whether connection has been restored after server closed it (for example when server doesn't
             // support 'keep-alive' connection type
@@ -2030,11 +1997,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         BOOL isDisconnectedOnError = PNBitIsOn(self.state, PNConnectionError);
         BOOL isByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
         BOOL isReconnecting = [self shouldReconnect];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         BOOL isSuspending = [self isSuspending];
-#else
-        BOOL isSuspending = NO;
-#endif
+
         PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, BITS_LIST_TERMINATOR);
         PNBitOn(&_state, PNConnectionDisconnected);
 
@@ -2109,18 +2073,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] SUSPENDED (STATE: %d)",
                       self.name ? self.name : self, self.state);
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-
                 PNBitsOff(&_state, PNConnectionSuspending, PNConnectionResuming, BITS_LIST_TERMINATOR);
                 PNBitOn(&_state, PNConnectionSuspended);
 
                 [self.delegate connectionDidSuspend:self];
-#endif
             }
             else {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
                 PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
+
                 NSString *errorReason = @"";
                 if (isDisconnectedOnError) {
 
@@ -2201,9 +2161,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     PNBitsOff(&_state, PNConnectionCleanReconnection, PNByUserRequest, PNByServerRequest, PNByInternalRequest,
               PNConnectionErrorCleanAll, BITS_LIST_TERMINATOR);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
     PNBitOn(&_state, PNConnectionDisconnected);
 
     [self reconnect];
@@ -2775,12 +2733,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         [connectionState appendFormat:@"\n- PREPARING TO CONNECT..."];
     }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     if (PNBitIsOn(self.state, PNConnectionResuming)) {
 
         [connectionState appendFormat:@"\n- RESUMING..."];
     }
-#endif
     if (PNBitIsOn(self.state, PNConnectionReconnect)) {
 
         [connectionState appendFormat:@"\n- RECONNECTING..."];
@@ -2793,12 +2749,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         [connectionState appendFormat:@"\n- WRITE STREAM DISCONNECTING%@...", actionSource];
     }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     if (PNBitIsOn(self.state, PNConnectionSuspending)) {
 
         [connectionState appendFormat:@"\n- SUSPENDING..."];
     }
-#endif
     if (PNBitIsOn(self.state, PNReadStreamDisconnected)) {
 
         [connectionState appendFormat:@"\n- READ STREAM DISCONNECTED"];
@@ -2811,12 +2765,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         [connectionState appendFormat:@"\n- WAITING FOR DISCONNECTION TO CONNECT BACK"];
     }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     if (PNBitIsOn(self.state, PNConnectionSuspended)) {
 
         [connectionState appendFormat:@"\n- SUSPENDED"];
     }
-#endif
     if (PNBitIsOn(self.state, PNConnectionProcessingRequests)) {
 
         [connectionState appendFormat:@"\n- REQUEST PROCESSING ENABLED"];
