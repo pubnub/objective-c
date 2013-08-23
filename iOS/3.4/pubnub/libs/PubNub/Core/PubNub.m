@@ -554,7 +554,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                             if (failure) {
 
-                                failure([PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]);
+                                failure(nil);
                             }
 
                             shouldAddStateObservation = YES;
