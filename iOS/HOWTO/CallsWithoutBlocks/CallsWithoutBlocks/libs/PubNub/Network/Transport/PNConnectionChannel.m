@@ -250,7 +250,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
               self.name, self.state);
 
         PNBitClear(&_state);
-        PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelConnecting, 0);
+        PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelConnecting, BITS_LIST_TERMINATOR);
         [self.connection connect];
     }
     // Check whether channel already connected or not
@@ -262,12 +262,14 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (BOOL)isConnecting {
 
-    return PNBitsIsOn(self.state, YES, PNConnectionChannelDisconnected, PNConnectionChannelConnecting);
+    return PNBitsIsOn(self.state, YES, PNConnectionChannelDisconnected, PNConnectionChannelConnecting,
+                                       BITS_LIST_TERMINATOR);
 }
 
 - (BOOL)isReconnecting {
 
-    return PNBitsIsOn(self.state, YES, PNConnectionChannelConnecting, PNConnectionChannelReconnect, 0);
+    return PNBitsIsOn(self.state, YES, PNConnectionChannelConnecting, PNConnectionChannelReconnect,
+                                       BITS_LIST_TERMINATOR);
 }
 
 - (BOOL)isConnected {
@@ -312,7 +314,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         [self unscheduleNextRequest];
 
         PNBitClear(&_state);
-        PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, 0);
+        PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, BITS_LIST_TERMINATOR);
         [self.connection disconnect];
     }
     // Check whether channel already disconnected or not
@@ -324,12 +326,13 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (BOOL)isDisconnecting {
 
-    return PNBitsIsOn(self.state, YES, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, 0);
+    return PNBitsIsOn(self.state, YES, PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
+                                       BITS_LIST_TERMINATOR);
 }
 
 - (BOOL)isDisconnected {
 
-    BOOL isDisconnected = PNBitsIsOn(self.state, PNConnectionChannelDisconnected);
+    BOOL isDisconnected = PNBitsIsOn(self.state, PNConnectionChannelDisconnected, BITS_LIST_TERMINATOR);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     isDisconnected = isDisconnected || PNBitIsOn(self.state, PNConnectionChannelSuspended);
 #endif
@@ -350,7 +353,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     void(^suspensionCompletionSimulation)(void) = ^{
 
         PNBitClear(&_state);
-        PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelSuspended, 0);
+        PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelSuspended, BITS_LIST_TERMINATOR);
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
@@ -375,7 +378,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
               self.name, self.state);
 
         PNBitClear(&_state);
-        PNBitsOn(&_state, PNConnectionChannelDisconnecting, PNConnectionChannelSuspending, 0);
+        PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR);
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
@@ -393,12 +396,12 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (BOOL)isSuspending {
 
-    return PNBitsIsOn(self.state, YES, PNConnectionChannelConnected, PNConnectionChannelSuspending, 0);
+    return PNBitsIsOn(self.state, YES, PNConnectionChannelConnected, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR);
 }
 
 - (BOOL)isSuspended {
 
-    return PNBitsIsOn(self.state, YES, PNConnectionChannelDisconnected, PNConnectionChannelSuspended, 0);
+    return PNBitsIsOn(self.state, YES, PNConnectionChannelDisconnected, PNConnectionChannelSuspended, BITS_LIST_TERMINATOR);
 }
 
 - (void)resume {
@@ -432,7 +435,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
               self.name, self.state);
 
         PNBitClear(&_state);
-        PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelResuming, 0);
+        PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelResuming, BITS_LIST_TERMINATOR);
         [self.delegate connectionChannelWillResume:self];
 
         [self.connection resume];
@@ -445,7 +448,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 }
 - (BOOL)isResuming {
 
-    return PNBitsIsOn(self.state, YES, PNConnectionChannelDisconnected, PNConnectionChannelResuming, 0);
+    return PNBitsIsOn(self.state, YES, PNConnectionChannelDisconnected, PNConnectionChannelResuming, BITS_LIST_TERMINATOR);
 }
 #endif
 
@@ -777,7 +780,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 - (BOOL)shouldHandleConnectionToHost {
 
     return PNBitsIsOn(self.state, NO, PNConnectionChannelDisconnected, PNConnectionChannelDisconnecting,
-                                      PNConnectionChannelConnecting, 0);
+                                      PNConnectionChannelConnecting, BITS_LIST_TERMINATOR);
 }
 
 - (BOOL)shouldHandleReconnectionToHost {
@@ -826,7 +829,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
           self.name, self.state);
 
     PNBitClear(&_state);
-    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelError, 0);
+    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelError, BITS_LIST_TERMINATOR);
 
     // Clean up requests, because there is no use from stream
     [self purgeStoredRequestsPool];
@@ -893,7 +896,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     // Check whether channel is waiting for suspension or not
     BOOL isExpected = [self isSuspending];
     PNBitClear(&_state);
-    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelSuspended, 0);
+    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelSuspended, BITS_LIST_TERMINATOR);
 
 
     [self stopTimeoutTimerForRequest:nil];
@@ -971,7 +974,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 
     PNBitClear(&_state);
-    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelConnecting, PNConnectionChannelReconnect, 0);
+    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelConnecting, PNConnectionChannelReconnect,
+                      BITS_LIST_TERMINATOR);
 }
 
 - (void)connection:(PNConnection *)connection didReconnectToHost:(NSString *)hostName {
@@ -1018,7 +1022,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 
     PNBitClear(&_state);
-    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelConnecting, PNConnectionChannelReconnect, 0);
+    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelConnecting, PNConnectionChannelReconnect,
+                      BITS_LIST_TERMINATOR);
 }
 
 - (void)connection:(PNConnection *)connection didReconnectToHostAfterError:(NSString *)hostName {
@@ -1065,7 +1070,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     isExpected = isExpected && ![self isSuspending];
 #endif
     PNBitClear(&_state);
-    PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, PNConnectionChannelError, 0);
+    PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, PNConnectionChannelError,
+                      BITS_LIST_TERMINATOR);
 
 
     [self stopTimeoutTimerForRequest:nil];
@@ -1142,7 +1148,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     [self unscheduleNextRequest];
 
     PNBitClear(&_state);
-    PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, 0);
+    PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, BITS_LIST_TERMINATOR);
 }
 
 - (void)connection:(PNConnection *)connection didDisconnectByServerRequestFromHost:(NSString *)hostName {
@@ -1169,7 +1175,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     isExpected = isExpected || [self isResuming];
 #endif
     PNBitClear(&_state);
-    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelError, 0);
+    PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelError, BITS_LIST_TERMINATOR);
 
 
     // Check whether all streams closed or not (in case if server closed only one from read/write streams)
@@ -1333,6 +1339,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     // Remove all requests sent by this communication channel
     [self clearScheduledRequestsQueue];
     [self stopTimeoutTimerForRequest:nil];
+    [self purgeObservedRequestsPool];
+    [self purgeStoredRequestsPool];
 
     _connection.dataSource = nil;
     _requestsQueue.delegate = nil;
@@ -1345,15 +1353,21 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
         
         [_delegate connectionChannel:self didDisconnectFromOrigin:nil];
     }
-    
+
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] RESETTING CONNECTION INSTANCE: %@ (STATE: %d)",
+          self.name, _connection, self.state);
     _connection.delegate = nil;
+    [_connection prepareForTermination];
     [PNConnection destroyConnection:_connection];
     _connection = nil;
 }
 
 - (void)dealloc {
-    
-    [self cleanUp];
+
+    if (_connection) {
+
+        [self cleanUp];
+    }
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DESTROYED (STATE: %d)",
           _name, _state);

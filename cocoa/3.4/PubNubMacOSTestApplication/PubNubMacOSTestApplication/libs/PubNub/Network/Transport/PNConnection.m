@@ -546,6 +546,7 @@ static NSUInteger const kPNMaximumRetryCount = 3;
     // Reset connections
     if ([_connectionsPool count]) {
 
+        [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(prepareForTermination) withObject:nil];
         [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(setDataSource:) withObject:nil];
         [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
     }
@@ -565,9 +566,9 @@ static NSUInteger const kPNMaximumRetryCount = 3;
         self.configuration = configuration;
         self.deserializer = [PNResponseDeserialize new];
 
-        // Set initial connectino state
-        PNBitOff(&_state, PNConnectionDisconnected);
-
+        // Set initial connection state
+        PNBitOn(&_state, PNConnectionDisconnected);
+        
         // Perform streams initial options and security initializations
         [self prepareStreams];
     }
@@ -662,7 +663,7 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
 
             // Calculate target stream state basing on whether it tried to connect or already was connected
             NSUInteger stateBit = isConnecting ? PNReadStreamConnecting : PNReadStreamDisconnecting;
-            PNBitsOn(&(connection->_state), stateBit, PNReadStreamError, 0);
+            PNBitsOn(&(connection->_state), stateBit, PNReadStreamError, BITS_LIST_TERMINATOR);
 
             CFErrorRef error = CFReadStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
@@ -730,7 +731,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             // Calculate target stream state basing on whether it tried to connect or already was connected
             NSUInteger stateBit = isConnecting ? PNWriteStreamConnecting : PNWriteStreamDisconnecting;
-            PNBitsOn(&(connection->_state), stateBit, PNWriteStreamError, 0);
+            PNBitsOn(&(connection->_state), stateBit, PNWriteStreamError, BITS_LIST_TERMINATOR);
 
             CFErrorRef error = CFWriteStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
@@ -996,8 +997,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)connectByUserRequest:(BOOL)byUserRequest {
 
+    
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@)"
-            "(STATE: %d)",
+          "(STATE: %d)",
           self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
 
     __block BOOL isStreamOpened = NO;
@@ -1006,9 +1008,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnect, PNConnectionErrorCleanAll,
                            PNByInternalRequest, PNByServerRequest, PNConnectionWakeUpTimer, PNConnectionSSL,
-                           PNConnectionSocket, 0);
+                           PNConnectionSocket, BITS_LIST_TERMINATOR);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-        PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, 0);
+        PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
 #endif
         PNBitOn(&_state, PNByUserRequest);
     }
@@ -1040,7 +1042,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             if (PNBitIsOn(self.state, PNConnectionSuspended)) {
 
                 // If connection is suspended, there is impossible that it may have any errors or ability to reconnect
-                PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionErrorCleanAll, PNConnectionSuspending, 0);
+                PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionErrorCleanAll, PNConnectionSuspending,
+                                   BITS_LIST_TERMINATOR);
                 PNBitOn(&_state, PNConnectionResuming);
 
                 action = @"RESUMING";
@@ -1048,7 +1051,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 #endif
             if ([action length] == 0 && !PNBitStrictIsOn(self.state, PNConnectionConnected)) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-                PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, 0);
+                PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming,
+                                   BITS_LIST_TERMINATOR);
 #endif
                 action = [self shouldReconnect] ? @"RECONNECTING" : @"CONNECTING";
             }
@@ -1073,7 +1077,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 // Mark that disconnection has been called because of internal request
                 PNBitOff(&_state, PNByUserRequest);
-                PNBitsOn(&_state, PNByInternalRequest, PNConnectionError, 0);
+                PNBitsOn(&_state, PNByInternalRequest, PNConnectionError, BITS_LIST_TERMINATOR);
 
                 // Forcibly close all connections
                 [self disconnectByUserRequest:NO];
@@ -1157,7 +1161,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Ask delegate whether connection should initiate connection to remote host or not
     if (shouldReconnect) {
 
-        PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionError, 0);
+        PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionError, BITS_LIST_TERMINATOR);
 
         // Marking that connection instance is reconnecting now and after last connection will be closed should
         // automatically renew connection
@@ -1190,7 +1194,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING DISCONNECT... (BY USER REQUEST? %@)(STATE: %d)",
           self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
 
-    PNBitsOff(&_state, PNConnectionConnecting, PNConnectionPrepareToConnect, 0);
+    PNBitsOff(&_state, PNConnectionConnecting, PNConnectionPrepareToConnect, BITS_LIST_TERMINATOR);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     PNBitOff(&_state, PNConnectionResuming);
 #endif
@@ -1198,9 +1202,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnect, PNConnectionErrorCleanAll,
                            PNByInternalRequest, PNByServerRequest, PNConnectionWakeUpTimer, PNConnectionSSL,
-                           PNConnectionSocket, 0);
+                           PNConnectionSocket, BITS_LIST_TERMINATOR);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-        PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, 0);
+        PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
 #endif
         PNBitOn(&_state, PNByUserRequest);
     }
@@ -1232,7 +1236,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     [self destroyReadStream:_socketReadStream];
     [self destroyWriteStream:_socketWriteStream];
-    PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, 0);
+    PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, BITS_LIST_TERMINATOR);
     PNBitOn(&_state, PNConnectionDisconnected);
 
     if (isConfiguring) {
@@ -1263,7 +1267,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnect, PNConnectionErrorCleanAll,
                                PNByUserRequest, PNByInternalRequest, PNByServerRequest, PNConnectionWakeUpTimer,
-                               PNConnectionSSL, PNConnectionSocket, PNConnectionSuspending, 0);
+                               PNConnectionSSL, PNConnectionSocket, PNConnectionSuspending, BITS_LIST_TERMINATOR);
             PNBitOn(&_state, PNConnectionSuspending);
             [self disconnectByUserRequest:NO];
         }
@@ -1284,7 +1288,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)isSuspended {
 
-    return PNBitsIsOn(self.state, YES, PNConnectionDisconnected, PNConnectionSuspended, 0);
+    return PNBitsIsOn(self.state, YES, PNConnectionDisconnected, PNConnectionSuspended, BITS_LIST_TERMINATOR);
 }
 
 - (void)resume {
@@ -1307,7 +1311,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)isResuming {
 
-    return PNBitsIsOn(self.state, YES, PNConnectionConnecting, PNConnectionResuming, 0);
+    return PNBitsIsOn(self.state, YES, PNConnectionConnecting, PNConnectionResuming, BITS_LIST_TERMINATOR);
 }
 #endif
 
@@ -1396,7 +1400,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
-        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] OPEN IS SCHEDUELD (STATE: %d)",
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] OPEN IS SCHEDULED (STATE: %d)",
               self.name ? self.name : self, self.state);
     }
 }
@@ -1406,7 +1410,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] DISCONNECTING... (STATE: %d)",
           self.name ? self.name : self, self.state);
 
-    PNBitsOff(&_state, PNReadStreamConnecting, PNReadStreamCleanDisconnection, 0);
+    PNBitsOff(&_state, PNReadStreamConnecting, PNReadStreamCleanDisconnection, BITS_LIST_TERMINATOR);
     PNBitOn(&_state, PNReadStreamDisconnecting);
 
     // Check whether there is some data received from server and try to parse it
@@ -1476,6 +1480,31 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] READED %d BYTES (STATE: %d)",
                   self.name ? self.name : self, readedBytesCount, self.state);
 
+
+            // Check whether debugging options is enabled to show received response or not
+            if (PNLoggingEnabledForLevel(PNLogConnectionLayerHTTPLoggingLevel) || PNHTTPDumpOutputToFileEnabled()) {
+
+                NSData *tempData = [NSData dataWithBytes:buffer length:(NSUInteger)readedBytesCount];
+
+                if (PNLoggingEnabledForLevel(PNLogConnectionLayerHTTPLoggingLevel)) {
+
+                    NSString *responseString = [[NSString alloc] initWithData:tempData encoding:NSUTF8StringEncoding];
+                    if (!responseString) {
+
+                        responseString = [[NSString alloc] initWithData:tempData encoding:NSASCIIStringEncoding];
+                    }
+                    if (!responseString) {
+
+                        responseString = @"Can't striongify response. Try check response dump on file system (if enabled)";
+                    }
+
+                    PNLog(PNLogConnectionLayerHTTPLoggingLevel, self, @"[CONNECTION::%@::READ] RESPONSE: %@",
+                                          self.name ? self.name : self, responseString);
+                }
+
+                PNHTTPDumpOutputToFile(tempData);
+            }
+
             // Check whether working on data deserialization or not
             if (self.deserializer.isDeserializing) {
 
@@ -1523,7 +1552,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether server reported that connection will be closed after this portion of data
             if (!PNBitIsOn(self.state, PNByServerRequest) && [(id<PNResponseProtocol>)response isLastResponseOnConnection]) {
 
-                PNBitsOn(&_state, PNConnectionDisconnect, PNByServerRequest, 0);
+                PNBitsOn(&_state, PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR);
 
                 // Inform delegate that connection will be closed soon by server request
                 [self.delegate connection:self willDisconnectByServerRequestFromHost:self.configuration.origin];
@@ -1538,6 +1567,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Check whether connection stored some response in temporary storage or not
     if ([_temporaryRetrievedData length] > 0) {
 
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] THERE IS %d BYTES IN TEMPORARY BUFFER. "
+                "PROCESS... (STATE: %d)",
+              self.name ? self.name : self, [_temporaryRetrievedData length], self.state);
+
         [self.retrievedData appendData:_temporaryRetrievedData];
         _temporaryRetrievedData = nil;
 
@@ -1548,7 +1581,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         // Check whether client is still connected and there is request from server side to close connection.
         // Connection will be restored after full disconnection
-        if ([self isConnected] && PNBitIsOn(self.state, PNByServerRequest)) {
+        if ([self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
+            PNBitIsOn(self.state, PNByServerRequest)) {
 
             [self disconnectByUserRequest:NO];
         }
@@ -1637,7 +1671,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::WRITE] DISCONNECTING... (STATE: %d)",
           self.name ? self.name : self, self.state);
 
-    PNBitsOff(&_state, PNWriteStreamConnecting, PNWriteStreamCleanDisconnection, 0);
+    PNBitsOff(&_state, PNWriteStreamConnecting, PNWriteStreamCleanDisconnection, BITS_LIST_TERMINATOR);
     PNBitOn(&_state, PNWriteStreamDisconnecting);
     self.writeStreamCanHandleData = NO;
 
@@ -1687,7 +1721,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     // Ensure that connection is able to send next portion of data which will be prepared
     BOOL shouldPrepareData = [self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
-                             !PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, 0);
+                             !PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
+                                                          BITS_LIST_TERMINATOR);
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     shouldPrepareData = shouldPrepareData && ![self isResuming];
@@ -1708,7 +1743,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     BOOL(^writeStreamIsAbleToSend)(void) = ^{
 
         BOOL canSendData = [self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
-                           !PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, 0) &&
+                           !PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
+                                                        BITS_LIST_TERMINATOR) &&
                            self.writeBuffer != nil && self.isWriteStreamCanHandleData;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
         canSendData = canSendData && ![self isResuming];
@@ -1831,7 +1867,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                         [self scheduleNextRequestExecution];
                     }
-                    else if (PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, 0)) {
+                    else if (PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR)) {
 
                         PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::WRITE] CAN'T PROCESS NEXT REQUEST "
                                 "BECAUSE CONNECTION WILL BE CLOSED SOON (STATE: %d)",
@@ -1849,7 +1885,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                     [self scheduleNextRequestExecution];
                 }
-                else if(PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, 0)) {
+                else if(PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR)) {
 
                     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::WRITE] CAN'T PROCESS NEXT REQUEST "
                           "BECAUSE CONNECTION WILL BE CLOSED SOON (STATE: %d)",
@@ -1860,7 +1896,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else if (PNBitStrictIsOn(self.state, PNConnectionConnected)) {
 
-        if (PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, 0)) {
+        if (PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR)) {
 
             PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::WRITE] CAN'T PROCESS NEXT REQUEST "
                   "BECAUSE CONNECTION WILL BE CLOSED SOON (STATE: %d)",
@@ -1892,11 +1928,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Terminate wake up timer
         [self stopWakeUpTimer];
 
-        BOOL isRestoredAfterServerClosed = PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, 0);
-        BOOL isConnectionReset = PNBitsIsOn(self.state, YES, PNConnectionError, PNByInternalRequest, 0);
-        BOOL isReconnectedByWakeUpTimer = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionWakeUpTimer, 0);
-        BOOL isReconnectedBySSL = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSSL, 0);
-        BOOL isReconnectedBySocket = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSocket, 0);
+        BOOL isRestoredAfterServerClosed = PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
+                                                                       BITS_LIST_TERMINATOR);
+        BOOL isConnectionReset = PNBitsIsOn(self.state, YES, PNConnectionError, PNByInternalRequest, BITS_LIST_TERMINATOR);
+        BOOL isReconnectedByWakeUpTimer = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionWakeUpTimer,
+                                                                      BITS_LIST_TERMINATOR);
+        BOOL isReconnectedBySSL = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR);
+        BOOL isReconnectedBySocket = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSocket,
+                                                                 BITS_LIST_TERMINATOR);
         BOOL connectedAfterError = PNBitIsOn(self.state, PNConnectionError);
         BOOL isByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
         BOOL isReconnecting = [self isReconnecting];
@@ -1909,7 +1948,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnecting, PNConnectionDisconnected,
                            PNConnectionDisconnect, PNConnectionConnecting, PNByServerRequest, PNByInternalRequest,
                            PNByUserRequest, PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket,
-                           PNConnectionErrorCleanAll, 0);
+                           PNConnectionErrorCleanAll, BITS_LIST_TERMINATOR);
 
         // Check whether connection has been established as result of user calling '-connect' method and not as
         // result of connection restoring/resuming/recovering and reconnecting
@@ -1924,15 +1963,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         else {
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-            PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, 0);
+            PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
 #endif
             // Check whether connection is resuming after it was suspended or not
             if (isResuming) {
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RESUMED (STATE: %d)",
                       self.name ? self.name : self, self.state);
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
                 [self.delegate connectionDidResume:self];
 #endif
             }
@@ -2010,11 +2048,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // about connection close event
     if (PNBitStrictIsOn(self.state, PNConnectionDisconnecting) && !PNBitStrictIsOn(self.state, PNConnectionDisconnected)) {
 
-        BOOL isDisconnectedByServerRequest = PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, 0);
-        BOOL isDisconnectedOnReset = PNBitsIsOn(self.state, YES, PNConnectionError, PNByInternalRequest, 0);
-        BOOL isDisconnectedByWakeUpTimer = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionWakeUpTimer, 0);
-        BOOL isDisconnectedBySSL = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSSL, 0);
-        BOOL isDisconnectedBySocket = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSocket, 0);
+        BOOL isDisconnectedByServerRequest = PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
+                                                                         BITS_LIST_TERMINATOR);
+        BOOL isDisconnectedOnReset = PNBitsIsOn(self.state, YES, PNConnectionError, PNByInternalRequest,
+                                                                 BITS_LIST_TERMINATOR);
+        BOOL isDisconnectedByWakeUpTimer = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionWakeUpTimer,
+                                                                       BITS_LIST_TERMINATOR);
+        BOOL isDisconnectedBySSL = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR);
+        BOOL isDisconnectedBySocket = PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSocket,
+                                                                  BITS_LIST_TERMINATOR);
         BOOL isDisconnectedOnError = PNBitIsOn(self.state, PNConnectionError);
         BOOL isByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
         BOOL isReconnecting = [self shouldReconnect];
@@ -2023,7 +2065,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 #else
         BOOL isSuspending = NO;
 #endif
-        PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, 0);
+        PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, BITS_LIST_TERMINATOR);
         PNBitOn(&_state, PNConnectionDisconnected);
 
         if (isDisconnectedOnError) {
@@ -2099,7 +2141,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 
-                PNBitsOff(&_state, PNConnectionSuspending, PNConnectionResuming, 0);
+                PNBitsOff(&_state, PNConnectionSuspending, PNConnectionResuming, BITS_LIST_TERMINATOR);
                 PNBitOn(&_state, PNConnectionSuspended);
 
                 [self.delegate connectionDidSuspend:self];
@@ -2107,7 +2149,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-                PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, 0);
+                PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
 #endif
                 NSString *errorReason = @"";
                 if (isDisconnectedOnError) {
@@ -2161,7 +2203,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     self.writeStreamCanHandleData = YES;
 
-    if (!PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, 0)) {
+    if (!PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR)) {
 
         [self writeBufferContent];
     }
@@ -2188,11 +2230,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (void)handleStreamTimeout {
 
     PNBitsOff(&_state, PNConnectionCleanReconnection, PNByUserRequest, PNByServerRequest, PNByInternalRequest,
-              PNConnectionErrorCleanAll, 0);
+              PNConnectionErrorCleanAll, BITS_LIST_TERMINATOR);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-    PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, 0);
+    PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
 #endif
-    PNBitsOn(&_state, PNConnectionDisconnected, 0);
+    PNBitOn(&_state, PNConnectionDisconnected);
 
     [self reconnect];
 }
@@ -2215,8 +2257,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             // Mark that since state fixing has been called from 'wake up' timer handler method, all further actions
             // performed on internal code request
-            PNBitsOff(&_state, PNByUserRequest, PNByServerRequest, 0);
-            PNBitsOn(&_state, PNByInternalRequest, PNConnectionWakeUpTimer, 0);
+            PNBitsOff(&_state, PNByUserRequest, PNByServerRequest, BITS_LIST_TERMINATOR);
+            PNBitsOn(&_state, PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR);
 
             PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %d)",
                   self.name ? self.name : self, self.state);
@@ -2228,14 +2270,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else {
 
-                PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, PNConnectionReconnection, 0);
+                PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, PNConnectionReconnection,
+                                                         BITS_LIST_TERMINATOR);
                 [self disconnectByUserRequest:NO];
             }
         }
         else {
 
             // Looks like connection can't be established, so there can be no 'connecting' state
-            PNBitsOff(&_state, PNConnectionConnecting, PNConnectionDisconnecting, 0);
+            PNBitsOff(&_state, PNConnectionConnecting, PNConnectionDisconnecting, BITS_LIST_TERMINATOR);
         }
     }
 }
@@ -2327,7 +2370,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     
                     self.sslConfigurationLevel = PNConnectionSSLConfigurationBarelySecure;
                     PNBitOff(&_state, PNConnectionErrorCleanAll);
-                    PNBitsOn(&_state, PNByInternalRequest, PNConnectionSSL, 0);
+                    PNBitsOn(&_state, PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR);
 
                     // Try to reconnect with new SSL security settings
                     [self reconnect];
@@ -2343,7 +2386,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     
                     self.sslConfigurationLevel = PNConnectionSSLConfigurationInsecure;
                     PNBitOff(&_state, PNConnectionErrorCleanAll);
-                    PNBitsOn(&_state, PNByInternalRequest, PNConnectionSSL, 0);
+                    PNBitsOn(&_state, PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR);
                     
                     // Try to reconnect with new SSL security settings
                     [self reconnect];
@@ -2356,7 +2399,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 shouldCloseConnection = NO;
                 PNBitOff(&_state, PNConnectionErrorCleanAll);
-                PNBitsOn(&_state, PNByInternalRequest, PNConnectionSSL, 0);
+                PNBitsOn(&_state, PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR);
                 
                 [self reconnect];
             }
@@ -2384,7 +2427,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 shouldCloseConnection = NO;
                 PNBitOff(&_state, PNConnectionErrorCleanAll);
-                PNBitsOn(&_state, PNByInternalRequest, PNConnectionSocket, 0);
+                PNBitsOn(&_state, PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR);
                 
                 [self reconnect];
             }
@@ -2398,7 +2441,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 shouldCloseConnection = PNBitIsOn(self.state, PNByUserRequest);
                 if (!shouldCloseConnection) {
 
-                    PNBitsOn(&_state, PNByInternalRequest, PNConnectionSocket, 0);
+                    PNBitsOn(&_state, PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR);
 
                     [self reconnect];
                 }
@@ -2423,7 +2466,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 BOOL byUserRequest = PNBitIsOn(self.state, PNByUserRequest);
                 PNBitsOff(&_state, PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
                                    PNConnectionDisconnect, PNByServerRequest, PNByInternalRequest,PNByUserRequest,
-                                   PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, 0);
+                                   PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, BITS_LIST_TERMINATOR);
                 [self.delegate connection:self willDisconnectFromHost:self.configuration.origin withError:errorObject];
                 [self disconnectByUserRequest:byUserRequest];
             }
@@ -2431,7 +2474,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 PNBitsOff(&_state, PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
                                    PNConnectionDisconnect, PNByServerRequest, PNByInternalRequest,PNByUserRequest,
-                                   PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, 0);
+                                   PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, BITS_LIST_TERMINATOR);
 
                 [self disconnectByUserRequest:NO];
                 [self.delegate connection:self connectionDidFailToHost:self.configuration.origin withError:errorObject];
@@ -2441,10 +2484,13 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (void)handleStreamSetupError {
+    
+    PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] HANDLE STREAM CONFIGURATION FAILURE (STATE: %d)",
+          self.name ? self.name : self, self.state);
 
     // Check whether error occurred while connection attempted to connect to remote services w/o configuration on
     // user request or not
-    if (PNBitsIsOn(self.state, YES, PNByUserRequest, PNConnectionPrepareToConnect, 0)) {
+    if (PNBitsIsOn(self.state, YES, PNByUserRequest, PNConnectionPrepareToConnect, BITS_LIST_TERMINATOR)) {
 
         // Prepare error message which will be sent to connection channel delegate
         PNError *setupError = [PNError errorWithCode:kPNConnectionErrorOnSetup];
@@ -2457,7 +2503,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         __pn_desired_weak __typeof__(self) weakSelf = self;
         int64_t delay = 1;
-        if (PNBitsIsOn(self.state, YES, PNConnectionConfiguring, PNConnectionPrepareToConnect, 0)) {
+        if (PNBitsIsOn(self.state, YES, PNConnectionConfiguring, PNConnectionPrepareToConnect, BITS_LIST_TERMINATOR)) {
 
             delay = kPNConnectionRetryDelay;
         }
@@ -2468,13 +2514,16 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether connection is still in bad state before issue connection
             if (PNBitIsOn(weakSelf.state, PNConnectionConfiguring)) {
 
-
                 if (weakSelf.retryCount + 1 < kPNMaximumRetryCount) {
+                    
+                    PNLog(PNLogConnectionLayerErrorLevel, weakSelf, @"[CONNECTION::%@] RETRY CONFIGURATION ATTEMPT... (STATE: %d)",
+                          weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state);
 
                     weakSelf.retryCount++;
 
                     // Check whether client configuration failed during connection attempt or not
-                    if (PNBitsIsOn(weakSelf.state, YES, PNConnectionConfiguring, PNConnectionPrepareToConnect, 0)) {
+                    if (PNBitsIsOn(weakSelf.state, YES, PNConnectionConfiguring, PNConnectionPrepareToConnect,
+                                                        BITS_LIST_TERMINATOR)) {
 
                         [weakSelf connectByUserRequest:NO];
                     }
@@ -2485,6 +2534,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 }
                 // Looks like connection instance can't retry anymore because it reached maximum retry count
                 else {
+                    
+                    PNLog(PNLogConnectionLayerErrorLevel, weakSelf, @"[CONNECTION::%@] CONFIGURATION RETRY COUNT EXCEEDED LIMIT. CANCEL. (STATE: %d)",
+                          weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state);
 
                     weakSelf.retryCount = 0;
 
@@ -2536,6 +2588,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         dispatch_source_set_cancel_handler(self.wakeUpTimer, ^{
 
             PNDispatchRelease(timerSource);
+            weakSelf.wakeUpTimerSuspended = NO;
             weakSelf.wakeUpTimer = NULL;
         });
 
@@ -2583,7 +2636,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (self.wakeUpTimer != NULL) {
 
-        [self suspendWakeUpTimer];
+        if (self.isWakeUpTimerSuspended) {
+
+            [self resumeWakeUpTimer];
+        }
+        self.wakeUpTimerSuspended = NO;
         dispatch_source_cancel(self.wakeUpTimer);
     }
 }
@@ -2822,6 +2879,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 
 #pragma mark - Memory management
+
+- (void)prepareForTermination {
+
+    [self stopWakeUpTimer];
+}
 
 - (void)dealloc {
 

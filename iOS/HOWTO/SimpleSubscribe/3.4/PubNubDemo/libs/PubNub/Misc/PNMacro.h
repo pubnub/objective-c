@@ -34,6 +34,9 @@
     #endif // __has_feature(objc_arc_weak)
 #endif // pn_desired_weak
 
+
+#pragma mark - GCD helper macro
+
 #ifndef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
     #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 0
 
@@ -77,7 +80,7 @@
 #pragma mark - Logging
 
 #define PNLOG_LOGGING_ENABLED 1
-#define PNLOG_STORE_LOG_TO_FILE 0
+#define PNLOG_STORE_LOG_TO_FILE 1
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
 #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
 #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
@@ -87,6 +90,8 @@
 #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
 
 typedef enum _PNLogLevels {
     PNLogGeneralLevel,
@@ -95,12 +100,15 @@ typedef enum _PNLogLevels {
     PNLogDeserializerErrorLevel,
     PNLogConnectionLayerErrorLevel,
     PNLogConnectionLayerInfoLevel,
+    PNLogConnectionLayerHTTPLoggingLevel,
     PNLogCommunicationChannelLayerErrorLevel,
     PNLogCommunicationChannelLayerWarnLevel,
     PNLogCommunicationChannelLayerInfoLevel
 } PNLogLevels;
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
 static BOOL PNLoggingEnabledForLevel(PNLogLevels level);
 BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
 
@@ -138,6 +146,11 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
                 isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED == 1;
             break;
 
+        case PNLogConnectionLayerHTTPLoggingLevel:
+
+                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED == 1;
+            break;
+
         case PNLogCommunicationChannelLayerErrorLevel:
 
                 isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED == 1;
@@ -156,6 +169,40 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
 
 
     return isLoggingEnabledForLevel;
+}
+
+static BOOL PNHTTPDumpOutputToFileEnabled();
+BOOL PNHTTPDumpOutputToFileEnabled() {
+
+    return PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED == 1;
+}
+
+static NSString* PNHTTPDumpOutputFolderPath();
+NSString* PNHTTPDumpOutputFolderPath() {
+
+    // Retrieve path to the 'Documents' folder
+    NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+
+
+    return [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
+}
+
+static NSString* PNHTTPDumpOutputFilePath();
+NSString* PNHTTPDumpOutputFilePath() {
+
+    return [PNHTTPDumpOutputFolderPath() stringByAppendingFormat:@"/response-%@.dmp", [[NSDate date] consoleOutputTimestamp]];
+}
+
+static void PNHTTPDumpOutputToFile(NSData *data);
+void PNHTTPDumpOutputToFile(NSData *data) {
+
+    if (PNHTTPDumpOutputToFileEnabled()) {
+
+        if(![data writeToFile:PNHTTPDumpOutputFilePath() atomically:YES]){
+
+            NSLog(@"CAN'T SAVE DUMP: %@", data);
+        }
+    }
 }
 
 static void PNLogDumpOutputToFile(NSString *output);
@@ -214,6 +261,7 @@ void PNLog(PNLogLevels level, id sender, ...) {
             break;
         case PNLogDeserializerInfoLevel:
         case PNLogConnectionLayerInfoLevel:
+        case PNLogConnectionLayerHTTPLoggingLevel:
         case PNLogCommunicationChannelLayerInfoLevel:
 
             if (PNLoggingEnabledForLevel(level)) {
@@ -250,6 +298,9 @@ void PNLog(PNLogLevels level, id sender, ...) {
     }
 }
 
+
+#pragma mark - GCD helper functions
+
 static void PNDispatchRetain(dispatch_object_t object);
 void PNDispatchRetain(dispatch_object_t object) {
 
@@ -262,12 +313,18 @@ void PNDispatchRelease(dispatch_object_t object) {
     pn_dispatch_object_release(object);
 }
 
+
+#pragma mark - Bitwise helper functions
+
+#define BITS_LIST_TERMINATOR ((NSUInteger)0)
+
+
 static NSUInteger PNBitCompound(va_list masksList);
 NSUInteger PNBitCompound(va_list masksList) {
 
     NSUInteger compoundMask = 0;
     NSUInteger mask = va_arg(masksList, NSUInteger);
-    while (mask != 0) {
+    while (mask != BITS_LIST_TERMINATOR) {
 
         compoundMask |= mask;
         mask = va_arg(masksList, NSUInteger);
@@ -340,6 +397,9 @@ void PNBitsOff(NSUInteger *flag, ...) {
     PNBitOff(flag, compoundMask);
 }
 
+
+#pragma mark - CoreFoundation helper functions
+
 static void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject);
 void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
     if (CFObject != NULL) {
@@ -357,6 +417,26 @@ static NSNull* PNNillIfNotSet(id object);
 NSNull* PNNillIfNotSet(id object) {
 
     return (object ? object : [NSNull null]);
+}
+
+
+#pragma mark - Misc functions
+
+static void PNDebugPrepare();
+void PNDebugPrepare() {
+
+    if (PNHTTPDumpOutputToFileEnabled()) {
+
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+
+        // Check whether HTTP responses dump folder exists or not
+        NSString *dumpsFolderPath = PNHTTPDumpOutputFolderPath();
+        if (![fileManager fileExistsAtPath:dumpsFolderPath isDirectory:NULL]) {
+
+            [fileManager createDirectoryAtPath:dumpsFolderPath withIntermediateDirectories:YES
+                                    attributes:nil error:NULL];
+        }
+    }
 }
 
 static NSUInteger PNRandomValueInRange(NSRange valuesRange);
@@ -474,5 +554,6 @@ NSInteger PNRandomInteger() {
     return (arc4random() %(INT32_MAX)-1);
 }
 
+#pragma clang diagnostic pop
 
 #endif

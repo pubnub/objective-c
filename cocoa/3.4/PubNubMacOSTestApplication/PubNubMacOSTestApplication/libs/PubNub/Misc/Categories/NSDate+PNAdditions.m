@@ -49,7 +49,7 @@
     dispatch_once(&dispatchOnceToken, ^{
 
         dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"YYYY-MM-dd HH:mm:SSSS";
+        dateFormatter.dateFormat = @"YYYY-MM-dd HH:mm:ss.SSS";
     });
 
 

@@ -346,7 +346,6 @@
         [self.serviceDelegate serviceChannel:self didFailMessageSend:messageObject withError:error];
     }
 
-
     return messageObject;
 }
 
@@ -358,7 +357,6 @@
         [self sendMessage:message.message toChannel:message.channel];
     }
 }
-
 
 #pragma mark - Handler methods
 
@@ -440,6 +438,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
 
     // Check whether connection available or not
+    [[PubNub sharedInstance].reachability refreshReachabilityState];
     if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
 
         // Asking to schedule next request
@@ -521,11 +520,12 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
     // Check whether request can be rescheduled or not
     if (![request canRetry]) {
 
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@]",
+              self, request, request.resourcePath);
+
         // Removing failed request from queue
         [self destroyRequest:request];
 
-
-        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" REQUEST PROCESSING FAILED: %@", request);
 
         // Check whether request is 'Latency meter' request or not
         if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
@@ -611,9 +611,6 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
 
-    // Forward to the super class
-    [super requestsQueue:queue didCancelRequest:request];
-
     // Check whether request is 'Latency meter' request or not
     if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
 
@@ -623,6 +620,9 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
         // is not interested in delayed response on network measurements
         [self destroyRequest:request];
     }
+
+    // Forward to the super class
+    [super requestsQueue:queue didCancelRequest:request];
 }
 
 - (BOOL)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request {
@@ -631,7 +631,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
 
     // Check whether leave request has been sent to PubNub
     // services or not
-    if ([request isKindOfClass:[PNLeaveRequest class]]) {
+    if ([self isWaitingRequestCompletion:request.shortIdentifier]) {
 
         shouldRemoveRequest = NO;
     }

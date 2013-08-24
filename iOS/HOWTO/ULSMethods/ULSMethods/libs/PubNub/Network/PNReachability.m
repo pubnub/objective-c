@@ -114,7 +114,7 @@ typedef enum _PNReachabilityStatus {
 static PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags);
 PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     
-    PNReachabilityStatus status = (flags == 0) ? PNReachabilityStatusUnknown : PNReachabilityStatusNotReachable;
+    PNReachabilityStatus status = PNReachabilityStatusNotReachable;
     BOOL isServiceReachable = PNBitIsOn(flags, kSCNetworkReachabilityFlagsReachable);
     if (isServiceReachable) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -126,9 +126,9 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
 
                 status = PNReachabilityStatusReachableViaWiFi;
 
-                unsigned long flagsForCleanUp = (unsigned long)flags;
+                unsigned int flagsForCleanUp = (unsigned int)flags;
                 PNBitsOff(&flagsForCleanUp, kSCNetworkReachabilityFlagsReachable, kSCNetworkReachabilityFlagsIsDirect,
-                                            kSCNetworkReachabilityFlagsIsLocalAddress, 0);
+                                            kSCNetworkReachabilityFlagsIsLocalAddress, BITS_LIST_TERMINATOR);
                 flags = (SCNetworkReachabilityFlags)flagsForCleanUp;
 
                 if (flags != 0) {
