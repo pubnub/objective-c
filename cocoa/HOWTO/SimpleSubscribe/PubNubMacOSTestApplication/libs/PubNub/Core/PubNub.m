@@ -2437,19 +2437,24 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         host = self.configuration.origin;
     }
     
-    if ([channel isEqual:self.messagingChannel] && [self.serviceChannel isConnected]) {
+    
+    if (self.state != PNPubNubClientStateDisconnecting) {
         
-        PNLog(PNLogGeneralLevel, self, @" DISCONNECTING SERVICE CONNECTION CHANNEL: %@ (STATE: %d)",
-              channel, self.state);
-        
-        [self.serviceChannel disconnect];
-    }
-    else if ([channel isEqual:self.serviceChannel] && [self.messagingChannel isConnected]) {
-        
-        PNLog(PNLogGeneralLevel, self, @" DISCONNECTING MESSAGING CONNECTION CHANNEL: %@ (STATE: %d)",
-              channel, self.state);
-        
-        [self.messagingChannel disconnect];
+        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
+        if ([channel isEqual:self.messagingChannel] && [self.serviceChannel isConnected]) {
+            
+            PNLog(PNLogGeneralLevel, self, @" DISCONNECTING SERVICE CONNECTION CHANNEL: %@ (STATE: %d)",
+                  channel, self.state);
+            
+            [self.serviceChannel disconnect];
+        }
+        else if ([channel isEqual:self.serviceChannel] && [self.messagingChannel isConnected]) {
+            
+            PNLog(PNLogGeneralLevel, self, @" DISCONNECTING MESSAGING CONNECTION CHANNEL: %@ (STATE: %d)",
+                  channel, self.state);
+            
+            [self.messagingChannel disconnectWithReset:NO];
+        }
     }
     
     

@@ -2437,20 +2437,25 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         host = self.configuration.origin;
     }
 
-    if ([channel isEqual:self.messagingChannel] && [self.serviceChannel isConnected]) {
+    if (self.state != PNPubNubClientStateDisconnecting) {
 
-        PNLog(PNLogGeneralLevel, self, @" DISCONNECTING SERVICE CONNECTION CHANNEL: %@ (STATE: %d)",
-              channel, self.state);
+        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
+        if ([channel isEqual:self.messagingChannel] && [self.serviceChannel isConnected]) {
 
-        [self.serviceChannel disconnect];
+            PNLog(PNLogGeneralLevel, self, @" DISCONNECTING SERVICE CONNECTION CHANNEL: %@ (STATE: %d)",
+                  channel, self.state);
+
+            [self.serviceChannel disconnect];
+        }
+        else if ([channel isEqual:self.serviceChannel] && [self.messagingChannel isConnected]) {
+
+            PNLog(PNLogGeneralLevel, self, @" DISCONNECTING MESSAGING CONNECTION CHANNEL: %@ (STATE: %d)",
+                  channel, self.state);
+
+            [self.messagingChannel disconnectWithReset:NO];
+        }
     }
-    else if ([channel isEqual:self.serviceChannel] && [self.messagingChannel isConnected]) {
 
-        PNLog(PNLogGeneralLevel, self, @" DISCONNECTING MESSAGING CONNECTION CHANNEL: %@ (STATE: %d)",
-              channel, self.state);
-
-        [self.messagingChannel disconnect];
-    }
     
     // Check whether received event from same host on which client is configured or not and all communication
     // channels are closed
