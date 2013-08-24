@@ -80,8 +80,9 @@
 #pragma mark - Logging
 
 #define PNLOG_LOGGING_ENABLED 1
-#define PNLOG_STORE_LOG_TO_FILE 0
+#define PNLOG_STORE_LOG_TO_FILE 1
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
+#define PNLOG_DELEGATE_LOGGING_ENABLED 1
 #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
 #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
 #define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
@@ -93,6 +94,7 @@
 
 typedef enum _PNLogLevels {
     PNLogGeneralLevel,
+    PNLogDelegateLevel,
     PNLogReachabilityLevel,
     PNLogDeserializerInfoLevel,
     PNLogDeserializerErrorLevel,
@@ -116,6 +118,11 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
         case PNLogGeneralLevel:
 
                 isLoggingEnabledForLevel = PNLOG_GENERAL_LOGGING_ENABLED == 1;
+            break;
+
+        case PNLogDelegateLevel:
+
+                isLoggingEnabledForLevel = PNLOG_DELEGATE_LOGGING_ENABLED == 1;
             break;
 
         case PNLogReachabilityLevel:
@@ -207,41 +214,35 @@ void PNLog(PNLogLevels level, id sender, ...) {
     NSString *additionalData = nil;
 
 
-    switch (level) {
+    if (PNLoggingEnabledForLevel(level)) {
 
-        case PNLogGeneralLevel:
-        case PNLogReachabilityLevel:
+        switch (level) {
 
-            if (PNLoggingEnabledForLevel(level)) {
+            case PNLogDelegateLevel:
 
-                additionalData = @"";
-            }
-            break;
-        case PNLogDeserializerInfoLevel:
-        case PNLogConnectionLayerInfoLevel:
-        case PNLogCommunicationChannelLayerInfoLevel:
-
-            if (PNLoggingEnabledForLevel(level)) {
+                additionalData = @"{DELEGATE}";
+                break;
+            case PNLogDeserializerInfoLevel:
+            case PNLogConnectionLayerInfoLevel:
+            case PNLogCommunicationChannelLayerInfoLevel:
 
                 additionalData = @"{INFO}";
-            }
-            break;
-        case PNLogDeserializerErrorLevel:
-        case PNLogConnectionLayerErrorLevel:
-        case PNLogCommunicationChannelLayerErrorLevel:
-
-            if (PNLoggingEnabledForLevel(level)) {
+                break;
+            case PNLogDeserializerErrorLevel:
+            case PNLogConnectionLayerErrorLevel:
+            case PNLogCommunicationChannelLayerErrorLevel:
 
                 additionalData = @"{ERROR}";
-            }
-            break;
-        case PNLogCommunicationChannelLayerWarnLevel:
-
-            if (PNLoggingEnabledForLevel(level)) {
+                break;
+            case PNLogCommunicationChannelLayerWarnLevel:
 
                 additionalData = @"{WARN}";
-            }
-            break;
+                break;
+            default:
+
+                additionalData = @"";
+                break;
+        }
     }
 
 
