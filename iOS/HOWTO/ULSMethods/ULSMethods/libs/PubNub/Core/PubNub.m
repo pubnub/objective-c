@@ -949,6 +949,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             [self sharedInstance].clientIdentifier = identifier;
             [self sharedInstance].userProvidedClientIdentifier = identifier != nil;
+            [[self sharedInstance] handleLockingOperationComplete:YES];
         }
     }
            postponedExecutionBlock:^{
