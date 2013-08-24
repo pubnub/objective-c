@@ -173,6 +173,9 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     PNReachability *reachabilityMonitor = (__bridge PNReachability *)info;
     reachabilityMonitor.reachabilityFlags = flags;
     reachabilityMonitor.status = PNReachabilityStatusForFlags(reachabilityMonitor.reachabilityFlags);
+
+    PNLog(PNLogReachabilityLevel, reachabilityMonitor, @" PubNub services reachability flags changes: %d [CONNECTED? %@]",
+          flags, [reachabilityMonitor isServiceAvailable] ? @"YES" : @"NO");
 }
 
 - (void)startServiceReachabilityMonitoring {
@@ -293,6 +296,9 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     else {
 
         _status = PNReachabilityStatusForFlags(self.reachabilityFlags);
+
+        PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability refresh [CONNECTED? %@](FLAGS: %d)",
+              [self isServiceAvailable] ? @"YES" : @"NO", reachabilityFlags);
     }
 }
 
