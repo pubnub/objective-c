@@ -2441,14 +2441,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     if (self.state != PNPubNubClientStateDisconnecting) {
         
         self.state = PNPubNubClientStateDisconnectedOnNetworkError;
-        if ([channel isEqual:self.messagingChannel] && [self.serviceChannel isConnected]) {
+        if ([channel isEqual:self.messagingChannel] &&
+            (![self.serviceChannel isDisconnected] || [self.serviceChannel isConnected])) {
             
             PNLog(PNLogGeneralLevel, self, @" DISCONNECTING SERVICE CONNECTION CHANNEL: %@ (STATE: %d)",
                   channel, self.state);
             
             [self.serviceChannel disconnect];
         }
-        else if ([channel isEqual:self.serviceChannel] && [self.messagingChannel isConnected]) {
+        else if ([channel isEqual:self.serviceChannel] &&
+                 (![self.messagingChannel isDisconnected] || [self.messagingChannel isConnected])) {
             
             PNLog(PNLogGeneralLevel, self, @" DISCONNECTING MESSAGING CONNECTION CHANNEL: %@ (STATE: %d)",
                   channel, self.state);
