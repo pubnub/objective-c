@@ -2563,8 +2563,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (void)stopWakeUpTimer {
 
     if (self.wakeUpTimer != NULL) {
-
-        [self resumeWakeUpTimer];
+        
+        if (self.isWakeUpTimerSuspended) {
+            
+            [self resumeWakeUpTimer];
+        }
         self.wakeUpTimerSuspended = NO;
         dispatch_source_cancel(self.wakeUpTimer);
     }
