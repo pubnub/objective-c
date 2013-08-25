@@ -1791,7 +1791,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Check whether request can be rescheduled or not
     if (![request canRetry]) {
 
-        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@](STATE: %d)",
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@](STATE: %d)",
               self, request, request.resourcePath, self.messagingState);
 
         // Removing failed request from queue
@@ -1834,8 +1834,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DID CANCEL REQUEST: %@ [BODY: %@](STATE: %d)",
           self, request, request.resourcePath, self.messagingState);
 
-    [[PubNub sharedInstance].reachability refreshReachabilityState];
-
     if ([request isKindOfClass:[PNSubscribeRequest class]]) {
 
         PNBitsOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve,
@@ -1843,6 +1841,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         [self destroyRequest:request];
     }
     else if ([request isKindOfClass:[PNLeaveRequest class]]) {
+
+        [[PubNub sharedInstance].reachability refreshReachabilityState];
 
         if ([[PubNub sharedInstance].reachability isServiceAvailable]) {
 

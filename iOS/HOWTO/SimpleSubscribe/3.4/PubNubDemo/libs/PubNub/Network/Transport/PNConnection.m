@@ -999,13 +999,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnect, PNConnectionErrorCleanAll,
                            PNByInternalRequest, PNByServerRequest, PNConnectionWakeUpTimer, PNConnectionSSL,
                            PNConnectionSocket, BITS_LIST_TERMINATOR);
-<<<<<<< HEAD
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
-=======
-        PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
->>>>>>> hotfix-t61
         PNBitOn(&_state, PNByUserRequest);
     }
     else {
@@ -1041,19 +1035,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 action = @"RESUMING";
             }
-<<<<<<< HEAD
-#endif
-            if ([action length] == 0 && !PNBitStrictIsOn(self.state, PNConnectionConnected)) {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-                PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming,
-                                   BITS_LIST_TERMINATOR);
-#endif
-=======
             else if (!PNBitStrictIsOn(self.state, PNConnectionConnected)) {
 
                 PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming,
                                    BITS_LIST_TERMINATOR);
->>>>>>> hotfix-t61
                 action = [self shouldReconnect] ? @"RECONNECTING" : @"CONNECTING";
             }
 
@@ -1193,27 +1178,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING DISCONNECT... (BY USER REQUEST? %@)(STATE: %d)",
           self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
 
-<<<<<<< HEAD
-    PNBitsOff(&_state, PNConnectionConnecting, PNConnectionPrepareToConnect, BITS_LIST_TERMINATOR);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    PNBitOff(&_state, PNConnectionResuming);
-#endif
-=======
     PNBitsOff(&_state, PNConnectionConnecting, PNConnectionPrepareToConnect, PNConnectionResuming, BITS_LIST_TERMINATOR);
 
->>>>>>> hotfix-t61
     if (byUserRequest) {
 
         PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionDisconnect, PNConnectionErrorCleanAll,
                            PNByInternalRequest, PNByServerRequest, PNConnectionWakeUpTimer, PNConnectionSSL,
                            PNConnectionSocket, BITS_LIST_TERMINATOR);
-<<<<<<< HEAD
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
         PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
-=======
-        PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
->>>>>>> hotfix-t61
         PNBitOn(&_state, PNByUserRequest);
     }
 
@@ -1729,11 +1701,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     BOOL shouldPrepareData = [self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
                              !PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
                                                           BITS_LIST_TERMINATOR);
-<<<<<<< HEAD
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-=======
->>>>>>> hotfix-t61
     shouldPrepareData = shouldPrepareData && ![self isResuming];
 
     if (shouldPrepareData) {
@@ -1965,24 +1932,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         else {
 
-<<<<<<< HEAD
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-            PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
-=======
             PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
 
->>>>>>> hotfix-t61
             // Check whether connection is resuming after it was suspended or not
             if (isResuming) {
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RESUMED (STATE: %d)",
                       self.name ? self.name : self, self.state);
-<<<<<<< HEAD
-=======
 
->>>>>>> hotfix-t61
                 [self.delegate connectionDidResume:self];
             }
             // Check whether connection has been restored after server closed it (for example when server doesn't
@@ -2072,13 +2029,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         BOOL isByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
         BOOL isReconnecting = [self shouldReconnect];
         BOOL isSuspending = [self isSuspending];
-<<<<<<< HEAD
-#else
-        BOOL isSuspending = NO;
-#endif
-=======
 
->>>>>>> hotfix-t61
         PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, BITS_LIST_TERMINATOR);
         PNBitOn(&_state, PNConnectionDisconnected);
 
@@ -2153,25 +2104,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] SUSPENDED (STATE: %d)",
                       self.name ? self.name : self, self.state);
 
-<<<<<<< HEAD
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-
-=======
->>>>>>> hotfix-t61
                 PNBitsOff(&_state, PNConnectionSuspending, PNConnectionResuming, BITS_LIST_TERMINATOR);
                 PNBitOn(&_state, PNConnectionSuspended);
 
                 [self.delegate connectionDidSuspend:self];
             }
             else {
-<<<<<<< HEAD
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-                PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
-=======
                 PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
 
->>>>>>> hotfix-t61
                 NSString *errorReason = @"";
                 if (isDisconnectedOnError) {
 
@@ -2252,13 +2192,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     PNBitsOff(&_state, PNConnectionCleanReconnection, PNByUserRequest, PNByServerRequest, PNByInternalRequest,
               PNConnectionErrorCleanAll, BITS_LIST_TERMINATOR);
-<<<<<<< HEAD
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
-#endif
-=======
-    PNBitsOff(&_state, PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR);
->>>>>>> hotfix-t61
     PNBitOn(&_state, PNConnectionDisconnected);
 
     [self reconnect];

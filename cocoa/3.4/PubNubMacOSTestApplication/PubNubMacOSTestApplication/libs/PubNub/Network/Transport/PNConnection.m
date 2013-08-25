@@ -989,7 +989,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@)"
-          "(STATE: %d)", self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
+          "(STATE: %d)",
+          self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
 
     __block BOOL isStreamOpened = NO;
 

@@ -91,6 +91,8 @@
 #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
 
 typedef enum _PNLogLevels {
     PNLogGeneralLevel,
@@ -100,6 +102,7 @@ typedef enum _PNLogLevels {
     PNLogDeserializerErrorLevel,
     PNLogConnectionLayerErrorLevel,
     PNLogConnectionLayerInfoLevel,
+    PNLogConnectionLayerHTTPLoggingLevel,
     PNLogCommunicationChannelLayerErrorLevel,
     PNLogCommunicationChannelLayerWarnLevel,
     PNLogCommunicationChannelLayerInfoLevel
@@ -150,6 +153,11 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
                 isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED == 1;
             break;
 
+        case PNLogConnectionLayerHTTPLoggingLevel:
+
+                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED == 1;
+            break;
+
         case PNLogCommunicationChannelLayerErrorLevel:
 
                 isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED == 1;
@@ -168,6 +176,40 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
 
 
     return isLoggingEnabledForLevel;
+}
+
+static BOOL PNHTTPDumpOutputToFileEnabled();
+BOOL PNHTTPDumpOutputToFileEnabled() {
+
+    return PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED == 1;
+}
+
+static NSString* PNHTTPDumpOutputFolderPath();
+NSString* PNHTTPDumpOutputFolderPath() {
+
+    // Retrieve path to the 'Documents' folder
+    NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+
+
+    return [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
+}
+
+static NSString* PNHTTPDumpOutputFilePath();
+NSString* PNHTTPDumpOutputFilePath() {
+
+    return [PNHTTPDumpOutputFolderPath() stringByAppendingFormat:@"/response-%@.dmp", [[NSDate date] consoleOutputTimestamp]];
+}
+
+static void PNHTTPDumpOutputToFile(NSData *data);
+void PNHTTPDumpOutputToFile(NSData *data) {
+
+    if (PNHTTPDumpOutputToFileEnabled()) {
+
+        if(![data writeToFile:PNHTTPDumpOutputFilePath() atomically:YES]){
+
+            NSLog(@"CAN'T SAVE DUMP: %@", data);
+        }
+    }
 }
 
 static void PNLogDumpOutputToFile(NSString *output);
@@ -224,6 +266,7 @@ void PNLog(PNLogLevels level, id sender, ...) {
                 break;
             case PNLogDeserializerInfoLevel:
             case PNLogConnectionLayerInfoLevel:
+	        case PNLogConnectionLayerHTTPLoggingLevel:
             case PNLogCommunicationChannelLayerInfoLevel:
 
                 additionalData = @"{INFO}";
@@ -379,6 +422,23 @@ NSNull* PNNillIfNotSet(id object) {
 
 
 #pragma mark - Misc functions
+
+static void PNDebugPrepare();
+void PNDebugPrepare() {
+
+    if (PNHTTPDumpOutputToFileEnabled()) {
+
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+
+        // Check whether HTTP responses dump folder exists or not
+        NSString *dumpsFolderPath = PNHTTPDumpOutputFolderPath();
+        if (![fileManager fileExistsAtPath:dumpsFolderPath isDirectory:NULL]) {
+
+            [fileManager createDirectoryAtPath:dumpsFolderPath withIntermediateDirectories:YES
+                                    attributes:nil error:NULL];
+        }
+    }
+}
 
 static NSUInteger PNRandomValueInRange(NSRange valuesRange);
 NSUInteger PNRandomValueInRange(NSRange valuesRange) {

@@ -717,17 +717,10 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                              willSubscribeOnChannels:[self channelsWithOutPresenceFromList:[channelsSet allObjects]]];
         }
         else {
-<<<<<<< HEAD
 
             PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
                   "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
 
-=======
-
-            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
-                  "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
-
->>>>>>> hotfix-t61
             [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels];
         }
     }

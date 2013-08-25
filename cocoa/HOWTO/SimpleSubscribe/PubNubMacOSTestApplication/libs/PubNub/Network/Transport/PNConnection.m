@@ -540,6 +540,7 @@ static NSUInteger const kPNMaximumRetryCount = 3;
     // Reset connections
     if ([_connectionsPool count]) {
 
+        [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(prepareForTermination) withObject:nil];
         [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(setDataSource:) withObject:nil];
         [[_connectionsPool allValues] makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
     }
@@ -559,7 +560,7 @@ static NSUInteger const kPNMaximumRetryCount = 3;
         self.configuration = configuration;
         self.deserializer = [PNResponseDeserialize new];
 
-        // Set initial connectino state
+        // Set initial connection state
         PNBitOn(&_state, PNConnectionDisconnected);
         
         // Perform streams initial options and security initializations
@@ -986,7 +987,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)connectByUserRequest:(BOOL)byUserRequest {
 
-    NSUInteger oldStatus = self.state;
+    
+    PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@)"
+          "(STATE: %d)",
+          self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
+
     __block BOOL isStreamOpened = NO;
 
     if (byUserRequest) {
@@ -1001,10 +1006,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         PNBitOff(&_state, PNByUserRequest);
     }
-    
-    PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@)"
-          "(STATE: %d/%d)",
-          self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state, oldStatus);
 
     PNBitOn(&_state, PNConnectionPrepareToConnect);
 
@@ -1377,7 +1378,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
-        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] OPEN IS SCHEDUELD (STATE: %d)",
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] OPEN IS SCHEDULED (STATE: %d)",
               self.name ? self.name : self, self.state);
     }
 }
@@ -1457,6 +1458,31 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] READED %d BYTES (STATE: %d)",
                   self.name ? self.name : self, readedBytesCount, self.state);
 
+
+            // Check whether debugging options is enabled to show received response or not
+            if (PNLoggingEnabledForLevel(PNLogConnectionLayerHTTPLoggingLevel) || PNHTTPDumpOutputToFileEnabled()) {
+
+                NSData *tempData = [NSData dataWithBytes:buffer length:(NSUInteger)readedBytesCount];
+
+                if (PNLoggingEnabledForLevel(PNLogConnectionLayerHTTPLoggingLevel)) {
+
+                    NSString *responseString = [[NSString alloc] initWithData:tempData encoding:NSUTF8StringEncoding];
+                    if (!responseString) {
+
+                        responseString = [[NSString alloc] initWithData:tempData encoding:NSASCIIStringEncoding];
+                    }
+                    if (!responseString) {
+
+                        responseString = @"Can't striongify response. Try check response dump on file system (if enabled)";
+                    }
+
+                    PNLog(PNLogConnectionLayerHTTPLoggingLevel, self, @"[CONNECTION::%@::READ] RESPONSE: %@",
+                                          self.name ? self.name : self, responseString);
+                }
+
+                PNHTTPDumpOutputToFile(tempData);
+            }
+
             // Check whether working on data deserialization or not
             if (self.deserializer.isDeserializing) {
 
@@ -1519,6 +1545,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Check whether connection stored some response in temporary storage or not
     if ([_temporaryRetrievedData length] > 0) {
 
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] THERE IS %d BYTES IN TEMPORARY BUFFER. "
+                "PROCESS... (STATE: %d)",
+              self.name ? self.name : self, [_temporaryRetrievedData length], self.state);
+
         [self.retrievedData appendData:_temporaryRetrievedData];
         _temporaryRetrievedData = nil;
 
@@ -1529,7 +1559,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         // Check whether client is still connected and there is request from server side to close connection.
         // Connection will be restored after full disconnection
-        if ([self isConnected] && PNBitIsOn(self.state, PNByServerRequest)) {
+        if ([self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
+            PNBitIsOn(self.state, PNByServerRequest)) {
 
             [self disconnectByUserRequest:NO];
         }
@@ -2801,6 +2832,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 
 #pragma mark - Memory management
+
+- (void)prepareForTermination {
+
+    [self stopWakeUpTimer];
+}
 
 - (void)dealloc {
 

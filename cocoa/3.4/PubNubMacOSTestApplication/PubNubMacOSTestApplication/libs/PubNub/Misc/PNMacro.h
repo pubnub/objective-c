@@ -266,7 +266,7 @@ void PNLog(PNLogLevels level, id sender, ...) {
                 break;
             case PNLogDeserializerInfoLevel:
             case PNLogConnectionLayerInfoLevel:
-            case PNLogConnectionLayerHTTPLoggingLevel:
+	        case PNLogConnectionLayerHTTPLoggingLevel:
             case PNLogCommunicationChannelLayerInfoLevel:
 
                 additionalData = @"{INFO}";

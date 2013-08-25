@@ -260,22 +260,13 @@ void PNLog(PNLogLevels level, id sender, ...) {
 
         switch (level) {
 
-<<<<<<< HEAD
-                additionalData = @"";
-            }
-            break;
-        case PNLogDeserializerInfoLevel:
-        case PNLogConnectionLayerInfoLevel:
-        case PNLogConnectionLayerHTTPLoggingLevel:
-        case PNLogCommunicationChannelLayerInfoLevel:
-=======
             case PNLogDelegateLevel:
->>>>>>> hotfix-t61
 
                 additionalData = @"{DELEGATE}";
                 break;
             case PNLogDeserializerInfoLevel:
             case PNLogConnectionLayerInfoLevel:
+	        case PNLogConnectionLayerHTTPLoggingLevel:
             case PNLogCommunicationChannelLayerInfoLevel:
 
                 additionalData = @"{INFO}";
@@ -432,7 +423,6 @@ NSNull* PNNillIfNotSet(id object) {
 
 #pragma mark - Misc functions
 
-<<<<<<< HEAD
 static void PNDebugPrepare();
 void PNDebugPrepare() {
 
@@ -450,8 +440,6 @@ void PNDebugPrepare() {
     }
 }
 
-=======
->>>>>>> hotfix-t61
 static NSUInteger PNRandomValueInRange(NSRange valuesRange);
 NSUInteger PNRandomValueInRange(NSRange valuesRange) {
     

@@ -329,10 +329,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 - (BOOL)isDisconnected {
 
     BOOL isDisconnected = PNBitsIsOn(self.state, PNConnectionChannelDisconnected, BITS_LIST_TERMINATOR);
-<<<<<<< HEAD
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-=======
->>>>>>> hotfix-t61
     isDisconnected = isDisconnected || PNBitIsOn(self.state, PNConnectionChannelSuspended);
     isDisconnected = isDisconnected && ![self isConnecting];
 
@@ -374,11 +370,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
               self.name, self.state);
 
         PNBitClear(&_state);
-<<<<<<< HEAD
         PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR);
-=======
-        PNBitsOn(&_state, PNConnectionChannelDisconnecting, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR);
->>>>>>> hotfix-t61
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
