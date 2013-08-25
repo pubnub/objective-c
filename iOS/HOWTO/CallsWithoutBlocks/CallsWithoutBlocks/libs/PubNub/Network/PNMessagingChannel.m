@@ -353,7 +353,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)suspend {
 
     PNBitClear(&_messagingState);
@@ -377,7 +376,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     [self resumeChannelIdleTimer];
 }
-#endif
 
 
 #pragma mark - Presence management
@@ -719,10 +717,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                              willSubscribeOnChannels:[self channelsWithOutPresenceFromList:[channelsSet allObjects]]];
         }
         else {
+<<<<<<< HEAD
 
             PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
                   "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
 
+=======
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
+                  "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
+
+>>>>>>> hotfix-t61
             [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels];
         }
     }
@@ -1329,12 +1334,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName {
 
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     BOOL shouldRestoreActivity = ![self isSuspended] && ![self isResuming];
-#else
-    BOOL shouldRestoreActivity = YES;
-#endif
 
     if (shouldRestoreActivity) {
 
@@ -1398,7 +1398,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     [super connection:connection didConnectToHost:hostName];
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)connectionDidResume:(PNConnection *)connection {
 
     PNBitClear(&_messagingState);
@@ -1415,7 +1414,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Forward to the super class
     [super connectionDidResume:connection];
 }
-#endif
 
 - (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName {
 

@@ -46,9 +46,7 @@ typedef enum _PNPubNubClientState {
     // Client disconnected from remote PubNub services (by user request)
     PNPubNubClientStateDisconnected,
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     PNPubNubClientStateSuspended,
-#endif
     
     // Client disconnected from remote PubNub service because of network failure
     PNPubNubClientStateDisconnectedOnNetworkError

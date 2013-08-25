@@ -26,21 +26,17 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
     // Channel reconnecting with same settings which was used during initialization
     PNConnectionChannelReconnect = 1 << 1,
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     // Channel is resuming it's operation state
     PNConnectionChannelResuming = 1 << 2,
-#endif
 
     // Channel is ready for work (connections established and requests queue is ready)
     PNConnectionChannelConnected = 1 << 3,
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     // Channel is transferring to suspended state
     PNConnectionChannelSuspending = 1 << 4,
 
     // Channel is in suspended state
     PNConnectionChannelSuspended = 1 << 5,
-#endif
 
     // Channel is disconnecting on user request (for example: leave request for all channels)
     PNConnectionChannelDisconnecting = 1 << 6,
@@ -333,17 +329,17 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 - (BOOL)isDisconnected {
 
     BOOL isDisconnected = PNBitsIsOn(self.state, PNConnectionChannelDisconnected, BITS_LIST_TERMINATOR);
+<<<<<<< HEAD
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
+=======
+>>>>>>> hotfix-t61
     isDisconnected = isDisconnected || PNBitIsOn(self.state, PNConnectionChannelSuspended);
-#endif
-
     isDisconnected = isDisconnected && ![self isConnecting];
 
 
     return isDisconnected;
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)suspend {
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] TRYING TO SUSPEND (STATE: %d)",
@@ -378,7 +374,11 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
               self.name, self.state);
 
         PNBitClear(&_state);
+<<<<<<< HEAD
         PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR);
+=======
+        PNBitsOn(&_state, PNConnectionChannelDisconnecting, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR);
+>>>>>>> hotfix-t61
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
@@ -450,7 +450,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
     return PNBitsIsOn(self.state, YES, PNConnectionChannelDisconnected, PNConnectionChannelResuming, BITS_LIST_TERMINATOR);
 }
-#endif
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request {
 
@@ -650,17 +649,14 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
         [connectionState appendFormat:@"\n- RECONNECTING..."];
     }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     if (PNBitIsOn(self.state, PNConnectionChannelResuming)) {
 
         [connectionState appendFormat:@"\n- RESUMING..."];
     }
-#endif
     if (PNBitIsOn(self.state, PNConnectionChannelConnected)) {
 
         [connectionState appendFormat:@"\n- CONNECTED"];
     }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     if (PNBitIsOn(self.state, PNConnectionChannelSuspending)) {
 
         [connectionState appendFormat:@"\n- SUSPENDING..."];
@@ -669,7 +665,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
         [connectionState appendFormat:@"\n- SUSPENDED"];
     }
-#endif
     if (PNBitIsOn(self.state, PNConnectionChannelDisconnecting)) {
 
         [connectionState appendFormat:@"\n- DISCONNECTING..."];
@@ -887,7 +882,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     }
 }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)connectionDidSuspend:(PNConnection *)connection {
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] HANDLE SUSPENSION EVENT (STATE: %d)",
@@ -942,7 +936,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
         [self.delegate connectionChannelDidResume:self];
     }
 }
-#endif
 
 - (BOOL)connectionShouldRestoreConnection:(PNConnection *)connection {
 
@@ -951,9 +944,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 
     BOOL connectionShouldRestoreConnection = [self isConnected] || [self isConnecting] || [self isReconnecting];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     connectionShouldRestoreConnection = connectionShouldRestoreConnection || [self isResuming];
-#endif
 
     // Ensure that there is connection available as well as permission to connect
     connectionShouldRestoreConnection = connectionShouldRestoreConnection &&
@@ -1066,9 +1057,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     // Check whether channel is in suitable state to handle this event or not
     BOOL isExpected = [self isConnected] && !PNBitIsOn(self.state, PNConnectionChannelDisconnecting);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     isExpected = isExpected && ![self isSuspending];
-#endif
+
     PNBitClear(&_state);
     PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, PNConnectionChannelError,
                       BITS_LIST_TERMINATOR);
@@ -1171,9 +1161,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     // Check whether channel is in suitable state to handle this event or not
     BOOL isExpected = [self isConnecting] || [self isReconnecting];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
     isExpected = isExpected || [self isResuming];
-#endif
+
     PNBitClear(&_state);
     PNBitsOn(&_state, PNConnectionChannelDisconnected, PNConnectionChannelError, BITS_LIST_TERMINATOR);
 

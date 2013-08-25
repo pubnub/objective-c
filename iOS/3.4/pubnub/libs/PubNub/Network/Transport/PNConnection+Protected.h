@@ -48,10 +48,8 @@ extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;
 - (BOOL)isReconnecting;
 - (BOOL)shouldReconnect;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (BOOL)isSuspending;
 - (BOOL)isResuming;
-#endif
 
 /**
  * Disconnect from name of the user (if flag is set to 'YES')

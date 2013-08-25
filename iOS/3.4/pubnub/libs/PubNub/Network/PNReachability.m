@@ -168,12 +168,14 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Verify that reachability callback was called for correct client
     NSCAssert([(__bridge NSObject *)info isKindOfClass:[PNReachability class]],
               @"Wrong instance has been sent as reachability observer");
-    
-    
+
     // Retrieve reference on reachability monitor and update it's state
     PNReachability *reachabilityMonitor = (__bridge PNReachability *)info;
     reachabilityMonitor.reachabilityFlags = flags;
     reachabilityMonitor.status = PNReachabilityStatusForFlags(reachabilityMonitor.reachabilityFlags);
+
+    PNLog(PNLogReachabilityLevel, reachabilityMonitor, @" PubNub services reachability flags changes: %d [CONNECTED? %@]",
+          flags, [reachabilityMonitor isServiceAvailable] ? @"YES" : @"NO");
 }
 
 - (void)startServiceReachabilityMonitoring {
@@ -294,6 +296,9 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     else {
 
         _status = PNReachabilityStatusForFlags(self.reachabilityFlags);
+
+        PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability refresh [CONNECTED? %@](FLAGS: %d)",
+              [self isServiceAvailable] ? @"YES" : @"NO", reachabilityFlags);
     }
 }
 

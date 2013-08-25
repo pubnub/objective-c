@@ -73,7 +73,6 @@
  */
 - (void)reconnect;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
 /**
  * Suspend sockets (basically they will be closed w/o PNConnection instance destroy)
  */
@@ -84,7 +83,6 @@
  * Restore default sockets functions (sockets connection will be up again)
  */
 - (void)resume;
-#endif
 
 #pragma mark -
 
