@@ -2439,7 +2439,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     if (self.state != PNPubNubClientStateDisconnecting) {
 
-        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
+        self.state = PNPubNubClientStateDisconnectingOnNetworkError;
         if ([channel isEqual:self.messagingChannel] &&
             (![self.serviceChannel isDisconnected] || [self.serviceChannel isConnected])) {
 
@@ -2582,6 +2582,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         
                         self.state = PNPubNubClientStateDisconnected;
                         disconnectionNotifyBlock();
+                    }
+                    else if ([self shouldRestoreConnection]) {
+
+                        PNLog(PNLogGeneralLevel, self, @" CONNECTION WILL BE RESTORED AS SOON AS INTERNET CONNECTION "
+                              "WILL GO UP (STATE: %d)", self.state);
                     }
                 }
             }
