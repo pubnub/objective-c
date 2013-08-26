@@ -90,6 +90,12 @@
     return self;
 }
 
+- (void)resetTimeToken {
+
+    [[self channels] makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
+    self.updateTimeToken = @"0";
+}
+
 /**
  * Reloaded to return full list of channels for which client is subscribing
  */

@@ -28,6 +28,14 @@
 @property (nonatomic, strong) NSArray *channelsForPresenceEnabling;
 @property (nonatomic, strong) NSArray *channelsForPresenceDisabling;
 
+
+#pragma mark - Instance methods
+
+/**
+ * Allow to reset time token on each of channel which should be used for subscription
+ */
+- (void)resetTimeToken;
+
 #pragma mark -
 
 
