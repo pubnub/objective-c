@@ -316,7 +316,15 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Check whether channel already disconnected or not
     else if ([self isConnected]) {
 
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DISCONNECTING... (STATE: %d)",
+              self.name, self.state);
+
         disconnectionCompletionSimulation();
+    }
+    else {
+
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] ALREADY DISCONNECTED (STATE: %d)",
+              self.name, self.state);
     }
 }
 

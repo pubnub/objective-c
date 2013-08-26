@@ -47,6 +47,7 @@ typedef enum _PNReachabilityStatus {
 
 #pragma mark - Properties
 
+@property (nonatomic, assign, getter = isNotificationsSuspended) BOOL notificationsSuspended;
 @property (nonatomic, assign) SCNetworkConnectionFlags reachabilityFlags;
 @property (nonatomic, assign) PNReachabilityStatus status;
 @property (nonatomic, assign) SCNetworkReachabilityRef serviceReachability;
@@ -58,6 +59,13 @@ typedef enum _PNReachabilityStatus {
  * Retrieve reference on created reachability instance with specific address
  */
 + (SCNetworkReachabilityRef)newReachabilityForWiFi:(BOOL)wifiReachability;
+
+
+#pragma mark - Instance methods
+
+- (BOOL)isServiceAvailableForStatus:(PNReachabilityStatus)status;
+
+#pragma mark -
 
 
 @end
@@ -171,11 +179,24 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
     // Retrieve reference on reachability monitor and update it's state
     PNReachability *reachabilityMonitor = (__bridge PNReachability *)info;
-    reachabilityMonitor.reachabilityFlags = flags;
-    reachabilityMonitor.status = PNReachabilityStatusForFlags(reachabilityMonitor.reachabilityFlags);
 
-    PNLog(PNLogReachabilityLevel, reachabilityMonitor, @" PubNub services reachability flags changes: %d [CONNECTED? %@]",
-          flags, [reachabilityMonitor isServiceAvailable] ? @"YES" : @"NO");
+    if (reachabilityMonitor.isNotificationsSuspended) {
+
+        reachabilityMonitor.reachabilityFlags = flags;
+        reachabilityMonitor.status = PNReachabilityStatusForFlags(reachabilityMonitor.reachabilityFlags);
+
+        PNLog(PNLogReachabilityLevel, reachabilityMonitor, @" PubNub services reachability flags changes: %d [CONNECTED? %@]",
+              flags, [reachabilityMonitor isServiceAvailable] ? @"YES" : @"NO");
+
+    }
+    else {
+
+        PNReachabilityStatus status = PNReachabilityStatusForFlags(reachabilityMonitor.reachabilityFlags);
+        BOOL available = [reachabilityMonitor isServiceAvailableForStatus:status];
+
+        PNLog(PNLogReachabilityLevel, reachabilityMonitor, @" PubNub services reachability changed while "
+              "suspended [CONNECTED? %@]", available ? @"YES" : @"NO");
+    }
 }
 
 - (void)startServiceReachabilityMonitoring {
@@ -235,6 +256,23 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     PNLog(PNLogGeneralLevel, self, @"STOP REACHABILITY OBSERVATION");
 }
 
+- (void)suspend {
+
+    PNLog(PNLogGeneralLevel, self, @" SUSPENDED");
+    self.notificationsSuspended = YES;
+}
+
+- (BOOL)isSuspended {
+
+    return self.isNotificationsSuspended;
+}
+
+- (void)resume {
+
+    PNLog(PNLogGeneralLevel, self, @" RESUMED");
+    self.notificationsSuspended = NO;
+}
+
 #pragma mark - Misc methods
 
 - (BOOL)isServiceReachabilityChecked {
@@ -244,12 +282,17 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
 - (BOOL)isServiceAvailable {
 
+    return [self isServiceAvailableForStatus:self.status];
+}
+
+- (BOOL)isServiceAvailableForStatus:(PNReachabilityStatus)status {
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-    return (self.status == PNReachabilityStatusReachableViaCellular ||
-            self.status == PNReachabilityStatusReachableViaWiFi);
+    return (status == PNReachabilityStatusReachableViaCellular ||
+            status == PNReachabilityStatusReachableViaWiFi);
 #else
 
-    return self.status == PNReachabilityStatusReachableViaWiFi;
+    return status == PNReachabilityStatusReachableViaWiFi;
 #endif
 }
 
@@ -292,6 +335,10 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
             weakSelf.status = updatedStatus;
         });
+
+        PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability changed interface from %d to %d "
+              "[CONNECTED? %@](FLAGS: %d)", oldStatus, updatedStatus, [self isServiceAvailable] ? @"YES" : @"NO",
+              reachabilityFlags);
     }
     else {
 
@@ -340,13 +387,14 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     
     // Checking whether service reachability really changed or not
     if(oldStatus != newStatus) {
-        
+
         if (newStatus != PNReachabilityStatusUnknown) {
-            
-            PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability changed [CONNECTED? %@]", [self isServiceAvailable]?@"YES":@"NO");
-            
+
+            PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability changed [CONNECTED? %@]",
+                  [self isServiceAvailable] ? @"YES" : @"NO");
+
             if (self.reachabilityChangeHandleBlock) {
-                
+
                 self.reachabilityChangeHandleBlock([self isServiceAvailable]);
             }
         }

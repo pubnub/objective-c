@@ -71,6 +71,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 @property (nonatomic, strong) NSMutableSet *subscribedChannelsSet;
 @property (nonatomic, strong) NSSet *oldSubscribedChannelsSet;
 
+// Stores whether on subscription request should be reset when rescheduling requests or not
+@property (nonatomic, assign, getter = shouldResetTimeTokenForSubscribeRequets) BOOL resetTimeTokenForSubscribeRequets;
+
 // Stores current messaging channel state
 @property (nonatomic, assign) NSUInteger messagingState;
 
@@ -283,6 +286,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
                [request reset];
                request.closeConnection = NO;
+
+               if ([request isKindOfClass:[PNSubscribeRequest class]] && !self.shouldResetTimeTokenForSubscribeRequets) {
+
+                   [(PNSubscribeRequest *)request resetTimeToken];
+               }
 
                // Check whether client is waiting for request completion
                BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
@@ -1395,10 +1403,22 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     PNBitClear(&_messagingState);
 
+    self.resetTimeTokenForSubscribeRequets = NO;
+
     // Check whether subscription request already scheduled or not
     if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
 
         [self restoreSubscriptionOnPreviousChannels];
+    }
+    else {
+
+        self.resetTimeTokenForSubscribeRequets = [self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self];
+
+        if (self.shouldResetTimeTokenForSubscribeRequets) {
+
+            PNBitOff(&_messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
+            PNBitOn(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
+        }
     }
 
     [self startChannelIdleTimer];
@@ -1406,6 +1426,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     // Forward to the super class
     [super connectionDidResume:connection];
+
+    self.resetTimeTokenForSubscribeRequets = NO;
 }
 
 - (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName {

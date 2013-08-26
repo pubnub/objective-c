@@ -73,6 +73,8 @@ typedef enum _PNPubNubClientState {
 @property (nonatomic, readonly, getter = canRunInBackground) BOOL runInBackground;
 #endif
 
+// Stores whether application is trying to awake after suspension or not
+
 
 #pragma mark - Class methods
 
