@@ -316,7 +316,15 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Check whether channel already disconnected or not
     else if ([self isConnected]) {
 
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DISCONNECTING... (STATE: %d)",
+              self.name, self.state);
+
         disconnectionCompletionSimulation();
+    }
+    else {
+
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] ALREADY DISCONNECTED (STATE: %d)",
+              self.name, self.state);
     }
 }
 
@@ -937,10 +945,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     BOOL connectionShouldRestoreConnection = [self isConnected] || [self isConnecting] || [self isReconnecting];
     connectionShouldRestoreConnection = connectionShouldRestoreConnection || [self isResuming];
-
-    // Ensure that there is connection available as well as permission to connect
-    connectionShouldRestoreConnection = connectionShouldRestoreConnection &&
-                                        [[PubNub sharedInstance].reachability isServiceAvailable];
+    connectionShouldRestoreConnection = connectionShouldRestoreConnection ||
+                                        [self.delegate connectionChannelShouldRestoreConnection:self];
 
 
     return connectionShouldRestoreConnection;

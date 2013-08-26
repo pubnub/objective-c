@@ -236,6 +236,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 #pragma mark - Misc methods
 
 /**
+ * Return whether library tries to resume operation at this moment or not
+ */
+- (BOOL)isResuming;
+
+/**
  * Will prepare crypto helper it is possible
  */
 - (void)prepareCryptoHelper;
@@ -491,10 +496,15 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             else {
 
                 // Check whether user has been faster to call connect than library was able to resume connection
-                if ([self sharedInstance].state == PNPubNubClientStateSuspended) {
+                if ([self sharedInstance].state == PNPubNubClientStateSuspended || [[self sharedInstance] isResuming]) {
 
-                    PNLog(PNLogGeneralLevel, [self sharedInstance], @" TRIED TO CONNECT WHILE WAS SUSPENDED  (LIBRARY"
-                          " DOESN'T HAVE ENOUGH TIME TO RESTORE) (STATE: %d)", [self sharedInstance].state);
+                    NSString *state = @"WAS SUSPENDED";
+                    if ([[self sharedInstance] isResuming]) {
+
+                        state = @"TRYING TO RESUME AFTER SLEEP";
+                    }
+                    PNLog(PNLogGeneralLevel, [self sharedInstance], @" TRIED TO CONNECT WHILE %@ (LIBRARY DOESN'T HAVE"
+                          " ENOUGH TIME TO RESTORE) (STATE: %d)", state, [self sharedInstance].state);
 
                     // Because all connection channels will be destroyed, it means that client currently disconnected
                     [self sharedInstance].state = PNPubNubClientStateDisconnected;
@@ -517,6 +527,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                     PNLog(PNLogGeneralLevel, [self sharedInstance], @" REACHABILITY CHECKED (STATE: %d)",
                           [self sharedInstance].state);
+
+                    // Forcibly refresh reachability information
+                    [[self sharedInstance].reachability refreshReachabilityState];
+                    if ([[self sharedInstance].reachability isSuspended]) {
+
+                        [[self sharedInstance].reachability resume];
+                    }
 
                     // Checking whether remote PubNub services is reachable or not (if they are not reachable,
                     // this mean that probably there is no connection)
@@ -657,6 +674,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
     PNLog(PNLogGeneralLevel, [self sharedInstance], @" TRYING TO DISCONNECT%@ (STATE: %d)",
           isDisconnectedByUser ? @" BY USER RWQUEST." : @" BY INTERNAL REQUEST", [self sharedInstance].state);
+
+    if ([[self sharedInstance].reachability isSuspended]) {
+
+        [[self sharedInstance].reachability resume];
+    }
     
     [self performAsyncLockingBlock:^{
         PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#23} TURN ON (%s)", __PRETTY_FUNCTION__);
@@ -691,7 +713,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         }
 
         // Check whether application has been suspended or not
-        if ([self sharedInstance].state == PNPubNubClientStateSuspended) {
+        if ([self sharedInstance].state == PNPubNubClientStateSuspended || [[self sharedInstance] isResuming]) {
 
             [self sharedInstance].state = PNPubNubClientStateConnected;
         }
@@ -2202,6 +2224,24 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
                     }
 
+
+                    // Check whether connection available message appeared while library tried to connect
+                    // (to handle situation when library doesn't have enough time to accept callbacks and reset it
+                    // state to 'disconnected'
+                    if (weakSelf.state == PNPubNubClientStateConnecting) {
+
+                        PNLog(PNLogGeneralLevel, weakSelf, @" LIBRARY OUT OF SYNC. CONNECTION STATE IS IMPOSSIBLE IF "
+                              "NETWORK AVAILABLE ARRIVE (STATE: %d)", weakSelf.state);
+
+                        // Because all connection channels will be destroyed, it means that client currently disconnected
+                        weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
+
+                        [_sharedInstance.messagingChannel terminate];
+                        [_sharedInstance.serviceChannel terminate];
+                        _sharedInstance.messagingChannel = nil;
+                        _sharedInstance.serviceChannel = nil;
+                    }
+
                     BOOL isSuspended = weakSelf.state == PNPubNubClientStateSuspended;
 
                     if (weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError ||
@@ -2471,7 +2511,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     if (self.state != PNPubNubClientStateDisconnecting) {
 
-        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
+        self.state = PNPubNubClientStateDisconnectingOnNetworkError;
         if ([channel isEqual:self.messagingChannel] &&
             (![self.serviceChannel isDisconnected] || [self.serviceChannel isConnected])) {
 
@@ -2519,9 +2559,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 case kPNClientConnectionFailedOnInternetFailureError:
                 case kPNClientConnectionClosedOnInternetFailureError:
                     
-                    // Try to refresh reachability state (there is situation whem reachability state changed within
+                    // Try to refresh reachability state (there is situation when reachability state changed within
                     // library to handle sockets timeout/error)
                     [self.reachability refreshReachabilityState];
+                    if ([self.reachability isSuspended]) {
+
+                        [self.reachability resume];
+                    }
                     break;
                     
                 default:
@@ -2587,6 +2631,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 if ([self.reachability isServiceReachabilityChecked]) {
 
                     [self.reachability refreshReachabilityState];
+                    if ([self.reachability isSuspended]) {
+
+                        [self.reachability resume];
+                    }
 
                     if ([self.reachability isServiceAvailable]) {
                         
@@ -2616,6 +2664,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         
                         self.state = PNPubNubClientStateDisconnected;
                         disconnectionNotifyBlock();
+                    }
+                    else if ([self shouldRestoreConnection]) {
+
+                        PNLog(PNLogGeneralLevel, self, @" CONNECTION WILL BE RESTORED AS SOON AS INTERNET CONNECTION "
+                              "WILL GO UP (STATE: %d)", self.state);
                     }
                 }
             }
@@ -2703,6 +2756,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
+- (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel {
+
+    // Help reachability instance update it's state our of schedule
+    [self.reachability refreshReachabilityState];
+
+    BOOL shouldRestoreConnection = self.state == PNPubNubClientStateConnecting ||
+                                   self.state == PNPubNubClientStateConnected ||
+                                   self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+                                   self.state == PNPubNubClientStateDisconnectedOnNetworkError;
+
+    // Ensure that there is connection available as well as permission to connect
+    shouldRestoreConnection = shouldRestoreConnection && [self.reachability isServiceAvailable];
+
+
+    return shouldRestoreConnection;
+}
+
 
 #pragma mark - Handler methods
 
@@ -2753,6 +2823,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)handleWorkspaceWillSleep:(NSNotification *)notification {
 
     PNLog(PNLogGeneralLevel, self, @" HANDLE WORKSPACE SLEEP");
+    [self.reachability suspend];
 
         // Check whether application connected or not
         if ([self isConnected]) {
@@ -2772,6 +2843,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     PNLog(PNLogGeneralLevel, self, @" HANDLE WORKSPACE WAKE");
 
     [self.reachability refreshReachabilityState];
+    [self.reachability resume];
 
     if ([self.reachability isServiceAvailable]) {
 
@@ -2849,6 +2921,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
 #pragma mark - Misc methods
+
+- (BOOL)isResuming {
+
+    BOOL isResuming = NO;
+
+    if (self.state == PNPubNubClientStateSuspended) {
+
+        isResuming = [self.messagingChannel isResuming] || [self.serviceChannel isResuming];
+    }
+
+
+    return isResuming;
+}
 
 - (void)prepareCryptoHelper {
     
