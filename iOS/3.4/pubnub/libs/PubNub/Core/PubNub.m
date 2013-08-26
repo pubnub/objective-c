@@ -527,8 +527,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     PNLog(PNLogGeneralLevel, [self sharedInstance], @" REACHABILITY CHECKED (STATE: %d)",
                           [self sharedInstance].state);
 
-                    // Forcely refresh reachability information
+                    // Forcibly refresh reachability information
                     [[self sharedInstance].reachability refreshReachabilityState];
+                    if ([[self sharedInstance].reachability isSuspended]) {
+
+                        [[self sharedInstance].reachability resume];
+                    }
 
                     // Checking whether remote PubNub services is reachable or not (if they are not reachable,
                     // this mean that probably there is no connection)
@@ -666,6 +670,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
     PNLog(PNLogGeneralLevel, [self sharedInstance], @" TRYING TO DISCONNECT%@ (STATE: %d)",
           isDisconnectedByUser ? @" BY USER RWQUEST." : @" BY INTERNAL REQUEST", [self sharedInstance].state);
+
+    if ([[self sharedInstance].reachability isSuspended]) {
+
+        [[self sharedInstance].reachability resume];
+    }
     
     [self performAsyncLockingBlock:^{
         
@@ -2518,9 +2527,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 case kPNClientConnectionFailedOnInternetFailureError:
                 case kPNClientConnectionClosedOnInternetFailureError:
                     
-                    // Try to refresh reachability state (there is situation whem reachability state changed within
+                    // Try to refresh reachability state (there is situation when reachability state changed within
                     // library to handle sockets timeout/error)
                     [self.reachability refreshReachabilityState];
+                    if ([self.reachability isSuspended]) {
+
+                        [self.reachability resume];
+                    }
                     break;
                     
                 default:
@@ -2585,6 +2598,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 if ([self.reachability isServiceReachabilityChecked]) {
 
                     [self.reachability refreshReachabilityState];
+                    if ([self.reachability isSuspended]) {
+
+                        [self.reachability resume];
+                    }
 
                     if ([self.reachability isServiceAvailable]) {
                         

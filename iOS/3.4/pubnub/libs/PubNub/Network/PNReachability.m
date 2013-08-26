@@ -47,7 +47,7 @@ typedef enum _PNReachabilityStatus {
 
 #pragma mark - Properties
 
-@property (nonatomic, assign, getter = isSuspended) BOOL suspended;
+@property (nonatomic, assign, getter = isNotificationsSuspended) BOOL notificationsSuspended;
 @property (nonatomic, assign) SCNetworkConnectionFlags reachabilityFlags;
 @property (nonatomic, assign) PNReachabilityStatus status;
 @property (nonatomic, assign) SCNetworkReachabilityRef serviceReachability;
@@ -180,7 +180,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Retrieve reference on reachability monitor and update it's state
     PNReachability *reachabilityMonitor = (__bridge PNReachability *)info;
 
-    if (reachabilityMonitor.isSuspended) {
+    if (reachabilityMonitor.isNotificationsSuspended) {
 
         reachabilityMonitor.reachabilityFlags = flags;
         reachabilityMonitor.status = PNReachabilityStatusForFlags(reachabilityMonitor.reachabilityFlags);
@@ -259,13 +259,18 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 - (void)suspend {
 
     PNLog(PNLogGeneralLevel, self, @" SUSPENDED");
-    self.suspended = YES;
+    self.notificationsSuspended = YES;
+}
+
+- (BOOL)isSuspended {
+
+    return self.isNotificationsSuspended;
 }
 
 - (void)resume {
 
     PNLog(PNLogGeneralLevel, self, @" RESUMED");
-    self.suspended = NO;
+    self.notificationsSuspended = NO;
 }
 
 #pragma mark - Misc methods
