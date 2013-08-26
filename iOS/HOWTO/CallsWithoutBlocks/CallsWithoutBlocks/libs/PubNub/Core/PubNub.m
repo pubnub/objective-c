@@ -2714,6 +2714,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self warmUpConnection:channel];
 }
 
+- (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel {
+
+    // Help reachability instance update it's state our of schedule
+    [self.reachability refreshReachabilityState];
+
+    BOOL shouldRestoreConnection = self.state == PNPubNubClientStateConnecting ||
+                                   self.state == PNPubNubClientStateConnected ||
+                                   self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+                                   self.state == PNPubNubClientStateDisconnectedOnNetworkError;
+
+    // Ensure that there is connection available as well as permission to connect
+    shouldRestoreConnection = shouldRestoreConnection && [self.reachability isServiceAvailable];
+
+
+    return shouldRestoreConnection;
+}
+
 
 #pragma mark - Handler methods
 
