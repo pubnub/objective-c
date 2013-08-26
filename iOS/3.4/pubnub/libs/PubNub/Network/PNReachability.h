@@ -40,6 +40,8 @@
  */
 - (void)startServiceReachabilityMonitoring;
 - (void)stopServiceReachabilityMonitoring;
+- (void)suspend;
+- (void)resume;
 
 /**
  * Check whether service reachability check performed or not
