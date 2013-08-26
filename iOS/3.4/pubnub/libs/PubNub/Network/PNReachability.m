@@ -180,7 +180,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Retrieve reference on reachability monitor and update it's state
     PNReachability *reachabilityMonitor = (__bridge PNReachability *)info;
 
-    if (reachabilityMonitor.isNotificationsSuspended) {
+    if (!reachabilityMonitor.isNotificationsSuspended) {
 
         reachabilityMonitor.reachabilityFlags = flags;
         reachabilityMonitor.status = PNReachabilityStatusForFlags(reachabilityMonitor.reachabilityFlags);
