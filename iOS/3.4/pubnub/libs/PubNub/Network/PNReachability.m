@@ -318,6 +318,9 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     PNReachabilityStatus updatedStatus = PNReachabilityStatusForFlags(self.reachabilityFlags);
 
 
+    PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability refreshed by request: %d / %d [CONNECTED? %@]"
+            "(FLAGS: %d)",  oldStatus, updatedStatus, [self isServiceAvailable] ? @"YES" : @"NO", reachabilityFlags);
+
     // Check whether data channel route changed (WiFi <-> Cellular)
     if (oldStatus != PNReachabilityStatusUnknown && oldStatus != PNReachabilityStatusNotReachable &&
         updatedStatus != PNReachabilityStatusUnknown && updatedStatus != PNReachabilityStatusNotReachable &&
@@ -330,10 +333,13 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         // Give some time before report that connection available, so all asynchronous operations will be able to
         // complete
         __pn_desired_weak __typeof__ (self) weakSelf = self;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC));
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^{
 
             weakSelf.status = updatedStatus;
+
+            PNLog(PNLogReachabilityLevel, weakSelf, @" PubNub service changing state to: %d [CONNECTED? %@](FLAGS: %d)",
+                  updatedStatus, [self isServiceAvailable] ? @"YES" : @"NO", reachabilityFlags);
         });
 
         PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability changed interface from %d to %d "

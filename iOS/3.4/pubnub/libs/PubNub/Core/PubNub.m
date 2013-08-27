@@ -2206,8 +2206,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         // Because all connection channels will be destroyed, it means that client currently disconnected
                         weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
 
-                        [_sharedInstance.messagingChannel terminate];
-                        [_sharedInstance.serviceChannel terminate];
+                        [_sharedInstance.messagingChannel disconnectWithReset:NO];
+                        [_sharedInstance.serviceChannel disconnect];
                         _sharedInstance.messagingChannel = nil;
                         _sharedInstance.serviceChannel = nil;
                     }
