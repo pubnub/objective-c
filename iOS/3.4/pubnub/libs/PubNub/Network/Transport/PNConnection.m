@@ -650,13 +650,8 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
             PNLog(PNLogConnectionLayerErrorLevel, connection, @"[CONNECTION::%@::READ] ERROR OCCURRED (%@)(STATE: %d)",
                   connection.name ? connection.name : connection, status, connection.state);
 
-            // Check whether error occurred while stream tried to establish connection or not
-            BOOL isConnecting = PNBitIsOn(connection->_state, PNReadStreamConnecting);
-            PNBitOff(&(connection->_state), PNReadStreamCleanAll);
-
-            // Calculate target stream state basing on whether it tried to connect or already was connected
-            NSUInteger stateBit = isConnecting ? PNReadStreamConnecting : PNReadStreamDisconnecting;
-            PNBitsOn(&(connection->_state), stateBit, PNReadStreamError, BITS_LIST_TERMINATOR);
+            // Mark that read stream caught and error
+            PNBitOn(&(connection->_state), PNReadStreamError);
 
             CFErrorRef error = CFReadStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
@@ -718,13 +713,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             PNLog(PNLogConnectionLayerErrorLevel, connection, @"[CONNECTION::%@::WRITE] ERROR OCCURRED (%@)(STATE: %d)",
                   connection.name ? connection.name : connection, status, connection.state);
 
-            // Check whether error occurred while stream tried to establish connection or not
-            BOOL isConnecting = PNBitIsOn(connection->_state, PNWriteStreamConnecting);
-            PNBitOff(&(connection->_state), PNWriteStreamCleanAll);
-
-            // Calculate target stream state basing on whether it tried to connect or already was connected
-            NSUInteger stateBit = isConnecting ? PNWriteStreamConnecting : PNWriteStreamDisconnecting;
-            PNBitsOn(&(connection->_state), stateBit, PNWriteStreamError, BITS_LIST_TERMINATOR);
+            // Mark that write stream caught and error
+            PNBitOn(&(connection->_state), PNWriteStreamError);
 
             CFErrorRef error = CFWriteStreamCopyError(stream);
             [connection handleStreamError:error shouldCloseConnection:YES];
