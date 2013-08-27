@@ -16,6 +16,7 @@
 
 
 #import "PNMessage+Protected.h"
+#import "PNJSONSerialization.h"
 #import "PNCryptoHelper.h"
 
 

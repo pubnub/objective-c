@@ -8,6 +8,7 @@
 
 
 #import "PNTimeTokenResponseParser.h"
+#import "PNPrivateMacro.h"
 #import "PNResponse.h"
 
 

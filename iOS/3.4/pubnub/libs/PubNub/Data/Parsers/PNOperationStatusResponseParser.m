@@ -9,6 +9,7 @@
 
 #import "PNOperationStatusResponseParser.h"
 #import "PNOperationStatus+Protected.h"
+#import "PNPrivateMacro.h"
 #import "PNResponse.h"
 
 

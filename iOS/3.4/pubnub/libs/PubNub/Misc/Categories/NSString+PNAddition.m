@@ -7,6 +7,7 @@
 //
 
 #import "NSString+PNAddition.h"
+#import "PNPrivateImports.h"
 
 
 #pragma mark Private interface implementation

@@ -14,8 +14,8 @@
 
 #import "PNPushNotificationsStateChangeRequest.h"
 #import "PNServiceResponseCallbacks.h"
-#import "PubNub+Protected.h"
 #import "PNBaseRequest+Protected.h"
+#import "PubNub+Protected.h"
 
 
 #pragma mark Extenrs

@@ -13,6 +13,7 @@
 //
 
 #import "PNResponse.h"
+#import "PNJSONSerialization.h"
 #import "PNRequestsImport.h"
 
 

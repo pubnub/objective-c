@@ -11,6 +11,7 @@
 //
 
 #import "PNDefaultConfiguration.h"
+#import "PNPrivateMacro.h"
 #import "PNConstants.h"
 
 
