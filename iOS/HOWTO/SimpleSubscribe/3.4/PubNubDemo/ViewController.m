@@ -7,16 +7,28 @@
 //
 
 #import "ViewController.h"
+#import "PNMessage+Protected.h"
 
 @interface ViewController ()
 
 @end
 
 @implementation ViewController
+@synthesize textView;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+
+    [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
+                                                         withBlock:^(PNMessage *message) {
+
+                                                             [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
+
+                                                         }];
+
+
     // Do any additional setup after loading the view, typically from a nib.
 
     // amongst other things, set the sub/pub keys to demo
