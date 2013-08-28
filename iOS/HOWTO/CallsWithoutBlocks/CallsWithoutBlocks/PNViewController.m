@@ -34,7 +34,8 @@
     [PubNub requestParticipantsListForChannel:channel_2];
 
     PNMessage *myMessage = [PubNub sendMessage:@"hello world!" toChannel:channel_2];
-
+    NSLog(@"MESSAGE OBJECT: %@", myMessage);
+    
     [PubNub sendMessage:@"hello ping3!" toChannel:channel_2];
 
     // Do a HereNow call after 5 sec

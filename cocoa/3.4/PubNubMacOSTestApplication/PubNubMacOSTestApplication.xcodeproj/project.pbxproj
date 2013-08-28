@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7935AE7717CD81FA0040632B /* CoreWLAN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7935AE7617CD81FA0040632B /* CoreWLAN.framework */; };
 		797D096717253898007A9D9A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797D096617253898007A9D9A /* Cocoa.framework */; };
 		797D097317253898007A9D9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D097217253898007A9D9A /* main.m */; };
 		797D0A2317253961007A9D9A /* TAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D098617253960007A9D9A /* TAAppDelegate.m */; };
@@ -72,6 +73,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7935AE7417CD79500040632B /* PNPrivateMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateMacro.h; sourceTree = "<group>"; };
+		7935AE7517CD795E0040632B /* PNPrivateImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateImports.h; sourceTree = "<group>"; };
+		7935AE7617CD81FA0040632B /* CoreWLAN.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreWLAN.framework; path = System/Library/Frameworks/CoreWLAN.framework; sourceTree = SDKROOT; };
 		797D096317253898007A9D9A /* PubNubMacOSTestApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNubMacOSTestApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		797D096617253898007A9D9A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		797D096917253898007A9D9A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -242,6 +246,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				797D0A5F1725426E007A9D9A /* SystemConfiguration.framework in Frameworks */,
+				7935AE7717CD81FA0040632B /* CoreWLAN.framework in Frameworks */,
 				797D096717253898007A9D9A /* Cocoa.framework in Frameworks */,
 				797D0A611725428D007A9D9A /* libz.1.2.5.dylib in Frameworks */,
 			);
@@ -271,6 +276,7 @@
 			isa = PBXGroup;
 			children = (
 				797D0A5E1725426D007A9D9A /* SystemConfiguration.framework */,
+				7935AE7617CD81FA0040632B /* CoreWLAN.framework */,
 				797D096617253898007A9D9A /* Cocoa.framework */,
 				797D0A601725428D007A9D9A /* libz.1.2.5.dylib */,
 				797D096817253898007A9D9A /* Other Frameworks */,
@@ -459,10 +465,12 @@
 		B56A4252F5EE3F38384329A9 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
-				B56A4B6558938C7FDC08ED0C /* PNMacro.h */,
 				B56A476A439F766E3F250449 /* Protocols */,
 				B56A4414790BBBC3AFE059A1 /* Categories */,
+				B56A4B6558938C7FDC08ED0C /* PNMacro.h */,
+				7935AE7417CD79500040632B /* PNPrivateMacro.h */,
 				B56A40D5DD0C76735C96BEBA /* PNImports.h */,
+				7935AE7517CD795E0040632B /* PNPrivateImports.h */,
 				B56A4F560FE4A023B108C2C2 /* PNConstants.h */,
 				B56A4A86FFF1ED8DDB2CB3DD /* PNErrorCodes.h */,
 				B56A49E992BBB37AB0DFB913 /* PNStructures.h */,

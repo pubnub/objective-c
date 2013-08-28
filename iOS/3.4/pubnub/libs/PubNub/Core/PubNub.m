@@ -13,25 +13,25 @@
 //
 
 #import "PubNub+Protected.h"
-#import "PNObservationCenter+Protected.h"
 #import "PNConnectionChannel+Protected.h"
-#import "PNConnectionChannelDelegate.h"
 #import "PNPresenceEvent+Protected.h"
-#import "PNConfiguration+Protected.h"
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "UIApplication+PNAdditions.h"
 #endif
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
-#import "PNHereNow+Protected.h"
-#import "PNMessage+Protected.h"
-#import "PNChannel+Protected.h"
 #import "PNMessagingChannel.h"
-#import "PNError+Protected.h"
 #import "PNServiceChannel.h"
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Static
@@ -2477,6 +2477,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         host = self.configuration.origin;
     }
 
+    BOOL isForceClosingSecondChannel = NO;
     if (self.state != PNPubNubClientStateDisconnecting) {
 
         self.state = PNPubNubClientStateDisconnectingOnNetworkError;
@@ -2486,6 +2487,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @" DISCONNECTING SERVICE CONNECTION CHANNEL: %@ (STATE: %d)",
                   channel, self.state);
 
+            isForceClosingSecondChannel = YES;
             [self.serviceChannel disconnect];
         }
         else if ([channel isEqual:self.serviceChannel] &&
@@ -2494,6 +2496,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @" DISCONNECTING MESSAGING CONNECTION CHANNEL: %@ (STATE: %d)",
                   channel, self.state);
 
+            isForceClosingSecondChannel = YES;
             [self.messagingChannel disconnectWithReset:NO];
         }
     }
@@ -2501,7 +2504,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     // Check whether received event from same host on which client is configured or not and all communication
     // channels are closed
-    if([self.configuration.origin isEqualToString:host] &&
+    if(!isForceClosingSecondChannel && [self.configuration.origin isEqualToString:host] &&
        ![self.messagingChannel isConnected] && ![self.serviceChannel isConnected]  &&
        self.state != PNPubNubClientStateDisconnected && self.state != PNPubNubClientStateDisconnectedOnNetworkError) {
 
@@ -2712,6 +2715,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)connectionChannelDidResume:(PNConnectionChannel *)channel {
 
     [self warmUpConnection:channel];
+}
+
+- (BOOL)connectionChannelCanConnect:(PNConnectionChannel *)channel {
+
+    // Help reachability instance update it's state our of schedule
+    [self.reachability refreshReachabilityState];
+
+
+    return [self.reachability isServiceAvailable];
 }
 
 - (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel {

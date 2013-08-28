@@ -31,6 +31,13 @@
 #import "PNResponse.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub messaging connection channel must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Statics
 
 typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
@@ -75,7 +82,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 @property (nonatomic, assign, getter = shouldResetTimeTokenForSubscribeRequets) BOOL resetTimeTokenForSubscribeRequets;
 
 // Stores current messaging channel state
-@property (nonatomic, assign) NSUInteger messagingState;
+@property (nonatomic, assign) unsigned long messagingState;
 
 @property (nonatomic, strong) NSTimer *idleTimer;
 @property (nonatomic, strong) NSDate *idleTimerFireDate;

@@ -14,8 +14,13 @@
 #import "PNChannelPresence+Protected.h"
 #import "PNHereNow+Protected.h"
 #import "NSString+PNAddition.h"
-#import "PNPresenceEvent.h"
-#import "PNDate.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub channel must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Static

@@ -17,6 +17,13 @@
 #import "PNRequestsImport.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub response must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Static
 
 // Stores index of callback method name in array which was created by splitting callback method from JSONP by '_' sign

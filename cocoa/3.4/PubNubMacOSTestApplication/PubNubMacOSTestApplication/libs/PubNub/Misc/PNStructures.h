@@ -15,55 +15,24 @@
 #ifndef PNStructures_h
 #define PNStructures_h
 
-// This enum represents possible message
-// processing states
+// This enum represents possible message processing states
 typedef enum _PNMessageState {
 
-    // Message was scheduled for processing.
-    // "processingData" field will contain message
-    // instance which was scheduled for processing
+    // Message was scheduled for processing. "processingData" field will contain message instance which was scheduled
+    // for processing
     PNMessageSending,
 
-    // Message was successfully sent to the
-    // PubNub service.
-    // "processingData" field will contain message
-    // instance which was sent for processing
+    // Message was successfully sent to the PubNub service. "processingData" field will contain message instance
+    // which was sent for processing
     PNMessageSent,
 
-    // PubNub client failed to send message because
-    // of some reasons.
-    // "processingData" field will contain error instance
-    // which will describe error which occurred during
-    // message processing
+    // PubNub client failed to send message because of some reasons. "processingData" field will contain error instance
+    // which will describe error which occurred during message processing
     PNMessageSendingError
 } PNMessageState;
 
 
-// This enum represent possible stream
-// states
-typedef enum _PNSocketStreamState {
-    
-    // Stream not configured
-    PNSocketStreamNotConfigured,
-    
-    // Stream configured by connection manager
-    PNSocketStreamReady,
-    
-    // Stream is connecting at this moment
-    PNSocketStreamConnecting,
-    
-    // Stream connected to the origin server
-    // over socket (secure if configured)
-    PNSocketStreamConnected,
-    
-    // Stream failure (not connected) because
-    // of error
-    PNSocketStreamError
-} PNSocketStreamState;
-
-
-// This enum represents list of possible
-// presence event types
+// This enum represents list of possible presence event types
 typedef enum _PNPresenceEventType {
     
     // New person joined to the channel
@@ -76,9 +45,7 @@ typedef enum _PNPresenceEventType {
     PNPresenceEventTimeout
 } PNPresenceEventType;
 
-// This enum represent list of possible
-// events which can occur during requests
-// execution
+// This enum represent list of possible events which can occur during requests execution
 typedef enum _PNOperationResultEvent {
 
     // Stores unknown event
@@ -87,25 +54,19 @@ typedef enum _PNOperationResultEvent {
 } PNOperationResultEvent;
 
 
-// This enum represents list of possible
-// subscription states which can occur while
-// client subscribing/restoring
+// This enum represents list of possible subscription states which can occur while client subscribing/restoring
 typedef enum _PNSubscriptionProcessState {
 
-    // Not subscribed state (maybe some error
-    // occurred while tried to subscribe)
+    // Not subscribed state (maybe some error occurred while tried to subscribe)
     PNSubscriptionProcessNotSubscribedState,
 
     // Subscribed state
     PNSubscriptionProcessSubscribedState,
 
-    // Will restore subscription
-    // (called right after connection
-    // restored)
+    // Will restore subscription (called right after connection restored)
     PNSubscriptionProcessWillRestoreState,
 
-    // Restored subscription after connection
-    // restored
+    // Restored subscription after connection restored
     PNSubscriptionProcessRestoredState
 } PNSubscriptionProcessState;
 
@@ -128,4 +89,4 @@ typedef void (^PNClientPushNotificationsEnableHandlingBlock)(NSArray *, PNError 
 typedef void (^PNClientPushNotificationsDisableHandlingBlock)(NSArray *, PNError *);
 typedef void (^PNClientPushNotificationsEnabledChannelsHandlingBlock)(NSArray *, PNError *);
 
-#endif
+#endif // PNStructures_h

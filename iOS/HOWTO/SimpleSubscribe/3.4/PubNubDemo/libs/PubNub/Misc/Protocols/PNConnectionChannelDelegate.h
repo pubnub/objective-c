@@ -89,6 +89,13 @@
 - (void)connectionChannelDidResume:(PNConnectionChannel *)channel;
 
 /**
+ * Sent to the delegate each timer when connection channel want to ensure on whether it can connect or it is
+ * impossible at this moment because of some reasons (no internet connection)
+ * This method is called periodically by intervals defined in connection class.
+ */
+- (BOOL)connectionChannelCanConnect:(PNConnectionChannel *)channel;
+
+/**
  * Sent to the delegate each timer when connection channel want to ensure on whether it should resume it's operation
  * or not (after it was disconnected).
  * This method is called periodically by intervals defined in connection class.

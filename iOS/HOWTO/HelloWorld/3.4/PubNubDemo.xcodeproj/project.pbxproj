@@ -78,6 +78,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7935AE6E17CD77BE0040632B /* PNPrivateImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateImports.h; sourceTree = "<group>"; };
+		7935AE6F17CD77C30040632B /* PNPrivateMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateMacro.h; sourceTree = "<group>"; };
 		962F9F8017BF468300141E23 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		962F9F8117BF468300141E23 /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
 		962F9F8217BF468300141E23 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
@@ -427,7 +429,9 @@
 				962F9FE617BF468300141E23 /* PNDefaultConfiguration.h */,
 				962F9FE717BF468300141E23 /* PNErrorCodes.h */,
 				962F9FE817BF468300141E23 /* PNImports.h */,
+				7935AE6E17CD77BE0040632B /* PNPrivateImports.h */,
 				962F9FE917BF468300141E23 /* PNMacro.h */,
+				7935AE6F17CD77C30040632B /* PNPrivateMacro.h */,
 				962F9FEA17BF468300141E23 /* PNNotifications.h */,
 				962F9FEB17BF468300141E23 /* PNRequestsImport.h */,
 				962F9FEC17BF468300141E23 /* PNServiceResponseCallbacks.h */,
