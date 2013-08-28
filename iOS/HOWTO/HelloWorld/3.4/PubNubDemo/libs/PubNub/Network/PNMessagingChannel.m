@@ -79,7 +79,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 @property (nonatomic, strong) NSSet *oldSubscribedChannelsSet;
 
 // Stores whether on subscription request should be reset when rescheduling requests or not
-@property (nonatomic, assign, getter = shouldResetTimeTokenForSubscribeRequets) BOOL resetTimeTokenForSubscribeRequets;
+@property (nonatomic, assign, getter = isRestoringSubscriptionOnResume) BOOL restoringSubscriptionOnResume;
 
 // Stores current messaging channel state
 @property (nonatomic, assign) unsigned long messagingState;
@@ -285,6 +285,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     if ([requestsList count] > 0) {
 
+        BOOL useLastTimeToken = [self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self];
         [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
                                        usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
                                                     BOOL *requestIdentifierEnumeratorStop) {
@@ -294,9 +295,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                [request reset];
                request.closeConnection = NO;
 
-               if ([request isKindOfClass:[PNSubscribeRequest class]] && !self.shouldResetTimeTokenForSubscribeRequets) {
+               if ([request isKindOfClass:[PNSubscribeRequest class]] && self.isRestoringSubscriptionOnResume) {
 
-                   [(PNSubscribeRequest *)request resetTimeToken];
+                   if (useLastTimeToken) {
+
+                       [(PNSubscribeRequest *)request resetTimeToken];
+                   }
                }
 
                // Check whether client is waiting for request completion
@@ -1410,8 +1414,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     PNBitClear(&_messagingState);
 
-    self.resetTimeTokenForSubscribeRequets = NO;
-
     // Check whether subscription request already scheduled or not
     if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
 
@@ -1419,9 +1421,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
     else {
 
-        self.resetTimeTokenForSubscribeRequets = [self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self];
+        self.restoringSubscriptionOnResume = YES;
 
-        if (self.shouldResetTimeTokenForSubscribeRequets) {
+        if ([self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self]) {
 
             PNBitOff(&_messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
             PNBitOn(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
@@ -1434,7 +1436,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Forward to the super class
     [super connectionDidResume:connection];
 
-    self.resetTimeTokenForSubscribeRequets = NO;
+    self.restoringSubscriptionOnResume = NO;
 }
 
 - (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName {
