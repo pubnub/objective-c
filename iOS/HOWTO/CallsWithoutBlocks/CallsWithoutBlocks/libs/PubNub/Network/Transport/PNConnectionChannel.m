@@ -951,10 +951,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (BOOL)connectionShouldRestoreConnection:(PNConnection *)connection {
 
-    // Help reachability instance update it's state our of schedule
-    [[PubNub sharedInstance].reachability refreshReachabilityState];
-
-
     BOOL connectionShouldRestoreConnection = [self isConnected] || [self isConnecting] || [self isReconnecting];
     connectionShouldRestoreConnection = connectionShouldRestoreConnection || [self isResuming];
     if (![self.delegate connectionChannelShouldRestoreConnection:self]) {

@@ -13,14 +13,15 @@
 #ifndef PNImports_h
 #define PNImports_h
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import "UIDevice+PNAdditions.h"
-#endif
 #import "PNObservationCenter.h"
 #import "PNChannelPresence.h"
 #import "PNConfiguration.h"
 #import "PNNotifications.h"
 #import "PNPresenceEvent.h"
+
+// Make developer's life a bit easier if small information about network is required
+#import "PNNetworkHelper.h"
+
 #import "PNErrorCodes.h"
 #import "PNStructures.h"
 

@@ -609,7 +609,14 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         // (set will contain only those channels, on which client subscribed at this moment)
         [presenceObservers intersectSet:[NSSet setWithArray:channels]];
 
-        [channelsSet minusSet:presenceObservers];
+        if (PNBitIsOn(channelsPresence, PNMessagingChannelEnablingPresence)) {
+
+            [channelsSet minusSet:presenceObservers];
+        }
+        else {
+
+            [channelsSet setSet:presenceObservers];
+        }
 
         if (withPresenceEvent) {
 
@@ -653,6 +660,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Check whether there is at leas one channel at which client didn't subscribed yet
     BOOL isAbleToSendRequest = [channelsSet count] > 0;
 
+
     if (isAbleToSendRequest) {
 
         [self destroyByRequestClass:[PNSubscribeRequest class]];
@@ -689,8 +697,16 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     if (isPresenceModification) {
 
         NSArray *channelsForPresenceManipulation = [channelsSet allObjects];
-        NSMutableArray *observedChannels = [[channelsForPresenceManipulation valueForKey:@"observedChannel"] mutableCopy];
-        [observedChannels removeObject:[NSNull null]];
+        NSMutableArray *observedChannels = nil;
+        if (PNBitIsOn(channelsPresence, PNMessagingChannelEnablingPresence)) {
+
+            observedChannels = [[channelsForPresenceManipulation valueForKey:@"observedChannel"] mutableCopy];
+            [observedChannels removeObject:[NSNull null]];
+        }
+        else {
+
+            observedChannels = [channelsForPresenceManipulation mutableCopy];
+        }
 
         if ([observedChannels count] > 0) {
 
@@ -843,11 +859,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Retrieve list of channels which will left after unsubscription
     NSMutableSet *currentlySubscribedChannels = [self.subscribedChannelsSet mutableCopy];
     NSSet *channelsWithPresence = [self channelsWithPresenceFromList:channels forSubscribe:NO];
-    [currentlySubscribedChannels minusSet:channelsWithPresence];
 
     // Check whether there is at least one of channels from which client should unsubscribe is in the list
     // of subscribed or not
     if ([currentlySubscribedChannels intersectsSet:channelsWithPresence]) {
+
+        [currentlySubscribedChannels minusSet:channelsWithPresence];
 
         if (withPresenceEvent) {
 
@@ -916,7 +933,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     if (shouldSendRequest) {
 
-        [self subscribeOnChannels:channels withPresenceEvent:NO presence:PNMessagingChannelDisablingPresence];
+        NSMutableArray *presenceObservers = [[channels valueForKey:@"presenceObserver"] mutableCopy];
+        [presenceObservers removeObject:[NSNull null]];
+
+
+        [self subscribeOnChannels:presenceObservers withPresenceEvent:NO presence:PNMessagingChannelDisablingPresence];
     }
     else {
 
@@ -1865,7 +1886,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DID CANCEL REQUEST: %@ [BODY: %@](STATE: %d)",
           self, request, request.resourcePath, self.messagingState);
 
-    [[PubNub sharedInstance].reachability refreshReachabilityState];
 
     if ([request isKindOfClass:[PNSubscribeRequest class]]) {
 
@@ -1875,6 +1895,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
     else if ([request isKindOfClass:[PNLeaveRequest class]]) {
 
+        [[PubNub sharedInstance].reachability refreshReachabilityState];
         if ([[PubNub sharedInstance].reachability isServiceAvailable]) {
 
             request.processing = YES;
