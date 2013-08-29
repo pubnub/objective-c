@@ -23,14 +23,16 @@
     [PubNub setClientIdentifier:@"SimpleSubscribe"];
     //[uuidView setText:[NSString stringWithFormat:@"%@", [PubNub clientIdentifier]]];
 
-
-
-
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
                                                          withBlock:^(PNMessage *message) {
 
-                                                             [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
+                                                             NSLog(@"Text Length: %i", textView.text.length);
 
+                                                             if (textView.text.length > 2000) {
+                                                                 [textView setText:@""];
+                                                             }
+
+                                                             [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
 
                                                          }];
 
