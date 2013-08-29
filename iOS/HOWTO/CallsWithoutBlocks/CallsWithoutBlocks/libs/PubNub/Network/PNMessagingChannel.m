@@ -297,7 +297,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
                if ([request isKindOfClass:[PNSubscribeRequest class]] && self.isRestoringSubscriptionOnResume) {
 
-                   if (useLastTimeToken) {
+                   if (!useLastTimeToken) {
 
                        [(PNSubscribeRequest *)request resetTimeToken];
                    }
