@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7935AE8A17CEDB420040632B /* PNNetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7935AE8917CEDB420040632B /* PNNetworkHelper.m */; };
 		962FA38517BF53CF00141E23 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA2E517BF53CE00141E23 /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		962FA38617BF53CF00141E23 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA2E717BF53CE00141E23 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		962FA38717BF53CF00141E23 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA2EC17BF53CE00141E23 /* PNObservationCenter.m */; };
@@ -44,7 +45,6 @@
 		962FA3A717BF53CF00141E23 /* NSMutableArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA34217BF53CF00141E23 /* NSMutableArray+PNAdditions.m */; };
 		962FA3A817BF53CF00141E23 /* NSString+PNAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA34417BF53CF00141E23 /* NSString+PNAddition.m */; };
 		962FA3A917BF53CF00141E23 /* UIApplication+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA34617BF53CF00141E23 /* UIApplication+PNAdditions.m */; };
-		962FA3AA17BF53CF00141E23 /* UIDevice+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA34817BF53CF00141E23 /* UIDevice+PNAdditions.m */; };
 		962FA3AB17BF53CF00141E23 /* PNBaseRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA35E17BF53CF00141E23 /* PNBaseRequest.m */; };
 		962FA3AC17BF53CF00141E23 /* PNHereNowRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA36117BF53CF00141E23 /* PNHereNowRequest.m */; };
 		962FA3AD17BF53CF00141E23 /* PNLatencyMeasureRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA36317BF53CF00141E23 /* PNLatencyMeasureRequest.m */; };
@@ -78,6 +78,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7935AE7217CD78F00040632B /* PNPrivateImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateImports.h; sourceTree = "<group>"; };
+		7935AE7317CD78F70040632B /* PNPrivateMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateMacro.h; sourceTree = "<group>"; };
+		7935AE8817CEDB420040632B /* PNNetworkHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNetworkHelper.h; sourceTree = "<group>"; };
+		7935AE8917CEDB420040632B /* PNNetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNNetworkHelper.m; sourceTree = "<group>"; };
 		962FA2E417BF53CE00141E23 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		962FA2E517BF53CE00141E23 /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
 		962FA2E617BF53CE00141E23 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
@@ -167,8 +171,6 @@
 		962FA34417BF53CF00141E23 /* NSString+PNAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PNAddition.m"; sourceTree = "<group>"; };
 		962FA34517BF53CF00141E23 /* UIApplication+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+PNAdditions.h"; sourceTree = "<group>"; };
 		962FA34617BF53CF00141E23 /* UIApplication+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+PNAdditions.m"; sourceTree = "<group>"; };
-		962FA34717BF53CF00141E23 /* UIDevice+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+PNAdditions.h"; sourceTree = "<group>"; };
-		962FA34817BF53CF00141E23 /* UIDevice+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+PNAdditions.m"; sourceTree = "<group>"; };
 		962FA34917BF53CF00141E23 /* PNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConstants.h; sourceTree = "<group>"; };
 		962FA34A17BF53CF00141E23 /* PNDefaultConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDefaultConfiguration.h; sourceTree = "<group>"; };
 		962FA34B17BF53CF00141E23 /* PNErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNErrorCodes.h; sourceTree = "<group>"; };
@@ -423,16 +425,18 @@
 			isa = PBXGroup;
 			children = (
 				962FA33817BF53CF00141E23 /* Categories */,
+				962FA35217BF53CF00141E23 /* Protocols */,
 				962FA34917BF53CF00141E23 /* PNConstants.h */,
 				962FA34A17BF53CF00141E23 /* PNDefaultConfiguration.h */,
 				962FA34B17BF53CF00141E23 /* PNErrorCodes.h */,
 				962FA34C17BF53CF00141E23 /* PNImports.h */,
+				7935AE7217CD78F00040632B /* PNPrivateImports.h */,
 				962FA34D17BF53CF00141E23 /* PNMacro.h */,
+				7935AE7317CD78F70040632B /* PNPrivateMacro.h */,
 				962FA34E17BF53CF00141E23 /* PNNotifications.h */,
 				962FA34F17BF53CF00141E23 /* PNRequestsImport.h */,
 				962FA35017BF53CF00141E23 /* PNServiceResponseCallbacks.h */,
 				962FA35117BF53CF00141E23 /* PNStructures.h */,
-				962FA35217BF53CF00141E23 /* Protocols */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -454,8 +458,6 @@
 				962FA34417BF53CF00141E23 /* NSString+PNAddition.m */,
 				962FA34517BF53CF00141E23 /* UIApplication+PNAdditions.h */,
 				962FA34617BF53CF00141E23 /* UIApplication+PNAdditions.m */,
-				962FA34717BF53CF00141E23 /* UIDevice+PNAdditions.h */,
-				962FA34817BF53CF00141E23 /* UIDevice+PNAdditions.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -482,6 +484,8 @@
 				962FA37917BF53CF00141E23 /* PNMessagingChannel.m */,
 				962FA37A17BF53CF00141E23 /* PNReachability.h */,
 				962FA37B17BF53CF00141E23 /* PNReachability.m */,
+				7935AE8817CEDB420040632B /* PNNetworkHelper.h */,
+				7935AE8917CEDB420040632B /* PNNetworkHelper.m */,
 				962FA37C17BF53CF00141E23 /* PNServiceChannel.h */,
 				962FA37D17BF53CF00141E23 /* PNServiceChannel.m */,
 				962FA37E17BF53CF00141E23 /* Transport */,
@@ -700,7 +704,6 @@
 				962FA3A717BF53CF00141E23 /* NSMutableArray+PNAdditions.m in Sources */,
 				962FA3A817BF53CF00141E23 /* NSString+PNAddition.m in Sources */,
 				962FA3A917BF53CF00141E23 /* UIApplication+PNAdditions.m in Sources */,
-				962FA3AA17BF53CF00141E23 /* UIDevice+PNAdditions.m in Sources */,
 				962FA3AB17BF53CF00141E23 /* PNBaseRequest.m in Sources */,
 				962FA3AC17BF53CF00141E23 /* PNHereNowRequest.m in Sources */,
 				962FA3AD17BF53CF00141E23 /* PNLatencyMeasureRequest.m in Sources */,
@@ -717,6 +720,7 @@
 				962FA3B817BF53CF00141E23 /* PNServiceChannel.m in Sources */,
 				962FA3B917BF53CF00141E23 /* PNConnection.m in Sources */,
 				962FA3BA17BF53CF00141E23 /* PNConnectionChannel.m in Sources */,
+				7935AE8A17CEDB420040632B /* PNNetworkHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

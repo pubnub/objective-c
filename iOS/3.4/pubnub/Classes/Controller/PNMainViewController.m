@@ -15,12 +15,10 @@
 #import "PNChannelInformationDelegate.h"
 #import "PNChannelCreationDelegate.h"
 #import "PNChannelInformationView.h"
-#import "PNChannelCreationView.h"
 #import "NSString+PNDemoAddition.h"
-#import "PNDataManager.h"
+#import "PNChannelCreationView.h"
 #import "PNChannelHistoryView.h"
-#import "PNPresenceEvent.h"
-#import "PNPresenceEvent+Protected.h"
+#import "PNDataManager.h"
 #import "PNChannelCell.h"
 
 
@@ -480,7 +478,7 @@ static NSUInteger const inChatMessageLabelTag = 878;
 - (void)updateClientInformation {
 
     NSString *identifier = [PubNub clientIdentifier];
-    NSString *address = [[UIDevice currentDevice] networkAddress];
+    NSString *address = [PNNetworkHelper networkAddress];
     if (![[PubNub sharedInstance] isConnected]) {
 
         identifier = @"---";

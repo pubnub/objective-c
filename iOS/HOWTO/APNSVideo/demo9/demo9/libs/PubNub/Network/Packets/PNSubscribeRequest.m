@@ -20,6 +20,13 @@
 #import "PNConstants.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub subscribe request must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Private interface methods
 
 @interface PNSubscribeRequest ()
@@ -103,11 +110,22 @@
 
     NSArray *channels = _channels;
 
-    // In case if user specified set of channels for which presence is enabled, add them to the channels list
-    if ([self.channelsForPresenceEnabling count] > 0) {
+    // Check whether presence enabling / disabling channels specified or not
+    if ([self.channelsForPresenceEnabling count] > 0 || [self.channelsForPresenceDisabling count] > 0) {
 
         NSMutableSet *updatedSet = [NSMutableSet setWithArray:channels];
-        [updatedSet addObjectsFromArray:self.channelsForPresenceEnabling];
+
+        // In case if user specified set of channels for which presence is enabled, add them to the channels list
+        if ([self.channelsForPresenceEnabling count] > 0) {
+
+            [updatedSet addObjectsFromArray:self.channelsForPresenceEnabling];
+        }
+        // In case if user specified set of channels for which presence should be disabled,
+        // remove them from overall channels list
+        if ([self.channelsForPresenceDisabling count] > 0) {
+
+            [updatedSet minusSet:[NSSet setWithArray:self.channelsForPresenceDisabling]];
+        }
 
         channels = [updatedSet allObjects];
     }

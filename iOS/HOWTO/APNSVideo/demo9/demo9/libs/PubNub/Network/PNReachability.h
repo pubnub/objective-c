@@ -55,9 +55,11 @@
 - (BOOL)isServiceAvailable;
 
 /**
- * Force reachability monitor to perform reachability check w/o any callbacks
+ * Force reachability monitor to perform reachability check w/o any callbacks.
+ * Return whether reachability refresh in it turn cause reachability state change event generation or not.
  */
-- (void)refreshReachabilityState;
+- (BOOL)refreshReachabilityState;
+- (BOOL)refreshReachabilityStateWithEvent:(BOOL)shouldGenerateReachabilityChangeEvent;
 
 /**
  * Allow to update current reachability state according to the error object (there is some situation when sockets may go down

@@ -12,6 +12,7 @@
 //
 //
 
+#import "PNPrivateImports.h"
 #import "PNConfiguration.h"
 #import "PNReachability.h"
 #import "PNDelegate.h"

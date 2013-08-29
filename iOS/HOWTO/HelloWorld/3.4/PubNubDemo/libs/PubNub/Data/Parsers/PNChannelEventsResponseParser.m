@@ -7,13 +7,19 @@
 //
 
 
+#import "PNPrivateImports.h"
 #import "PNChannelEventsResponseParser.h"
 #import "PNChannelPresence+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #import "PNChannelEvents+Protected.h"
-#import "PNMessage+Protected.h"
-#import "PNChannel+Protected.h"
 #import "PNResponse.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub channel events response parser must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Static
