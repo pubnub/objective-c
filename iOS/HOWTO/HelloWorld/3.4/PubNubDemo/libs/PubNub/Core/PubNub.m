@@ -2197,7 +2197,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                     if (weakSelf.state == PNPubNubClientStateConnecting) {
 
                         PNLog(PNLogGeneralLevel, weakSelf, @"LIBRARY OUT OF SYNC. CONNECTION STATE IS IMPOSSIBLE IF "
-                              "NETWORK AVAILABLE ARRIVE (STATE: %d)", weakSelf.state);
+                              "'NETWORK AVAILABLE' ARRIVE (STATE: %d)", weakSelf.state);
 
                         // Because all connection channels will be destroyed, it means that client currently disconnected
                         weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
@@ -2258,7 +2258,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                             PNLog(PNLogGeneralLevel, weakSelf, @"CLIENT TRIED TO CONNECT (STATE: %d)",
                                   weakSelf.state);
-                            
+
+                            weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
+                            [_sharedInstance.messagingChannel disconnectWithReset:NO];
+                            [_sharedInstance.serviceChannel disconnect];
+
                             [weakSelf handleConnectionErrorOnNetworkFailure];
                         }
                         else {
@@ -2830,9 +2834,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)handleConnectionErrorOnNetworkFailureWithError:(PNError *)error {
 
     // Check whether client is connecting currently or not
-    if (self.state == PNPubNubClientStateConnecting || self.shouldConnectOnServiceReachability) {
+    if (self.state == PNPubNubClientStateConnecting || self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+        self.shouldConnectOnServiceReachability) {
 
-        self.state = PNPubNubClientStateDisconnected;
+        if (self.state != PNPubNubClientStateDisconnectingOnNetworkError) {
+
+            self.state = PNPubNubClientStateDisconnected;
+        }
         [self notifyDelegateClientConnectionFailedWithError:error];
     }
 }
