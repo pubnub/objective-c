@@ -492,8 +492,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Check whether client has been subscribed on channels before or not
     if ([self.subscribedChannelsSet count]) {
 
-        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] RESTORING SUBSCRIPTION... (STATE: %d)",
-              self, self.messagingState);
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] RESTORING SUBSCRIPTION... (USE LAST TIME"
+              " TOKEN? %@)(STATE: %d)", self, shouldRestoreSubscriptionFromLastTimeToken ? @"YES" : @"NO",
+              self.messagingState);
 
         [self destroyByRequestClass:[PNLeaveRequest class]];
         [self destroyByRequestClass:[PNSubscribeRequest class]];
@@ -506,10 +507,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
                                     BITS_LIST_TERMINATOR);
-        if (shouldRestoreSubscriptionFromLastTimeToken) {
-
-            PNBitOn(&_messagingState, PNMessagingChannelRestoringSubscription);
-        }
+        PNBitOn(&_messagingState, PNMessagingChannelRestoringSubscription);
 
         PNSubscribeRequest *resubscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
                                                                                    byUserRequest:YES];
@@ -1382,12 +1380,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         };
 
         // Check whether connection tried to update subscription before it was interrupted and reconnected back
-        if (PNBitsIsOn(self.messagingState, PNMessagingChannelUpdateSubscription, BITS_LIST_TERMINATOR)) {
+        if (PNBitIsOn(self.messagingState, PNMessagingChannelUpdateSubscription)) {
 
             PNBitClear(&_messagingState);
 
             // Check whether there is some channels which can be used to perform subscription update or not
-            if ([self.subscribedChannelsSet count]) {
+            if ([self canResubscribe]) {
 
                 storedRequestsDestroy();
 
@@ -1549,7 +1547,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                                 BITS_LIST_TERMINATOR);
 
     // Check whether connection tried to update subscription before it was interrupted and reconnected back
-    if (PNBitsIsOn(self.messagingState, PNMessagingChannelUpdateSubscription, BITS_LIST_TERMINATOR)) {
+    if (PNBitIsOn(self.messagingState, PNMessagingChannelUpdateSubscription)) {
 
         PNBitClear(&_messagingState);
 

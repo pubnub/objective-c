@@ -391,7 +391,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     }
                 }
 
-                *isIncompleteResponse = responseBody != nil;
+                *isIncompleteResponse = responseBody == nil;
 
                 PNLog(PNLogDeserializerInfoLevel, self, @" RAW DATA: %@",
                       [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding]);

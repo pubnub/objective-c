@@ -1137,34 +1137,48 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)reconnect {
 
+    unsigned long oldStates = self.state;
     BOOL shouldReconnect = [self.delegate connectionShouldRestoreConnection:self];
+    unsigned long newStates = self.state;
 
-    if (shouldReconnect) {
+    BOOL stateChangedFromOutside = oldStates != newStates && !PNBitIsOn(oldStates, PNByUserRequest) &&
+                                   PNBitIsOn(newStates, PNByUserRequest);
 
-        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING TO RECONNECT... (STATE: %d)",
-              self.name ? self.name : self, self.state);
+    if (!stateChangedFromOutside) {
+
+        if (shouldReconnect) {
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING TO RECONNECT... (STATE: %d)",
+                  self.name ? self.name : self, self.state);
+        }
+        else {
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RECONNECT IS IMPOSSIBLE AT THIS MOMENT. "
+                    "WAITING. (STATE: %d)",
+                  self.name ? self.name : self, self.state);
+        }
+
+        // Ask delegate whether connection should initiate connection to remote host or not
+        if (shouldReconnect) {
+
+            PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionError, BITS_LIST_TERMINATOR);
+
+            // Marking that connection instance is reconnecting now and after last connection will be closed should
+            // automatically renew connection
+            PNBitOn(&_state, PNConnectionReconnect);
+
+            [self disconnectByUserRequest:PNBitIsOn(self.state, PNByUserRequest)];
+        }
+        else {
+
+            [self resumeWakeUpTimer];
+        }
     }
     else {
 
-        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RECONNECT IS IMPOSSIBLE AT THIS MOMENT. "
-                "WAITING. (STATE: %d)",
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RECONNECT CANCELED. CONNECTION STATE HAS "
+              "BEEN CHANGED FROMOUTSIDE. (STATE: %d)",
               self.name ? self.name : self, self.state);
-    }
-
-    // Ask delegate whether connection should initiate connection to remote host or not
-    if (shouldReconnect) {
-
-        PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionError, BITS_LIST_TERMINATOR);
-
-        // Marking that connection instance is reconnecting now and after last connection will be closed should
-        // automatically renew connection
-        PNBitOn(&_state, PNConnectionReconnect);
-
-        [self disconnectByUserRequest:PNBitIsOn(self.state, PNByUserRequest)];
-    }
-    else {
-
-        [self resumeWakeUpTimer];
     }
 }
 
@@ -2754,6 +2768,19 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         [connectionState appendFormat:@"\n- PREPARING TO CONNECT..."];
     }
+    if (PNBitIsOn(self.state, PNByInternalRequest)) {
+
+        [connectionState appendFormat:@"\n- CURRENT ACTION PERFORMED BY INTERNAL REQUEST"];
+    }
+    if (PNBitIsOn(self.state, PNByUserRequest)) {
+
+        [connectionState appendFormat:@"\n- CURRENT ACTION PERFORMED BY USER REQUEST"];
+    }
+    if (PNBitIsOn(self.state, PNByServerRequest)) {
+
+        [connectionState appendFormat:@"\n- CONNECTION CLOSE WAS EXPECTED (PROBABLY SERVER DOESN'T SUPPORT "
+                "'keep-alive' CONNECTION TYPE)"];
+    }
     if (PNBitIsOn(self.state, PNConnectionResuming)) {
 
         [connectionState appendFormat:@"\n- RESUMING..."];
@@ -2794,10 +2821,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         [connectionState appendFormat:@"\n- REQUEST PROCESSING ENABLED"];
     }
-    if (PNBitIsOn(self.state, PNByServerRequest)) {
 
-        [connectionState appendFormat:@"\n- CONNECTINO CLOSE WAS EXPECTED (PROBABLY SERVER DOESN'T SUPPORT 'keep-alive' CONNECTION TYPE)"];
-    }
     if (PNBitIsOn(self.state, PNSendingData)) {
 
         [connectionState appendFormat:@"\n- SENDING DATA"];
