@@ -2206,39 +2206,58 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
               self.name ? self.name : self, self.state);
 
 
-        // Ask delegate on whether connection should be restored or not
-        if ([self.delegate connectionShouldRestoreConnection:self]) {
+        unsigned long oldStates = self.state;
+        BOOL shouldReconnect = [self.delegate connectionShouldRestoreConnection:self];
+        unsigned long newStates = self.state;
 
-            BOOL actionByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
+        BOOL stateChangedFromOutside = oldStates != newStates && !PNBitIsOn(oldStates, PNByUserRequest) &&
+                                       PNBitIsOn(newStates, PNByUserRequest);
 
-            // Mark that since state fixing has been called from 'wake up' timer handler method, all further actions
-            // performed on internal code request
-            PNBitsOff(&_state, PNByUserRequest, PNByServerRequest, BITS_LIST_TERMINATOR);
-            PNBitsOn(&_state, PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR);
+        if (!stateChangedFromOutside) {
 
-            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %d)",
-                  self.name ? self.name : self, self.state);
+            // Ask delegate on whether connection should be restored or not
+            if (shouldReconnect) {
 
-            // Check whether connection should be restored via '-reconnect' method or not
-            if ([self shouldReconnect]) {
+                BOOL actionByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
 
-                [self reconnect];
-            }
-            else if (PNBitIsOn(self.state, PNConnectionPrepareToConnect)) {
+                // Mark that since state fixing has been called from 'wake up' timer handler method, all further actions
+                // performed on internal code request
+                PNBitsOff(&_state, PNByUserRequest, PNByServerRequest, BITS_LIST_TERMINATOR);
+                PNBitsOn(&_state, PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR);
 
-                [self connectByUserRequest:actionByUserRequest];
+                PNLog(PNLogConnectionLayerInfoLevel,
+                      self,
+                      @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %d)",
+                      self.name ? self.name : self,
+                      self.state);
+
+                // Check whether connection should be restored via '-reconnect' method or not
+                if ([self shouldReconnect]) {
+
+                    [self reconnect];
+                }
+                else if (PNBitIsOn(self.state, PNConnectionPrepareToConnect)) {
+
+                    [self connectByUserRequest:actionByUserRequest];
+                }
+                else {
+
+                    PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, PNConnectionReconnection,
+                            BITS_LIST_TERMINATOR);
+                    [self disconnectByUserRequest:NO];
+                }
             }
             else {
 
-                PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, PNConnectionReconnection,
-                                                         BITS_LIST_TERMINATOR);
-                [self disconnectByUserRequest:NO];
+                // Looks like connection can't be established, so there can be no 'connecting' state
+                PNBitsOff(&_state, PNConnectionConnecting, PNConnectionDisconnecting, BITS_LIST_TERMINATOR);
             }
         }
         else {
 
-            // Looks like connection can't be established, so there can be no 'connecting' state
-            PNBitsOff(&_state, PNConnectionConnecting, PNConnectionDisconnecting, BITS_LIST_TERMINATOR);
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] WAKE UP EVENT CANCELED. CONNECTION STATE "
+                  "HAS BEEN CHANGED FROMOUTSIDE. (STATE: %d)",
+                  self.name ? self.name : self, self.state);
         }
     }
 }
