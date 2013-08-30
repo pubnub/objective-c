@@ -14,19 +14,48 @@
 @end
 
 @implementation ViewController
-@synthesize textView;
+@synthesize textView, presenceView, uuidView;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
+    [PubNub setClientIdentifier:@"SimpleSubscribe"];
+    //[uuidView setText:[NSString stringWithFormat:@"%@", [PubNub clientIdentifier]]];
 
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
                                                          withBlock:^(PNMessage *message) {
 
+                                                             NSLog(@"Text Length: %i", textView.text.length);
+
+                                                             if (textView.text.length > 2000) {
+                                                                 [textView setText:@""];
+                                                             }
+
                                                              [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
 
                                                          }];
+
+    [[PNObservationCenter defaultCenter] addPresenceEventObserver:self withBlock:^(PNPresenceEvent *event) {
+
+        NSString *eventString;
+        if (event.type == PNPresenceEventJoin) {
+            eventString = @"Join";
+        } else
+        if (event.type == PNPresenceEventLeave) {
+            eventString = @"Leave";
+        } else
+        if (event.type == PNPresenceEventTimeout) {
+            eventString = @"Timeout";
+        }
+
+        eventString = [NSString stringWithFormat:@"%@ : %@", event.uuid, eventString];
+
+        [presenceView setText:[eventString stringByAppendingFormat:@"\n%@\n", presenceView.text]];
+
+
+
+    }];
 
 
     // Do any additional setup after loading the view, typically from a nib.
@@ -71,4 +100,8 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)clearAll:(id)sender {
+    textView.text = @"";
+    presenceView.text = @"";
+}
 @end

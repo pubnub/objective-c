@@ -10,5 +10,8 @@
 
 @interface ViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UITextView *textView;
+- (IBAction)clearAll:(id)sender;
+@property (weak, nonatomic) IBOutlet UITextView *presenceView;
+@property (weak, nonatomic) IBOutlet UITextField *uuidView;
 
 @end

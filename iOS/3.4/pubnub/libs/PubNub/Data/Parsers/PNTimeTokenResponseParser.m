@@ -8,8 +8,14 @@
 
 
 #import "PNTimeTokenResponseParser.h"
-#import "PNPrivateMacro.h"
 #import "PNResponse.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub time token response parser must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Private interface methods

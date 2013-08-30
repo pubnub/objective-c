@@ -478,7 +478,7 @@ static NSUInteger const inChatMessageLabelTag = 878;
 - (void)updateClientInformation {
 
     NSString *identifier = [PubNub clientIdentifier];
-    NSString *address = [[UIDevice currentDevice] networkAddress];
+    NSString *address = [PNNetworkHelper networkAddress];
     if (![[PubNub sharedInstance] isConnected]) {
 
         identifier = @"---";

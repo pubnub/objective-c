@@ -17,9 +17,9 @@
 
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
 
-    NSLog([NSString stringWithFormat:@"received: %@", message.message]);
+    NSLog(@"MESSAGE: %@", [NSString stringWithFormat:@"received: %@", message.message]);
 
-    }
+}
 
 - (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event {
     //PNLog(PNLogGeneralLevel, self, @"PubNub client received presence event: %@", event);
@@ -30,7 +30,7 @@
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList forChannel:(PNChannel *)channel {
-    NSLog(@"hereNow! %@", channel.name, participantsList);
+    NSLog(@"hereNow on channel: %@! %@", channel.name, participantsList);
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

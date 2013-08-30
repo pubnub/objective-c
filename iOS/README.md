@@ -71,7 +71,7 @@ which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd pa
         #import "PNImports.h"
 ```
 4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m (disable ARC warnings for JSONKit)
-5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options
+5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options. Mac OS X version also require CoreWLAN.framework to be added.
 
 ## Finishing up configuration (Common to Manual and CocoaPods setup)
 

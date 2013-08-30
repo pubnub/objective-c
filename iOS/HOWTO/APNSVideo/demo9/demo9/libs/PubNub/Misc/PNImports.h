@@ -10,19 +10,26 @@
 //
 //
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import "UIDevice+PNAdditions.h"
-#endif
-#import "PNJSONSerialization.h"
+#ifndef PNImports_h
+#define PNImports_h
+
 #import "PNObservationCenter.h"
 #import "PNChannelPresence.h"
 #import "PNConfiguration.h"
 #import "PNNotifications.h"
+#import "PNPresenceEvent.h"
+
+// Make developer's life a bit easier if small information about network is required
+#import "PNNetworkHelper.h"
+
 #import "PNErrorCodes.h"
 #import "PNStructures.h"
+
 #import "PNMessage.h"
 #import "PNChannel.h"
-#import "PNError.h"
 #import "PNMacro.h"
+#import "PNError.h"
 #import "PubNub.h"
 #import "PNDate.h"
+
+#endif // PNImports_h

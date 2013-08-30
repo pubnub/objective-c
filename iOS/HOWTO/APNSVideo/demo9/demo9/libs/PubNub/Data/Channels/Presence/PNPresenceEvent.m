@@ -14,6 +14,13 @@
 #import "PNPresenceEvent+Protected.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub presence event must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Structures
 
 struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {

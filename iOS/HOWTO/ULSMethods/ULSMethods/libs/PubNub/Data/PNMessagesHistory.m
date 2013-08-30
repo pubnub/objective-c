@@ -8,7 +8,13 @@
 
 
 #import "PNMessagesHistory.h"
-#import "PNDate.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub messages history must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Private interface methods

@@ -15,6 +15,13 @@
 #import "PNWriteBuffer.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub requests queue must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Static
 
 static NSUInteger const kPNRequestQueueNextRequestIndex = 0;

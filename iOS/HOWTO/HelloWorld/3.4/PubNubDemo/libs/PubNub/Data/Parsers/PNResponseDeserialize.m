@@ -18,6 +18,13 @@
 #import "PNResponse.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub response deserializer must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 
 #pragma mark Static
 
@@ -384,7 +391,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     }
                 }
 
-                *isIncompleteResponse = responseBody != nil;
+                *isIncompleteResponse = responseBody == nil;
 
                 PNLog(PNLogDeserializerInfoLevel, self, @" RAW DATA: %@",
                       [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding]);

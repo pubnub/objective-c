@@ -16,6 +16,13 @@
 #import "PNResponse.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub connection channel  must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Structures
 
 typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
@@ -98,7 +105,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 @property (nonatomic, strong) NSString *name;
 
 // Current connection channel state
-@property (nonatomic, assign) NSUInteger state;
+@property (nonatomic, assign) unsigned long state;
 
 
 #pragma mark - Instance methods
@@ -336,7 +343,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (BOOL)isDisconnected {
 
-    BOOL isDisconnected = PNBitsIsOn(self.state, PNConnectionChannelDisconnected, BITS_LIST_TERMINATOR);
+    BOOL isDisconnected = PNBitIsOn(self.state, PNConnectionChannelDisconnected);
     isDisconnected = isDisconnected || PNBitIsOn(self.state, PNConnectionChannelSuspended);
     isDisconnected = isDisconnected && ![self isConnecting];
 
@@ -937,19 +944,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     }
 }
 
+- (BOOL)connectionCanConnect:(PNConnection *)connection {
+
+    return [self.delegate connectionChannelCanConnect:self];
+}
+
 - (BOOL)connectionShouldRestoreConnection:(PNConnection *)connection {
 
-    // Help reachability instance update it's state our of schedule
-    [[PubNub sharedInstance].reachability refreshReachabilityState];
-
-
-    BOOL connectionShouldRestoreConnection = [self isConnected] || [self isConnecting] || [self isReconnecting];
-    connectionShouldRestoreConnection = connectionShouldRestoreConnection || [self isResuming];
-    connectionShouldRestoreConnection = connectionShouldRestoreConnection ||
-                                        [self.delegate connectionChannelShouldRestoreConnection:self];
-
-
-    return connectionShouldRestoreConnection;
+    return [self.delegate connectionChannelShouldRestoreConnection:self];
 }
 
 - (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName {

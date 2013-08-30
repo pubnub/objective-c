@@ -14,7 +14,7 @@
 @implementation PNAppDelegate
 
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
-    NSLog(message.message);
+    NSLog(@"RECEIVED MESSAGE: %@", message.message);
 }
 
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(PNError *)error {
