@@ -2260,8 +2260,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                   weakSelf.state);
 
                             weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
+
+                            // Messaging channel will close second channel automatically.
                             [_sharedInstance.messagingChannel disconnectWithReset:NO];
-                            [_sharedInstance.serviceChannel disconnect];
 
                             [weakSelf handleConnectionErrorOnNetworkFailure];
                         }
@@ -2286,10 +2287,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             }
                             
                             weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
-                            
+
                             // Disconnect communication channels because of network issues
+                            // Messaging channel will close second channel automatically.
                             [weakSelf.messagingChannel disconnectWithReset:NO];
-                            [weakSelf.serviceChannel disconnect];
                         }
                     }
                 }
@@ -2436,12 +2437,24 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)connectionChannel:(PNConnectionChannel *)channel didReconnectToHost:(NSString *)host {
 
     PNLog(PNLogGeneralLevel, self, @"CHANNEL RECONNECTED: %@ (STATE: %d)", channel, self.state);
+
     
     // Check whether received event from same host on which client is configured or not and client connected at this
     // moment
-    if ([self.configuration.origin isEqualToString:host] && self.state == PNPubNubClientStateConnected) {
-        
-        [self warmUpConnection:channel];
+    if ([self.configuration.origin isEqualToString:host]) {
+
+        if (self.state == PNPubNubClientStateConnecting) {
+
+            PNLog(PNLogGeneralLevel, self, @"CHANNEL RECONNECTED DURING PUBNUB 'CONNECTING' STATE WHICH MEAN THAT "
+                    "SECOND CHANNEL DIDN'T REPORTED YET THAT IT WAS CONNECTED AND '%@' WAS ABLE TO RECOVED AFTER SOME"
+                    " ERROR (STATE: %d)", channel, self.state);
+
+            [self connectionChannel:channel didConnectToHost:host];
+        }
+        else if (self.state == PNPubNubClientStateConnected) {
+
+            [self warmUpConnection:channel];
+        }
     }
 }
 
@@ -2469,7 +2482,18 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)connectionChannel:(PNConnectionChannel *)channel didDisconnectFromOrigin:(NSString *)host {
 
-    PNLog(PNLogGeneralLevel, self, @"CHANNEL DISCONNECTED: %@ (STATE: %d)", channel, self.state);
+    // Check whether notification arrived from channels on which PubNub library is looking at this moment
+    BOOL shouldHandleChannelEvent = [channel isEqual:self.messagingChannel] || [channel isEqual:self.serviceChannel];
+
+    if (shouldHandleChannelEvent) {
+
+        PNLog(PNLogGeneralLevel, self, @"CHANNEL DISCONNECTED: %@ (STATE: %d)", channel, self.state);
+    }
+    else {
+
+        PNLog(PNLogGeneralLevel, self, @"RELEASED CHANNEL DISCONNECTED: %@. DON'T HANDLE EVENT (STATE: %d)", channel,
+              self.state);
+    }
     
     // Check whether host name arrived or not (it may not arrive if event sending instance was dismissed/deallocated)
     if (host == nil) {
@@ -2478,7 +2502,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 
     BOOL isForceClosingSecondChannel = NO;
-    if (self.state != PNPubNubClientStateDisconnecting) {
+    if (self.state != PNPubNubClientStateDisconnecting && shouldHandleChannelEvent) {
 
         self.state = PNPubNubClientStateDisconnectingOnNetworkError;
         if ([channel isEqual:self.messagingChannel] &&
@@ -2504,12 +2528,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     // Check whether received event from same host on which client is configured or not and all communication
     // channels are closed
-    if(!isForceClosingSecondChannel && [self.configuration.origin isEqualToString:host] &&
-       ![self.messagingChannel isConnected] && ![self.serviceChannel isConnected]  &&
+    if(shouldHandleChannelEvent && !isForceClosingSecondChannel && [self.configuration.origin isEqualToString:host] &&
+       [self.messagingChannel isDisconnected] && [self.serviceChannel isDisconnected]  &&
        self.state != PNPubNubClientStateDisconnected && self.state != PNPubNubClientStateDisconnectedOnNetworkError) {
 
         PNLog(PNLogGeneralLevel, self, @"CLIENT DISCONNECTED FROM ORIGIN: %@ (STATE: %d)", host, self.state);
-        
+
         // Check whether all communication channels disconnected and whether client in corresponding state or not
         if (self.state == PNPubNubClientStateDisconnecting ||
             self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
@@ -2529,111 +2553,134 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             switch (connectionError.code) {
                 case kPNClientConnectionFailedOnInternetFailureError:
                 case kPNClientConnectionClosedOnInternetFailureError:
+
+                    // Check whether should restore connection or not
+                    if ([self shouldRestoreConnection] && state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                        PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION. REACHABILITY CHECK "
+                              "COMPLETED (STATE: %d)", self.state);
+
+                        self.restoringConnection = YES;
+                    }
                     
                     // Try to refresh reachability state (there is situation when reachability state changed within
                     // library to handle sockets timeout/error)
                     [self.reachability refreshReachabilityState];
+
+                    if (![self.reachability isServiceAvailable]) {
+
+                        self.restoringConnection = NO;
+                    }
                     break;
                     
                 default:
                     break;
             }
             
-            
-            if(state == PNPubNubClientStateDisconnected) {
-                
-                // Clean up cached data
-                [PNChannel purgeChannelsCache];
 
-                // Delay disconnection notification to give client ability to perform clean up well
-                __block __pn_desired_weak __typeof__(self) weakSelf = self;
-                void(^disconnectionNotifyBlock)(void) = ^{
+            // Check whether client still in bad state or not (because of async operations it is possible that before
+            // this moment client was in corresponding state
+            if (self.state != PNPubNubClientStateConnecting) {
 
-                    if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+                if(state == PNPubNubClientStateDisconnected) {
 
-                        [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host];
+                    // Clean up cached data
+                    [PNChannel purgeChannelsCache];
+
+                    // Delay disconnection notification to give client ability to perform clean up well
+                    __block __pn_desired_weak __typeof__(self) weakSelf = self;
+                    void(^disconnectionNotifyBlock)(void) = ^{
+
+                        if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
+                            [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host];
+                        }
+                        PNLog(PNLogDelegateLevel, weakSelf, @" PubNub client disconnected from PubNub origin at: %@",
+                              host);
+
+
+                        [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
+                        [self handleLockingOperationComplete:YES];
+                    };
+                    if (channel == nil) {
+
+                        disconnectionNotifyBlock();
                     }
-                    PNLog(PNLogDelegateLevel, weakSelf, @" PubNub client disconnected from PubNub origin at: %@",
-                          host);
+                    else {
 
-
-                    [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:host];
-                    [self handleLockingOperationComplete:YES];
-                };
-                if (channel == nil) {
-
-                    disconnectionNotifyBlock();
+                        double delayInSeconds = 1.0;
+                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
+                        dispatch_after(popTime, dispatch_get_main_queue(), disconnectionNotifyBlock);
+                    }
                 }
                 else {
 
-                    double delayInSeconds = 1.0;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
-                    dispatch_after(popTime, dispatch_get_main_queue(), disconnectionNotifyBlock);
+                    __block __pn_desired_weak __typeof__ (self) weakSelf = self;
+                    void(^disconnectionNotifyBlock)(void) = ^{
+
+                        if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                            [weakSelf handleLockingOperationBlockCompletion:^{
+
+                                if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+
+                                    [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host withError:connectionError];
+                                }
+                                PNLog(PNLogDelegateLevel, weakSelf, @" PubNub client closed connection because of error: "
+                                      "%@", connectionError);
+
+
+                                [weakSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
+                            }
+                                                        shouldStartNext:YES];
+                        }
+                    };
+
+                    // Check whether service is available (this event may arrive after device was unlocked so basically
+                    // connection is available and only sockets closed by remote server or internal kernel layer)
+                    if ([self.reachability isServiceReachabilityChecked]) {
+
+                        if ([self.reachability isServiceAvailable]) {
+
+                            // Check whether should restore connection or not
+                            if ([self shouldRestoreConnection]) {
+
+                                PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION. REACHABILITY CHECK "
+                                      "COMPLETED (STATE: %d)", self.state);
+
+                                self.asyncLockingOperationInProgress = NO;
+                                self.restoringConnection = YES;
+
+                                // Try to restore connection to remote PubNub services
+                                [[self class] connect];
+                            }
+                            else {
+
+                                PNLog(PNLogGeneralLevel, self, @"DESTROY COMPONENTS (STATE: %d)", self.state);
+
+                                disconnectionNotifyBlock();
+                            }
+                        }
+                        // In case if there is no connection check whether clint should restore connection or not.
+                        else if(![self shouldRestoreConnection]) {
+
+                            PNLog(PNLogGeneralLevel, self, @"DESTROY COMPONENTS (STATE: %d)", self.state);
+
+                            self.state = PNPubNubClientStateDisconnected;
+                            disconnectionNotifyBlock();
+                        }
+                        else if ([self shouldRestoreConnection]) {
+
+                            PNLog(PNLogGeneralLevel, self, @"CONNECTION WILL BE RESTORED AS SOON AS INTERNET CONNECTION "
+                                  "WILL GO UP (STATE: %d)", self.state);
+                        }
+                    }
                 }
             }
             else {
 
-                __block __pn_desired_weak __typeof__ (self) weakSelf = self;
-                void(^disconnectionNotifyBlock)(void) = ^{
-
-                    if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
-
-                        [weakSelf handleLockingOperationBlockCompletion:^{
-
-                            if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
-
-                                [weakSelf.delegate pubnubClient:weakSelf didDisconnectFromOrigin:host withError:connectionError];
-                            }
-                            PNLog(PNLogDelegateLevel, weakSelf, @" PubNub client closed connection because of error: "
-                                    "%@", connectionError);
-
-
-                            [weakSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
-                        }
-                                                    shouldStartNext:YES];
-                    }
-                };
-
-                // Check whether service is available (this event may arrive after device was unlocked so basically
-                // connection is available and only sockets closed by remote server or internal kernel layer)
-                if ([self.reachability isServiceReachabilityChecked]) {
-
-                    [self.reachability refreshReachabilityState];
-
-                    if ([self.reachability isServiceAvailable]) {
-                        
-                        // Check whether should restore connection or not
-                        if ([self shouldRestoreConnection]) {
-
-                            PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION (STATE: %d)", self.state);
-
-                            self.asyncLockingOperationInProgress = NO;
-                            self.restoringConnection = YES;
-                            
-                            // Try to restore connection to remote PubNub services
-                            [[self class] connect];
-                        }
-                        else {
-
-                            PNLog(PNLogGeneralLevel, self, @"DESTROY COMPONENTS (STATE: %d)", self.state);
-
-                            disconnectionNotifyBlock();
-                        }
-                    }
-                    // In case if there is no connection check whether clint should restore connection or not.
-                    else if(![self shouldRestoreConnection]) {
-
-                        PNLog(PNLogGeneralLevel, self, @"DESTROY COMPONENTS (STATE: %d)", self.state);
-                        
-                        self.state = PNPubNubClientStateDisconnected;
-                        disconnectionNotifyBlock();
-                    }
-                    else if ([self shouldRestoreConnection]) {
-
-                        PNLog(PNLogGeneralLevel, self, @"CONNECTION WILL BE RESTORED AS SOON AS INTERNET CONNECTION "
-                              "WILL GO UP (STATE: %d)", self.state);
-                    }
-                }
+                PNLog(PNLogGeneralLevel, self, @"CLIENT ALREADY CONNECTING BACK. DON'T DO ANYTHING. (STATE: %d)",
+                      self.state);
             }
         }
         // Check whether server unexpectedly closed connection while client was active or not
@@ -2643,7 +2690,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             
             if([self shouldRestoreConnection]) {
 
-                PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION (STATE: %d)", self.state);
+                PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION. WAS CONNECTED BEFORE. (STATE: %d)",
+                      self.state);
 
                 self.asyncLockingOperationInProgress = NO;
                 self.restoringConnection = YES;
@@ -2725,13 +2773,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     // Help reachability instance update it's state our of schedule
     [self.reachability refreshReachabilityState];
 
+    BOOL isSimulatingReachability = [self.reachability isSimulatingNetworkSwitchEvent];
     BOOL shouldRestoreConnection = self.state == PNPubNubClientStateConnecting ||
                                    self.state == PNPubNubClientStateConnected ||
                                    self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
                                    self.state == PNPubNubClientStateDisconnectedOnNetworkError;
 
     // Ensure that there is connection available as well as permission to connect
-    shouldRestoreConnection = shouldRestoreConnection && [self.reachability isServiceAvailable];
+    shouldRestoreConnection = shouldRestoreConnection && [self.reachability isServiceAvailable] && !isSimulatingReachability;
 
 
     return shouldRestoreConnection;
@@ -2837,7 +2886,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     if (self.state == PNPubNubClientStateConnecting || self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
         self.shouldConnectOnServiceReachability) {
 
-        if (self.state != PNPubNubClientStateDisconnectingOnNetworkError) {
+        if (self.state != PNPubNubClientStateDisconnectingOnNetworkError &&
+            self.state != PNPubNubClientStateDisconnectedOnNetworkError) {
 
             self.state = PNPubNubClientStateDisconnected;
         }
@@ -3543,6 +3593,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
 
+    self.restoringConnection = NO;
+
     [self handleLockingOperationBlockCompletion:^{
 
         PNLog(PNLogGeneralLevel, self, @"SUBSCRIBED ON CHANNELS (STATE: %d)", self.state);
@@ -3578,6 +3630,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels {
+
+    self.restoringConnection = NO;
 
     [self handleLockingOperationBlockCompletion:^{
 
