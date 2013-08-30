@@ -1171,6 +1171,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         else {
 
+            PNBitOn(&_state, PNConnectionWakeUpTimer);
+
             [self resumeWakeUpTimer];
         }
     }
@@ -2198,7 +2200,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 
     // Check whether connection not connected
-    if (![self isConnected] && ![self isConnecting]) {
+    if ((![self isConnected] && ![self isConnecting]) || PNBitIsOn(self.state, PNConnectionWakeUpTimer)) {
 
         PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] STILL IN BAD STATE... (STATE: %d)",
               self.name ? self.name : self, self.state);
@@ -2736,25 +2738,30 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         [connectionState appendFormat:@"\n- WRITE STREAM CONFIGURED"];
     }
     NSString *actionSource = @"";
+    NSString *actionSourceReason = @"";
     if (PNBitIsOn(self.state, PNConnectionWakeUpTimer)) {
 
-        actionSource = @" (BY WAKE UP TIMER REQUEST)";
+        actionSource = @"WAKE UP TIMER";
+        actionSourceReason = @" (BY WAKE UP TIMER REQUEST)";
     }
     else if (PNBitIsOn(self.state, PNConnectionSSL)) {
 
-        actionSource = @" (BY SSL LAYER REQUEST)";
+        actionSource = @"SSL LAYER";
+        actionSourceReason = @" (BY SSL LAYER REQUEST)";
     }
     else if (PNBitIsOn(self.state, PNConnectionSocket)) {
 
-        actionSource = @" (BY SOCKET LAYER REQUEST)";
+        actionSource = @"SOCKET LAYER";
+        actionSourceReason = @" (BY SOCKET LAYER REQUEST)";
     }
+    [connectionState appendFormat:@"\n- ACTION SOURCE: %@...", actionSource];
     if (PNBitIsOn(self.state, PNReadStreamConnecting)) {
 
-        [connectionState appendFormat:@"\n- READ STREAM CONNECTING%@...", actionSource];
+        [connectionState appendFormat:@"\n- READ STREAM CONNECTING%@...", actionSourceReason];
     }
     if (PNBitIsOn(self.state, PNWriteStreamConnecting)) {
 
-        [connectionState appendFormat:@"\n- WRITE STREAM CONNECTING%@...", actionSource];
+        [connectionState appendFormat:@"\n- WRITE STREAM CONNECTING%@...", actionSourceReason];
     }
     if (PNBitIsOn(self.state, PNReadStreamConnected)) {
 
@@ -2791,11 +2798,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     if (PNBitIsOn(self.state, PNReadStreamDisconnecting)) {
 
-        [connectionState appendFormat:@"\n- READ STREAM DISCONNECTING%@...", actionSource];
+        [connectionState appendFormat:@"\n- READ STREAM DISCONNECTING%@...", actionSourceReason];
     }
     if (PNBitIsOn(self.state, PNWriteStreamDisconnecting)) {
 
-        [connectionState appendFormat:@"\n- WRITE STREAM DISCONNECTING%@...", actionSource];
+        [connectionState appendFormat:@"\n- WRITE STREAM DISCONNECTING%@...", actionSourceReason];
     }
     if (PNBitIsOn(self.state, PNConnectionSuspending)) {
 
@@ -2821,7 +2828,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         [connectionState appendFormat:@"\n- REQUEST PROCESSING ENABLED"];
     }
-
     if (PNBitIsOn(self.state, PNSendingData)) {
 
         [connectionState appendFormat:@"\n- SENDING DATA"];
