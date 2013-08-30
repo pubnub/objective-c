@@ -1138,34 +1138,50 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)reconnect {
 
+    unsigned long oldStates = self.state;
     BOOL shouldReconnect = [self.delegate connectionShouldRestoreConnection:self];
+    unsigned long newStates = self.state;
 
-    if (shouldReconnect) {
+    BOOL stateChangedFromOutside = oldStates != newStates && !PNBitIsOn(oldStates, PNByUserRequest) &&
+                                   PNBitIsOn(newStates, PNByUserRequest);
 
-        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING TO RECONNECT... (STATE: %d)",
-              self.name ? self.name : self, self.state);
+    if (!stateChangedFromOutside) {
+
+        if (shouldReconnect) {
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING TO RECONNECT... (STATE: %d)",
+                  self.name ? self.name : self, self.state);
+        }
+        else {
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RECONNECT IS IMPOSSIBLE AT THIS MOMENT. "
+                    "WAITING. (STATE: %d)",
+                  self.name ? self.name : self, self.state);
+        }
+
+        // Ask delegate whether connection should initiate connection to remote host or not
+        if (shouldReconnect) {
+
+            PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionError, BITS_LIST_TERMINATOR);
+
+            // Marking that connection instance is reconnecting now and after last connection will be closed should
+            // automatically renew connection
+            PNBitOn(&_state, PNConnectionReconnect);
+
+            [self disconnectByUserRequest:PNBitIsOn(self.state, PNByUserRequest)];
+        }
+        else {
+
+            PNBitOn(&_state, PNConnectionWakeUpTimer);
+
+            [self resumeWakeUpTimer];
+        }
     }
     else {
 
-        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RECONNECT IS IMPOSSIBLE AT THIS MOMENT. "
-                "WAITING. (STATE: %d)",
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RECONNECT CANCELED. CONNECTION STATE HAS "
+              "BEEN CHANGED FROMOUTSIDE. (STATE: %d)",
               self.name ? self.name : self, self.state);
-    }
-
-    // Ask delegate whether connection should initiate connection to remote host or not
-    if (shouldReconnect) {
-
-        PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionError, BITS_LIST_TERMINATOR);
-
-        // Marking that connection instance is reconnecting now and after last connection will be closed should
-        // automatically renew connection
-        PNBitOn(&_state, PNConnectionReconnect);
-
-        [self disconnectByUserRequest:PNBitIsOn(self.state, PNByUserRequest)];
-    }
-    else {
-
-        [self resumeWakeUpTimer];
     }
 }
 
@@ -2215,45 +2231,64 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 
     // Check whether connection not connected
-    if (![self isConnected] && ![self isConnecting]) {
+    if ((![self isConnected] && ![self isConnecting]) || PNBitIsOn(self.state, PNConnectionWakeUpTimer)) {
 
         PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] STILL IN BAD STATE... (STATE: %d)",
               self.name ? self.name : self, self.state);
 
 
-        // Ask delegate on whether connection should be restored or not
-        if ([self.delegate connectionShouldRestoreConnection:self]) {
+        unsigned long oldStates = self.state;
+        BOOL shouldReconnect = [self.delegate connectionShouldRestoreConnection:self];
+        unsigned long newStates = self.state;
 
-            BOOL actionByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
+        BOOL stateChangedFromOutside = oldStates != newStates && !PNBitIsOn(oldStates, PNByUserRequest) &&
+                                       PNBitIsOn(newStates, PNByUserRequest);
 
-            // Mark that since state fixing has been called from 'wake up' timer handler method, all further actions
-            // performed on internal code request
-            PNBitsOff(&_state, PNByUserRequest, PNByServerRequest, BITS_LIST_TERMINATOR);
-            PNBitsOn(&_state, PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR);
+        if (!stateChangedFromOutside) {
 
-            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %d)",
-                  self.name ? self.name : self, self.state);
+            // Ask delegate on whether connection should be restored or not
+            if (shouldReconnect) {
 
-            // Check whether connection should be restored via '-reconnect' method or not
-            if ([self shouldReconnect]) {
+                BOOL actionByUserRequest = PNBitIsOn(self.state, PNByUserRequest);
 
-                [self reconnect];
-            }
-            else if (PNBitIsOn(self.state, PNConnectionPrepareToConnect)) {
+                // Mark that since state fixing has been called from 'wake up' timer handler method, all further actions
+                // performed on internal code request
+                PNBitsOff(&_state, PNByUserRequest, PNByServerRequest, BITS_LIST_TERMINATOR);
+                PNBitsOn(&_state, PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR);
 
-                [self connectByUserRequest:actionByUserRequest];
+                PNLog(PNLogConnectionLayerInfoLevel,
+                      self,
+                      @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %d)",
+                      self.name ? self.name : self,
+                      self.state);
+
+                // Check whether connection should be restored via '-reconnect' method or not
+                if ([self shouldReconnect]) {
+
+                    [self reconnect];
+                }
+                else if (PNBitIsOn(self.state, PNConnectionPrepareToConnect)) {
+
+                    [self connectByUserRequest:actionByUserRequest];
+                }
+                else {
+
+                    PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, PNConnectionReconnection,
+                            BITS_LIST_TERMINATOR);
+                    [self disconnectByUserRequest:NO];
+                }
             }
             else {
 
-                PNBitsOff(&_state, PNReadStreamCleanAll, PNWriteStreamCleanAll, PNConnectionReconnection,
-                                                         BITS_LIST_TERMINATOR);
-                [self disconnectByUserRequest:NO];
+                // Looks like connection can't be established, so there can be no 'connecting' state
+                PNBitsOff(&_state, PNConnectionConnecting, PNConnectionDisconnecting, BITS_LIST_TERMINATOR);
             }
         }
         else {
 
-            // Looks like connection can't be established, so there can be no 'connecting' state
-            PNBitsOff(&_state, PNConnectionConnecting, PNConnectionDisconnecting, BITS_LIST_TERMINATOR);
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] WAKE UP EVENT CANCELED. CONNECTION STATE "
+                  "HAS BEEN CHANGED FROMOUTSIDE. (STATE: %d)",
+                  self.name ? self.name : self, self.state);
         }
     }
 }
@@ -2753,25 +2788,30 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         [connectionState appendFormat:@"\n- WRITE STREAM CONFIGURED"];
     }
     NSString *actionSource = @"";
+    NSString *actionSourceReason = @"";
     if (PNBitIsOn(self.state, PNConnectionWakeUpTimer)) {
 
-        actionSource = @" (BY WAKE UP TIMER REQUEST)";
+        actionSource = @"WAKE UP TIMER";
+        actionSourceReason = @" (BY WAKE UP TIMER REQUEST)";
     }
     else if (PNBitIsOn(self.state, PNConnectionSSL)) {
 
-        actionSource = @" (BY SSL LAYER REQUEST)";
+        actionSource = @"SSL LAYER";
+        actionSourceReason = @" (BY SSL LAYER REQUEST)";
     }
     else if (PNBitIsOn(self.state, PNConnectionSocket)) {
 
-        actionSource = @" (BY SOCKET LAYER REQUEST)";
+        actionSource = @"SOCKET LAYER";
+        actionSourceReason = @" (BY SOCKET LAYER REQUEST)";
     }
+    [connectionState appendFormat:@"\n- ACTION SOURCE: %@...", actionSource];
     if (PNBitIsOn(self.state, PNReadStreamConnecting)) {
 
-        [connectionState appendFormat:@"\n- READ STREAM CONNECTING%@...", actionSource];
+        [connectionState appendFormat:@"\n- READ STREAM CONNECTING%@...", actionSourceReason];
     }
     if (PNBitIsOn(self.state, PNWriteStreamConnecting)) {
 
-        [connectionState appendFormat:@"\n- WRITE STREAM CONNECTING%@...", actionSource];
+        [connectionState appendFormat:@"\n- WRITE STREAM CONNECTING%@...", actionSourceReason];
     }
     if (PNBitIsOn(self.state, PNReadStreamConnected)) {
 
@@ -2785,6 +2825,19 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         [connectionState appendFormat:@"\n- PREPARING TO CONNECT..."];
     }
+    if (PNBitIsOn(self.state, PNByInternalRequest)) {
+
+        [connectionState appendFormat:@"\n- CURRENT ACTION PERFORMED BY INTERNAL REQUEST"];
+    }
+    if (PNBitIsOn(self.state, PNByUserRequest)) {
+
+        [connectionState appendFormat:@"\n- CURRENT ACTION PERFORMED BY USER REQUEST"];
+    }
+    if (PNBitIsOn(self.state, PNByServerRequest)) {
+
+        [connectionState appendFormat:@"\n- CONNECTION CLOSE WAS EXPECTED (PROBABLY SERVER DOESN'T SUPPORT "
+                "'keep-alive' CONNECTION TYPE)"];
+    }
     if (PNBitIsOn(self.state, PNConnectionResuming)) {
 
         [connectionState appendFormat:@"\n- RESUMING..."];
@@ -2795,11 +2848,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     if (PNBitIsOn(self.state, PNReadStreamDisconnecting)) {
 
-        [connectionState appendFormat:@"\n- READ STREAM DISCONNECTING%@...", actionSource];
+        [connectionState appendFormat:@"\n- READ STREAM DISCONNECTING%@...", actionSourceReason];
     }
     if (PNBitIsOn(self.state, PNWriteStreamDisconnecting)) {
 
-        [connectionState appendFormat:@"\n- WRITE STREAM DISCONNECTING%@...", actionSource];
+        [connectionState appendFormat:@"\n- WRITE STREAM DISCONNECTING%@...", actionSourceReason];
     }
     if (PNBitIsOn(self.state, PNConnectionSuspending)) {
 
@@ -2824,10 +2877,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     if (PNBitIsOn(self.state, PNConnectionProcessingRequests)) {
 
         [connectionState appendFormat:@"\n- REQUEST PROCESSING ENABLED"];
-    }
-    if (PNBitIsOn(self.state, PNByServerRequest)) {
-
-        [connectionState appendFormat:@"\n- CONNECTINO CLOSE WAS EXPECTED (PROBABLY SERVER DOESN'T SUPPORT 'keep-alive' CONNECTION TYPE)"];
     }
     if (PNBitIsOn(self.state, PNSendingData)) {
 

@@ -343,7 +343,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (BOOL)isDisconnected {
 
-    BOOL isDisconnected = PNBitsIsOn(self.state, PNConnectionChannelDisconnected, BITS_LIST_TERMINATOR);
+    BOOL isDisconnected = PNBitIsOn(self.state, PNConnectionChannelDisconnected);
     isDisconnected = isDisconnected || PNBitIsOn(self.state, PNConnectionChannelSuspended);
     isDisconnected = isDisconnected && ![self isConnecting];
 
@@ -951,15 +951,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (BOOL)connectionShouldRestoreConnection:(PNConnection *)connection {
 
-    BOOL connectionShouldRestoreConnection = [self isConnected] || [self isConnecting] || [self isReconnecting];
-    connectionShouldRestoreConnection = connectionShouldRestoreConnection || [self isResuming];
-    if (![self.delegate connectionChannelShouldRestoreConnection:self]) {
-
-        connectionShouldRestoreConnection = NO;
-    }
-
-
-    return connectionShouldRestoreConnection;
+    return [self.delegate connectionChannelShouldRestoreConnection:self];
 }
 
 - (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName {

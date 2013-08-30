@@ -23,6 +23,8 @@
 // Stores reference on block which will be called each time when service reachability is changed
 @property (nonatomic, copy) void(^reachabilityChangeHandleBlock)(BOOL connected);
 
+@property (nonatomic, readonly, assign, getter = isSimulatingNetworkSwitchEvent) BOOL simulatingNetworkSwitchEvent;
+
 
 #pragma mark - Class methods
 
