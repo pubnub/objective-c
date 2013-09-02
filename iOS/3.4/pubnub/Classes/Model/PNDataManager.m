@@ -142,7 +142,7 @@ static PNDataManager *_sharedInstance = nil;
                 }
                 eventMessage = [eventMessage stringByAppendingFormat:@"<%@> %@ '%@'\n",
                                                                      [dateFormatter stringFromDate:event.date.date],
-                                                                     event.uuid,
+                                                                     event.uuid ? event.uuid : @"unknown",
                                                                      eventType];
                 [weakSelf.messages setValue:eventMessage forKey:channel.name];
 
