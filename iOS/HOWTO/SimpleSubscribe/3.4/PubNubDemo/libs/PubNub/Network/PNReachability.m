@@ -154,6 +154,10 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
     if (isServiceReachable) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
         status = PNBitIsOn(flags, kSCNetworkReachabilityFlagsIsWWAN) ? PNReachabilityStatusReachableViaCellular : status;
+        if (status == PNReachabilityStatusReachableViaCellular && PNBitIsOn(flags, kSCNetworkReachabilityFlagsConnectionRequired)) {
+            
+            status = PNReachabilityStatusNotReachable;
+        }
 #endif
         if (status == PNReachabilityStatusUnknown || status == PNReachabilityStatusNotReachable) {
 
