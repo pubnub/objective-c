@@ -1841,7 +1841,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Check whether request can be rescheduled or not
     if (![request canRetry]) {
 
-        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@](STATE: %d)",
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@](STATE: %d)",
               self, request, request.resourcePath, self.messagingState);
 
         // Removing failed request from queue

@@ -57,6 +57,11 @@ extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;
 - (void)disconnectByUserRequest:(BOOL)byUserRequest;
 - (BOOL)isDisconnecting;
 
+/**
+ * This is final point where connection can release all resources which may not allow it to destroy it from outside
+ */
+- (void)prepareForTermination;
+
 #pragma mark -
 
 

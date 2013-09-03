@@ -385,7 +385,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
               self.name, self.state);
 
         PNBitClear(&_state);
-        PNBitsOn(&_state, PNConnectionChannelDisconnecting, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR);
+        PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR);
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
@@ -1328,6 +1328,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     // Remove all requests sent by this communication channel
     [self clearScheduledRequestsQueue];
     [self stopTimeoutTimerForRequest:nil];
+    [self purgeObservedRequestsPool];
+    [self purgeStoredRequestsPool];
 
     _connection.dataSource = nil;
     _requestsQueue.delegate = nil;
@@ -1340,15 +1342,21 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
         
         [_delegate connectionChannel:self didDisconnectFromOrigin:nil];
     }
-    
+
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] RESETTING CONNECTION INSTANCE: %@ (STATE: %d)",
+          self.name, _connection, self.state);
     _connection.delegate = nil;
+    [_connection prepareForTermination];
     [PNConnection destroyConnection:_connection];
     _connection = nil;
 }
 
 - (void)dealloc {
-    
-    [self cleanUp];
+
+    if (_connection) {
+
+        [self cleanUp];
+    }
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DESTROYED (STATE: %d)",
           _name, _state);
