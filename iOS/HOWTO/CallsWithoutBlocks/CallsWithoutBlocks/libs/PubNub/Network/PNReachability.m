@@ -731,7 +731,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                 self.reachabilityChangeHandleBlock(isServiceConnected);
             }
         }
-        else {
+        else if (_serviceReachability){
 
             PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability got strange state: %@"
                   ". Fallback to the previous: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",

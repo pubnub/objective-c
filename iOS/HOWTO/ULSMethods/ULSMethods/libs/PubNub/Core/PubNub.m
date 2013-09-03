@@ -36,6 +36,10 @@
 
 #pragma mark Static
 
+static NSString * const kPNLibraryVersion = @"3.4.2";
+static NSString * const kPNCodebaseBranch = @"refinement-connection";
+static NSString * const kPNCodeCommitIdentifier = @"96f3446ea98c5e2495c6ff7b8e7463d2df0cc5b5";
+
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
 static dispatch_once_t onceToken;
@@ -170,6 +174,11 @@ static NSMutableArray *pendingInvocations = nil;
 
 
 #pragma mark - Misc methods
+
+/**
+ * Print out PubNub library information
+ */
++ (void)showVserionInfo;
 
 /**
  * Allow to perform code which should lock asynchronous methods execution till it ends and in case if code itself
@@ -393,6 +402,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 + (PubNub *)sharedInstance {
     
     dispatch_once(&onceToken, ^{
+        
+        [self showVserionInfo];
         
         _sharedInstance = [[[self class] alloc] init];
     });
@@ -2141,6 +2152,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
 #pragma mark - Misc methods
+
++ (void)showVserionInfo {
+    
+    NSString *pubnubLogo = @"| +--------+          +-+       +-+     +-+          +-+\n"
+"| | +----+ |          | |       | |    /  |          | |\n"
+"| | |    | |          | |       | |   / / |          | |\n"
+"| | +----+ | +-+  +-+ | +-----\\ | |  / /| | +-+  +-+ | +-----\\\n"
+"| | +------+ | |  | | | +---+ | | | / / | | | |  | | | +---+ |\n"
+"| | |        | |  | | | |   | | | |/ /  | | | |  | | | |   | |\n"
+"| | |        | +--+ | | +---+ | |   /   | | | +--+ | | +---+ |\n"
+"| +-+        \\------/ +-------/ +--/    +-+ \\------/ +-------/\n|\n|\n";
+    NSString *informationBlockSeparator = @"\n+--------------------------------------------------------------\n";
+    
+    PNLog(PNLogGeneralLevel, self, @"\n\n%@%@| PubNub.com real-time messaging network information:\n| - version: %@\n| - git branch: %@\n| - commit identifier: %@%@\n\n",
+          informationBlockSeparator, pubnubLogo, kPNLibraryVersion, kPNCodebaseBranch, kPNCodeCommitIdentifier, informationBlockSeparator);
+}
 
 + (void)performAsyncLockingBlock:(void(^)(void))codeBlock postponedExecutionBlock:(void(^)(void))postponedCodeBlock {
     
