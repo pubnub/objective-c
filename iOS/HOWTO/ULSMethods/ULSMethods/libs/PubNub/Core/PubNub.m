@@ -1594,7 +1594,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
                 
                 channel.observePresence = YES;
-                channel.userDefinedPresenceObservation = YES;
+                channel.linkedWithPresenceObservationChannel = NO;
             }];
             
             [[self sharedInstance].messagingChannel enablePresenceObservationForChannels:channels];

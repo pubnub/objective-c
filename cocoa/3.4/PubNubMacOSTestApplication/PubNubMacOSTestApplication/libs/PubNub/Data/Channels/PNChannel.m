@@ -25,6 +25,7 @@
 
 #pragma mark Static
 
+static NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
 static NSMutableDictionary *_channelsCache = nil;
 
 
@@ -42,7 +43,7 @@ static NSMutableDictionary *_channelsCache = nil;
 @property (nonatomic, assign) NSUInteger participantsCount;
 @property (nonatomic, strong) NSMutableArray *participantsList;
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
-@property (nonatomic, assign, getter = isUserDefinedPresenceObservation)BOOL userDefinedPresenceObservation;
+@property (nonatomic, assign, getter = isLinkedWithPresenceObservationChannel)BOOL linkedWithPresenceObservationChannel;
 
 
 #pragma mark - Class methods
@@ -103,7 +104,7 @@ static NSMutableDictionary *_channelsCache = nil;
 + (PNChannel *)channelWithName:(NSString *)channelName shouldObservePresence:(BOOL)observePresence {
 
     PNChannel *channel = [self channelWithName:channelName shouldObservePresence:observePresence shouldUpdatePresenceObservingFlag:YES];
-    channel.userDefinedPresenceObservation = NO;
+    channel.linkedWithPresenceObservationChannel = YES;
 
 
     return channel;
@@ -158,8 +159,10 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     NSSortDescriptor *tokenSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updateTimeToken" ascending:YES];
     NSArray *timeTokens = [[channels sortedArrayUsingDescriptors:@[tokenSortDescriptor]] valueForKey:@"updateTimeToken"];
 
+    NSString *token = [timeTokens lastObject];
 
-    return [timeTokens lastObject];
+
+    return token ? token : @"0";
 }
 
 
@@ -210,6 +213,26 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     if (event.type == PNPresenceEventJoin) {
 
         [self.participantsList addObject:event.uuid];
+    }
+    // Check whether number of persons changed in channel or not
+    else if (event.type == PNPresenceEventChanged) {
+
+        // Check whether 'anonymous' (or 'unknown') person is joined to the channel
+        // (calculated basing on previous number of participants)
+        if ([self.participantsList count] < event.occupancy) {
+
+            [self.participantsList addObject:kPNAnonymousParticipantIdentifier];
+        }
+        // Check whether 'anonymous' (or 'unknown') person leaved channel
+        // (calculated basing on previous number of participants)
+        else if ([self.participantsList count] > event.occupancy) {
+
+            NSUInteger anonymousParticipantIndex = [self.participantsList indexOfObject:kPNAnonymousParticipantIdentifier];
+            if (anonymousParticipantIndex != NSNotFound) {
+
+                [self.participantsList removeObjectAtIndex:anonymousParticipantIndex];
+            }
+        }
     }
     // Looks like someone leaved or was kicked by timeout
     else {

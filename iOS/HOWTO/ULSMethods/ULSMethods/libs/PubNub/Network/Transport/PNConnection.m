@@ -1721,8 +1721,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         return canSendData;
     };
-    // Check whether there is connection which can be used to write data
 
+    // Check whether there is connection which can be used to write data
     if (writeStreamIsAbleToSend()) {
 
         PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::WRITE] WRITE BUFFER CONTENT (STATE: %d)",
