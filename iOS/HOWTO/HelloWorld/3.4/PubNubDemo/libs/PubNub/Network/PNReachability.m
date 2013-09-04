@@ -515,6 +515,11 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
         shouldGenerateReachabilityChangeEvent = YES;
     }
+    
+    if ([self isServiceAvailableForStatus:oldStatus] != [self isServiceAvailableForStatus:updatedStatus]) {
+        
+        shouldGenerateReachabilityChangeEvent = YES;
+    }
 
     // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
     // connection state in non appropriate state

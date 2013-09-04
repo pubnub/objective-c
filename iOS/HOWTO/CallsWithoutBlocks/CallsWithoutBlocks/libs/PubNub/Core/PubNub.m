@@ -36,9 +36,9 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.4.2";
-static NSString * const kPNCodebaseBranch = @"refinement-connection";
-static NSString * const kPNCodeCommitIdentifier = @"96f3446ea98c5e2495c6ff7b8e7463d2df0cc5b5";
+static NSString * const kPNLibraryVersion = @"3.5.0rc2";
+static NSString * const kPNCodebaseBranch = @"hotfix-rvairplane";
+static NSString * const kPNCodeCommitIdentifier = @"387b56503a3c5094bac2cf6ad1e9f5f79daee3b4";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -2909,6 +2909,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [self.serviceChannel resume];
         }
     }
+    else {
+        
+        PNLog(PNLogGeneralLevel, self, @"CONNECTION WENT DOWN WHILE APPLICATION WAS IN BACKGROUND.");
+    }
 }
 #else
 - (void)handleWorkspaceWillSleep:(NSNotification *)notification {
@@ -2950,6 +2954,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [self.messagingChannel resume];
             [self.serviceChannel resume];
         }
+    }
+    else {
+        
+        PNLog(PNLogGeneralLevel, self, @"CONNECTION WENT DOWN WHILE COMPUTER SLEEPED.");
     }
 }
 #endif
