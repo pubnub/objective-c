@@ -38,7 +38,7 @@
 
 static NSString * const kPNLibraryVersion = @"3.5.0rc2";
 static NSString * const kPNCodebaseBranch = @"hotfix-rvairplane";
-static NSString * const kPNCodeCommitIdentifier = @"387b56503a3c5094bac2cf6ad1e9f5f79daee3b4";
+static NSString * const kPNCodeCommitIdentifier = @"04a2e8e63feda5b4841626253970fe4a64cffd7f";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -358,6 +358,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * This method allow notify delegate that client is about to close connection because of specified error
  */
 - (void)notifyDelegateClientWillDisconnectWithError:(PNError *)error;
+- (void)notifyDelegateClientDidDisconnectWithError:(PNError *)error;
 - (void)notifyDelegateClientConnectionFailedWithError:(PNError *)error;
 
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object;
@@ -2314,9 +2315,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                     PNLog(PNLogGeneralLevel, weakSelf, @"INTERNET CONNECITON NOT AVAILABLE (STATE: %d)",
                           weakSelf.state);
+                    BOOL hasBeenSuspended = weakSelf.state == PNPubNubClientStateSuspended;
                     
                     // Check whether PubNub client was connected or connecting right now
-                    if (weakSelf.state == PNPubNubClientStateConnected || weakSelf.state == PNPubNubClientStateConnecting) {
+                    if (weakSelf.state == PNPubNubClientStateConnected || weakSelf.state == PNPubNubClientStateConnecting || hasBeenSuspended) {
                         
                         if (weakSelf.state == PNPubNubClientStateConnecting) {
 
@@ -2331,18 +2333,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             [weakSelf handleConnectionErrorOnNetworkFailure];
                         }
                         else {
-
-                            PNLog(PNLogGeneralLevel, weakSelf, @"CLIENT WAS CONNECTED (STATE: %d)",
-                                  weakSelf.state);
+                            
+                            if (weakSelf.state == PNPubNubClientStateSuspended) {
+                                
+                                PNLog(PNLogGeneralLevel, weakSelf, @"CLIENT WAS SUSPENDED (STATE: %d)",
+                                      weakSelf.state);
+                            }
+                            else {
+                                
+                                PNLog(PNLogGeneralLevel, weakSelf, @"CLIENT WAS CONNECTED (STATE: %d)",
+                                      weakSelf.state);
+                            }
 
 
                             if (![weakSelf shouldRestoreConnection]) {
 
                                 PNLog(PNLogGeneralLevel, weakSelf, @"AUTO CONNECTION TURNED OFF (STATE: %d)",
                                       weakSelf.state);
-
-                                PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
-                                [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
                             }
                             else {
 
@@ -2350,11 +2357,25 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                         "AVAILABLE (STATE: %d)", weakSelf.state);
                             }
                             
+                            PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
+                            [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
+                            
                             weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
 
-                            // Disconnect communication channels because of network issues
-                            // Messaging channel will close second channel automatically.
-                            [weakSelf.messagingChannel disconnectWithReset:NO];
+                            // Check whether client was suspended or not.
+                            if (hasBeenSuspended) {
+                                
+                                [weakSelf.messagingChannel disconnectWithReset:NO];
+                                [weakSelf.serviceChannel disconnect];
+                                
+                                [weakSelf notifyDelegateClientDidDisconnectWithError:connectionError];
+                            }
+                            else {
+                                
+                                // Disconnect communication channels because of network issues
+                                // Messaging channel will close second channel automatically.
+                                [weakSelf.messagingChannel disconnectWithReset:NO];
+                            }
                         }
                     }
                 }
@@ -2613,6 +2634,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
             self.state = state;
             
+            BOOL reachabilityWillSimulateAction = NO;
             
             // Check whether error is caused by network error or not
             switch (connectionError.code) {
@@ -2630,7 +2652,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                     
                     // Try to refresh reachability state (there is situation when reachability state changed within
                     // library to handle sockets timeout/error)
-                    [self.reachability refreshReachabilityState];
+                    reachabilityWillSimulateAction = [self.reachability refreshReachabilityState];
 
                     if (![self.reachability isServiceAvailable]) {
 
@@ -2741,6 +2763,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                             PNLog(PNLogGeneralLevel, self, @"CONNECTION WILL BE RESTORED AS SOON AS INTERNET CONNECTION "
                                   "WILL GO UP (STATE: %d)", self.state);
+                            
+                            if (!reachabilityWillSimulateAction) {
+                                
+                                [self notifyDelegateClientDidDisconnectWithError:connectionError];
+                            }
                         }
                     }
                 }
@@ -3548,6 +3575,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                             withObject:error];
     }
     PNLog(PNLogDelegateLevel, self, @" PubNub clinet will close connection because of error: %@", error);
+    
+    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+}
+
+- (void)notifyDelegateClientDidDisconnectWithError:(PNError *)error {
+    
+    if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+        
+        [self.delegate pubnubClient:self didDisconnectFromOrigin:self.configuration.origin withError:error];
+    }
+    PNLog(PNLogDelegateLevel, self, @" PubNub client closed connection because of error: %@", error);
     
     [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
 }
