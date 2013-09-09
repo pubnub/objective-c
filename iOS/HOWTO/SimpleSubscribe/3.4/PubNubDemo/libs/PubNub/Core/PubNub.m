@@ -36,9 +36,10 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.5.0rc2";
-static NSString * const kPNCodebaseBranch = @"hotfix-rvairplane";
-static NSString * const kPNCodeCommitIdentifier = @"b4fb4cba97b8aa3e22e3b0c791eaf841b2f68bca";
+static NSString * const kPNLibraryVersion = @"3.5.0rc3";
+static NSString * const kPNCodebaseBranch = @"hotfix-t93";
+static NSString * const kPNCodeCommitIdentifier = @"afed888147e2d290ff2e91ccdc15deb5db14c3a0";
+
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -2892,7 +2893,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         BOOL disconnectedOnNetworkError = ![self.reachability isServiceAvailable];
         if(!disconnectedOnNetworkError) {
             
-            disconnectedOnNetworkError = error.code == kPNRequestExecutionFailedOnInternetFailureError;
+            disconnectedOnNetworkError = error.code == kPNRequestExecutionFailedOnInternetFailureError ||
+                                         error.code == kPNClientConnectionClosedOnInternetFailureError;
         }
         if (!disconnectedOnNetworkError) {
             
