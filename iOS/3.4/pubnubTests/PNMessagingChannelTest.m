@@ -49,7 +49,7 @@
 - (PNChannel *)mockChannel {
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
     
-    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isUserDefinedPresenceObservation];
+    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isLinkedWithPresenceObservationChannel];
     [[mockChannel stub] presenceObserver];
     [[mockChannel stub] resetUpdateTimeToken];
     [[mockChannel stub] valueForKey:OCMOCK_ANY];
@@ -75,7 +75,7 @@
 - (void)testIsSubscribedForChannel {
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
     
-    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isUserDefinedPresenceObservation];
+    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isLinkedWithPresenceObservationChannel];
     [[mockChannel stub] presenceObserver];
     [[mockChannel stub] resetUpdateTimeToken];
     [[mockChannel stub] valueForKey:OCMOCK_ANY];

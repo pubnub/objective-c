@@ -24,16 +24,13 @@
 
 #pragma mark Static
 
-// Stores reference on index under which events
-// list is stored
+// Stores reference on index under which events list is stored
 static NSUInteger const kPNResponseEventsListElementIndex = 0;
 
-// Stores reference on index under which channels list
-// is stored
+// Stores reference on index under which channels list is stored
 static NSUInteger const kPNResponseChannelsListElementIndex = 2;
 
-// Stores reference on time token element index in
-// response for events
+// Stores reference on time token element index in response for events
 static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 
@@ -44,8 +41,7 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 #pragma mark - Properties
 
-// Stores reference on even data object which
-// holds all information about events
+// Stores reference on even data object which holds all information about events
 @property (nonatomic, strong) PNChannelEvents *events;
 
 

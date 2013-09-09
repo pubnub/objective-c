@@ -35,6 +35,9 @@ typedef enum _PNMessageState {
 // This enum represents list of possible presence event types
 typedef enum _PNPresenceEventType {
     
+    // Number of persons changed in observed channel
+    PNPresenceEventChanged,
+
     // New person joined to the channel
     PNPresenceEventJoin,
     

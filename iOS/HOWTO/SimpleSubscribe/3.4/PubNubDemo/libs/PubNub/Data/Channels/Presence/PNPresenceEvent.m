@@ -11,6 +11,7 @@
 //
 //
 
+
 #import "PNPresenceEvent+Protected.h"
 
 
@@ -75,9 +76,7 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
 + (BOOL)isPresenceEventObject:(NSDictionary *)event {
 
-    return [event objectForKey:PNPresenceEventDataKeys.action] != nil &&
-           [event objectForKey:PNPresenceEventDataKeys.timestamp] != nil &&
-           [event objectForKey:PNPresenceEventDataKeys.uuid] != nil &&
+    return [event objectForKey:PNPresenceEventDataKeys.timestamp] != nil &&
            [event objectForKey:PNPresenceEventDataKeys.occupancy] != nil;
 }
 
@@ -86,7 +85,7 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
 - (id)initWithResponse:(id)presenceResponse {
     
-    // Check whether intialization successful or not
+    // Check whether initialization successful or not
     if((self = [super init])) {
 
         // Extracting event type from response
@@ -99,6 +98,10 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
         else if ([type isEqualToString:@"timeout"]) {
 
             self.type = PNPresenceEventTimeout;
+        }
+        else if (type == nil){
+
+            self.type = PNPresenceEventChanged;
         }
 
         // Extracting event date from response
@@ -127,10 +130,18 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
         action = @"timeout";
     }
+    else if (self.type == PNPresenceEventChanged) {
+
+        action = @"changed";
+    }
 
 
-    return [NSString stringWithFormat:@"%@ \nEVENT: %@\nUSER IDENTIFIER: %@\nDATE: %@\nOCCUPANCY: %ld\nCHANNEL: %@",
-                    NSStringFromClass([self class]), action, self.uuid, self.date, (unsigned long)self.occupancy,
+    return [NSString stringWithFormat:@"%@ \nEVENT: %@%@\nDATE: %@\nOCCUPANCY: %ld\nCHANNEL: %@",
+                    NSStringFromClass([self class]),
+                    action,
+                    self.uuid ? [NSString stringWithFormat:@"\nUSER IDENTIFIER: %@", self.uuid] : @"",
+                    self.date,
+                    (unsigned long)self.occupancy,
                     self.channel];
 }
 
