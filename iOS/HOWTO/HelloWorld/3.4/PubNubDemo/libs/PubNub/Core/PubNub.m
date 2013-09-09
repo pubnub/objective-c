@@ -38,7 +38,7 @@
 
 static NSString * const kPNLibraryVersion = @"3.5.0rc2";
 static NSString * const kPNCodebaseBranch = @"hotfix-rvairplane";
-static NSString * const kPNCodeCommitIdentifier = @"ecd14c4e43cc2c7346e63dc8b79c4cdff0b20d1f";
+static NSString * const kPNCodeCommitIdentifier = @"b4fb4cba97b8aa3e22e3b0c791eaf841b2f68bca";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -2971,6 +2971,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
 
 	PNLog(PNLogGeneralLevel, self, @"HANDLE APPLICATION ENTERED BACKGROUND (STATE: %@)", [self humanReadableStateFrom:self.state]);
+    [self.reachability suspend];
     
 	if (![self canRunInBackground]) {
         
