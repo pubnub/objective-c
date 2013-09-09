@@ -469,6 +469,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 - (BOOL)refreshReachabilityStateWithEvent:(BOOL)shouldGenerateReachabilityChangeEvent {
     
     BOOL originallyShouldGenerateReachabilityChangeEvent = shouldGenerateReachabilityChangeEvent;
+    BOOL isConnectionAvailabilityChanged = NO;
 
     if ([self isSuspended]) {
 
@@ -515,6 +516,12 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
         shouldGenerateReachabilityChangeEvent = YES;
     }
+    
+    if ([self isServiceAvailableForStatus:oldStatus] != [self isServiceAvailableForStatus:updatedStatus]) {
+        
+        isConnectionAvailabilityChanged = YES;
+        shouldGenerateReachabilityChangeEvent = YES;
+    }
 
     // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
     // connection state in non appropriate state
@@ -534,14 +541,23 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // w/o reachability event generation
     if (!shouldGenerateReachabilityChangeEvent && [self isInterfaceChangedFrom:oldStatus to:updatedStatus]) {
 
+        isConnectionAvailabilityChanged = NO;
         shouldGenerateReachabilityChangeEvent = YES;
     }
 
-    if (!originallyShouldGenerateReachabilityChangeEvent && shouldGenerateReachabilityChangeEvent) {
-
-        PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub service reachability forced to generate 'change event' "
-              "[CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", available ? @"YES" : @"NO", currentNetworkAddress,
-              reachabilityFlags);
+    if (!isConnectionAvailabilityChanged) {
+        
+        if (!originallyShouldGenerateReachabilityChangeEvent && shouldGenerateReachabilityChangeEvent) {
+            
+            PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub service reachability forced to generate 'change event' "
+                  "[CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", available ? @"YES" : @"NO", currentNetworkAddress,
+                  reachabilityFlags);
+        }
+    }
+    else {
+        
+        PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub service reachability changed [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
+              available ? @"YES" : @"NO", currentNetworkAddress, reachabilityFlags);
     }
 
 
@@ -576,7 +592,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     }
 
 
-    return shouldGenerateReachabilityChangeEvent;
+    return shouldGenerateReachabilityChangeEvent && !isConnectionAvailabilityChanged;
 }
 
 - (void)updateReachabilityFromError:(PNError *)error {
@@ -635,7 +651,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                     isSimulationNetworkSwitchRequired = [self isNetworkAddressChanged];
                     if (isSimulationNetworkSwitchRequired) {
 
-                        PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability report network address changed: '%@' "
+                        PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability report network address changed: '%@' "
                               "/ '%@' [CONNECTED? %@](FLAGS: %d)", self.currentNetworkAddress, currentNetworkAddress,
                               available ? @"YES" : @"NO", self.reachabilityFlags);
                     }
@@ -646,7 +662,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                         NSString *updatedWLANSSID = [PNNetworkHelper WLANServiceSetIdentifier];
                         if (isSimulationNetworkSwitchRequired) {
 
-                            PNLog(PNLogReachabilityLevel, self, @" PubNub services reachability report switch to another WiFi: "
+                            PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability report switch to another WiFi: "
                                   "'%@' / '%@' [CONNECTED? %@](FLAGS: %d)", self.currentWLANSSID, updatedWLANSSID,
                                   available ? @"YES" : @"NO", self.reachabilityFlags);
                         }
@@ -657,7 +673,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
                     isSimulationNetworkSwitchRequired = YES;
 
-                    PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub services reachability noticed interface changed from "
+                    PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability noticed interface changed from "
                           "%@ to %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
                           [self humanReadableInterfaceFromStatus:oldStatus], [self humanReadableInterfaceFromStatus:newStatus],
                           available ? @"YES" : @"NO", currentNetworkAddress, self.reachabilityFlags);
@@ -695,6 +711,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
                 // Simulate disconnected event (disconnected from previous interface, WiFi point or old IP address)
                 isServiceConnected = NO;
+                self.currentNetworkAddress = nil;
                 _status = PNReachabilityStatusNotReachable;
                 self.simulatingNetworkSwitchEvent = YES;
 
