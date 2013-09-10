@@ -95,24 +95,28 @@ If you just can't wait to start using PubNub for iOS (we totally know the feelin
 from [Adding PubNub to your Project](#adding-pubnub-to-your-project):
 
 1. In your ViewController.m, add this to viewDidLoad():
-```objective-c   
-        # Set config and connect
-        [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:@"mySecret"]];
-        [PubNub connect];
-   
-        # Define a channel
-        PNChannel *channel_1 = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
-   
-        # Subscribe on the channel
-        [PubNub subscribeOnChannel:channel_1];
-        # Publish on the channel
-        [PubNub sendMessage:@"hello from PubNub iOS!" toChannel:channel_1];
+
+```obj-c
+## Set config and connect
+[PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:@"mySecret"]];
+[PubNub connect];
+
+## Define a channel
+PNChannel *channel_1 = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
+
+## Subscribe on the channel
+[PubNub subscribeOnChannel:channel_1];
+
+## Publish on the channel
+[PubNub sendMessage:@"hello from PubNub iOS!" toChannel:channel_1];
 ```
+
 2. In your AppDelegate.m, define a didReceiveMessage delegate method:
-```objective-c
-        - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
-               NSLog(@"%@", [NSString stringWithFormat:@"received: %@", message.message]);
-        }
+
+```obj-c
+- (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
+   NSLog( @"%@", [NSString stringWithFormat:@"received: %@", message.message] );
+}
 ```
 
 This results in a simple app that displays a PubNub 'Ping' message, published every second from PubNub PHP Bot.    
