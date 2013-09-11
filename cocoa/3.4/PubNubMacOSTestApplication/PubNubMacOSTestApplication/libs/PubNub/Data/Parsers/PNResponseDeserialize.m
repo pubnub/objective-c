@@ -318,91 +318,97 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
     CFHTTPMessageAppendBytes(message, responseSubdata.bytes, responseSubdata.length);
 
     // Ensure that full HTTP header has been received
-    if (message != NULL && CFHTTPMessageIsHeaderComplete(message)) {
+    if (message != NULL) {
 
-        // Fetch HTTP headers from response
-        NSDictionary *headers = CFBridgingRelease(CFHTTPMessageCopyAllHeaderFields(message));
+        if (CFHTTPMessageIsHeaderComplete(message)) {
 
-        // Fetch HTTP status code from response
-        NSInteger statusCode = CFHTTPMessageGetResponseStatusCode(message);
+            // Fetch HTTP headers from response
+            NSDictionary *headers = CFBridgingRelease(CFHTTPMessageCopyAllHeaderFields(message));
 
-        // Check whether response is chunked or not
-        BOOL isResponseChunked = [self isChunkedTransfer:headers];
+            // Fetch HTTP status code from response
+            NSInteger statusCode = CFHTTPMessageGetResponseStatusCode(message);
 
-        // Check whether response is archived or not
-        BOOL isResponseCompressed = [self isCompressedTransfer:headers];
+            // Check whether response is chunked or not
+            BOOL isResponseChunked = [self isChunkedTransfer:headers];
 
-        // Check whether server want to close connection right after this response or keep it alive
-        BOOL isKeepAliveConnection = [self isKeepAliveConnectionType:headers];
+            // Check whether response is archived or not
+            BOOL isResponseCompressed = [self isCompressedTransfer:headers];
 
-        // Retrieve response body length (from header field)
-        NSUInteger contentLength = [self contentLength:headers];
+            // Check whether server want to close connection right after this response or keep it alive
+            BOOL isKeepAliveConnection = [self isKeepAliveConnectionType:headers];
 
-        // Fetch cleaned up response body (all extra new lines will be stripped away)
-        NSData *responseBody = CFBridgingRelease(CFHTTPMessageCopyBody(message));
+            // Retrieve response body length (from header field)
+            NSUInteger contentLength = [self contentLength:headers];
 
-
-        NSUInteger contentSize = [responseBody length];
-        if((contentLength > 0 && contentSize > 0) || contentSize > 0) {
-
-            if (statusCode != 200 && !(statusCode >= 401 && statusCode <= 503)) {
-
-                NSData *httpPayload = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(message));
-                NSString *encodedContent = [[NSString alloc] initWithData:httpPayload encoding:NSASCIIStringEncoding];
-                PNLog(PNLogDeserializerInfoLevel, self, @"Received strange response with '%d' status code\nContent: %@\n",
-                      statusCode,
-                      encodedContent);
-            }
-
-            BOOL isFullBody = contentSize == contentLength;
-
-            if(isResponseChunked) {
-
-                // Retrieve range of content end
-                NSRange contentEndRange = [responseBody rangeOfData:self.httpChunkedContentEndData
-                                                    options:NSDataSearchBackwards
-                                                      range:NSMakeRange(0, contentSize)];
+            // Fetch cleaned up response body (all extra new lines will be stripped away)
+            NSData *responseBody = CFBridgingRelease(CFHTTPMessageCopyBody(message));
 
 
-                isFullBody = contentEndRange.location != NSNotFound &&
-                             (contentEndRange.location + contentEndRange.length == contentSize);
-                if (isFullBody) {
+            NSUInteger contentSize = [responseBody length];
+            if ((contentLength > 0 && contentSize > 0) || contentSize > 0) {
 
-                    responseBody = [responseBody subdataWithRange:NSMakeRange(0, contentEndRange.location)];
+                if (statusCode != 200 && !(statusCode >= 401 && statusCode <= 503)) {
+
+                    NSData *httpPayload = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(message));
+                    NSString *encodedContent = [[NSString alloc] initWithData:httpPayload
+                                                                     encoding:NSASCIIStringEncoding];
+                    PNLog(PNLogDeserializerInfoLevel,
+                          self,
+                          @"Received strange response with '%d' status code\nContent: %@\n",
+                          statusCode,
+                          encodedContent);
                 }
-            }
 
-            if (isFullBody) {
+                BOOL isFullBody = contentSize == contentLength;
 
                 if (isResponseChunked) {
 
-                    responseBody = [self joinedDataFromChunkedDataUsingOctets:responseBody];
+                    // Retrieve range of content end
+                    NSRange contentEndRange = [responseBody rangeOfData:self.httpChunkedContentEndData
+                                                                options:NSDataSearchBackwards
+                                                                  range:NSMakeRange(0, contentSize)];
+
+
+                    isFullBody = contentEndRange.location != NSNotFound &&
+                            (contentEndRange.location + contentEndRange.length == contentSize);
+                    if (isFullBody) {
+
+                        responseBody = [responseBody subdataWithRange:NSMakeRange(0, contentEndRange.location)];
+                    }
                 }
 
-                if (isResponseCompressed) {
+                if (isFullBody) {
 
-                    if ([self isGZIPCompressedTransfer:headers]) {
+                    if (isResponseChunked) {
 
-                        responseBody = [responseBody GZIPInflate];
+                        responseBody = [self joinedDataFromChunkedDataUsingOctets:responseBody];
                     }
-                    else {
 
-                        responseBody = [responseBody inflate];
+                    if (isResponseCompressed) {
+
+                        if ([self isGZIPCompressedTransfer:headers]) {
+
+                            responseBody = [responseBody GZIPInflate];
+                        }
+                        else {
+
+                            responseBody = [responseBody inflate];
+                        }
                     }
+
+                    *isIncompleteResponse = responseBody == nil;
+
+                    PNLog(PNLogDeserializerInfoLevel, self, @" RAW DATA: %@",
+                          [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding]);
+                    response = [PNResponse responseWithContent:responseBody
+                                                          size:responseSubdata.length
+                                                          code:statusCode
+                                      lastResponseOnConnection:!isKeepAliveConnection];
                 }
-
-                *isIncompleteResponse = responseBody == nil;
-
-                PNLog(PNLogDeserializerInfoLevel, self, @" RAW DATA: %@",
-                      [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding]);
-                response = [PNResponse responseWithContent:responseBody
-                                                      size:responseSubdata.length
-                                                      code:statusCode
-                                  lastResponseOnConnection:!isKeepAliveConnection];
             }
         }
+        CFRelease(message);
     }
-    CFRelease(message);
     
     
     return response;
