@@ -79,7 +79,11 @@ static NSMutableDictionary *_channelsCache = nil;
                                                NSUInteger channelNameIdx,
                                                BOOL *channelNamesEnumerator) {
 
-        [channels addObject:[PNChannel channelWithName:channelName]];
+        PNChannel *channel = [PNChannel channelWithName:channelName];
+        if (channel) {
+
+            [channels addObject:channel];
+        }
     }];
 
 
@@ -116,10 +120,14 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
     PNChannel *channel = [[[self class] channelsCache] valueForKey:channelName];
 
-    if (channel == nil) {
+    if (channel == nil && [channelName length] > 0) {
 
         channel = [[[self class] alloc] initWithName:channelName];
         [[[self class] channelsCache] setValue:channel forKey:channelName];
+    }
+    else if ([channelName length] == 0) {
+
+        PNLog(PNLogGeneralLevel, self, @"CAN'T CREATE CHANNEL WITH EMPTY NAME");
     }
 
     if (shouldUpdatePresenceObservingFlag) {
