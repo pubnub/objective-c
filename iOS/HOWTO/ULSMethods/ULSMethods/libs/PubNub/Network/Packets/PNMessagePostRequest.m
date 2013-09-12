@@ -162,6 +162,7 @@
 - (NSString *)signature {
 
     NSString *signature = @"0";
+#if PN_SHOULD_USE_SIGNATURE
     NSString *secretKey = [PubNub sharedInstance].configuration.secretKey;
     if ([secretKey length] > 0) {
 
@@ -175,9 +176,9 @@
 
         signature = PNHMACSHA256String(secretKey, signedRequestPath);
     }
+#endif
 
-
-    return @"0";
+    return signature;
 }
 
 #pragma mark -

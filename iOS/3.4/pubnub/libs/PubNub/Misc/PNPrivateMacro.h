@@ -16,6 +16,11 @@
 #define PNPrivateMacro_h
 
 
+#pragma mark - Cypher
+
+#define PN_SHOULD_USE_SIGNATURE 0
+
+
 #pragma mark - GCD helper macro
 
 #ifndef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
