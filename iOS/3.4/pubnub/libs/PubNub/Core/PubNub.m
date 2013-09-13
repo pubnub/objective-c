@@ -2973,11 +2973,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
 
 	PNLog(PNLogGeneralLevel, self, @"HANDLE APPLICATION ENTERED BACKGROUND (STATE: %@)", [self humanReadableStateFrom:self.state]);
-    [self.reachability suspend];
     
 	if (![self canRunInBackground]) {
         
         PNLog(PNLogGeneralLevel, self, @"APPLICATION CAN'T RUN IN BACKGROUND.");
+        [self.reachability suspend];
 
         // Check whether application connected or not
         if ([self isConnected]) {
