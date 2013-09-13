@@ -23,6 +23,13 @@
 #import "PNConstants.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub message post request must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Private interface methods
 
 @interface PNMessagePostRequest ()
@@ -155,6 +162,7 @@
 - (NSString *)signature {
 
     NSString *signature = @"0";
+#if PN_SHOULD_USE_SIGNATURE
     NSString *secretKey = [PubNub sharedInstance].configuration.secretKey;
     if ([secretKey length] > 0) {
 
@@ -168,9 +176,9 @@
 
         signature = PNHMACSHA256String(secretKey, signedRequestPath);
     }
+#endif
 
-
-    return @"0";
+    return signature;
 }
 
 #pragma mark -

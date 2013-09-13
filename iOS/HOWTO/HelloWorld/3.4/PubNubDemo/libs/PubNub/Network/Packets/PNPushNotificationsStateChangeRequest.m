@@ -14,8 +14,15 @@
 
 #import "PNPushNotificationsStateChangeRequest.h"
 #import "PNServiceResponseCallbacks.h"
-#import "PubNub+Protected.h"
 #import "PNBaseRequest+Protected.h"
+#import "PubNub+Protected.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub notification state changing request must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Extenrs

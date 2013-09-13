@@ -20,10 +20,13 @@
 
 @interface PNMessagingChannel ()
 
+- (BOOL)canResubscribe;
 - (void)leaveSubscribedChannelsByUserRequest:(BOOL)isLeavingByUserRequest;
 - (void)handleLeaveRequestCompletionForChannels:(NSArray *)channels
                                    withResponse:(PNResponse *)response
                                   byUserRequest:(BOOL)isLeavingByUserRequest;
+- (void)disablePresenceObservationForChannels:(NSArray *)channels sendRequest:(BOOL)shouldSendRequest;
+- (NSArray *)channelsWithPresenceFromList:(NSArray *)channelsList;
 
 @end
 
@@ -46,7 +49,7 @@
 - (PNChannel *)mockChannel {
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
     
-    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isUserDefinedPresenceObservation];
+    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isLinkedWithPresenceObservationChannel];
     [[mockChannel stub] presenceObserver];
     [[mockChannel stub] resetUpdateTimeToken];
     [[mockChannel stub] valueForKey:OCMOCK_ANY];
@@ -72,7 +75,7 @@
 - (void)testIsSubscribedForChannel {
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
     
-    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isUserDefinedPresenceObservation];
+    [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] isLinkedWithPresenceObservationChannel];
     [[mockChannel stub] presenceObserver];
     [[mockChannel stub] resetUpdateTimeToken];
     [[mockChannel stub] valueForKey:OCMOCK_ANY];
@@ -110,63 +113,16 @@
 #pragma mark - Interaction tests
 
 - (void)testDisconnectWithReset {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    
+   PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     
-    [[mockChannel expect] purgeObservedRequestsPool];
-    [[mockChannel expect] purgeStoredRequestsPool];
-    [[mockChannel expect] clearScheduledRequestsQueue];
+    [[mockChannel stub] purgeObservedRequestsPool];
+    [[mockChannel stub] purgeStoredRequestsPool];
+    [[mockChannel stub] clearScheduledRequestsQueue];
     
     [mockChannel disconnectWithReset:YES];
-    
-    [mockChannel verify];
-}
-
-- (void)testResubscribe {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-    
-    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
-    
-    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
-                  shouldObserveProcessing:YES];
-    
-    // subscribe to mock channel before we can resubscribe successfully
-    [mockChannel subscribeOnChannels:@[[self mockChannel]]];
-
-    [mockChannel resubscribe];
-    
-    [mockChannel verify];
-}
-
-- (void)testRestoreSubscription {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-    
-    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
-    
-    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
-                  shouldObserveProcessing:YES];
-    
-    // subscribe to mock channel before we can restore successfully
-    [mockChannel subscribeOnChannels:@[[self mockChannel]]];
-    
-    [mockChannel restoreSubscription:YES];
-    
-    [mockChannel verify];
-}
-
-- (void)testUpdateSubscription {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-    
-    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
-    
-    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
-                  shouldObserveProcessing:YES];
-    
-    // subscribe to mock channel before we can restore successfully
-    [mockChannel subscribeOnChannels:@[[self mockChannel]]];
-    
-    [mockChannel updateSubscription];
     
     [mockChannel verify];
 }
@@ -215,7 +171,8 @@
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     
-    [[mockChannel expect] subscribeOnChannels:OCMOCK_ANY withPresenceEvent:NO];
+//    [[mockChannel expect] subscribeOnChannels:OCMOCK_ANY withPresenceEvent:NO];
+    [[mockChannel expect] channelsWithPresenceFromList:OCMOCK_ANY];
     
     [mockChannel enablePresenceObservationForChannels:@[[self mockChannel]]];
     
@@ -226,7 +183,7 @@
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     
-    [[mockChannel expect] unsubscribeFromChannels:OCMOCK_ANY withPresenceEvent:NO];
+    [[mockChannel expect] disablePresenceObservationForChannels:OCMOCK_ANY sendRequest:YES];
     
     [mockChannel disablePresenceObservationForChannels:@[[self mockChannel]]];
     

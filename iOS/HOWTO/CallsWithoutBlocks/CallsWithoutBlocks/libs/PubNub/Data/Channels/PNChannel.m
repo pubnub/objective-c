@@ -14,12 +14,18 @@
 #import "PNChannelPresence+Protected.h"
 #import "PNHereNow+Protected.h"
 #import "NSString+PNAddition.h"
-#import "PNPresenceEvent.h"
-#import "PNDate.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub channel must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Static
 
+static NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
 static NSMutableDictionary *_channelsCache = nil;
 
 
@@ -37,7 +43,7 @@ static NSMutableDictionary *_channelsCache = nil;
 @property (nonatomic, assign) NSUInteger participantsCount;
 @property (nonatomic, strong) NSMutableArray *participantsList;
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
-@property (nonatomic, assign, getter = isUserDefinedPresenceObservation)BOOL userDefinedPresenceObservation;
+@property (nonatomic, assign, getter = isLinkedWithPresenceObservationChannel)BOOL linkedWithPresenceObservationChannel;
 
 
 #pragma mark - Class methods
@@ -73,7 +79,11 @@ static NSMutableDictionary *_channelsCache = nil;
                                                NSUInteger channelNameIdx,
                                                BOOL *channelNamesEnumerator) {
 
-        [channels addObject:[PNChannel channelWithName:channelName]];
+        PNChannel *channel = [PNChannel channelWithName:channelName];
+        if (channel) {
+
+            [channels addObject:channel];
+        }
     }];
 
 
@@ -98,7 +108,7 @@ static NSMutableDictionary *_channelsCache = nil;
 + (PNChannel *)channelWithName:(NSString *)channelName shouldObservePresence:(BOOL)observePresence {
 
     PNChannel *channel = [self channelWithName:channelName shouldObservePresence:observePresence shouldUpdatePresenceObservingFlag:YES];
-    channel.userDefinedPresenceObservation = NO;
+    channel.linkedWithPresenceObservationChannel = YES;
 
 
     return channel;
@@ -110,10 +120,14 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
     PNChannel *channel = [[[self class] channelsCache] valueForKey:channelName];
 
-    if (channel == nil) {
+    if (channel == nil && [channelName length] > 0) {
 
         channel = [[[self class] alloc] initWithName:channelName];
         [[[self class] channelsCache] setValue:channel forKey:channelName];
+    }
+    else if ([channelName length] == 0) {
+
+        PNLog(PNLogGeneralLevel, self, @"CAN'T CREATE CHANNEL WITH EMPTY NAME");
     }
 
     if (shouldUpdatePresenceObservingFlag) {
@@ -146,6 +160,17 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     
     
     return _channelsCache;
+}
+
++ (NSString *)largestTimetokenFromChannels:(NSArray *)channels {
+
+    NSSortDescriptor *tokenSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updateTimeToken" ascending:YES];
+    NSArray *timeTokens = [[channels sortedArrayUsingDescriptors:@[tokenSortDescriptor]] valueForKey:@"updateTimeToken"];
+
+    NSString *token = [timeTokens lastObject];
+
+
+    return token ? token : @"0";
 }
 
 
@@ -196,6 +221,26 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     if (event.type == PNPresenceEventJoin) {
 
         [self.participantsList addObject:event.uuid];
+    }
+    // Check whether number of persons changed in channel or not
+    else if (event.type == PNPresenceEventChanged) {
+
+        // Check whether 'anonymous' (or 'unknown') person is joined to the channel
+        // (calculated basing on previous number of participants)
+        if ([self.participantsList count] < event.occupancy) {
+
+            [self.participantsList addObject:kPNAnonymousParticipantIdentifier];
+        }
+        // Check whether 'anonymous' (or 'unknown') person leaved channel
+        // (calculated basing on previous number of participants)
+        else if ([self.participantsList count] > event.occupancy) {
+
+            NSUInteger anonymousParticipantIndex = [self.participantsList indexOfObject:kPNAnonymousParticipantIdentifier];
+            if (anonymousParticipantIndex != NSNotFound) {
+
+                [self.participantsList removeObjectAtIndex:anonymousParticipantIndex];
+            }
+        }
     }
     // Looks like someone leaved or was kicked by timeout
     else {

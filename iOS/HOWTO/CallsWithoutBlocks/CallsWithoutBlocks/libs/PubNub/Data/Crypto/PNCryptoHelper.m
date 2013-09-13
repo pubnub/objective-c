@@ -10,8 +10,15 @@
 //
 
 #import "PNCryptoHelper.h"
-#import <CommonCrypto/CommonCrypto.h>
 #import "NSString+PNAddition.h"
+#import "PNPrivateImports.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub crypto helper must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Types
@@ -397,11 +404,6 @@ static NSData *_cryptorKeyData = nil;
                 size_t remainingUnprocessedDataLength;
                 processingStatus = CCCryptorFinal(cryptor, processedDataEndPointer, unfilledSize, &remainingUnprocessedDataLength);
                 [processedData setLength:(updatedProcessedDataLength+remainingUnprocessedDataLength)];
-                
-                if (unfilledSize > 0 && remainingUnprocessedDataLength == 0) {
-                    
-                    processingStatus = kCCDecodeError;
-                }
             }
 
 

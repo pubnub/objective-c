@@ -61,7 +61,7 @@
                                                                  messages = @"";
                                                              }
                                                              messages = [messages stringByAppendingFormat:@"<%@> %@\n",
-                                                                                                          [dateFormatter stringFromDate:message.receiveDate],
+                                                                                                          [dateFormatter stringFromDate:message.receiveDate.date],
                                                                                                           message.message];
                                                              [weakSelf.messages setValue:messages forKey:channel.name];
 

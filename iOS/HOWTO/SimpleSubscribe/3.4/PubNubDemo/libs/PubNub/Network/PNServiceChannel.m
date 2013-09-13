@@ -25,6 +25,7 @@
 #import "PNConnectionChannel+Protected.h"
 #import "PNOperationStatus+Protected.h"
 #import "PNHereNowRequest+Protected.h"
+#import "NSInvocation+PNAdditions.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
 #import "PNMessage+Protected.h"
@@ -35,31 +36,13 @@
 #import "PNResponseParser.h"
 #import "PNRequestsQueue.h"
 #import "PNResponse.h"
-#import "PNPushNotificationsStateChangeRequest.h"
-#import "NSInvocation+PNAdditions.h"
-#import "PNError+Protected.h"
 
 
-#pragma mark Private interface methods
-
-@interface PNServiceChannel ()
-
-
-#pragma mark - Instance methods
-
-/**
- * Check whether response should be processed on
- * this communication channel or not
- */
-- (BOOL)shouldHandleResponse:(PNResponse *)response;
-
-- (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;
-
-
-#pragma mark - Handler methods
-
-
-@end
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub service connection channel must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark - Public interface methods
@@ -306,9 +289,46 @@
     }
 }
 
+- (void)rescheduleStoredRequests:(NSArray *)requestsList {
+
+    if ([requestsList count] > 0) {
+
+        [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
+                                       usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+                                                    BOOL *requestIdentifierEnumeratorStop) {
+
+               PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+
+               [request reset];
+               request.closeConnection = NO;
+
+               // Check whether client is waiting for request completion
+               BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+
+               // Clean up query (if request has been stored in it)
+               [self destroyRequest:request];
+
+               // Send request back into queue with higher priority among other requests
+               [self scheduleRequest:request
+             shouldObserveProcessing:isWaitingForCompletion
+                          outOfOrder:YES
+                    launchProcessing:NO];
+           }];
+
+        [self scheduleNextRequest];
+    }
+}
+
 - (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
 
-    return YES;
+    BOOL shouldStoreRequest = YES;
+    if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
+
+        shouldStoreRequest = request.isSendingByUserRequest;
+    }
+
+
+    return shouldStoreRequest;
 }
 
 
@@ -333,7 +353,6 @@
         [self.serviceDelegate serviceChannel:self didFailMessageSend:messageObject withError:error];
     }
 
-
     return messageObject;
 }
 
@@ -345,7 +364,6 @@
         [self sendMessage:message.message toChannel:message.channel];
     }
 }
-
 
 #pragma mark - Handler methods
 
@@ -427,65 +445,11 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
 
     // Check whether connection available or not
+    [[PubNub sharedInstance].reachability refreshReachabilityState];
     if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
 
         // Asking to schedule next request
         [self scheduleNextRequest];
-    }
-}
-
-
-#pragma mark - Connection delegate methods
-
-- (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
-
-    if ([self shouldHandleResponse:response]) {
-
-        [super connection:connection didReceiveResponse:response];
-
-
-        BOOL shouldResendRequest = response.error.code == kPNResponseMalformedJSONError;
-
-        // Retrieve reference on observer request
-        PNBaseRequest *request = [self observedRequestWithIdentifier:response.requestIdentifier];
-        BOOL shouldObserveExecution = request != nil;
-
-        // Check whether response is valid or not
-        if (shouldResendRequest) {
-
-            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" RECEIVED MALFORMED RESPONSE: %@", response);
-
-            if (request == nil) {
-
-                request = [super storedRequestWithIdentifier:response.requestIdentifier];
-            }
-            [request reset];
-
-            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RESCHEDULING REQUEST: %@", request);
-        }
-        // Looks like response is valid (continue)
-        else {
-
-            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RECIEVED RESPONSE: %@", response);
-
-            [self destroyRequest:request];
-            [self processResponse:response forRequest:request];
-        }
-
-
-        // Check whether connection available or not
-        if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
-            
-            if (shouldResendRequest) {
-                
-                [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution];
-            }
-            else {
-                
-                // Asking to schedule next request
-                [self scheduleNextRequest];
-            }
-        }
     }
 }
 
@@ -563,11 +527,12 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
     // Check whether request can be rescheduled or not
     if (![request canRetry]) {
 
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@]",
+              self, request, request.resourcePath);
+
         // Removing failed request from queue
         [self destroyRequest:request];
 
-
-        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" REQUEST PROCESSING FAILED: %@", request);
 
         // Check whether request is 'Latency meter' request or not
         if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
@@ -653,9 +618,6 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
 
-    // Forward to the super class
-    [super requestsQueue:queue didCancelRequest:request];
-
     // Check whether request is 'Latency meter' request or not
     if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
 
@@ -665,6 +627,9 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
         // is not interested in delayed response on network measurements
         [self destroyRequest:request];
     }
+
+    // Forward to the super class
+    [super requestsQueue:queue didCancelRequest:request];
 }
 
 - (BOOL)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request {
@@ -673,7 +638,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
 
     // Check whether leave request has been sent to PubNub
     // services or not
-    if ([request isKindOfClass:[PNLeaveRequest class]]) {
+    if ([self isWaitingRequestCompletion:request.shortIdentifier]) {
 
         shouldRemoveRequest = NO;
     }

@@ -340,13 +340,19 @@ typedef enum _PNHistoryViewPagingDirection {
 
     UIDatePicker *datePicker = [[UIDatePicker alloc] init];
     datePicker.datePickerMode = UIDatePickerModeDateAndTime;
-    datePicker.date = self.isConfiguringStartDate ? self.startDate.date : self.endDate.date;
+    
+    NSDate *date = self.isConfiguringStartDate ? self.startDate.date : self.endDate.date;
+    if (!date) {
+        date = [NSDate new];
+    }
+    
+    datePicker.date = date;
+    
     [datePicker addTarget:self action:@selector(datePickerChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     UIViewController *datePickerViewController = [UIViewController new];
     CGSize sizeInPopover = datePicker.bounds.size;
-    sizeInPopover.height -= 44.0f;
-    datePickerViewController.view = datePicker;
+    [datePickerViewController.view addSubview:datePicker];
     datePickerViewController.contentSizeForViewInPopover = sizeInPopover;
 
     CGRect targetFrame = self.isConfiguringStartDate ? self.startDateTextField.frame : self.endDateTextField.frame;
@@ -357,7 +363,6 @@ typedef enum _PNHistoryViewPagingDirection {
                      permittedArrowDirections:UIPopoverArrowDirectionUp
                                      animated:YES];
 }
-
 
 #pragma mark - UIPopoverController delegate methods
 

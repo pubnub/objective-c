@@ -7,27 +7,30 @@
 //
 
 
+#import "PNPrivateImports.h"
 #import "PNChannelEventsResponseParser.h"
 #import "PNChannelPresence+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #import "PNChannelEvents+Protected.h"
-#import "PNMessage+Protected.h"
-#import "PNChannel+Protected.h"
 #import "PNResponse.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub channel events response parser must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Static
 
-// Stores reference on index under which events
-// list is stored
+// Stores reference on index under which events list is stored
 static NSUInteger const kPNResponseEventsListElementIndex = 0;
 
-// Stores reference on index under which channels list
-// is stored
+// Stores reference on index under which channels list is stored
 static NSUInteger const kPNResponseChannelsListElementIndex = 2;
 
-// Stores reference on time token element index in
-// response for events
+// Stores reference on time token element index in response for events
 static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 
@@ -38,8 +41,7 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 #pragma mark - Properties
 
-// Stores reference on even data object which
-// holds all information about events
+// Stores reference on even data object which holds all information about events
 @property (nonatomic, strong) PNChannelEvents *events;
 
 

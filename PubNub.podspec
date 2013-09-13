@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'PubNub'
-  s.version      = '3.4.2'
+  s.version      = '3.4.3'
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'Sergey Mamontov' => 'support@pubnub.com',
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   }
   s.source = {
     :git => 'https://github.com/pubnub/objective-c.git',
-    :tag => 'v3.4.2'
+    :tag => 'v3.4.3'
   }
   
   # A list of file patterns which select the source files that should be
@@ -38,8 +38,9 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.frameworks =  'CFNetwork', 'SystemConfiguration'
   s.library   = 'z'
-  
   s.dependency 'JSONKit', '~> 1.4'
+
+  s.osx.frameworks = 'CoreWLAN'
   s.osx.prefix_header_contents = <<-EOS
 #import "PNImports.h"
 EOS

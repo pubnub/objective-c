@@ -2,12 +2,8 @@
 //  PNRequestsQueue.m
 //  pubnub
 //
-//  This class was created for iOS PubNub
-//  client support to handle request sending
-//  via single socket connection.
-//  This is singleton class which will help
-//  to organize requests into single FIFO
-//  pipe.
+//  This class was created for iOS PubNub client support to handle request sending via single socket connection.
+//  This is singleton class which will help to organize requests into single FIFO pipe.
 //
 //
 //  Created by Sergey Mamontov on 12/13/12.
@@ -17,6 +13,13 @@
 #import "PNRequestsQueue.h"
 #import "PNBaseRequest.h"
 #import "PNWriteBuffer.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub requests queue must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Static
@@ -38,14 +41,12 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 #pragma mark - Instance methods
 
 /**
- * Returns reference on request which is still not
- * processed by connection with specified identifier
+ * Returns reference on request which is still not processed by connection with specified identifier
  */
 - (PNBaseRequest *)dequeRequestWithIdentifier:(NSString *)requestIdentifier;
 
 /**
- * Returns identifier for next request which 
- * probably will be sent for processing
+ * Returns identifier for next request which probably will be sent for processing
  */
 - (NSString *)nextRequestIdentifier;
 
@@ -72,31 +73,47 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     return self;
 }
 
+- (NSArray *)requestsQueue {
+
+    return self.query;
+}
+
 
 #pragma mark - Queue management
 
 - (BOOL)enqueueRequest:(PNBaseRequest *)request {
-    
+
+    return [self enqueueRequest:request outOfOrder:NO];
+}
+
+- (BOOL)enqueueRequest:(PNBaseRequest *)request outOfOrder:(BOOL)shouldEnqueueRequestOutOfOrder {
+
     BOOL requestScheduled = NO;
-    
+
     // Searching for existing request entry
     NSPredicate *sameObjectsSearch = [NSPredicate predicateWithFormat:@"identifier = %@ && processing = %@",
                                       request.identifier,
                                       @NO];
     if ([[self.query filteredArrayUsingPredicate:sameObjectsSearch] count] == 0) {
-        
-        [self.query addObject:request];
+
+        if (shouldEnqueueRequestOutOfOrder) {
+
+            [self.query insertObject:request atIndex:0];
+        }
+        else {
+
+            [self.query addObject:request];
+        }
         requestScheduled = YES;
     }
-    
-    
+
+
     return requestScheduled;
 }
 
 - (PNBaseRequest *)dequeRequestWithIdentifier:(NSString *)requestIdentifier {
     
-    // Searching for existing request entry by it's identifier
-    // which is not launched yet
+    // Searching for existing request entry by it's identifier which is not launched yet
     NSPredicate *nextRequestSearch = [NSPredicate predicateWithFormat:@"identifier = %@", requestIdentifier];
     NSArray *filteredRequests = [self.query filteredArrayUsingPredicate:nextRequestSearch];
     
@@ -106,8 +123,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
 - (void)removeRequest:(PNBaseRequest *)request {
     
-    // Check whether request not in the processing
-    // at this moment and remove it if possible
+    // Check whether request not in the processing at this moment and remove it if possible
     if (!request.processing) {
         
         [self.query removeObject:request];
@@ -150,16 +166,19 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     return [self nextRequestIdentifier];
 }
 
+- (PNBaseRequest *)nextRequestForConnection:(PNConnection *)connection {
+
+    return [self dequeRequestWithIdentifier:[self nextRequestIdentifierForConnection:connection]];
+}
+
 - (PNWriteBuffer *)connection:(PNConnection *)connection requestDataForIdentifier:(NSString *)requestIdentifier {
 
     // Retrieve reference on next request which will be processed
     PNBaseRequest *nextRequest = [self dequeRequestWithIdentifier:requestIdentifier];
     PNWriteBuffer *buffer = nil;
 
-    // Check whether request already processed or not
-    // (processed requests can be leaved in queue to
-    // lock it's further execution till specific event
-    // or timeout)
+    // Check whether request already processed or not (processed requests can be leaved in queue to lock it's further
+    // execution till specific event or timeout)
     if (!nextRequest.processed) {
 
         buffer = [nextRequest buffer];
@@ -190,12 +209,11 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
         [self.delegate requestsQueue:self didSendRequest:processedRequest];
 
 
-        // Check whether request issuer allow to remove completed request from queue
-        // or should leave it there and lock queue with it
+        // Check whether request issuer allow to remove completed request from queue or should leave it there and
+        // lock queue with it
         if ([self.delegate shouldRequestsQueue:self removeCompletedRequest:processedRequest]) {
 
-            // Find processed request by identifier to remove it from
-            // requests queue
+            // Find processed request by identifier to remove it from requests queue
             [self removeRequest:[self dequeRequestWithIdentifier:requestIdentifier]];
         }
     }
@@ -206,23 +224,20 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     PNBaseRequest *currentRequest = [self dequeRequestWithIdentifier:requestIdentifier];
     if (currentRequest != nil) {
 
-        // Forward request processing cancelation to the delegate
+        // Forward request processing cancellation to the delegate
         [self.delegate requestsQueue:self didCancelRequest:currentRequest];
     }
 }
 
 /**
- * Handle request send failure event to reset request state.
- * Maybe this error occurred because of network error, so we
+ * Handle request send failure event to reset request state. Maybe this error occurred because of network error, so we
  * should resend request right after connection is up again
  */
-- (void)connection:(PNConnection *)connection
-        didFailToProcessRequestWithIdentifier:(NSString *)requestIdentifier
+- (void)connection:(PNConnection *)connection didFailToProcessRequestWithIdentifier:(NSString *)requestIdentifier
          withError:(PNError *)error {
     
     // Mark request as not in processing state
     PNBaseRequest *currentRequest = [self dequeRequestWithIdentifier:requestIdentifier];
-
     if (currentRequest != nil) {
 
         // Forward request processing failure to the delegate

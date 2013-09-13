@@ -7,6 +7,14 @@
 //
 
 #import "NSString+PNAddition.h"
+#import "PNPrivateImports.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub string category must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Private interface implementation
@@ -83,7 +91,7 @@
 
     unsigned char hashedData[CC_SHA256_DIGEST_LENGTH];
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
-    CC_SHA256([data bytes], [data length], hashedData);
+    CC_SHA256([data bytes], (CC_LONG)[data length], hashedData);
 
 
     return [NSData dataWithBytes:hashedData length:CC_SHA256_DIGEST_LENGTH];

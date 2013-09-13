@@ -8,7 +8,6 @@
 
 #import "PNAppDelegate.h"
 #import "PNIdentificationViewController.h"
-#import "PNPresenceEvent.h"
 
 
 #pragma mark Private interface methods
@@ -43,8 +42,7 @@
     [PubNub setDelegate:self];
 
 
-    // Subscribe for client connection state change
-    // (observe when client will be disconnected)
+    // Subscribe for client connection state change (observe when client will be disconnected)
     [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
                                                         withCallbackBlock:^(NSString *origin,
                                                                             BOOL connected,
@@ -59,8 +57,7 @@
             }];
 
 
-    // Subscribe application delegate on subscription updates
-    // (events when client subscribe on some channel)
+    // Subscribe application delegate on subscription updates (events when client subscribe on some channel)
     __pn_desired_weak __typeof__(self) weakSelf = self;
     [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:weakSelf
                                                                  withCallbackBlock:^(PNSubscriptionProcessState state,

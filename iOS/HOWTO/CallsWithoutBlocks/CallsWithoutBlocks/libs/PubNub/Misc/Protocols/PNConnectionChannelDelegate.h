@@ -28,6 +28,11 @@
 @required
 
 /**
+ * Sent to the PubNub client when connection channel was unable to enable connection
+ */
+- (void)connectionChannelConfigurationDidFail:(PNConnectionChannel *)channel;
+
+/**
  * Sent to the PubNub client when connection channel successfully
  * configured and connected to the specified PubNub services origin
  */
@@ -37,7 +42,7 @@
  * Sent to the PubNub client when connection channel successfully
  * restored it's operation after connection error
  */
-- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectOnErrorToHost:(NSString *)host;
+- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectToHost:(NSString *)host;
 
 /**
  * Sent to the PubNub client when connection channel was unable
@@ -62,6 +67,40 @@
     willDisconnectFromOrigin:(NSString *)host
                 withError:(PNError *)error;
 
+/**
+ * Sent to the PubNub client when connection channel is about to suspend it's operation
+ */
+- (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel;
+
+/**
+ * Sent to the PubNub client when connection channel suspended
+ */
+- (void)connectionChannelDidSuspend:(PNConnectionChannel *)channel;
+
+/**
+ * Sent to the PubNub client when connection channel is about to resume it's operation
+ */
+- (void)connectionChannelWillResume:(PNConnectionChannel *)channel;
+
+/**
+ * Sent to the PubNub client when connection channel resumed it's operation
+ * and ready to process requests
+ */
+- (void)connectionChannelDidResume:(PNConnectionChannel *)channel;
+
+/**
+ * Sent to the delegate each timer when connection channel want to ensure on whether it can connect or it is
+ * impossible at this moment because of some reasons (no internet connection)
+ * This method is called periodically by intervals defined in connection class.
+ */
+- (BOOL)connectionChannelCanConnect:(PNConnectionChannel *)channel;
+
+/**
+ * Sent to the delegate each timer when connection channel want to ensure on whether it should resume it's operation
+ * or not (after it was disconnected).
+ * This method is called periodically by intervals defined in connection class.
+ */
+- (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel;
 
 #pragma mark -
 

@@ -34,7 +34,7 @@
 
 // Stores whether channel presence observation flag was set by
 // developer or not
-@property (nonatomic, assign, getter = isUserDefinedPresenceObservation)BOOL userDefinedPresenceObservation;
+@property (nonatomic, assign, getter = isLinkedWithPresenceObservationChannel) BOOL linkedWithPresenceObservationChannel;
 
 // Stores number of participants for particular
 // channel (this number fetched from presence API
@@ -64,6 +64,10 @@
             shouldObservePresence:(BOOL)observePresence
 shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag;
 
+/**
+ * Allow to fetch largest time token inside channels group
+ */
++ (NSString *)largestTimetokenFromChannels:(NSArray *)channels;
 
 #pragma mark - Instance methods
 
