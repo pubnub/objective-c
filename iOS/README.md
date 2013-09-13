@@ -25,6 +25,9 @@ with
         # or
         PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567]; // Convert from a timetoken
 ```
+Also, there are new files in the libary that were not present in 3.4.x. Be sure when updating the library that you add these new files to your project,
+or you will certainly get compile errors for missing files. Easiest thing to do is remove all PubNub files, and add the new PubNub files back.
+
 ## Coming Soon... XCode Project Template Support!
 But until then...
 
