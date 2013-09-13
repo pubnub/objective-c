@@ -1,4 +1,4 @@
-# PubNub 3.4.2 for iOS (iPhone and iPad)
+# PubNub 3.5.0 for iOS 4+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -9,6 +9,7 @@ All requests made by the client are asynchronous, and are handled by:
 4. Observation Center
 
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
+
 ## Important Changes from 3.4.0
 We've added better precision for pulling history via the new PNDate types.
 
