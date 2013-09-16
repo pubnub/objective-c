@@ -806,17 +806,30 @@ A full list of notifications are stored in [__PNNotifications.h__](3.4/pubnub/li
 
 Logging can be controlled via the following booleans:
 
-    #define PNLOG_GENERAL_LOGGING_ENABLED 0
-    #define PNLOG_REACHABILITY_LOGGING_ENABLED 0
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 0
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 0
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 0
-    #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 0
-    #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 0
+    #define PNLOG_LOGGING_ENABLED 1
+    #define PNLOG_STORE_LOG_TO_FILE 0
+    #define PNLOG_GENERAL_LOGGING_ENABLED 1
+    #define PNLOG_DELEGATE_LOGGING_ENABLED 1
+    #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
+    #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
+    #define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 1
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 1
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
+    #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
+    #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
+    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 0
+    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
 
-in [3.4/pubnub/libs/PubNub/Misc/PNMacro.h](3.4/pubnub/libs/PubNub/Misc/PNMacro.h#L37)
+in [pubnub/libs/PubNub/Misc/PNMacro.h](pubnub/libs/PubNub/Misc/PNMacro.h#L37)
 
-In the above example, all logging is disabled. By default, all logging is enabled.
+By default, all non-http response logging is enabled AND not to file.
+
+If you do choose the PNLOG_STORE_LOG_TO_FILE option, you will find your log written to you app's Document directory as 
+
+```
+pubnub-console-dump.txt
+```
 
 
 ### Tests with OCUnit and OCMock
