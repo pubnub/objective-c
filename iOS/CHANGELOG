@@ -1,3 +1,19 @@
+09-16-2013
+improvements all around concerning:
+. iOS 7 tests complete and passing
+
+. handling of radio transitions (WiFia -> WiFib -> 3G -> Edge -> No Service -> 3G -> WiFib -> ...)
+. wake detection handling on iOS
+. support for Mac OS maintenance wakes / sleeps
+. catchup (resume) after wake
+. JSON parsing
+. Error handling from 3rd-party mobile network proxies
+. PubNub AES compatibility
+. handling of idle network connections
+. Logging engine
+. Reachability engine
+. ARC detection reminders for misconfigurated applications
+
 07-17-2013
 . fixed bug of publish resume on reconnect
 . misc networking reconnect issues under various network switching scenarios
