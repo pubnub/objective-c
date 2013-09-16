@@ -73,6 +73,17 @@ To your project's .pch file. **It must be the first import in your pch, or it wi
 which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd party) performs all memory management on it's own
 (doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
 
+**NOTE:** If you wish to completely remove JSONKit from your project and filesystem, delete (or do not add) /libs/JSONKit, and comment out
+the following lines in PNJSONSerialization.m:
+
+```
+    // #import "JSONKit.h"
+    // result = [[jsonString dataUsingEncoding:NSUTF8StringEncoding] objectFromJSONDataWithParseOptions:JKParseOptionNone error:&parsingError];
+    // JSONString = [object JSONString];
+```
+
+(We'll be making this a configuration option in an upcoming release, but for now, this is the way to achieve it.)
+
 3. Add PNImports to your project precompile header (.pch)  
 ```objective-c
         #import "PNImports.h"
