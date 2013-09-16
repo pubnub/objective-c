@@ -32,6 +32,9 @@ or you will certainly get compile errors for missing files. Easiest thing to do 
 But until then...
 
 ## Adding PubNub to your project via CocoaPods
+### **NOTE:** We are currently revving the existing CocoaPod from 3.4.2 to the latest 3.5.x
+It is highly advised to use the latest 3.5.x version of PubNub directly from the repo until
+CocoaPods has been updated, as it contains many new fixes and enhancements.
 
 [These steps are documented in our Emmy-winning CocoaPod's Setup Video, check it out here!](https://vimeo.com/69284108)
 
