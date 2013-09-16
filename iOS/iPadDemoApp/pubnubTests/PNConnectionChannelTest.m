@@ -167,6 +167,9 @@
 }
 
 #pragma mark - PNConnectionChannel Delegate
+- (BOOL)connectionChannelCanConnect:(PNConnectionChannel *)channel {
+    return YES;
+}
 
 - (void)connectionChannelConfigurationDidFail:(PNConnectionChannel *)channel {}
 - (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel {}
