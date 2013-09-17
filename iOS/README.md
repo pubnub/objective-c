@@ -312,6 +312,25 @@ To access the client configuration and state, the following methods are provided
     
     - (BOOL)isConnected;  
 
+### Determing Connection State
+You can easily determine the current PubNub connection state via:
+
+```objective-c
+[[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
+                                                    withCallbackBlock:^(NSString *origin,
+                                                               BOOL connected,
+                                                                PNError *error) {
+                                                                    NSLog(@"connection %@", error);
+                                                            }];
+```
+
+```objective-c
+[PubNub sharedInstance].isConnected
+```
+
+Note, that just because your network is up, does not mean your connection to PubNub is up, so be sure to use this logic
+for authoritative PubNub connection state status.
+
 ### Encryption Notes
 
 This client supports the PubNub AES Encryption standard, which enables this client to speak with all other PubNub 3.4+ clients securely via AES.
