@@ -81,6 +81,8 @@ typedef enum _PNReachabilityStatus {
 
 #pragma mark - Instance methods
 
+- (void)startServiceReachabilityMonitoring:(BOOL)shouldStopPrevious;
+
 - (BOOL)isNetworkAddressChanged;
 - (BOOL)isWiFiAccessPointChanged;
 - (BOOL)isServiceAvailableForStatus:(PNReachabilityStatus)status;
@@ -237,8 +239,15 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
 - (void)startServiceReachabilityMonitoring {
 
-    [self stopServiceReachabilityMonitoring];
+    [self startServiceReachabilityMonitoring:YES];
+}
 
+- (void)startServiceReachabilityMonitoring:(BOOL)shouldStopPrevious {
+
+    if (shouldStopPrevious) {
+
+        [self stopServiceReachabilityMonitoring];
+    }
 
     // Check whether origin (PubNub services host) is specified or not
     NSString *originHost = [PubNub sharedInstance].configuration.origin;
@@ -250,7 +259,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         SCNetworkReachabilityContext context = {0, (__bridge void *)self, NULL, NULL, NULL};
         if (SCNetworkReachabilitySetCallback(self.serviceReachability, PNReachabilityCallback, &context)) {
 
-            // Schedule service reachability monitoring on current runloop with
+            // Schedule service reachability monitoring on current run-loop with
             // common mode (prevent from blocking by other tasks)
             SCNetworkReachabilityScheduleWithRunLoop(self.serviceReachability,
                                                      CFRunLoopGetCurrent(),
@@ -258,22 +267,41 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         }
 
 
-        struct sockaddr_in addressIPv4;
-        struct sockaddr_in6 addressIPv6;
-        char *serverCString = (char *)[originHost UTF8String];
-        if (inet_pton(AF_INET, serverCString, &addressIPv4) == 1 || inet_pton(AF_INET6, serverCString, &addressIPv6)) {
+        if (shouldStopPrevious) {
 
-            SCNetworkReachabilityFlags currentReachabilityStateFlags;
-            SCNetworkReachabilityGetFlags(self.serviceReachability, &currentReachabilityStateFlags);
-            self.status = PNReachabilityStatusForFlags(currentReachabilityStateFlags);
+            struct sockaddr_in addressIPv4;
+            struct sockaddr_in6 addressIPv6;
+            char *serverCString = (char *)[originHost UTF8String];
+            if (inet_pton(AF_INET, serverCString, &addressIPv4) == 1 || inet_pton(AF_INET6, serverCString, &addressIPv6)) {
+
+                SCNetworkReachabilityFlags currentReachabilityStateFlags;
+                SCNetworkReachabilityGetFlags(self.serviceReachability, &currentReachabilityStateFlags);
+                self.status = PNReachabilityStatusForFlags(currentReachabilityStateFlags);
+            }
         }
 
-        PNLog(PNLogReachabilityLevel, self, @"START REACHABILITY OBSERVATION");
+        PNLog(PNLogReachabilityLevel, self, @"%@ REACHABILITY OBSERVATION", shouldStopPrevious ? @"START" : @"RESTART");
     }
     else {
 
         PNLog(PNLogReachabilityLevel, self, @"REACHABILITY OBSERVATION IS IMPOSSIBLE W/O ORIGIN");
     }
+}
+
+- (void)restartServiceReachabilityMonitoring {
+
+    // Check whether reachability instance crated before destroy it
+    if (self.serviceReachability) {
+
+        SCNetworkReachabilityUnscheduleFromRunLoop(self.serviceReachability, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+        CFRelease(_serviceReachability);
+        _serviceReachability = NULL;
+
+
+        PNLog(PNLogGeneralLevel, self, @"STOP REACHABILITY OBSERVATION");
+    }
+
+    [self startServiceReachabilityMonitoring:NO];
 }
 
 - (void)stopServiceReachabilityMonitoring {

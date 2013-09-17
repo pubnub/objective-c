@@ -379,6 +379,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
 }
 
+- (void)disconnectWithEvent:(BOOL)shouldNotifyOnDisconnection {
+
+    PNBitClear(&_messagingState);
+
+    [self stopChannelIdleTimer];
+
+
+    // Forward to the super class
+    [super disconnectWithEvent:shouldNotifyOnDisconnection];
+}
+
 - (void)suspend {
 
     PNBitClear(&_messagingState);
