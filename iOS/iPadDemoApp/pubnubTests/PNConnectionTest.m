@@ -13,7 +13,7 @@
 #import "PNConnection.h"
 #import "PNConnection+Protected.h"
 
-@interface PNConnection ()
+@interface PNConnection () <PNConnectionDelegate>
 
 + (NSMutableDictionary *)connectionsPool;
 + (PNConnection *)connectionFromPoolWithIdentifier:(NSString *)identifier;
@@ -54,6 +54,7 @@
     
     [[mockConnection expect] isConnected];
     
+    [mockConnection setDelegate:self];
     [mockConnection connect];
     
     [mockConnection verify];
@@ -130,6 +131,12 @@
     [mockConnenction disconnect];
     
     [mockConnenction verify];
+}
+
+#pragma mark - PNConnectionDelegate
+
+- (BOOL)connectionCanConnect:(PNConnection *)connection {
+	return YES;
 }
 
 @end
