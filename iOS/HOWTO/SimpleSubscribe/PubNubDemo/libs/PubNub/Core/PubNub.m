@@ -37,8 +37,13 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.5.0";
+<<<<<<< HEAD:iOS/HOWTO/SimpleSubscribe/PubNubDemo/libs/PubNub/Core/PubNub.m
 static NSString * const kPNCodebaseBranch = @"hotfix-t106";
 static NSString * const kPNCodeCommitIdentifier = @"03ba8d96adb4b5ccd009697d814e4696bb28ece3";
+=======
+static NSString * const kPNCodebaseBranch = @"hotfix-t101";
+static NSString * const kPNCodeCommitIdentifier = @"a7db1c66ef05cfc151056dd678263b8024ebc3b9";
+>>>>>>> hotfix-t101:iOS/3.4/pubnub/libs/PubNub/Core/PubNub.m
 
 
 // Stores reference on singleton PubNub instance
@@ -3076,11 +3081,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
 
 	PNLog(PNLogGeneralLevel, self, @"HANDLE APPLICATION ENTERED BACKGROUND (STATE: %@)", [self humanReadableStateFrom:self.state]);
-    [self.reachability suspend];
     
 	if (![self canRunInBackground]) {
         
         PNLog(PNLogGeneralLevel, self, @"APPLICATION CAN'T RUN IN BACKGROUND.");
+        [self.reachability suspend];
 
         // Check whether application connected or not
         if ([self isConnected]) {
