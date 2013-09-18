@@ -78,7 +78,7 @@ typedef enum _PNConnectionChannelType {
 - (BOOL)isConnected;
 
 /**
- * Closing connection to the server. Requests queue won't be flushed
+ * Closing connection to the server. Requests queue won't be flushed.
  */
 - (void)disconnect;
 
