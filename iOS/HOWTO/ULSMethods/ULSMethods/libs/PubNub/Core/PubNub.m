@@ -409,8 +409,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     dispatch_once(&onceToken, ^{
         
-        [self showVserionInfo];
-        
         _sharedInstance = [[[self class] alloc] init];
     });
     
@@ -2267,6 +2265,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     if((self = [super init])) {
 
         PNDebugPrepare();
+        [[self class] showVserionInfo];
+        
         self.state = PNPubNubClientStateCreated;
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
