@@ -37,6 +37,7 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.5.0";
+<<<<<<< HEAD
 <<<<<<< HEAD:iOS/HOWTO/SimpleSubscribe/PubNubDemo/libs/PubNub/Core/PubNub.m
 static NSString * const kPNCodebaseBranch = @"hotfix-t106";
 static NSString * const kPNCodeCommitIdentifier = @"03ba8d96adb4b5ccd009697d814e4696bb28ece3";
@@ -44,6 +45,10 @@ static NSString * const kPNCodeCommitIdentifier = @"03ba8d96adb4b5ccd009697d814e
 static NSString * const kPNCodebaseBranch = @"hotfix-t101";
 static NSString * const kPNCodeCommitIdentifier = @"a7db1c66ef05cfc151056dd678263b8024ebc3b9";
 >>>>>>> hotfix-t101:iOS/3.4/pubnub/libs/PubNub/Core/PubNub.m
+=======
+static NSString * const kPNCodebaseBranch = @"feature-t119";
+static NSString * const kPNCodeCommitIdentifier = @"bb7365c74e2f95374c117974a512de521a5097ad";
+>>>>>>> feature-t119
 
 
 // Stores reference on singleton PubNub instance

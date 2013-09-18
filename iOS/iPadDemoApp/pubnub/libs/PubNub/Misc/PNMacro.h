@@ -34,6 +34,11 @@
 
 #pragma mark - Logging
 
+// Stores maximum file syze which should be stored on file system.
+// As soon as limit will be reached, beginning of the file will be truncated.
+// Default file size is 5Mb
+#define kPNLogMaximumLogFileSize (5 * 1024 * 1024)
+
 #define PNLOG_LOGGING_ENABLED 1
 #define PNLOG_STORE_LOG_TO_FILE 0
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
@@ -179,7 +184,6 @@ void PNLogDumpOutputToFile(NSString *output) {
         output = [[[NSDate date] consoleOutputTimestamp] stringByAppendingFormat:@"> %@\n", output];
 
 
-
         FILE *consoleDumpFilePointer = fopen([consoleDumpFilePath UTF8String], "a+");
         if (consoleDumpFilePointer == NULL) {
 
@@ -189,6 +193,50 @@ void PNLogDumpOutputToFile(NSString *output) {
 
             const char *cOutput = [output UTF8String];
             fwrite(cOutput, strlen(cOutput), 1, consoleDumpFilePointer);
+            fclose(consoleDumpFilePointer);
+        }
+    }
+}
+
+static void PNLogDumpFileTruncate();
+void PNLogDumpFileTruncate() {
+
+
+    if (PNLOG_STORE_LOG_TO_FILE) {
+
+        // Retrieve path to the 'Documents' folder
+        NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        NSString *consoleDumpFilePath = [documentsFolder stringByAppendingPathComponent:@"pubnub-console-dump.txt"];
+
+
+        FILE *consoleDumpFilePointer = fopen([consoleDumpFilePath UTF8String], "a+");
+        if (consoleDumpFilePointer == NULL) {
+
+            NSLog(@"PNLog: Can't open console dump file (%@)", consoleDumpFilePath);
+        }
+        else {
+
+            // Calculate current log dump file size
+            fseek(consoleDumpFilePointer, 0L, SEEK_END);
+            long consoleDumpFileSize = ftell(consoleDumpFilePointer);
+            fseek(consoleDumpFilePointer, 0, SEEK_SET);
+
+
+            NSLog(@"PNLog: Current console dump file size is %lu bytes (maximum allowed: %d bytes)",
+                  consoleDumpFileSize, kPNLogMaximumLogFileSize);
+
+            if (consoleDumpFileSize > kPNLogMaximumLogFileSize) {
+
+                fpos_t targetPosition = MAX(0, (consoleDumpFileSize - kPNLogMaximumLogFileSize));
+                fsetpos(consoleDumpFilePointer, &targetPosition);
+
+                char *oldConsoleDumpContent = (char *)malloc(sizeof(char) * kPNLogMaximumLogFileSize);
+                if (fread(oldConsoleDumpContent, 1, kPNLogMaximumLogFileSize, consoleDumpFilePointer)){
+
+                    truncate([consoleDumpFilePath UTF8String], 0);
+                    fwrite(oldConsoleDumpContent, strlen(oldConsoleDumpContent), 1, consoleDumpFilePointer);
+                }
+            }
             fclose(consoleDumpFilePointer);
         }
     }
@@ -260,6 +308,7 @@ void PNLog(PNLogLevels level, id sender, ...) {
 static void PNDebugPrepare();
 void PNDebugPrepare() {
 
+    PNLogDumpFileTruncate();
     if (PNHTTPDumpOutputToFileEnabled()) {
 
         NSFileManager *fileManager = [NSFileManager defaultManager];
