@@ -407,7 +407,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 + (PubNub *)sharedInstance {
     
     dispatch_once(&onceToken, ^{
-
         _sharedInstance = [[[self class] alloc] init];
     });
     
