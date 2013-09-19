@@ -49,13 +49,15 @@ static NSString * const kTAChannelName = @"hello_world";
 
 @implementation TAAppDelegate
 
+@synthesize myChannel;
 
 #pragma mark - Instance methods
 
 - (void)initializePubNubClient {
     
     [PubNub setDelegate:self];
-    
+
+    self.myChannel = [PNChannel channelWithName:@"a"];
     
     // Subscribe for client connection state change
     // (observe when client will be disconnected)
@@ -174,17 +176,52 @@ static NSString * const kTAChannelName = @"hello_world";
 - (void)subscribeOnChannels {
     
     // then subscribe on channel 'zzz'
-    PNChannel *myChannel = [PNChannel channelWithName:@"zzz" shouldObservePresence:YES];
-    [PubNub subscribeOnChannel:myChannel];
+    [PubNub subscribeOnChannel:self.myChannel];
 }
 
 
 #pragma mark - NSApplication delegate methods
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    
+
+
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                           selector:@selector(receivedWakeNote:)
+                                                               name:NSWorkspaceDidWakeNotification
+                                                             object:nil] ;
+
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                           selector:@selector(receivedSleepNote:)
+                                                               name:NSWorkspaceWillSleepNotification
+                                                             object:nil] ;
+
+
+
+
     [self initializePubNubClient];
+    [PubNub setClientIdentifier:@"PubNubOnMac"];
     [self connect];
+}
+
+
+- (void)receivedWakeNote: (NSNotification *)notification {
+
+    NSLog(@"WOKE UP!");
+    [self connect];
+
+}
+
+- (void)receivedSleepNote: (NSNotification *)notification {
+    NSLog(@"GOING TO SLEEP!");
+
+    [PubNub unsubscribeFromChannel:self.myChannel withCompletionHandlingBlock:^(NSArray *channels, PNError *error){
+
+        NSLog(@"FINISHED UNSUBBING.");
+        [PubNub disconnect];
+        NSLog(@"FINISHED DISCO");
+
+    }];
+
 }
 
 

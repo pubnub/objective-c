@@ -37,7 +37,7 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.5.1b";
-static NSString * const kPNCodebaseBranch = @"106.101.119";
+static NSString * const kPNCodebaseBranch = @"106.101.119.127";
 static NSString * const kPNCodeCommitIdentifier = @"493d7852af99f93db7ac92972e9969fae735592c";
 
 // Stores reference on singleton PubNub instance
@@ -1052,40 +1052,51 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 [self sharedInstance].userProvidedClientIdentifier = identifier != nil;
 
                 NSArray *allChannels = [[self sharedInstance].messagingChannel fullSubscribedChannelsList];
-                [self unsubscribeFromChannels:allChannels withPresenceEvent:YES
-                   andCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
-
-                       if (leaveError == nil) {
-
-                           // Check whether user identifier was provided by user or not
-                           if (identifier == nil) {
-
-                               // Change user identifier before connect to the PubNub services
-                               [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
+                if ([allChannels count]) {
+                    
+                    [self sharedInstance].asyncLockingOperationInProgress = NO;
+                    [self unsubscribeFromChannels:allChannels withPresenceEvent:YES
+                       andCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+                           
+                           if (leaveError == nil) {
+                               
+                               // Check whether user identifier was provided by user or not
+                               if (identifier == nil) {
+                                   
+                                   // Change user identifier before connect to the PubNub services
+                                   [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
+                               }
+                               else {
+                                   
+                                   [self sharedInstance].clientIdentifier = identifier;
+                               }
+                               
+                               [self sharedInstance].asyncLockingOperationInProgress = NO;
+                               PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#5} TURN OFF (%s)", __PRETTY_FUNCTION__);
+                               [self subscribeOnChannels:allChannels withPresenceEvent:YES
+                              andCompletionHandlingBlock:^(PNSubscriptionProcessState state,
+                                                           NSArray *subscribedChannels,
+                                                           PNError *subscribeError) {
+                                  
+                                  PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#40} TURN OFF (%s)", __PRETTY_FUNCTION__);
+                                  [[self sharedInstance] handleLockingOperationComplete:YES];
+                              }];
                            }
                            else {
-
-                               [self sharedInstance].clientIdentifier = identifier;
+                               
+                               [self sharedInstance].asyncLockingOperationInProgress = NO;
+                               PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#6} TURN OFF (%s)", __PRETTY_FUNCTION__);
+                               [self subscribeOnChannels:allChannels withPresenceEvent:NO];
                            }
-
-                           [self sharedInstance].asyncLockingOperationInProgress = NO;
-                           PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#5} TURN OFF (%s)", __PRETTY_FUNCTION__);
-                           [self subscribeOnChannels:allChannels withPresenceEvent:YES
-                          andCompletionHandlingBlock:^(PNSubscriptionProcessState state,
-                                                       NSArray *subscribedChannels,
-                                                       PNError *subscribeError) {
-
-                              PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#40} TURN OFF (%s)", __PRETTY_FUNCTION__);
-                              [[self sharedInstance] handleLockingOperationComplete:YES];
-                          }];
-                       }
-                       else {
-
-                           [self sharedInstance].asyncLockingOperationInProgress = NO;
-                           PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#6} TURN OFF (%s)", __PRETTY_FUNCTION__);
-                           [self subscribeOnChannels:allChannels withPresenceEvent:NO];
-                       }
-                   }];
+                       }];
+                }
+                else {
+                    
+                    [self sharedInstance].clientIdentifier = identifier;
+                    [self sharedInstance].userProvidedClientIdentifier = identifier != nil;
+                    PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#6NNN} TURN OFF (%s)", __PRETTY_FUNCTION__);
+                    [[self sharedInstance] handleLockingOperationComplete:YES];
+                }
             }
             else {
 

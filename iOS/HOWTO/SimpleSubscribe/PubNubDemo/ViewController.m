@@ -75,8 +75,8 @@
             [PubNub subscribeOnChannel:myChannel];
 
         }); }
-     // In case of error you always can pull out error code and identify what happened and what you can do // additional information is stored inside error's localizedDescription, localizedFailureReason and
-     // localizedRecoverySuggestion)
+            // In case of error you always can pull out error code and identify what happened and what you can do // additional information is stored inside error's localizedDescription, localizedFailureReason and
+            // localizedRecoverySuggestion)
                          errorBlock:^(PNError *connectionError) {
                              if (connectionError.code == kPNClientConnectionFailedOnInternetFailureError) {
                                  PNLog(PNLogGeneralLevel, self, @"Connection will be established as soon as internet connection will be restored");
