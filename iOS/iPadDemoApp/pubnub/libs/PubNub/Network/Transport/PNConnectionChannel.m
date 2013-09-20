@@ -1088,8 +1088,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     // Check whether channel is in suitable state to handle this event or not
     BOOL isExpected = PNBitIsOn(self.state, PNConnectionChannelDisconnecting);
-    PNBitClear(&_state);
-    PNBitOn(&_state, PNConnectionChannelDisconnected);
+    if (isExpected) {
+        
+        PNBitClear(&_state);
+        PNBitOn(&_state, PNConnectionChannelDisconnected);
+    }
 
 
     [self stopTimeoutTimerForRequest:nil];

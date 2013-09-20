@@ -234,8 +234,8 @@ static int const kPNStreamBufferSize = 32768;
 // Delay after which connection should retry
 static int64_t const kPNConnectionRetryDelay = 2;
 
-// Maximum retry count which can be performed for single operation
-static NSUInteger const kPNMaximumRetryCount = 3;
+// Maximum retry count which can be performed for configuration operation
+static NSUInteger const kPNMaximumConfigurationRetryCount = 3;
 
 
 #pragma mark - Private interface methods
@@ -264,7 +264,7 @@ static NSUInteger const kPNMaximumRetryCount = 3;
 // Stores reference on buffer which should be sent to the PubNub service via socket
 @property (nonatomic, strong) PNWriteBuffer *writeBuffer;
 
-@property (nonatomic, assign) NSUInteger retryCount;
+@property (nonatomic, assign) NSUInteger configurationRetryCount;
 
 // Stores connection channel state
 @property (nonatomic, assign) unsigned long state;
@@ -435,7 +435,8 @@ static NSUInteger const kPNMaximumRetryCount = 3;
  */
 - (BOOL)isSecurityTransportError:(CFErrorRef)error;
 - (BOOL)isInternalSecurityTransportError:(CFErrorRef)error;
-- (BOOL)isTemporaryServerError:(CFErrorRef)error;
+- (BOOL)isTemporaryError:(CFErrorRef)error;
+- (BOOL)isServerError:(CFErrorRef)error;
 
 - (CFStreamClientContext)streamClientContext;
 
@@ -798,11 +799,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         switch (CFErrorGetCode(error)) {
 
-            case ENETDOWN:      // Network went down
-            case ENETUNREACH:   // Network is unreachable
-            case EHOSTDOWN:     // Host is down
-            case EHOSTUNREACH:  // Can't reach host
-            case ETIMEDOUT:     // Socket timeout
+            case ENETDOWN:      // Network is down (maybe even no connection on interface level)
+
+            // Error cases which may occurs during socket lifecycle, when gateway uplink may go down and additional
+            // network check should be performed
+            case ENETUNREACH:   // Remote host can't be reached
+            case EHOSTDOWN:     // Remote host is down
+            case EHOSTUNREACH:  // Host can't be reached, because there is no route to it
+            case ECONNREFUSED:  // Remote host doesn't want to accept connection
 
                 isConnectionIssue = YES;
                 break;
@@ -815,8 +819,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         switch (CFErrorGetCode(error)) {
 
             case kCFHostErrorHostNotFound:
-            case kCFHostErrorUnknown:
-            case kCFErrorHTTPConnectionLost:
 
                 isConnectionIssue = YES;
                 break;
@@ -838,7 +840,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainOSStatus]) {
 
-        isSecurityTransportError = (errSSLLast <= errorCode) && (errorCode <= errSSLProtocol);
+        isSecurityTransportError = (errSSLUnexpectedRecord <= errorCode) && (errorCode <= errSSLProtocol);
     }
     else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
         
@@ -857,7 +859,52 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     return (code == errSSLInternal) || (code == errSSLClosedAbort);
 }
 
-- (BOOL)isTemporaryServerError:(CFErrorRef)error {
+- (BOOL)isTemporaryError:(CFErrorRef)error {
+    
+    BOOL isTemporaryError = NO;
+    
+    CFIndex errorCode = CFErrorGetCode(error);
+    NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
+    
+    if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX]) {
+        
+        switch (errorCode) {
+            case ETIMEDOUT:     // There is no activity on socket for some time
+            case ENETRESET:     // Remote host crashed w/o sending 'close packet'
+            case ECONNABORTED:  // Connection was aborted locally (by system or device)
+
+            // Special cases when connection state was changed by remote server
+            case ECONNRESET:    // Remote host sent 'close packet'
+
+            case ENOBUFS:       // No space where data for sockets can be stored
+            case ENOTCONN:      // Socket not connected or was disconnected
+
+            case ESHUTDOWN:     // Socket was closed before new write attempt has been done
+            case ENOENT:        // Rare error when system probably can't prepare sockets for further operation
+            case EPIPE:         // Remote host went down or socket configuration not completed
+            case EAGAIN:        // Requested resource not available
+            case EISCONN:       // Socket already connected
+
+                isTemporaryError = YES;
+                break;
+            default:
+                break;
+        }
+    }
+    else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
+
+        isTemporaryError = (kCFNetServiceErrorDNSServiceFailure <= errorCode) && (errorCode <= kCFNetServiceErrorUnknown);
+        if (!isTemporaryError) {
+
+            isTemporaryError = errorCode == kCFHostErrorUnknown || errorCode == kCFErrorHTTPConnectionLost;
+        }
+    }
+    
+    
+    return isTemporaryError;
+}
+
+- (BOOL)isServerError:(CFErrorRef)error {
     
     BOOL isServerError = NO;
     
@@ -867,26 +914,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX]) {
         
         switch (errorCode) {
-            case ENETRESET:     // Network dropped connection on reset
-            case ECONNABORTED:  // Connection was aborted by software (OS)
-            case ECONNRESET:    // Connection reset by peer
-            case ENOBUFS:       // No buffer space available
-            case ENOTCONN:      // Socket not connected or was disconnected
-            case ECONNREFUSED:  // Connection refused
-            case ESHUTDOWN:     // Can't send after socket shutdown
-            case ENOENT:        // No such file or directory
-            case EPIPE:         // Something went wrong and pipe was damaged
-            case EAGAIN:        // Requested resource not available
-
+            
+            case ECONNRESET:    // Remote host sent 'close packet'
+                
                 isServerError = YES;
                 break;
             default:
                 break;
         }
-    }
-    else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
-
-        isServerError = (kCFNetServiceErrorDNSServiceFailure <= errorCode) && (errorCode <= kCFNetServiceErrorUnknown);
     }
     
     
@@ -1919,7 +1954,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
           self.name ? self.name : self, self.state);
 
     // Resetting some cached data
-    self.retryCount = 0;
+    self.configurationRetryCount = 0;
 
     // Ensure that both read and write streams are connected before notify
     // delegate about successful connection
@@ -2036,7 +2071,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
           self.name ? self.name : self, self.state);
 
     // Resetting some cached data
-    self.retryCount = 0;
+    self.configurationRetryCount = 0;
 
     // Ensure that both read and write streams reset before notify delegate
     // about connection close event
@@ -2256,11 +2291,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 PNBitsOff(&_state, PNByUserRequest, PNByServerRequest, BITS_LIST_TERMINATOR);
                 PNBitsOn(&_state, PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR);
 
-                PNLog(PNLogConnectionLayerInfoLevel,
-                      self,
-                      @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %d)",
-                      self.name ? self.name : self,
-                      self.state);
+                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %d)",
+                      self.name ? self.name : self, self.state);
 
                 // Check whether connection should be restored via '-reconnect' method or not
                 if ([self shouldReconnect]) {
@@ -2430,10 +2462,18 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 shouldCloseConnection = YES;
             }
             
-            if ([self isTemporaryServerError:error]) {
+            if ([self isTemporaryError:error]) {
 
-                PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] SOCKET GENERAL ERROR BECAUSE OF TEMPORARY ISSUES WITH SERVER (STATE: %d)",
-                        self.name ? self.name : self, self.state);
+                if ([self isServerError:error]) {
+                    
+                    PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] SOCKET GENERAL ERROR BECAUSE OF SERVER ACTIONS (STATE: %d)",
+                          self.name ? self.name : self, self.state);
+                }
+                else {
+                    
+                    PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] SOCKET GENERAL ERROR BECAUSE OF TEMPORARY ISSUES WITH SOCKET (STATE: %d)",
+                          self.name ? self.name : self, self.state);
+                }
 
                 shouldCloseConnection = NO;
                 PNBitOff(&_state, PNConnectionErrorCleanAll);
@@ -2468,7 +2508,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
 
 
-            if (![self isDisconnecting]) {
+            if ([self isConnected] && ![self isDisconnecting]) {
 
                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] CLOSING STREAMS BECAUSE OF ERROR (STATE: %d)",
                       self.name ? self.name : self, self.state);
@@ -2481,6 +2521,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [self disconnectByUserRequest:byUserRequest];
             }
             else if ([self isConnecting]) {
+                
+                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] CLOSING STREAMS BECAUSE OF ERROR WHILE TRIED TO CONNECT (STATE: %d)",
+                      self.name ? self.name : self, self.state);
 
                 PNBitsOff(&_state, PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
                                    PNConnectionDisconnect, PNByServerRequest, PNByInternalRequest,PNByUserRequest,
@@ -2524,12 +2567,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether connection is still in bad state before issue connection
             if (PNBitIsOn(weakSelf.state, PNConnectionConfiguring)) {
 
-                if (weakSelf.retryCount + 1 < kPNMaximumRetryCount) {
+                if (weakSelf.configurationRetryCount + 1 < kPNMaximumConfigurationRetryCount) {
                     
                     PNLog(PNLogConnectionLayerErrorLevel, weakSelf, @"[CONNECTION::%@] RETRY CONFIGURATION ATTEMPT... (STATE: %d)",
                           weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state);
 
-                    weakSelf.retryCount++;
+                    weakSelf.configurationRetryCount++;
 
                     // Check whether client configuration failed during connection attempt or not
                     if (PNBitsIsOn(weakSelf.state, YES, PNConnectionConfiguring, PNConnectionPrepareToConnect,
@@ -2548,7 +2591,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     PNLog(PNLogConnectionLayerErrorLevel, weakSelf, @"[CONNECTION::%@] CONFIGURATION RETRY COUNT EXCEEDED LIMIT. CANCEL. (STATE: %d)",
                           weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state);
 
-                    weakSelf.retryCount = 0;
+                    weakSelf.configurationRetryCount = 0;
 
                     // Terminate operation of all streams and buffers (clean up)
                     [weakSelf destroyStreams];

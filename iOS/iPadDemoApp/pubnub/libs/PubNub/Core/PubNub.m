@@ -2631,9 +2631,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"CLIENT FAILED TO CONNECT TO ORIGIN: %@ (STATE: %@)", host, [self humanReadableStateFrom:self.state]);
         
+        self.state = PNPubNubClientStateDisconnectingOnNetworkError;
         self.connectOnServiceReachabilityCheck = NO;
         self.connectOnServiceReachability = NO;
-        
         
         [self.configuration shouldKillDNSCache:YES];
         
