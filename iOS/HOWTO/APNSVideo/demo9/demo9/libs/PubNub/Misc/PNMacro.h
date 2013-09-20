@@ -230,12 +230,13 @@ void PNLogDumpFileTruncate() {
                 fpos_t targetPosition = MAX(0, (consoleDumpFileSize - kPNLogMaximumLogFileSize));
                 fsetpos(consoleDumpFilePointer, &targetPosition);
 
-                char *oldConsoleDumpContent = (char *)malloc(sizeof(char) * kPNLogMaximumLogFileSize);
+                char *oldConsoleDumpContent = (char *)malloc(sizeof(char) * (kPNLogMaximumLogFileSize + 1));
                 if (fread(oldConsoleDumpContent, 1, kPNLogMaximumLogFileSize, consoleDumpFilePointer)){
 
                     truncate([consoleDumpFilePath UTF8String], 0);
                     fwrite(oldConsoleDumpContent, strlen(oldConsoleDumpContent), 1, consoleDumpFilePointer);
                 }
+                free(oldConsoleDumpContent);
             }
             fclose(consoleDumpFilePointer);
         }
