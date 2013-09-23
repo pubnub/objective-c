@@ -12,6 +12,7 @@
 //
 
 #import "PNConnection.h"
+#import <SystemConfiguration/SystemConfiguration.h>
 #import <Security/SecureTransport.h>
 #import "PNConnection+Protected.h"
 #import "PNResponseDeserialize.h"
@@ -231,6 +232,9 @@ static UInt32 const kPNOriginSSLConnectionPort = 443;
 // Default data buffer size (Default: 32kb)
 static int const kPNStreamBufferSize = 32768;
 
+// Default connection attempt timeout (Default: 10s)
+static int const kPNConnectionTimeout = 10.0f;
+
 // Delay after which connection should retry
 static int64_t const kPNConnectionRetryDelay = 2;
 
@@ -273,6 +277,8 @@ static NSUInteger const kPNMaximumRetryCount = 3;
 // race of states and conditions
 @property (nonatomic, pn_dispatch_property_ownership) dispatch_source_t wakeUpTimer;
 @property (nonatomic, assign, getter = isWakeUpTimerSuspended) BOOL wakeUpTimerSuspended;
+
+@property (nonatomic, strong) NSTimer *connectionTimeoutTimer;
 
 // Socket streams and state
 @property (nonatomic, assign) CFReadStreamRef socketReadStream;
@@ -398,6 +404,8 @@ static NSUInteger const kPNMaximumRetryCount = 3;
  */
 - (void)handleStreamTimeout;
 
+- (void)handleTimeoutTimer:(NSTimer *)timer;
+
 /**
  * Called each time when wake up timer is fired
  */
@@ -415,6 +423,12 @@ static NSUInteger const kPNMaximumRetryCount = 3;
 
 
 #pragma mark - Misc methods
+
+/**
+ * Start/stop connection timeout timer
+ */
+- (void)startTimeoutTimer;
+- (void)stopTimeoutTimer;
 
 /**
  * Construct/reuse and launch/resume/suspend/stop 'wakeup' timer to help restore connection if it will be required
@@ -1048,6 +1062,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 isStreamOpened = YES;
 
+                [self startTimeoutTimer];
                 [self openReadStream:self.socketReadStream];
                 [self openWriteStream:self.socketWriteStream];
             }
@@ -1200,6 +1215,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Launch 'wake up' timer in case if disconnection was accident or some catch up logic failed because some
     // tragic coincidence
     [self startWakeUpTimer];
+    [self stopTimeoutTimer];
 
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TRYING DISCONNECT... (BY USER REQUEST? %@)(STATE: %d)",
           self.name ? self.name : self, byUserRequest ? @"YES" : @"NO", self.state);
@@ -1284,6 +1300,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
 
     [self suspendWakeUpTimer];
+    [self stopTimeoutTimer];
 }
 
 - (BOOL)isSuspending {
@@ -1927,6 +1944,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         // Terminate wake up timer
         [self stopWakeUpTimer];
+        [self stopTimeoutTimer];
 
         BOOL isRestoredAfterServerClosed = PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
                                                                        BITS_LIST_TERMINATOR);
@@ -2118,6 +2136,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
 
             [self resumeWakeUpTimer];
+            [self stopTimeoutTimer];
 
             PNBitOff(&_state, PNConnectionReconnectOnDisconnect);
             [self connectByUserRequest:isByUserRequest];
@@ -2175,6 +2194,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     [self.delegate connection:self didDisconnectFromHost:self.configuration.origin];
 
                     [self resumeWakeUpTimer];
+                    [self stopTimeoutTimer];
                 }
             }
         }
@@ -2224,6 +2244,39 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     [self reconnect];
 }
 
+- (void)handleTimeoutTimer:(NSTimer *)timer {
+
+    PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] HANDLE 'TIMEOUT' TIMER EVENT (STATE: %d)",
+          self.name ? self.name : self, self.state);
+
+    unsigned long oldStates = self.state;
+    BOOL shouldReconnect = [self.delegate connectionShouldRestoreConnection:self];
+    unsigned long newStates = self.state;
+
+    BOOL stateChangedFromOutside = oldStates != newStates && !PNBitIsOn(oldStates, PNByUserRequest) &&
+                                   PNBitIsOn(newStates, PNByUserRequest);
+
+    if (!stateChangedFromOutside) {
+
+        // Ask delegate on whether connection should be restored or not
+        if (shouldReconnect) {
+
+            [self handleStreamTimeout];
+        }
+        else {
+
+            PNLog(PNLogConnectionLayerErrorLevel, self, @"[CONNECTION::%@] CONNECTION RETRY IS IMPOSSIBLE AT THIS "
+                  "MOMENT (STATE: %d)", self.name ? self.name : self, self.state);
+        }
+    }
+    else {
+
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] TIMEOUT EVENT CANCELED. CONNECTION STATE "
+              "HAS BEEN CHANGED FROM OUTSIDE. (STATE: %d)",
+              self.name ? self.name : self, self.state);
+    }
+}
+
 - (void)handleWakeUpTimer {
 
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] HANDLE 'WAKE UP' TIMER EVENT (STATE: %d)",
@@ -2256,11 +2309,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 PNBitsOff(&_state, PNByUserRequest, PNByServerRequest, BITS_LIST_TERMINATOR);
                 PNBitsOn(&_state, PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR);
 
-                PNLog(PNLogConnectionLayerInfoLevel,
-                      self,
-                      @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %d)",
-                      self.name ? self.name : self,
-                      self.state);
+                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: "
+                      "%d)", self.name ? self.name : self, self.state);
 
                 // Check whether connection should be restored via '-reconnect' method or not
                 if ([self shouldReconnect]) {
@@ -2287,7 +2337,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         else {
 
             PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] WAKE UP EVENT CANCELED. CONNECTION STATE "
-                  "HAS BEEN CHANGED FROMOUTSIDE. (STATE: %d)",
+                  "HAS BEEN CHANGED FROM OUTSIDE. (STATE: %d)",
                   self.name ? self.name : self, self.state);
         }
     }
@@ -2581,6 +2631,27 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 #pragma mark - Misc methods
 
+- (void)startTimeoutTimer {
+
+    [self stopTimeoutTimer];
+
+    self.connectionTimeoutTimer = [NSTimer timerWithTimeInterval:kPNConnectionTimeout target:self
+                                                        selector:@selector(handleTimeoutTimer:) userInfo:nil
+                                                         repeats:NO];
+
+    [[NSRunLoop currentRunLoop] addTimer:self.connectionTimeoutTimer forMode:NSRunLoopCommonModes];
+}
+
+- (void)stopTimeoutTimer {
+
+    if ([self.connectionTimeoutTimer isValid]) {
+
+        [self.connectionTimeoutTimer invalidate];
+    }
+
+    self.connectionTimeoutTimer = nil;
+}
+
 - (void)startWakeUpTimer {
 
     if (self.wakeUpTimer == NULL) {
@@ -2706,7 +2777,48 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (self.proxySettings == NULL) {
 
-        self.proxySettings = CFBridgingRelease(CFNetworkCopySystemProxySettings());
+        PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] FETCHING PROXY CONFIGURATION SETTINGS (STATE: "
+              "%d)", self.name ? self.name : self, self.state);
+
+        // Fetch list of all available proxy settings in system
+        CFDictionaryRef proxiesList = CFNetworkCopySystemProxySettings();
+
+        if (proxiesList) {
+
+            NSString *scheme = @"http";
+            if (self.streamSecuritySettings != NULL) {
+
+                scheme = @"https";
+            }
+
+            // Construct URL basing on which system will return list of proxy settings which can be used to open
+            // socket
+            NSURL *targetHost = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@", scheme, self.configuration.origin]];
+
+            // Retrieve list of proxy settings which can be used to reach specific resources
+            CFArrayRef suitableProxies = CFNetworkCopyProxiesForURL((__bridge CFURLRef)targetHost, proxiesList);
+
+            if (CFArrayGetCount(suitableProxies) > 0) {
+
+                // Retrieve reference on first suitable proxy settings
+                CFDictionaryRef suitableProxySettings = CFArrayGetValueAtIndex(suitableProxies, 0);
+
+                if (suitableProxySettings != NULL) {
+
+                    self.proxySettings = CFBridgingRelease(CFDictionaryCreateCopy(kCFAllocatorDefault, suitableProxySettings));
+                }
+            }
+            CFRelease(suitableProxies);
+            CFRelease(proxiesList);
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] PROXY CONFIGURATION SETTINGS: %@\n(STATE: "
+                  "%d)", self.name ? self.name : self, self.proxySettings, self.state);
+        }
+        else {
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] THERE IS NO PROXY CONFIGURATION IN SYSTEM "
+                  "(STATE: %d)", self.name ? self.name : self, self.state);
+        }
     }
 }
 
@@ -2901,6 +3013,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (void)prepareForTermination {
 
     [self stopWakeUpTimer];
+    [self stopTimeoutTimer];
 }
 
 - (void)dealloc {
@@ -2908,6 +3021,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Closing all streams and free up resources which was allocated for their support
     [self destroyStreams];
     [self stopWakeUpTimer];
+    [self stopTimeoutTimer];
     _delegate = nil;
     _proxySettings = nil;
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] DESTROYED (STATE: %d)",

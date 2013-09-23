@@ -72,6 +72,13 @@
 - (BOOL)hasRequestsWithClass:(Class)requestClass;
 
 /**
+ * Closing connection to the server. Requests queue won't be flushed.
+ * If 'shouldNotifyOnDisconnection' is set to YES, than connection channel will receive disconnection event and pass
+ * it forward
+ */
+- (void)disconnectWithEvent:(BOOL)shouldNotifyOnDisconnection;
+
+/**
  * Reconnect main communication channel on which this communication channel is working
  */
 - (void)reconnect;
