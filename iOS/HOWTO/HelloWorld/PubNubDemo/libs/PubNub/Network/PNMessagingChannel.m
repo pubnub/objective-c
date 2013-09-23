@@ -1412,7 +1412,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             // Check whether subscription request already scheduled or not
             else if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
 
-                [self restoreSubscriptionOnPreviousChannels];
+                // Check whether there is no 'leave' requests, which will mean that we are leaving from all channels
+                if (![self hasRequestsWithClass:[PNLeaveRequest class]]) {
+
+                    [self restoreSubscriptionOnPreviousChannels];
+                }
             }
         }
         else {
