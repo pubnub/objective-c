@@ -1084,9 +1084,7 @@ PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download history for %@
 }
 ```
 
-####- (void) pubnubClient:(PubNub *)client  
-didReceiveParticipantsLits:(NSArray *)participantsList  
-                forChannel:(PNChannel *)channel;  
+####- (void) pubnubClient:(PubNub *)client  didReceiveParticipantsLits:(NSArray *)participantsList forChannel:(PNChannel *)channel;  
 This delegate method is called when the client successfully retrieves the info of other connected users on the channel. The users info will be contained the “participantsList” which is an NSArray. “channel” will contain the value of the PubNub channel.  Example usage follows:
 
 ```objective-c
@@ -1097,9 +1095,7 @@ PNLog(PNLogGeneralLevel, self, @"PubNub client received participants list for ch
 }
 ```
 
-####- (void) pubnubClient:(PubNub *)client
-    didFailParticipantsListDownloadForChannel:(PNChannel *)channel  
-                                    withError:(PNError *)error;  
+####- (void) pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel withError:(PNError *)error;  
 This delegate method is called when the client fails to get the info of other connected users on the channel. 
 “channel” will contain the value of the PubNub channel and 
 “error” will contain the error info.  Example usage follows:
