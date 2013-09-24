@@ -41,6 +41,7 @@
  * Managing reachability monitor activity
  */
 - (void)startServiceReachabilityMonitoring;
+- (void)restartServiceReachabilityMonitoring;
 - (void)stopServiceReachabilityMonitoring;
 - (void)suspend;
 - (BOOL)isSuspended;

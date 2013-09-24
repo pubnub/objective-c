@@ -379,6 +379,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
 }
 
+- (void)disconnectWithEvent:(BOOL)shouldNotifyOnDisconnection {
+
+    PNBitClear(&_messagingState);
+
+    [self stopChannelIdleTimer];
+
+
+    // Forward to the super class
+    [super disconnectWithEvent:shouldNotifyOnDisconnection];
+}
+
 - (void)suspend {
 
     PNBitClear(&_messagingState);
@@ -1401,7 +1412,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             // Check whether subscription request already scheduled or not
             else if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
 
-                [self restoreSubscriptionOnPreviousChannels];
+                // Check whether there is no 'leave' requests, which will mean that we are leaving from all channels
+                if (![self hasRequestsWithClass:[PNLeaveRequest class]]) {
+
+                    [self restoreSubscriptionOnPreviousChannels];
+                }
             }
         }
         else {
