@@ -727,55 +727,435 @@ The client provides different methods of handling different events:
 3. Observation center
 4. Notifications  
 
-### Delegate callback methods  
+##Delegate callback methods
 
-At any given time, there can be only one PubNub client delegate. The delegate class must conform to the [__PNDelegate__](pubnub/libs/PubNub/Misc/Protocols/PNDelegate.h) protocol in order to receive callbacks.  
+In the PubNub iOS client, delegate callback methods provide one way to handle different events. At any given time, there can be only one PubNub client delegate. 
 
-Here is full set of callbacks which are available:
-  
-    - (void)pubnubClient:(PubNub *)client error:(PNError *)error;  
-    
-    - (void)pubnubClient:(PubNub *)client willConnectToOrigin:(NSString *)origin;  
-    - (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin;  
-    - (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin;  
-    - (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin withError:(PNError *)error;  
-    - (void)pubnubClient:(PubNub *)client willDisconnectWithError:(PNError *)error;  
-    - (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error;  
-    
-    - (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels;  
-    - (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels;  
-    - (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels;  
-    - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(PNError *)error;  
-    
-    - (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannels:(NSArray *)channels;  
-    - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error;  
-    
-    - (void)pubnubClient:(PubNub *)client didReceiveTimeToken:(NSNumber *)timeToken;  
-    - (void)pubnubClient:(PubNub *)client timeTokenReceiveDidFailWithError:(PNError *)error;  
-    
-    - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message;  
-    - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error;  
-    - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message;  
-    - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message;  
-    - (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event;  
-    
-    - (void)    pubnubClient:(PubNub *)client  
-    didReceiveMessageHistory:(NSArray *)messages  
-                  forChannel:(PNChannel *)channel  
-                startingFrom:(PNDate *)startDate  
-                          to:(PNDate *)endDate;  
-    - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error;  
-    
-    - (void)      pubnubClient:(PubNub *)client  
-    didReceiveParticipantsLits:(NSArray *)participantsList  
-                    forChannel:(PNChannel *)channel;  
-    
-    - (void)                         pubnubClient:(PubNub *)client
-        didFailParticipantsListDownloadForChannel:(PNChannel *)channel  
-                                        withError:(PNError *)error;  
-	                                
-    - (NSNumber *)shouldReconnectPubNubClient:(PubNub *)client;  
-    - (NSNumber *)shouldResubscribeOnConnectionRestore;  
+The delegate class must conform to the PNDelegate protocol in order to receive callbacks. 
+
+Lets go through each delegate with a small example.
+
+
+####- (void)pubnubClient:(PubNub *)client error:(PNError *)error;
+
+This delegate method is called when an error occurs in the PubNub client.
+“error” will contain the details of the error. Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client error:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"An error occurred: %@", error);
+}
+```
+####- (void)pubnubClient:(PubNub *)client willConnectToOrigin:(NSString *)origin;  
+
+
+This delegate method is called when the client is about to connect to the PubNub origin. “origin” will contain the PubNub origin url.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client willConnectToOrigin:(NSString *)origin { 
+PNLog(PNLogGeneralLevel, self, @"PubNub client is about to connect to PubNub origin at: %@", origin);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin;  
+
+This delegate method is called when the client is successfully connected to the PubNub origin. “origin” will contain the PubNub origin url. Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin { 					PNLog(PNLogGeneralLevel, self, @"PubNub client successfully connected to PubNub origin at: %@", origin);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin;
+
+This delegate method is called when the client is successfully disconnected from the PubNub origin. “origin” will contain the PubNub origin url.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin {
+PNLog(PNLogGeneralLevel, self, @"PubNub client disconnected from PubNub origin at: %@", origin);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin withError:(PNError *)error;  
+
+This delegate method is called when the client is disconnected from the PubNub origin due to an error. “error” will contain the details of the error. “origin” will contain the PubNub origin url.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin withError:(PNError *)error {
+    PNLog(PNLogGeneralLevel, self, @"PubNub client closed connection because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client willDisconnectWithError:(PNError *)error;  
+This delegate method is called if an error occurred when disconnecting from the PubNub origin.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client willDisconnectWithError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client will close connection because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error;  
+This delegate method is called if an error occurred when connecting to the PubNub origin.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client was unable to connect because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels;  
+This delegate method is called when the client is successfully subscribed call to the channels. 
+“channels” will contain the array of channels to which the client is subscribed.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels {
+PNLog(PNLogGeneralLevel, self, @"PubNub client successfully subscribed to channels:%@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels;  
+This delegate method is called when the subscription on the channels is about to be restored after a network disconnect.
+“channels” will contain the array of channels to which the subscription is about to be restored.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels {
+    PNLog(PNLogGeneralLevel, self, @"PubNub client resuming subscription on: %@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels;  
+This delegate method is called when the subscription on the channels is successfully restored after a network disconnect.
+“channels” will contain the array of channels to which the subscription has been restored.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels {
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully restored subscription on channels: %@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(PNError *)error;  
+This delegate method is called if an error occurred when subscribing to a channel.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed to subscribe because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannels:(NSArray *)channels;  
+This delegate method is called if the channels are successfully unsubscribed.
+“channels” will contain the array of channels which have been unsubscribed.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannels:(NSArray *)channels {    
+PNLog(PNLogGeneralLevel, self, @"PubNub client successfully unsubscribed from channels: %@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error;  
+This delegate method is called if an error occurs when a channel is unsubscribed.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed to unsubscribe because of 	error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels;
+This delegate method is called if the presence notifications are successfully enabled.
+“channels” will contain the array of channels which have presence notifications enabled.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully enabled presence observation on channels: %@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error;
+This delegate method is called if an error occurs on enabling presence notifications.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error {
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to enable presence observation because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels;
+This delegate method is called if the presence notifications are successfully disabled.
+“channels” will contain the array of channels which have presence notifications disabled.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully disabled presence observation on channels: %@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error;
+This delegate method is called if an error occurs on disabling presence notifications.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error {
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to disable presence observation      because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didEnablePushNotificationsOnChannels:(NSArray *)channels;
+This delegate method is called if push notifications for all channels are successfully enabled.
+“channels” will contain the array of channels which have push notifications enabled.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didEnablePushNotificationsOnChannels:(NSArray *)channels {
+PNLog(PNLogGeneralLevel, self, @"PubNub client enabled push notifications on channels: %@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client pushNotificationEnableDidFailWithError:(PNError *)error;
+This delegate method is called when an error occurs on enabling push notifications for all channels.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client pushNotificationEnableDidFailWithError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed push notification enable because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didDisablePushNotificationsOnChannels:(NSArray *)channels;
+This delegate method is called when push notifications for all channels are successfully disabled.
+“channels” will contain the array of channels which have push notifications disabled.   Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didDisablePushNotificationsOnChannels:(NSArray *)channels {
+PNLog(PNLogGeneralLevel, self, @"PubNub client disabled push notifications on channels: %@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client pushNotificationDisableDidFailWithError:(PNError *)error;
+This delegate method is called when an error occurs on disabling push notifications for all channels.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client pushNotificationDisableDidFailWithError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed to disable push notifications because of error: %@", error);
+}
+```
+
+####- (void)pubnubClientDidRemovePushNotifications:(PubNub *)client;
+This delegate method is called when push notifications for all channels are successfully removed.  Example usage follows:
+
+```objective-c
+- (void)pubnubClientDidRemovePushNotifications:(PubNub *)client {
+PNLog(PNLogGeneralLevel, self, @"PubNub client removed push notifications from all channels");
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client pushNotificationsRemoveFromChannelsDidFailWithError:(PNError *)error;
+This delegate method is called when an error occurs on removing push notifications for all channels.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client pushNotificationsRemoveFromChannelsDidFailWithError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed remove push notifications from channels because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didReceivePushNotificationEnabledChannels:(NSArray *)channels;
+This delegate method is called when the client successfully receives to receive push notifications for a channel. “channels” will contain the array of channels which received push notifications.   Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didReceivePushNotificationEnabledChannels:(NSArray *)channels {
+PNLog(PNLogGeneralLevel, self, @"PubNub client received push notifications for these enabled channels: %@", channels);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFailWithError:(PNError *)error;
+This delegate method is called when the client fails to receive push notifications for a channel.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFailWithError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed to receive list of channels because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didReceiveTimeToken:(NSNumber *)timeToken;  
+This delegate method is called when the client successfully retrieves the timetoken from the server. 
+“timeToken” will contain the retrieved timetoken.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didReceiveTimeToken:(NSNumber *)timeToken {
+    PNLog(PNLogGeneralLevel, self, @"PubNub client received time token: %@", timeToken);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client timeTokenReceiveDidFailWithError:(PNError *)error;  
+This delegate method is called when the client fails to retrieve the timetoken from the server. 
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client timeTokenReceiveDidFailWithError:(PNError *)error 
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed to receive time token because of error: %@", error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message;  
+This delegate method is called when the client is about to send a message on a channel. 
+“message” will contain the details of the message including the channel info.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
+PNLog(PNLogGeneralLevel, self, @"PubNub client is about to send message: %@", message);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error;  
+This delegate method is called when the client fails to send a message on a channel. 
+“message” will contain the details of the message including the channel info.
+“error” will contain the details of the error.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {    
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed to send message '%@' because of error: %@", message, error);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message;  
+This delegate method is called when the client successfully sends a message on a channel. 
+“message” will contain the details of the message including the channel info.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message{ 
+PNLog(PNLogGeneralLevel, self, @"PubNub client sent message: %@", message);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message; 
+This delegate method is called when the client successfully receives a message on a subscribed channel. 
+“message” will contain the details of the message including the channel info.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {    
+    PNLog(PNLogGeneralLevel, self, @"PubNub client received message: %@", message);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event;  
+This delegate method is called when the client successfully receives a presence event on a channel whose presence notifications are subscribed. 
+“event” will contain the presence event.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event {
+PNLog(PNLogGeneralLevel, self, @"PubNub client received presence event: %@", event);
+}
+```
+
+####- (void)    pubnubClient:(PubNub *)client didReceiveMessageHistory:(NSArray *)messages          forChannel:(PNChannel *)channel  
+            startingFrom:(PNDate *)startDate  
+                      to:(PNDate *)endDate;  
+This delegate method is called when the client successfully retrieves the history of messages on the channel. 
+“channel” will contain the value of the PubNub channel.
+“messages” will contain the retrieved messages as an NSArray.
+“startDate” and “endDate” are the datetime range of the retrieved messages.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client
+didReceiveMessageHistory:(NSArray *)messages
+          forChannel:(PNChannel *)channel
+        startingFrom:(NSDate *)startDate
+                  to:(NSDate *)endDate {
+PNLog(PNLogGeneralLevel, self, @"PubNub client received history for %@ starting from %@ to %@: %@", channel, startDate, endDate, messages);
+}
+```
+
+####- (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error;  
+This delegate method is called when the client fails to get history of messages on the channel. 
+“channel” will contain the value of the PubNub channel and 
+“error” will contain the error info.  Example usage follows:
+
+```objective-c
+- (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download history for %@ because of error: %@", channel, error);
+}
+```
+
+####- (void) pubnubClient:(PubNub *)client  
+didReceiveParticipantsLits:(NSArray *)participantsList  
+                forChannel:(PNChannel *)channel;  
+This delegate method is called when the client successfully retrieves the info of other connected users on the channel. The users info will be contained the “participantsList” which is an NSArray. “channel” will contain the value of the PubNub channel.  Example usage follows:
+
+```objective-c
+- (void) pubnubClient:(PubNub *)client
+didReceiveParticipantsLits:(NSArray *)participantsList
+                forChannel:(PNChannel *)channel {
+PNLog(PNLogGeneralLevel, self, @"PubNub client received participants list for channel %@: %@", participantsList, channel);
+}
+```
+
+####- (void) pubnubClient:(PubNub *)client
+    didFailParticipantsListDownloadForChannel:(PNChannel *)channel  
+                                    withError:(PNError *)error;  
+This delegate method is called when the client fails to get the info of other connected users on the channel. 
+“channel” will contain the value of the PubNub channel and 
+“error” will contain the error info.  Example usage follows:
+
+```objective-c
+- (void) pubnubClient:(PubNub *)client
+didFailParticipantsListDownloadForChannel:(PNChannel *)channel
+                                withError:(PNError *)error {
+PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download participants list for channel %@ because of error: %@", channel, error);
+}
+```
+
+####- (BOOL)shouldRunClientInBackground;
+This method returns the setting to determine if the client is configured to run in the background mode when the app goes into the background. If this method not implemented by delegate, then the app property list is read to determine if the app is configured to run in the background mode.  Example usage follows:
+
+```objective-c
+BOOL canRunInBackground = [UIApplication canRunInBackground];
+if ([self.delegate respondsToSelector:@selector(shouldRunClientInBackground)]) {
+      canRunInBackground = [self.delegate shouldRunClientInBackground];
+}
+```
+
+####- (NSNumber *)shouldReconnectPubNubClient:(PubNub *)client;  
+This is a delegate method to override the value in the configuration which was passed at the time of initialization. This method is called on reconnect, if the previous session had failed due to network issues or on first launch. This will connect the client automatically on reconnect. If called manually this will trigger hard reset of the client connection.  Example usage follows:
+
+```objective-c
+- (NSNumber *)shouldResubscribeOnConnectionRestore {
+    return @(NO);
+}
+```
+
+####- (NSNumber *)shouldResubscribeOnConnectionRestore;  
+This is a delegate method to override the value in the configuration which was passed at the time of initialization. This method is called on reconnect, if the previous session had failed due to network issues or on first launch. If this is true the subscription of the PubNub channel(s) is restored.  Example usage follows:
+
+```objective-c
+- (NSNumber *)shouldResubscribeOnConnectionRestore {
+    NSNumber *shouldResubscribeOnConnectionRestore = @(YES);
+    PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription? %@",[shouldResubscribeOnConnectionRestore boolValue]?@"YES":@"NO");
+    return shouldResubscribeOnConnectionRestore;
+}
+```
+
+####- (NSNumber *)shouldRestoreSubscriptionFromLastTimeToken;
+This is a delegate method to override the value in the configuration which was passed at the time of initialization. It is called by the library after reconnect, if the client was configured to restore subscription on channels.  Example usage follows:
+
+```objective-c
+- (NSNumber *)shouldRestoreSubscriptionFromLastTimeToken {
+      NSNumber *shouldRestoreSubscriptionFromLastTimeToken = @(NO);
+      NSString *lastTimeToken = @"0";
+if ([[PubNub subscribedChannels] count] > 0) {
+         lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
+     }
+     PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription from last time token? %@ (last time token: %@)", [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
+return shouldRestoreSubscriptionFromLastTimeToken;
+}
+```
 	
 ### Block callbacks
 
