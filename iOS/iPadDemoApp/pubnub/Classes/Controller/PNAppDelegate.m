@@ -124,12 +124,6 @@
     [self.window makeKeyAndVisible];
     
     [self initializePubNubClient];
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-    [PubNub connectWithSuccessBlock:^(NSString *origin) {
-        NSLog(@"\n\n\n\n\n\n\nCONNECTED TO: %@\n\n\n\n\n\n\n", origin);
-    } errorBlock:^(PNError *connectionError) {
-        NSLog(@"\n\n\n\n\n\n\nCONNECTION ERROR: %@\n\n\n\n\n\n\n", connectionError);
-    }];
 
     
     return YES;

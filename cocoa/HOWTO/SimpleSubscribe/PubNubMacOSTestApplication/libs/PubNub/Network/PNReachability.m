@@ -456,8 +456,16 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
 - (void)handleOriginLookupTimer {
     
+    // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
+    // allow to check network state for sure
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    BOOL shouldSuspectWrongState = self.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+#else
+    BOOL shouldSuspectWrongState = YES;
+#endif
+    
     // In case if server report that there is connection
-    if ([self isServiceAvailableForStatus:self.reachabilityStatus] && self.reachabilityStatus != PNReachabilityStatusReachableViaCellular) {
+    if ([self isServiceAvailableForStatus:self.reachabilityStatus] && shouldSuspectWrongState) {
         
         __block __pn_desired_weak __typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -478,7 +486,15 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
 - (void)handleOriginLookupCompletionWithData:(NSData *)responseData response:(NSHTTPURLResponse *)response error:(NSError *)error {
     
-    if(self.reachabilityStatus != PNReachabilityStatusReachableViaCellular) {
+    // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
+    // allow to check network state for sure
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    BOOL shouldSuspectWrongState = self.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+#else
+    BOOL shouldSuspectWrongState = YES;
+#endif
+    
+    if(shouldSuspectWrongState) {
         
         // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
         // connection state in non appropriate state
@@ -523,14 +539,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             
             isConnectionAvailable = [parser parsedData] != nil;
         }
-        
-        // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
-        // allow to check network state for sure
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-        BOOL shouldSuspectWrongState = self.lookupStatus != PNReachabilityStatusReachableViaCellular;
-#else
-        BOOL shouldSuspectWrongState = YES;
-#endif
+
         if ([self isServiceAvailableForStatus:self.reachabilityStatus] && shouldSuspectWrongState) {
             
             [self startOriginLookup:NO];
@@ -687,6 +696,12 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 }
 
 - (BOOL)isServiceReachabilityChecked {
+    
+    if ([self isSuspended]) {
+        
+        [self resume];
+    }
+    
     
     return self.status != PNReachabilityStatusUnknown;
 }
@@ -902,6 +917,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
 - (PNReachabilityStatus)status {
     
+    // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
+    // allow to check network state for sure
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     BOOL shouldSuspectWrongState = self.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
 #else

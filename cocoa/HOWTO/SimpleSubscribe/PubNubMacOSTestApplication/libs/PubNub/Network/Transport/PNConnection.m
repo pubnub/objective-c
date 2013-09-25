@@ -885,8 +885,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
 
     if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainOSStatus]) {
-
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
         isSecurityTransportError = (errSSLUnexpectedRecord <= errorCode) && (errorCode <= errSSLProtocol);
+#else
+        isSecurityTransportError = (errSSLLast <= errorCode) && (errorCode <= errSSLProtocol);
+#endif
     }
     else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
         
@@ -1248,13 +1251,13 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     
     // Check whether reconnection was issued because of SSL error or not
     if (self.sslConfigurationLevel == PNConnectionSSLConfigurationInsecure &&
-        PNBitsIsOn(&_state, YES, PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR)) {
+        PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR)) {
 
         PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RETRY CONNECTION BECAUSE OF INTERNAL SSL ERROR "
               "(STATE: %d)", self.name ? self.name : self, self.state);
     }
     // Check whether reconnection was issued because of socket temporary issues or not
-    else if (PNBitsIsOn(&_state, YES, PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR)) {
+    else if (PNBitsIsOn(self.state, YES, PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR)) {
 
         PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] RETRY CONNECTION BECAUSE OF TEMPORARY ISSUES "
                 "WITH SERVER OR SOCKET (STATE: %d)", self.name ? self.name : self, self.state);
@@ -1441,7 +1444,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     else {
 
         [self disconnectOnInternalRequest];
-        PNBitsOn(self.state, PNConnectionDisconnected, PNConnectionSuspended, BITS_LIST_TERMINATOR);
+        PNBitsOn(&_state, PNConnectionDisconnected, PNConnectionSuspended, BITS_LIST_TERMINATOR);
 
         [self.delegate connectionDidSuspend:self];
     }
