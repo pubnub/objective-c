@@ -895,6 +895,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
         // Empty connection pool after connection will be closed
         [PNConnection closeAllConnections];
+        
+        // Sumulate disconnection, because streams not capable for it at this moment
+        [[self sharedInstance] connectionChannel:nil didDisconnectFromOrigin:[self sharedInstance].configuration.origin];
     }
            postponedExecutionBlock:^{
 
@@ -2733,21 +2736,41 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"CLIENT FAILED TO CONNECT TO ORIGIN: %@ (STATE: %@)", host, [self humanReadableStateFrom:self.state]);
         
+        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
         self.connectOnServiceReachabilityCheck = NO;
         self.connectOnServiceReachability = NO;
         
+        [self.messagingChannel disconnectWithEvent:NO];
+        [self.serviceChannel disconnectWithEvent:NO];
         
-        [self.configuration shouldKillDNSCache:YES];
-        
-        // Send notification to all who is interested in it (observation center will track it as well)
-        [self notifyDelegateClientConnectionFailedWithError:error];
+        if (![self.configuration shouldKillDNSCache]) {
+            
+            PNLog(PNLogGeneralLevel, self, @"TRYING TO KILL DNS CACHE (STATE: %@)", host, [self humanReadableStateFrom:self.state]);
+            self.asyncLockingOperationInProgress = NO;
+            
+            [self.configuration shouldKillDNSCache:YES];
+            [self.messagingChannel disconnectWithEvent:NO];
+            [self.serviceChannel disconnectWithEvent:NO];
+            
+            [[self class] connect];
+        }
+        else {
+            
+            PNLog(PNLogGeneralLevel, self, @"NOTIFY DELEGATE THAT CONNECTION CAN'T BE ESTABLISHED (STATE: %@)", host, [self humanReadableStateFrom:self.state]);
+            
+            [self.configuration shouldKillDNSCache:NO];
+            
+            // Send notification to all who is interested in it (observation center will track it as well)
+            [self notifyDelegateClientConnectionFailedWithError:error];
+        }
     }
 }
 
 - (void)connectionChannel:(PNConnectionChannel *)channel didDisconnectFromOrigin:(NSString *)host {
 
     // Check whether notification arrived from channels on which PubNub library is looking at this moment
-    BOOL shouldHandleChannelEvent = [channel isEqual:self.messagingChannel] || [channel isEqual:self.serviceChannel];
+    BOOL shouldHandleChannelEvent = [channel isEqual:self.messagingChannel] || [channel isEqual:self.serviceChannel] ||
+                                    self.state == PNPubNubClientStateDisconnectingOnConfigurationChange;
 
     if (shouldHandleChannelEvent) {
 
@@ -2800,9 +2823,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         PNLog(PNLogGeneralLevel, self, @"CLIENT DISCONNECTED FROM ORIGIN: %@ (STATE: %@)", host, [self humanReadableStateFrom:self.state]);
 
         // Check whether all communication channels disconnected and whether client in corresponding state or not
-        if (self.state == PNPubNubClientStateDisconnecting ||
-            self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
-            channel == nil) {
+        if (self.state == PNPubNubClientStateDisconnecting || self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+            (channel == nil && self.state != PNPubNubClientStateDisconnectingOnConfigurationChange)) {
             
             PNError *connectionError;
             PNPubNubClientState state = PNPubNubClientStateDisconnected;

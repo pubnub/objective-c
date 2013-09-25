@@ -43,7 +43,7 @@ extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;
 /**
  * Open connection from name of the user (if flag is set to 'YES')
  */
-- (BOOL)connectByUserRequest:(BOOL)byUserRequest;
+- (BOOL)connectByInternalRequest;
 - (BOOL)isConnecting;
 - (BOOL)isReconnecting;
 - (BOOL)shouldReconnect;
@@ -54,7 +54,7 @@ extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;
 /**
  * Disconnect from name of the user (if flag is set to 'YES')
  */
-- (void)disconnectByUserRequest:(BOOL)byUserRequest;
+- (void)disconnectByInternalRequest;
 - (BOOL)isDisconnecting;
 
 /**

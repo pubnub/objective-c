@@ -17,6 +17,7 @@
 /**
  * Set whether configuration should provide DNS killing remote origin address or not
  */
+- (BOOL)shouldKillDNSCache;
 - (void)shouldKillDNSCache:(BOOL)shouldKillDNSCache;
 
 /**

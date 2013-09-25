@@ -21,6 +21,11 @@
  */
 + (NSString *)networkAddress;
 
+/**
+ * Retrieve reference on URL which should be used to ensure that origin lookup is possible
+ */
++ (NSString *)originLookupResourcePath;
+
 
 #pragma mark - WLAN information methods
 

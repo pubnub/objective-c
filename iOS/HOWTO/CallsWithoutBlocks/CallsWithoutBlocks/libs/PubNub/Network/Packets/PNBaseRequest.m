@@ -129,6 +129,11 @@
     return authorizationKey;
 }
 
+- (NSString *)requestPath {
+    
+    return [NSString stringWithFormat:@"http://%@%@", [PubNub sharedInstance].configuration.origin, [self resourcePath]];
+}
+
 - (NSString *)HTTPPayload {
 
     NSString *acceptEncoding = @"";

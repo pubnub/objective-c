@@ -9,6 +9,8 @@
 
 #import "PNNetworkHelper.h"
 #import <SystemConfiguration/SystemConfiguration.h>
+#import "PNBaseRequest+Protected.h"
+#import "PNTimeTokenRequest.h"
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #include <net/if.h>
@@ -131,6 +133,11 @@ static NSString * kPNWLANServiceSetIdentifierKey = @"SSID";
 
 
     return address;
+}
+
++ (NSString *)originLookupResourcePath {
+    
+    return [[PNTimeTokenRequest new] requestPath];
 }
 
 

@@ -126,7 +126,7 @@
     
     id mockConnenction = [OCMockObject partialMockForObject:connection];
     
-    [[mockConnenction expect] disconnectByUserRequest:(BOOL)YES];
+    [[mockConnenction expect] disconnectByInternalRequest];
     
     [mockConnenction disconnect];
     

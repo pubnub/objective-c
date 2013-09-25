@@ -318,7 +318,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
         // Destroy connection communication instance
         self.connection.delegate = nil;
-        self.connection = nil;
+        [PNConnection destroyConnection:_connection];
+        _connection = nil;
 
         disconnectionCompletionSimulation();
     }
@@ -341,7 +342,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         else {
 
             // Destroy connection communication instance
-            self.connection = nil;
+            self.connection.delegate = nil;
+            [PNConnection destroyConnection:_connection];
+            _connection = nil;
 
             disconnectionCompletionSimulation();
         }
@@ -352,8 +355,10 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DISCONNECTING... (STATE: %d)",
               self.name, self.state);
 
-
-        self.connection = nil;
+        self.connection.delegate = nil;
+        [PNConnection destroyConnection:_connection];
+        _connection = nil;
+        
         disconnectionCompletionSimulation();
     }
     else {
@@ -361,8 +366,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] ALREADY DISCONNECTED (STATE: %d)",
               self.name, self.state);
 
-
-        self.connection = nil;
+        self.connection.delegate = nil;
+        [PNConnection destroyConnection:_connection];
+        _connection = nil;
     }
 }
 
@@ -776,12 +782,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)scheduleNextRequest {
 
-    [self.connection scheduleNextRequestExecution];
+    [_connection scheduleNextRequestExecution];
 }
 
 - (void)unscheduleNextRequest {
 
-    [self.connection unscheduleRequestsExecution];
+    [_connection unscheduleRequestsExecution];
 }
 
 - (void)unscheduleRequest:(PNBaseRequest *)request {
@@ -1053,8 +1059,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 - (void)connection:(PNConnection *)connection willReconnectToHostAfterError:(NSString *)hostName {
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] WILL RESTORE CONNECTION AFTER ERROR (STATE: "
-            "%d)",
-          self.name, self.state);
+          "%d)",  self.name, self.state);
 
 
     [self stopTimeoutTimerForRequest:nil];
@@ -1223,7 +1228,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     // Check whether all streams closed or not (in case if server closed only one from read/write streams)
     if (![connection isDisconnected]) {
 
-        [connection disconnectByUserRequest:NO];
+        [connection disconnectByInternalRequest];
     }
 
 

@@ -297,6 +297,11 @@
     return isEqual;
 }
 
+- (BOOL)shouldKillDNSCache {
+    
+    return ![self.origin isEqualToString:self.realOrigin];
+}
+
 - (void)shouldKillDNSCache:(BOOL)shouldKillDNSCache {
 
     if (shouldKillDNSCache) {

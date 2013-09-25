@@ -371,7 +371,6 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         [self.originLookupTimer invalidate];
     }
     
-    self.lookupStatus = PNReachabilityStatusUnknown;
     self.originLookupTimer = nil;
 }
 
@@ -431,6 +430,9 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         PNLog(PNLogReachabilityLevel, self, @" SUSPENDED");
         self.notificationsSuspended = YES;
         [self stopOriginLookup];
+        
+        self.reachabilityStatus = PNReachabilityStatusUnknown;
+        self.lookupStatus = PNReachabilityStatusUnknown;
     }
 }
 
@@ -531,7 +533,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 #endif
         if ([self isServiceAvailableForStatus:self.reachabilityStatus] && shouldSuspectWrongState) {
             
-            [self startOriginLookup];
+            [self startOriginLookup:NO];
         }
         
         // Check whether connection still available or not
@@ -546,7 +548,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             
             // If after check reachability we find out that it has been changed from the moment of last reachability callback/refresh we trigger
             // overall reachability instance state update
-            if (self.lookupStatus != self.reachabilityStatus) {
+            if (self.lookupStatus != self.reachabilityStatus || wasDisconnectedBefore) {
                 
                 self.status = self.lookupStatus;
             }
@@ -555,7 +557,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         // network connection around or not
         else if ([self isServiceAvailableForStatus:self.reachabilityStatus]) {
             
-            PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.", [self humanReadableInterfaceFromStatus:self.status]);
+            PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.",
+                  [self humanReadableInterfaceFromStatus:self.reachabilityStatus]);
             self.lookupStatus = PNReachabilityStatusNotReachable;
             
             self.status = self.lookupStatus;
@@ -851,6 +854,9 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                 
                 [self startOriginLookup:NO];
             }
+            
+            PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub service reachability changed w/o event [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
+                  available ? @"YES" : @"NO", currentNetworkAddress, reachabilityFlags);
         }
     }
     else {
