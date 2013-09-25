@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97917F3201D00FE90CF /* Swizzler.m */; };
+		5ACCA98117F3202400FE90CF /* HowToTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA98017F3202400FE90CF /* HowToTests.m */; };
+		5ACCA98817F3207300FE90CF /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32250166DF848006DB535 /* SenTestingKit.framework */; };
+		5ACCA98917F3207300FE90CF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222C166DF847006DB535 /* UIKit.framework */; };
+		5ACCA98A17F3207300FE90CF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222E166DF847006DB535 /* Foundation.framework */; };
+		5ACCA99017F3207300FE90CF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5ACCA98E17F3207300FE90CF /* InfoPlist.strings */; };
+		5ACCA99317F3207300FE90CF /* pubnubChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99217F3207300FE90CF /* pubnubChaosTest.m */; };
+		5ACCA99B17F3208200FE90CF /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
+		5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */; };
 		7902452C167B5F6100E36546 /* PNWriteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7902452B167B5F6100E36546 /* PNWriteBuffer.m */; };
 		7902452D167B5F6100E36546 /* PNWriteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7902452B167B5F6100E36546 /* PNWriteBuffer.m */; };
 		7902B9E01679E72000DE2BBB /* PNLatencyMeasureRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7902B9DF1679E72000DE2BBB /* PNLatencyMeasureRequest.m */; };
@@ -222,6 +231,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5ACCA97817F3201D00FE90CF /* Swizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Swizzler.h; sourceTree = "<group>"; };
+		5ACCA97917F3201D00FE90CF /* Swizzler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Swizzler.m; sourceTree = "<group>"; };
+		5ACCA97A17F3201D00FE90CF /* TimeOutTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeOutTest.h; sourceTree = "<group>"; };
+		5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeOutTest.m; sourceTree = "<group>"; };
+		5ACCA97F17F3202400FE90CF /* HowToTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HowToTests.h; sourceTree = "<group>"; };
+		5ACCA98017F3202400FE90CF /* HowToTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTests.m; sourceTree = "<group>"; };
+		5ACCA98717F3207300FE90CF /* pubnubChaosTest.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pubnubChaosTest.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5ACCA98D17F3207300FE90CF /* pubnubChaosTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "pubnubChaosTest-Info.plist"; sourceTree = "<group>"; };
+		5ACCA98F17F3207300FE90CF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5ACCA99117F3207300FE90CF /* pubnubChaosTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pubnubChaosTest.h; sourceTree = "<group>"; };
+		5ACCA99217F3207300FE90CF /* pubnubChaosTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = pubnubChaosTest.m; sourceTree = "<group>"; };
+		5ACCA99417F3207300FE90CF /* pubnubChaosTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pubnubChaosTest-Prefix.pch"; sourceTree = "<group>"; };
+		5ACCA99917F3208200FE90CF /* W_ChaosTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = W_ChaosTest.h; sourceTree = "<group>"; };
+		5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = W_ChaosTest.m; sourceTree = "<group>"; };
+		5ACCA99E17F33A9700FE90CF /* PNCryptoTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNCryptoTest.h; path = PNCryptoTest/PNCryptoTest.h; sourceTree = "<group>"; };
+		5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNCryptoTest.m; path = PNCryptoTest/PNCryptoTest.m; sourceTree = "<group>"; };
 		7902452A167B5F6100E36546 /* PNWriteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNWriteBuffer.h; sourceTree = "<group>"; };
 		7902452B167B5F6100E36546 /* PNWriteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNWriteBuffer.m; sourceTree = "<group>"; };
 		7902452E167B69FF00E36546 /* PNBaseRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNBaseRequest+Protected.h"; sourceTree = "<group>"; };
@@ -461,6 +486,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5ACCA98317F3207300FE90CF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5ACCA98817F3207300FE90CF /* SenTestingKit.framework in Frameworks */,
+				5ACCA98917F3207300FE90CF /* UIKit.framework in Frameworks */,
+				5ACCA98A17F3207300FE90CF /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79C32225166DF847006DB535 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -495,6 +530,64 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5ACCA97717F3201D00FE90CF /* TimeOutTest */ = {
+			isa = PBXGroup;
+			children = (
+				5ACCA97817F3201D00FE90CF /* Swizzler.h */,
+				5ACCA97917F3201D00FE90CF /* Swizzler.m */,
+				5ACCA97A17F3201D00FE90CF /* TimeOutTest.h */,
+				5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */,
+			);
+			path = TimeOutTest;
+			sourceTree = "<group>";
+		};
+		5ACCA97E17F3202400FE90CF /* HowToTests */ = {
+			isa = PBXGroup;
+			children = (
+				5ACCA97F17F3202400FE90CF /* HowToTests.h */,
+				5ACCA98017F3202400FE90CF /* HowToTests.m */,
+			);
+			path = HowToTests;
+			sourceTree = "<group>";
+		};
+		5ACCA98B17F3207300FE90CF /* pubnubChaosTest */ = {
+			isa = PBXGroup;
+			children = (
+				5ACCA99117F3207300FE90CF /* pubnubChaosTest.h */,
+				5ACCA99217F3207300FE90CF /* pubnubChaosTest.m */,
+				5ACCA98C17F3207300FE90CF /* Supporting Files */,
+			);
+			path = pubnubChaosTest;
+			sourceTree = "<group>";
+		};
+		5ACCA98C17F3207300FE90CF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5ACCA98D17F3207300FE90CF /* pubnubChaosTest-Info.plist */,
+				5ACCA98E17F3207300FE90CF /* InfoPlist.strings */,
+				5ACCA99417F3207300FE90CF /* pubnubChaosTest-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5ACCA99817F3208200FE90CF /* ChaosTest */ = {
+			isa = PBXGroup;
+			children = (
+				5ACCA99917F3208200FE90CF /* W_ChaosTest.h */,
+				5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */,
+			);
+			path = ChaosTest;
+			sourceTree = "<group>";
+		};
+		5ACCA99D17F33A5800FE90CF /* PNCryptoTest */ = {
+			isa = PBXGroup;
+			children = (
+				5ACCA99E17F33A9700FE90CF /* PNCryptoTest.h */,
+				5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */,
+			);
+			name = PNCryptoTest;
+			sourceTree = "<group>";
+		};
 		79024528167B5F3B00E36546 /* Buffers */ = {
 			isa = PBXGroup;
 			children = (
@@ -627,6 +720,7 @@
 			children = (
 				79C32232166DF847006DB535 /* pubnub */,
 				79C32256166DF848006DB535 /* pubnubTests */,
+				5ACCA98B17F3207300FE90CF /* pubnubChaosTest */,
 				79C3222B166DF847006DB535 /* Frameworks */,
 				79C32229166DF847006DB535 /* Products */,
 			);
@@ -637,6 +731,7 @@
 			children = (
 				79C32228166DF847006DB535 /* pubnub.app */,
 				79C3224F166DF848006DB535 /* pubnubTests.octest */,
+				5ACCA98717F3207300FE90CF /* pubnubChaosTest.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -680,6 +775,10 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5ACCA99D17F33A5800FE90CF /* PNCryptoTest */,
+				5ACCA99817F3208200FE90CF /* ChaosTest */,
+				5ACCA97E17F3202400FE90CF /* HowToTests */,
+				5ACCA97717F3201D00FE90CF /* TimeOutTest */,
 				9645C0FA174FDA7D00F82D09 /* RequestTests */,
 				79DC835F1773A8680061A76C /* PNCryptoHelperTest.h */,
 				79DC83601773A8680061A76C /* PNCryptoHelperTest.m */,
@@ -1036,6 +1135,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5ACCA98617F3207300FE90CF /* pubnubChaosTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5ACCA99517F3207400FE90CF /* Build configuration list for PBXNativeTarget "pubnubChaosTest" */;
+			buildPhases = (
+				5ACCA98217F3207300FE90CF /* Sources */,
+				5ACCA98317F3207300FE90CF /* Frameworks */,
+				5ACCA98417F3207300FE90CF /* Resources */,
+				5ACCA98517F3207300FE90CF /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = pubnubChaosTest;
+			productName = pubnubChaosTest;
+			productReference = 5ACCA98717F3207300FE90CF /* pubnubChaosTest.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		79C32227166DF847006DB535 /* pubnub */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 79C32261166DF848006DB535 /* Build configuration list for PBXNativeTarget "pubnub" */;
@@ -1096,11 +1213,20 @@
 			targets = (
 				79C32227166DF847006DB535 /* pubnub */,
 				79C3224E166DF848006DB535 /* pubnubTests */,
+				5ACCA98617F3207300FE90CF /* pubnubChaosTest */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5ACCA98417F3207300FE90CF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5ACCA99017F3207300FE90CF /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79C32226166DF847006DB535 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1161,6 +1287,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		5ACCA98517F3207300FE90CF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
 		79C3224D166DF848006DB535 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1177,6 +1316,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5ACCA98217F3207300FE90CF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5ACCA99317F3207300FE90CF /* pubnubChaosTest.m in Sources */,
+				5ACCA99B17F3208200FE90CF /* W_ChaosTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79C32224166DF847006DB535 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1330,6 +1478,9 @@
 				DD71B0AD141CDCDA0B429436 /* NSDate+PNAdditions.m in Sources */,
 				DD71BA1EF7F550439DC89C28 /* UIApplication+PNAdditions.m in Sources */,
 				DD71B84F04A062C955ED3457 /* PNNetworkHelper.m in Sources */,
+				5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */,
+				5ACCA98117F3202400FE90CF /* HowToTests.m in Sources */,
+				5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1344,6 +1495,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		5ACCA98E17F3207300FE90CF /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5ACCA98F17F3207300FE90CF /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		79C32259166DF848006DB535 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1355,6 +1514,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		5ACCA99617F3207400FE90CF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "pubnubChaosTest/pubnubChaosTest-Prefix.pch";
+				INFOPLIST_FILE = "pubnubChaosTest/pubnubChaosTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		5ACCA99717F3207400FE90CF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "pubnubChaosTest/pubnubChaosTest-Prefix.pch";
+				INFOPLIST_FILE = "pubnubChaosTest/pubnubChaosTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 		79C3225F166DF848006DB535 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1364,8 +1561,8 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sergiy Fesenko (Y8JZQ7JQ9A)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sergiy Fesenko (Y8JZQ7JQ9A)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Vadym Osovets (TS2DHB4U39)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vadym Osovets (TS2DHB4U39)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1380,8 +1577,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "44266222-37E9-425F-BE5C-90665E49F0E1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "44266222-37E9-425F-BE5C-90665E49F0E1";
+				PROVISIONING_PROFILE = "FC1E0E1D-5D87-4BAA-A7DA-ADCB4CF80A95";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FC1E0E1D-5D87-4BAA-A7DA-ADCB4CF80A95";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = 2;
@@ -1397,7 +1594,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sergiy Fesenko (Y8JZQ7JQ9A)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Vadym Osovets (TS2DHB4U39)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sergiy Fesenko (Y8JZQ7JQ9A)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1406,7 +1603,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "44266222-37E9-425F-BE5C-90665E49F0E1";
+				PROVISIONING_PROFILE = "FC1E0E1D-5D87-4BAA-A7DA-ADCB4CF80A95";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "44266222-37E9-425F-BE5C-90665E49F0E1";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -1418,16 +1615,14 @@
 		79C32262166DF848006DB535 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pubnub/pubnub-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/pubnub/Resources/General/pubnub-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1435,16 +1630,14 @@
 		79C32263166DF848006DB535 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pubnub/pubnub-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/pubnub/Resources/General/pubnub-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1452,6 +1645,7 @@
 		79C32265166DF848006DB535 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = armv7;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/pubnub.app/pubnub";
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
@@ -1459,6 +1653,11 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pubnub/pubnub-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"CRYPTO_BACKWARD_COMPATIBILITY_MODE=1",
+				);
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/include\"";
 				INFOPLIST_FILE = "pubnubTests/pubnubTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/lib\"";
@@ -1469,6 +1668,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -1476,6 +1676,7 @@
 		79C32266166DF848006DB535 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = armv7;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/pubnub.app/pubnub";
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
@@ -1493,6 +1694,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
@@ -1500,6 +1702,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5ACCA99517F3207400FE90CF /* Build configuration list for PBXNativeTarget "pubnubChaosTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5ACCA99617F3207400FE90CF /* Debug */,
+				5ACCA99717F3207400FE90CF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		79C32222166DF847006DB535 /* Build configuration list for PBXProject "pubnub" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
