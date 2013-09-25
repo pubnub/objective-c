@@ -1837,14 +1837,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         BOOL canSendData = [self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
                            !PNBitsIsOn(self.state, YES, PNConnectionDisconnect, PNByServerRequest,
                                                         BITS_LIST_TERMINATOR) &&
-                           self.writeBuffer != nil && self.isWriteStreamCanHandleData;
+                           self.isWriteStreamCanHandleData;
         canSendData = canSendData && ![self isResuming];
 
         return canSendData;
     };
 
     // Check whether there is connection which can be used to write data
-    if (writeStreamIsAbleToSend()) {
+    if (writeStreamIsAbleToSend() && self.writeBuffer != nil) {
 
         PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::WRITE] WRITE BUFFER CONTENT (STATE: %d)",
               self.name ? self.name : self, self.state);
@@ -1873,7 +1873,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         [self.dataSource connection:self processingRequestWithIdentifier:self.writeBuffer.requestIdentifier];
                     }
 
-                    if (writeStreamIsAbleToSend()) {
+                    if (writeStreamIsAbleToSend() && self.writeBuffer != nil) {
 
                         // Try write data into write stream
                         CFIndex bytesWritten = CFWriteStreamWrite(self.socketWriteStream, [self.writeBuffer buffer],
