@@ -36,7 +36,8 @@
 	[objects addObject: @{@"strings":@"asdfasdfasdfasdf asfasd"}];
 //	[objects addObject: @{@"strings":[NSNumber numberWithFloat: 1231.435]}];
 	[objects addObject: @{@"string ad aldjsasjhfd asdkfjh s":strings}];
-	[objects addObject: @{@"string ad ald3452345	#$%^@#!#$^$%&jsasjhfd asdkfjh s":@{@"asdfgadsf":@"value"}}];
+	[objects addObject: @{@"string ad ald3452345	#$%^@#!#$^$%&jswergasjhfd asdkfjh s":@{@"asdfgadsf":@"value"}}];
+	[objects addObject: @{@"string ad ald3452345	#$%^@#!#$^$%&jsasjhfd asdkfjh s":@{@"asdfgadsf":@"value", @"arr":@[@"asdf", @"ssdfgsdf", [NSString stringWithFormat:@"%@", [NSDate date]]]}}];
 	NSMutableArray *arr = [strings copy];
 	[objects addObject: [arr arrayByAddingObject: strings]];
 ///////////////////////////////////////

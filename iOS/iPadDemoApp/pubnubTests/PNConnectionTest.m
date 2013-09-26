@@ -139,4 +139,9 @@
 	return YES;
 }
 
+- (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName {
+
+}
+
+
 @end

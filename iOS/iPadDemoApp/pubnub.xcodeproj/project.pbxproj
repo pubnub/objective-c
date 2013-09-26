@@ -16,6 +16,7 @@
 		5ACCA99317F3207300FE90CF /* pubnubChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99217F3207300FE90CF /* pubnubChaosTest.m */; };
 		5ACCA99B17F3208200FE90CF /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
 		5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */; };
+		5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */; };
 		7902452C167B5F6100E36546 /* PNWriteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7902452B167B5F6100E36546 /* PNWriteBuffer.m */; };
 		7902452D167B5F6100E36546 /* PNWriteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7902452B167B5F6100E36546 /* PNWriteBuffer.m */; };
 		7902B9E01679E72000DE2BBB /* PNLatencyMeasureRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7902B9DF1679E72000DE2BBB /* PNLatencyMeasureRequest.m */; };
@@ -247,6 +248,8 @@
 		5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = W_ChaosTest.m; sourceTree = "<group>"; };
 		5ACCA99E17F33A9700FE90CF /* PNCryptoTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNCryptoTest.h; path = PNCryptoTest/PNCryptoTest.h; sourceTree = "<group>"; };
 		5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNCryptoTest.m; path = PNCryptoTest/PNCryptoTest.m; sourceTree = "<group>"; };
+		5ACF73C917F417F80058E029 /* PNSubscribeUnsubscribeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNSubscribeUnsubscribeTest.h; path = PNSubscribeUnsubscribeTest/PNSubscribeUnsubscribeTest.h; sourceTree = "<group>"; };
+		5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNSubscribeUnsubscribeTest.m; path = PNSubscribeUnsubscribeTest/PNSubscribeUnsubscribeTest.m; sourceTree = "<group>"; };
 		7902452A167B5F6100E36546 /* PNWriteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNWriteBuffer.h; sourceTree = "<group>"; };
 		7902452B167B5F6100E36546 /* PNWriteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNWriteBuffer.m; sourceTree = "<group>"; };
 		7902452E167B69FF00E36546 /* PNBaseRequest+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNBaseRequest+Protected.h"; sourceTree = "<group>"; };
@@ -588,6 +591,15 @@
 			name = PNCryptoTest;
 			sourceTree = "<group>";
 		};
+		5ACF73C817F4179E0058E029 /* PNSubscribeUnsubscribeTest */ = {
+			isa = PBXGroup;
+			children = (
+				5ACF73C917F417F80058E029 /* PNSubscribeUnsubscribeTest.h */,
+				5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */,
+			);
+			name = PNSubscribeUnsubscribeTest;
+			sourceTree = "<group>";
+		};
 		79024528167B5F3B00E36546 /* Buffers */ = {
 			isa = PBXGroup;
 			children = (
@@ -775,6 +787,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5ACF73C817F4179E0058E029 /* PNSubscribeUnsubscribeTest */,
 				5ACCA99D17F33A5800FE90CF /* PNCryptoTest */,
 				5ACCA99817F3208200FE90CF /* ChaosTest */,
 				5ACCA97E17F3202400FE90CF /* HowToTests */,
@@ -1481,6 +1494,7 @@
 				5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */,
 				5ACCA98117F3202400FE90CF /* HowToTests.m in Sources */,
 				5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */,
+				5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

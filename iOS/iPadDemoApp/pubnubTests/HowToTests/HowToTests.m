@@ -652,7 +652,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
 //    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"chaos.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: @"key"];
+	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: @"key"];
 //	//	configuration.autoReconnectClient = NO;
 	[PubNub setConfiguration: configuration];
 
