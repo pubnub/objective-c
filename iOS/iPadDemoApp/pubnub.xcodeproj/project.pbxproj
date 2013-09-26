@@ -13,7 +13,6 @@
 		5ACCA98917F3207300FE90CF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222C166DF847006DB535 /* UIKit.framework */; };
 		5ACCA98A17F3207300FE90CF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222E166DF847006DB535 /* Foundation.framework */; };
 		5ACCA99017F3207300FE90CF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5ACCA98E17F3207300FE90CF /* InfoPlist.strings */; };
-		5ACCA99317F3207300FE90CF /* pubnubChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99217F3207300FE90CF /* pubnubChaosTest.m */; };
 		5ACCA99B17F3208200FE90CF /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
 		5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */; };
 		5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */; };
@@ -1333,7 +1332,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5ACCA99317F3207300FE90CF /* pubnubChaosTest.m in Sources */,
 				5ACCA99B17F3208200FE90CF /* W_ChaosTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
