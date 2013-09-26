@@ -38,7 +38,7 @@
 
 static NSString * const kPNLibraryVersion = @"3.5.0";
 static NSString * const kPNCodebaseBranch = @"hotfix-t128";
-static NSString * const kPNCodeCommitIdentifier = @"10cd4190b9752bf42822fa114c01e6855c664f56";
+static NSString * const kPNCodeCommitIdentifier = @"731267c9f4a7080beff67938800e25e4ab1ced99";
 
 
 // Stores reference on singleton PubNub instance
@@ -376,7 +376,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 /**
  * Check whether delegate should be notified about some runtime event (errors will be notified w/o regard to this flag)
  */
-- (BOOL)shouldNotifyAboutEvent;
+- (BOOL)shouldChannelNotifyAboutEvent:(PNConnectionChannel *)channel;
 
 /**
  * Check whether client should restore subscription to previous channels or not
@@ -3537,7 +3537,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO SUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.messagingChannel]) {
             
             // Check whether delegate is able to handle subscription error
             // or not
@@ -3563,7 +3563,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO UNSUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.messagingChannel]) {
             
             // Check whether delegate is able to handle unsubscription error
             // or not
@@ -3589,7 +3589,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO ENABLE PRESENCE (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate is able to handle unsubscription error
             // or not
@@ -3616,7 +3616,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO DISABLE PRESENCE (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate is able to handle unsubscription error
             // or not
@@ -3643,7 +3643,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO ENABLED PUSH NOTIFICATION ON CHANNEL (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate is able to handle push notification enabling error
             // or not
@@ -3672,7 +3672,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO DISABLE PUSH NOTIFICATIONS ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate is able to handle push notification enabling error
             // or not
@@ -3702,7 +3702,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         PNLog(PNLogGeneralLevel, self, @"FAILED TO REMOVE REMOVE PUSH NOTIFICATIONS FROM ALL CHANNELS (STATE: %@)",
               [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate is able to handle push notifications removal error
             // or not
@@ -3732,7 +3732,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         PNLog(PNLogGeneralLevel, self, @"FAILED TO REQUEST PUSH NOTIFICATION ENABLED CHANNELS (STATE: %@)",
               [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate is able to handle push notifications removal error
             // or not
@@ -3761,7 +3761,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO RETRIEVE TIME TOKEN (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate is able to handle time token retrieval
             // error or not
@@ -3788,7 +3788,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO SEND MESSAGE (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate is able to handle message sending error or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didFailMessageSend:withError:)]) {
@@ -3812,7 +3812,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO DOWNLOAD HISTORY (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate us able to handle message history download error
             // or not
@@ -3837,7 +3837,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO DOWNLOAD PARTICIPANTS LIST (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:self.serviceChannel]) {
             
             // Check whether delegate us able to handle participants list
             // download error or not
@@ -3964,19 +3964,20 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     return shouldRestoreSubscription;
 }
 
-- (BOOL)shouldNotifyAboutEvent {
-
-    BOOL shouldNotifyAboutEvent = (self.state != PNPubNubClientStateCreated) &&
-                                  (self.state != PNPubNubClientStateConnecting) &&
-                                  (self.state != PNPubNubClientStateDisconnecting) &&
-                                  (self.state != PNPubNubClientStateDisconnected) &&
-                                  (self.state != PNPubNubClientStateReset);
-
-    PNLog(PNLogGeneralLevel, self, @"SHOULD NOTIFY DELEGATE? %@ (STATE: %@)", shouldNotifyAboutEvent ? @"YES" : @"NO",
-          [self humanReadableStateFrom:self.state]);
-
+- (BOOL)shouldChannelNotifyAboutEvent:(PNConnectionChannel *)channel {
     
-    return shouldNotifyAboutEvent;
+    BOOL shouldChannelNotifyAboutEvent = NO;
+    if (self.state != PNPubNubClientStateCreated && self.state != PNPubNubClientStateDisconnecting &&
+        self.state != PNPubNubClientStateDisconnected && self.state != PNPubNubClientStateReset &&
+        (self.state == PNPubNubClientStateConnecting || self.state == PNPubNubClientStateConnected)) {
+        
+        shouldChannelNotifyAboutEvent = [channel isConnected];
+    }
+    PNLog(PNLogGeneralLevel, self, @"SHOULD CHANNEL NOTIFY DELEGATE? %@ (STATE: %@)", shouldChannelNotifyAboutEvent ? @"YES" : @"NO",
+          [self humanReadableStateFrom:self.state]);
+    
+    
+    return shouldChannelNotifyAboutEvent;
 }
 
 - (BOOL)shouldRestoreSubscriptionWithLastTimeToken {
@@ -4051,7 +4052,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"SUBSCRIBED ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
 
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
 
             // Check whether delegate can handle subscription on channel or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
@@ -4091,7 +4092,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNLog(PNLogGeneralLevel, self, @"RESTORED SUBSCRIPTION ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
 
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
 
             // Check whether delegate can handle subscription restore on channels or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
@@ -4136,7 +4137,7 @@ didFailSubscribeOnChannels:(NSArray *)channels
 
         PNLog(PNLogGeneralLevel, self, @"UNSUBSCRIBED FROM CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
 
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
 
             // Check whether delegate can handle unsubscription event or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)]) {
@@ -4180,7 +4181,7 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
         PNLog(PNLogGeneralLevel, self, @"DID ENABLE PRESENCE ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
             
             // Check whether delegate can handle new message arrival or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)]) {
@@ -4225,7 +4226,7 @@ didFailPresenceEnablingOnChannels:(NSArray *)channels
 
         PNLog(PNLogGeneralLevel, self, @"DID DISABLE PRESENCE ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
             
             // Check whether delegate can handle new message arrival or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)]) {
@@ -4256,7 +4257,7 @@ didFailPresenceDisablingOnChannels:(NSArray *)channels
 
     PNLog(PNLogGeneralLevel, self, @"RECEIVED MESSAGE (STATE: %@)", [self humanReadableStateFrom:self.state]);
     
-    if ([self shouldNotifyAboutEvent]) {
+    if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
         
         // Check whether delegate can handle new message arrival or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessage:)]) {
@@ -4283,7 +4284,7 @@ didFailPresenceDisablingOnChannels:(NSArray *)channels
 
     PNLog(PNLogGeneralLevel, self, @"RECEIVED EVENT (STATE: %@)", [self humanReadableStateFrom:self.state]);
     
-    if ([self shouldNotifyAboutEvent]) {
+    if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
         
         // Check whether delegate can handle presence event arrival or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceivePresenceEvent:)]) {
@@ -4309,7 +4310,7 @@ didFailPresenceDisablingOnChannels:(NSArray *)channels
 
         PNLog(PNLogGeneralLevel, self, @"RECEIVED TIME TOKEN (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
             
             // Check whether delegate can handle time token retrieval or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveTimeToken:)]) {
@@ -4339,7 +4340,7 @@ didFailPresenceDisablingOnChannels:(NSArray *)channels
 
         PNLog(PNLogGeneralLevel, self, @"ENABLED PUSH NOTIFICATIONS ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
             
             // Check whether delegate is able to handle push notification enabled event or not
             SEL selector = @selector(pubnubClient:didEnablePushNotificationsOnChannels:);
@@ -4374,7 +4375,7 @@ didFailPushNotificationEnableForChannels:(NSArray *)channels
 
         PNLog(PNLogGeneralLevel, self, @"DISABLED PUSH NOTIFICATIONS ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
             
             // Check whether delegate is able to handle push notification disable event or not
             SEL selector = @selector(pubnubClient:didDisablePushNotificationsOnChannels:);
@@ -4409,7 +4410,7 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
 
         PNLog(PNLogGeneralLevel, self, @"REMOVED PUSH NOTIFICATIONS FROM ALL CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
             
             // Check wheter delegate is able to handle successful push notification removal from
             // all channels or not
@@ -4442,7 +4443,7 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
 
         PNLog(PNLogGeneralLevel, self, @"DID RECEIVE PUSH NOTIFICATINO ENABLED CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
             
             // Check whether delegate is able to handle push notification enabled
             // channels retrieval or not
@@ -4480,7 +4481,7 @@ didReceiveNetworkLatency:(double)latency
 
     PNLog(PNLogGeneralLevel, self, @"WILL SEND MESSAGE (STATE: %@)", [self humanReadableStateFrom:self.state]);
     
-    if ([self shouldNotifyAboutEvent]) {
+    if ([self shouldChannelNotifyAboutEvent:channel]) {
         
         // Check whether delegate can handle message sending event or not
         if ([self.delegate respondsToSelector:@selector(pubnubClient:willSendMessage:)]) {
@@ -4503,7 +4504,7 @@ didReceiveNetworkLatency:(double)latency
 
         PNLog(PNLogGeneralLevel, self, @"DID SEND MESSAGE (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
             
             // Check whether delegate can handle message sent event or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didSendMessage:)]) {
@@ -4536,7 +4537,7 @@ didReceiveNetworkLatency:(double)latency
 
         PNLog(PNLogGeneralLevel, self, @"DID RECEIVE HISTORY ON CHANNEL (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:serviceChannel]) {
             
             // Check whether delegate can response on history download event or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveMessageHistory:forChannel:startingFrom:to:)]) {
@@ -4571,7 +4572,7 @@ didReceiveNetworkLatency:(double)latency
     [self handleLockingOperationBlockCompletion:^{
         PNLog(PNLogGeneralLevel, self, @"DID RECEIVE PARTICIPANTS LIST (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        if ([self shouldNotifyAboutEvent]) {
+        if ([self shouldChannelNotifyAboutEvent:serviceChannel]) {
             
             // Check whether delegate can response on participants list download event or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsList:forChannel:)]) {

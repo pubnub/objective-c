@@ -31,7 +31,7 @@
 
 #pragma mark Static
 
-static int64_t const kPNReachabilityNetworkSwitchSimulationDelay = 1;
+static int64_t const kPNReachabilityNetworkSwitchSimulationDelay = 2;
 
 
 #pragma mark Structures
@@ -263,7 +263,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         reachabilityMonitor.reachabilityFlags = flags;
         reachabilityMonitor.reachabilityStatus = status;
         
-        if ([reachabilityMonitor isServiceAvailableForStatus:status]) {
+        if (available) {
             
             [reachabilityMonitor startOriginLookup];
         }
@@ -276,8 +276,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         else {
             
             PNLog(PNLogReachabilityLevel, reachabilityMonitor, @"{CALLBACK} PubNub services reachability change ignored because origin lookup support "
-                  "system reported different state (%@) [CONNECTED? %@]", [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus],
-                  available ? @"YES" : @"NO");
+                  "system reported different state (%@ / %@) [CONNECTED? %@]", [reachabilityMonitor humanReadableStatus:reachabilityMonitor.reachabilityStatus],
+                   [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus], available ? @"YES" : @"NO");
         }
     }
     else {
@@ -448,6 +448,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
         PNLog(PNLogReachabilityLevel, self, @" RESUMED");
         self.notificationsSuspended = NO;
+        [self startOriginLookup];
     }
 }
 
@@ -767,6 +768,13 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         currentNetworkAddress = @"'not assigned'";
     }
     
+    // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
+    // allow to check network state for sure
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    BOOL shouldSuspectWrongState = updatedStatus != PNReachabilityStatusReachableViaCellular;
+#else
+    BOOL shouldSuspectWrongState = YES;
+#endif
     
     if (![self isServiceAvailableForStatus:updatedStatus] ||
         ([self isServiceAvailableForStatus:self.status] && [self isServiceAvailableForStatus:updatedStatus])) {
@@ -858,13 +866,6 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             
             _status = updatedStatus;
             
-            // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
-            // allow to check network state for sure
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-            BOOL shouldSuspectWrongState = updatedStatus != PNReachabilityStatusReachableViaCellular;
-#else
-            BOOL shouldSuspectWrongState = YES;
-#endif
             if ([self isServiceAvailableForStatus:updatedStatus] && shouldSuspectWrongState) {
                 
                 [self startOriginLookup:NO];
@@ -876,9 +877,14 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     }
     else {
         
+        if ([self isServiceAvailableForStatus:updatedStatus] && shouldSuspectWrongState) {
+            
+            [self startOriginLookup:NO];
+        }
+        
         PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub services reachability change ignored because origin lookup support "
-              "system reported different state (%@) [CONNECTED? %@]", [self humanReadableStatus:self.lookupStatus],
-              [self isServiceAvailableForStatus:self.lookupStatus] ? @"YES" : @"NO");
+              "system reported different state (%@ / %@) [CONNECTED? %@]", [self humanReadableStatus:self.reachabilityStatus],
+              [self humanReadableStatus:self.lookupStatus], [self isServiceAvailableForStatus:self.lookupStatus] ? @"YES" : @"NO");
     }
 
 
