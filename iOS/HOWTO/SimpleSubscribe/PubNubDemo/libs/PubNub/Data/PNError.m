@@ -187,6 +187,8 @@
                 break;
             case kPNClientConnectionFailedOnInternetFailureError:
             case kPNClientConnectionClosedOnSSLNegotiationFailureError:
+            case kPNClientConnectionClosedOnServerRequestError:
+            case kPNClientConnectionClosedOnSocketsError:
                 
                 errorDescription = @"PubNub client connection failed";
                 break;
@@ -304,6 +306,15 @@
         case kPNClientConnectionClosedOnSSLNegotiationFailureError:
 
             failureReason = @"Looks like client was unable to connect to remote PubNub services becuase of security issues (SSL)";
+            break;
+        case kPNClientConnectionClosedOnSocketsError:
+            
+            failureReason = @"Looks like system was unable to allocate and/or support connection";
+            break;
+        case kPNClientConnectionClosedOnServerRequestError:
+            
+            failureReason = @"Looks like client was unable to connect to remote PubNub services becuase server refuse to accept connection (or there "
+                            @"is no connection behind gateway) or reset connection";
             break;
         case kPNRequestExecutionFailedOnInternetFailureError:
         case kPNClientConnectionClosedOnInternetFailureError:
@@ -438,6 +449,14 @@
         case kPNClientConnectionClosedOnSSLNegotiationFailureError:
 
             fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again. If this issue still persist, please contact with support team at support@pubnub.com to ask them investigate issue with SSL certificates on servers.";
+            break;
+        case kPNClientConnectionClosedOnServerRequestError:
+            
+            fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again. If this issue still persist, please contact with support team at support@pubnub.com to ask them investigate issue with connectino drop by server.";
+            break;
+        case kPNClientConnectionClosedOnSocketsError:
+            
+            fixSuggestion = @"Try repeat request later.";
             break;
         case kPNConnectionErrorOnSetup:
             

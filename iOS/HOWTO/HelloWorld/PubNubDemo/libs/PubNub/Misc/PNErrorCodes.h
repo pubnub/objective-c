@@ -30,91 +30,97 @@ static NSInteger const kPNClientConnectionClosedOnInternetFailureError = 103;
 // PubNub client disconnected because of SSL issues
 static NSInteger const kPNClientConnectionClosedOnSSLNegotiationFailureError = 104;
 
+// PubNub client disconnected because of server request (connection refure/reset)
+static NSInteger const kPNClientConnectionClosedOnServerRequestError = 105;
+
+// PubNub client disconnected because system wasn't able to initalize and support connection sockets
+static NSInteger const kPNClientConnectionClosedOnSocketsError = 106;
+
 // PubNub client failed to execute request because there is no connection which can be used to reach PubNub services
-static NSInteger const kPNRequestExecutionFailedOnInternetFailureError = 105;
+static NSInteger const kPNRequestExecutionFailedOnInternetFailureError = 107;
 
 // PubNub client failed to execute request because of client not ready
-static NSInteger const kPNRequestExecutionFailedClientNotReadyError = 106;
+static NSInteger const kPNRequestExecutionFailedClientNotReadyError = 108;
 
 // PubNub client failed to execute request because of timeout
-static NSInteger const kPNRequestExecutionFailedByTimeoutError = 107;
+static NSInteger const kPNRequestExecutionFailedByTimeoutError = 109;
 
 // PubNub client failed to use presence API because it is not enabled in used account
-static NSInteger const kPNPresenceAPINotAvailableError = 108;
+static NSInteger const kPNPresenceAPINotAvailableError = 110;
 
 // PubNub service refuse to process request because it has wrong JSON format
-static NSInteger const kPNInvalidJSONError = 109;
+static NSInteger const kPNInvalidJSONError = 111;
 
 // PubNub service refuse to process request because it has wrong subscribe/publish key
-static NSInteger const kPNInvalidSubscribeOrPublishKeyError = 110;
+static NSInteger const kPNInvalidSubscribeOrPublishKeyError = 112;
 
 // PubNub service refuse to process message sending because it is too long
-static NSInteger const kPNTooLongMessageError = 111;
+static NSInteger const kPNTooLongMessageError = 113;
 
 // PubNub service reported that restricted characters has been used in channel name and request can't be processed
-static NSInteger const kPNRestrictedCharacterInChannelNameError = 112;
+static NSInteger const kPNRestrictedCharacterInChannelNameError = 114;
 
 // PubNub service reported that there is no authorization key specified and resource not available w/o it
-static NSInteger const kPNAPIUnauthorizedAccessError = 113;
+static NSInteger const kPNAPIUnauthorizedAccessError = 115;
 
 // PubNub service reported that wrong authorization has been used for request
-static NSInteger const kPNAPIAccessForbiddenError = 114;
+static NSInteger const kPNAPIAccessForbiddenError = 116;
 
 
 #pragma mark - Cryptography error
 
 // Developer tried to initialize Cryptor helper with configuration which doesn't has cipher key in it
-static NSInteger const kPNCryptoEmptyCipherKeyError = 115;
+static NSInteger const kPNCryptoEmptyCipherKeyError = 117;
 
 // Error occurred during cryptor initialization because of error in provided parameters
-static NSInteger const kPNCryptoIllegalInitializationParametersError = 116;
+static NSInteger const kPNCryptoIllegalInitializationParametersError = 118;
 
 // Error occurred because buffer with insufficient size was provided for encrypted/decrypted data output
-static NSInteger const kPNCryptoInsufficentBufferSizeError = 117;
+static NSInteger const kPNCryptoInsufficentBufferSizeError = 119;
 
 // Error occurred in case if during cryptor operation there was not enough memory for it's operation
-static NSInteger const kPNCryptoInsufficentMemoryError = 118;
+static NSInteger const kPNCryptoInsufficentMemoryError = 120;
 
 // Error occurred because input data wasn't properly aligned
-static NSInteger const kPNCryptoAligmentInputDataError = 119;
+static NSInteger const kPNCryptoAligmentInputDataError = 121;
 
 // Error occurred during input data encode/decode process
-static NSInteger const kPNCryptoInputDataProcessingError = 120;
+static NSInteger const kPNCryptoInputDataProcessingError = 122;
 
 // Error occurred if developer try to use one of features which is not available in specified algorithm
-static NSInteger const kPNCryptoUnavailableFeatureError = 121;
+static NSInteger const kPNCryptoUnavailableFeatureError = 123;
 
 
 
 #pragma mark - Developers error (caused by developer)
 
 // Developer tries to submit empty (nil) request by passing no message object to PubNub service
-static NSInteger const kPNMessageObjectError = 122;
+static NSInteger const kPNMessageObjectError = 124;
 
 // Developer tried to submit message w/o text to PubNub service
-static NSInteger const kPNMessageHasNoContentError = 123;
+static NSInteger const kPNMessageHasNoContentError = 125;
 
 // Developer tried to submit message w/o target channel to PubNub service
-static NSInteger const kPNMessageHasNoChannelError = 124;
+static NSInteger const kPNMessageHasNoChannelError = 126;
 
 // Developer tried to use APNS API w/o enabling push notifications support on admin.punub.com
-static NSInteger const kPNPushNotificationsNotEnabledError = 125;
+static NSInteger const kPNPushNotificationsNotEnabledError = 127;
 
 // Developer tried to use empty device push notification to enable push notification on specified channel
-static NSInteger const kPNDevicePushTokenIsEmptyError = 126;
+static NSInteger const kPNDevicePushTokenIsEmptyError = 128;
 
 
 #pragma mark - Service error (caused by remote server)
 
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 127;
+static NSInteger const kPNResponseEncodingError = 129;
 
 // Server provided response with malformed JSON in it (in such cases library will try to resend request to
 // remote origin)
-static NSInteger const kPNResponseMalformedJSONError = 128;
+static NSInteger const kPNResponseMalformedJSONError = 130;
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some errors
-static NSInteger const kPNConnectionErrorOnSetup = 129;
+static NSInteger const kPNConnectionErrorOnSetup = 131;

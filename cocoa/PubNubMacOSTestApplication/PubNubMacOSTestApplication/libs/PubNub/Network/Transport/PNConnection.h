@@ -63,6 +63,8 @@
 #pragma mark - Connection management
 
 - (BOOL)connect;
+- (BOOL)canRetryConnection;
+- (void)retryConnection;
 - (BOOL)isConnected;
 
 - (void)disconnect;
