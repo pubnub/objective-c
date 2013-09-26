@@ -39,6 +39,13 @@
             #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 1
         #endif // MAC_OS_X_VERSION_MIN_REQUIRED >= 1080
     #endif // __IPHONE_OS_VERSION_MIN_REQUIRED
+
+//    #ifdef OS_OBJECT_USE_OBJC
+//        #if (OS_OBJECT_USE_OBJC == 0)
+//            #undef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
+//            #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 0
+//        #endif
+//    #endif
 #endif // PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
 
 #ifndef pn_dispatch_property_ownership
