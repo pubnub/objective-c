@@ -14,6 +14,8 @@
 #import "PNConstants.h"
 #import "PNDataManager.h"
 #import "PNConnection.h"
+#import "PNNotifications.h"
+#import "PNChannel.h"
 #import "Swizzler.h"
 
 @interface W_ChaosTest () <PNDelegate>
