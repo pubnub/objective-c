@@ -20,7 +20,7 @@
 
 @interface W_ChaosTest () <PNDelegate>
 {
-	BOOL conectedFinish;
+	BOOL connectedFinish;
 	NSArray *pnChannels;
 	BOOL subscribeOnChannelsFinish;
 	BOOL participantsListForChannelFinish;
@@ -37,13 +37,13 @@
 - (void)handleConnectionErrorOnNetworkFailure {
 	PNLog(PNLogGeneralLevel, nil, @"handleConnectionErrorOnNetworkFailure");
 //	dispatch_semaphore_signal(semaphore);
-	conectedFinish = YES;
+	connectedFinish = YES;
 }
 
 - (void)handleConnectionErrorOnNetworkFailureWithError:(PNError *)error {
 	PNLog(PNLogGeneralLevel, nil, @"handleConnectionErrorOnNetworkFailure: %@", error);
 //	dispatch_semaphore_signal(semaphore);
-	conectedFinish = YES;
+	connectedFinish = YES;
 }
 
 
@@ -59,6 +59,7 @@
 
 - (void)handleClientConnectionStateChange:(NSNotification *)notification {
     // Default field values
+	connectedFinish = YES;
     BOOL connected = YES;
     PNError *connectionError = nil;
     NSString *origin = [PubNub sharedInstance].configuration.origin;
@@ -82,18 +83,18 @@
     [super setUp];
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientConnectionStateChange:)
-//							   name:kPNClientDidConnectToOriginNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientConnectionStateChange:)
-//							   name:kPNClientDidDisconnectFromOriginNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientConnectionStateChange:)
-//							   name:kPNClientConnectionDidFailWithErrorNotification
-//							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(handleClientConnectionStateChange:)
+							   name:kPNClientDidConnectToOriginNotification
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(handleClientConnectionStateChange:)
+							   name:kPNClientDidDisconnectFromOriginNotification
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(handleClientConnectionStateChange:)
+							   name:kPNClientConnectionDidFailWithErrorNotification
+							 object:nil];
 }
 
 - (void)test10ConnectionChaos {
@@ -110,18 +111,20 @@
 	//	configuration.autoReconnectClient = NO;
 	[PubNub setConfiguration: configuration];
 
-	conectedFinish = NO;
+	connectedFinish = NO;
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
-		conectedFinish = YES;
+		connectedFinish = YES;
         PNLog(PNLogGeneralLevel, nil, @"{BLOCK} PubNub client connected to: %@", origin);
     }
 		 errorBlock:^(PNError *connectionError) {
 			 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
-			 conectedFinish = YES;
+			 connectedFinish = YES;
 	 }];
-	for( int i=0; (i<100 && conectedFinish == NO); i++ )
+	for( int i=0; (i<320 && connectedFinish == NO); i++ ) {
+		NSLog(@"Waiting to connectedFinish... %d", i);
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	STAssertTrue( conectedFinish, @"conectedFinish must be YES");
+	}
+	STAssertTrue( connectedFinish, @"conectedFinish must be YES");
 }
 //
 //- (void)test10ConnectionChaos
