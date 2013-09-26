@@ -517,6 +517,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                 case NSURLErrorCannotFindHost:
                 case NSURLErrorCallIsActive:
                     
+                    PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKUP FAILED WITH ERROR: %@", error);
                     isConnectionAvailable = NO;
                     break;
                 case NSURLErrorBadServerResponse:
@@ -529,6 +530,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         }
         else if (response.statusCode != 200 && response.statusCode != 302) {
             
+            PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKUP GOT RESPONSE WITH UNACCEPTABLE HTTP STATUS CODE (%d)", response.statusCode);
             isConnectionAvailable = NO;
         }
         
@@ -549,7 +551,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         // Check whether connection still available or not
         if (isConnectionAvailable) {
             
-            BOOL wasDisconnectedBefore = self.lookupStatus != PNReachabilityStatusUnknown && ![self isServiceAvailableForStatus:self.lookupStatus];
+            BOOL wasDisconnectedBefore = (self.lookupStatus != PNReachabilityStatusUnknown && ![self isServiceAvailableForStatus:self.lookupStatus]) ||
+                                         ![self isServiceAvailableForStatus:self.reachabilityStatus];
             self.lookupStatus = PNReachabilityStatusForFlags([self synchronousStatusFlags]);
             if (wasDisconnectedBefore) {
                 
@@ -567,14 +570,25 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         // network connection around or not
         else if ([self isServiceAvailableForStatus:self.reachabilityStatus]) {
             
-            PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.",
-                  [self humanReadableInterfaceFromStatus:self.reachabilityStatus]);
-            self.lookupStatus = PNReachabilityStatusNotReachable;
-            
-            self.status = self.lookupStatus;
+            if (self.lookupStatus != PNReachabilityStatusNotReachable) {
+                
+                PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.",
+                      [self humanReadableInterfaceFromStatus:self.reachabilityStatus]);
+                self.lookupStatus = PNReachabilityStatusNotReachable;
+                
+                self.status = self.lookupStatus;
+            }
+            else {
+                
+                PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' STILL DOWN.",
+                      [self humanReadableInterfaceFromStatus:self.reachabilityStatus]);
+            }
         }
         // Looks like both routes reported that there is no connection
-        else {
+        else if (self.lookupStatus != PNReachabilityStatusNotReachable) {
+            
+            PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.",
+                  [self humanReadableInterfaceFromStatus:self.reachabilityStatus]);
             
             self.lookupStatus = PNReachabilityStatusNotReachable;
         }
