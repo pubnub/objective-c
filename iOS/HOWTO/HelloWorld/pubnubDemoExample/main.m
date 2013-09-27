@@ -1,9 +1,9 @@
 //
 //  main.m
-//  PubNubDemo
+//  pubnubDemoExample
 //
-//  Created by Jiang ZC on 2/21/13.
-//  Copyright (c) 2013 JiangZC. All rights reserved.
+//  Created by rajat  on 18/09/13.
+//  Copyright (c) 2013 pubnub. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

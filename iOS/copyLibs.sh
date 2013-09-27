@@ -1,4 +1,4 @@
-cp -r iPadDemoApp/pubnub/libs/PubNub/* HOWTO/HelloWorld/PubNubDemo/libs/PubNub
+cp -r iPadDemoApp/pubnub/libs/PubNub/* HOWTO/HelloWorld/pubnubDemoExample/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* HOWTO/SimpleSubscribe/PubNubDemo/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* HOWTO/APNSVideo/demo9/demo9/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* HOWTO/ULSMethods/ULSMethods/libs/PubNub

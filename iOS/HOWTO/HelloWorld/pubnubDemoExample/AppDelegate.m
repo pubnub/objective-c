@@ -1,9 +1,9 @@
 //
 //  AppDelegate.m
-//  PubNubDemo
+//  pubnubDemoExample
 //
-//  Created by Jiang ZC on 2/21/13.
-//  Copyright (c) 2013 JiangZC. All rights reserved.
+//  Created by rajat  on 18/09/13.
+//  Copyright (c) 2013 pubnub. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -11,8 +11,6 @@
 #import "ViewController.h"
 
 @implementation AppDelegate
-
-
 
 - (void)initializePubNubClient {
     
@@ -103,13 +101,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
+    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPhone" bundle:nil];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
-    //Initialize PubNub library
-    [self initializePubNubClient];
     return YES;
 }
 
@@ -139,9 +134,6 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
-
-
-#pragma mark - PubNub client delegate methods
 
 - (void)pubnubClient:(PubNub *)client error:(PNError *)error {
     
@@ -269,6 +261,5 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
     
     return @(NO);
 }
-
 
 @end

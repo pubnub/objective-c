@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:PubNubDemo.xcodeproj">
+      location = "self:pubnubDemoExample.xcodeproj">
    </FileRef>
 </Workspace>

@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'PubNubDemo' target in the 'PubNubDemo' project
+// Prefix header for all source files of the 'pubnubDemoExample' target in the 'pubnubDemoExample' project
 //
 
 #import <Availability.h>
