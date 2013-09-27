@@ -2693,6 +2693,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.restoringConnection = NO;
         
         PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#36} TURN OFF (%s)", __PRETTY_FUNCTION__);
+        [self handleLockingOperationComplete:YES];
     }
 }
 
