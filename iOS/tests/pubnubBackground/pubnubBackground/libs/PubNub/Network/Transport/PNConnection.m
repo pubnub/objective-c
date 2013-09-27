@@ -629,7 +629,7 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
         }
         else {
 
-            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] ALREADY SENDING DATA (%@)(STATE: %d)",
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@] ALREADY SENDING DATA (STATE: %d)",
                   self.name ? self.name : self, self.state);
         }
     }
