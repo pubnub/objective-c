@@ -2690,14 +2690,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [self warmUpConnections];
         
         [self notifyDelegateAboutConnectionToOrigin:host];
-        
-        if (!self.isRestoringConnection) {
-            PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#36} TURN OFF (%s)", __PRETTY_FUNCTION__);
-            
-            [self handleLockingOperationComplete:YES];
-        }
-        
         self.restoringConnection = NO;
+        
+        PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#36} TURN OFF (%s)", __PRETTY_FUNCTION__);
     }
 }
 
