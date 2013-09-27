@@ -60,7 +60,16 @@
     } else {
         appDelegate.pubnubConfig = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:secretKey cipherKey:cipherKey];
     }
+    
+    NSString *clientIdentifier = [self.txtCustomUuid.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    if ([clientIdentifier length] == 0) {
+        clientIdentifier = nil;
+    }
+    
+    [PubNub setClientIdentifier:clientIdentifier];
 
+    
     NSLog(@"%@", appDelegate.pubnubConfig);
     [PubNub setConfiguration:appDelegate.pubnubConfig];
     
@@ -99,11 +108,7 @@
     
     appDelegate.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        self.viewController = [[MainViewController alloc] initWithNibName:@"MainViewController_iPhone" bundle:nil];
-    } else {
-        self.viewController = [[MainViewController alloc] initWithNibName:@"MainViewController_iPad" bundle:nil];
-    }
+    self.viewController = [[MainViewController alloc] initWithNibName:@"MainViewController_iPhone" bundle:nil];
     self.viewController.bSsl = self.switchSsl.isOn;
     self.viewController.sCipher = self.txtCipherKey.text;
     self.viewController.sCustomUuid = self.txtCustomUuid.text;

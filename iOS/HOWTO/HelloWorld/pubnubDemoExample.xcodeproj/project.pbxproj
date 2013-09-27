@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		040B4E1D17EB23A7004EEAF1 /* MainViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 040B4E1F17EB23A7004EEAF1 /* MainViewController_iPhone.xib */; };
-		040B4E2017EB23AF004EEAF1 /* MainViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 040B4E2217EB23AF004EEAF1 /* MainViewController_iPad.xib */; };
 		04CDDB5E17E9C40E009424BF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04CDDB5D17E9C40E009424BF /* UIKit.framework */; };
 		04CDDB6017E9C40E009424BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04CDDB5F17E9C40E009424BF /* Foundation.framework */; };
 		04CDDB6217E9C40E009424BF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04CDDB6117E9C40E009424BF /* CoreGraphics.framework */; };
@@ -20,7 +19,6 @@
 		04CDDB7417E9C40E009424BF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDDB7317E9C40E009424BF /* Default-568h@2x.png */; };
 		04CDDB7717E9C40E009424BF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDDB7617E9C40E009424BF /* ViewController.m */; };
 		04CDDB7A17E9C40E009424BF /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04CDDB7817E9C40E009424BF /* ViewController_iPhone.xib */; };
-		04CDDB7D17E9C40E009424BF /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04CDDB7B17E9C40E009424BF /* ViewController_iPad.xib */; };
 		04CDDC2817E9C459009424BF /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDDB8617E9C459009424BF /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		04CDDC2917E9C459009424BF /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDDB8817E9C459009424BF /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		04CDDC2A17E9C459009424BF /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDDB8D17E9C459009424BF /* PNObservationCenter.m */; };
@@ -82,8 +80,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		040B4E1E17EB23A7004EEAF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/MainViewController_iPhone.xib; sourceTree = "<group>"; };
-		040B4E2117EB23AF004EEAF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/MainViewController_iPad.xib; sourceTree = "<group>"; };
+		040B4E1E17EB23A7004EEAF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainViewController_iPhone.xib; sourceTree = "<group>"; };
 		04CDDB5A17E9C40E009424BF /* pubnubDemoExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pubnubDemoExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04CDDB5D17E9C40E009424BF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		04CDDB5F17E9C40E009424BF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -100,7 +97,6 @@
 		04CDDB7517E9C40E009424BF /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		04CDDB7617E9C40E009424BF /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		04CDDB7917E9C40E009424BF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
-		04CDDB7C17E9C40E009424BF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPad.xib; sourceTree = "<group>"; };
 		04CDDB8517E9C459009424BF /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		04CDDB8617E9C459009424BF /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
 		04CDDB8717E9C459009424BF /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
@@ -312,13 +308,11 @@
 				04CDDB7517E9C40E009424BF /* ViewController.h */,
 				04CDDB7617E9C40E009424BF /* ViewController.m */,
 				04CDDB7817E9C40E009424BF /* ViewController_iPhone.xib */,
-				04CDDB7B17E9C40E009424BF /* ViewController_iPad.xib */,
 				04CDDB8317E9C459009424BF /* libs */,
 				04CDDB6417E9C40E009424BF /* Supporting Files */,
 				04CDDC6417E9C79B009424BF /* MainViewController.h */,
 				04CDDC6517E9C79B009424BF /* MainViewController.m */,
 				040B4E1F17EB23A7004EEAF1 /* MainViewController_iPhone.xib */,
-				040B4E2217EB23AF004EEAF1 /* MainViewController_iPad.xib */,
 			);
 			path = pubnubDemoExample;
 			sourceTree = "<group>";
@@ -669,9 +663,7 @@
 				04CDDB7217E9C40E009424BF /* Default@2x.png in Resources */,
 				04CDDB7417E9C40E009424BF /* Default-568h@2x.png in Resources */,
 				04CDDB7A17E9C40E009424BF /* ViewController_iPhone.xib in Resources */,
-				04CDDB7D17E9C40E009424BF /* ViewController_iPad.xib in Resources */,
 				040B4E1D17EB23A7004EEAF1 /* MainViewController_iPhone.xib in Resources */,
-				040B4E2017EB23AF004EEAF1 /* MainViewController_iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,14 +746,6 @@
 			name = MainViewController_iPhone.xib;
 			sourceTree = "<group>";
 		};
-		040B4E2217EB23AF004EEAF1 /* MainViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				040B4E2117EB23AF004EEAF1 /* en */,
-			);
-			name = MainViewController_iPad.xib;
-			sourceTree = "<group>";
-		};
 		04CDDB6617E9C40E009424BF /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -776,14 +760,6 @@
 				04CDDB7917E9C40E009424BF /* en */,
 			);
 			name = ViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		04CDDB7B17E9C40E009424BF /* ViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				04CDDB7C17E9C40E009424BF /* en */,
-			);
-			name = ViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
