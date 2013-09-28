@@ -36,9 +36,10 @@
 
 #pragma mark Static
 
+
 static NSString * const kPNLibraryVersion = @"3.5.1b";
-static NSString * const kPNCodebaseBranch = @"106a.t106b.101.116.119.127.113.128a.128b";
-static NSString * const kPNCodeCommitIdentifier = @"f64bc5086f92159f07f16e85ba28ad18724c8b9b";
+static NSString * const kPNCodebaseBranch = @"106a.t106b.101.116.119.127.113.128a.128b.114.128c.128d";
+static NSString * const kPNCodeCommitIdentifier = @"9e184b56f6c0f305016e841915823ac3ea692d26";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -2699,14 +2700,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [self warmUpConnections];
         
         [self notifyDelegateAboutConnectionToOrigin:host];
-        
-        if (!self.isRestoringConnection) {
-            PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#36} TURN OFF (%s)", __PRETTY_FUNCTION__);
-            
-            [self handleLockingOperationComplete:YES];
-        }
-        
         self.restoringConnection = NO;
+        
+        PNLog(PNLogGeneralLevel, self, @">>>>>> {LOCK}{#36} TURN OFF (%s)", __PRETTY_FUNCTION__);
+        [self handleLockingOperationComplete:YES];
     }
 }
 
