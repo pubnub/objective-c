@@ -778,19 +778,25 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [self sharedInstance].restoringConnection = NO;
         
         
-        void(^connectionsTerminationBlock)(void) = ^{
-            
-            [_sharedInstance.messagingChannel terminate];
-            [_sharedInstance.serviceChannel terminate];
+        void(^connectionsTerminationBlock)(BOOL) = ^(BOOL allowGenerateEvents){
+
+            if (allowGenerateEvents) {
+
+                [_sharedInstance.messagingChannel terminate];
+                [_sharedInstance.serviceChannel terminate];
+            }
+            else {
+
+                [_sharedInstance.messagingChannel disconnectWithEvent:NO];
+                [_sharedInstance.serviceChannel disconnectWithEvent:NO];
+            }
             _sharedInstance.messagingChannel = nil;
             _sharedInstance.serviceChannel = nil;
         };
         
         if (isDisconnectedByUser) {
-            
-            [PNConnection resetConnectionsPool];
 
-            connectionsTerminationBlock();
+            connectionsTerminationBlock(NO);
 
             if ([self sharedInstance].state != PNPubNubClientStateDisconnected) {
 
@@ -825,7 +831,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             // Empty connection pool after connection will be closed
             [PNConnection closeAllConnections];
             
-            connectionsTerminationBlock();
+            connectionsTerminationBlock(YES);
 
             PNLog(PNLogGeneralLevel, [self sharedInstance], @"DISCONNECTED (STATE: %@)", [self humanReadableStateFrom:[self sharedInstance].state]);
         }
