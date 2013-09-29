@@ -38,7 +38,7 @@
 
 static NSString * const kPNLibraryVersion = @"3.5.0";
 static NSString * const kPNCodebaseBranch = @"hotfix-t128";
-static NSString * const kPNCodeCommitIdentifier = @"ca2935772b53a1c49d5fd7ae692d9541d404787a";
+static NSString * const kPNCodeCommitIdentifier = @"2c2ffcd3c9dcf49ccb6127113b0773d06c255492";
 
 
 // Stores reference on singleton PubNub instance
@@ -2160,6 +2160,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             sendingError.associatedObject = channel;
             
             [[self sharedInstance] notifyDelegateAboutHistoryDownloadFailedWithError:sendingError];
+
+            if (handleBlock) {
+
+                handleBlock(nil, channel, startDate, endDate, sendingError);
+            }
         }
     }
            postponedExecutionBlock:^{
@@ -2232,6 +2237,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             sendingError.associatedObject = channel;
             
             [[self sharedInstance] notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
+
+            if (handleBlock) {
+
+                handleBlock(nil, channel, sendingError);
+            }
         }
     }
            postponedExecutionBlock:^{
@@ -2880,6 +2890,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                     // Delay disconnection notification to give client ability to perform clean up well
                     __block __pn_desired_weak __typeof__(self) weakSelf = self;
                     void(^disconnectionNotifyBlock)(void) = ^{
+
+                        self.messagingChannel.delegate = nil;
+                        self.messagingChannel = nil;
+                        self.serviceChannel.delegate = nil;
+                        self.serviceChannel = nil;
 
                         if ([weakSelf.delegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
 
