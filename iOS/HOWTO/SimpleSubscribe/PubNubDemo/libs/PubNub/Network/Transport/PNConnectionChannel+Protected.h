@@ -23,6 +23,13 @@
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;
 
+- (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error;
+
+/**
+ * Simulate requests failure (used in case if connection terminated by user or because of network error
+ */
+- (void)makeScheduledRequestsFail:(NSArray *)requestsList withError:(PNError *)processingError;
+
 /**
  * Returns whether communication channel is waiting for request processing completion from backend or not
  */
