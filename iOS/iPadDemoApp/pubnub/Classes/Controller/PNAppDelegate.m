@@ -110,7 +110,7 @@
 
                                                             PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new event: %@",
                                                                     presenceEvent);
-                                                        }];
+                                                     }];
 }
 
 

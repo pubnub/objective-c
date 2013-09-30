@@ -256,27 +256,27 @@
                 break;
             case kPNCryptoInsufficentBufferSizeError:
                 
-                errorDescription = @"Wrong buffer size";
+                errorDescription = @"CRYPTO: Wrong buffer size";
                 break;
             case kPNCryptoInsufficentMemoryError:
                 
-                errorDescription = @"Insufficient memory";
+                errorDescription = @"CRYPTO: Insufficient memory";
                 break;
             case kPNCryptoAligmentInputDataError:
                 
-                errorDescription = @"Input data error";
+                errorDescription = @"CRYPTO: Input data error";
                 break;
             case kPNCryptoInputDataProcessingError:
                 
-                errorDescription = @"Input data processing error";
+                errorDescription = @"CRYPTO: Input data processing error";
                 break;
             case kPNCryptoUnavailableFeatureError:
                 
-                errorDescription = @"Not implemented";
+                errorDescription = @"CRYPTO: Not implemented";
                 break;
             default:
 
-                errorDescription = @"Unknown error.";
+                errorDescription = @"Unknown error. Please contact support@pubnub.com with complete logs of this issue";
                 break;
         }
     }
@@ -293,81 +293,80 @@
             
         case kPNClientConfigurationError:
             
-            failureReason = @"One of required configuration field is empty:\n- publish key\n- subscribe key\n- secret key";
+            failureReason = @"One of the required configuration fields is empty:\n- publish key\n- subscribe key\n- secret key";
             break;
         case kPNClientTriedConnectWhileConnectedError:
             
-            failureReason = @"Looks like client tried to connecte to remote PubNub service while already has connection";
+            failureReason = @"Looks like the client tried to connect to the remote PubNub service while already connected";
             break;
         case kPNClientConnectionFailedOnInternetFailureError:
             
-            failureReason = @"Looks like client lost connection while trying to connect to remote PubNub service";
+            failureReason = @"Looks like the client lost it's net connection while trying to connect to the PubNub origin";
             break;
         case kPNClientConnectionClosedOnSSLNegotiationFailureError:
 
-            failureReason = @"Looks like client was unable to connect to remote PubNub services becuase of security issues (SSL)";
+            failureReason = @"Looks like the client was unable to connect to the PubNub origin due to an SSL handshake issue";
             break;
         case kPNClientConnectionClosedOnSocketsError:
             
-            failureReason = @"Looks like system was unable to allocate and/or support connection";
+            failureReason = @"Looks like the system was unable to allocate and/or support a native socket connection";
             break;
         case kPNClientConnectionClosedOnServerRequestError:
             
-            failureReason = @"Looks like client was unable to connect to remote PubNub services becuase server refuse to accept connection (or there "
-                            @"is no connection behind gateway) or reset connection";
+            failureReason = @"Looks like the client was unable to connect to the PubNub origin due to receiving a RST. A server, proxy, or gateway refused the connection";
             break;
         case kPNRequestExecutionFailedOnInternetFailureError:
         case kPNClientConnectionClosedOnInternetFailureError:
             
-            failureReason = @"Looks like client lost connection";
+            failureReason = @"Looks like the client lost it's net connection";
             break;
         case kPNRequestExecutionFailedByTimeoutError:
 
-            failureReason = @"Looks like there is some packets lost because of which request failed by timeout";
+            failureReason = @"Looks like the client timed out while waiting to receive data from the PubNub origin";
             break;
         case kPNConnectionErrorOnSetup:
             
-            failureReason = @"Connection can't be opened becuase of errors in configuration";
+            failureReason = @"The connection can't be opened due to an errors in the connection config";
             break;
         case kPNRequestExecutionFailedClientNotReadyError:
 
-            failureReason = @"Looks like client is not connected to PubNub service";
+            failureReason = @"Looks like the client is not connected to the PubNub origin";
             break;
         case kPNPresenceAPINotAvailableError:
 
-            failureReason = @"Looks like presence API access not enabled";
+            failureReason = @"Looks like the Presence feature is not enabled. Be sure to enable it for your keys at http://admin.pubnub.com, and try again";
             break;
         case kPNInvalidJSONError:
 
-            failureReason = @"Looks like one of requests tried to send malformed JSON or message hase been changed after signature was generated";
+            failureReason = @"Looks like we sent malformed JSON or the message was changed after the signature was generated";
             break;
         case kPNInvalidSubscribeOrPublishKeyError:
 
-            failureReason = @"Looks like one of subscribe or publish key is wrong";
+            failureReason = @"Looks like either the subscribe or publish key is wrong";
             break;
         case kPNRestrictedCharacterInChannelNameError:
 
-            failureReason = @"Looks like one of reqests used restricted characters in channel name";
+            failureReason = @"Looks like there are invalid characters in one of the channel names";
             break;
         case kPNAPIUnauthorizedAccessError:
 
-            failureReason = @"Looks like API required 'auth' key";
+            failureReason = @"An 'auth' key must be provided for this request because PAM is enabled and access was denied";
             break;
         case kPNAPIAccessForbiddenError:
 
-            failureReason = @"Looks like specified wrong 'auth' key or you don't have permissions";
+            failureReason = @"An 'auth' key was provided for this request because PAM is enabled, but access was denied because the 'auth' key supplied does not posess the adequate permissions for this resource";
             break;
         case kPNMessageHasNoContentError:
 
-            failureReason = @"Looks like message has empty body or doesnt have it at all";
+            failureReason = @"Looks like message has an empty or non-existant body";
             break;
         case kPNMessageHasNoChannelError:
 
-            failureReason = @"Looks like target channel for message not specified";
+            failureReason = @"Looks like the target channel for the message has not been specified";
             break;
         case kPNMessageObjectError:
 
-            failureReason = @"Looks like there is no message object has been passed";
+            failureReason = @"Looks like no message object was passed";
             break;
         case kPNTooLongMessageError:
 
@@ -375,51 +374,51 @@
             break;
         case kPNPushNotificationsNotEnabledError:
 
-            failureReason = @"Looks like push notifications wasn't enabled for current subscribe key on PubNub admin console";
+            failureReason = @"Looks like APNS (push notifications) weren't enabled for this subscribe key. Enable at http://admin.pubnub.com and try again";
             break;
         case kPNDevicePushTokenIsEmptyError:
             
-            failureReason = @"Looks like device push notification is nil";
+            failureReason = @"Looks like device push notification token is nil";
             break;
         case kPNResponseEncodingError:
 
-            failureReason = @"Looks like remote service send message with encoding which is other than UTF8";
+            failureReason = @"Looks like the PubNub origin sent a response not in UTF8 format";
             break;
         case kPNResponseMalformedJSONError:
 
-            failureReason = @"Looks like remote service send response with malformed JSON in it (maybe truncated)";
+            failureReason = @"Looks like the PubNub origin sent a response with malformed JSON in it (maybe truncated)";
             break;
         case kPNCryptoEmptyCipherKeyError:
             
-            failureReason = @"Looks like there is no cipher key in configuration instance which was used for client configuration";
+            failureReason = @"Looks like the cipher key is missing in the configuration instance";
             break;
         case kPNCryptoIllegalInitializationParametersError:
             
-            failureReason = @"Looks like some illegal parameter values has been used during cryptor initialization";
+            failureReason = @"Looks like illegal values were used during crypto initialization";
             break;
         case kPNCryptoInsufficentBufferSizeError:
             
-            failureReason = @"Looks like output buffer with insufficient type has been specified";
+            failureReason = @"Looks like an output buffer with an insufficient type has been specified";
             break;
         case kPNCryptoInsufficentMemoryError:
             
-            failureReason = @"Looks like there is not enough memory for Crypto helper operation completion";
+            failureReason = @"Looks like there is not enough memory for the crypto helper operation to complete";
             break;
         case kPNCryptoAligmentInputDataError:
             
-            failureReason = @"Looks like input data not aligned properly";
+            failureReason = @"Looks like the input data is not aligned properly";
             break;
         case kPNCryptoInputDataProcessingError:
             
-            failureReason = @"Crypto helper failed to process input data because of unknown error";
+            failureReason = @"The crypto helper failed to process input data because of an unknown error";
             break;
         case kPNCryptoUnavailableFeatureError:
             
-            failureReason = @"Looks like someone tried to use feature which is not available for specified algorythm";
+            failureReason = @"Looks like someone tried to use a feature which is not available for the specified algorithm";
             break;
         default:
 
-            failureReason = @"Unknown error reason.";
+            failureReason = @"Unknown.";
             break;
     }
     
@@ -435,128 +434,128 @@
             
         case kPNClientConfigurationError:
             
-            fixSuggestion = @"Ensure that you specified all required keys while creating PNConfiguration instance or all values specified in PNDefaultConfiguration.h. You can always visit https://admin.pubnub.comto get all required keys for PubNub client";
+            fixSuggestion = @"Ensure that you specified all required keys while creating the PNConfiguration instance or all values specified in PNDefaultConfiguration.h. You can always visit https://admin.pubnub.com to verify your correct keys.";
             break;
         case kPNClientTriedConnectWhileConnectedError:
             
-            fixSuggestion = @"If it is required to reconnect PubNub client, close connection first and then try connect again";
+            fixSuggestion = @"If you wish to reconnect the PubNub client, close the connection first, then try to connect again.";
             break;
         case kPNClientConnectionFailedOnInternetFailureError:
         case kPNRequestExecutionFailedOnInternetFailureError:
             
-            fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again";
+            fixSuggestion = @"Ensure that all network configuration (including any proxy) is correct, and try again.";
             break;
         case kPNClientConnectionClosedOnSSLNegotiationFailureError:
 
-            fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again. If this issue still persist, please contact with support team at support@pubnub.com to ask them investigate issue with SSL certificates on servers.";
+            fixSuggestion = @"Ensure that all network configuration (including any proxy) is correct and try again. If this issue persists, please contact support at support@pubnub.com and reference error kPNClientConnectionClosedOnSSLNegotiationFailureError.";
             break;
         case kPNClientConnectionClosedOnServerRequestError:
             
-            fixSuggestion = @"Ensure that all network configuration (including proxy if there is) is correct and try again. If this issue still persist, please contact with support team at support@pubnub.com to ask them investigate issue with connectino drop by server.";
+            fixSuggestion = @"Ensure that all network configuration (including any proxy) is correct and try again. If this issue persists, please contact support at support@pubnub.com and reference error kPNClientConnectionClosedOnServerRequestError.";
             break;
         case kPNClientConnectionClosedOnSocketsError:
             
-            fixSuggestion = @"Try repeat request later.";
+            fixSuggestion = @"There was a network socket error. Try to repeat this request later.";
             break;
         case kPNConnectionErrorOnSetup:
             
-            fixSuggestion = @"Check whether client was configured to use secure connection and whether remote origin has valid certificate.\nIf remote origin doesn't provide correct SSL certificate, you can set kPNShouldReduceSecurityLevelOnError to YES in PNDefaultConfiguration.h or provide YES when initializing PNConfiguration instance.";
+            fixSuggestion = @"Check whether the client has been configured to use a secure connection, and whether the PubNub origin has a valid certificate.\nIf you continue to receive this error, you can set kPNShouldReduceSecurityLevelOnError to YES in PNDefaultConfiguration.h or provide YES when initializing PNConfiguration instance.";
             break;
         case kPNRequestExecutionFailedClientNotReadyError:
 
-            fixSuggestion = @"Ensure that PubNub client connected to the PubNub service and try again.";
+            fixSuggestion = @"Ensure that the PubNub has proper connectivity to the PubNub origin and try again.";
             break;
         case kPNRequestExecutionFailedByTimeoutError:
 
-            fixSuggestion = @"Try send request again later.";
+            fixSuggestion = @"There was a timeout. Try send the request again later.";
             break;
         case kPNPresenceAPINotAvailableError:
 
-            fixSuggestion = @"Please visit https://admin.pubnub.com and enable presence API feature and try again.";
+            fixSuggestion = @"Please visit https://admin.pubnub.com, enable Presence, and try again.";
             break;
         case kPNInvalidJSONError:
 
-            fixSuggestion = @"Review all JSON request which is sent for processing to the PubNub services. Ensure that you don't try to change message while request is prepared.";
+            fixSuggestion = @"There was an error sending the data to the origin. Be sure you didn't try to send non-object or non-JSON data.";
             break;
         case kPNInvalidSubscribeOrPublishKeyError:
 
-            fixSuggestion = @"Review request and ensure that correct publish or(and) subscribe key was specified in it";
+            fixSuggestion = @"Review the request and ensure that the correct keys are referenced.";
             break;
         case kPNRestrictedCharacterInChannelNameError:
 
-            fixSuggestion = @"Ensure that you don't use in channel name next characters: ','";
+            fixSuggestion = @"Ensure that you don't use the comma char (,) in your channel names.";
             break;
         case kPNAPIUnauthorizedAccessError:
 
-            fixSuggestion = @"Specify 'authorizationKey' for configuration instance used to setup PubNub client";
+            fixSuggestion = @"Specify an 'authorizationKey' for the configuration instance used to setup the PubNub client.";
             break;
         case kPNAPIAccessForbiddenError:
 
-            fixSuggestion = @"Ensure that you specified correct 'authorizationKey'. If key is correct, than access denied with ULS.";
+            fixSuggestion = @"Ensure that you specified a valid 'authorizationKey'. If the key is correct, then access is currently denied for this key.";
             break;
         case kPNMessageHasNoContentError:
 
-            fixSuggestion = @"Ensure that you are not sending empty message (maybe there only spaces in it).";
+            fixSuggestion = @"Ensure that you are not sending an empty message (maybe there are only spaces in it?).";
             break;
         case kPNMessageHasNoChannelError:
 
-            fixSuggestion = @"Ensure that you specified valid channel as message target";
+            fixSuggestion = @"Ensure that you specified a valid channel for this message.";
             break;
         case kPNTooLongMessageError:
 
-            fixSuggestion = @"Please visit https://admin.pubnub.com and change maximum message size.";
+            fixSuggestion = @"Please visit https://admin.pubnub.com to enable Elastic Message Size if you wish to send larger-sized messages.";
             break;
         case kPNPushNotificationsNotEnabledError:
 
-            fixSuggestion = @"Please visit https://admin.pubnub.com and enable push notifications feature.";
+            fixSuggestion = @"Please visit https://admin.pubnub.com to enable the push notification (APNS) feature.";
             break;
         case kPNDevicePushTokenIsEmptyError:
             
-            fixSuggestion = @"Ensure that you provided correct non nil device push token";
+            fixSuggestion = @"Ensure that you provided the correct non-nil device push token.";
             break;
         case kPNMessageObjectError:
 
-            fixSuggestion = @"Ensure that you provide correct message object to be used for sending request";
+            fixSuggestion = @"Ensure that you provided the correct message object to be used for this request.";
             break;
         case kPNResponseEncodingError:
 
-            fixSuggestion = @"Ensure that you use UTF8 character table to send messages to the PubNub service";
+            fixSuggestion = @"Ensure that you are using the UTF8 character table to send messages to the PubNub service.";
             break;
         case kPNResponseMalformedJSONError:
 
-            fixSuggestion = @"Try resend request which caused this error";
+            fixSuggestion = @"Try to resend the request which caused this error.";
             break;
         case kPNCryptoEmptyCipherKeyError:
             
-            fixSuggestion = @"Please check client configuration instance and ensure that key is specified or don't try to initialize helper if there is no key supplied.";
+            fixSuggestion = @"Please check the client configuration instance, and ensure that the cipher key is specified, or simply don't try to initialize the helper if there is no key supplied.";
             break;
         case kPNCryptoIllegalInitializationParametersError:
             
-            fixSuggestion = @"Ensure that correct parameters has been passed to cryptor creation functions.";
+            fixSuggestion = @"Ensure that correct parameters has been passed to crypto functions.";
             break;
         case kPNCryptoInsufficentBufferSizeError:
             
-            fixSuggestion = @"Ensure that buffer with correct amount of space has been specified and provided for cryptor";
+            fixSuggestion = @"Ensure that a buffer with the correct amount of space has been specified and provided for the cryptor";
             break;
         case kPNCryptoInsufficentMemoryError:
             
-            fixSuggestion = @"Looks like cryptor is run out of memory during his last operation. Try to separate input data in chunks and process them one by one if possible.";
+            fixSuggestion = @"Looks like the cryptor has run out of memory during this last operation. Try to separate the input data in chunks and process them one by one if possible.";
             break;
         case kPNCryptoAligmentInputDataError:
             
-            fixSuggestion = @"Ensure that input data is alligned according to PKCS5/7 padding.";
+            fixSuggestion = @"Ensure that the input data is aligned according to the PKCS5/7 padding standard.";
             break;
         case kPNCryptoInputDataProcessingError:
             
-            fixSuggestion = @"Cryptor stumbled on unknown error during input data processing.";
+            fixSuggestion = @"The cryptor stumbled on an unknown error during input data processing.";
             break;
         case kPNCryptoUnavailableFeatureError:
             
-            fixSuggestion = @"Looks like you tried to perform some operation which is not supported by cryptor with specified algorythm.";
+            fixSuggestion = @"Looks like you tried to perform some operations which are not supported by the crypto lib with the specified algorithm.";
             break;
         default:
 
-            fixSuggestion = @"There is no known solutions.";
+            fixSuggestion = @"There are no known solutions.";
             break;
     }
     
