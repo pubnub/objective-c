@@ -40,7 +40,7 @@
 #define kPNLogMaximumLogFileSize (5 * 1024 * 1024)
 
 #define PNLOG_LOGGING_ENABLED 1
-#define PNLOG_STORE_LOG_TO_FILE 1
+#define PNLOG_STORE_LOG_TO_FILE 0
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
 #define PNLOG_DELEGATE_LOGGING_ENABLED 1
 #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
@@ -266,38 +266,6 @@ void PNLogDumpFileTruncate() {
                 }
             }
         }
-/*
-        FILE *consoleDumpFilePointer = fopen([consoleDumpFilePath UTF8String], "a+");
-        if (consoleDumpFilePointer == NULL) {
-
-            NSLog(@"PNLog: Can't open console dump file (%@)", consoleDumpFilePath);
-        }
-        else {
-
-            // Calculate current log dump file size
-            fseek(consoleDumpFilePointer, 0L, SEEK_END);
-            long consoleDumpFileSize = ftell(consoleDumpFilePointer);
-            fseek(consoleDumpFilePointer, 0, SEEK_SET);
-
-
-            NSLog(@"PNLog: Current console dump file size is %lu bytes (maximum allowed: %d bytes)",
-                  consoleDumpFileSize, kPNLogMaximumLogFileSize);
-
-            if (consoleDumpFileSize > kPNLogMaximumLogFileSize) {
-
-                fpos_t targetPosition = MAX(0, (consoleDumpFileSize - kPNLogMaximumLogFileSize));
-                fsetpos(consoleDumpFilePointer, &targetPosition);
-
-                char *oldConsoleDumpContent = (char *)malloc(sizeof(char) * (kPNLogMaximumLogFileSize + 1));
-                if (fread(oldConsoleDumpContent, 1, kPNLogMaximumLogFileSize, consoleDumpFilePointer)){
-
-                    truncate([consoleDumpFilePath UTF8String], 0);
-                    fwrite(oldConsoleDumpContent, strlen(oldConsoleDumpContent), 1, consoleDumpFilePointer);
-                }
-                free(oldConsoleDumpContent);
-            }
-            fclose(consoleDumpFilePointer);
-        }*/
     }
 }
 
