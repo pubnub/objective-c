@@ -411,7 +411,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 + (PubNub *)sharedInstance {
     
     dispatch_once(&onceToken, ^{
-
+        
         _sharedInstance = [[[self class] alloc] init];
     });
     
@@ -2380,7 +2380,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         PNDebugPrepare();
         [[self class] showVserionInfo];
-
+        
         self.state = PNPubNubClientStateCreated;
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
