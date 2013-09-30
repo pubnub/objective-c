@@ -246,22 +246,21 @@ void PNLogDumpFileTruncate() {
 
                                 if (currentLogDeleteError != nil) {
 
-                                    NSLog(@"PNLog: Can't remove current console dump log (%@)",
-                                          consoleDumpFilePath);
+                                    NSLog(@"PNLog: Can't remove current console dump log (%@) because of error: %@",
+                                          consoleDumpFilePath, currentLogDeleteError);
                                 }
                             }
                         }
                         else {
 
-                            NSLog(@"PNLog: Can't copy current log (%@) to new location (%@)",
-                                  consoleDumpFilePath, oldConsoleDumpFilePath);
-
-                            NSLog(@"COPY ERROR: %@", fileCopyError);
+                            NSLog(@"PNLog: Can't copy current log (%@) to new location (%@) because of error: %@",
+                                  consoleDumpFilePath, oldConsoleDumpFilePath, fileCopyError);
                         }
                     }
                     else {
 
-                        NSLog(@"PNLog: Can't remove old console dump log (%@)", oldConsoleDumpFilePath);
+                        NSLog(@"PNLog: Can't remove old console dump log (%@) because of error: %@",
+                              oldConsoleDumpFilePath, oldLogDeleteError);
                     }
                 }
             }
