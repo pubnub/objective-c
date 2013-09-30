@@ -506,8 +506,18 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
            [self isWaitingStoredRequestCompletion:requestIdentifier];
 }
 
+- (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error {
+
+    NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
+}
+
+- (void)makeScheduledRequestsFail:(NSArray *)requestsList withError:(PNError *)processingError {
+
+    NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
+}
+
 - (void)purgeObservedRequestsPool {
-    
+
     [self.observedRequests removeAllObjects];
 }
 
@@ -931,6 +941,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     PNBitOn(&_state, PNConnectionChannelConnected);
 
 
+    if ([self.storedRequestsList count]) {
+
+        // Ask to reschedule required requests
+        [self rescheduleStoredRequests:self.storedRequestsList];
+    }
+
     // Launch communication process on sockets by triggering requests queue processing
     [self scheduleNextRequest];
 
@@ -1121,9 +1137,15 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     [self stopTimeoutTimerForRequest:nil];
     [self unscheduleNextRequest];
 
-    [self clearScheduledRequestsQueue];
-    [self purgeObservedRequestsPool];
-    [self purgeStoredRequestsPool];
+    if ([self.storedRequestsList count]) {
+
+        PNError *error = nil;
+        if ([[PubNub sharedInstance].reachability isServiceAvailable]) {
+
+            error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+        }
+        [self makeScheduledRequestsFail:self.storedRequestsList withError:error];
+    }
 
 
     if (isExpected) {
@@ -1153,9 +1175,15 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     [self stopTimeoutTimerForRequest:nil];
     [self unscheduleNextRequest];
 
-    [self clearScheduledRequestsQueue];
-    [self purgeObservedRequestsPool];
-    [self purgeStoredRequestsPool];
+    if ([self.storedRequestsList count]) {
+
+        PNError *error = nil;
+        if ([[PubNub sharedInstance].reachability isServiceAvailable]) {
+
+            error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+        }
+        [self makeScheduledRequestsFail:self.storedRequestsList withError:error];
+    }
 
 
     if(isExpected) {
