@@ -37,7 +37,7 @@
 // Stores maximum file syze which should be stored on file system.
 // As soon as limit will be reached, beginning of the file will be truncated.
 // Default file size is 5Mb
-#define kPNLogMaximumLogFileSize (1 * 1024 * 1024)
+#define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
 
 #define PNLOG_LOGGING_ENABLED 1
 #define PNLOG_STORE_LOG_TO_FILE 1
