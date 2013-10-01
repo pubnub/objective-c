@@ -1,4 +1,4 @@
-Chris Moore connectivity issue.
+WiFi connectivity issue.
 Trello ticket url: https://trello.com/c/iMyOnryA/101-chris-moore-connectivity-issue
 
 Important: 
