@@ -23,6 +23,13 @@
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;
 
+- (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error;
+
+/**
+ * Simulate requests failure (used in case if connection terminated by user or because of network error
+ */
+- (void)makeScheduledRequestsFail:(NSArray *)requestsList withError:(PNError *)processingError;
+
 /**
  * Returns whether communication channel is waiting for request processing completion from backend or not
  */
@@ -70,6 +77,13 @@
  * Allow to check whether requests with specified class already placed into storage
  */
 - (BOOL)hasRequestsWithClass:(Class)requestClass;
+
+/**
+ * Closing connection to the server. Requests queue won't be flushed.
+ * If 'shouldNotifyOnDisconnection' is set to YES, than connection channel will receive disconnection event and pass
+ * it forward
+ */
+- (void)disconnectWithEvent:(BOOL)shouldNotifyOnDisconnection;
 
 /**
  * Reconnect main communication channel on which this communication channel is working

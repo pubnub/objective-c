@@ -208,11 +208,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         
         
         // Initialize connection to the PubNub services
-        self.connection = [PNConnection connectionWithIdentifier:self.name];
-        self.connection.delegate = self;
         self.requestsQueue = [PNRequestsQueue new];
         self.requestsQueue.delegate = self;
-        self.connection.dataSource = self.requestsQueue;
         [self connect];
     }
     
@@ -282,11 +279,21 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)disconnect {
 
-    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] TRYING TO DISCONNECT (STATE: %d)",
-          self.name, self.state);
+    [self disconnectWithEvent:YES];
+}
+
+- (void)disconnectWithEvent:(BOOL)shouldNotifyOnDisconnection {
+
+    NSString *shouldNotify = shouldNotifyOnDisconnection ? @" AND NOTIFY ON DISCONNECTION" : @" W/O DISCONNECTION "
+                                                           "NOTIFY";
+    PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] TRYING TO DISCONNECT%@ (STATE: %d)",
+          self.name, shouldNotify, self.state);
 
 
-    void(^disconnectionCompletionSimulation)(void) = ^{
+    void(^disconnectionCompletionSimulation)() = ^{
+
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DISCONNECTED (STATE: %d)",
+              self.name, self.state);
 
         PNBitClear(&_state);
         PNBitOn(&_state, PNConnectionChannelDisconnected);
@@ -294,16 +301,25 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
 
-        // Because with getters 'isDisconnected' channel provided wrong state, outside code may rely on disconnection
-        // completion notifications, so we simulate it
-        [self connection:self.connection didDisconnectFromHost:[PubNub sharedInstance].configuration.origin];
+        if (shouldNotifyOnDisconnection) {
+
+            // Because with getters 'isDisconnected' channel provided wrong state, outside code may rely on disconnection
+            // completion notifications, so we simulate it
+            [self connection:self.connection didDisconnectFromHost:[PubNub sharedInstance].configuration.origin];
+        }
     };
 
     // Check whether connection already disconnected but channel internal state is out of sync
-    if ([self.connection isDisconnected] && ![self isDisconnected]) {
+    if ([self.connection isDisconnected] && ![self isDisconnected] ) {
 
-        PNLog(PNLogCommunicationChannelLayerWarnLevel, self, @"[CHANNEL::%@] OUT OF SYNC WITH DISCONNECTION. UPDATING... (STATE: %d)",
-              self.name, self.state);
+        PNLog(PNLogCommunicationChannelLayerWarnLevel, self, @"[CHANNEL::%@] OUT OF SYNC WITH DISCONNECTION. "
+              "UPDATING... (STATE: %d)", self.name, self.state);
+
+
+        // Destroy connection communication instance
+        self.connection.delegate = nil;
+        [PNConnection destroyConnection:_connection];
+        _connection = nil;
 
         disconnectionCompletionSimulation();
     }
@@ -313,12 +329,25 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DISCONNECTING... (STATE: %d)",
               self.name, self.state);
 
-        [self stopTimeoutTimerForRequest:nil];
-        [self unscheduleNextRequest];
 
         PNBitClear(&_state);
-        PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, BITS_LIST_TERMINATOR);
-        [self.connection disconnect];
+        if (shouldNotifyOnDisconnection) {
+
+            [self stopTimeoutTimerForRequest:nil];
+            [self unscheduleNextRequest];
+
+            PNBitsOn(&_state, PNConnectionChannelConnected, PNConnectionChannelDisconnecting, BITS_LIST_TERMINATOR);
+            [self.connection disconnect];
+        }
+        else {
+
+            // Destroy connection communication instance
+            self.connection.delegate = nil;
+            [PNConnection destroyConnection:_connection];
+            _connection = nil;
+
+            disconnectionCompletionSimulation();
+        }
     }
     // Check whether channel already disconnected or not
     else if ([self isConnected]) {
@@ -326,12 +355,20 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DISCONNECTING... (STATE: %d)",
               self.name, self.state);
 
+        self.connection.delegate = nil;
+        [PNConnection destroyConnection:_connection];
+        _connection = nil;
+        
         disconnectionCompletionSimulation();
     }
     else {
 
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] ALREADY DISCONNECTED (STATE: %d)",
               self.name, self.state);
+
+        self.connection.delegate = nil;
+        [PNConnection destroyConnection:_connection];
+        _connection = nil;
     }
 }
 
@@ -469,8 +506,18 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
            [self isWaitingStoredRequestCompletion:requestIdentifier];
 }
 
+- (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error {
+
+    NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
+}
+
+- (void)makeScheduledRequestsFail:(NSArray *)requestsList withError:(PNError *)processingError {
+
+    NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
+}
+
 - (void)purgeObservedRequestsPool {
-    
+
     [self.observedRequests removeAllObjects];
 }
 
@@ -626,6 +673,24 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     return hasRequestsWithClass;
 }
 
+/**
+ * Create lazily create connection instance (useful in cased when it was necessary to destroy connection and there
+ * was no time to create new one
+ *
+ */
+- (PNConnection *)connection {
+
+    if (_connection == nil) {
+
+        _connection = [PNConnection connectionWithIdentifier:self.name];
+        _connection.delegate = self;
+        _connection.dataSource = self.requestsQueue;
+    }
+
+
+    return _connection;
+}
+
 
 #pragma mark - Handler methods
 
@@ -727,12 +792,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)scheduleNextRequest {
 
-    [self.connection scheduleNextRequestExecution];
+    [_connection scheduleNextRequestExecution];
 }
 
 - (void)unscheduleNextRequest {
 
-    [self.connection unscheduleRequestsExecution];
+    [_connection unscheduleRequestsExecution];
 }
 
 - (void)unscheduleRequest:(PNBaseRequest *)request {
@@ -876,6 +941,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     PNBitOn(&_state, PNConnectionChannelConnected);
 
 
+    if ([self.storedRequestsList count]) {
+
+        // Ask to reschedule required requests
+        [self rescheduleStoredRequests:self.storedRequestsList];
+    }
+
     // Launch communication process on sockets by triggering requests queue processing
     [self scheduleNextRequest];
 
@@ -1004,8 +1075,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 - (void)connection:(PNConnection *)connection willReconnectToHostAfterError:(NSString *)hostName {
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] WILL RESTORE CONNECTION AFTER ERROR (STATE: "
-            "%d)",
-          self.name, self.state);
+          "%d)",  self.name, self.state);
 
 
     [self stopTimeoutTimerForRequest:nil];
@@ -1067,9 +1137,15 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     [self stopTimeoutTimerForRequest:nil];
     [self unscheduleNextRequest];
 
-    [self clearScheduledRequestsQueue];
-    [self purgeObservedRequestsPool];
-    [self purgeStoredRequestsPool];
+    if ([self.storedRequestsList count]) {
+
+        PNError *error = nil;
+        if ([[PubNub sharedInstance].reachability isServiceAvailable]) {
+
+            error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+        }
+        [self makeScheduledRequestsFail:self.storedRequestsList withError:error];
+    }
 
 
     if (isExpected) {
@@ -1087,17 +1163,27 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
           self.name, self.state);
 
     // Check whether channel is in suitable state to handle this event or not
-    BOOL isExpected = PNBitIsOn(self.state, PNConnectionChannelDisconnecting);
-    PNBitClear(&_state);
-    PNBitOn(&_state, PNConnectionChannelDisconnected);
+    BOOL isExpected = PNBitsIsOn(self.state, NO, PNConnectionChannelDisconnected, PNConnectionChannelDisconnecting,
+                                                 BITS_LIST_TERMINATOR);
+    if (isExpected) {
+
+        PNBitClear(&_state);
+        PNBitOn(&_state, PNConnectionChannelDisconnected);
+    }
 
 
     [self stopTimeoutTimerForRequest:nil];
     [self unscheduleNextRequest];
 
-    [self clearScheduledRequestsQueue];
-    [self purgeObservedRequestsPool];
-    [self purgeStoredRequestsPool];
+    if ([self.storedRequestsList count]) {
+
+        PNError *error = nil;
+        if ([[PubNub sharedInstance].reachability isServiceAvailable]) {
+
+            error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+        }
+        [self makeScheduledRequestsFail:self.storedRequestsList withError:error];
+    }
 
 
     if(isExpected) {
@@ -1170,7 +1256,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     // Check whether all streams closed or not (in case if server closed only one from read/write streams)
     if (![connection isDisconnected]) {
 
-        [connection disconnectByUserRequest:NO];
+        [connection disconnectByInternalRequest];
     }
 
 
