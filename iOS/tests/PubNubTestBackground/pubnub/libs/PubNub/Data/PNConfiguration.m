@@ -213,6 +213,95 @@
     return shouldReset;
 }
 
+- (BOOL)isEqual:(PNConfiguration *)configuration {
+
+    BOOL isEqual = configuration != nil;
+
+    if (isEqual) {
+
+        isEqual = [self.origin isEqualToString:configuration.origin];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.publishKey isEqualToString:configuration.publishKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.subscriptionKey isEqualToString:configuration.subscriptionKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.secretKey isEqualToString:configuration.secretKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.cipherKey isEqualToString:configuration.cipherKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.authorizationKey isEqualToString:configuration.authorizationKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = self.nonSubscriptionRequestTimeout == configuration.nonSubscriptionRequestTimeout;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldResubscribeOnConnectionRestore && configuration.shouldResubscribeOnConnectionRestore;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldRestoreSubscriptionFromLastTimeToken &&
+                  configuration.shouldRestoreSubscriptionFromLastTimeToken;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.canIgnoreSecureConnectionRequirement && configuration.canIgnoreSecureConnectionRequirement;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldReduceSecurityLevelOnError && configuration.shouldReduceSecurityLevelOnError;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldUseSecureConnection && configuration.shouldUseSecureConnection;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldAutoReconnectClient && configuration.shouldAutoReconnectClient;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldAcceptCompressedResponse && configuration.shouldAcceptCompressedResponse;
+    }
+
+
+    return isEqual;
+}
+
+- (BOOL)shouldKillDNSCache {
+    
+    return ![self.origin isEqualToString:self.realOrigin];
+}
+
 - (void)shouldKillDNSCache:(BOOL)shouldKillDNSCache {
 
     if (shouldKillDNSCache) {
