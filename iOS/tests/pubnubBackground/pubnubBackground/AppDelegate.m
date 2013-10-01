@@ -5,7 +5,7 @@
 //  Created by rajat  on 23/09/13.
 //  Copyright (c) 2013 pubnub. All rights reserved.
 //
-
+    
 #import "AppDelegate.h"
 
 #import "ViewController.h"
@@ -22,6 +22,8 @@ NSString *latitude = @"";
 
 NSString *address = @"";
 
+const int noOfChannels =3;
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -32,14 +34,11 @@ NSString *address = @"";
     [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
                                                      UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
-    //locationManager.distanceFilter = kCLDistanceFilterNone;
-    //locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    
     self.locationManager = [[CLLocationManager alloc] init];
     [self.locationManager setDelegate:self];
     [self.locationManager startUpdatingLocation];
     
-    self.messageStack = [[MessageStack alloc] init];
+    self.dictMessageQueue = [[NSMutableDictionary alloc] init];
     displayLogs = true;
     
     return YES;
@@ -123,35 +122,33 @@ NSString *address = @"";
 }
 
 
-/*- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
-{
-    CLLocation *currentLocation = [self.locationManager location];
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    latitude =[NSString stringWithFormat:@"%f",  currentLocation.coordinate.latitude];
-    longitude =[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
-    
-    [geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error) {
-        if ([placemarks count] > 0) {
-            // Pick the best out of the possible placemarks
-            CLPlacemark *placemark = [placemarks objectAtIndex:0];
-            NSString *addressString = [placemark name];
-            address = addressString;
-        }
-    }];
-    [self WriteLog:[NSString stringWithFormat:@"LOC3:, lat: %@, long: %@, address: %@", latitude, longitude, address]];
-}*/
-
-
 - (void)SendLoop{
     UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         [[UIApplication sharedApplication] endBackgroundTask:bgTask];
     }];
 
-    NSArray * channels = @[@"testChannel1", @"testChannel2", @"testChannel3"];
+    NSMutableArray *channels =  [[NSMutableArray alloc] init];
+  
+    if(self.shouldUseAutoNames){
+        for (int i=0; i< noOfChannels; i++){
+            int r = arc4random()/100000;
+            NSString * strChName = [NSString stringWithFormat:@"testCh%u", r];
+            [channels addObject:strChName];
+        }
+    } else {
+        NSString *newChannelString = [self GetChannels];
+
+        NSString *newTrimmedString = [newChannelString stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+        NSArray *nsa = [[NSArray alloc] initWithArray:[newTrimmedString componentsSeparatedByString:@","]];
+        channels = [nsa mutableCopy];
+        NSLog(@"Custom Channels: %@", channels);
+    }
     
     //subscribe
     for(int i=0; i<[channels count]; i++){
         NSLog(@"Subscribing to: %@", [channels objectAtIndex:i]);
+        [self.dictMessageQueue setObject:[[MessageQueue alloc] init] forKey:[channels objectAtIndex:i]];
         [self SubscribeToChannels: [channels objectAtIndex:i]];
     }
     
@@ -161,23 +158,35 @@ NSString *address = @"";
         @autoreleasepool{
             //send
             for(int i=0; i<[channels count]; i++){
-                NSString *channel = [channels objectAtIndex:i];
-                if([channel length]>0){
-                    [self WriteLog:[NSString stringWithFormat:@"sending message '%d' on channel '%@'", iCount, channel] isEssential:YES];
+                @try{
+                    NSString *channel = [channels objectAtIndex:i];
+                    if([channel length]>0){
+                        [self WriteLog:[NSString stringWithFormat:@"sending message '%d' on channel '%@'", iCount, channel] isEssential:YES];
 
-                    PNChannel *ch = [PNChannel channelWithName:channel
-                                         shouldObservePresence:NO];
-                    NSMutableString *messageToPublish = [NSString stringWithFormat:@""];
-                    
-                    if(!displayLogs){
-                        messageToPublish = [NSString stringWithFormat:@"\"Current location:  lat: %@, long: %@, address: %@\"", latitude, longitude, address];
+                        PNChannel *ch = [PNChannel channelWithName:channel
+                                             shouldObservePresence:NO];
+                        NSMutableString *messageToPublish = [NSString stringWithFormat:@""];
+                        
+                        if(!displayLogs){
+                            messageToPublish = [NSString stringWithFormat:@"\"Current location:  lat: %@, long: %@, address: %@\"", latitude, longitude, address];
+                            [PubNub sendMessage:messageToPublish toChannel:ch];
+                            id anObject = [self.dictMessageQueue objectForKey:channel];
+                            [anObject enqueue:messageToPublish];
+                        }
+                        NSDate *date = [NSDate date];
+                        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                        NSTimeZone *zone = [NSTimeZone localTimeZone];
+                        [formatter setTimeZone:zone];
+                        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+
+                        messageToPublish = [NSString stringWithFormat:@"test message %d, dt: %@", iCount, [formatter stringFromDate:date]];
+                        id anObject = [self.dictMessageQueue objectForKey:channel];
+                        [anObject enqueue:messageToPublish];
                         [PubNub sendMessage:messageToPublish toChannel:ch];
-                        [self.messageStack push:messageToPublish];
                     }
-                    
-                    messageToPublish = [NSString stringWithFormat:@"test message %d", iCount];
-                    [self.messageStack push:messageToPublish];                    
-                    [PubNub sendMessage:messageToPublish toChannel:ch];
+                } @catch (NSException * e) {
+                    [self WriteLog: [NSString stringWithFormat:@"Exception: %@", e] isEssential:NO];
+                    [self WriteLog: [NSString stringWithFormat:@"Stack trace: %@", [e callStackSymbols]] isEssential:NO];
                 }
             }
         }
@@ -262,7 +271,6 @@ NSString *address = @"";
     
     [PubNub setDelegate:self];
     
-    
     // Subscribe for client connection state change
     // (observe when client will be disconnected)
     [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
@@ -299,9 +307,6 @@ NSString *address = @"";
                                                                              
                                                                          case PNSubscriptionProcessSubscribedState:
                                                                              
-                                                                             /*[self WriteLog: [NSString stringWithFormat:
-                                                                              @"{BLOCK-P} PubNub client subscribed on channels: %@",
-                                                                              channels]];*/
                                                                              break;
                                                                              
                                                                          case PNSubscriptionProcessWillRestoreState:
@@ -324,44 +329,33 @@ NSString *address = @"";
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
                                                          withBlock:^(PNMessage *message) {
                                                              
-
-                                                             if([message.channel.name isEqualToString:@"testChannel3"]){
-                                                                 //pop and match
-                                                                 NSString *m = [self.messageStack pop];
+                                                            @try {
+                                                             id anObject = [self.dictMessageQueue objectForKey:message.channel.name];
+                                                             
+                                                             NSObject *obj= [anObject dequeue];
+                                                             if(obj != Nil){
+                                                                 NSString *m =[NSString stringWithFormat:@"%@",obj];
                                                                  
                                                                  NSString *j = message.message;
-                                                                 
-                                                                 if([j isEqualToString:[NSString stringWithFormat:@"%@", m]]){
+
+                                                                 if([j isEqualToString:m]){
                                                                      
                                                                      [self WriteLog: [NSString stringWithFormat:@"Message matched '%@' on channel '%@'", m, message.channel.name] isEssential:YES];
                                                                      
                                                                  }else{
                                                                      
                                                                      [self WriteLog: [NSString stringWithFormat:@"Message match failed, clearing stack Expected:'%@', Got:'%@' on channel '%@'", j, m, message.channel.name] isEssential:YES];
-                                                                     [self.messageStack clear];
+                                                                     [anObject clear];
                                                                      
                                                                  }
                                                              }
+                                                            }
+                                                             @catch (NSException * e) {
+                                                                 [self WriteLog: [NSString stringWithFormat:@"Exception: %@", e] isEssential:NO];                                                                 [self WriteLog: [NSString stringWithFormat:@"Stack trace: %@", [e callStackSymbols]] isEssential:NO];
+                                                            }
                                                              
                                                              [self WriteLog: [NSString stringWithFormat:@"[CH: %@]: %@",message.channel.name, message.message] isEssential:NO];
                                                          }];
-    
-    // Subscribe on message arrival events with block
-    /*    [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
-     withBlock:^(PNMessage *message) {
-     
-     [self DisplayInLog: [NSString stringWithFormat: @"{BLOCK-P} PubNubc client received new message: %@",
-     message]];
-     }];
-     
-     // Subscribe on presence event arrival events with block
-     [[PNObservationCenter defaultCenter] addPresenceEventObserver:self
-     withBlock:^(PNPresenceEvent *presenceEvent) {
-     
-     [self DisplayInLog: [NSString stringWithFormat:@"{BLOCK-P} PubNubc client received new event: %@",
-     presenceEvent]];
-     }];*/
-    
 }
 
 -(void) ConnectPubnubClient {
@@ -627,7 +621,6 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
     
     PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
           [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
-    
     
     return shouldRestoreSubscriptionFromLastTimeToken;
 }

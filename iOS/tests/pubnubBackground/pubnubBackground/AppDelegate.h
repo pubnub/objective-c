@@ -10,7 +10,7 @@
 
 #import <CoreLocation/CoreLocation.h>
 
-#import "MessageStack.h"
+#import "MessageQueue.h"
 
 @class ViewController;
 
@@ -55,11 +55,15 @@
 
 @property (nonatomic, assign, setter = isLoopingOn:, getter = isLoopingOn) BOOL runLoop;
 
+@property (nonatomic, assign, setter = shouldUseAutoNames:, getter = shouldUseAutoNames) BOOL autoChannels;
+
+@property (nonatomic, copy, setter = SetChannels:, getter = GetChannels) NSString * subscribeToChannels;
+
 // Stores reference on current channel
 @property (nonatomic, strong) PNChannel *currentChannel;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 
-@property (strong, nonatomic) MessageStack *messageStack;
+@property (strong, nonatomic) NSMutableDictionary *dictMessageQueue;
 
 @end

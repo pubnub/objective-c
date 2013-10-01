@@ -30,4 +30,10 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *btnStopTest;
 
+@property (weak, nonatomic) IBOutlet UITextField *textChannels;
+
+- (IBAction)switchAutoNamesValueChanged:(id)sender;
+
+@property (weak, nonatomic) IBOutlet UISwitch *switchAutoNames;
+
 @end

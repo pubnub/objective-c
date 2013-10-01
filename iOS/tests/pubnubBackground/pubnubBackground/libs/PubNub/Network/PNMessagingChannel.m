@@ -281,6 +281,56 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
 }
 
+- (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error {
+
+    // Check whether this is 'Subscribe' or 'Leave' request or not
+    if ([request isKindOfClass:[PNSubscribeRequest class]] ||
+        [request isKindOfClass:[PNLeaveRequest class]]) {
+
+        // Retrieve list of channels w/o presence channels to notify user that client was unable to subscribe on
+        // specified list of channels
+        NSArray *channels = [self channelsWithOutPresenceFromList:[request valueForKey:@"channels"]];
+
+        if ([channels count] > 0 && [request isSendingByUserRequest]) {
+
+            if ([request isKindOfClass:[PNSubscribeRequest class]]) {
+
+                // Notify delegate about that client failed to subscribe on channels
+                [self handleSubscribeDidFail:request withError:error];
+            }
+            else {
+
+                // Notify delegate about that client failed to leave set of channels
+                [self handleUnsubscribeDidFail:request withError:error];
+            }
+        }
+    }
+}
+
+- (void)makeScheduledRequestsFail:(NSArray *)requestsList withError:(PNError *)processingError {
+
+    PNError *error = processingError;
+    if (error == nil) {
+
+        error = [PNError errorWithCode:kPNRequestExecutionFailedOnInternetFailureError];
+    }
+
+    [requestsList enumerateObjectsUsingBlock:^(NSString *requestIdentifier, NSUInteger requestIdentifierIdx,
+                                               BOOL *requestIdentifierEnumeratorStop) {
+
+        PNBaseRequest *request = [self requestWithIdentifier:requestIdentifier];
+
+        if (![request isKindOfClass:[PNSubscribeRequest class]] ||
+           ([request isKindOfClass:[PNSubscribeRequest class]] && ![(PNSubscribeRequest *)request isInitialSubscription])) {
+
+            // Removing failed request from queue
+            [self destroyRequest:request];
+            [self handleRequestProcessingDidFail:request withError:error];
+        }
+
+    }];
+}
+
 - (void)rescheduleStoredRequests:(NSArray *)requestsList {
 
     requestsList = [requestsList copy];
@@ -1687,7 +1737,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Forward to the super class
     [super requestsQueue:queue didSendRequest:request];
 
-
     // If we are not waiting for request completion, inform delegate immediately
     if (![self isWaitingRequestCompletion:request.shortIdentifier]) {
 
@@ -1870,7 +1919,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         }
     }
 
-
     [self scheduleNextRequest];
 }
 
@@ -1895,28 +1943,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         // Removing failed request from queue
         [self destroyRequest:request];
 
-        // Check whether this is 'Subscribe' or 'Leave' request or not
-        if ([request isKindOfClass:[PNSubscribeRequest class]] ||
-            [request isKindOfClass:[PNLeaveRequest class]]) {
-
-            // Retrieve list of channels w/o presence channels to notify user that client was unable to subscribe on
-            // specified list of channels
-            NSArray *channels = [self channelsWithOutPresenceFromList:[request valueForKey:@"channels"]];
-
-            if ([channels count] > 0 && [request isSendingByUserRequest]) {
-
-                if ([request isKindOfClass:[PNSubscribeRequest class]]) {
-
-                    // Notify delegate about that client failed to subscribe on channels
-                    [self handleSubscribeDidFail:request withError:error];
-                }
-                else {
-
-                    // Notify delegate about that client failed to leave set of channels
-                    [self handleUnsubscribeDidFail:request withError:error];
-                }
-            }
-        }
+        [self handleRequestProcessingDidFail:request withError:error];
     }
 
 

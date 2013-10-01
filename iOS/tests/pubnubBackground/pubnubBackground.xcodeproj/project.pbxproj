@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		043E4BE417F9171500693F45 /* MessageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 043E4BE317F9171500693F45 /* MessageQueue.m */; };
 		04B30C9F17F056DE00E4E6F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B30C9E17F056DE00E4E6F5 /* UIKit.framework */; };
 		04B30CA117F056DE00E4E6F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B30CA017F056DE00E4E6F5 /* Foundation.framework */; };
 		04B30CA317F056DE00E4E6F5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B30CA217F056DE00E4E6F5 /* CoreGraphics.framework */; };
@@ -82,6 +83,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		043E4BE217F9171500693F45 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageQueue.h; sourceTree = "<group>"; };
+		043E4BE317F9171500693F45 /* MessageQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageQueue.m; sourceTree = "<group>"; };
 		04B30C9B17F056DE00E4E6F5 /* pubnubBackground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pubnubBackground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04B30C9E17F056DE00E4E6F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		04B30CA017F056DE00E4E6F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -322,6 +325,8 @@
 				04B30CA517F056DE00E4E6F5 /* Supporting Files */,
 				04DBB2C817F4636500FB4C4C /* MessageStack.h */,
 				04DBB2C917F4636500FB4C4C /* MessageStack.m */,
+				043E4BE217F9171500693F45 /* MessageQueue.h */,
+				043E4BE317F9171500693F45 /* MessageQueue.m */,
 			);
 			path = pubnubBackground;
 			sourceTree = "<group>";
@@ -688,6 +693,9 @@
 				04B30D6617F0572B00E4E6F5 /* JSON.m in Sources */,
 				04B30D6717F0572B00E4E6F5 /* JSONKit.m in Sources */,
 				04DBB2CA17F4636500FB4C4C /* MessageStack.m in Sources */,
+<<<<<<< HEAD
+				043E4BE417F9171500693F45 /* MessageQueue.m in Sources */,
+=======
 				B56A443212ACCB1C6ADCED43 /* PubNub.m in Sources */,
 				B56A412220859B513DA52D10 /* PNObservationCenter.m in Sources */,
 				B56A4751C389B4FB0286A3F9 /* PNCryptoHelper.m in Sources */,
@@ -740,6 +748,7 @@
 				B56A45349FED56FB542C6021 /* PNNetworkHelper.m in Sources */,
 				B56A4E810726CA4F2FA19EFA /* PNServiceChannel.m in Sources */,
 				B56A4AE3ADD205F56FB4419B /* PNMessagingChannel.m in Sources */,
+>>>>>>> 8c98823352dcce6599d9feab39946c43e6a5b300
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
