@@ -9,4 +9,8 @@ cp -r iPadDemoApp/pubnub/libs/PubNub/* ../cocoa/HOWTO/SimpleSubscribe/PubNubMacO
 cp -r iPadDemoApp/pubnub/libs/PubNub/* HOWTO/CallsWithoutBlocks/CallsWithoutBlocks/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/PubNubTestBackground/pubnub/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/ConnectionIssues/pubnub/libs/PubNub
+<<<<<<< HEAD
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/iOSUnitTests/pubnub/libs/PubNub
+=======
+cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/pubnubBackground/pubnubBackground/libs/PubNub
+>>>>>>> Added missing newlines to end of files

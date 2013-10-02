@@ -34,7 +34,8 @@
 /**
  * Allow to reset time token on each of channel which should be used for subscription
  */
-- (void)resetTimeToken;
+ - (void)resetTimeToken;
+ - (void)resetTimeTokenTo:(NSString *)timeToken;
 
 #pragma mark -
 
