@@ -94,6 +94,9 @@
 		79FFF696167E5C66008093F2 /* NSMutableArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FFF695167E5C66008093F2 /* NSMutableArray+PNAdditions.m */; };
 		79FFF697167E5C66008093F2 /* NSMutableArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FFF695167E5C66008093F2 /* NSMutableArray+PNAdditions.m */; };
 		963A848917FC495700D8DD4E /* pubnubChaosTest-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 963A848717FC495700D8DD4E /* pubnubChaosTest-Info.plist */; };
+		963A849117FCA9B100D8DD4E /* BadJsonTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848C17FCA9B100D8DD4E /* BadJsonTest.m */; };
+		963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848E17FCA9B100D8DD4E /* FakeStub.m */; };
+		963A849317FCA9B100D8DD4E /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
 		9645C115174FDA7D00F82D09 /* PNReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */; };
 		9645C117174FDA7D00F82D09 /* PNBaseRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FC174FDA7D00F82D09 /* PNBaseRequestTest.m */; };
 		9645C118174FDA7D00F82D09 /* PNHereNowRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FE174FDA7D00F82D09 /* PNHereNowRequestTest.m */; };
@@ -290,6 +293,12 @@
 		79FFF695167E5C66008093F2 /* NSMutableArray+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+PNAdditions.m"; sourceTree = "<group>"; };
 		963A848717FC495700D8DD4E /* pubnubChaosTest-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "pubnubChaosTest-Info.plist"; sourceTree = "<group>"; };
 		963A848817FC495700D8DD4E /* pubnubChaosTest-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "pubnubChaosTest-Prefix.pch"; sourceTree = "<group>"; };
+		963A848B17FCA9B100D8DD4E /* BadJsonTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BadJsonTest.h; sourceTree = "<group>"; };
+		963A848C17FCA9B100D8DD4E /* BadJsonTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BadJsonTest.m; sourceTree = "<group>"; };
+		963A848D17FCA9B100D8DD4E /* FakeStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FakeStub.h; sourceTree = "<group>"; };
+		963A848E17FCA9B100D8DD4E /* FakeStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FakeStub.m; sourceTree = "<group>"; };
+		963A848F17FCA9B100D8DD4E /* PNConnectionBadJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionBadJson.h; sourceTree = "<group>"; };
+		963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionBadJson.m; sourceTree = "<group>"; };
 		9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNReachabilityTest.m; sourceTree = "<group>"; };
 		9645C0F9174FDA7D00F82D09 /* PNMessagingChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagingChannelTest.m; sourceTree = "<group>"; };
 		9645C0FB174FDA7D00F82D09 /* PNBaseRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBaseRequestTest.h; sourceTree = "<group>"; };
@@ -674,6 +683,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				963A848A17FCA9B100D8DD4E /* PNConnectionBadJSONTest */,
 				5ACF73C817F4179E0058E029 /* PNSubscribeUnsubscribeTest */,
 				5ACCA99D17F33A5800FE90CF /* PNCryptoTest */,
 				5ACCA99817F3208200FE90CF /* ChaosTest */,
@@ -948,6 +958,19 @@
 			);
 			path = pubnubChaosTest;
 			sourceTree = SOURCE_ROOT;
+		};
+		963A848A17FCA9B100D8DD4E /* PNConnectionBadJSONTest */ = {
+			isa = PBXGroup;
+			children = (
+				963A848B17FCA9B100D8DD4E /* BadJsonTest.h */,
+				963A848C17FCA9B100D8DD4E /* BadJsonTest.m */,
+				963A848D17FCA9B100D8DD4E /* FakeStub.h */,
+				963A848E17FCA9B100D8DD4E /* FakeStub.m */,
+				963A848F17FCA9B100D8DD4E /* PNConnectionBadJson.h */,
+				963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */,
+			);
+			path = PNConnectionBadJSONTest;
+			sourceTree = "<group>";
 		};
 		9645C0FA174FDA7D00F82D09 /* RequestTests */ = {
 			isa = PBXGroup;
@@ -1269,6 +1292,9 @@
 				5ACCA98117F3202400FE90CF /* HowToTests.m in Sources */,
 				5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */,
 				5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */,
+				963A849117FCA9B100D8DD4E /* BadJsonTest.m in Sources */,
+				963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */,
+				963A849317FCA9B100D8DD4E /* PNConnectionBadJson.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
