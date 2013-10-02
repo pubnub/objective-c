@@ -228,14 +228,14 @@
 		962FA2A917BF531300141E23 /* PNConnectionChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnectionChannel+Protected.h"; sourceTree = "<group>"; };
 		962FA2AA17BF531300141E23 /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		962FA2AB17BF531300141E23 /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
-		A77D832B1703BB090049BFA1 /* PubNubDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNubDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A77D832B1703BB090049BFA1 /* ClientSidePresence.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClientSidePresence.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A77D832E1703BB090049BFA1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A77D83301703BB090049BFA1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A77D83321703BB090049BFA1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		A77D83361703BB090049BFA1 /* PubNubDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNubDemo-Info.plist"; sourceTree = "<group>"; };
+		A77D83361703BB090049BFA1 /* ClientSidePresence-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ClientSidePresence-Info.plist"; sourceTree = "<group>"; };
 		A77D83381703BB090049BFA1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A77D833A1703BB090049BFA1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		A77D833C1703BB090049BFA1 /* PubNubDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNubDemo-Prefix.pch"; sourceTree = "<group>"; };
+		A77D833C1703BB090049BFA1 /* ClientSidePresence-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ClientSidePresence-Prefix.pch"; sourceTree = "<group>"; };
 		A77D833D1703BB090049BFA1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A77D833E1703BB090049BFA1 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		A77D83401703BB090049BFA1 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -560,7 +560,7 @@
 		A77D832C1703BB090049BFA1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A77D832B1703BB090049BFA1 /* PubNubDemo.app */,
+				A77D832B1703BB090049BFA1 /* ClientSidePresence.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -592,10 +592,10 @@
 		A77D83351703BB090049BFA1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A77D83361703BB090049BFA1 /* PubNubDemo-Info.plist */,
+				A77D83361703BB090049BFA1 /* ClientSidePresence-Info.plist */,
 				A77D83371703BB090049BFA1 /* InfoPlist.strings */,
 				A77D833A1703BB090049BFA1 /* main.m */,
-				A77D833C1703BB090049BFA1 /* PubNubDemo-Prefix.pch */,
+				A77D833C1703BB090049BFA1 /* ClientSidePresence-Prefix.pch */,
 				A77D83401703BB090049BFA1 /* Default.png */,
 				A77D83421703BB090049BFA1 /* Default@2x.png */,
 				A77D83441703BB090049BFA1 /* Default-568h@2x.png */,
@@ -606,9 +606,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A77D832A1703BB090049BFA1 /* PubNubDemo */ = {
+		A77D832A1703BB090049BFA1 /* ClientSidePresence */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A77D834E1703BB090049BFA1 /* Build configuration list for PBXNativeTarget "PubNubDemo" */;
+			buildConfigurationList = A77D834E1703BB090049BFA1 /* Build configuration list for PBXNativeTarget "ClientSidePresence" */;
 			buildPhases = (
 				A77D83271703BB090049BFA1 /* Sources */,
 				A77D83281703BB090049BFA1 /* Frameworks */,
@@ -618,9 +618,9 @@
 			);
 			dependencies = (
 			);
-			name = PubNubDemo;
+			name = ClientSidePresence;
 			productName = PubNubDemo;
-			productReference = A77D832B1703BB090049BFA1 /* PubNubDemo.app */;
+			productReference = A77D832B1703BB090049BFA1 /* ClientSidePresence.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -632,7 +632,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "geremy cohen";
 			};
-			buildConfigurationList = A77D83261703BB090049BFA1 /* Build configuration list for PBXProject "PubNubDemo" */;
+			buildConfigurationList = A77D83261703BB090049BFA1 /* Build configuration list for PBXProject "ClientSidePresence" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -644,7 +644,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A77D832A1703BB090049BFA1 /* PubNubDemo */,
+				A77D832A1703BB090049BFA1 /* ClientSidePresence */,
 			);
 		};
 /* End PBXProject section */
@@ -811,10 +811,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PubNubDemo/PubNubDemo-Prefix.pch";
-				INFOPLIST_FILE = "PubNubDemo/PubNubDemo-Info.plist";
+				GCC_PREFIX_HEADER = "PubNubDemo/ClientSidePresence-Prefix.pch";
+				INFOPLIST_FILE = "PubNubDemo/ClientSidePresence-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ClientSidePresence;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -824,10 +824,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PubNubDemo/PubNubDemo-Prefix.pch";
-				INFOPLIST_FILE = "PubNubDemo/PubNubDemo-Info.plist";
+				GCC_PREFIX_HEADER = "PubNubDemo/ClientSidePresence-Prefix.pch";
+				INFOPLIST_FILE = "PubNubDemo/ClientSidePresence-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ClientSidePresence;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -836,7 +836,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A77D83261703BB090049BFA1 /* Build configuration list for PBXProject "PubNubDemo" */ = {
+		A77D83261703BB090049BFA1 /* Build configuration list for PBXProject "ClientSidePresence" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A77D834C1703BB090049BFA1 /* Debug */,
@@ -845,7 +845,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A77D834E1703BB090049BFA1 /* Build configuration list for PBXNativeTarget "PubNubDemo" */ = {
+		A77D834E1703BB090049BFA1 /* Build configuration list for PBXNativeTarget "ClientSidePresence" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A77D834F1703BB090049BFA1 /* Debug */,

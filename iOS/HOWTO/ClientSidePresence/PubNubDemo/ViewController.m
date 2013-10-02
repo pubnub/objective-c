@@ -19,13 +19,15 @@
 
 
 - (void)sweepOccupants{
+
+    [presenceView setText:@""];
+
     NSNumber *currentTime = [NSNumber numberWithLong:[NSDate timeIntervalSinceReferenceDate]];
 
     // avoid mutating during enumeration
-    NSDictionary *occupantsCopy = [occupants copy];
         
     NSLog(@"All Occupants:");
-    for(id key in occupantsCopy) {
+    for(id key in [occupants allKeys]) {
 
         NSNumber *lastTime =  [occupants objectForKey:key];
         NSLog(@"user=%@ lastUpdate=%@", key, lastTime);
@@ -33,10 +35,13 @@
         if ([currentTime intValue] - [lastTime intValue] > 10) {
             [textView setText:[[NSString stringWithFormat:@"Haven't heard from %@ in 10 seconds. Removing it from the occupants list!",key] stringByAppendingFormat:@"\n%@\n",textView.text]];
             NSLog(@"Haven't heard from %@ in 10 seconds. Removing it from the occupants list!",key);
-            [occupants setValue:nil forKey:key];
+            [occupants removeObjectForKey:key];
+            [presenceView setText:@""];
+
         }
+
+        [presenceView setText:[[NSString stringWithFormat:@"user=%@ lastUpdate=%@", key, lastTime] stringByAppendingFormat:@"\n%@\n", presenceView.text]];
     }
-        
 }
 
 - (void)updateOccupant:(NSString *)uuid {
@@ -93,9 +98,9 @@
             eventString = @"Timeout";
         }
 
-        eventString = [NSString stringWithFormat:@"%@ : %@", uuid, eventString];
+        //eventString = [NSString stringWithFormat:@"%@ : %@", uuid, eventString];
 
-        [presenceView setText:[eventString stringByAppendingFormat:@"\n%@\n", presenceView.text]];
+
 
 
         if (![eventString isEqualToString:@"Timeout"]) {
