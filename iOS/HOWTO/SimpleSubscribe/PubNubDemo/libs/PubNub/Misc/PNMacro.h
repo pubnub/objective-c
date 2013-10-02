@@ -213,7 +213,7 @@ void PNLogDumpFileTruncate() {
         NSFileManager *fileManager = [NSFileManager defaultManager];
         if ([fileManager fileExistsAtPath:consoleDumpFilePath]) {
 
-            NSError *attributesFetchError;
+            NSError *attributesFetchError = nil;
             NSDictionary *fileInformation = [fileManager attributesOfItemAtPath:consoleDumpFilePath
                                                                           error:&attributesFetchError];
             if (attributesFetchError == nil) {
@@ -226,7 +226,7 @@ void PNLogDumpFileTruncate() {
 
                 if (consoleDumpFileSize > kPNLogMaximumLogFileSize) {
 
-                    NSError *oldLogDeleteError;
+                    NSError *oldLogDeleteError = nil;
                     if ([fileManager fileExistsAtPath:oldConsoleDumpFilePath]) {
 
                         [fileManager removeItemAtPath:oldConsoleDumpFilePath error:&oldLogDeleteError];
@@ -241,7 +241,7 @@ void PNLogDumpFileTruncate() {
 
                             if ([fileManager fileExistsAtPath:consoleDumpFilePath]) {
 
-                                NSError *currentLogDeleteError;
+                                NSError *currentLogDeleteError = nil;
                                 [fileManager removeItemAtPath:consoleDumpFilePath error:&currentLogDeleteError];
 
                                 if (currentLogDeleteError != nil) {

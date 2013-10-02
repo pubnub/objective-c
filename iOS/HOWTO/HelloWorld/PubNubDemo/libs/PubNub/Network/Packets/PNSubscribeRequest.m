@@ -99,8 +99,13 @@
 
 - (void)resetTimeToken {
 
+    [self resetTimeTokenTo:@"0"];
+}
+
+- (void)resetTimeTokenTo:(NSString *)timeToken {
+
     [[self channels] makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
-    self.updateTimeToken = @"0";
+    self.updateTimeToken = timeToken;
 }
 
 /**
