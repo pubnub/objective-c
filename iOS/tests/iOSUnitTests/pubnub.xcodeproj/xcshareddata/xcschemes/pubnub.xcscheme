@@ -27,36 +27,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "79C3224E166DF848006DB535"
-               BuildableName = "pubnubTests.octest"
-               BlueprintName = "pubnubTests"
-               ReferencedContainer = "container:pubnub.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5ACCA98617F3207300FE90CF"
-               BuildableName = "pubnubChaosTest.octest"
-               BlueprintName = "pubnubChaosTest"
-               ReferencedContainer = "container:pubnub.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79C32227166DF847006DB535"
-            BuildableName = "pubnub.app"
-            BlueprintName = "pubnub"
-            ReferencedContainer = "container:pubnub.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"

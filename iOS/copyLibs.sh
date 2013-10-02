@@ -8,3 +8,4 @@ cp -r iPadDemoApp/pubnub/libs/PubNub/* ../cocoa/HOWTO/SimpleSubscribe/PubNubMacO
 cp -r iPadDemoApp/pubnub/libs/PubNub/* HOWTO/CallsWithoutBlocks/CallsWithoutBlocks/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/PubNubTestBackground/pubnub/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/ConnectionIssues/pubnub/libs/PubNub
+cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/iOSUnitTests/pubnub/libs/PubNub

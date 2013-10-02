@@ -12,7 +12,6 @@
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
-#import "PNDataManager.h"
 #import "PNConnection.h"
 #import "PNNotifications.h"
 #import "PNChannel.h"
