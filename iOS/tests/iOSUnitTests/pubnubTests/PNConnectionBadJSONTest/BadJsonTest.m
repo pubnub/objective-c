@@ -211,21 +211,23 @@
 
 		//		handleClientMessageProcessingStateChange = NO;
 		//		handleClientDidReceiveMessage = NO;
-		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+//		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+		__block BOOL isCompletionBlockCalled = NO;
 		__block PNMessageState state = PNMessageSendingError;
 		/*PNMessage *helloMessage = */[PubNub sendMessage:@"Hello PubNub"
 												toChannel:pnChannels[i]
 									  withCompletionBlock:^(PNMessageState messageSendingState, id data)
 									   {
-										   dispatch_semaphore_signal(semaphore);
+										   isCompletionBlockCalled = YES;
+//										   dispatch_semaphore_signal(semaphore);
 										   state = messageSendingState;
 										   PNLog(PNLogGeneralLevel, nil, @"sendMessage state %d", messageSendingState);
 										   STAssertFalse(messageSendingState==PNMessageSent, @"messageSendingState can't be equal PNMessageSent, %@", data);
 									   }];
 
-		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+		for( int j=0; /*j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&*/
+			isCompletionBlockCalled == NO /*&& notificationParticipantsListCalled == NO*/; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		[Swizzler unswizzleFromReceipt:receipt];
 		//		STAssertTrue(handleClientMessageProcessingStateChange, @"notification not called");
 		//		STAssertTrue(handleClientDidReceiveMessage || state != PNMessageSent, @"notificaition not called");

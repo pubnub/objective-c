@@ -65,7 +65,16 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
 
 - (void)updateBuffer:(UInt8 [])buffer {
 	if( [self isNeedUpdateBuffer] == YES ) {
-		NSString *badJson = @"<?xml version='1.0'?>"
+		NSString *badJson =
+		@"HTTP/1.1 504 Gateway Timeout\n"
+		@"Date: Thu, 03 Oct 2013 11:10:18 GMT\n"
+		@"Content-Type: text/javascript; charset=\"UTF-8\"\n"
+		@"Content-Length: 372\n"
+		@"Connection: keep-alive\n"
+		@"Cache-Control: no-cache\n"
+		@"Access-Control-Allow-Origin: *\n"
+		@"Access-Control-Allow-Methods: GET\n"
+		@"<?xml version='1.0'?>"
 		@"<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
 		@"'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
 		@"<html xmlns='http://www.w3.org/1999/xhtml'>"
@@ -79,7 +88,7 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
 		@"</body>"
 		@"</html>";
 		NSData *newData = [badJson dataUsingEncoding: NSUTF8StringEncoding];
-		NSLog(@"badJson %@", badJson);
+		NSLog(@"badJson \n%@", badJson);
 		memcpy( buffer, newData.bytes, newData.length);
 	}
 }
@@ -106,8 +115,14 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
 		if( [self isNeedCloseSocket] == YES )
 			CFReadStreamClose( (CFReadStreamRef)[self performSelector:@selector(socketReadStream)]);
         CFIndex readedBytesCount = CFReadStreamRead( (CFReadStreamRef)[self performSelector:@selector(socketReadStream)], buffer, kPNStreamBufferSize);
+
+//		NSData *data = [NSData dataWithBytes: buffer length: readedBytesCount];
+//		[data writeToFile: [NSString stringWithFormat: @"/Users/tuller/data/%ld.txt", readedBytesCount] atomically: YES];
+
 		[self updateBuffer: buffer];
-		
+		if( [self isNeedUpdateBuffer] == YES ) {
+			readedBytesCount = 605;
+		}
 
         // Checking whether client was able to read out some data from stream or not
         if (readedBytesCount > 0) {
