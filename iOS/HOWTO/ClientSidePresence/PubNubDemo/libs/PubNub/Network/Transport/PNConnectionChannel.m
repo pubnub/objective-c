@@ -1144,7 +1144,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
             error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
         }
-        [self makeScheduledRequestsFail:self.storedRequestsList withError:error];
+        [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList] withError:error];
     }
 
 
@@ -1182,7 +1182,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
             error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
         }
-        [self makeScheduledRequestsFail:self.storedRequestsList withError:error];
+        [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList] withError:error];
     }
 
 
