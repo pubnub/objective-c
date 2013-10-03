@@ -40,18 +40,20 @@
 
         }
 
+    }
+
+    for(id key in [occupants allKeys]) {
+        NSNumber *lastTime =  [occupants objectForKey:key];
         [presenceView setText:[[NSString stringWithFormat:@"user=%@ lastUpdate=%@", key, lastTime] stringByAppendingFormat:@"\n%@\n", presenceView.text]];
     }
 }
 
 - (void)updateOccupant:(NSString *)uuid {
     [occupants setValue:[NSNumber numberWithInt:[NSDate timeIntervalSinceReferenceDate]] forKey:uuid];
-    [self sweepOccupants];
 }
 
 - (void)addOccupant:(NSString *)uuid {
     [occupants setValue:[NSNumber numberWithInt:[NSDate timeIntervalSinceReferenceDate]] forKey:uuid];
-    [self sweepOccupants];
 }
 
 - (void)viewDidLoad {
@@ -104,6 +106,10 @@
 
 
         if (![eventString isEqualToString:@"Timeout"]) {
+
+            [textView setText:[[NSString stringWithFormat:@"Presence Event Received!"] stringByAppendingFormat:@"\n%@\n",textView.text]];
+
+
             alreadyExists = [occupants objectForKey:uuid];
             if (alreadyExists) {
                 [textView setText:[[NSString stringWithFormat:@"Heard from an existing user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.text]];
@@ -140,11 +146,13 @@
             [PubNub subscribeOnChannel:myChannel];
             [PubNub enablePresenceObservationForChannel:presenceChannel];
 
-            self.pingPongTimer = [NSTimer scheduledTimerWithTimeInterval:10.0
-                                                          target:self
-                                                        selector:@selector(presSub:)
-                                                        userInfo:nil
-                                                         repeats:YES];
+//            self.pingPongTimer = [NSTimer scheduledTimerWithTimeInterval:10.0
+//                                                          target:self
+//                                                        selector:@selector(presSub:)
+//                                                        userInfo:nil
+//                                                         repeats:YES];
+
+            [self presSub:NULL];
 
         });
     }
@@ -177,12 +185,15 @@
     [self sweepOccupants];
     NSLog(@"Ping!");
     [PubNub subscribeOnChannel:presenceChannel withPresenceEvent:YES];
-    [self performSelector:@selector(presUnsub) withObject:NULL afterDelay:4.0];
+    [self performSelector:@selector(presUnsub) withObject:NULL afterDelay:5.0];
 }
 
 - (void)presUnsub{
+    [self sweepOccupants];
     NSLog(@"Pong!");
     [PubNub unsubscribeFromChannel:presenceChannel withPresenceEvent:YES];
+    [self performSelector:@selector(presSub:) withObject:NULL afterDelay:5.0];
+
 }
 
 
