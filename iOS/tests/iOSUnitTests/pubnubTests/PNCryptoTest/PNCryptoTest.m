@@ -30,6 +30,10 @@
 	[strings addObject: @"				"];
 	[strings addObject: @"12312341#%##$^#^@$^%&^&*:{AD:{X>QW{~{!@{::{AD"];
 	[strings addObject: @"a"];
+	[strings addObject: @"12345678"];
+	[strings addObject: @"1234567890abcdef"];
+	[strings addObject: @"1234567890abcdef1234567890abcdef"];
+	[strings addObject: @"1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"];
 	[strings addObject: [NSString stringWithFormat:@"%@", [NSDate date]]];
 
 	objects = [NSMutableArray array];
