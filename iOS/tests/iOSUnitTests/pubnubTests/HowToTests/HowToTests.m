@@ -17,7 +17,7 @@
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
-#import "PNDataManager.h"
+//#import "PNDataManager.h"
 
 @interface HowToTests ()
 
@@ -651,6 +651,7 @@
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
+	[PubNub disconnect];
 //    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
 	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: @"key"];
 //	//	configuration.autoReconnectClient = NO;

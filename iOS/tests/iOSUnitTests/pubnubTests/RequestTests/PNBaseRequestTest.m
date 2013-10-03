@@ -69,7 +69,7 @@
 
 - (void)testReset {
     id mockBaseRequest = [OCMockObject partialMockForObject:[[PNBaseRequest alloc] init]];
-    [[mockBaseRequest expect] setConfigurationRetryCount:0];
+    [[mockBaseRequest expect] setRetryCount:0];
     [[mockBaseRequest expect] setProcessed:NO];
     [[mockBaseRequest expect] setProcessing:NO];
     
@@ -95,7 +95,7 @@
 
 - (void)testCanRetry {
     id mockBaseRequest = [OCMockObject partialMockForObject:[[PNBaseRequest alloc] init]];
-    [[mockBaseRequest expect] configurationRetryCount];
+    [[mockBaseRequest expect] retryCount];
     [[mockBaseRequest expect] allowedRetryCount];
     
     [mockBaseRequest canRetry];
