@@ -1,5 +1,4 @@
-Chris Moore connectivity issue.
-Trello ticket url: https://trello.com/c/iMyOnryA/101-chris-moore-connectivity-issue
+Trello ticket 101
 
 Important: 
 background modes available in iOS: Play audio, Receive location updates, Perform finite-length tasks, Process Newsstand Kit downloads, VoIP and work with bluetooth.
