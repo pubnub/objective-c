@@ -48,8 +48,6 @@ static NSString * const kTAChannelName = @"hello_world";
 
 - (void)sweepOccupants{
 
-    [presenceView setText:@""];
-
     NSNumber *currentTime = [NSNumber numberWithLong:[NSDate timeIntervalSinceReferenceDate]];
 
     // avoid mutating during enumeration
@@ -61,14 +59,14 @@ static NSString * const kTAChannelName = @"hello_world";
         NSLog(@"user=%@ lastUpdate=%@", key, lastTime);
 
         if ([currentTime intValue] - [lastTime intValue] > 10) {
-            [textView setText:[[NSString stringWithFormat:@"Haven't heard from %@ in 10 seconds. Removing it from the occupants list!",key] stringByAppendingFormat:@"\n%@\n",textView.text]];
+            //[textView setText:[[NSString stringWithFormat:@"Haven't heard from %@ in 10 seconds. Removing it from the occupants list!",key] stringByAppendingFormat:@"\n%@\n",textView.text]];
             NSLog(@"Haven't heard from %@ in 10 seconds. Removing it from the occupants list!",key);
             [occupants removeObjectForKey:key];
-            [presenceView setText:@""];
+            //[presenceView setText:@""];
 
         }
 
-        [presenceView setText:[[NSString stringWithFormat:@"user=%@ lastUpdate=%@", key, lastTime] stringByAppendingFormat:@"\n%@\n", presenceView.text]];
+        //[presenceView setText:[[NSString stringWithFormat:@"user=%@ lastUpdate=%@", key, lastTime] stringByAppendingFormat:@"\n%@\n", presenceView.text]];
     }
 }
 
@@ -153,13 +151,7 @@ static NSString * const kTAChannelName = @"hello_world";
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
                                                          withBlock:^(PNMessage *message) {
 
-                                                             NSLog(@"Text Length: %i", textView.text.length);
 
-                                                             if (textView.text.length > 2000) {
-                                                                 [textView setText:@""];
-                                                             }
-
-                                                             [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
 
                                                          }];
 
@@ -194,11 +186,11 @@ static NSString * const kTAChannelName = @"hello_world";
         if (![eventString isEqualToString:@"Timeout"]) {
             alreadyExists = [occupants objectForKey:uuid];
             if (alreadyExists) {
-                [textView setText:[[NSString stringWithFormat:@"Heard from an existing user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.text]];
+                //[textView setText:[[NSString stringWithFormat:@"Heard from an existing user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.text]];
                 NSLog(@"Heard from an existing user: %@", uuid);
                 [self updateOccupant:uuid];
             } else {
-                [textView setText:[[NSString stringWithFormat:@"Heard from a new user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.text]];
+                //[textView setText:[[NSString stringWithFormat:@"Heard from a new user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.text]];
                 NSLog(@"Heard from a new user: %@", uuid);
                 [self addOccupant:uuid];
             }
@@ -311,13 +303,13 @@ static NSString * const kTAChannelName = @"hello_world";
 - (void)receivedSleepNote: (NSNotification *)notification {
     NSLog(@"GOING TO SLEEP!");
 
-    [PubNub unsubscribeFromChannel:self.myChannel withCompletionHandlingBlock:^(NSArray *channels, PNError *error){
-
-        NSLog(@"FINISHED UNSUBBING.");
-        //[PubNub disconnect];
-        NSLog(@"FINISHED DISCO");
-
-    }];
+//    [PubNub unsubscribeFromChannel:self.myChannel withCompletionHandlingBlock:^(NSArray *channels, PNError *error){
+//
+//        NSLog(@"FINISHED UNSUBBING.");
+//        //[PubNub disconnect];
+//        NSLog(@"FINISHED DISCO");
+//
+//    }];
 
     NSLog(@"GOOD NITE!");
 }

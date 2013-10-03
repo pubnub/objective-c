@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *uuidView;
 
 @property NSTimer *pingPongTimer;
-@property NSTimer *gratuitousTimer;
 
 @property PNChannel *myChannel;
 @property NSString *presenceChannel;
