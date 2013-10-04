@@ -38,7 +38,7 @@
 
 static NSString * const kPNLibraryVersion = @"3.5.1rc1";
 static NSString * const kPNCodebaseBranch = @"hotfix-t159";
-static NSString * const kPNCodeCommitIdentifier = @"caff2ff2323b46756d03c177eaf63db5ee08edbd";
+static NSString * const kPNCodeCommitIdentifier = @"d563b2d8ebd6ce78a46f068e6c3e5491f35b8c96";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
