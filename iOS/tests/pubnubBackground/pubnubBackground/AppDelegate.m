@@ -549,11 +549,7 @@ const int noOfChannels =3;
 }
 
 - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
-<<<<<<< HEAD
-    [self WriteLog: [NSString stringWithFormat:@"PubNub client sent message: %@", message]isEssential:YES];
-=======
     [self WriteLog: [NSString stringWithFormat:@"PubNub client failed to send message: %@", message]isEssential:YES];
->>>>>>> Added missing newlines to end of files
     PNLog(PNLogGeneralLevel, self, @"PubNub client failed to send message '%@' because of error: %@", message, error);
 }
 
