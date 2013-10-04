@@ -444,7 +444,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 - (void)resume {
 
     // Check whether reachability instance crated before destroy it
-    if (self.serviceReachability) {
+    if (self.serviceReachability && [self isSuspended]) {
 
         PNLog(PNLogReachabilityLevel, self, @" RESUMED");
         self.notificationsSuspended = NO;

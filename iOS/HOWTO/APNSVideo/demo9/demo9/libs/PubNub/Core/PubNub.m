@@ -3987,7 +3987,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.state != PNPubNubClientStateDisconnected && self.state != PNPubNubClientStateReset &&
         (self.state == PNPubNubClientStateConnecting || self.state == PNPubNubClientStateConnected)) {
         
-        shouldChannelNotifyAboutEvent = [channel isConnected];
+        shouldChannelNotifyAboutEvent = [channel isConnected] || [channel isConnecting];
     }
     PNLog(PNLogGeneralLevel, self, @"SHOULD CHANNEL NOTIFY DELEGATE? %@ (STATE: %@)", shouldChannelNotifyAboutEvent ? @"YES" : @"NO",
           [self humanReadableStateFrom:self.state]);
@@ -4009,23 +4009,33 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (NSInteger)requestExecutionPossibilityStatusCode {
-    
+
     NSInteger statusCode = 0;
-    
-    // Check whether client can subscribe for channels or not
-    if ([self.reachability isServiceReachabilityChecked] && [self.reachability isServiceAvailable]) {
-        
-        if (![self isConnected]) {
-            
-            statusCode = kPNRequestExecutionFailedClientNotReadyError;
-        }
+
+    // Check whether library suspended or not
+    if (self.state == PNPubNubClientStateSuspended) {
+
+        statusCode = kPNRequestExecutionFailedClientSuspendedError;
     }
     else {
-        
+
         statusCode = kPNRequestExecutionFailedOnInternetFailureError;
+
+        if (![self isConnected]) {
+
+            // Check whether client can subscribe for channels or not
+            if ([self.reachability isServiceReachabilityChecked] && [self.reachability isServiceAvailable]) {
+
+                statusCode = kPNRequestExecutionFailedClientNotReadyError;
+            }
+        }
+        else {
+
+            statusCode = 0;
+        }
     }
-    
-    
+
+
     return statusCode;
 }
 

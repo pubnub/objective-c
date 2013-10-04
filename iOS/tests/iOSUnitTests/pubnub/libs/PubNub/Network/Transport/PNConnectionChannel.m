@@ -673,6 +673,24 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     return hasRequestsWithClass;
 }
 
+- (NSArray *)requestsWithClass:(Class)requestClass {
+
+    NSMutableArray *requests = [NSMutableArray array];
+
+    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+            BOOL *requestIdentifierEnumeratorStop) {
+
+        PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+        if ([request isKindOfClass:requestClass]) {
+
+            [requests addObject:request];
+        }
+    }];
+
+
+    return requests;
+}
+
 /**
  * Create lazily create connection instance (useful in cased when it was necessary to destroy connection and there
  * was no time to create new one
