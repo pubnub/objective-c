@@ -37,8 +37,8 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.5.1rc1";
-static NSString * const kPNCodebaseBranch = @"106ab.101.116.119.127.113.128abcde.114.133.156,3.5.1b";
-static NSString * const kPNCodeCommitIdentifier = @"fe5c25cf8dac4732e92890a3ebdf6db8c81355a5";
+static NSString * const kPNCodebaseBranch = @"hotfix-t159";
+static NSString * const kPNCodeCommitIdentifier = @"d563b2d8ebd6ce78a46f068e6c3e5491f35b8c96";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -3987,7 +3987,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.state != PNPubNubClientStateDisconnected && self.state != PNPubNubClientStateReset &&
         (self.state == PNPubNubClientStateConnecting || self.state == PNPubNubClientStateConnected)) {
         
-        shouldChannelNotifyAboutEvent = [channel isConnected];
+        shouldChannelNotifyAboutEvent = [channel isConnected] || [channel isConnecting];
     }
     PNLog(PNLogGeneralLevel, self, @"SHOULD CHANNEL NOTIFY DELEGATE? %@ (STATE: %@)", shouldChannelNotifyAboutEvent ? @"YES" : @"NO",
           [self humanReadableStateFrom:self.state]);
@@ -4009,23 +4009,33 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (NSInteger)requestExecutionPossibilityStatusCode {
-    
+
     NSInteger statusCode = 0;
-    
-    // Check whether client can subscribe for channels or not
-    if ([self.reachability isServiceReachabilityChecked] && [self.reachability isServiceAvailable]) {
-        
-        if (![self isConnected]) {
-            
-            statusCode = kPNRequestExecutionFailedClientNotReadyError;
-        }
+
+    // Check whether library suspended or not
+    if (self.state == PNPubNubClientStateSuspended) {
+
+        statusCode = kPNRequestExecutionFailedClientSuspendedError;
     }
     else {
-        
+
         statusCode = kPNRequestExecutionFailedOnInternetFailureError;
+
+        if (![self isConnected]) {
+
+            // Check whether client can subscribe for channels or not
+            if ([self.reachability isServiceReachabilityChecked] && [self.reachability isServiceAvailable]) {
+
+                statusCode = kPNRequestExecutionFailedClientNotReadyError;
+            }
+        }
+        else {
+
+            statusCode = 0;
+        }
     }
-    
-    
+
+
     return statusCode;
 }
 

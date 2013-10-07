@@ -605,47 +605,101 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     if ([channels count] > 0) {
 
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] UPDATING SUBSCRIPTIONS... (STATE: %d)",
-              self, self.messagingState);
+                self, self.messagingState);
 
-        [self destroyByRequestClass:[PNLeaveRequest class]];
-        [self destroyByRequestClass:[PNSubscribeRequest class]];
+
+        BOOL shouldSendUpdateSubscriptionRequest = YES;
+
+        // Check whether user want to subscribe on particular channel (w/ or w/o presence event) or unsubscribe from all channels
+        if ([self hasRequestsWithClass:[PNSubscribeRequest class]] || [self hasRequestsWithClass:[PNLeaveRequest class]]) {
+
+            shouldSendUpdateSubscriptionRequest = NO;
+
+            // Check whether user want to unsubscribe from all channels or not
+            __block BOOL isLeavingAllChannles = NO;
+            NSArray *leaveRequests  = [self requestsWithClass:[PNLeaveRequest class]];
+            [leaveRequests enumerateObjectsUsingBlock:^(PNLeaveRequest *leaveRequest, NSUInteger leaveRequestIdx,
+                    BOOL *leaveRequestEnumeratorStop) {
+
+                if (!isLeavingAllChannles) {
+
+                    // Check whether we already found request which will unsubscribe from all channels or not
+                    NSSet *leaveChannelsSet = [NSSet setWithArray:leaveRequest.channels];
+                    if ([leaveChannelsSet isEqualToSet:self.subscribedChannelsSet]) {
+
+                        isLeavingAllChannles = YES;
+                    }
+                }
+                else {
+
+                    [self destroyRequest:leaveRequest];
+                }
+            }];
+
+            // Check whether is leaving only partial channels and there is no subscribe request for rest of the channels
+            if ([leaveRequests count] > 0 && !isLeavingAllChannles && ![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
+
+                [self destroyByRequestClass:[PNLeaveRequest class]];
+                shouldSendUpdateSubscriptionRequest = YES;
+            }
+
+            if ([self hasRequestsWithClass:[PNSubscribeRequest class]]) {
+
+                shouldSendUpdateSubscriptionRequest = NO;
+            }
+        }
+
+        if (!shouldSendUpdateSubscriptionRequest) {
+
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIPTION UPDATE CANCELED. WE ALREADY SENT"
+                    " REQUEST (STATE: %d)", self, self.messagingState);
+        }
 
         BOOL shouldModifyPresence = PNBitsIsOn(presenceType, NO, PNMessagingChannelEnablingPresence,
-                                               PNMessagingChannelDisablingPresence, BITS_LIST_TERMINATOR);
+                PNMessagingChannelDisablingPresence, BITS_LIST_TERMINATOR);
         NSArray *channelsForPresenceModification = [NSArray arrayWithArray:channels];
         if (shouldModifyPresence) {
 
             channels = @[];
         }
 
-        PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channels byUserRequest:YES];
-        if (shouldModifyPresence) {
 
-            if (PNBitIsOn(presenceType, PNMessagingChannelEnablingPresence)) {
+        // Depending on whether clint already try to subscribe on another set of channels or leave all channels, there maybe no
+        // reason to send request to subscribe on channels with updated time token
+        if (shouldSendUpdateSubscriptionRequest) {
 
-                subscribeRequest.channelsForPresenceEnabling = channelsForPresenceModification;
+            [self destroyByRequestClass:[PNLeaveRequest class]];
+            [self destroyByRequestClass:[PNSubscribeRequest class]];
+
+            PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channels byUserRequest:YES];
+            if (shouldModifyPresence) {
+
+                if (PNBitIsOn(presenceType, PNMessagingChannelEnablingPresence)) {
+
+                    subscribeRequest.channelsForPresenceEnabling = channelsForPresenceModification;
+                }
+                else {
+
+                    subscribeRequest.channelsForPresenceDisabling = channelsForPresenceModification;
+                }
+                [subscribeRequest resetTimeTokenTo:[PNChannel largestTimetokenFromChannels:channelsForPresenceModification]];
             }
-            else {
 
-                subscribeRequest.channelsForPresenceDisabling = channelsForPresenceModification;
+            PNBitOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
+            PNBitOn(&_messagingState, PNMessagingChannelUpdateSubscription);
+            subscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
+            if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
+
+                subscribeRequest.closeConnection = NO;
             }
-            [subscribeRequest resetTimeTokenTo:[PNChannel largestTimetokenFromChannels:channelsForPresenceModification]];
+
+            // In case if we are restoring subscription and user decided to discard old time token client should
+            // send channel long-poll request (with updated time token) before other requests
+            [self scheduleRequest:subscribeRequest
+          shouldObserveProcessing:[subscribeRequest isInitialSubscription]
+                       outOfOrder:PNBitIsOn(self.messagingState, PNMessagingChannelRestoringSubscription)
+                 launchProcessing:YES];
         }
-
-        PNBitOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
-        PNBitOn(&_messagingState, PNMessagingChannelUpdateSubscription);
-        subscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
-        if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
-
-            subscribeRequest.closeConnection = NO;
-        }
-
-        // In case if we are restoring subscription and user decided to discard old time token client should
-        // send channel long-poll request (with updated time token) before other requests
-        [self scheduleRequest:subscribeRequest
-      shouldObserveProcessing:[subscribeRequest isInitialSubscription]
-                   outOfOrder:PNBitIsOn(self.messagingState, PNMessagingChannelRestoringSubscription)
-             launchProcessing:YES];
     }
 
 }

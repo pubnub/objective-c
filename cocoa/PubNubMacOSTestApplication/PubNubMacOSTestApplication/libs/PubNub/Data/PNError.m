@@ -179,7 +179,8 @@
                 
             case kPNClientConfigurationError:
                 
-                errorDescription = @"Incomplete PubNub client configuration. Make sure you set the configuration correctly.";
+                errorDescription = @"Incomplete PubNub client configuration. Make sure you set the configuration "
+                                    "correctly.";
                 break;
             case kPNClientTriedConnectWhileConnectedError:
                 
@@ -198,7 +199,8 @@
                 break;
             case kPNRequestExecutionFailedOnInternetFailureError:
             case kPNRequestExecutionFailedClientNotReadyError:
-                
+            case kPNRequestExecutionFailedClientSuspendedError:
+
                 errorDescription = @"PubNub client can't perform request";
                 break;
             case kPNConnectionErrorOnSetup:
@@ -293,19 +295,23 @@
             
         case kPNClientConfigurationError:
             
-            failureReason = @"One of the required configuration fields is empty:\n- publish key\n- subscribe key\n- secret key";
+            failureReason = @"One of the required configuration fields is empty:\n- publish key\n- subscribe key\n- "
+                             "secret key";
             break;
         case kPNClientTriedConnectWhileConnectedError:
             
-            failureReason = @"Looks like the client tried to connect to the remote PubNub service while already connected";
+            failureReason = @"Looks like the client tried to connect to the remote PubNub service while already "
+                             "connected";
             break;
         case kPNClientConnectionFailedOnInternetFailureError:
             
-            failureReason = @"Looks like the client lost it's net connection while trying to connect to the PubNub origin";
+            failureReason = @"Looks like the client lost it's net connection while trying to connect to the PubNub "
+                             "origin";
             break;
         case kPNClientConnectionClosedOnSSLNegotiationFailureError:
 
-            failureReason = @"Looks like the client was unable to connect to the PubNub origin due to an SSL handshake issue";
+            failureReason = @"Looks like the client was unable to connect to the PubNub origin due to an SSL "
+                             "handshake issue";
             break;
         case kPNClientConnectionClosedOnSocketsError:
             
@@ -313,7 +319,8 @@
             break;
         case kPNClientConnectionClosedOnServerRequestError:
             
-            failureReason = @"Looks like the client was unable to connect to the PubNub origin due to receiving a RST. A server, proxy, or gateway refused the connection";
+            failureReason = @"Looks like the client was unable to connect to the PubNub origin due to receiving a RST. "
+                             "A server, proxy, or gateway refused the connection";
             break;
         case kPNRequestExecutionFailedOnInternetFailureError:
         case kPNClientConnectionClosedOnInternetFailureError:
@@ -332,13 +339,19 @@
 
             failureReason = @"Looks like the client is not connected to the PubNub origin";
             break;
+        case kPNRequestExecutionFailedClientSuspendedError:
+
+            failureReason = @"Looks like the client suspended";
+            break;
         case kPNPresenceAPINotAvailableError:
 
-            failureReason = @"Looks like the Presence feature is not enabled. Be sure to enable it for your keys at http://admin.pubnub.com, and try again";
+            failureReason = @"Looks like the Presence feature is not enabled. Be sure to enable it for your keys at "
+                             "http://admin.pubnub.com, and try again";
             break;
         case kPNInvalidJSONError:
 
-            failureReason = @"Looks like we sent malformed JSON or the message was changed after the signature was generated";
+            failureReason = @"Looks like we sent malformed JSON or the message was changed after the signature was "
+                             "generated";
             break;
         case kPNInvalidSubscribeOrPublishKeyError:
 
@@ -350,11 +363,14 @@
             break;
         case kPNAPIUnauthorizedAccessError:
 
-            failureReason = @"An 'auth' key must be provided for this request because PAM is enabled and access was denied";
+            failureReason = @"An 'auth' key must be provided for this request because PAM is enabled and access was "
+                             "denied";
             break;
         case kPNAPIAccessForbiddenError:
 
-            failureReason = @"An 'auth' key was provided for this request because PAM is enabled, but access was denied because the 'auth' key supplied does not posess the adequate permissions for this resource";
+            failureReason = @"An 'auth' key was provided for this request because PAM is enabled, but access was "
+                             "denied because the 'auth' key supplied does not posess the adequate permissions for "
+                             "this resource";
             break;
         case kPNMessageHasNoContentError:
 
@@ -374,7 +390,8 @@
             break;
         case kPNPushNotificationsNotEnabledError:
 
-            failureReason = @"Looks like APNS (push notifications) weren't enabled for this subscribe key. Enable at http://admin.pubnub.com and try again";
+            failureReason = @"Looks like APNS (push notifications) weren't enabled for this subscribe key. Enable at "
+                             "http://admin.pubnub.com and try again";
             break;
         case kPNDevicePushTokenIsEmptyError:
             
@@ -414,7 +431,8 @@
             break;
         case kPNCryptoUnavailableFeatureError:
             
-            failureReason = @"Looks like someone tried to use a feature which is not available for the specified algorithm";
+            failureReason = @"Looks like someone tried to use a feature which is not available for the specified "
+                             "algorithm";
             break;
         default:
 
@@ -434,11 +452,14 @@
             
         case kPNClientConfigurationError:
             
-            fixSuggestion = @"Ensure that you specified all required keys while creating the PNConfiguration instance or all values specified in PNDefaultConfiguration.h. You can always visit https://admin.pubnub.com to verify your correct keys.";
+            fixSuggestion = @"Ensure that you specified all required keys while creating the PNConfiguration instance "
+                             "or all values specified in PNDefaultConfiguration.h. You can always visit "
+                             "https://admin.pubnub.com to verify your correct keys.";
             break;
         case kPNClientTriedConnectWhileConnectedError:
             
-            fixSuggestion = @"If you wish to reconnect the PubNub client, close the connection first, then try to connect again.";
+            fixSuggestion = @"If you wish to reconnect the PubNub client, close the connection first, then try to "
+                             "connect again.";
             break;
         case kPNClientConnectionFailedOnInternetFailureError:
         case kPNRequestExecutionFailedOnInternetFailureError:
@@ -447,11 +468,15 @@
             break;
         case kPNClientConnectionClosedOnSSLNegotiationFailureError:
 
-            fixSuggestion = @"Ensure that all network configuration (including any proxy) is correct and try again. If this issue persists, please contact support at support@pubnub.com and reference error kPNClientConnectionClosedOnSSLNegotiationFailureError.";
+            fixSuggestion = @"Ensure that all network configuration (including any proxy) is correct and try again. "
+                             "If this issue persists, please contact support at support@pubnub.com and reference error "
+                             "kPNClientConnectionClosedOnSSLNegotiationFailureError.";
             break;
         case kPNClientConnectionClosedOnServerRequestError:
             
-            fixSuggestion = @"Ensure that all network configuration (including any proxy) is correct and try again. If this issue persists, please contact support at support@pubnub.com and reference error kPNClientConnectionClosedOnServerRequestError.";
+            fixSuggestion = @"Ensure that all network configuration (including any proxy) is correct and try again. "
+                             "If this issue persists, please contact support at support@pubnub.com and reference error "
+                             "kPNClientConnectionClosedOnServerRequestError.";
             break;
         case kPNClientConnectionClosedOnSocketsError:
             
@@ -459,11 +484,19 @@
             break;
         case kPNConnectionErrorOnSetup:
             
-            fixSuggestion = @"Check whether the client has been configured to use a secure connection, and whether the PubNub origin has a valid certificate.\nIf you continue to receive this error, you can set kPNShouldReduceSecurityLevelOnError to YES in PNDefaultConfiguration.h or provide YES when initializing PNConfiguration instance.";
+            fixSuggestion = @"Check whether the client has been configured to use a secure connection, and whether the "
+                             "PubNub origin has a valid certificate.\nIf you continue to receive this error, you can "
+                             "set kPNShouldReduceSecurityLevelOnError to YES in PNDefaultConfiguration.h or provide "
+                             "YES when initializing PNConfiguration instance.";
             break;
         case kPNRequestExecutionFailedClientNotReadyError:
 
             fixSuggestion = @"Ensure that the PubNub has proper connectivity to the PubNub origin and try again.";
+            break;
+        case kPNRequestExecutionFailedClientSuspendedError:
+
+            fixSuggestion = @"Make sure that your application is configured to run persistently in background or check "
+                             "whether client is connected before issue any requests.";
             break;
         case kPNRequestExecutionFailedByTimeoutError:
 
@@ -475,7 +508,8 @@
             break;
         case kPNInvalidJSONError:
 
-            fixSuggestion = @"There was an error sending the data to the origin. Be sure you didn't try to send non-object or non-JSON data.";
+            fixSuggestion = @"There was an error sending the data to the origin. Be sure you didn't try to send "
+                             "non-object or non-JSON data.";
             break;
         case kPNInvalidSubscribeOrPublishKeyError:
 
@@ -487,11 +521,13 @@
             break;
         case kPNAPIUnauthorizedAccessError:
 
-            fixSuggestion = @"Specify an 'authorizationKey' for the configuration instance used to setup the PubNub client.";
+            fixSuggestion = @"Specify an 'authorizationKey' for the configuration instance used to setup the "
+                             "PubNub client.";
             break;
         case kPNAPIAccessForbiddenError:
 
-            fixSuggestion = @"Ensure that you specified a valid 'authorizationKey'. If the key is correct, then access is currently denied for this key.";
+            fixSuggestion = @"Ensure that you specified a valid 'authorizationKey'. If the key is correct, then "
+                             "access is currently denied for this key.";
             break;
         case kPNMessageHasNoContentError:
 
@@ -503,7 +539,8 @@
             break;
         case kPNTooLongMessageError:
 
-            fixSuggestion = @"Please visit https://admin.pubnub.com to enable Elastic Message Size if you wish to send larger-sized messages.";
+            fixSuggestion = @"Please visit https://admin.pubnub.com to enable Elastic Message Size if you wish to "
+                             "send larger-sized messages.";
             break;
         case kPNPushNotificationsNotEnabledError:
 
@@ -519,7 +556,8 @@
             break;
         case kPNResponseEncodingError:
 
-            fixSuggestion = @"Ensure that you are using the UTF8 character table to send messages to the PubNub service.";
+            fixSuggestion = @"Ensure that you are using the UTF8 character table to send messages to the PubNub "
+                             "service.";
             break;
         case kPNResponseMalformedJSONError:
 
@@ -527,7 +565,8 @@
             break;
         case kPNCryptoEmptyCipherKeyError:
             
-            fixSuggestion = @"Please check the client configuration instance, and ensure that the cipher key is specified, or simply don't try to initialize the helper if there is no key supplied.";
+            fixSuggestion = @"Please check the client configuration instance, and ensure that the cipher key is "
+                             "specified, or simply don't try to initialize the helper if there is no key supplied.";
             break;
         case kPNCryptoIllegalInitializationParametersError:
             
@@ -535,11 +574,13 @@
             break;
         case kPNCryptoInsufficentBufferSizeError:
             
-            fixSuggestion = @"Ensure that a buffer with the correct amount of space has been specified and provided for the cryptor";
+            fixSuggestion = @"Ensure that a buffer with the correct amount of space has been specified and provided "
+                             "for the cryptor";
             break;
         case kPNCryptoInsufficentMemoryError:
             
-            fixSuggestion = @"Looks like the cryptor has run out of memory during this last operation. Try to separate the input data in chunks and process them one by one if possible.";
+            fixSuggestion = @"Looks like the cryptor has run out of memory during this last operation. Try to separate "
+                             "the input data in chunks and process them one by one if possible.";
             break;
         case kPNCryptoAligmentInputDataError:
             
@@ -551,7 +592,8 @@
             break;
         case kPNCryptoUnavailableFeatureError:
             
-            fixSuggestion = @"Looks like you tried to perform some operations which are not supported by the crypto lib with the specified algorithm.";
+            fixSuggestion = @"Looks like you tried to perform some operations which are not supported by the crypto "
+                             "lib with the specified algorithm.";
             break;
         default:
 

@@ -77,6 +77,7 @@
  * Allow to check whether requests with specified class already placed into storage
  */
 - (BOOL)hasRequestsWithClass:(Class)requestClass;
+- (NSArray *)requestsWithClass:(Class)requestClass;
 
 /**
  * Closing connection to the server. Requests queue won't be flushed.
