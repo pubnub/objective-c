@@ -97,16 +97,15 @@
 }
 
 - (void)test10ConnectionChaos {
-//	semaphore = dispatch_semaphore_create(0);
-//	pnChannels = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev"]];
+	//	semaphore = dispatch_semaphore_create(0);
     [PubNub setDelegate:self];
 	[PubNub disconnect];
 	for( int i=0; (i<100/*[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1*/ &&
-		notifyDidDisconnectWithErrorCalled == NO) && ([PubNub sharedInstance].isConnected == YES); i++ )
+				   notifyDidDisconnectWithErrorCalled == NO) && ([PubNub sharedInstance].isConnected == YES); i++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertFalse( [PubNub sharedInstance].isConnected, @"[PubNub sharedInstance].isConnected");
 
-	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"chaos.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
 	//	configuration.autoReconnectClient = NO;
 	[PubNub setConfiguration: configuration];
 
@@ -115,16 +114,54 @@
 		connectedFinish = YES;
         PNLog(PNLogGeneralLevel, nil, @"{BLOCK} PubNub client connected to: %@", origin);
     }
-		 errorBlock:^(PNError *connectionError) {
-			 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
-			 connectedFinish = YES;
-	 }];
-	for( int i=0; (i<10 && connectedFinish == NO); i++ ) {
-		NSLog(@"Waiting to connectedFinish... %d", i);
+						 errorBlock:^(PNError *connectionError) {
+							 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+							 connectedFinish = YES;
+						 }];
+	for( int i=0; (i<320 && connectedFinish == NO); i++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	}
 	STAssertTrue( connectedFinish, @"conectedFinish must be YES");
+
+
+	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
+	 {
+		 subscribeOnChannelsFinish = YES;
+		 STAssertEqualObjects( [NSSet setWithArray: pnChannels], [NSSet setWithArray: channels], @"channels must be equal");
+	 }];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+		subscribeOnChannelsFinish == NO; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( subscribeOnChannelsFinish, @"subscribeOnChannelsFinish must be YES");
+
+
+	configuration = [PNConfiguration configurationForOrigin:@"chaos.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+	//	configuration.autoReconnectClient = NO;
+	[PubNub setConfiguration: configuration];
+
+	connectedFinish = NO;
+    [PubNub connectWithSuccessBlock:^(NSString *origin) {
+		connectedFinish = YES;
+        PNLog(PNLogGeneralLevel, nil, @"{BLOCK} PubNub client connected to: %@", origin);
+    }
+						 errorBlock:^(PNError *connectionError) {
+							 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+							 connectedFinish = YES;
+						 }];
+	for( int i=0; (i<100 && connectedFinish == NO); i++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
+
+	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
+	 {
+		 subscribeOnChannelsFinish = YES;
+		 STAssertEqualObjects( [NSSet setWithArray: pnChannels], [NSSet setWithArray: channels], @"channels must be equal");
+	 }];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+		subscribeOnChannelsFinish == NO; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( subscribeOnChannelsFinish, @"subscribeOnChannelsFinish must be YES");
 }
+
 //
 //- (void)test10ConnectionChaos
 //{
@@ -158,20 +195,20 @@
 	subscribeOnChannelsFinish = YES;
 }
 
-- (void)test20SubscribeOnChannels
-{
-//    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-	subscribeOnChannelsFinish = NO;
-	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-	 {
-		 subscribeOnChannelsFinish = YES;
-	 }];
-	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-		subscribeOnChannelsFinish == NO; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	if( [PubNub sharedInstance].isConnected == YES )
-		STAssertTrue( subscribeOnChannelsFinish, @"subscribeOnChannelsFinish must be YES");
-}
+//- (void)test20SubscribeOnChannels
+//{
+////    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+//	subscribeOnChannelsFinish = NO;
+//	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
+//	 {
+//		 subscribeOnChannelsFinish = YES;
+//	 }];
+//	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+//		subscribeOnChannelsFinish == NO; j++ )
+//		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+//	if( [PubNub sharedInstance].isConnected == YES )
+//		STAssertTrue( subscribeOnChannelsFinish, @"subscribeOnChannelsFinish must be YES");
+//}
 
 //nonSubscriptionRequestTimeout
 - (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel withError:(PNError *)error {
@@ -179,20 +216,20 @@
           channel, error);
 	participantsListForChannelFinish = YES;
 }
-- (void)test30ParticipantsListForChannel
-{
-	participantsListForChannelFinish = NO;
-	PNChannel *channel = [PNChannel channelsWithNames: @[@"channel"]][0];
-	[PubNub requestParticipantsListForChannel: channel
-						  withCompletionBlock: ^(NSArray *udids, PNChannel *channel, PNError *error)
-	 {
-		 participantsListForChannelFinish = YES;
-	 }];
-	for( int j=0; j<[PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout+1 &&
-		participantsListForChannelFinish == NO; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	if( [PubNub sharedInstance].isConnected == YES )
-		STAssertTrue( participantsListForChannelFinish, @"subscribeOnChannelsFinish must be YES");
-}
+//- (void)test30ParticipantsListForChannel
+//{
+//	participantsListForChannelFinish = NO;
+//	PNChannel *channel = [PNChannel channelsWithNames: @[@"channel"]][0];
+//	[PubNub requestParticipantsListForChannel: channel
+//						  withCompletionBlock: ^(NSArray *udids, PNChannel *channel, PNError *error)
+//	 {
+//		 participantsListForChannelFinish = YES;
+//	 }];
+//	for( int j=0; j<[PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout+1 &&
+//		participantsListForChannelFinish == NO; j++ )
+//		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+//	if( [PubNub sharedInstance].isConnected == YES )
+//		STAssertTrue( participantsListForChannelFinish, @"subscribeOnChannelsFinish must be YES");
+//}
 
 @end
