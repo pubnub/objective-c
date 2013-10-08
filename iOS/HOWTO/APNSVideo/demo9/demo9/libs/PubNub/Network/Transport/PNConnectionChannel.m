@@ -506,6 +506,11 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
            [self isWaitingStoredRequestCompletion:requestIdentifier];
 }
 
+- (BOOL)shouldScheduleRequest:(PNBaseRequest *)request {
+
+    return YES;
+}
+
 - (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
@@ -785,26 +790,34 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
              outOfOrder:(BOOL)shouldEnqueueRequestOutOfOrder
        launchProcessing:(BOOL)shouldLaunchRequestsProcessing {
 
-    if([self.requestsQueue enqueueRequest:request outOfOrder:shouldEnqueueRequestOutOfOrder]) {
+    if ([self shouldScheduleRequest:request]) {
 
-        if (shouldObserveProcessing) {
+        if([self.requestsQueue enqueueRequest:request outOfOrder:shouldEnqueueRequestOutOfOrder]) {
 
-            [self.observedRequests setValue:request forKey:request.shortIdentifier];
+            if (shouldObserveProcessing) {
+
+                [self.observedRequests setValue:request forKey:request.shortIdentifier];
+            }
+
+            if ([self shouldStoreRequest:request]) {
+
+                [self.storedRequestsList addObject:request.shortIdentifier];
+                [self.storedRequests setValue:@{PNStoredRequestKeys.request:request,
+                                                PNStoredRequestKeys.isObserved :@(shouldObserveProcessing)}
+                                       forKey:request.shortIdentifier];
+            }
+
+            if (shouldLaunchRequestsProcessing) {
+
+                // Launch communication process on sockets by triggering requests queue processing
+                [self scheduleNextRequest];
+            }
         }
+    }
+    else {
 
-        if ([self shouldStoreRequest:request]) {
-
-            [self.storedRequestsList addObject:request.shortIdentifier];
-            [self.storedRequests setValue:@{PNStoredRequestKeys.request:request,
-                                            PNStoredRequestKeys.isObserved :@(shouldObserveProcessing)}
-                                   forKey:request.shortIdentifier];
-        }
-
-        if (shouldLaunchRequestsProcessing) {
-
-            // Launch communication process on sockets by triggering requests queue processing
-            [self scheduleNextRequest];
-        }
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] IGNORE SCHEDULED REQUEST: %@ (STATE: %d)",
+              self.name, request, self.state);
     }
 }
 
@@ -957,7 +970,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     BOOL isExpected = [self shouldHandleConnectionToHost];
     PNBitClear(&_state);
     PNBitOn(&_state, PNConnectionChannelConnected);
-
 
     if ([self.storedRequestsList count]) {
 

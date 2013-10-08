@@ -281,6 +281,20 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
 }
 
+- (BOOL)shouldScheduleRequest:(PNBaseRequest *)request {
+
+    BOOL shouldScheduleRequest = YES;
+
+    if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
+
+        shouldScheduleRequest = !PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents) &&
+                                !PNBitIsOn(self.messagingState, PNMessagingChannelRestoringSubscription);
+    }
+
+
+    return shouldScheduleRequest;
+}
+
 - (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error {
 
     // Check whether this is 'Subscribe' or 'Leave' request or not

@@ -34,6 +34,7 @@
  * Returns whether communication channel is waiting for request processing completion from backend or not
  */
 - (BOOL)isWaitingRequestCompletion:(NSString *)requestIdentifier;
+- (BOOL)shouldScheduleRequest:(PNBaseRequest *)request;
 
 /**
  * Clean up requests stack
