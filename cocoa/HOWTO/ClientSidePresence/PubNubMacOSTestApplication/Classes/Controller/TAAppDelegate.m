@@ -42,6 +42,7 @@ static NSString * const kTAChannelName = @"hello_world";
 
 @implementation TAAppDelegate
 
+@synthesize textView, presenceView;
 @synthesize myChannel, pingPongTimer, presenceChannel, occupants;
 
 #pragma mark - Instance methods
@@ -52,6 +53,8 @@ static NSString * const kTAChannelName = @"hello_world";
 
     // avoid mutating during enumeration
 
+    [presenceView setStringValue:@""];
+
     NSLog(@"All Occupants:");
     for(id key in [occupants allKeys]) {
 
@@ -59,10 +62,10 @@ static NSString * const kTAChannelName = @"hello_world";
         NSLog(@"user=%@ lastUpdate=%@", key, lastTime);
 
         if ([currentTime intValue] - [lastTime intValue] > 10) {
-            //[textView setText:[[NSString stringWithFormat:@"Haven't heard from %@ in 10 seconds. Removing it from the occupants list!",key] stringByAppendingFormat:@"\n%@\n",textView.text]];
+            [textView setStringValue:[[NSString stringWithFormat:@"Haven't heard from %@ in 10 seconds. Removing it from the occupants list!",key] stringByAppendingFormat:@"\n%@\n",textView.stringValue]];
             NSLog(@"Haven't heard from %@ in 10 seconds. Removing it from the occupants list!",key);
             [occupants removeObjectForKey:key];
-            //[presenceView setText:@""];
+            [presenceView setStringValue:@""];
 
         }
 
@@ -70,7 +73,7 @@ static NSString * const kTAChannelName = @"hello_world";
 
     for(id key in [occupants allKeys]) {
         NSNumber *lastTime =  [occupants objectForKey:key];
-        //[presenceView setText:[[NSString stringWithFormat:@"user=%@ lastUpdate=%@", key, lastTime] stringByAppendingFormat:@"\n%@\n", presenceView.text]];
+        [presenceView setStringValue:[[NSString stringWithFormat:@"user=%@ lastUpdate=%@", key, lastTime] stringByAppendingFormat:@"\n%@\n", presenceView.stringValue]];
     }
 }
 
@@ -188,11 +191,11 @@ static NSString * const kTAChannelName = @"hello_world";
         if (![eventString isEqualToString:@"Timeout"]) {
             alreadyExists = [occupants objectForKey:uuid];
             if (alreadyExists) {
-                //[textView setText:[[NSString stringWithFormat:@"Heard from an existing user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.text]];
+                [textView setStringValue:[[NSString stringWithFormat:@"Heard from an existing user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.stringValue]];
                 NSLog(@"Heard from an existing user: %@", uuid);
                 [self updateOccupant:uuid];
             } else {
-                //[textView setText:[[NSString stringWithFormat:@"Heard from a new user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.text]];
+                [textView setStringValue:[[NSString stringWithFormat:@"Heard from a new user: %@", uuid] stringByAppendingFormat:@"\n%@\n",textView.stringValue]];
                 NSLog(@"Heard from a new user: %@", uuid);
                 [self addOccupant:uuid];
             }

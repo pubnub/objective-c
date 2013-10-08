@@ -16,5 +16,7 @@
 @property NSTimer *pingPongTimer;
 @property NSString *presenceChannel;
 @property NSMutableDictionary *occupants;
+@property (weak) IBOutlet NSTextFieldCell *textView;
+@property (weak) IBOutlet NSTextFieldCell *presenceView;
 
 @end
