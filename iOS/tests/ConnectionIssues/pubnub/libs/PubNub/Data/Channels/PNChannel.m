@@ -202,6 +202,11 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     return presence;
 }
 
+- (PNChannel *)observedChannel {
+
+    return self;
+}
+
 - (void)resetUpdateTimeToken {
     
     self.updateTimeToken = @"0";
