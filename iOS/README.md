@@ -1,4 +1,4 @@
-# PubNub 3.5.0 for iOS 4+ (iPhone, iPad, iPod)
+# PubNub 3.5.1 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -144,14 +144,14 @@ demonstrate in more detail how you can use the delegate and completion block fea
 
 ### SimpleSubscribe HOWTO
 
-The [SimpleSubscribe](HOWTO/SimpleSubscribe/3.4) app references how to create a simple subscribe-only, non-ui application using PubNub and iOS. 
+The [SimpleSubscribe](HOWTO/SimpleSubscribe) app references how to create a simple subscribe-only, non-ui application using PubNub and iOS. 
 [A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/SimpleSubscribe/SimpleSubscribeHOWTO_34.pdf).
 
 This is the most basic example of how to wire it all up, and as such, should take beginners and experts alike about 5-10 minutes to complete.
 
 ### Hello World HOWTO
 
-The [Hello World](HOWTO/HelloWorld/3.4) app references how to create a simple application using PubNub and iOS. 
+The [Hello World](HOWTO/HelloWorld) app references how to create a simple application using PubNub and iOS. 
 [A getting started walkthrough document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf).
 
 ### CallsWithoutBlocks
@@ -164,7 +164,7 @@ for server responses (fire and forget).
 The [APNSVideo](HOWTO/APNSVideo) app is the companion to the APNS Tutorial Videos -- keep reading for more info on this...
 ### Deluxe iPad Full Featured Demo
 
-Once you are familiar with the [Hello World](HOWTO_3.4) app, The deluxe iPad-only app demonstrates all API functions in greater detail than
+Once you are familiar with the [Hello World](HOWTO) app, The deluxe iPad-only app demonstrates all API functions in greater detail than
 the Hello World app. It is intended to be a reference application.
 
 ## APNS Setup
@@ -1212,8 +1212,10 @@ A full list of notifications are stored in [__PNNotifications.h__](3.4/pubnub/li
 
 Logging can be controlled via the following booleans:
 
+    #define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
+
     #define PNLOG_LOGGING_ENABLED 1
-    #define PNLOG_STORE_LOG_TO_FILE 0
+    #define PNLOG_STORE_LOG_TO_FILE 1
     #define PNLOG_GENERAL_LOGGING_ENABLED 1
     #define PNLOG_DELEGATE_LOGGING_ENABLED 1
     #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
@@ -1229,9 +1231,15 @@ Logging can be controlled via the following booleans:
 
 in [pubnub/libs/PubNub/Misc/PNMacro.h](pubnub/libs/PubNub/Misc/PNMacro.h#L37)
 
-By default, all non-http response logging is enabled AND not to file.
+By default, all non-http response logging is enabled to file with a 10MB, single archived file log rotation.
 
-If you do choose the PNLOG_STORE_LOG_TO_FILE option, you will find your log written to you app's Document directory as 
+    kPNLogMaximumLogFileSize (10 * 1024 * 1024)
+    
+In the above, 10 represents the size in MB. Set it to the size you desire.  
+
+** Keep in mind, this file size is only checked/rotated at application start. If it rises above the max size during application run-time, it will not rotate until after the application has been restarted. **
+
+If you choose the PNLOG_STORE_LOG_TO_FILE option, you will find your log written to you app's Document directory as 
 
 ```
 pubnub-console-dump.txt
