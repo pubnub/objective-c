@@ -1,4 +1,22 @@
-09-16-2013
+10-08-2013 - 3.5.1
+. unsubscribe on resume race condition removed
+. setClientID and setConfiguration to be run mid-subscribe
+. socket connections will wait maximum 10s before timeout/retry
+. monitor each connection separately during connect/reconnect for connection errors
+. changing channels while in background fix
+. added an uplink check, which performs a PubNub time ping to verify connectivity in addition to Apple API detection
+. added log rotation -- default 20mb max size, via PNMacro.h.40 - kPNLogMaximumLogFileSize
+. fixed error handling block for history and unsubscribe when app is running in background
+. fixed typos in error messages
+. added newlines to source files
+. fixed issue because of which in certain situation sub/unsub/presence requests failed
+. fixed issue because of which client was able to postpone requests while workspace is sleeping (Mac OS)
+. added error code in case if developer will try to issue requests while workspace is sleeping
+. running enablePresenceObservation before subscribeOnChannel hangs app
+. never reset the UUID unless setClientIdentifier is run
+. fixed issue where quick succession of enable/disable presence would hang the subsequent subscribe on the same channel
+
+09-16-2013 - 3.5.0
 improvements all around concerning:
 . iOS 7 tests complete and passing
 
