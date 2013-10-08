@@ -1292,23 +1292,28 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Ask delegate whether connection should initiate connection to remote host or not
         if (shouldReconnect) {
 
+            BOOL isWaitingForReconnection = PNBitIsOn(self.state, PNConnectionReconnect);
             PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionError, BITS_LIST_TERMINATOR);
 
             // Marking that connection instance is reconnecting now and after last connection will be closed should
             // automatically renew connection
             PNBitOn(&_state, PNConnectionReconnect);
             [self destroyStreams];
-            
-            // Attempt to restore connection after small delay defined in 'static' section of this class
-            __pn_desired_weak __typeof__ (self) weakSelf = self;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPNConnectionRetryDelay * NSEC_PER_SEC));
-            dispatch_after(popTime, dispatch_get_main_queue(), ^{
 
-                if (PNBitIsOn(weakSelf.state, PNConnectionReconnect)) {
+            // Check whether 'reconnection' delayed request already has been issued or not
+            if (!isWaitingForReconnection) {
 
-                    [self disconnectByInternalRequest];
-                }
-            });
+                // Attempt to restore connection after small delay defined in 'static' section of this class
+                __pn_desired_weak __typeof__ (self) weakSelf = self;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPNConnectionRetryDelay * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^{
+
+                    if (PNBitIsOn(weakSelf.state, PNConnectionReconnect)) {
+
+                        [self disconnectByInternalRequest];
+                    }
+                });
+            }
         }
         else {
 
