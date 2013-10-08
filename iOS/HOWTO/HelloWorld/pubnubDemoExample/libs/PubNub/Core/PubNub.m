@@ -36,8 +36,8 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.5.1rc1";
-static NSString * const kPNCodebaseBranch = @"hotfix-t166";
+static NSString * const kPNLibraryVersion = @"3.5.1";
+static NSString * const kPNCodebaseBranch = @"master";
 static NSString * const kPNCodeCommitIdentifier = @"31e1caf5055a62756db7f847c47da1b102ca6cfe";
 
 
@@ -430,8 +430,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [PNConnection resetConnectionsPool];
     [PNChannel purgeChannelsCache];
     [PNCryptoHelper resetHelper];
-    
+
+    _sharedInstance.messagingChannel.delegate = nil;
     [_sharedInstance.messagingChannel terminate];
+    _sharedInstance.serviceChannel.delegate = nil;
     [_sharedInstance.serviceChannel terminate];
     _sharedInstance.messagingChannel = nil;
     _sharedInstance.serviceChannel = nil;

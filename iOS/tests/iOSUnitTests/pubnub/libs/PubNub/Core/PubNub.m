@@ -36,8 +36,8 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.5.1rc1";
-static NSString * const kPNCodebaseBranch = @"hotfix-t166";
+static NSString * const kPNLibraryVersion = @"3.5.1";
+static NSString * const kPNCodebaseBranch = @"master";
 static NSString * const kPNCodeCommitIdentifier = @"31e1caf5055a62756db7f847c47da1b102ca6cfe";
 
 
@@ -421,10 +421,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 + (void)resetClient {
 
     PNLog(PNLogGeneralLevel, _sharedInstance, @"CLIENT RESET.");
-
+    
     // Mark that client is in resetting state, so it won't be affected by callbacks from transport classes
     _sharedInstance.state = PNPubNubClientStateReset;
-
+    
     onceToken = 0;
     [PNObservationCenter resetCenter];
     [PNConnection resetConnectionsPool];
@@ -439,12 +439,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     _sharedInstance.serviceChannel = nil;
     [_sharedInstance.reachability stopServiceReachabilityMonitoring];
     _sharedInstance.reachability = nil;
-
+    
     pendingInvocations = nil;
 
     [_sharedInstance unsubscribeFromNotifications];
     _sharedInstance = nil;
 }
+
 
 #pragma mark - Client connection management methods
 
