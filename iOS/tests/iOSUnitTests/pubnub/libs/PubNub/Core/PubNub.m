@@ -421,29 +421,30 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 + (void)resetClient {
 
     PNLog(PNLogGeneralLevel, _sharedInstance, @"CLIENT RESET.");
-    
+
     // Mark that client is in resetting state, so it won't be affected by callbacks from transport classes
     _sharedInstance.state = PNPubNubClientStateReset;
-    
+
     onceToken = 0;
     [PNObservationCenter resetCenter];
     [PNConnection resetConnectionsPool];
     [PNChannel purgeChannelsCache];
     [PNCryptoHelper resetHelper];
-    
+
+    _sharedInstance.messagingChannel.delegate = nil;
     [_sharedInstance.messagingChannel terminate];
+    _sharedInstance.serviceChannel.delegate = nil;
     [_sharedInstance.serviceChannel terminate];
     _sharedInstance.messagingChannel = nil;
     _sharedInstance.serviceChannel = nil;
     [_sharedInstance.reachability stopServiceReachabilityMonitoring];
     _sharedInstance.reachability = nil;
-    
+
     pendingInvocations = nil;
 
     [_sharedInstance unsubscribeFromNotifications];
     _sharedInstance = nil;
 }
-
 
 #pragma mark - Client connection management methods
 
