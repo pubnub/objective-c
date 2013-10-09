@@ -649,28 +649,39 @@
 
 - (void)test10Connect
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-
 	[PubNub disconnect];
 //    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: @"key"];
-//	//	configuration.autoReconnectClient = NO;
-	[PubNub setConfiguration: configuration];
+//	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: @"key"];
+////	//	configuration.autoReconnectClient = NO;
+//	[PubNub setConfiguration: configuration];
 
 	handleClientConnectionStateChange = NO;
-    [PubNub connectWithSuccessBlock:^(NSString *origin) {
+	int64_t delayInSeconds = 2;
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 
-        PNLog(PNLogGeneralLevel, nil, @"{BLOCK} PubNub client connected to: %@", origin);
-        dispatch_semaphore_signal(semaphore);
-    }
-                         errorBlock:^(PNError *connectionError) {
-							 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
-							 dispatch_semaphore_signal(semaphore);
-							 STFail(@"connectionError %@", connectionError);
-                         }];
-    while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
+		[PubNub setDelegate:self];
+//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+		[PubNub setConfiguration: configuration];
+
+		handleClientConnectionStateChange = NO;
+		[PubNub connectWithSuccessBlock:^(NSString *origin) {
+
+			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
+			dispatch_semaphore_signal(semaphore);
+		}
+							 errorBlock:^(PNError *connectionError) {
+								 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+								 dispatch_semaphore_signal(semaphore);
+								 STFail(@"connectionError %@", connectionError);
+							 }];
+	});
+	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
+		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
 	STAssertTrue( handleClientConnectionStateChange, @"notification not called");
 }
 
@@ -804,6 +815,7 @@
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: nil limit: 0 reverseHistory: NO];
 	}
 }
+//file://localhost/Users/tuller/work/pubnub%203.5.1rc1/iOS/tests/iOSUnitTests/pubnubTests/HowToTests/HowToTests.m: error: test50SendMessage (HowToTests) failed: "messageSendingState==PNMessageSendingError" should be false. messageSendingState==PNMessageSendingError Domain=com.pubnub.remote-service; Code=112; Description="PubNub service can't process JSON"; Reason="Looks like we sent malformed JSON or the message was changed after the signature was generated"; Fix suggestion="There was an error sending the data to the origin. Be sure you didn't try to send non-object or non-JSON data."; Associated object=PNMessage (0x768d920): <message: Hello PubNub, date: (null), channel: iosdev>
 
 -(void)test50SendMessage
 {
