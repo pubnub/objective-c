@@ -10,6 +10,9 @@ All requests made by the client are asynchronous, and are handled by:
 
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
 
+## If you are using iOS7, you MUST disable JSONKit support.  
+[Please follow the directions here to disable JSONKit after setting up your project.](#disabling-jsonkit---mandatory-for-ios7--xcode-5)
+
 ## Important Changes from 3.4.0
 We've added better precision for pulling history via the new PNDate types.
 
@@ -32,9 +35,12 @@ or you will certainly get compile errors for missing files. Easiest thing to do 
 But until then...
 
 ## Adding PubNub to your project via CocoaPods
-### **NOTE:** We are currently revving the existing CocoaPod from 3.4.2 to the latest 3.5.x
-It is highly advised to use the latest 3.5.x version of PubNub directly from the repo until
-CocoaPods has been updated, as it contains many new fixes and enhancements.
+#### **NOTE:** The CocoaPods version is also not XCode5 / iOS7 compatible (we are fixing this).
+
+It is highly advised to use the latest 3.5.1 version of PubNub directly from the repo until
+CocoaPods has been updated, as it contains many new fixes and enhancements.  
+
+If you are using XCode 4.6 and are not targetting iOS 7, then you can proceed with using CocoaPods.
 
 [These steps are documented in our Emmy-winning CocoaPod's Setup Video, check it out here!](https://vimeo.com/69284108)
 
@@ -67,29 +73,23 @@ To your project's .pch file. **It must be the first import in your pch, or it wi
 ## Adding PubNub to your project manually
 
 1. Add the PubNub library folder to your project (/libs/PubNub)  
-2. Add the JSONKit support files to your project (/libs/JSONKit)
 
-**JSONKit ARC NOTE:** PubNub core code is ARC-compliant.  We provide JSONKit only so you can run against older versions of iOS
-which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd party) performs all memory management on it's own
-(doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
-
-**NOTE:** If you wish to completely remove JSONKit from your project and filesystem, delete (or do not add) /libs/JSONKit, and comment out
-the following lines in PNJSONSerialization.m:
-
-```
-    // #import "JSONKit.h"
-    // result = [[jsonString dataUsingEncoding:NSUTF8StringEncoding] objectFromJSONDataWithParseOptions:JKParseOptionNone error:&parsingError];
-    // JSONString = [object JSONString];
-```
-
-(We'll be making this a configuration option in an upcoming release, but for now, this is the way to achieve it.)
-
-3. Add PNImports to your project precompile header (.pch)  
+2. Add PNImports to your project precompile header (.pch)  
 ```objective-c
         #import "PNImports.h"
 ```
-4. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m (disable ARC warnings for JSONKit)
-5. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options. Mac OS X version also require CoreWLAN.framework to be added.
+3. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options. Mac OS X version also require CoreWLAN.framework to be added.
+
+## Setting up JSONKit for legacy JSON Support
+** If you are on iOS7 / XCode 5, skip this step -- do not add JSONKit to your project!
+
+PubNub core code is ARC-compliant.  We provide JSONKit only so you can run against older versions of iOS
+which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd party) performs all memory management on it's own
+(doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
+
+1. Add the JSONKit support files to your project (/libs/JSONKit)
+
+2. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m (disable ARC warnings for JSONKit)
 
 ## Finishing up configuration (Common to Manual and CocoaPods setup)
 
@@ -105,7 +105,24 @@ the following lines in PNJSONSerialization.m:
         [PubNub setDelegate:self] 
 ```
 
+## Disabling JSONKit - Mandatory for iOS7 / XCode 5
+
+If you are on XCode 5, targetting iOS7, or otherwise wish to completely remove JSONKit from your project and filesystem,
+delete (or do not add) /libs/JSONKit, and comment out the following lines in PNJSONSerialization.m:
+
+```
+    // line 15
+    // #import "JSONKit.h"
+    
+    // line 85
+    // result = [[jsonString dataUsingEncoding:NSUTF8StringEncoding] objectFromJSONDataWithParseOptions:JKParseOptionNone error:&parsingError];
+    
+    // line 133
+    // JSONString = [object JSONString];
+```
+
 For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
+
 
 ## Lets start coding now with PubNub!
 
