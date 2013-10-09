@@ -79,7 +79,7 @@ To your project's .pch file. **It must be the first import in your pch, or it wi
 3. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options. Mac OS X version also require CoreWLAN.framework to be added.
 
 ## Setting up JSONKit for legacy JSON Support
-** If you are on iOS7 / XCode 5, skip this step -- do not add JSONKit to your project!
+**If you are on iOS7 / XCode 5, skip this step -- do not add JSONKit to your project!**
 
 PubNub core code is ARC-compliant.  We provide JSONKit only so you can run against older versions of iOS
 which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd party) performs all memory management on it's own
