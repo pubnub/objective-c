@@ -70,7 +70,6 @@
 		5AC38A8417F1C0E000956E69 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71BF43E328EDCD6FF8F254 /* Security.framework */; };
 		5AC38A8517F1C0E000956E69 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
 		5AC38A8617F1C0E000956E69 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */; };
-		5AC38A8817F1C0E000956E69 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 79C32285166DFA56006DB535 /* InfoPlist.strings */; };
 		5AC38AA517F1C18E00956E69 /* ConnectionIssuesAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC38AA417F1C18E00956E69 /* ConnectionIssuesAppDelegate.m */; };
 		5AC38AAA17F1C20100956E69 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC38AA817F1C20100956E69 /* main.m */; };
 		5ADA61EA17FAD4330092C625 /* Log.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5ADA61E917FAD4330092C625 /* Log.xib */; };
@@ -142,7 +141,6 @@
 		79C32230166DF847006DB535 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		79C3223A166DF847006DB535 /* ConnectionIssues-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ConnectionIssues-Prefix.pch"; sourceTree = "<group>"; };
 		79C32250166DF848006DB535 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		79C32285166DFA56006DB535 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		79C3229E166E0291006DB535 /* PubNub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
 		79C3229F166E0291006DB535 /* PubNub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNub.m; sourceTree = "<group>"; };
 		79C322A8166E0568006DB535 /* PNConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConfiguration.h; sourceTree = "<group>"; };
@@ -490,7 +488,6 @@
 		79C32284166DFA56006DB535 /* General */ = {
 			isa = PBXGroup;
 			children = (
-				79C32285166DFA56006DB535 /* InfoPlist.strings */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -676,7 +673,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5AC38A8817F1C0E000956E69 /* InfoPlist.strings in Resources */,
 				5ADA61EA17FAD4330092C625 /* Log.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -760,8 +756,8 @@
 				INFOPLIST_FILE = pubnubInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = ConnectionIssues;
-				PROVISIONING_PROFILE = "FC1E0E1D-5D87-4BAA-A7DA-ADCB4CF80A95";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FC1E0E1D-5D87-4BAA-A7DA-ADCB4CF80A95";
+				PROVISIONING_PROFILE = "4F282ADF-0741-44CA-BCE8-A0C7636C3520";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4F282ADF-0741-44CA-BCE8-A0C7636C3520";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

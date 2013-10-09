@@ -41,7 +41,7 @@
 #if TARGET_IPHONE_SIMULATOR
 	wiFiOnUrl = @"http://localhost/wiFiReconnect.php";
 #else
-	wiFiOnUrl = @"http://169.254.208.16/wiFiReconnect.php";
+	wiFiOnUrl = @"http://192.168.2.1/wiFiReconnect.php";
 #endif
 
 	lastWiFiReconnect = [NSDate date];
