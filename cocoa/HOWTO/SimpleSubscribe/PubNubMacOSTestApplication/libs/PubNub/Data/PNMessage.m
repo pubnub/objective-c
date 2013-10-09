@@ -185,7 +185,7 @@
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
         self.message = [PNJSONSerialization stringFromJSONObject:object];
 #else
-        self.message = object;
+        self.message = [PNCryptoHelper sharedInstance].isReady ? object : [PNJSONSerialization stringFromJSONObject:object];
 #endif
         self.channel = channel;
     }

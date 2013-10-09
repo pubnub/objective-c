@@ -237,6 +237,7 @@ static int const kPNConnectionTimeout = 10.0f;
 
 // Delay after which connection should retry
 static int64_t const kPNConnectionRetryDelay = 2;
+static NSTimeInterval const kPNConnectionRetryFastDelay = 0.5f;
 
 // Maximum retry count which can be performed for configuration operation
 static NSUInteger const kPNMaximumConfigurationRetryCount = 3;
@@ -1293,6 +1294,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         if (shouldReconnect) {
 
             BOOL isWaitingForReconnection = PNBitIsOn(self.state, PNConnectionReconnect);
+            BOOL isReconnectingBecauseOfError = PNBitIsOn(self.state, PNConnectionError);
             PNBitsOff(&_state, PNConnectionCleanReconnection, PNConnectionError, BITS_LIST_TERMINATOR);
 
             // Marking that connection instance is reconnecting now and after last connection will be closed should
@@ -1305,7 +1307,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 // Attempt to restore connection after small delay defined in 'static' section of this class
                 __pn_desired_weak __typeof__ (self) weakSelf = self;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPNConnectionRetryDelay * NSEC_PER_SEC));
+                NSTimeInterval delay = (NSTimeInterval) kPNConnectionRetryDelay;
+                if (isReconnectingBecauseOfError) {
+
+                    delay = kPNConnectionRetryFastDelay;
+                }
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^{
 
                     if (PNBitIsOn(weakSelf.state, PNConnectionReconnect)) {
