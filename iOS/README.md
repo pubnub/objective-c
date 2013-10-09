@@ -13,21 +13,19 @@ Detailed information on methods, constants, and notifications can be found in th
 ## If you are using iOS7, you MUST disable JSONKit support.  
 [Please follow the directions here to disable JSONKit after setting up your project.](#disabling-jsonkit---mandatory-for-ios7--xcode-5)
 
-## Important Changes from 3.4.0
-We've added better precision for pulling history via the new PNDate types.
+## Important Changes from 3.4.x
 
-If you were previously using history in 3.4.0, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
+If you were previously using history in 3.4.x, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
 take PNDate arguments, not NSDate arguments. This is as easy as replacing:
 
 ```objective-c
-        NSDate *startDate = [NSDate date];
-```
-with
-```objective-c
+        NSDate *startDate = [NSDate date]; // this is the old way. replace it with:
+
         PNDate *startDate = [PNDate dateWithDate:[NSDate date]]; // Convert from a date
-        # or
+        // or
         PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567]; // Convert from a timetoken
 ```
+
 Also, there are new files in the libary that were not present in 3.4.x. Be sure when updating the library that you add these new files to your project,
 or you will certainly get compile errors for missing files. Easiest thing to do is remove all PubNub files, and add the new PubNub files back.
 
