@@ -15,6 +15,7 @@
 . running enablePresenceObservation before subscribeOnChannel hangs app
 . never reset the UUID unless setClientIdentifier is run
 . fixed issue where quick succession of enable/disable presence would hang the subsequent subscribe on the same channel
+. fixed bug where when running disablePresenceObservationForChannel: it would not allow subscribe to channel afterwards
 
 09-16-2013 - 3.5.0
 improvements all around concerning:

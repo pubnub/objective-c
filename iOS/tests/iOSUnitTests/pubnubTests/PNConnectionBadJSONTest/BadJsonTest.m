@@ -179,6 +179,31 @@
 
 - (void)test20SubscribeOnChannels
 {
+    [PubNub resetClient];
+	int64_t delayInSeconds = 2;
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+
+		[PubNub setDelegate:self];
+		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
+
+		handleClientConnectionStateChange = NO;
+		[PubNub connectWithSuccessBlock:^(NSString *origin) {
+
+			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
+			dispatch_semaphore_signal(semaphore);
+		}
+							 errorBlock:^(PNError *connectionError) {
+								 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+								 dispatch_semaphore_signal(semaphore);
+								 STFail(@"connectionError %@", connectionError);
+							 }];
+	});
+	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
+		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
+	
 	SwizzleReceipt *receipt = [self setNewDataForBuffer];
 
 //    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -225,14 +250,14 @@
 										   STAssertFalse(messageSendingState==PNMessageSent, @"messageSendingState can't be equal PNMessageSent, %@", data);
 									   }];
 
-		for( int j=0; /*j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&*/
+		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 			isCompletionBlockCalled == NO /*&& notificationParticipantsListCalled == NO*/; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		[Swizzler unswizzleFromReceipt:receipt];
-		//		STAssertTrue(handleClientMessageProcessingStateChange, @"notification not called");
+		STAssertTrue(isCompletionBlockCalled, @"completion block not called");
 		//		STAssertTrue(handleClientDidReceiveMessage || state != PNMessageSent, @"notificaition not called");
 	}
-	STAssertTrue(messageSendingDidFailCount >= pnChannels.count, @"messageSendingDidFailCount (%d) must be >= pnChannels.count (%d)", messageSendingDidFailCount, pnChannels.count);
+//	STAssertTrue(messageSendingDidFailCount >= pnChannels.count, @"messageSendingDidFailCount (%d) must be >= pnChannels.count (%d)", messageSendingDidFailCount, pnChannels.count);
 }
 
 -(SwizzleReceipt*)setNewDataForBuffer {
