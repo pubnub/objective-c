@@ -90,7 +90,7 @@
     else if ([self isJSONKitAvailable]) {
 
         NSData *dataForDeserialization = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-        SEL jsonKitSelector = @selector(objectFromJSONDataWithParseOptions:error:);
+        SEL jsonKitSelector = NSSelectorFromString(@"objectFromJSONDataWithParseOptions:error:");
         NSMethodSignature *jsonKitMethod = [NSData instanceMethodSignatureForSelector:jsonKitSelector];
         NSInvocation *deserializationInvocation = [NSInvocation invocationWithMethodSignature:jsonKitMethod];
         [deserializationInvocation setSelector:jsonKitSelector];
@@ -156,8 +156,11 @@
             }
         }
         else if ([self isJSONKitAvailable]) {
-
-            JSONString = [object performSelector:@selector(JSONString)];
+            
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            JSONString = [object performSelector:NSSelectorFromString(@"JSONString")];
+#pragma clang diagnostic pop
         }
         else {
 
@@ -247,9 +250,9 @@
     static dispatch_once_t isJSONKitAvailableToken;
     dispatch_once(&isJSONKitAvailableToken, ^{
         
-        isJSONKitAvailable = [@"" respondsToSelector:@selector(JSONString)];
+        isJSONKitAvailable = [@"" respondsToSelector:NSSelectorFromString(@"JSONString")];
     });
-
+    
 
     return isJSONKitAvailable;
 }
