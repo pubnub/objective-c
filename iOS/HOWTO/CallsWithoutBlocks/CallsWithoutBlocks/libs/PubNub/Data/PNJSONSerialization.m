@@ -12,7 +12,6 @@
 //
 
 #import "PNJSONSerialization.h"
-#import "JSONKit.h"
 
 
 // ARC check
@@ -35,8 +34,15 @@
  * JSONP string.
  */
 + (void)getCallbackMethodName:(NSString **)callbackMethodName fromJSONString:(NSString *)jsonString;
-
 + (NSString *)JSONStringFromJSONPString:(NSString *)jsonpString callbackMethodName:(NSString *)callbackMethodName;
+
+
+#pragma mark - Misc methods
+
++ (BOOL)isNSJSONAvailable;
++ (BOOL)isJSONKitAvailable;
+
+
 
 @end
 
@@ -60,7 +66,7 @@
 + (void)JSONObjectWithString:(NSString *)jsonString
              completionBlock:(void(^)(id result, BOOL isJSONPStyle, NSString *callbackMethodName))completionBlock
                   errorBlock:(void(^)(NSError *error))errorBlock {
-    
+
     NSString *jsonCallbackMethodName = nil;
     [self getCallbackMethodName:&jsonCallbackMethodName fromJSONString:jsonString];
     
@@ -71,22 +77,43 @@
     }
     
     // Checking whether native JSONSerializer is available or not
-    NSError *parsingError = nil;
+    __autoreleasing NSError *parsingError = nil;
     id result = nil;
-    if (NSClassFromString(@"NSJSONSerialization")) {
+
+    if ([self isNSJSONAvailable]) {
         
         result = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]
                                                  options:NSJSONReadingAllowFragments
                                                    error:&parsingError];
     }
     // Fallback to JSONKit usage
-    else {
+    else if ([self isJSONKitAvailable]) {
+
+        NSData *dataForDeserialization = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        SEL jsonKitSelector = @selector(objectFromJSONDataWithParseOptions:error:);
+        NSMethodSignature *jsonKitMethod = [NSData instanceMethodSignatureForSelector:jsonKitSelector];
+        NSInvocation *deserializationInvocation = [NSInvocation invocationWithMethodSignature:jsonKitMethod];
+        [deserializationInvocation setSelector:jsonKitSelector];
+        [deserializationInvocation setTarget:dataForDeserialization];
+
+        NSUInteger parseOption = 0;
+        __autoreleasing NSError **parsingErrorForInvocation = &parsingError;
+        __unsafe_unretained id invocationResult;
+        [deserializationInvocation setArgument:&parseOption atIndex:2];
+        [deserializationInvocation setArgument:&parsingErrorForInvocation atIndex:3];
+        [deserializationInvocation invoke];
+        [deserializationInvocation getReturnValue:&invocationResult];
         
-        result = [[jsonString dataUsingEncoding:NSUTF8StringEncoding] objectFromJSONDataWithParseOptions:JKParseOptionNone
-                                                                                                   error:&parsingError];
+        result = invocationResult;
     }
-    
-    
+    else {
+
+        [NSException raise:@"JSON serialization library"
+                    format:@"There is no JSON serialization library available. If you are targeting 4.3+ versions, "
+                            "please make sure to read 'How-to' on JSONKit addition"];
+    }
+
+
     // Checking whether parsing was successful or not
     if (result && parsingError == nil) {
         
@@ -109,7 +136,7 @@
     NSString *JSONString = nil;
     if (![self isJSONString:object]) {
 
-        if (NSClassFromString(@"NSJSONSerialization")) {
+        if ([self isNSJSONAvailable]) {
 
             if ([object isKindOfClass:[NSArray class]] || [object isKindOfClass:[NSDictionary class]]) {
 
@@ -128,9 +155,15 @@
                 JSONString = [NSString stringWithFormat:@"\"%@\"", object];
             }
         }
+        else if ([self isJSONKitAvailable]) {
+
+            JSONString = [object performSelector:@selector(JSONString)];
+        }
         else {
 
-            JSONString = [object JSONString];
+            [NSException raise:@"JSON serialization library"
+                        format:@"There is no JSON serialization library available. If you are targeting 4.3+ versions, "
+                                "please make sure to read 'How-to' on JSONKit addition"];
         }
     }
     else {
@@ -175,6 +208,9 @@
     return [JSONWrappedInParens stringByTrimmingCharactersInSet:parens];
 }
 
+
+#pragma mark - Misc methods
+
 + (BOOL)isJSONString:(id)object {
 
     BOOL isJSONString = [object isKindOfClass:[NSNumber class]];
@@ -190,6 +226,32 @@
     }
 
     return isJSONString;
+}
+
++ (BOOL)isNSJSONAvailable {
+
+    static BOOL isNSJSONAvailable;
+    static dispatch_once_t isNSJSONAvailableToken;
+    dispatch_once(&isNSJSONAvailableToken, ^{
+
+        isNSJSONAvailable = NSClassFromString(@"NSJSONSerialization") != nil;
+    });
+
+
+    return isNSJSONAvailable;
+}
+
++ (BOOL)isJSONKitAvailable {
+    
+    static BOOL isJSONKitAvailable;
+    static dispatch_once_t isJSONKitAvailableToken;
+    dispatch_once(&isJSONKitAvailableToken, ^{
+        
+        isJSONKitAvailable = [@"" respondsToSelector:@selector(JSONString)];
+    });
+
+
+    return isJSONKitAvailable;
 }
 
 #pragma mark -
