@@ -17,8 +17,6 @@
 		797D0A5F1725426E007A9D9A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797D0A5E1725426D007A9D9A /* SystemConfiguration.framework */; };
 		797D0A611725428D007A9D9A /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 797D0A601725428D007A9D9A /* libz.1.2.5.dylib */; };
 		797D0A631725431B007A9D9A /* TAMainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 797D0A621725431B007A9D9A /* TAMainMenu.xib */; };
-		A78CD5FB176952A90045758F /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A78CD560176952A80045758F /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		A78CD5FC176952A90045758F /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A78CD562176952A80045758F /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B56A4039A36C98F599F5349A /* PNResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B56A40BCE14B96748067C255 /* PNResponse.m */; };
 		B56A4054697F340CACAC5D12 /* NSString+PNAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = B56A4A26B707920EB3C5064A /* NSString+PNAddition.m */; };
 		B56A412E7948C876274E1DB7 /* PNMessageHistoryRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B56A4498E82D002356FA77B2 /* PNMessageHistoryRequest.m */; };
@@ -93,10 +91,6 @@
 		797D0A5E1725426D007A9D9A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		797D0A601725428D007A9D9A /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		797D0A621725431B007A9D9A /* TAMainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TAMainMenu.xib; sourceTree = "<group>"; };
-		A78CD55F176952A80045758F /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
-		A78CD560176952A80045758F /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
-		A78CD561176952A80045758F /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
-		A78CD562176952A80045758F /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		B56A400B90CB4CBE333AC835 /* NSArray+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+PNAdditions.h"; sourceTree = "<group>"; };
 		B56A4018CF0A925928AE68A6 /* PNActionResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNActionResponseParser.h; sourceTree = "<group>"; };
 		B56A403F0C6EB9A0A2164A25 /* PNMessagingChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessagingChannel.h; sourceTree = "<group>"; };
@@ -401,21 +395,9 @@
 		A78CD55D176952A80045758F /* libs */ = {
 			isa = PBXGroup;
 			children = (
-				A78CD55E176952A80045758F /* JSONKit */,
 				B56A474BFDE99ABD4E5E8A53 /* PubNub */,
 			);
 			path = libs;
-			sourceTree = "<group>";
-		};
-		A78CD55E176952A80045758F /* JSONKit */ = {
-			isa = PBXGroup;
-			children = (
-				A78CD55F176952A80045758F /* JSON.h */,
-				A78CD560176952A80045758F /* JSON.m */,
-				A78CD561176952A80045758F /* JSONKit.h */,
-				A78CD562176952A80045758F /* JSONKit.m */,
-			);
-			path = JSONKit;
 			sourceTree = "<group>";
 		};
 		B56A402474198B96CC2E6B55 /* Crypto */ = {
@@ -741,8 +723,6 @@
 			files = (
 				797D097317253898007A9D9A /* main.m in Sources */,
 				797D0A2317253961007A9D9A /* TAAppDelegate.m in Sources */,
-				A78CD5FB176952A90045758F /* JSON.m in Sources */,
-				A78CD5FC176952A90045758F /* JSONKit.m in Sources */,
 				B56A479195A6DD60CD01E50C /* PubNub.m in Sources */,
 				B56A4F4B994A11EE1B085031 /* PNObservationCenter.m in Sources */,
 				B56A4BFF6C62CCBF53AAD9CE /* PNCryptoHelper.m in Sources */,

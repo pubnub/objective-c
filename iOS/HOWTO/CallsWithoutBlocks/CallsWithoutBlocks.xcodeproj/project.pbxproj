@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		7935AE8117CED7AC0040632B /* PNNetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7935AE8017CED7AC0040632B /* PNNetworkHelper.m */; };
-		962FA1D317BF4B4100141E23 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA13317BF4B4100141E23 /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		962FA1D417BF4B4100141E23 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA13517BF4B4100141E23 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		962FA1D517BF4B4100141E23 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA13A17BF4B4100141E23 /* PNObservationCenter.m */; };
 		962FA1D617BF4B4100141E23 /* PubNub.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA13D17BF4B4100141E23 /* PubNub.m */; };
 		962FA1D717BF4B4100141E23 /* PNWriteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 962FA14117BF4B4100141E23 /* PNWriteBuffer.m */; };
@@ -82,10 +80,6 @@
 		7935AE6C17CD77510040632B /* PNPrivateImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateImports.h; sourceTree = "<group>"; };
 		7935AE7F17CED7AC0040632B /* PNNetworkHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNetworkHelper.h; sourceTree = "<group>"; };
 		7935AE8017CED7AC0040632B /* PNNetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNNetworkHelper.m; sourceTree = "<group>"; };
-		962FA13217BF4B4100141E23 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
-		962FA13317BF4B4100141E23 /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
-		962FA13417BF4B4100141E23 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
-		962FA13517BF4B4100141E23 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		962FA13817BF4B4100141E23 /* PNObservationCenter+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNObservationCenter+Protected.h"; sourceTree = "<group>"; };
 		962FA13917BF4B4100141E23 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
 		962FA13A17BF4B4100141E23 /* PNObservationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNObservationCenter.m; sourceTree = "<group>"; };
@@ -268,21 +262,9 @@
 		962FA13017BF4B4100141E23 /* libs */ = {
 			isa = PBXGroup;
 			children = (
-				962FA13117BF4B4100141E23 /* JSONKit */,
 				962FA13617BF4B4100141E23 /* PubNub */,
 			);
 			path = libs;
-			sourceTree = "<group>";
-		};
-		962FA13117BF4B4100141E23 /* JSONKit */ = {
-			isa = PBXGroup;
-			children = (
-				962FA13217BF4B4100141E23 /* JSON.h */,
-				962FA13317BF4B4100141E23 /* JSON.m */,
-				962FA13417BF4B4100141E23 /* JSONKit.h */,
-				962FA13517BF4B4100141E23 /* JSONKit.m */,
-			);
-			path = JSONKit;
 			sourceTree = "<group>";
 		};
 		962FA13617BF4B4100141E23 /* PubNub */ = {
@@ -667,8 +649,6 @@
 				B56A4F147ACCBAE6F955314F /* main.m in Sources */,
 				B56A4B8B2AADC38F917E72CE /* PNAppDelegate.m in Sources */,
 				B56A45F69C10A6A7368789BA /* PNViewController.m in Sources */,
-				962FA1D317BF4B4100141E23 /* JSON.m in Sources */,
-				962FA1D417BF4B4100141E23 /* JSONKit.m in Sources */,
 				962FA1D517BF4B4100141E23 /* PNObservationCenter.m in Sources */,
 				962FA1D617BF4B4100141E23 /* PubNub.m in Sources */,
 				962FA1D717BF4B4100141E23 /* PNWriteBuffer.m in Sources */,
