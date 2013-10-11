@@ -1,4 +1,4 @@
-MacOS Cocoa PubNub 3.4 Real-time Cloud Push API
+MacOS Cocoa PubNub 3.5 Real-time Cloud Push API
 ===============================================
 
 **PubNub Account**
