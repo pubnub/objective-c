@@ -37,8 +37,8 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.5.1";
-static NSString * const kPNCodebaseBranch = @"master";
-static NSString * const kPNCodeCommitIdentifier = @"b96dcb8cfb81cab2483edb661e2331010853f1cb";
+static NSString * const kPNCodebaseBranch = @"feature-t171";
+static NSString * const kPNCodeCommitIdentifier = @"d02117cbd1a01505e41be04b9a5b1492482f2183";
 
 
 // Stores reference on singleton PubNub instance
@@ -2244,6 +2244,137 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                   forObject:self
                              withParameters:@[PNNillIfNotSet(channel), PNNillIfNotSet(handleBlock)]
                                  outOfOrder:NO];
+}
+
+
+#pragma mark - Crypto helper methods
+
++ (id)AESDecrypt:(id)object {
+    
+    return [self AESDecrypt:object error:NULL];
+}
+
++ (id)AESDecrypt:(id)object error:(PNError **)decryptionError {
+    
+    __block id decryptedObject = nil;
+    if ([PNCryptoHelper sharedInstance].isReady) {
+        
+        PNError *processingError;
+        NSInteger processingErrorCode = -1;
+        
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+        BOOL isExpectedDataType = [object isKindOfClass:[NSString class]];
+#else
+        BOOL isExpectedDataType = [object isKindOfClass:[NSString class]] ||
+                                  [object isKindOfClass:[NSArray class]] ||
+                                  [object isKindOfClass:[NSDictionary class]];
+#endif
+        if (isExpectedDataType) {
+            
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+            NSString *decodedMessage = [[PNCryptoHelper sharedInstance] decryptedStringFromString:object error:&processingError];
+#else
+            id decodedMessage = [[PNCryptoHelper sharedInstance] decryptedObjectFromObject:object error:&processingError];
+#endif
+            if (decodedMessage == nil || processingError != nil) {
+                
+                processingErrorCode = kPNCryptoInputDataProcessingError;
+            }
+            else if (decodedMessage != nil) {
+                
+                decryptedObject = decodedMessage;
+            }
+            
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+            if (processingError == nil && processingErrorCode < 0) {
+                
+                [PNJSONSerialization JSONObjectWithString:decodedMessage
+                                          completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
+                                              
+                                             decryptedObject = result;
+                                          }
+                                               errorBlock:^(NSError *error) {
+                                                   
+                                                   PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
+                                               }];
+            }
+#endif
+        }
+        else {
+            
+            processingErrorCode = kPNCryptoInputDataProcessingError;
+        }
+        
+        if (processingError != nil || processingErrorCode > 0) {
+            
+            if (processingErrorCode > 0) {
+                
+                processingError = [PNError errorWithCode:processingErrorCode];
+            }
+            if (decryptionError != NULL) {
+                
+                *decryptionError = processingError;
+            }
+            
+            PNLog(PNLogGeneralLevel, object, @" Message decoding failed because of error: %@", processingError);
+            decryptedObject = @"DECRYPTION_ERROR";
+        }
+    }
+    else {
+        
+        decryptedObject = object;
+    }
+
+
+    return decryptedObject;
+}
+
++ (NSString *)AESEncrypt:(id)object {
+    
+    return [self AESEncrypt:object error:NULL];
+}
+
+
++ (NSString *)AESEncrypt:(id)object error:(PNError **)encryptionError {
+    
+    PNError *processingError;
+    NSString *encryptedObjectHash = nil;
+    if ([PNCryptoHelper sharedInstance].isReady) {
+        
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+        object = object ? [PNJSONSerialization stringFromJSONObject:object] : @"";
+#endif
+        
+        // Retrieve reference on encrypted message (if possible)
+        if ([PNCryptoHelper sharedInstance].isReady) {
+            
+#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
+            NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:object error:&processingError];
+            
+            encryptedObjectHash = [NSString stringWithFormat:@"\"%@\"", encryptedData];
+#else
+            id encryptedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:object error:&processingError];
+            NSString *encryptedData = [PNJSONSerialization stringFromJSONObject:encryptedMessage];
+            
+            encryptedObjectHash = [NSString stringWithFormat:@"%@", encryptedData];
+#endif
+            
+            if (processingError != nil) {
+                
+                if (encryptionError != NULL) {
+                    
+                    *encryptionError = processingError;
+                }
+                
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self,
+                      @"Message encryption failed with error: %@\nUnencrypted message will be sent.",
+                      processingError);
+            }
+        }
+    }
+    
+    
+    return encryptedObjectHash;
 }
 
 

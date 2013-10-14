@@ -565,6 +565,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
 
+#pragma mark - Crypto helper methods
+
+/**
+ * Cryptographic function which allow to decrypt AES hash stored inside 'base64' string and return object
+ */
++ (id)AESDecrypt:(id)object;
++ (id)AESDecrypt:(id)object error:(PNError **)decryptionError;
+
+/**
+ * Cryptographic function which allow to encrypt object into 'base64' string using AES and return hash string
+ */
++ (NSString *)AESEncrypt:(id)object;
++ (NSString *)AESEncrypt:(id)object error:(PNError **)encryptionError;
+
+
 #pragma mark - Instance methods
 
 /**
