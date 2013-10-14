@@ -37,7 +37,7 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.5.1";
-static NSString * const kPNCodebaseBranch = @"master";
+static NSString * const kPNCodebaseBranch = @"hotfix-t175";
 static NSString * const kPNCodeCommitIdentifier = @"b96dcb8cfb81cab2483edb661e2331010853f1cb";
 
 
