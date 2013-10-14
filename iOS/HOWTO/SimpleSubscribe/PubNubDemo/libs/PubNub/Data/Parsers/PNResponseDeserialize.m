@@ -359,6 +359,16 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                           encodedContent);
                 }
 
+                // Check whether there provided content is larger than declared by 'Content-Length' or not
+                if (contentSize > contentLength) {
+
+                    // Looks like there is an extra data at the end of parsed response which should be truncated to the
+                    // correct size
+                    responseBody = [responseBody subdataWithRange:NSMakeRange(0, contentLength)];
+                    contentSize = [responseBody length];
+                }
+
+
                 BOOL isFullBody = contentSize == contentLength;
 
                 if (isResponseChunked) {
