@@ -11,6 +11,9 @@ cp -r iPadDemoApp/pubnub/libs/PubNub/* HOWTO/CallsWithoutBlocks/CallsWithoutBloc
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/PubNubTestBackground/pubnub/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/ConnectionIssues/pubnub/libs/PubNub
 
+cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/JSONAbsent/pubnub/libs/PubNub
+cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/JSONPresent/pubnub/libs/PubNub
+
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/iOSUnitTests/pubnub/libs/PubNub
 cp -r iPadDemoApp/pubnub/libs/PubNub/* tests/pubnubBackground/pubnubBackground/libs/PubNub
 
