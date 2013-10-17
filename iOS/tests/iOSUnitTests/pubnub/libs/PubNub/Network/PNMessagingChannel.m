@@ -843,6 +843,14 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         }
     }
 
+    // In case if we don't update presence and there is no channels when array stripped of we should force
+    // presence modification logic
+    if (!isPresenceModification && [[self channelsWithOutPresenceFromList:[channelsSet allObjects]] count] == 0) {
+
+        PNBitOn(&channelsPresence, PNMessagingChannelEnablingPresence);
+        isPresenceModification = YES;
+    }
+
     PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:subscriptionChannels byUserRequest:YES];
     if (isPresenceModification) {
 
