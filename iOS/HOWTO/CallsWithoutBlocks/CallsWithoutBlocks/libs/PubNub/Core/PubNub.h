@@ -102,10 +102,10 @@
 + (void)setClientIdentifier:(NSString *)identifier;
 
 /**
- * Same as +setClientIdentifier: but allow to specify on whether client should notify everyone that user with
- * previous identifier leaved channel and new one joined
+ * Same as +setClientIdentifier: but allow to specify on whether client catchup on channels on which it has been
+ * subscribed before or not
  */
-+ (void)setClientIdentifier:(NSString *)identifier withPresenceEvent:(BOOL)withPresenceEvent;
++ (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;
 
 /**
  * Retrieve current PubNub client identifier which will/used to
