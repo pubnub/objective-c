@@ -102,6 +102,12 @@
 + (void)setClientIdentifier:(NSString *)identifier;
 
 /**
+ * Same as +setClientIdentifier: but allow to specify on whether client should notify everyone that user with
+ * previous identifier leaved channel and new one joined
+ */
++ (void)setClientIdentifier:(NSString *)identifier withPresenceEvent:(BOOL)withPresenceEvent;
+
+/**
  * Retrieve current PubNub client identifier which will/used to
  * establish connection with PubNub services
  */

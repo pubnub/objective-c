@@ -1037,6 +1037,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 + (void)setClientIdentifier:(NSString *)identifier {
 
+    [self setClientIdentifier:identifier withPresenceEvent:YES];
+}
+
++ (void)setClientIdentifier:(NSString *)identifier withPresenceEvent:(BOOL)withPresenceEvent {
+
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO UPDATE CLIENT IDENTIFIER (STATE: %@)",
           [self humanReadableStateFrom:[self sharedInstance].state]);
 
@@ -1054,26 +1059,26 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                 NSArray *allChannels = [[self sharedInstance].messagingChannel fullSubscribedChannelsList];
                 if ([allChannels count]) {
-                    
+
                     [self sharedInstance].asyncLockingOperationInProgress = NO;
-                    [self unsubscribeFromChannels:allChannels withPresenceEvent:YES
+                    [self unsubscribeFromChannels:allChannels withPresenceEvent:withPresenceEvent
                        andCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
-                           
+
                            if (leaveError == nil) {
-                               
+
                                // Check whether user identifier was provided by user or not
                                if (identifier == nil) {
-                                   
+
                                    // Change user identifier before connect to the PubNub services
                                    [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
                                }
                                else {
-                                   
+
                                    [self sharedInstance].clientIdentifier = identifier;
                                }
-                               
+
                                [self sharedInstance].asyncLockingOperationInProgress = NO;
-                               [self subscribeOnChannels:allChannels withPresenceEvent:YES
+                               [self subscribeOnChannels:allChannels withPresenceEvent:withPresenceEvent
                               andCompletionHandlingBlock:^(PNSubscriptionProcessState state,
                                                            NSArray *subscribedChannels,
                                                            PNError *subscribeError) {
@@ -1082,14 +1087,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                               }];
                            }
                            else {
-                               
+
                                [self sharedInstance].asyncLockingOperationInProgress = NO;
                                [self subscribeOnChannels:allChannels withPresenceEvent:NO];
                            }
                        }];
                 }
                 else {
-                    
+
                     [self sharedInstance].clientIdentifier = identifier;
                     [self sharedInstance].userProvidedClientIdentifier = identifier != nil;
                     [[self sharedInstance] handleLockingOperationComplete:YES];
