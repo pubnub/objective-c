@@ -92,7 +92,7 @@
 {
     if (!_avQueuePlayer) {
         _avQueuePlayer = [[AVQueuePlayer alloc]init];
-		_avQueuePlayer.volume = 0.2;
+		_avQueuePlayer.volume = 0.0;
 //
 //		[[NSNotificationCenter defaultCenter] addObserver: self
 //                                                 selector: @selector(playerItemDidReachEnd:)
