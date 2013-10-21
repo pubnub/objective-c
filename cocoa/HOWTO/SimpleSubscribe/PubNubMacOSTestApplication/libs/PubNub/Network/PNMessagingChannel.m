@@ -946,8 +946,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         if ([[subscriptionChannels lastObject] isTimeTokenChangeLocked] && ![subscribeRequest isInitialSubscription]) {
 
-            PNBitOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
-            PNBitOn(&_messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
+            PNBitOn(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
+            PNBitOff(&_messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
 
             [subscribeRequest resetTimeToken];
         }
