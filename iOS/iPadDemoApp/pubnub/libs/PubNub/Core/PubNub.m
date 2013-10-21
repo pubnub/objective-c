@@ -49,6 +49,10 @@ static dispatch_once_t onceToken;
 // (connect/disconnect/subscribe/unsubscribe)
 static NSMutableArray *pendingInvocations = nil;
 
+// Stores how much times client will try to resubscribe on channels with new identifier before report that subscription
+// failed
+static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
+
 
 #pragma mark - Private interface methods
 
@@ -831,6 +835,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             
             // Empty connection pool after connection will be closed
             [PNConnection closeAllConnections];
+            [[self subscribedChannels] makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
             
             connectionsTerminationBlock(YES);
 
@@ -1072,48 +1077,79 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         [allChannels makeObjectsPerformSelector:@selector(lockTimeTokenChange)];
                     }
 
-                    [self sharedInstance].asyncLockingOperationInProgress = NO;
-                    [self unsubscribeFromChannels:allChannels withPresenceEvent:YES
-                       andCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+                    __block NSUInteger resubscribeRetryCount = 0;
+                    __block __pn_desired_weak PubNub *weakSharedInstance = [self sharedInstance];
 
-                           if (leaveError == nil) {
+                    void(^resubscribeErrorBlock)(PNError *, void(^)(void)) = ^(PNError *resubscriptionError,
+                                                                               void(^block)(void)) {
 
-                               // Check whether user identifier was provided by user or not
-                               if (identifier == nil) {
+                        if (resubscribeRetryCount < kPNClientIdentifierUpdateRetryCount) {
 
-                                   // Change user identifier before connect to the PubNub services
-                                   [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
-                               }
-                               else {
+                            resubscribeRetryCount++;
+                            block();
+                        }
+                        else {
 
-                                   [self sharedInstance].clientIdentifier = identifier;
-                               }
+                            weakSharedInstance.updatingClientIdentifier = NO;
+                            [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
 
-                               [self sharedInstance].asyncLockingOperationInProgress = NO;
-                               [self subscribeOnChannels:allChannels withPresenceEvent:!shouldCatchup
-                              andCompletionHandlingBlock:^(PNSubscriptionProcessState state,
-                                                           NSArray *subscribedChannels,
-                                                           PNError *subscribeError) {
+                            [weakSharedInstance notifyDelegateAboutSubscriptionFailWithError:resubscriptionError];
+                        }
+                    };
 
-                                  [self sharedInstance].updatingClientIdentifier = NO;
+                    void(^subscribeBlock)(void) = ^{
 
-                                  if (shouldCatchup && subscribeError) {
+                        weakSharedInstance.asyncLockingOperationInProgress = NO;
+                        [self subscribeOnChannels:allChannels withPresenceEvent:!shouldCatchup
+                       andCompletionHandlingBlock:^(PNSubscriptionProcessState state,
+                                                    NSArray *subscribedChannels,
+                                                    PNError *subscribeError) {
 
-                                      [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
-                                  }
+                           if (subscribeError == nil) {
 
-                                  [[self sharedInstance] handleLockingOperationComplete:YES];
-                              }];
+                               weakSharedInstance.updatingClientIdentifier = NO;
+                               [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
+
+                               [weakSharedInstance handleLockingOperationComplete:YES];
                            }
                            else {
 
-                               [self sharedInstance].updatingClientIdentifier = NO;
-                               [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
-
-                               [self sharedInstance].asyncLockingOperationInProgress = NO;
-                               [self subscribeOnChannels:allChannels withPresenceEvent:NO];
+                               resubscribeErrorBlock(subscribeError, subscribeBlock);
                            }
+
                        }];
+                    };
+
+                    void(^unsubscribeBlock)(void) = ^{
+
+                        weakSharedInstance.asyncLockingOperationInProgress = NO;
+                        [self unsubscribeFromChannels:allChannels withPresenceEvent:YES
+                           andCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+
+                               if (leaveError == nil) {
+
+                                   // Check whether user identifier was provided by user or not
+                                   if (identifier == nil) {
+
+                                       // Change user identifier before connect to the PubNub services
+                                       weakSharedInstance.clientIdentifier = PNUniqueIdentifier();
+                                   }
+                                   else {
+
+                                       weakSharedInstance.clientIdentifier = identifier;
+                                   }
+
+                                   resubscribeRetryCount = 0;
+                                   subscribeBlock();
+                               }
+                               else {
+
+                                   resubscribeErrorBlock(leaveError, unsubscribeBlock);
+                               }
+                           }];
+                    };
+
+                    unsubscribeBlock();
                 }
                 else {
 
