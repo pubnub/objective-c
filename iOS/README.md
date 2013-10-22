@@ -115,6 +115,8 @@ delete (or do not add) /libs/JSONKit, and comment out the following lines in PNJ
     // JSONString = [object JSONString];
 ```
 
+For more background on this, [check out this conversation](https://github.com/pubnub/objective-c/issues/36).
+
 For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
 
 
