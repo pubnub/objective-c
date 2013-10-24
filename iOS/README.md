@@ -37,7 +37,7 @@ But until then...
 
 [These steps are documented in our Emmy-winning CocoaPod's Setup Video, check it out here!](https://vimeo.com/69284108)
 
-By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.4.2**
+By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.5.2b**
 
 +   Create an empty XCode Project
 +   Add the following to your project's Podfile:
