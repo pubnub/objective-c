@@ -566,7 +566,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" WILL START REQUEST PROCESSING: %@ [BODY: %@]",
           request,
-          request.resourcePath);
+          request.debugResourcePath);
 
 
     // Check whether this is 'Message post' request or not
@@ -585,7 +585,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" DID SEND REQUEST: %@ [BODY: %@]",
           request,
-          request.resourcePath);
+          request.debugResourcePath);
 
 
     // If we are not waiting for request completion, inform delegate
@@ -623,14 +623,14 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" DID FAIL TO SEND REQUEST: %@ [BODY: %@]",
           request,
-          request.resourcePath);
+          request.debugResourcePath);
 
 
     // Check whether request can be rescheduled or not
     if (![request canRetry]) {
 
         PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@]",
-              self, request, request.resourcePath);
+              self, request, request.debugResourcePath);
 
         // Removing failed request from queue
         [self destroyRequest:request];

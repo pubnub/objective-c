@@ -29,6 +29,13 @@
  */
 - (void)reset;
 
+/**
+ Retrieve reference on debug resource path with obfuscated private information.
+
+ @return formatted resource path for debug output.
+ */
+- (NSString *)debugResourcePath;
+
 
 #pragma mark - Processing retry
 
