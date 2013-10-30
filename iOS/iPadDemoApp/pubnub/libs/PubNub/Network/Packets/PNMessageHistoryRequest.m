@@ -141,7 +141,7 @@
 
 
     return [NSString stringWithFormat:@"/v2/history/sub-key/%@/channel/%@%@%@",
-                    PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey),
+                    [PubNub sharedInstance].configuration.subscriptionKey,
                     [self.channel escapedName],
                     parameters,
                     ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
