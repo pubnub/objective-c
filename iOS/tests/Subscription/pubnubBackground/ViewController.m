@@ -175,8 +175,10 @@ AppDelegate *appDelegate;
     // Run loop
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, ([PNConfiguration defaultConfiguration].subscriptionRequestTimeout + 1)* NSEC_PER_SEC);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-		if( isCompletionBlockCalled == NO )
+		if( isCompletionBlockCalled == NO ) {
 			[self.textViewLogs setText:[NSString stringWithFormat:@"%@\n%@:%@", self.textViewLogs.text,[NSDate date], @"subscr. block not called"]];
+			[self performSelector: @selector(errorSelectorSubscrBlockNotCalled)];
+		}
 		else
 			[self.textViewLogs setText:[NSString stringWithFormat:@"%@\n%@:%@", self.textViewLogs.text,[NSDate date], @"subscr block"]];
 		[self.textViewLogs scrollRangeToVisible:NSMakeRange([self.textViewLogs.text length], 0)];
@@ -207,8 +209,10 @@ AppDelegate *appDelegate;
 	 }];
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, ([PNConfiguration defaultConfiguration].subscriptionRequestTimeout + 1) * NSEC_PER_SEC);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-		if( isUnCompletionBlockCalled == NO )
+		if( isUnCompletionBlockCalled == NO ) {
 			[self.textViewLogs setText:[NSString stringWithFormat:@"%@\n%@:%@", self.textViewLogs.text,[NSDate date], @"unsub block not called"]];
+			[self performSelector: @selector(errorSelectorUnsubBlockNotCalled)];
+		}
 		else
 			[self.textViewLogs setText:[NSString stringWithFormat:@"%@\n%@:%@", self.textViewLogs.text,[NSDate date], @"unsub block"]];
 		[self.textViewLogs scrollRangeToVisible:NSMakeRange([self.textViewLogs.text length], 0)];

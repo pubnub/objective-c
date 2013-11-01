@@ -25,6 +25,9 @@
                <Test
                   Identifier = "ChangingChannels">
                </Test>
+               <Test
+                  Identifier = "W_ChaosTest">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

@@ -12,6 +12,7 @@
 		5A198E8E181547FF00D20005 /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
 		5A198E931815884500D20005 /* CatchupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E921815884500D20005 /* CatchupTest.m */; };
 		5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E97181593EC00D20005 /* ChangingChannels.m */; };
+		5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */; };
 		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
 		5AC703EB180D89B000B0FC53 /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
 		5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97917F3201D00FE90CF /* Swizzler.m */; };
@@ -185,6 +186,7 @@
 /* Begin PBXFileReference section */
 		5A198E921815884500D20005 /* CatchupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatchupTest.m; sourceTree = "<group>"; };
 		5A198E97181593EC00D20005 /* ChangingChannels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangingChannels.m; sourceTree = "<group>"; };
+		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
 		5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbbreviatedPresenceTest.m; path = AbbreviatedPresenceTest/AbbreviatedPresenceTest.m; sourceTree = "<group>"; };
 		5ACCA97817F3201D00FE90CF /* Swizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Swizzler.h; sourceTree = "<group>"; };
 		5ACCA97917F3201D00FE90CF /* Swizzler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Swizzler.m; sourceTree = "<group>"; };
@@ -458,6 +460,14 @@
 			name = ChangingChannels;
 			sourceTree = "<group>";
 		};
+		5A3A05811823EE22009CF68B /* PNChannelConstructor */ = {
+			isa = PBXGroup;
+			children = (
+				5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */,
+			);
+			name = PNChannelConstructor;
+			sourceTree = "<group>";
+		};
 		5AC5FBCA1817D2CB001EE9D8 /* AbbreviatedPresenceTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -700,6 +710,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5A3A05811823EE22009CF68B /* PNChannelConstructor */,
 				5AC5FBCA1817D2CB001EE9D8 /* AbbreviatedPresenceTest */,
 				5A198E96181593C000D20005 /* ChangingChannels */,
 				5A198E951815885400D20005 /* CatchupTest */,
@@ -1257,6 +1268,7 @@
 				9645C122174FDA7D00F82D09 /* PNServiceChannelTest.m in Sources */,
 				9645C123174FDDAE00F82D09 /* PNMessagingChannelTest.m in Sources */,
 				DD71B333D86ED4AE5B3FDDCC /* PNDate.m in Sources */,
+				5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */,
 				DD71B711565AED5AB2E64DDB /* PNPushNotificationsStateChangeRequest.m in Sources */,
 				DD71BD64F3BF85B30FD8BC12 /* PNPushNotificationsEnabledChannelsRequest.m in Sources */,
 				DD71B5FDE33189422F9920F6 /* PNPushNotificationsRemoveRequest.m in Sources */,

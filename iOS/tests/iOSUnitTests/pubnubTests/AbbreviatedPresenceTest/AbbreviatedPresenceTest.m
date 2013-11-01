@@ -82,7 +82,7 @@
 	isConnect = [PubNub sharedInstance].isConnected;
 	if( isConnect == YES )
 		STAssertTrue( isCompletionBlockCalled, @"completion block not called");
-	STAssertTrue( clientDidReceivePresenceEvent > 5, @"clientDidReceivePresenceEvent not received");
+	STAssertTrue( clientDidReceivePresenceEvent > 5, @"clientDidReceivePresenceEvent not received %d", clientDidReceivePresenceEvent);
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
