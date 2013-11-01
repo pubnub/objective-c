@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'PubNub'
-  s.version      = ‘3.5.2’
+  s.version      = '3.5.2'
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'Sergey Mamontov' => 'support@pubnub.com',
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   }
   s.source = {
     :git => 'https://github.com/pubnub/objective-c.git',
-    :tag => 'v3.5.2’
+    :tag => 'v3.5.2'
   }
   
   # A list of file patterns which select the source files that should be
@@ -38,17 +38,16 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.frameworks =  'CFNetwork', 'SystemConfiguration'
   s.library   = 'z'
-  s.dependency 'JSONKit', '~> 1.4'
-
+  
   s.osx.frameworks = 'CoreWLAN'
   s.osx.prefix_header_contents = <<-EOS
 #import "PNImports.h"
 EOS
   
   s.homepage = 'http://www.pubnub.com/'
-  s.license = {
-	    :type => 'MIT',
-    	:text => <<-LICENSE
+  s.license = %{
+    :type => 'MIT',
+    :text => <<-LICENSE'
 PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks
 Copyright (c) 2013 PubNub Inc.
 http://www.pubnub.com/
@@ -80,3 +79,4 @@ LICENSE
   }
 
 end
+
