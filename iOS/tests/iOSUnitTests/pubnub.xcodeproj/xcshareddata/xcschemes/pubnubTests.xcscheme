@@ -21,6 +21,11 @@
                BlueprintName = "pubnubTests"
                ReferencedContainer = "container:pubnub.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ChangingChannels">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

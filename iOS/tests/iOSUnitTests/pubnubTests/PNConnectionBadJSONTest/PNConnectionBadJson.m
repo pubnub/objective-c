@@ -64,41 +64,76 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
 //}
 
 - (void)updateBuffer:(UInt8 [])buffer {
-	if( [self isNeedUpdateBuffer] == YES ) {
-		NSString *badJson =
-		@"HTTP/1.1 504 Gateway Timeout\n"
-		@"Date: Thu, 03 Oct 2013 11:10:18 GMT\n"
-		@"Content-Type: text/javascript; charset=\"UTF-8\"\n"
-		@"Content-Length: 372\n"
-		@"Connection: keep-alive\n"
-		@"Cache-Control: no-cache\n"
-		@"Access-Control-Allow-Origin: *\n"
-		@"Access-Control-Allow-Methods: GET\n"
-		@"<?xml version='1.0'?>"
-		@"<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
-		@"'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
-		@"<html xmlns='http://www.w3.org/1999/xhtml'>"
-		@"<head>"
-		@"<title>The request failed</title>"
-		@"</head>"
-		@"<body>"
-		@"<p><big>Service Unavailable.</big></p>"
-		@"<p>"
-		@"<i>Technical description:</i><br/>504 Gateway Time-out - The web server is not responding</p>"
-		@"</body>"
-		@"</html>";
-		NSData *newData = [badJson dataUsingEncoding: NSUTF8StringEncoding];
-		NSLog(@"badJson \n%@", badJson);
-		memcpy( buffer, newData.bytes, newData.length);
-	}
+	NSString *badJson =
+	@"HTTP/1.1 504 Gateway Timeout\n"
+	@"Date: Thu, 03 Oct 2013 11:10:18 GMT\n"
+	@"Content-Type: text/javascript; charset=\"UTF-8\"\n"
+	@"Content-Length: 372\n"
+	@"Connection: keep-alive\n"
+	@"Cache-Control: no-cache\n"
+	@"Access-Control-Allow-Origin: *\n"
+	@"Access-Control-Allow-Methods: GET\n"
+	@"<?xml version='1.0'?>"
+	@"<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
+	@"'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
+	@"<html xmlns='http://www.w3.org/1999/xhtml'>"
+	@"<head>"
+	@"<title>The request failed</title>"
+	@"</head>"
+	@"<body>"
+	@"<p><big>Service Unavailable.</big></p>"
+	@"<p>"
+	@"<i>Technical description:</i><br/>504 Gateway Time-out - The web server is not responding</p>"
+	@"</body>"
+	@"</html>";
+	NSData *newData = [badJson dataUsingEncoding: NSUTF8StringEncoding];
+//	NSLog(@"badJson \n%@", badJson);
+	memcpy( buffer, newData.bytes, newData.length);
 }
 
+- (void)updateBuffer1:(UInt8 [])buffer {
+	NSString *badJson =
+//	@"HTTP/1.1 200 OK\n"
+//	@"Date: Mon, 14 Oct 2013 11:45:34 GMT\n"
+//	@"Content-Type: text/javascript; charset=\"UTF-8\"\n"
+//	@"Content-Length: 33\n"
+//	@"Connection: keep-alive\n"
+//	@"Cache-Control: no-cache\n"
+//	@"Access-Control-Allow-Origin: *\n"
+//	@"Access-Control-Allow-Methods: GET\n"
+//
+//	@"s_654fc([[],\"13817511341066824\"])"
+	@"<html>"
+	@"<head><title>400 Bad Request</title></head>"
+	@"'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
+	@"<body bgcolor=\"white\">"
+	@"<center><h1>400 Bad Request</h1></center>"
+	@"<hr><center>nginx</center>"
+	@"</body>"
+	@"</html>";
+	NSData *newData = [badJson dataUsingEncoding: NSUTF8StringEncoding];
+//	NSLog(@"badJson1 \n%@", badJson);
+	memcpy( buffer, newData.bytes, newData.length);
+}
 
 - (BOOL)isNeedUpdateBuffer {
 	return NO;
 }
 
+- (BOOL)isNeedUpdateBuffer1 {
+	return NO;
+}
+
 - (BOOL)isNeedCloseSocket {
+	return NO;
+}
+
+
+-(BOOL)isNeedCreateError {
+	return NO;
+}
+
+-(BOOL)isNeedReturnAfterRead {
 	return NO;
 }
 
@@ -116,12 +151,25 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
 			CFReadStreamClose( (CFReadStreamRef)[self performSelector:@selector(socketReadStream)]);
         CFIndex readedBytesCount = CFReadStreamRead( (CFReadStreamRef)[self performSelector:@selector(socketReadStream)], buffer, kPNStreamBufferSize);
 
+		if( [self isNeedReturnAfterRead] == YES ) {
+			for( int j=0; j<60; j++ )
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+//			return;
+		}
+
 //		NSData *data = [NSData dataWithBytes: buffer length: readedBytesCount];
 //		[data writeToFile: [NSString stringWithFormat: @"/Users/tuller/data/%ld.txt", readedBytesCount] atomically: YES];
 
-		[self updateBuffer: buffer];
 		if( [self isNeedUpdateBuffer] == YES ) {
+			[self updateBuffer: buffer];
 			readedBytesCount = 605;
+		}
+
+		if( [self isNeedUpdateBuffer1] == YES ) {
+			[self updateBuffer1: buffer+readedBytesCount];
+			readedBytesCount += 164;
+			NSString *read = [[NSString alloc] initWithBytes: buffer length: readedBytesCount encoding: NSUTF8StringEncoding];
+			NSLog(@"read \n%@", read);
 		}
 
         // Checking whether client was able to read out some data from stream or not
@@ -192,9 +240,18 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
     }
 }
 
--(BOOL)isNeedCreateError {
-	return NO;
+void fakeReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *clientCallBackInfo) {
 }
 
+- (void)configureFakeReadStream {
+	CFReadStreamRef readStream = (__bridge CFReadStreamRef)([self performSelector: @selector(socketReadStream)]);
+
+    CFOptionFlags options = (kCFStreamEventOpenCompleted | kCFStreamEventHasBytesAvailable |
+                             kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered);
+//    CFStreamClientContext client = [self performSelector: @selector(streamClientContext)];
+
+    // Configuring connection channel instance as client for read stream with described set of handling events
+    CFReadStreamSetClient(readStream, options, fakeReadStreamCallback, /*&client*/ NULL);
+}
 
 @end

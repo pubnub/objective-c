@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A198E881815405B00D20005 /* BadJsonTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848C17FCA9B100D8DD4E /* BadJsonTest.m */; };
+		5A198E891815410400D20005 /* TimeOutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */; };
+		5A198E8E181547FF00D20005 /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
+		5A198E931815884500D20005 /* CatchupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E921815884500D20005 /* CatchupTest.m */; };
+		5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E97181593EC00D20005 /* ChangingChannels.m */; };
+		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
+		5AC703EB180D89B000B0FC53 /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
 		5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97917F3201D00FE90CF /* Swizzler.m */; };
 		5ACCA98117F3202400FE90CF /* HowToTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA98017F3202400FE90CF /* HowToTests.m */; };
-		5ACCA98817F3207300FE90CF /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32250166DF848006DB535 /* SenTestingKit.framework */; };
-		5ACCA98917F3207300FE90CF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222C166DF847006DB535 /* UIKit.framework */; };
-		5ACCA98A17F3207300FE90CF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222E166DF847006DB535 /* Foundation.framework */; };
-		5ACCA99B17F3208200FE90CF /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
 		5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */; };
 		5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */; };
 		7902452C167B5F6100E36546 /* PNWriteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7902452B167B5F6100E36546 /* PNWriteBuffer.m */; };
@@ -93,8 +96,6 @@
 		79FFF67D167C919E008093F2 /* PNServiceChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FFF67B167C919E008093F2 /* PNServiceChannel.m */; };
 		79FFF696167E5C66008093F2 /* NSMutableArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FFF695167E5C66008093F2 /* NSMutableArray+PNAdditions.m */; };
 		79FFF697167E5C66008093F2 /* NSMutableArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 79FFF695167E5C66008093F2 /* NSMutableArray+PNAdditions.m */; };
-		963A848917FC495700D8DD4E /* pubnubChaosTest-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 963A848717FC495700D8DD4E /* pubnubChaosTest-Info.plist */; };
-		963A849117FCA9B100D8DD4E /* BadJsonTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848C17FCA9B100D8DD4E /* BadJsonTest.m */; };
 		963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848E17FCA9B100D8DD4E /* FakeStub.m */; };
 		963A849317FCA9B100D8DD4E /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
 		9645C115174FDA7D00F82D09 /* PNReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */; };
@@ -182,13 +183,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5A198E921815884500D20005 /* CatchupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatchupTest.m; sourceTree = "<group>"; };
+		5A198E97181593EC00D20005 /* ChangingChannels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangingChannels.m; sourceTree = "<group>"; };
+		5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbbreviatedPresenceTest.m; path = AbbreviatedPresenceTest/AbbreviatedPresenceTest.m; sourceTree = "<group>"; };
 		5ACCA97817F3201D00FE90CF /* Swizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Swizzler.h; sourceTree = "<group>"; };
 		5ACCA97917F3201D00FE90CF /* Swizzler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Swizzler.m; sourceTree = "<group>"; };
 		5ACCA97A17F3201D00FE90CF /* TimeOutTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeOutTest.h; sourceTree = "<group>"; };
 		5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeOutTest.m; sourceTree = "<group>"; };
 		5ACCA97F17F3202400FE90CF /* HowToTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HowToTests.h; sourceTree = "<group>"; };
 		5ACCA98017F3202400FE90CF /* HowToTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTests.m; sourceTree = "<group>"; };
-		5ACCA98717F3207300FE90CF /* pubnubChaosTest.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pubnubChaosTest.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ACCA99917F3208200FE90CF /* W_ChaosTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = W_ChaosTest.h; sourceTree = "<group>"; };
 		5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = W_ChaosTest.m; sourceTree = "<group>"; };
 		5ACCA99E17F33A9700FE90CF /* PNCryptoTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNCryptoTest.h; path = PNCryptoTest/PNCryptoTest.h; sourceTree = "<group>"; };
@@ -283,7 +286,7 @@
 		79ECCF1A167217D2005E83B3 /* PNReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNReachability.m; sourceTree = "<group>"; };
 		79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		79ECCF5016761F05005E83B3 /* PNConnectionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionDelegate.h; sourceTree = "<group>"; };
-		79F84AFA166F60450005E3B1 /* PNMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PNMacro.h; sourceTree = "<group>"; };
+		79F84AFA166F60450005E3B1 /* PNMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PNMacro.h; path = libs/PubNub/Misc/PNMacro.h; sourceTree = "<group>"; };
 		79F84B03166F72000005E3B1 /* PNImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNImports.h; sourceTree = "<group>"; };
 		79F84B05166F74A80005E3B1 /* PubNub+Protected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+Protected.h"; sourceTree = "<group>"; };
 		79FFF67A167C919E008093F2 /* PNServiceChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannel.h; sourceTree = "<group>"; };
@@ -405,16 +408,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		5ACCA98317F3207300FE90CF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5ACCA98817F3207300FE90CF /* SenTestingKit.framework in Frameworks */,
-				5ACCA98917F3207300FE90CF /* UIKit.framework in Frameworks */,
-				5ACCA98A17F3207300FE90CF /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		79C32225166DF847006DB535 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -449,6 +442,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5A198E951815885400D20005 /* CatchupTest */ = {
+			isa = PBXGroup;
+			children = (
+				5A198E921815884500D20005 /* CatchupTest.m */,
+			);
+			name = CatchupTest;
+			sourceTree = "<group>";
+		};
+		5A198E96181593C000D20005 /* ChangingChannels */ = {
+			isa = PBXGroup;
+			children = (
+				5A198E97181593EC00D20005 /* ChangingChannels.m */,
+			);
+			name = ChangingChannels;
+			sourceTree = "<group>";
+		};
+		5AC5FBCA1817D2CB001EE9D8 /* AbbreviatedPresenceTest */ = {
+			isa = PBXGroup;
+			children = (
+				5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */,
+			);
+			name = AbbreviatedPresenceTest;
+			sourceTree = "<group>";
+		};
 		5ACCA97717F3201D00FE90CF /* TimeOutTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -639,7 +656,6 @@
 			children = (
 				79C32228166DF847006DB535 /* pubnub.app */,
 				79C3224F166DF848006DB535 /* pubnubTests.octest */,
-				5ACCA98717F3207300FE90CF /* pubnubChaosTest.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -663,6 +679,7 @@
 		79C32232166DF847006DB535 /* pubnub */ = {
 			isa = PBXGroup;
 			children = (
+				79F84AFA166F60450005E3B1 /* PNMacro.h */,
 				79C32274166DFA42006DB535 /* Classes */,
 				79C32281166DFA50006DB535 /* libs */,
 				79C32283166DFA56006DB535 /* Resources */,
@@ -683,11 +700,14 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5AC5FBCA1817D2CB001EE9D8 /* AbbreviatedPresenceTest */,
+				5A198E96181593C000D20005 /* ChangingChannels */,
+				5A198E951815885400D20005 /* CatchupTest */,
 				963A848A17FCA9B100D8DD4E /* PNConnectionBadJSONTest */,
 				5ACF73C817F4179E0058E029 /* PNSubscribeUnsubscribeTest */,
 				5ACCA99D17F33A5800FE90CF /* PNCryptoTest */,
-				5ACCA99817F3208200FE90CF /* ChaosTest */,
 				5ACCA97E17F3202400FE90CF /* HowToTests */,
+				5ACCA99817F3208200FE90CF /* ChaosTest */,
 				5ACCA97717F3201D00FE90CF /* TimeOutTest */,
 				9645C0FA174FDA7D00F82D09 /* RequestTests */,
 				79DC835F1773A8680061A76C /* PNCryptoHelperTest.h */,
@@ -848,7 +868,6 @@
 				79C322BC166E1358006DB535 /* PNConstants.h */,
 				79F84B03166F72000005E3B1 /* PNImports.h */,
 				DD71BA8EC5D5B9273CCA4DEA /* PNPrivateImports.h */,
-				79F84AFA166F60450005E3B1 /* PNMacro.h */,
 				DD71B4DDA1E8843F9192E3EC /* PNPrivateMacro.h */,
 			);
 			path = Misc;
@@ -998,24 +1017,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		5ACCA98617F3207300FE90CF /* pubnubChaosTest */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5ACCA99517F3207400FE90CF /* Build configuration list for PBXNativeTarget "pubnubChaosTest" */;
-			buildPhases = (
-				5ACCA98217F3207300FE90CF /* Sources */,
-				5ACCA98317F3207300FE90CF /* Frameworks */,
-				5ACCA98417F3207300FE90CF /* Resources */,
-				5ACCA98517F3207300FE90CF /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = pubnubChaosTest;
-			productName = pubnubChaosTest;
-			productReference = 5ACCA98717F3207300FE90CF /* pubnubChaosTest.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 		79C32227166DF847006DB535 /* pubnub */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 79C32261166DF848006DB535 /* Build configuration list for PBXNativeTarget "pubnub" */;
@@ -1076,20 +1077,11 @@
 			targets = (
 				79C32227166DF847006DB535 /* pubnub */,
 				79C3224E166DF848006DB535 /* pubnubTests */,
-				5ACCA98617F3207300FE90CF /* pubnubChaosTest */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		5ACCA98417F3207300FE90CF /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				963A848917FC495700D8DD4E /* pubnubChaosTest-Info.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		79C32226166DF847006DB535 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1116,19 +1108,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		5ACCA98517F3207300FE90CF /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
 		79C3224D166DF848006DB535 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1145,14 +1124,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		5ACCA98217F3207300FE90CF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5ACCA99B17F3208200FE90CF /* W_ChaosTest.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		79C32224166DF847006DB535 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1200,6 +1171,7 @@
 				DD71BD853FC1FE21641DE953 /* PNMessagesHistory.m in Sources */,
 				DD71BAB90D4AE2911A18025E /* PNMessageHistoryRequest.m in Sources */,
 				DD71BA0A5F475C2A6D8F96D3 /* PNChannelHistoryParser.m in Sources */,
+				5A198E8E181547FF00D20005 /* PNConnectionBadJson.m in Sources */,
 				DD71B3D4F9D318B0314170E2 /* PNHereNowRequest.m in Sources */,
 				799A5ADF16DD55F8007025AF /* NSString+PNAddition.m in Sources */,
 				79C9D72916F28F9500E91D74 /* PNCryptoHelper.m in Sources */,
@@ -1222,6 +1194,7 @@
 			files = (
 				79C3227E166DFA42006DB535 /* PNAppDelegate.m in Sources */,
 				79C322A1166E0291006DB535 /* PubNub.m in Sources */,
+				5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */,
 				79C322AB166E0568006DB535 /* PNConfiguration.m in Sources */,
 				79A8B5CC166FB69800C64BCF /* PNError.m in Sources */,
 				7966DFC5166FD60A00E07B40 /* PNJSONSerialization.m in Sources */,
@@ -1239,6 +1212,7 @@
 				792C1F7D1678B29F0054E18E /* PNSubscribeRequest.m in Sources */,
 				792C1F831678C0EF0054E18E /* PNLeaveRequest.m in Sources */,
 				792C1FAC1678D5C50054E18E /* PNTimeTokenRequest.m in Sources */,
+				5A198E891815410400D20005 /* TimeOutTest.m in Sources */,
 				7902B9E11679E72000DE2BBB /* PNLatencyMeasureRequest.m in Sources */,
 				7902B9E61679EEFC00DE2BBB /* PNRequestsQueue.m in Sources */,
 				7902452D167B5F6100E36546 /* PNWriteBuffer.m in Sources */,
@@ -1252,15 +1226,19 @@
 				DD71BE15F59E0713A173AD48 /* PNTimeTokenResponseParser.m in Sources */,
 				DD71BCCFCE5CB73563328BC7 /* PNOperationStatusResponseParser.m in Sources */,
 				DD71B88FCF007B906DEB85A9 /* PNActionResponseParser.m in Sources */,
+				5AC703EB180D89B000B0FC53 /* W_ChaosTest.m in Sources */,
 				DD71B87F23118C37506AB59A /* PNHereNowResponseParser.m in Sources */,
 				DD71B5CD0F877468AD4AF2CF /* PNOperationStatus.m in Sources */,
 				DD71BCD53696B3EC9391E031 /* PNHereNow.m in Sources */,
 				DD71BDDA6EA5CBD867B28FEE /* PNChannelEventsResponseParser.m in Sources */,
+				5A198E881815405B00D20005 /* BadJsonTest.m in Sources */,
 				DD71B89F2355AF055631A7B5 /* PNChannelEvents.m in Sources */,
 				DD71BB648CFD071665532BDE /* PNErrorResponseParser.m in Sources */,
+				5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */,
 				DD71BF1ECCC592FD0362472B /* NSData+PNAdditions.m in Sources */,
 				DD71BAA53C4B1DF3509500F6 /* PNMessagesHistory.m in Sources */,
 				DD71B8C3033F2A75539ABCF8 /* PNMessageHistoryRequest.m in Sources */,
+				5A198E931815884500D20005 /* CatchupTest.m in Sources */,
 				DD71B80C09EF3ECF46330376 /* PNChannelHistoryParser.m in Sources */,
 				DD71B5E4F9EA91F76ABD842D /* PNHereNowRequest.m in Sources */,
 				799A5AE016DD55F8007025AF /* NSString+PNAddition.m in Sources */,
@@ -1292,7 +1270,6 @@
 				5ACCA98117F3202400FE90CF /* HowToTests.m in Sources */,
 				5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */,
 				5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */,
-				963A849117FCA9B100D8DD4E /* BadJsonTest.m in Sources */,
 				963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */,
 				963A849317FCA9B100D8DD4E /* PNConnectionBadJson.m in Sources */,
 			);
@@ -1320,66 +1297,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		5ACCA99617F3207400FE90CF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = armv7;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/pubnub.app/pubnub";
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "pubnubChaosTest/pubnubChaosTest-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/include\"";
-				INFOPLIST_FILE = "pubnubChaosTest/pubnubChaosTest-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/lib\"";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-force_load",
-					"\"$(SRCROOT)/pubnubTests/usr/lib/libOCMock.a\"",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				VALID_ARCHS = armv7;
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		5ACCA99717F3207400FE90CF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = armv7;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/pubnub.app/pubnub";
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "pubnubChaosTest/pubnubChaosTest-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/include\"";
-				INFOPLIST_FILE = "pubnubChaosTest/pubnubChaosTest-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/lib\"";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-force_load",
-					"\"$(SRCROOT)/pubnubTests/usr/lib/libOCMock.a\"",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				VALID_ARCHS = armv7;
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
 		79C3225F166DF848006DB535 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1538,15 +1455,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5ACCA99517F3207400FE90CF /* Build configuration list for PBXNativeTarget "pubnubChaosTest" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5ACCA99617F3207400FE90CF /* Debug */,
-				5ACCA99717F3207400FE90CF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		79C32222166DF847006DB535 /* Build configuration list for PBXProject "pubnub" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -8,6 +8,7 @@
 
 #import "PNConnection.h"
 
-@interface PNConnection (BadJson)
+@interface PNConnection (BadJson) {
+}
 
 @end

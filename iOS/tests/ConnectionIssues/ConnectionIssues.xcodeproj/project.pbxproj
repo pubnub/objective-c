@@ -157,7 +157,7 @@
 		79ECCF1A167217D2005E83B3 /* PNReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNReachability.m; sourceTree = "<group>"; };
 		79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		79ECCF5016761F05005E83B3 /* PNConnectionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionDelegate.h; sourceTree = "<group>"; };
-		79F84AFA166F60450005E3B1 /* PNMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PNMacro.h; sourceTree = "<group>"; };
+		79F84AFA166F60450005E3B1 /* PNMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PNMacro.h; path = libs/PubNub/Misc/PNMacro.h; sourceTree = "<group>"; };
 		79F84B03166F72000005E3B1 /* PNImports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNImports.h; sourceTree = "<group>"; };
 		79F84B05166F74A80005E3B1 /* PubNub+Protected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+Protected.h"; sourceTree = "<group>"; };
 		79FFF67A167C919E008093F2 /* PNServiceChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannel.h; sourceTree = "<group>"; };
@@ -437,6 +437,7 @@
 		79C32232166DF847006DB535 /* ConnectionIssues */ = {
 			isa = PBXGroup;
 			children = (
+				79F84AFA166F60450005E3B1 /* PNMacro.h */,
 				5AC38AA717F1C1CD00956E69 /* Supporting Files */,
 				5ADA61E917FAD4330092C625 /* Log.xib */,
 				5AC38AA317F1C18E00956E69 /* ConnectionIssuesAppDelegate.h */,
@@ -519,7 +520,6 @@
 				79C322BC166E1358006DB535 /* PNConstants.h */,
 				79F84B03166F72000005E3B1 /* PNImports.h */,
 				DD71BA8EC5D5B9273CCA4DEA /* PNPrivateImports.h */,
-				79F84AFA166F60450005E3B1 /* PNMacro.h */,
 				DD71B4DDA1E8843F9192E3EC /* PNPrivateMacro.h */,
 			);
 			path = Misc;
@@ -756,8 +756,8 @@
 				INFOPLIST_FILE = pubnubInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = ConnectionIssues;
-				PROVISIONING_PROFILE = "4F282ADF-0741-44CA-BCE8-A0C7636C3520";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4F282ADF-0741-44CA-BCE8-A0C7636C3520";
+				PROVISIONING_PROFILE = "560C3B8F-849F-4188-8681-23A9F1CA8C35";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "560C3B8F-849F-4188-8681-23A9F1CA8C35";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -766,15 +766,15 @@
 		5AC38A9F17F1C0E000956E69 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Vadym Osovets (TS2DHB4U39)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vadym Osovets (TS2DHB4U39)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pubnub/ConnectionIssues-Prefix.pch";
 				INFOPLIST_FILE = pubnubInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = ConnectionIssues;
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "560C3B8F-849F-4188-8681-23A9F1CA8C35";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "560C3B8F-849F-4188-8681-23A9F1CA8C35";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
