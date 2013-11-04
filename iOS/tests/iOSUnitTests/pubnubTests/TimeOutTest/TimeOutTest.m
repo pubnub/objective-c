@@ -26,8 +26,9 @@
 	BOOL subscriptionDidFailWithErrorCalled;
 	BOOL notificationParticipantsListCalled;
 	BOOL notificationFailHistoryDownloadCalled;
-	BOOL notificationFailMessageSendCalled;
+	BOOL delegateFailMessageSendCalled;
 	BOOL notificationTokenReceiveDidFailCallled;
+	BOOL pNClientMessageSendingDidFailNotification;
 }
 
 @end
@@ -44,6 +45,13 @@
     [super setUp];
 	semaphoreNotification = dispatch_semaphore_create(0);
 	pnChannels = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev"]];
+
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientMessageSendingDidFailNotification:)
+							   name:kPNClientMessageSendingDidFailNotification
+							 object:nil];
+
 	[self resetConnection];
 }
 
@@ -91,10 +99,10 @@
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-	__block NSDate *start = [NSDate date];
+//	__block NSDate *start = [NSDate date];
 	__block BOOL isCompletionBlockCalled = NO;
-	__block SwizzleReceipt *receipt = nil;
-	__block SwizzleReceipt *receipt2 = nil;
+//	__block SwizzleReceipt *receipt = nil;
+//	__block SwizzleReceipt *receipt2 = nil;
 
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 
@@ -267,7 +275,12 @@
 
 //message timeout
 - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
-	notificationFailMessageSendCalled = YES;
+	delegateFailMessageSendCalled = YES;
+}
+
+- (void)kPNClientMessageSendingDidFailNotification:(NSNotification *)notification {
+    PNLog(PNLogGeneralLevel, self, @"kPNClientMessageSendingDidFailNotification: %@", notification);
+	pNClientMessageSendingDidFailNotification = YES;
 }
 
 - (void)test50SendMessageTimeout
@@ -288,7 +301,8 @@
 
 
 		isCompletionBlockCalled = NO;
-		notificationFailMessageSendCalled = NO;
+		delegateFailMessageSendCalled = NO;
+		pNClientMessageSendingDidFailNotification = NO;
 
 		__block NSDate *start = [NSDate date];
 
@@ -303,11 +317,12 @@
 			 STAssertFalse(messageSendingState==PNMessageSent, @"messageSendingState==PNMessageSent %@", data);
 		 }];
 		SwizzleReceipt *receipt = [self setFakeReadStreamContent];
-		for( int j=0; j<[PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout+10 &&
-			isCompletionBlockCalled == NO && notificationFailMessageSendCalled == NO; j++ )
+		for( int j=0; j<[PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout+2 &&
+			(isCompletionBlockCalled == NO || delegateFailMessageSendCalled == NO || pNClientMessageSendingDidFailNotification == NO); j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue(isCompletionBlockCalled, @"Completion block not called");
-		STAssertTrue(notificationFailMessageSendCalled, @"Notification not called");
+		STAssertTrue(delegateFailMessageSendCalled, @"delegate not called");
+		STAssertTrue(pNClientMessageSendingDidFailNotification, @"notification not called");
 
 		[Swizzler unswizzleFromReceipt:receipt];
 	}

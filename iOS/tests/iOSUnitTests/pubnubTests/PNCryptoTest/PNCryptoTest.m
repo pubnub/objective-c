@@ -105,10 +105,28 @@
 			NSString *encodeString = [[PNCryptoHelper sharedInstance] encryptedStringFromString: strings[j] error: &processingError];
 			STAssertNil( processingError, @"processingError %@", processingError);
 			STAssertFalse( [strings[j] isEqual: encodeString], @"strings must be not equal");
+			processingError = nil;
 			NSString *decodeString = [[PNCryptoHelper sharedInstance] decryptedStringFromString: encodeString error: &processingError];
 			STAssertNil( processingError, @"processingError %@", processingError);
 			STAssertEqualObjects( strings[j], decodeString, @"strings not equal");
+
+
+			NSString *encrypt = [PubNub AESEncrypt: strings[j] error: &processingError];
+			STAssertTrue( encrypt.length > 0 , @"encrypt empty");
+			STAssertNil( processingError, @"AESEncrypt error, %@", processingError);
+
+			processingError = nil;
+			NSString *decrypt = [PubNub AESDecrypt: encrypt error: &processingError];
+			STAssertNil( processingError, @"AESDecrypt error, %@, %@", processingError, strings[j]);
+//			if( processingError != nil ) {
+//				processingError = nil;
+//				NSString *decrypt = [PubNub AESDecrypt: encrypt error: &processingError];
+//			}
+			if( processingError == nil )
+				STAssertEqualObjects( strings[j], decrypt, @"AESEncrypt != AESDecrypt (string)");
 		}
+//file://localhost/Users/tuller/work/pubnub%203.5.2/iOS/tests/iOSUnitTests/pubnubTests/PNCryptoTest/PNCryptoTest.m: test failure: -[PNCryptoTest test10updateWithConfiguration] failed: "((processingError) == nil)" should be true. AESDecrypt error, Domain=com.pubnub.pubnub; Code=123; Description="CRYPTO: Input data processing error"; Reason="The crypto helper failed to process input data because of an unknown error"; Fix suggestion="The cryptor stumbled on an unknown error during input data processing."; Associated object=(null), asdvjad  adfa asdkfjlhas half alhkashkf asfdhk1239851239847пывоадфыоафлыва
+//file://localhost/Users/tuller/work/pubnub%203.5.2/iOS/tests/iOSUnitTests/pubnubTests/PNCryptoTest/PNCryptoTest.m: test failure: -[PNCryptoTest test10updateWithConfiguration] failed: "((processingError) == nil)" should be true. AESDecrypt error, Domain=com.pubnub.pubnub; Code=123; Description="CRYPTO: Input data processing error"; Reason="The crypto helper failed to process input data because of an unknown error"; Fix suggestion="The cryptor stumbled on an unknown error during input data processing."; Associated object=(null), 12312341#%##$^#^@$^%&^&*:{AD:{X>QW{~{!@{::{AD
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
 		for( int j=0; j<objects.count; j++ ) {
@@ -128,10 +146,23 @@
 				NSLog(@"isEtalonDictionary Fail \n%@\n%@", objects[j], decodeObject );
 			}
 			STAssertTrue( result, @"objects not equal");
+
+			NSString *encrypt = [PubNub AESEncrypt: objects[j] error: &processingError];
+			STAssertTrue( encrypt.length > 0 , @"encrypt empty");
+			STAssertNil( processingError, @"AESEncrypt error", processingError);
+
+			processingError = nil;
+			id decrypt = [PubNub AESDecrypt: encrypt error: &processingError];
+			result = [objects[j] isEqual: decrypt];
+			if( result == NO ) {
+				NSLog(@"AESEncrypt != AESDecrypt (objects) \n%@\n%@", objects[j], decrypt );
+			}
+			STAssertNil( processingError, @"AESDecrypt error, %@, %@", processingError, objects[j]);
+			if( processingError == nil )
+				STAssertEqualObjects( objects[j], decrypt, @"AESEncrypt != AESDecrypt (objects)");
 		}
 #endif
 	}
-
 
 	configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
 												 publishKey:nil

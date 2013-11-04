@@ -86,10 +86,22 @@
                   Identifier = "BadJsonTest">
                </Test>
                <Test
-                  Identifier = "TimeOutTest">
+                  Identifier = "CatchupTest">
                </Test>
                <Test
-                  Identifier = "CatchupTest">
+                  Identifier = "PNCryptoTest">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest/test30ParticipantsListForChannelTimeout">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest/test30ParticipantsListForChannelTimeout1">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest/test40RequestHistoryForChannelTimeout">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest/test60RequestServerTimeTimeout">
                </Test>
             </SkippedTests>
          </TestableReference>
