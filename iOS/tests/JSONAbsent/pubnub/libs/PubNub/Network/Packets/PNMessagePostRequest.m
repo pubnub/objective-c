@@ -52,11 +52,6 @@
 #pragma mark - Instance methods
 
 /**
- * Retrieve reference on encrypted message
- */
-- (NSString *)encryptedMessageWithError:(PNError **)encryptionError;
-
-/**
  * Retrieve message post request signature
  */
 - (NSString *)signature;
@@ -109,8 +104,8 @@
         PNError *encryptionError;
         if ([PNCryptoHelper sharedInstance].isReady) {
 
-            message = [self encryptedMessageWithError:&encryptionError];
-
+            message = [PubNub AESEncrypt:self.message.message error:&encryptionError];
+            
             if (encryptionError != nil) {
 
                 PNLog(PNLogCommunicationChannelLayerErrorLevel,
@@ -141,22 +136,6 @@
                     self.preparedMessage,
                     self.clientIdentifier,
 					([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
-}
-
-- (NSString *)encryptedMessageWithError:(PNError **)encryptionError {
-
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-    NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:self.message.message
-                                                                                          error:encryptionError];
-
-    return [NSString stringWithFormat:@"\"%@\"", encryptedData];
-#else
-    id encryptedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:self.message.message
-                                                                                       error:encryptionError];
-    NSString *encryptedData = [PNJSONSerialization stringFromJSONObject:encryptedMessage];
-
-    return [NSString stringWithFormat:@"%@", encryptedData];
-#endif
 }
 
 - (NSString *)signature {
