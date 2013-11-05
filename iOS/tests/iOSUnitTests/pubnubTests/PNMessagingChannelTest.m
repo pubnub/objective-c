@@ -127,11 +127,14 @@
     [mockChannel verify];
 }
 
-- (void)testSubscribeOnChannels {
+- (void)testSubscribeOnChannelsReject {
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
-    
-    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
+
+	id mockChannel = [OCMockObject partialMockForObject:messageChannel];
+    [mockChannel subscribeOnChannels:@[[self mockChannel]]];
+
+	mockChannel = [OCMockObject partialMockForObject:messageChannel];
+    [[mockChannel reject] scheduleRequest:OCMOCK_ANY
                   shouldObserveProcessing:YES];
     
     [mockChannel subscribeOnChannels:@[[self mockChannel]]];
@@ -139,15 +142,44 @@
     [mockChannel verify];
 }
 
-- (void)testSubscribeOnChannelsWithPresenceEvent {
+- (void)testSubscribeOnChannelsExpect {
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+
+	id mockChannel = [OCMockObject partialMockForObject:messageChannel];
+	PNChannel *ch = [PNChannel channelWithName: [NSString stringWithFormat: @"channel %@", [NSDate date]]];
+
+    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
+                  shouldObserveProcessing:YES];
+
+    [mockChannel subscribeOnChannels: @[ch] ];
+
+    [mockChannel verify];
+}
+
+- (void)testSubscribeOnChannelsWithPresenceEventReject {
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
-    
-    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
+    [mockChannel subscribeOnChannels:@[[self mockChannel]] withPresenceEvent:YES];
+
+    mockChannel = [OCMockObject partialMockForObject:messageChannel];
+    [[mockChannel reject] scheduleRequest:OCMOCK_ANY
                   shouldObserveProcessing:YES];
     
     [mockChannel subscribeOnChannels:@[[self mockChannel]] withPresenceEvent:YES];
     
+    [mockChannel verify];
+}
+
+- (void)testSubscribeOnChannelsWithPresenceEventExpect {
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
+	PNChannel *ch = [PNChannel channelWithName: [NSString stringWithFormat: @"channel %@", [NSDate date]]];
+
+    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
+                  shouldObserveProcessing:YES];
+
+    [mockChannel subscribeOnChannels:@[ch] withPresenceEvent:YES];
+
     [mockChannel verify];
 }
 
