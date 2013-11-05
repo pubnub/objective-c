@@ -184,6 +184,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
         
         [self resetUpdateTimeToken];
         self.ableToResetTimeToken = YES;
+		self.updateTimeToken = @"0";
         self.name = channelName;
         self.participantsList = [NSMutableArray array];
     }

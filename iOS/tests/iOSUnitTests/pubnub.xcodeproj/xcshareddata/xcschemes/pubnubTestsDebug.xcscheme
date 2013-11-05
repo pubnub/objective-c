@@ -23,9 +23,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "W_ChaosTest">
-               </Test>
-               <Test
                   Identifier = "PNTimeTokenRequestTest">
                </Test>
                <Test
@@ -41,43 +38,13 @@
                   Identifier = "PNReachabilityTest">
                </Test>
                <Test
-                  Identifier = "PNMessagingChannelTest">
-               </Test>
-               <Test
-                  Identifier = "PNMessagePostRequestTest">
-               </Test>
-               <Test
                   Identifier = "PNMessageHistoryRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNLeaveRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNLatencyMeasureRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNHereNowRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNCryptoHelperTest">
-               </Test>
-               <Test
-                  Identifier = "PNConnectionTest">
-               </Test>
-               <Test
-                  Identifier = "PNConnectionChannelTest">
-               </Test>
-               <Test
-                  Identifier = "PNBaseRequestTest">
                </Test>
                <Test
                   Identifier = "ChangingChannels">
                </Test>
                <Test
                   Identifier = "AbbreviatedPresenceTest">
-               </Test>
-               <Test
-                  Identifier = "PNChannelConstructor">
                </Test>
                <Test
                   Identifier = "HowToTests">
@@ -87,9 +54,6 @@
                </Test>
                <Test
                   Identifier = "CatchupTest">
-               </Test>
-               <Test
-                  Identifier = "PNCryptoTest">
                </Test>
                <Test
                   Identifier = "TimeOutTest/test30ParticipantsListForChannelTimeout">
@@ -102,6 +66,45 @@
                </Test>
                <Test
                   Identifier = "TimeOutTest/test60RequestServerTimeTimeout">
+               </Test>
+               <Test
+                  Identifier = "ApnsToken">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest">
+               </Test>
+               <Test
+                  Identifier = "PNBaseRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNChannelConstructor">
+               </Test>
+               <Test
+                  Identifier = "PNConnectionChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNConnectionTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoHelperTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoTest">
+               </Test>
+               <Test
+                  Identifier = "PNHereNowRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNLatencyMeasureRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNLeaveRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagePostRequestTest">
+               </Test>
+               <Test
+                  Identifier = "W_ChaosTest">
                </Test>
             </SkippedTests>
          </TestableReference>

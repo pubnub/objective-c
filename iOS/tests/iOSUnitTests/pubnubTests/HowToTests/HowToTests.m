@@ -813,7 +813,7 @@
 	STAssertTrue( handleClientMessageHistoryProcess, @"notification not called");
 }
 
--(void)test40RequestHistoryForChannel
+-(void)test50RequestHistoryForChannel
 {
 	for( int i=0; i<pnChannels.count; i++ )
 	{
@@ -826,45 +826,6 @@
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: endDate limit: 0 reverseHistory: NO];
 		[self requestHistoryForChannel: pnChannels[i] from: nil to: endDate limit: 0 reverseHistory: YES];
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: nil limit: 0 reverseHistory: NO];
-	}
-}
-
--(void)test50SendMessage
-{
-	for( int i=0; i<pnChannels.count; i++ )
-	{
-		handleClientMessageProcessingStateChange = NO;
-		handleClientDidReceiveMessage = NO;
-		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-		__block PNMessageState state = PNMessageSendingError;
-		/*PNMessage *helloMessage = */[PubNub sendMessage:@"Hello PubNub"
-												toChannel:pnChannels[i]
-									  withCompletionBlock:^(PNMessageState messageSendingState, id data)
-									   {
-										   dispatch_semaphore_signal(semaphore);
-										   state = messageSendingState;
-										   STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
-										   switch (messageSendingState)
-										   {
-											   case PNMessageSending:
-												   // Handle message sending event (it means that message processing started and
-												   // still in progress)
-												   break;
-											   case PNMessageSent:
-												   // Handle message sent event
-												   break;
-											   case PNMessageSendingError:
-												   // Retry message sending (but in real world should check error and hanle it)
-												   //											  [PubNub sendMessage:helloMessage];
-												   break;
-										   }
-									   }];
-
-		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-		STAssertTrue(handleClientMessageProcessingStateChange, @"notification not called");
-		STAssertTrue(handleClientDidReceiveMessage || state != PNMessageSent, @"notificaition not called");
 	}
 }
 
