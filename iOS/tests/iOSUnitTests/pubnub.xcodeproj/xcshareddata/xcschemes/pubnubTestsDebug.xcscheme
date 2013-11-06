@@ -47,9 +47,6 @@
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
-                  Identifier = "HowToTests">
-               </Test>
-               <Test
                   Identifier = "BadJsonTest">
                </Test>
                <Test
@@ -105,6 +102,12 @@
                </Test>
                <Test
                   Identifier = "W_ChaosTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagingChannelTest">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test50RequestHistoryForChannel">
                </Test>
             </SkippedTests>
          </TestableReference>
