@@ -109,6 +109,12 @@
                <Test
                   Identifier = "HowToTests/test50RequestHistoryForChannel">
                </Test>
+               <Test
+                  Identifier = "HowToTests">
+               </Test>
+               <Test
+                  Identifier = "TimeCommand/testHandleOriginLookup20">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

@@ -13,6 +13,7 @@
 		5A198E931815884500D20005 /* CatchupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E921815884500D20005 /* CatchupTest.m */; };
 		5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E97181593EC00D20005 /* ChangingChannels.m */; };
 		5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */; };
+		5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */; };
 		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
 		5AC703EB180D89B000B0FC53 /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
 		5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97917F3201D00FE90CF /* Swizzler.m */; };
@@ -188,6 +189,7 @@
 		5A198E921815884500D20005 /* CatchupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatchupTest.m; sourceTree = "<group>"; };
 		5A198E97181593EC00D20005 /* ChangingChannels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangingChannels.m; sourceTree = "<group>"; };
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
+		5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeCommand.m; path = TimeCommand/TimeCommand.m; sourceTree = "<group>"; };
 		5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbbreviatedPresenceTest.m; path = AbbreviatedPresenceTest/AbbreviatedPresenceTest.m; sourceTree = "<group>"; };
 		5ACCA97817F3201D00FE90CF /* Swizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Swizzler.h; sourceTree = "<group>"; };
 		5ACCA97917F3201D00FE90CF /* Swizzler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Swizzler.m; sourceTree = "<group>"; };
@@ -470,6 +472,14 @@
 			name = PNChannelConstructor;
 			sourceTree = "<group>";
 		};
+		5ABFBCC3182A8C88008A0DDF /* TimeCommand */ = {
+			isa = PBXGroup;
+			children = (
+				5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */,
+			);
+			name = TimeCommand;
+			sourceTree = "<group>";
+		};
 		5AC5FBCA1817D2CB001EE9D8 /* AbbreviatedPresenceTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -714,6 +724,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5ABFBCC3182A8C88008A0DDF /* TimeCommand */,
 				5A3A05811823EE22009CF68B /* PNChannelConstructor */,
 				5AC5FBCA1817D2CB001EE9D8 /* AbbreviatedPresenceTest */,
 				5A198E96181593C000D20005 /* ChangingChannels */,
@@ -1208,6 +1219,7 @@
 			files = (
 				79C3227E166DFA42006DB535 /* PNAppDelegate.m in Sources */,
 				79C322A1166E0291006DB535 /* PubNub.m in Sources */,
+				5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */,
 				5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */,
 				79C322AB166E0568006DB535 /* PNConfiguration.m in Sources */,
 				79A8B5CC166FB69800C64BCF /* PNError.m in Sources */,
@@ -1386,7 +1398,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1405,7 +1417,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
