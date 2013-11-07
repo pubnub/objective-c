@@ -44,9 +44,6 @@
                   Identifier = "ChangingChannels">
                </Test>
                <Test
-                  Identifier = "AbbreviatedPresenceTest">
-               </Test>
-               <Test
                   Identifier = "BadJsonTest">
                </Test>
                <Test
@@ -86,9 +83,6 @@
                   Identifier = "PNCryptoHelperTest">
                </Test>
                <Test
-                  Identifier = "PNCryptoTest">
-               </Test>
-               <Test
                   Identifier = "PNHereNowRequestTest">
                </Test>
                <Test
@@ -101,19 +95,40 @@
                   Identifier = "PNMessagePostRequestTest">
                </Test>
                <Test
-                  Identifier = "W_ChaosTest">
-               </Test>
-               <Test
                   Identifier = "PNMessagingChannelTest">
                </Test>
                <Test
                   Identifier = "HowToTests/test50RequestHistoryForChannel">
                </Test>
                <Test
+                  Identifier = "TimeCommand/testHandleOriginLookup20">
+               </Test>
+               <Test
+                  Identifier = "TimeCommand">
+               </Test>
+               <Test
+                  Identifier = "W_ChaosTest">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test20SubscribeOnChannels">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test30RequestParticipantsListForChannel">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test35RequestServerTimeTokenWithCompletionBlock">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test40SendMessage">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test55RequestHistoryReverse">
+               </Test>
+               <Test
                   Identifier = "HowToTests">
                </Test>
                <Test
-                  Identifier = "TimeCommand/testHandleOriginLookup20">
+                  Identifier = "AbbreviatedPresenceTest">
                </Test>
             </SkippedTests>
          </TestableReference>

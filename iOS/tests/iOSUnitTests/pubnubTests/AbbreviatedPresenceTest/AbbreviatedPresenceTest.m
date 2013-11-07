@@ -77,12 +77,12 @@
 
 	// Run loop
 	clientDidReceivePresenceEvent = 0;
-	for( int j=0; j<60; j++ )
+	for( int j=0; j<160; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	isConnect = [PubNub sharedInstance].isConnected;
 	if( isConnect == YES )
 		STAssertTrue( isCompletionBlockCalled, @"completion block not called");
-	STAssertTrue( clientDidReceivePresenceEvent > 5, @"clientDidReceivePresenceEvent not received %d", clientDidReceivePresenceEvent);
+	STAssertTrue( clientDidReceivePresenceEvent > 5, @"clientDidReceivePresenceEvent not received (%d)", clientDidReceivePresenceEvent);
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {

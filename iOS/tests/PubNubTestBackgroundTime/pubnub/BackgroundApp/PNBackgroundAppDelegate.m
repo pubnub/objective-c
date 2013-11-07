@@ -17,8 +17,12 @@
 
     // Configure application window and its content
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [[UIViewController alloc] init];
     [self.window makeKeyAndVisible];
+
+
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
+	self.window.rootViewController = navController;
+
 
     [self initializePubNubClient];
 

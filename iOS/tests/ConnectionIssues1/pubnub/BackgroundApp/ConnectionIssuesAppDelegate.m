@@ -325,7 +325,7 @@
 		 {
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 if( interval > delta )
-				 [self performSelector: @selector(errorSelector)];
+				 [self performSelector: @selector(errorSelectorSendMesage)];
 			 [self addMessagetoLog: [NSString stringWithFormat: @"send message for fail, state %d, interval %f", messageSendingState, interval]];
 		 }];
 		NSLog(@"sendMessage");
@@ -335,7 +335,7 @@
 -(void)kPNClientMessageSendingDidFailNotification:(NSNotification*)notification {
 	NSTimeInterval interval = -[startSendMessage timeIntervalSinceNow];
 	if( interval > delta )
-		[self performSelector: @selector(errorSelector)];
+		[self performSelector: @selector(errorSelectorPNClientMessageSendingDidFailNotification)];
 	[self addMessagetoLog: [NSString stringWithFormat: @"kPNClientMessageSendingDidFailNotification, interval %f", interval]];
 	startSendMessage = [NSDate date];
 }
@@ -355,7 +355,7 @@
 	 {
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
 		 if( interval > delta )
-			 [self performSelector: @selector(errorSelector)];
+			 [self performSelector: @selector(errorSelectorHistoryForChannel)];
 		 [self addMessagetoLog: [NSString stringWithFormat: @"history channel fail, error %@, interval %f", error, interval]];
 	 }];
 }
@@ -375,7 +375,7 @@
 -(void)kPNClientHistoryDownloadFailedWithErrorNotification:(NSNotification*)notification {
 	NSTimeInterval interval = -[startHistory timeIntervalSinceNow];
 	if( interval > delta )
-		[self performSelector: @selector(errorSelector)];
+		[self performSelector: @selector(errorSelectorPNClientHistoryDownloadFailedWithErrorNotification)];
 	[self addMessagetoLog: [NSString stringWithFormat: @"kPNClientHistoryDownloadFailedWithErrorNotification, interval %f", interval]];
 	startHistory = [NSDate date];
 }
@@ -390,7 +390,7 @@
 	 {
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
 		 if( interval > delta )
-			 [self performSelector: @selector(errorSelector)];
+			 [self performSelector: @selector(errorSelectorServerTimeToken)];
 		 [self addMessagetoLog: [NSString stringWithFormat: @"requestServerTimeToken, error %@, interval %f", error, interval]];
 	 }];
 }
@@ -398,7 +398,7 @@
 -(void)kPNClientDidFailTimeTokenReceiveNotification:(NSNotification*)notification {
 	NSTimeInterval interval = -[startTimeToken timeIntervalSinceNow];
 	if( interval > delta )
-		[self performSelector: @selector(errorSelector)];
+		[self performSelector: @selector(errorSelectorPNClientDidFailTimeTokenReceiveNotification)];
 	[self addMessagetoLog: [NSString stringWithFormat: @"kPNClientDidFailTimeTokenReceiveNotification, interval %f", interval]];
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

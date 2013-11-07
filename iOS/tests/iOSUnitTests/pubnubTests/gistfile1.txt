@@ -1,0 +1,13 @@
+    it (@"should be an awesome test of completion blocks", ^{
+        NSString *key = [NSString UUID];
+        
+        [_apiClient playersWithIdentifiers:@[@11549892] fields:nil completion:^(NSArray *players) {
+            [[theValue([players count]) should] equal:@1];
+//some other logic
+            [[TestSemaphor sharedInstance] lift:key];
+        } error:^(NSError *error) {
+            [[error should] beNil];
+            [[TestSemaphor sharedInstance] lift:key];
+        }];
+        [[theValue([[TestSemaphor sharedInstance] waitForKey:key]) should] beTrue];
+    });

@@ -18,6 +18,7 @@
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 //#import "PNDataManager.h"
+#import "TestSemaphor.h"
 
 @interface HowToTests ()
 
@@ -724,7 +725,7 @@
 	for( int i = 0; i<20; i++ )
 	{
 //		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-		__block BOOL isCompletionBlockCalled = NO;
+//		__block BOOL isCompletionBlockCalled = NO;
 		NSString *channelName = [NSString stringWithFormat: @"%@ %d", [NSDate date], i];
 		NSArray *arr = [PNChannel channelsWithNames: @[channelName]];
 		NSDate *start = [NSDate date];
@@ -733,7 +734,8 @@
 		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 		 {
 //			 dispatch_semaphore_signal(semaphore);
-			 isCompletionBlockCalled = YES;
+//			 isCompletionBlockCalled = YES;
+			 [[TestSemaphor sharedInstance] lift:channelName];
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 NSLog(@"subscribed %f, %@", interval, channels);
 			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
@@ -749,11 +751,11 @@
 			 STAssertTrue( isSubscribed == YES, @"Channel no subecribed");
 		 }];
 		// Run loop
-		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-			isCompletionBlockCalled == NO; j++ )
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-
-		STAssertTrue( isCompletionBlockCalled, @"completion block not called, %@", channelName);
+//		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+//			isCompletionBlockCalled == NO; j++ )
+//			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+//		STAssertTrue( isCompletionBlockCalled, @"completion block not called, %@", channelName);
+		STAssertTrue([[TestSemaphor sharedInstance] waitForKey: channelName timeout: [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"completion block not called, %@", channelName);
 	}
 }
 

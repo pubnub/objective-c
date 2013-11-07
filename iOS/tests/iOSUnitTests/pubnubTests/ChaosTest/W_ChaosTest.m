@@ -450,7 +450,7 @@
 	[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 							 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
-	for( int i=0; i<2; i++ )
+	for( int i=0; i<1; i++ )
 	{
 		[self resetConnection];
 
@@ -459,6 +459,8 @@
 			break;
 		NSLog(@"attemt №%d", i);
 	}
+	for( int j=0; [[PubNub sharedInstance] isConnected] == NO; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
 	BOOL isConnected = [[PubNub sharedInstance] isConnected];
 	STAssertTrue( isConnected, @"not connection");

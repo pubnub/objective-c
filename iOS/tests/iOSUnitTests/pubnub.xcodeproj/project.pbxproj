@@ -13,6 +13,8 @@
 		5A198E931815884500D20005 /* CatchupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E921815884500D20005 /* CatchupTest.m */; };
 		5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E97181593EC00D20005 /* ChangingChannels.m */; };
 		5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */; };
+		5ABE6C42182B9F1800204DC6 /* gistfile1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */; };
+		5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */; };
 		5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */; };
 		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
 		5AC703EB180D89B000B0FC53 /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
@@ -189,6 +191,9 @@
 		5A198E921815884500D20005 /* CatchupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatchupTest.m; sourceTree = "<group>"; };
 		5A198E97181593EC00D20005 /* ChangingChannels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangingChannels.m; sourceTree = "<group>"; };
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
+		5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gistfile1.txt; sourceTree = "<group>"; };
+		5ABE6C40182B9F1800204DC6 /* TestSemaphor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSemaphor.h; sourceTree = "<group>"; };
+		5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSemaphor.m; sourceTree = "<group>"; };
 		5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeCommand.m; path = TimeCommand/TimeCommand.m; sourceTree = "<group>"; };
 		5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbbreviatedPresenceTest.m; path = AbbreviatedPresenceTest/AbbreviatedPresenceTest.m; sourceTree = "<group>"; };
 		5ACCA97817F3201D00FE90CF /* Swizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Swizzler.h; sourceTree = "<group>"; };
@@ -472,6 +477,16 @@
 			name = PNChannelConstructor;
 			sourceTree = "<group>";
 		};
+		5ABE6C3E182B9F1000204DC6 /* TestSemaphor */ = {
+			isa = PBXGroup;
+			children = (
+				5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */,
+				5ABE6C40182B9F1800204DC6 /* TestSemaphor.h */,
+				5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */,
+			);
+			name = TestSemaphor;
+			sourceTree = "<group>";
+		};
 		5ABFBCC3182A8C88008A0DDF /* TimeCommand */ = {
 			isa = PBXGroup;
 			children = (
@@ -724,6 +739,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5ABE6C3E182B9F1000204DC6 /* TestSemaphor */,
 				5ABFBCC3182A8C88008A0DDF /* TimeCommand */,
 				5A3A05811823EE22009CF68B /* PNChannelConstructor */,
 				5AC5FBCA1817D2CB001EE9D8 /* AbbreviatedPresenceTest */,
@@ -1125,6 +1141,7 @@
 				79C3225B166DF848006DB535 /* InfoPlist.strings in Resources */,
 				79C32290166DFA56006DB535 /* InfoPlist.strings in Resources */,
 				79C32294166DFA56006DB535 /* Default-568h@2x.png in Resources */,
+				5ABE6C42182B9F1800204DC6 /* gistfile1.txt in Resources */,
 				79C32296166DFA56006DB535 /* Default.png in Resources */,
 				79C32298166DFA56006DB535 /* Default@2x.png in Resources */,
 			);
@@ -1237,6 +1254,7 @@
 				792C1F79167897210054E18E /* PNBaseRequest.m in Sources */,
 				5AD394BD18280F390057443C /* ApnsToken.m in Sources */,
 				792C1F7D1678B29F0054E18E /* PNSubscribeRequest.m in Sources */,
+				5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */,
 				792C1F831678C0EF0054E18E /* PNLeaveRequest.m in Sources */,
 				792C1FAC1678D5C50054E18E /* PNTimeTokenRequest.m in Sources */,
 				5A198E891815410400D20005 /* TimeOutTest.m in Sources */,
@@ -1437,7 +1455,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
-					"CRYPTO_BACKWARD_COMPATIBILITY_MODE=1",
 				);
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/include\"";
 				INFOPLIST_FILE = "pubnubTests/pubnubTests-Info.plist";
