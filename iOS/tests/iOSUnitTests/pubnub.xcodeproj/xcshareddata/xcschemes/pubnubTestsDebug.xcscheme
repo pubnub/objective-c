@@ -125,10 +125,10 @@
                   Identifier = "HowToTests">
                </Test>
                <Test
-                  Identifier = "AbbreviatedPresenceTest">
+                  Identifier = "PNCryptoTest">
                </Test>
                <Test
-                  Identifier = "PNCryptoTest">
+                  Identifier = "W_ChaosTest">
                </Test>
             </SkippedTests>
          </TestableReference>

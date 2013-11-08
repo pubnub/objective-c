@@ -501,7 +501,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         // connection state in non appropriate state
         self.simulatingNetworkSwitchEvent = NO;
         
-        BOOL isConnectionAvailable = YES;
+        BOOL isConnectionAvailable = responseData != nil;
         
         if (error != nil) {
             

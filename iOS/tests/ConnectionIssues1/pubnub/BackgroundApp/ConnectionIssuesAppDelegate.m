@@ -9,7 +9,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-	delta = 0.1;
+	delta = 0.5;
     // Configure application window and its content
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [[UIViewController alloc] init];
@@ -324,9 +324,9 @@
 		withCompletionBlock:^(PNMessageState messageSendingState, id data)
 		 {
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
+			 [self addMessagetoLog: [NSString stringWithFormat: @"send message for fail, state %d, interval %f", messageSendingState, interval]];
 			 if( interval > delta )
 				 [self performSelector: @selector(errorSelectorSendMesage)];
-			 [self addMessagetoLog: [NSString stringWithFormat: @"send message for fail, state %d, interval %f", messageSendingState, interval]];
 		 }];
 		NSLog(@"sendMessage");
 	}
