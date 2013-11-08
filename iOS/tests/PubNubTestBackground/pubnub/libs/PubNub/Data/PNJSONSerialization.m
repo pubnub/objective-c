@@ -234,7 +234,7 @@
 + (BOOL)isJSONString:(id)object {
 
     BOOL isJSONString = [object isKindOfClass:[NSNumber class]];
-    if ([object isKindOfClass:[NSString class]]) {
+    if ([object isKindOfClass:[NSString class]] && [(NSString *)object length] > 0) {
 
         unichar nodeStartChar = [(NSString *)object characterAtIndex:0];
         unichar nodeClosingChar = [(NSString *)object characterAtIndex:([(NSString *)object length] - 1)];
@@ -251,7 +251,7 @@
 + (BOOL)isJSONStringObject:(id)object {
     
     BOOL isJSONStringObject = [object isKindOfClass:[NSString class]];
-    if (isJSONStringObject) {
+    if (isJSONStringObject && [(NSString *)object length] > 0) {
         
         unichar nodeStartChar = [(NSString *)object characterAtIndex:0];
         unichar nodeClosingChar = [(NSString *)object characterAtIndex:([(NSString *)object length] - 1)];
