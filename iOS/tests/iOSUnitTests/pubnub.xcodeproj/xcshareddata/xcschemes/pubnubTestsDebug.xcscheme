@@ -107,9 +107,6 @@
                   Identifier = "TimeCommand">
                </Test>
                <Test
-                  Identifier = "W_ChaosTest">
-               </Test>
-               <Test
                   Identifier = "HowToTests/test20SubscribeOnChannels">
                </Test>
                <Test
@@ -129,6 +126,9 @@
                </Test>
                <Test
                   Identifier = "AbbreviatedPresenceTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoTest">
                </Test>
             </SkippedTests>
          </TestableReference>

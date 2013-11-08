@@ -17,6 +17,7 @@
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
+#import "TestSemaphor.h"
 
 @interface AbbreviatedPresenceTest : SenTestCase <PNDelegate> {
 	int clientDidReceivePresenceEvent;
@@ -74,15 +75,46 @@
 			 //			 dispatch_semaphore_signal(semaphore);
 			 isCompletionBlockCalled = YES;
 	 }];
+	[self subscribeOnChannelsByTurns];
 
 	// Run loop
 	clientDidReceivePresenceEvent = 0;
-	for( int j=0; j<160; j++ )
+	for( int j=0; j<60; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	isConnect = [PubNub sharedInstance].isConnected;
 	if( isConnect == YES )
 		STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( clientDidReceivePresenceEvent > 5, @"clientDidReceivePresenceEvent not received (%d)", clientDidReceivePresenceEvent);
+}
+
+- (void)subscribeOnChannelsByTurns
+{
+	for( int i = 0; i<20; i++ )
+	{
+		NSString *channelName = [NSString stringWithFormat: @"%@ %d", [NSDate date], i];
+		NSArray *arr = [PNChannel channelsWithNames: @[channelName]];
+		NSDate *start = [NSDate date];
+		NSLog(@"Start subscribe to channel %@", channelName);
+		[PubNub subscribeOnChannels: arr
+		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
+		 {
+			 [[TestSemaphor sharedInstance] lift:channelName];
+			 NSTimeInterval interval = -[start timeIntervalSinceNow];
+			 NSLog(@"subscribed %f, %@", interval, channels);
+			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+
+			 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
+			 BOOL isSubscribed = NO;
+			 for( int j=0; j<channels.count; j++ ) {
+				 if( [[channels[j] name] isEqualToString: channelName] == YES ) {
+					 isSubscribed = YES;
+					 break;
+				 }
+			 }
+			 STAssertTrue( isSubscribed == YES, @"Channel no subecribed");
+		 }];
+		STAssertTrue([[TestSemaphor sharedInstance] waitForKey: channelName timeout: [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"completion block not called, %@", channelName);
+	}
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
