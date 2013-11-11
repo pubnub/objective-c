@@ -58,19 +58,27 @@
         NSDictionary *responseData = response.response;
 
         PNError *error;
-        if ([responseData objectForKey:kPNResponseErrorPayloadKey] != nil &&
-            (response.statusCode == 401 || response.statusCode == 403)) {
-
-            error = [PNError errorWithHTTPStatusCode:response.statusCode];
-            NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@", kPNResponseErrorPayloadKey, kPNResponseErrorChannelsKey];
-            if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
-
-                error.associatedObject = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
+        
+        if ([response.response isKindOfClass:[NSDictionary class]]) {
+            
+            if ([responseData objectForKey:kPNResponseErrorPayloadKey] != nil &&
+                (response.statusCode == 401 || response.statusCode == 403)) {
+                
+                error = [PNError errorWithHTTPStatusCode:response.statusCode];
+                NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@", kPNResponseErrorPayloadKey, kPNResponseErrorChannelsKey];
+                if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
+                    
+                    error.associatedObject = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
+                }
+            }
+            else {
+                
+                error = [PNError errorWithResponseErrorMessage:[responseData valueForKey:kPNResponseErrorMessageKey]];
             }
         }
         else {
-
-            error = [PNError errorWithResponseErrorMessage:[responseData valueForKey:kPNResponseErrorMessageKey]];
+            
+            error = [PNError errorWithCode:kPNResponseMalformedJSONError];
         }
         self.error = error;
     }

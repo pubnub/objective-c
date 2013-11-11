@@ -540,7 +540,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                                                                        code:response.statusCode lastResponseOnConnection:NO];
             PNResponseParser *parser = [PNResponseParser parserForResponse:timetokenResponse];
             
-            isConnectionAvailable = [parser parsedData] != nil;
+            isConnectionAvailable = [parser parsedData] != nil && ![[parser parsedData] isKindOfClass:[PNError class]];
         }
 
         if ([self isServiceAvailableForStatus:self.reachabilityStatus] && shouldSuspectWrongState) {

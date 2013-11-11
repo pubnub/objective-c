@@ -1162,10 +1162,13 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] LEAVE REQUEST RESULT: %@ (STATE: %d)",
               self, parser, self.messagingState);
 
+        PNOperationResultEvent result = PNOperationResultLeave;
+        shouldRemoveChannels = YES;
+        
         // Ensure that parsed data has numeric data, which will mean that this is status code or event enum value
         if ([[parser parsedData] isKindOfClass:[NSNumber class]]) {
 
-            PNOperationResultEvent result = (PNOperationResultEvent)[[parser parsedData] intValue];
+            result = (PNOperationResultEvent)[[parser parsedData] intValue];
             shouldRemoveChannels = result == PNOperationResultLeave;
         }
     }
