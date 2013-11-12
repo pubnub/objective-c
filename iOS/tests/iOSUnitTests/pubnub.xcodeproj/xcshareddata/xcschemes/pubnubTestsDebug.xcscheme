@@ -38,9 +38,6 @@
                   Identifier = "PNReachabilityTest">
                </Test>
                <Test
-                  Identifier = "PNMessageHistoryRequestTest">
-               </Test>
-               <Test
                   Identifier = "ChangingChannels">
                </Test>
                <Test
@@ -89,15 +86,6 @@
                   Identifier = "PNLatencyMeasureRequestTest">
                </Test>
                <Test
-                  Identifier = "PNLeaveRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNMessagePostRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNMessagingChannelTest">
-               </Test>
-               <Test
                   Identifier = "HowToTests/test50RequestHistoryForChannel">
                </Test>
                <Test
@@ -122,13 +110,13 @@
                   Identifier = "HowToTests/test55RequestHistoryReverse">
                </Test>
                <Test
-                  Identifier = "HowToTests">
-               </Test>
-               <Test
                   Identifier = "PNCryptoTest">
                </Test>
                <Test
                   Identifier = "W_ChaosTest">
+               </Test>
+               <Test
+                  Identifier = "AbbreviatedPresenceTest">
                </Test>
             </SkippedTests>
          </TestableReference>
