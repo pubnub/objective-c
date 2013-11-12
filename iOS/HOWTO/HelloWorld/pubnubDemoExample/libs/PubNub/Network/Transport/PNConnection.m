@@ -1344,7 +1344,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (void)disconnect {
     
     PNBitOn(&_state, PNByUserRequest);
-    
+    self.connectionRetryCount = 0;
     
     [self disconnectByInternalRequest];
 }
