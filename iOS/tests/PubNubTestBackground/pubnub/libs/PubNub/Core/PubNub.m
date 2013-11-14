@@ -36,16 +36,9 @@
 
 #pragma mark Static
 
-<<<<<<< HEAD
 static NSString * const kPNLibraryVersion = @"3.5.2";
 static NSString * const kPNCodebaseBranch = @"3.5.2";
-static NSString * const kPNCodeCommitIdentifier = @"d31c58559aecbfaf11ae64b6a0f15e802a2e91a4";
-=======
-static NSString * const kPNLibraryVersion = @"3.5.1";
-static NSString * const kPNCodebaseBranch = @"hotfix-t174";
-static NSString * const kPNCodeCommitIdentifier = @"1d341b3f6b94f61846053c8eaab49de5cb199d04";
-
->>>>>>> hotfix-t174
+static NSString * const kPNCodeCommitIdentifier = @"dc488e7655b17df7f30607d14b8814a71e0dadee";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -943,7 +936,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRY UPDATE CONFIGURATION (STATE: %@)",
           [self humanReadableStateFrom:[self sharedInstance].state]);
-
+    
     // Ensure that configuration is valid before update/set client configuration to it
     if ([configuration isValid]) {
 
@@ -3786,19 +3779,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         if (!self.isUpdatingClientIdentifier) {
 
-        PNLog(PNLogGeneralLevel, self, @"FAILED TO SUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
+        	PNLog(PNLogGeneralLevel, self, @"FAILED TO SUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
+	
+        	// Check whether delegate is able to handle subscription error or not
+        	if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
 
-        // Check whether delegate is able to handle subscription error or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
+            	[self.delegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
+                	                withObject:self
+                    	            withObject:(id)error];
+	        }
+    	    PNLog(PNLogDelegateLevel, self, @" PubNub client failed to subscribe because of error: %@", error);
 
-            [self.delegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
-                                withObject:self
-                                withObject:(id)error];
-        }
-        PNLog(PNLogDelegateLevel, self, @" PubNub client failed to subscribe because of error: %@", error);
-
-
-        [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
+	
+    	    [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
         }
         else {
 
@@ -3817,19 +3810,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         if (!self.isUpdatingClientIdentifier) {
 
-        PNLog(PNLogGeneralLevel, self, @"FAILED TO UNSUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
+        	PNLog(PNLogGeneralLevel, self, @"FAILED TO UNSUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
 
-        // Check whether delegate is able to handle unsubscription error or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)]) {
+        	// Check whether delegate is able to handle unsubscription error or not
+        	if ([self.delegate respondsToSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
-                                withObject:self
-                                withObject:(id)error];
-        }
-        PNLog(PNLogDelegateLevel, self, @" PubNub client failed to unsubscribe because of error: %@", error);
+            	[self.delegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
+                                	withObject:self
+                                	withObject:(id)error];
+        	}
+        	PNLog(PNLogDelegateLevel, self, @" PubNub client failed to unsubscribe because of error: %@", error);
 
 
-        [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
+        	[self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
         }
         else {
 

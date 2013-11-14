@@ -39,7 +39,7 @@
 // Default file size is 5Mb
 #define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
 
-#define PNLOG_LOGGING_ENABLED 0
+#define PNLOG_LOGGING_ENABLED 1
 #define PNLOG_STORE_LOG_TO_FILE 1
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
 #define PNLOG_DELEGATE_LOGGING_ENABLED 1
@@ -51,8 +51,8 @@
 #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
-#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
-#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 0
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
 
 #ifdef PN_TESTING
     #undef PNLOG_LOGGING_ENABLED
@@ -238,7 +238,6 @@ void PNLogDumpFileTruncate() {
         // Retrieve path to the 'Documents' folder
         NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
         NSString *consoleDumpFilePath = [documentsFolder stringByAppendingPathComponent:@"pubnub-console-dump.txt"];
-		NSLog( @"consoleDumpFilePath %@", consoleDumpFilePath);
         NSString *oldConsoleDumpFilePath = [documentsFolder stringByAppendingPathComponent:@"pubnub-console-dump.1.txt"];
 
 

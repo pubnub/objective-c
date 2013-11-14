@@ -360,7 +360,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                 }
 
                 // Check whether there provided content is larger than declared by 'Content-Length' or not
-                if (contentSize > contentLength) {
+                if (contentSize > contentLength && contentLength > 0) {
 
                     // Looks like there is an extra data at the end of parsed response which should be truncated to the
                     // correct size
