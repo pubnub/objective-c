@@ -3779,19 +3779,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         if (!self.isUpdatingClientIdentifier) {
 
-        PNLog(PNLogGeneralLevel, self, @"FAILED TO SUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
+        	PNLog(PNLogGeneralLevel, self, @"FAILED TO SUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
+	
+        	// Check whether delegate is able to handle subscription error or not
+        	if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
 
-        // Check whether delegate is able to handle subscription error or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
+            	[self.delegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
+                	                withObject:self
+                    	            withObject:(id)error];
+	        }
+    	    PNLog(PNLogDelegateLevel, self, @" PubNub client failed to subscribe because of error: %@", error);
 
-            [self.delegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
-                                withObject:self
-                                withObject:(id)error];
-        }
-        PNLog(PNLogDelegateLevel, self, @" PubNub client failed to subscribe because of error: %@", error);
-
-
-        [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
+	
+    	    [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
         }
         else {
 
@@ -3810,19 +3810,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         if (!self.isUpdatingClientIdentifier) {
 
-        PNLog(PNLogGeneralLevel, self, @"FAILED TO UNSUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
+        	PNLog(PNLogGeneralLevel, self, @"FAILED TO UNSUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
 
-        // Check whether delegate is able to handle unsubscription error or not
-        if ([self.delegate respondsToSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)]) {
+        	// Check whether delegate is able to handle unsubscription error or not
+        	if ([self.delegate respondsToSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)]) {
 
-            [self.delegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
-                                withObject:self
-                                withObject:(id)error];
-        }
-        PNLog(PNLogDelegateLevel, self, @" PubNub client failed to unsubscribe because of error: %@", error);
+            	[self.delegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
+                                	withObject:self
+                                	withObject:(id)error];
+        	}
+        	PNLog(PNLogDelegateLevel, self, @" PubNub client failed to unsubscribe because of error: %@", error);
 
 
-        [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
+        	[self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
         }
         else {
 
