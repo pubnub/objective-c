@@ -936,7 +936,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRY UPDATE CONFIGURATION (STATE: %@)",
           [self humanReadableStateFrom:[self sharedInstance].state]);
-    
+
     // Ensure that configuration is valid before update/set client configuration to it
     if ([configuration isValid]) {
 

@@ -118,6 +118,24 @@
                <Test
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
+               <Test
+                  Identifier = "PNLeaveRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessageHistoryRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagingChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagePostRequestTest">
+               </Test>
+               <Test
+                  Identifier = "HowToTests">
+               </Test>
+               <Test
+                  Identifier = "Configuration">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

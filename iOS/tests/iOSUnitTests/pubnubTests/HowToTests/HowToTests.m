@@ -52,6 +52,7 @@
 	BOOL handleClientHereNowProcess;
 	BOOL handleClientCompletedTimeTokenProcessing;
 	BOOL pNClientDidSendMessageNotification;
+	BOOL pNClientMessageSendingDidFailNotification;
 }
 
 @property (nonatomic, retain) NSConditionLock *theLock;
@@ -221,6 +222,11 @@
 							   name:kPNClientDidSendMessageNotification
 							 object:nil];
 	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientMessageSendingDidFailNotification:)
+							   name:kPNClientMessageSendingDidFailNotification
+							 object:nil];
+
+	[notificationCenter addObserver:self
 						   selector:@selector(handleClientMessageProcessingStateChange:)
 							   name:kPNClientMessageSendingDidFailNotification
 							 object:nil];
@@ -332,6 +338,11 @@
     PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientDidSendMessageNotification: %@", notification);
 	pNClientDidSendMessageNotification = YES;
 }
+- (void)kPNClientMessageSendingDidFailNotification:(NSNotification *)notification {
+    PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientMessageSendingDidFailNotification: %@", notification);
+	pNClientMessageSendingDidFailNotification = YES;
+}
+
 
 - (void)handleClientDidReceiveMessage:(NSNotification *)notification {
     PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientDidReceiveMessage: %@", notification);
@@ -557,7 +568,6 @@
 
 -(void)test40SendMessage
 {
-	return;
 	for( int j=0; j<5; j++ ) {
 		for( int i=0; i<pnChannels.count; i++ )	{
 			pNClientDidSendMessageNotification = NO;
@@ -577,9 +587,40 @@
 				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 //			while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-//				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-//										 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+										 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
+		}
+	}
+}
+
+-(void)test45SendMessageBig
+{
+	NSMutableString *message = [NSMutableString stringWithString: @""];
+	for( int j=0; j<10; j++ ) {
+		for( int i=0; i<pnChannels.count; i++ )	{
+			pNClientDidSendMessageNotification = NO;
+			pNClientMessageSendingDidFailNotification = NO;
+			__block PNMessageState state = PNMessageSendingError;
+			[message appendFormat: @"message block <big text: asd aslkjdfh asdasljdhf fsdgdjagafdakfl> %d_%d", i, j];
+			NSLog(@"send message %d_%d with size %d", i, j, message.length);
+			state = PNMessageSending;
+			[PubNub sendMessage: message toChannel:pnChannels[i]
+			withCompletionBlock:^(PNMessageState messageSendingState, id data)
+			 {
+				 state = messageSendingState;
+			 }];
+
+			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+				(state == PNMessageSending && pNClientDidSendMessageNotification == NO && pNClientMessageSendingDidFailNotification == NO); j++ )
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
+			if( message.length < 1300 )
+				STAssertTrue( pNClientDidSendMessageNotification == YES && state == PNMessageSent, @"message not sent, size %d", message.length);
+			if( message.length >= 1300 ) {
+
+				STAssertTrue( pNClientMessageSendingDidFailNotification == YES && state == PNMessageSendingError, @"message's methods not called, size %d", message.length);
+			}
 		}
 	}
 }
