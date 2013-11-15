@@ -428,6 +428,26 @@ NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
     return timeStamp;
 }
 
+static NSString* PNObfuscateString(NSString *string);
+NSString *PNObfuscateString(NSString *string) {
+
+    NSString *obfuscatedString = string;
+    NSUInteger minimumWidth = 3;
+    NSUInteger stringWidth = (NSUInteger)([string length]/2);
+    if (stringWidth >= minimumWidth) {
+
+        obfuscatedString = [NSString stringWithFormat:@"%@*****%@", [string substringToIndex:minimumWidth],
+                            [string substringFromIndex:([string length] - minimumWidth)]];
+    }
+    else {
+
+        obfuscatedString = [obfuscatedString substringToIndex:stringWidth];
+    }
+
+
+    return obfuscatedString;
+}
+
 #pragma clang diagnostic pop
 
 #endif

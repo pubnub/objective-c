@@ -1842,7 +1842,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] WILL START REQUEST PROCESSING: %@ [BODY: %@](STATE: %d)",
-          self, request, request.resourcePath, self.messagingState);
+          self, request, request.debugResourcePath, self.messagingState);
 
 
     // Check whether connection should be closed for resubscribe
@@ -1863,7 +1863,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 - (void)requestsQueue:(PNRequestsQueue *)queue didSendRequest:(PNBaseRequest *)request {
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DID SEND REQUEST: %@ [BODY: %@][WAITING FOR COMPLETION? %@](STATE: %d)",
-          self, request, request.resourcePath, [self isWaitingRequestCompletion:request.shortIdentifier] ? @"YES" : @"NO", self.messagingState);
+          self, request, request.debugResourcePath, [self isWaitingRequestCompletion:request.shortIdentifier] ? @"YES" : @"NO", self.messagingState);
 
     // Check whether non-initial subscription request has been sent
     if ([request isKindOfClass:[PNSubscribeRequest class]]) {
@@ -2088,7 +2088,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     if (![request canRetry]) {
 
         PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@](STATE: %d)",
-              self, request, request.resourcePath, self.messagingState);
+              self, request, request.debugResourcePath, self.messagingState);
 
         // Removing failed request from queue
         [self destroyRequest:request];
@@ -2107,7 +2107,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 - (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DID CANCEL REQUEST: %@ [BODY: %@](STATE: %d)",
-          self, request, request.resourcePath, self.messagingState);
+          self, request, request.debugResourcePath, self.messagingState);
 
 
     if ([request isKindOfClass:[PNSubscribeRequest class]]) {

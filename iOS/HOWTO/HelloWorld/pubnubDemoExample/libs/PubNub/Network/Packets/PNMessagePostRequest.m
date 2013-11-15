@@ -138,6 +138,15 @@
 					([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
+- (NSString *)debugResourcePath {
+
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([PubNub sharedInstance].configuration.publishKey)];
+    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+
+    return [resourcePathComponents componentsJoinedByString:@"/"];
+}
+
 - (NSString *)signature {
 
     NSString *signature = @"0";

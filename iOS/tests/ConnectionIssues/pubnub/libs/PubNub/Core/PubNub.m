@@ -4268,21 +4268,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             if (!self.isUpdatingClientIdentifier) {
 
-			PNLog(PNLogGeneralLevel, self, @"SUBSCRIBED ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
+				PNLog(PNLogGeneralLevel, self, @"SUBSCRIBED ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
+	
+				if ([self shouldChannelNotifyAboutEvent:channel]) {
 
-			if ([self shouldChannelNotifyAboutEvent:channel]) {
+					// Check whether delegate can handle subscription on channel or not
+					if ([self.delegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
 
-				// Check whether delegate can handle subscription on channel or not
-				if ([self.delegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
-
-					[self.delegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
-										withObject:self
-										withObject:channels];
-				}
-				PNLog(PNLogDelegateLevel, self, @" PubNub client successfully subscribed on channels: %@", channels);
+						[self.delegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
+											withObject:self
+											withObject:channels];
+					}
+					PNLog(PNLogDelegateLevel, self, @" PubNub client successfully subscribed on channels: %@", channels);
 
 
-				[self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channels];
+					[self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channels];
 				}
 				else {
 

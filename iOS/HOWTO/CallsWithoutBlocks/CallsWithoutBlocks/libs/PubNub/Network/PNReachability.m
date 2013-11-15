@@ -1065,6 +1065,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                 // Simulate disconnected event (disconnected from previous interface, WiFi point or old IP address)
                 isServiceConnected = NO;
                 self.currentNetworkAddress = nil;
+                PNReachabilityStatus originalReachabilityStatus = self.reachabilityStatus;
                 self.reachabilityStatus = PNReachabilityStatusNotReachable;
                 _status = self.reachabilityStatus;
                 self.simulatingNetworkSwitchEvent = YES;
@@ -1084,6 +1085,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                               weakSelf.reachabilityFlags);
 
                         weakSelf.simulatingNetworkSwitchEvent = NO;
+                        weakSelf.reachabilityStatus = originalReachabilityStatus;
                         weakSelf.status = newStatus;
                     }
                 });
