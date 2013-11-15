@@ -141,10 +141,7 @@
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                  beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
-//	STAssertTrue( handleClientConnectionStateChange, @"notification not called");
 }
-
-//file://localhost/Users/tuller/work/pubnub/iOS/3.4/pubnubTests/RequestTests/PNBaseRequestTest.m: error: test20SubscribeOnChannels (PNBaseRequestTest) failed: "((subscriptionError) == nil)" should be true. subscriptionError Domain=com.pubnub.pubnub; Code=106; Description="Subscription failed by timeout"; Reason="Looks like there is some packets lost because of which request failed by timeout"; Fix suggestion="Try send request again later."; Associated object=(
 
 - (void)test15SubscribeOnChannels
 {
@@ -302,7 +299,7 @@
 		 //		 dispatch_semaphore_signal(semaphore);
 		 isCompletionBlockCalled = YES;
 		 NSLog(@"test50SubscribeOnChannels1 %@, %@", (subscriptionError!=nil) ? @"" : channels, subscriptionError);
-		 STAssertNotNil( subscriptionError, @"subscriptionError %@", subscriptionError);
+		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 	 }];
     // Run loop
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
@@ -330,14 +327,15 @@
 												toChannel:pnChannels[i]
 									  withCompletionBlock:^(PNMessageState messageSendingState, id data)
 									   {
+										   if( messageSendingState == PNMessageSending )
+											   return;
 										   isCompletionBlockCalled = YES;
-										   //										   dispatch_semaphore_signal(semaphore);
 										   state = messageSendingState;
 										   NSLog(@"sendMessage state %@%@%@",
 												 (messageSendingState==PNMessageSending) ? @"PNMessageSending" : @"",
 												 (messageSendingState==PNMessageSent) ? @"PNMessageSent" : @"",
 												 (messageSendingState==PNMessageSendingError) ? @"PNMessageSendingError" : @"");
-										   STAssertFalse(messageSendingState==PNMessageSent, @"messageSendingState can't be equal PNMessageSent, %@", data);
+										   STAssertTrue(messageSendingState==PNMessageSent, @"messageSendingState can't be equal PNMessageSendingError, %@", data);
 									   }];
 
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&

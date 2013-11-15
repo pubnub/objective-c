@@ -164,9 +164,9 @@
 				(state == PNMessageSending || (pNClientDidSendMessageNotification == NO && pNClientMessageSendingDidFailNotification == NO)); j++ )
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
-			if( message.length < 7.2*1024 )
+			if( message.length < 4*1024 )
 				STAssertTrue( pNClientDidSendMessageNotification == YES && state == PNMessageSent, @"message not sent, size %d", message.length);
-			if( message.length >= 7.2*1024 )
+			if( message.length >= 5*1024 )
 				STAssertTrue( pNClientMessageSendingDidFailNotification == YES && state == PNMessageSendingError, @"message's methods not called, size %d", message.length);
 		}
 	}
