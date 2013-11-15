@@ -33,22 +33,17 @@ or you will certainly get compile errors for missing files. Easiest thing to do 
 But until then...
 
 ## Adding PubNub to your project via CocoaPods
-#### **NOTE:** The CocoaPods version is also not XCode5 / iOS7 compatible (we are fixing this).
-
-It is highly advised to use the latest 3.5.1 version of PubNub directly from the repo until
-CocoaPods has been updated, as it contains many new fixes and enhancements.  
-
-If you are using XCode 4.6 and are not targetting iOS 7, then you can proceed with using CocoaPods.
+**NOTE:** Be sure you are running CocoaPods 0.26.2 or above!
 
 [These steps are documented in our Emmy-winning CocoaPod's Setup Video, check it out here!](https://vimeo.com/69284108)
 
-By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.4.2**
+By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.5.2b**
 
 +   Create an empty XCode Project
 +   Add the following to your project's Podfile:
 
 ```
-pod 'PubNub', '3.4.2'
+pod 'PubNub', '3.5.2b'
 ```
 
 +   Run
@@ -64,7 +59,8 @@ pod install
 #import "PNImports.h"
 ```
 
-To your project's .pch file. **It must be the first import in your pch, or it will not work correctly.**
+To your project's .pch file. 
+**Note:** It must be the first import in your pch, or it will not work correctly.
 
 [Finish up by setting up your delegate](#finishing-up-configuration-common-to-manual-and-cocoapods-setup)
 
@@ -118,6 +114,8 @@ delete (or do not add) /libs/JSONKit, and comment out the following lines in PNJ
     // line 133
     // JSONString = [object JSONString];
 ```
+
+For more background on this, [check out this conversation](https://github.com/pubnub/objective-c/issues/36).
 
 For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
 
