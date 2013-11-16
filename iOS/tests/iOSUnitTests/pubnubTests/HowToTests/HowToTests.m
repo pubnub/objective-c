@@ -597,18 +597,19 @@
 -(void)test45SendMessageBig
 {
 	NSMutableString *message = [NSMutableString stringWithString: @""];
-	for( int j=0; j<10; j++ ) {
+	for( int j=0; j<6; j++ ) {
 		for( int i=0; i<pnChannels.count; i++ )	{
 			pNClientDidSendMessageNotification = NO;
 			pNClientMessageSendingDidFailNotification = NO;
 			__block PNMessageState state = PNMessageSendingError;
-			[message appendFormat: @"message block <big text: asd aslkjdfh asdasljdhf fsdgdjagafdakfl> %d_%d", i, j];
+			[message appendFormat: @"message block <big text: asd aslkjdfh asdasljdhf fsdgdjagslkjdfh asdasljdhf fsdgdjagafdakflslkjdfh asdasljdhf fsdgdjagafdakflslkjdfh asdasljdhf fsdgdjagafdakflslkjdfh asdasljdhf fsdgdjagafdakflslkjdfh asdasljdhf fsdgdjagafdakflafdakfl> %d_%d", i, j];
 			NSLog(@"send message %d_%d with size %d", i, j, message.length);
 			state = PNMessageSending;
 			[PubNub sendMessage: message toChannel:pnChannels[i]
 			withCompletionBlock:^(PNMessageState messageSendingState, id data)
 			 {
 				 state = messageSendingState;
+				 NSLog(@"withCompletionBlock %d, message size %d", messageSendingState, message.length);
 			 }];
 
 			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
@@ -617,7 +618,8 @@
 
 			if( message.length < 1300 )
 				STAssertTrue( pNClientDidSendMessageNotification == YES && state == PNMessageSent, @"message not sent, size %d", message.length);
-			if( message.length >= 1300 ) {
+			if( message.length >= 1600 ) {
+				NSLog(@"sended message %d_%d with size %d", i, j, message.length);
 
 				STAssertTrue( pNClientMessageSendingDidFailNotification == YES && state == PNMessageSendingError, @"message's methods not called, size %d", message.length);
 			}
@@ -676,6 +678,9 @@
 		PNDate *endDate = [PNDate dateWithDate:[NSDate date]];
 		int limit = 34;
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: endDate limit: limit reverseHistory: YES];
+		[self requestHistoryForChannel: pnChannels[i] from: endDate to: startDate limit: limit reverseHistory: YES];
+		[self requestHistoryForChannel: pnChannels[i] from: startDate to: startDate limit: limit reverseHistory: YES];
+		[self requestHistoryForChannel: pnChannels[i] from: endDate to: endDate limit: limit reverseHistory: NO];
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: endDate limit: limit reverseHistory: NO];
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: endDate limit: 0 reverseHistory: NO];
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: nil limit: 0 reverseHistory: NO];
