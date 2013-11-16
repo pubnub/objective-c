@@ -858,7 +858,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // presence modification logic
     if (!isPresenceModification && [[self channelsWithOutPresenceFromList:[channelsSet allObjects]] count] == 0) {
 
-        PNBitOn(&channelsPresence, PNMessagingChannelEnablingPresence);
+        unsigned long updatedChannelsPresence = channelsPresence;
+        PNBitOn(&updatedChannelsPresence, PNMessagingChannelEnablingPresence);
+        channelsPresence = updatedChannelsPresence;
         isPresenceModification = YES;
     }
 

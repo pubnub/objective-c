@@ -113,8 +113,16 @@
 }
 
 - (void)reset {
+    
+    [self resetWithRetryCount:YES];
+}
 
-    self.retryCount = 0;
+- (void)resetWithRetryCount:(BOOL)shouldResetRetryCountInformation {
+    
+    if (shouldResetRetryCountInformation) {
+        
+        self.retryCount = 0;
+    }
     self.processing = NO;
     self.processed = NO;
 }
