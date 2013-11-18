@@ -638,6 +638,7 @@
 	handleClientMessageHistoryProcess = NO;
 	__block BOOL isCompletionBlockCalled = NO;
 	NSDate *start = [NSDate date];
+	NSLog(@"requestHistoryForChannel start %@, end %@", startDate, endDate);
 	[PubNub requestHistoryForChannel:channel
 								from:startDate
 								  to:endDate
@@ -645,8 +646,8 @@
 					  reverseHistory:NO
 				 withCompletionBlock:^(NSArray *messages,
 									   PNChannel *channel,
-									   PNDate *startDate,
-									   PNDate *endDate,
+									   PNDate *fromDate,
+									   PNDate *toDate,
 									   PNError *error)
 	 {
 //		 dispatch_semaphore_signal(semaphore);
@@ -657,7 +658,11 @@
 		 NSLog(@"requestHistoryForChannel interval %f", interval);
 		 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
-		 STAssertNil( error, @"error %@", error);
+		 if( startDate == nil || endDate == nil || endDate.timeToken.intValue > startDate.timeToken.intValue ) {
+			 if( error != nil )
+				 NSLog(@"requestHistoryForChannel error %@, start %@, end %@", error, startDate, endDate);
+			 STAssertNil( error, @"requestHistoryForChannel error %@", error);
+		 }
 	 }];
 //	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) || handleClientMessageHistoryProcess == NO)
 //		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
