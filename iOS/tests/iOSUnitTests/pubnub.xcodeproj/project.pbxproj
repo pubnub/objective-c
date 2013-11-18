@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A111E66183A8009000CDC9F /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 5A111E62183A8009000CDC9F /* CHANGELOG.md */; };
+		5A111E67183A8009000CDC9F /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 5A111E62183A8009000CDC9F /* CHANGELOG.md */; };
+		5A111E68183A8009000CDC9F /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A111E64183A8009000CDC9F /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5A111E69183A8009000CDC9F /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A111E64183A8009000CDC9F /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5A111E6A183A8009000CDC9F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5A111E65183A8009000CDC9F /* README.md */; };
+		5A111E6B183A8009000CDC9F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5A111E65183A8009000CDC9F /* README.md */; };
 		5A198E881815405B00D20005 /* BadJsonTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848C17FCA9B100D8DD4E /* BadJsonTest.m */; };
 		5A198E891815410400D20005 /* TimeOutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */; };
 		5A198E8E181547FF00D20005 /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
@@ -56,10 +62,6 @@
 		792C1FAC1678D5C50054E18E /* PNTimeTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 792C1FAA1678D5C40054E18E /* PNTimeTokenRequest.m */; };
 		7966DFC4166FD60A00E07B40 /* PNJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFC3166FD60900E07B40 /* PNJSONSerialization.m */; };
 		7966DFC5166FD60A00E07B40 /* PNJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFC3166FD60900E07B40 /* PNJSONSerialization.m */; };
-		7966DFC9166FD94D00E07B40 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFC8166FD94D00E07B40 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		7966DFCA166FD94D00E07B40 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFC8166FD94D00E07B40 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		7966DFCD166FDC7C00E07B40 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFCC166FDC7C00E07B40 /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		7966DFCE166FDC7C00E07B40 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFCC166FDC7C00E07B40 /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7966DFD2166FF1F800E07B40 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFD1166FF1F800E07B40 /* PNObservationCenter.m */; };
 		7966DFD3166FF1F800E07B40 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFD1166FF1F800E07B40 /* PNObservationCenter.m */; };
 		799A5ADF16DD55F8007025AF /* NSString+PNAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 799A5ADE16DD55F8007025AF /* NSString+PNAddition.m */; };
@@ -190,6 +192,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5A111E62183A8009000CDC9F /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = "<group>"; };
+		5A111E63183A8009000CDC9F /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		5A111E64183A8009000CDC9F /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		5A111E65183A8009000CDC9F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		5A198E921815884500D20005 /* CatchupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatchupTest.m; sourceTree = "<group>"; };
 		5A198E97181593EC00D20005 /* ChangingChannels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangingChannels.m; sourceTree = "<group>"; };
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
@@ -251,10 +257,6 @@
 		7966DFC0166FB9B800E07B40 /* PNErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNErrorCodes.h; sourceTree = "<group>"; };
 		7966DFC2166FD60900E07B40 /* PNJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNJSONSerialization.h; sourceTree = "<group>"; };
 		7966DFC3166FD60900E07B40 /* PNJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNJSONSerialization.m; sourceTree = "<group>"; };
-		7966DFC7166FD94D00E07B40 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
-		7966DFC8166FD94D00E07B40 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
-		7966DFCB166FDC7C00E07B40 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
-		7966DFCC166FDC7C00E07B40 /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
 		7966DFCF166FF0C000E07B40 /* PNNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNotifications.h; sourceTree = "<group>"; };
 		7966DFD0166FF1F800E07B40 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
 		7966DFD1166FF1F800E07B40 /* PNObservationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNObservationCenter.m; sourceTree = "<group>"; };
@@ -457,6 +459,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5A111E61183A8009000CDC9F /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				5A111E62183A8009000CDC9F /* CHANGELOG.md */,
+				5A111E63183A8009000CDC9F /* JSONKit.h */,
+				5A111E64183A8009000CDC9F /* JSONKit.m */,
+				5A111E65183A8009000CDC9F /* README.md */,
+			);
+			path = JSONKit;
+			sourceTree = "<group>";
+		};
 		5A198E951815885400D20005 /* CatchupTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -646,17 +659,6 @@
 			path = Packets;
 			sourceTree = "<group>";
 		};
-		7966DFC6166FD94D00E07B40 /* JSONKit */ = {
-			isa = PBXGroup;
-			children = (
-				7966DFC7166FD94D00E07B40 /* JSONKit.h */,
-				7966DFC8166FD94D00E07B40 /* JSONKit.m */,
-				7966DFCB166FDC7C00E07B40 /* JSON.h */,
-				7966DFCC166FDC7C00E07B40 /* JSON.m */,
-			);
-			path = JSONKit;
-			sourceTree = "<group>";
-		};
 		7966DFD416707EF700E07B40 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -836,8 +838,8 @@
 		79C32281166DFA50006DB535 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				5A111E61183A8009000CDC9F /* JSONKit */,
 				79C32282166DFA50006DB535 /* PubNub */,
-				7966DFC6166FD94D00E07B40 /* JSONKit */,
 			);
 			path = libs;
 			sourceTree = "<group>";
@@ -1141,7 +1143,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A111E6A183A8009000CDC9F /* README.md in Resources */,
 				79C3228F166DFA56006DB535 /* InfoPlist.strings in Resources */,
+				5A111E66183A8009000CDC9F /* CHANGELOG.md in Resources */,
 				79C32293166DFA56006DB535 /* Default-568h@2x.png in Resources */,
 				79C32295166DFA56006DB535 /* Default.png in Resources */,
 				79C32297166DFA56006DB535 /* Default@2x.png in Resources */,
@@ -1157,6 +1161,8 @@
 				79C32294166DFA56006DB535 /* Default-568h@2x.png in Resources */,
 				5ABE6C42182B9F1800204DC6 /* gistfile1.txt in Resources */,
 				79C32296166DFA56006DB535 /* Default.png in Resources */,
+				5A111E67183A8009000CDC9F /* CHANGELOG.md in Resources */,
+				5A111E6B183A8009000CDC9F /* README.md in Resources */,
 				79C32298166DFA56006DB535 /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1190,8 +1196,6 @@
 				79C322AA166E0568006DB535 /* PNConfiguration.m in Sources */,
 				79A8B5CB166FB69800C64BCF /* PNError.m in Sources */,
 				7966DFC4166FD60A00E07B40 /* PNJSONSerialization.m in Sources */,
-				7966DFC9166FD94D00E07B40 /* JSONKit.m in Sources */,
-				7966DFCD166FDC7C00E07B40 /* JSON.m in Sources */,
 				7966DFD2166FF1F800E07B40 /* PNObservationCenter.m in Sources */,
 				79ECCF1B167217D2005E83B3 /* PNReachability.m in Sources */,
 				792C1F5916788B370054E18E /* PNChannel.m in Sources */,
@@ -1240,6 +1244,7 @@
 				79BBEFF51747B15C00CF170A /* PNPushNotificationsEnabledChannelsParser.m in Sources */,
 				DD71B5F3CD424193FC00F2A9 /* NSDate+PNAdditions.m in Sources */,
 				DD71B4456DC232CD5DBF95B6 /* UIApplication+PNAdditions.m in Sources */,
+				5A111E68183A8009000CDC9F /* JSONKit.m in Sources */,
 				DD71B241F44F75A4A3828171 /* PNNetworkHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1252,12 +1257,11 @@
 				79C3227E166DFA42006DB535 /* PNAppDelegate.m in Sources */,
 				79C322A1166E0291006DB535 /* PubNub.m in Sources */,
 				5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */,
+				5A111E69183A8009000CDC9F /* JSONKit.m in Sources */,
 				5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */,
 				79C322AB166E0568006DB535 /* PNConfiguration.m in Sources */,
 				79A8B5CC166FB69800C64BCF /* PNError.m in Sources */,
 				7966DFC5166FD60A00E07B40 /* PNJSONSerialization.m in Sources */,
-				7966DFCA166FD94D00E07B40 /* JSONKit.m in Sources */,
-				7966DFCE166FDC7C00E07B40 /* JSON.m in Sources */,
 				7966DFD3166FF1F800E07B40 /* PNObservationCenter.m in Sources */,
 				79ECCF1C167217D2005E83B3 /* PNReachability.m in Sources */,
 				792C1F5A16788B370054E18E /* PNChannel.m in Sources */,
@@ -1363,6 +1367,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1382,8 +1387,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				ONLY_ACTIVE_ARCH = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				ONLY_ACTIVE_ARCH = NO;
 				PROVISIONING_PROFILE = "FC1E0E1D-5D87-4BAA-A7DA-ADCB4CF80A95";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FC1E0E1D-5D87-4BAA-A7DA-ADCB4CF80A95";
 				SDKROOT = iphoneos;
@@ -1396,6 +1401,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1408,7 +1414,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "FC1E0E1D-5D87-4BAA-A7DA-ADCB4CF80A95";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "44266222-37E9-425F-BE5C-90665E49F0E1";
@@ -1422,7 +1428,6 @@
 		79C32262166DF848006DB535 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1433,7 +1438,6 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1441,7 +1445,6 @@
 		79C32263166DF848006DB535 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1452,7 +1455,6 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1460,7 +1462,6 @@
 		79C32265166DF848006DB535 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/pubnub.app/pubnub";
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
@@ -1482,7 +1483,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -1490,7 +1490,6 @@
 		79C32266166DF848006DB535 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/pubnub.app/pubnub";
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
@@ -1508,7 +1507,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;

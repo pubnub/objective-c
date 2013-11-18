@@ -28,6 +28,9 @@
                <Test
                   Identifier = "W_ChaosTest">
                </Test>
+               <Test
+                  Identifier = "AbbreviatedPresenceTest">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
