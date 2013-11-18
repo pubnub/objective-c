@@ -135,8 +135,6 @@
 			if( processingError == nil )
 				STAssertEqualObjects( strings[j], decrypt, @"AESEncrypt != AESDecrypt (string)");
 		}
-//file://localhost/Users/tuller/work/pubnub%203.5.2/iOS/tests/iOSUnitTests/pubnubTests/PNCryptoTest/PNCryptoTest.m: test failure: -[PNCryptoTest test10updateWithConfiguration] failed: "((processingError) == nil)" should be true. AESDecrypt error, Domain=com.pubnub.pubnub; Code=123; Description="CRYPTO: Input data processing error"; Reason="The crypto helper failed to process input data because of an unknown error"; Fix suggestion="The cryptor stumbled on an unknown error during input data processing."; Associated object=(null), asdvjad  adfa asdkfjlhas half alhkashkf asfdhk1239851239847пывоадфыоафлыва
-//file://localhost/Users/tuller/work/pubnub%203.5.2/iOS/tests/iOSUnitTests/pubnubTests/PNCryptoTest/PNCryptoTest.m: test failure: -[PNCryptoTest test10updateWithConfiguration] failed: "((processingError) == nil)" should be true. AESDecrypt error, Domain=com.pubnub.pubnub; Code=123; Description="CRYPTO: Input data processing error"; Reason="The crypto helper failed to process input data because of an unknown error"; Fix suggestion="The cryptor stumbled on an unknown error during input data processing."; Associated object=(null), 12312341#%##$^#^@$^%&^&*:{AD:{X>QW{~{!@{::{AD
 
 		for( int j=0; j<objects.count; j++ ) {
 			PNError *processingError = nil;

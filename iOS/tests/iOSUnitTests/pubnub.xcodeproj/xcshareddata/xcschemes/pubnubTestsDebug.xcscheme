@@ -77,9 +77,6 @@
                   Identifier = "PNConnectionTest">
                </Test>
                <Test
-                  Identifier = "PNCryptoHelperTest">
-               </Test>
-               <Test
                   Identifier = "PNHereNowRequestTest">
                </Test>
                <Test
@@ -110,9 +107,6 @@
                   Identifier = "HowToTests/test55RequestHistoryReverse">
                </Test>
                <Test
-                  Identifier = "PNCryptoTest">
-               </Test>
-               <Test
                   Identifier = "W_ChaosTest">
                </Test>
                <Test
@@ -135,6 +129,9 @@
                </Test>
                <Test
                   Identifier = "Configuration">
+               </Test>
+               <Test
+                  Identifier = "SendBigMessage">
                </Test>
             </SkippedTests>
          </TestableReference>
