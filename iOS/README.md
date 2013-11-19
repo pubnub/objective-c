@@ -289,13 +289,15 @@ You can use few class methods to intialise and update instance properties:
 ***NOTE: If you are using the `+defaultConfiguration` method to create your configuration instance, than you will need to update:  _kPNPublishKey_, _kPNSubscriptionKey_ and _kPNOriginHost_ keys in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h).***
   
 PubNub client configuration is then set via:
-  
+
+```objective-c  
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];  
-        
+```
+
 After this call, your PubNub client will be configured with the default values taken from [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h) and is now ready to connect to the PubNub real-time network!
   
 Other methods which allow you to adjust the client configuration are:  
-  
+
     + (void)setConfiguration:(PNConfiguration *)configuration;  
     + (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;  
     + (void)setDelegate:(id<PNDelegate>)delegate;  
@@ -305,16 +307,24 @@ The above first two methods (which update client configuration) may require a __
 
 Changing the UUID mid-connection requires a "__soft state reset__".  A "__soft state reset__" is when the client sends an explicit `leave` request on any subscribed channels, and then resubscribes with its new UUID.
 
+
+** NOTE:** If you wish to change the client identifier, then catchup in time where you left-off before you changed client identifier, use:
+
+```objective-c
+[PubNub setClientIdentifier:@"moonlight" shouldCatchup:YES];
+```        
+        
 To access the client configuration and state, the following methods are provided:  
-    
+
     + (PubNub *)sharedInstance;  
     + (NSString *)clientIdentifier;  
     + (NSArray *)subscribedChannels;  
-    
+       
     + (BOOL)isSubscribedOnChannel:(PNChannel *)channel;  
     + (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel;  
     
     - (BOOL)isConnected;  
+
 
 ### Determing Connection State
 You can easily determine the current PubNub connection state via:
@@ -369,6 +379,25 @@ The above directive will allow this current PubNub iOS client to speak with earl
 
 It is advised for security and network/battery/power considerations to upgrade all clients to 3.4+ encryption as soon as possible, and to only use this
 backward compatibility mode if absolutely neccesary.
+
+#### Encrypt / Descrypt Methods
+
+If you wish to manually utilize the encryption logic for your own purposes (decrypt messages sent via PubNub from APNS for example), the following public methods can be used:
+
+```objective-c
+/**
+ * Cryptographic function which allow to decrypt AES hash stored inside 'base64' string and return object
+ */
++ (id)AESDecrypt:(id)object;
++ (id)AESDecrypt:(id)object error:(PNError **)decryptionError;
+
+/**
+ * Cryptographic function which allow to encrypt object into 'base64' string using AES and return hash string
+ */
++ (NSString *)AESEncrypt:(id)object;
++ (NSString *)AESEncrypt:(id)object error:(PNError **)encryptionError;
+```
+
 
 ## PubNub client methods  
 
