@@ -1,3 +1,15 @@
+11-18-2013 - 3.5.2
+. obscure keys in log files
+. fixed an issue when switching from WiFi to Cellular in background with background app configuration
+. fixed an issue when enabling presence via the PNChannel constructor
+. optimize reconnect-delay performance
+. fixed issue when history handle block was not always called on result
+. JSONKit support no longer means JSONKit dependence (removed JSONKit requirement by default)
+. Expose encryption methods publically
+. Better handling of Presence abbreviated response
+. Catchup is optional when changing UUID mid-subscribe cycle
+. Verify push token is valid before using for APNS methods
+
 10-08-2013 - 3.5.1
 . unsubscribe on resume race condition removed
 . setClientID and setConfiguration to be run mid-subscribe
