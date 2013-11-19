@@ -45,7 +45,7 @@ By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods 
 +   Add the following to your project's Podfile:
 
 ```
-pod 'PubNub', '3.5.2b'
+pod 'PubNub', '3.5.2'
 ```
 
 +   Run
@@ -57,8 +57,9 @@ pod install
 +   Open the resulting workspace.
 +   Add
 
-```
-#import "PNImports.h"
+```objective-c
+        // Make this the FIRST import statement
+        #import "PNImports.h"
 ```
 
 To your project's .pch file. 
@@ -72,6 +73,7 @@ To your project's .pch file.
 
 2. Add PNImports to your project precompile header (.pch)  
 ```objective-c
+        // Make this the FIRST import statement
         #import "PNImports.h"
 ```
 
@@ -104,10 +106,10 @@ PubNub core code is ARC-compliant.  But since JSONKit (which is 3rd party) perfo
         @interface PNAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate>
 ```
 
-2. In AppDelegate.m (right before the return YES line works fine), add setDelegate:
+2. In AppDelegate.m, in application:didFinishLaunchingWithOptions: (right before the return YES line works fine), add setDelegate:
 
 ```objective-c
-        [PubNub setDelegate:self] 
+        [PubNub setDelegate:self]; 
 ```
 
 ## Start Coding now with PubNub!
@@ -122,13 +124,13 @@ In your ViewController.m, add this to viewDidLoad():
 [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:@"mySecret"]];
 [PubNub connect];
 
-## Define a channel
+// Define a channel
 PNChannel *channel_1 = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
 
-## Subscribe on the channel
+// Subscribe on the channel
 [PubNub subscribeOnChannel:channel_1];
 
-## Publish on the channel
+// Publish on the channel
 [PubNub sendMessage:@"hello from PubNub iOS!" toChannel:channel_1];
 ```
 
