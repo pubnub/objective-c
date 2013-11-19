@@ -1,4 +1,4 @@
-# PubNub 3.5.1 for iOS 5.1+ (iPhone, iPad, iPod)
+# PubNub 3.5.2 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -10,10 +10,12 @@ All requests made by the client are asynchronous, and are handled by:
 
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
 
-## If you are using iOS7, you MUST disable JSONKit support.  
-[Please follow the directions here to disable JSONKit after setting up your project.](#disabling-jsonkit---mandatory-for-ios7--xcode-5)
 
-## Important Changes from 3.4.x
+## Important Changes from Earlier Versions
+### 3.5.1
+JSONKit support has been refactored so that it will only use JSONKit if your iOS version does not support NSJson.  By default in 3.5.2, JSONKit is not a required library. However, if its found, and its needed, PubNub will use it.
+
+### 3.4.x
 
 If you were previously using history in 3.4.x, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
 take PNDate arguments, not NSDate arguments. This is as easy as replacing:
@@ -37,7 +39,7 @@ But until then...
 
 [These steps are documented in our Emmy-winning CocoaPod's Setup Video, check it out here!](https://vimeo.com/69284108)
 
-By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.5.2b**
+By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.5.2**
 
 +   Create an empty XCode Project
 +   Add the following to your project's Podfile:
@@ -72,18 +74,27 @@ To your project's .pch file.
 ```objective-c
         #import "PNImports.h"
 ```
-3. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options. Mac OS X version also require CoreWLAN.framework to be added.
+
+Add the following link options:
+
+
+* CFNetwork.Framework
+* SystemConfiguration.Framework
+* libz.dylib
+
+ 
+** NOTE: ** The Mac OS X version also requires CoreWLAN.framework.
 
 ## Setting up JSONKit for legacy JSON Support
-**If you are on iOS7 / XCode 5, skip this step -- do not add JSONKit to your project!**
+### Only needed when targetting iOS 5.0 and earlier
 
-PubNub core code is ARC-compliant.  We provide JSONKit only so you can run against older versions of iOS
-which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd party) performs all memory management on it's own
-(doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
+We provide a special build of JSONKit in the iOS subdirectory (which fixes some default fatal warnings in XCode 5) only to target older versions (5 and earlier) of iOS, which do not support Apples native JSON (NSJson).
 
-1. Add the JSONKit support files to your project (/libs/JSONKit)
+PubNub core code is ARC-compliant.  But since JSONKit (which is 3rd party) performs all memory management on it's own (it doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
 
-2. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m (disable ARC warnings for JSONKit)
+1. Add the [JSONKit support files to your project](JSONKit)
+
+2. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
 
 ## Finishing up configuration (Common to Manual and CocoaPods setup)
 
@@ -93,42 +104,21 @@ which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd pa
         @interface PNAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate>
 ```
 
-2. In AppDelegate.m (right before the return YES line works fine)
+2. In AppDelegate.m (right before the return YES line works fine), add setDelegate:
 
 ```objective-c
         [PubNub setDelegate:self] 
 ```
 
-## Disabling JSONKit - Mandatory for iOS7 / XCode 5
-
-If you are on XCode 5, targetting iOS7, or otherwise wish to completely remove JSONKit from your project and filesystem,
-delete (or do not add) /libs/JSONKit, and comment out the following lines in PNJSONSerialization.m:
-
-```
-    // line 15
-    // #import "JSONKit.h"
-    
-    // line 85
-    // result = [[jsonString dataUsingEncoding:NSUTF8StringEncoding] objectFromJSONDataWithParseOptions:JKParseOptionNone error:&parsingError];
-    
-    // line 133
-    // JSONString = [object JSONString];
-```
-
-For more background on this, [check out this conversation](https://github.com/pubnub/objective-c/issues/36).
-
-For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
-
-
-## Lets start coding now with PubNub!
+## Start Coding now with PubNub!
 
 If you just can't wait to start using PubNub for iOS (we totally know the feeling), after performing the steps 
 from [Adding PubNub to your Project](#adding-pubnub-to-your-project):
 
-1. In your ViewController.m, add this to viewDidLoad():
+## Set config and connect
+In your ViewController.m, add this to viewDidLoad():
 
 ```obj-c
-## Set config and connect
 [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:@"mySecret"]];
 [PubNub connect];
 
@@ -152,8 +142,9 @@ PNChannel *channel_1 = [PNChannel channelWithName:@"a" shouldObservePresence:YES
 
 This results in a simple app that displays a PubNub 'Ping' message, published every second from PubNub PHP Bot.    
 
-That was just a quick and dirty demo to cut your teeth on... There are five other iOS PubNub 3.4 client demo apps available! These
-demonstrate in more detail how you can use the delegate and completion block features of the PubNub client for iOS.
+That was just a quick and dirty demo to cut your teeth on... There are other iOS for PubNub client demo apps available! These demonstrate in more detail how you can use the delegate and completion block features of the PubNub client for iOS.
+
+They include:
 
 ### SimpleSubscribe HOWTO
 
