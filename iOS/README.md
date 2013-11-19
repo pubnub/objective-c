@@ -83,7 +83,7 @@ Add the following link options:
 * libz.dylib
 
  
-** NOTE: ** The Mac OS X version also requires CoreWLAN.framework.
+**NOTE:** The Mac OS X version also requires CoreWLAN.framework.
 
 ## Setting up JSONKit for legacy JSON Support
 ### Only needed when targetting iOS 5.0 and earlier
@@ -165,7 +165,7 @@ for server responses (fire and forget).
 
 ### APNSDemo
 
-The [APNSVideo](HOWTO/APNSVideo) app is the companion to the APNS Tutorial Videos -- keep reading for more info on this...
+The [APNSVideo](HOWTO/APNSVideo) app is the companion to the APNS Tutorial Videos -- [Be sure to checkout the APNS API methods before reviewing this video](#apns-methods).
 ### Deluxe iPad Full Featured Demo
 
 Once you are familiar with the [Hello World](HOWTO) app, The deluxe iPad-only app demonstrates all API functions in greater detail than
@@ -181,12 +181,11 @@ We've just added a video walkthrough, along with a sample application (based on 
 end how to setup APNS with PubNub. It includes all Apple-specific setup (which appears to be the most misunderstood) as
 well as the PubNub-specific setup, along with the end product app available in [HOWTO/APNSVideo](HOWTO/APNSVideo).
 
-If after watching the video you'd like to get a more behind-the-scenes breakdown of how PubNub and APNS work together, 
-refer to [APNS Development Notes](https://github.com/pubnub/objective-c/blob/master/iOS/README_FOR_APNS.md).
-
 #### APNS Video HOWTO ####
 
-Watch the following in order:
+[0 Review the APNS Methods API](#apns-methods)
+
+Then, watch the following in order:
 
 [1 Creating the App ID and PEM Cert File](https://vimeo.com/67419903)
 
@@ -308,7 +307,7 @@ The above first two methods (which update client configuration) may require a __
 Changing the UUID mid-connection requires a "__soft state reset__".  A "__soft state reset__" is when the client sends an explicit `leave` request on any subscribed channels, and then resubscribes with its new UUID.
 
 
-** NOTE:** If you wish to change the client identifier, then catchup in time where you left-off before you changed client identifier, use:
+**NOTE:** If you wish to change the client identifier, then catchup in time where you left-off before you changed client identifier, use:
 
 ```objective-c
 [PubNub setClientIdentifier:@"moonlight" shouldCatchup:YES];
@@ -745,6 +744,8 @@ In the following example, we pull history for the `iosdev` channel within the sp
                  }];  
 
 ## APNS Methods
+**Be sure you enabled APNS in your admin under the option "Mobile Push". If you don't, it won't work!**
+
 PubNub provides the ability to send APNS push notifications from any client (iOS, Android, Java, Ruby, etc) using the native PubNub publish() mechanism. APNS push notifications can only be received on supported iOS devices (iPad, iPhone, etc).
 
 Normally, when you publish a message, it stays on the PubNub network, and is only accessible by native PubNub subscribers.  If you want that same message to be recieved on an iOS device via APNS, you must first associate the PubNub channel with the destination device's device ID (also known as a push token).
@@ -791,6 +792,92 @@ And to get an active list (audit) of whats currently associated:
 
 Check out a working example in the APNS Demo HOWTO app.
 
+### Underlying APNS REST calls
+
+If you ever wanted to directly call the underlying APNS methods directly through REST, here are the endpoints:
+
+#### Add channel(s) for a device
+
+http://pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>?add=channel,channel,...
+
+#### Remove channel(s) from a device
+
+http://pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>?remove=channel,channel,...
+
+#### Remove device (and all channel subscriptions)
+
+http://pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>/remove
+
+#### Get channels for a device
+
+http://pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>
+
+### Publish to APNS
+**Be sure you enabled APNS in your admin under the option "Mobile Push". If you don't, it won't work!**
+
+To test, publish a string (not an object!) on the associated channel via the web console.  You should receive this string
+as an APNS push message on your APNS-enabled app.
+
+If it works, you can publish an object, but it must follow a pre-defined Apple format.  More info on that here -- search for 'Examples of JSON Payloads' at 
+https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
+
+If you wish to publish **an object** (versus a string) to an APNS-enabled channel using another PubNub client, below
+we show some examples of how to do this in various languages:
+
+#### Java, BlackBerry, Android, J2ME, Codename One
+
+```java
+        Pubnub pubnub = new Pubnub("demo","demo");
+        JSONObject jso = null;
+       
+        try {
+            jso = new JSONObject("{'aps' : {'alert' : 'You got your emails.'," +
+                    "'badge' : 9,'sound' : 'bingbong.aiff'}," +
+                    "'acme 1': 42      }");
+            pubnub.publish("my_channel", jso, new Callback(){
+
+                @Override
+                public void successCallback(String arg0, Object arg1) {
+                    System.out.println(arg1);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+```
+
+#### Ruby
+
+```ruby
+pubnub.publish(
+    :channel  => 'my_channel',
+    :message => {
+
+      "aps" : {
+        "alert" : "You got your emails.",
+        "badge" : 9,
+        "sound" : "bingbong.aiff"
+      },
+      "acme 1": 42
+    }
+)
+```
+
+#### Python
+
+```python
+pubnub.publish({
+    'channel' : 'my_channel',
+    'message' : {
+      "aps" : {
+        "alert" : "You got your emails.",
+        "badge" : 9,
+        "sound" : "bingbong.aiff"
+      },
+      "acme 1": 42
+    }
+})
+```
 
 ## Error handling
 
@@ -1317,7 +1404,7 @@ By default, all non-http response logging is enabled to file with a 10MB, single
     
 In the above, 10 represents the size in MB. Set it to the size you desire.  
 
-** Keep in mind, this file size is only checked/rotated at application start. If it rises above the max size during application run-time, it will not rotate until after the application has been restarted. **
+**Keep in mind, this file size is only checked/rotated at application start. If it rises above the max size during application run-time, it will not rotate until after the application has been restarted.**
 
 If you choose the PNLOG_STORE_LOG_TO_FILE option, you will find your log written to you app's Document directory as 
 
