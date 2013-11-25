@@ -1400,6 +1400,8 @@ Logging can be controlled via the following booleans:
 
 in [pubnub/libs/PubNub/Misc/PNMacro.h](pubnub/libs/PubNub/Misc/PNMacro.h#L37)
 
+To disable logging, set **PNLOG_LOGGING_ENABLED** to 0.
+
 By default, all non-http response logging is enabled to file with a 10MB, single archived file log rotation.
 
     kPNLogMaximumLogFileSize (10 * 1024 * 1024)
