@@ -133,6 +133,12 @@
                <Test
                   Identifier = "SendBigMessage">
                </Test>
+               <Test
+                  Identifier = "PNCryptoHelperTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoTest">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
