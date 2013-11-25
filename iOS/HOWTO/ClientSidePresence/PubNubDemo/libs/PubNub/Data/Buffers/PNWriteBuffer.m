@@ -100,7 +100,7 @@ static NSUInteger const kPNWriteBufferSize = 4096;
 
 - (CFIndex)bufferLength {
     
-    return MIN(kPNWriteBufferSize, self.length);
+    return MIN(kPNWriteBufferSize, (self.length - self.offset));
 }
 
 - (void)reset {
