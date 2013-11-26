@@ -12,6 +12,11 @@ Detailed information on methods, constants, and notifications can be found in th
 
 
 ## Important Changes from Earlier Versions
+### JSONKit
+PubNub forked JSONKit and made some enhancements that remove by-default fatal warnings on XCode 5. 
+
+If you find yourself needing to use JSONKit with PubNub, [you should use the PubNub fork of JSONKit](https://github.com/pubnub/JSONKit), not the original.
+
 ### 3.5.1
 JSONKit support has been refactored so that it will only use JSONKit if your iOS version does not support NSJson.  By default in 3.5.2, JSONKit is not a required library. However, if its found, and its needed, PubNub will use it.
 
@@ -94,7 +99,7 @@ We provide a special build of JSONKit in the iOS subdirectory (which fixes some 
 
 PubNub core code is ARC-compliant.  But since JSONKit (which is 3rd party) performs all memory management on it's own (it doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
 
-1. Add the [JSONKit support files to your project](JSONKit)
+1. Add the [JSONKit support files to your project](JSONKit).
 
 2. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
 
