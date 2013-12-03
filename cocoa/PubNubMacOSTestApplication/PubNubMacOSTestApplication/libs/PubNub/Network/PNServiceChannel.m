@@ -326,7 +326,7 @@
                 PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" ACCESS RIGHTS AUDIT FAILED WITH ERROR: %@",
                       parsedData);
 
-                [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:parsedData];
+                [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:parsedData];
             }
         }
         else {
