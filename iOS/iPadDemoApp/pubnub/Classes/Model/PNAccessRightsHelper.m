@@ -82,7 +82,16 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
 - (void)updateWithAccessRightsCollectionInformation:(PNAccessRightsCollection *)collection {
     
     self.collection = collection;
-    [self buildDataTree];
+    
+    if (self.collection != nil) {
+        
+        [self buildDataTree];
+    }
+    else {
+        
+        self.data = nil;
+        self.objects = nil;
+    }
     
     [self.accessRightsInformationTable reloadData];
 }
