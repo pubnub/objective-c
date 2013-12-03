@@ -59,6 +59,11 @@
  */
 - (void)clearChatHistory;
 
+/**
+ Clean up all channels on which application subscrbed at this moment.
+ */
+- (void)clearChannels;
+
 
 #pragma mark -
 

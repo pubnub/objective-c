@@ -17,10 +17,9 @@
 @required
 
 /**
- * Called on delegate when user hit "Subscribe"
- * button in interface
+ * Called on delegate when user hit "Subscribe" button in interface
  */
-- (void)creationView:(PNChannelCreationView*)view subscribeOnChannel:(PNChannel *)channel;
+- (void)creationView:(PNChannelCreationView *)view subscribeOnChannel:(PNChannel *)channel;
 
 #pragma mark -
 

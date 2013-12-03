@@ -1396,7 +1396,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     BOOL isWaitingForRequestCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
 
-
     // Launching timeout timer only for requests which is scheduled from the name of user
     if (request.isSendingByUserRequest && isWaitingForRequestCompletion) {
 

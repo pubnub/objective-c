@@ -197,6 +197,12 @@ static PNDataManager *_sharedInstance = nil;
     self.currentChannelChat = nil;
 }
 
+- (void)clearChannels {
+    
+    self.subscribedChannelsList = @[];
+    self.currentChannel = nil;
+}
+
 - (void)setCurrentChannel:(PNChannel *)currentChannel {
 
     if (currentChannel != nil) {

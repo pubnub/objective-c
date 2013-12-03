@@ -58,14 +58,19 @@
         NSDictionary *responseData = response.response;
 
         PNError *error;
-        if ([responseData objectForKey:kPNResponseErrorPayloadKey] != nil &&
-            (response.statusCode == 401 || response.statusCode == 403)) {
+        if (([responseData objectForKey:kPNResponseErrorPayloadKey] != nil || [responseData objectForKey:kPNResponseErrorServiceKey] != nil) &&
+            (response.statusCode == 401 || response.statusCode == 402 || response.statusCode == 403)) {
 
             error = [PNError errorWithHTTPStatusCode:response.statusCode];
-            NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@", kPNResponseErrorPayloadKey, kPNResponseErrorChannelsKey];
-            if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
+            if ([responseData objectForKey:kPNResponseErrorPayloadKey] != nil) {
 
-                error.associatedObject = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
+                NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@",
+                                                                              kPNResponseErrorPayloadKey,
+                                                                              kPNResponseErrorChannelsKey];
+                if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
+
+                    error.associatedObject = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
+                }
             }
         }
         else {

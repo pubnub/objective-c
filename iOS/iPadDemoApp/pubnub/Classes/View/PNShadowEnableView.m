@@ -31,6 +31,11 @@
     self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
 }
 
+- (void)updateShadow {
+    
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
+}
+
 #pragma mark -
 
 

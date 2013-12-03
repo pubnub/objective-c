@@ -8,6 +8,7 @@
 
 #import "PNAppDelegate.h"
 #import "PNIdentificationViewController.h"
+#import "PNPrivateMacro.h"
 
 
 #pragma mark Private interface methods
@@ -124,13 +125,50 @@
     [self.window makeKeyAndVisible];
     
     [self initializePubNubClient];
-
+    
     
     return YES;
 }
 
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    
+    // You are free to register channel for push notifications right from this callback or store device push token in property and use it later.
+    [PubNub enablePushNotificationsOnChannel:[PNChannel channelWithName:@"iosdev"] withDevicePushToken:deviceToken];
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    
+    // Application was unable to register for remote push notifications and reason stored inside 'error' instance. If application were registered
+    // for remote notifications before there is a chance that it won't be able to receive remote push notifications anymore.
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    // Application received push notification (only in foreground or if application is able to work in background),
+}
+
 
 #pragma mark - PubNub client delegate methods
+
+- (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+    
+    PNLog(PNLogGeneralLevel, self, @"PubNub client changed access rights configuration: %@", accessRightsCollection);
+}
+
+- (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+    
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to change access rights configuration because of error: %@", error);
+}
+
+- (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+    
+    PNLog(PNLogGeneralLevel, self, @"PubNub client completed access rights audition: %@", accessRightsCollection);
+}
+
+- (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error {
+    
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to audit access rights because of error: %@", error);
+}
 
 - (void)pubnubClient:(PubNub *)client didEnablePushNotificationsOnChannels:(NSArray *)channels {
 

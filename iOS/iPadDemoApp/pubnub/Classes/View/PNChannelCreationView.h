@@ -17,8 +17,7 @@
 
 #pragma mark Properties
 
-// Stores reference on delegate which will be used to
-// notify about subscription attempt
+// Stores reference on delegate which will be used to notify about subscription attempt
 @property (nonatomic, pn_desired_weak) id<PNChannelCreationDelegate> delegate;
 
 
