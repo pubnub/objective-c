@@ -24,7 +24,7 @@
 
 #pragma mark Private interface methods
 
-@interface PNConfiguration ()
+@interface PNConfiguration () <NSCopying>
 
 
 #pragma mark - Properties
@@ -195,6 +195,24 @@
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    
+    PNConfiguration *configuration = [[[self class] allocWithZone:zone] initWithOrigin:self.origin publishKey:self.publishKey subscribeKey:self.subscriptionKey
+                                                                             secretKey:self.secretKey cipherKey:self.cipherKey authorizationKey:self.authorizationKey];
+    configuration.useSecureConnection = self.shouldUseSecureConnection;
+    configuration.autoReconnectClient = self.shouldAutoReconnectClient;
+    configuration.reduceSecurityLevelOnError = self.shouldReduceSecurityLevelOnError;
+    configuration.ignoreSecureConnectionRequirement = self.canIgnoreSecureConnectionRequirement;
+    configuration.resubscribeOnConnectionRestore = self.shouldResubscribeOnConnectionRestore;
+    configuration.restoreSubscriptionFromLastTimeToken = self.shouldRestoreSubscriptionFromLastTimeToken;
+    configuration.acceptCompressedResponse = self.shouldAcceptCompressedResponse;
+    configuration.nonSubscriptionRequestTimeout = self.nonSubscriptionRequestTimeout;
+    configuration.subscriptionRequestTimeout = self.subscriptionRequestTimeout;
+    
+    
+    return configuration;
+}
+
 - (BOOL)requiresConnectionResetWithConfiguration:(PNConfiguration *)configuration {
 
     BOOL shouldReset = NO;
@@ -204,7 +222,7 @@
 
         // Checking whether critical configuration information has been changed or not
         if ((self.shouldUseSecureConnection != configuration.shouldUseSecureConnection) ||
-            ![self.origin isEqualToString:configuration.origin]) {
+            ![self.origin isEqualToString:configuration.origin] || ![self.authorizationKey isEqualToString:configuration.authorizationKey]) {
 
             shouldReset = YES;
         }
@@ -249,48 +267,47 @@
 
     if (isEqual) {
 
-        isEqual = self.nonSubscriptionRequestTimeout == configuration.nonSubscriptionRequestTimeout;
+        isEqual = (self.nonSubscriptionRequestTimeout == configuration.nonSubscriptionRequestTimeout);
     }
 
     if (isEqual) {
 
-        isEqual = self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout;
+        isEqual = (self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout);
     }
 
     if (isEqual) {
 
-        isEqual = self.shouldResubscribeOnConnectionRestore && configuration.shouldResubscribeOnConnectionRestore;
+        isEqual = (self.shouldResubscribeOnConnectionRestore && configuration.shouldResubscribeOnConnectionRestore);
     }
 
     if (isEqual) {
 
-        isEqual = self.shouldRestoreSubscriptionFromLastTimeToken &&
-                  configuration.shouldRestoreSubscriptionFromLastTimeToken;
+        isEqual = (self.shouldRestoreSubscriptionFromLastTimeToken && configuration.shouldRestoreSubscriptionFromLastTimeToken);
     }
 
     if (isEqual) {
 
-        isEqual = self.canIgnoreSecureConnectionRequirement && configuration.canIgnoreSecureConnectionRequirement;
+        isEqual = (self.canIgnoreSecureConnectionRequirement && configuration.canIgnoreSecureConnectionRequirement);
     }
 
     if (isEqual) {
 
-        isEqual = self.shouldReduceSecurityLevelOnError && configuration.shouldReduceSecurityLevelOnError;
+        isEqual = (self.shouldReduceSecurityLevelOnError && configuration.shouldReduceSecurityLevelOnError);
     }
 
     if (isEqual) {
 
-        isEqual = self.shouldUseSecureConnection && configuration.shouldUseSecureConnection;
+        isEqual = (self.shouldUseSecureConnection && configuration.shouldUseSecureConnection);
     }
 
     if (isEqual) {
 
-        isEqual = self.shouldAutoReconnectClient && configuration.shouldAutoReconnectClient;
+        isEqual = (self.shouldAutoReconnectClient && configuration.shouldAutoReconnectClient);
     }
 
     if (isEqual) {
 
-        isEqual = self.shouldAcceptCompressedResponse && configuration.shouldAcceptCompressedResponse;
+        isEqual = (self.shouldAcceptCompressedResponse && configuration.shouldAcceptCompressedResponse);
     }
 
 
@@ -321,27 +338,20 @@
 
 - (BOOL)isValid {
     
-    BOOL isValid = YES;
-    
-    
-    // Check whether publish/subscription/secret keys are valid or not
-    isValid = isValid?([self.publishKey length] > 0):isValid;
-    isValid = isValid?([self.subscriptionKey length] > 0):isValid;
-    isValid = isValid?([self.secretKey length] > 0):isValid;
-    
-    
-    return isValid;
+    return ([self.publishKey length] > 0 || [self.subscriptionKey length] > 0);
 }
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"\nConfiguration for: %@ (secured: %@)\nPublish key (Required): %@\nSubscription key (Required): %@\nSecret key (Required): %@\nCipher key: %@",
-            self.origin,
-            self.shouldUseSecureConnection?@"YES":@"NO",
-            ([self.publishKey length] > 0)?self.publishKey:@"-missing-",
-            ([self.subscriptionKey length] > 0)?self.subscriptionKey:@"-missing-",
-            ([self.secretKey length] > 0)?self.secretKey:@"missing",
-            ([self.cipherKey length] > 0)?self.cipherKey:@"-no encription key-"];
+    return [NSString stringWithFormat:@"\n(%p) Configuration for: %@ (secured: %@)\n"
+                                       "Publish key (optional for read-only application): %@\n"
+                                       "Subscription key (optional for write-only application): %@\n"
+                                       "Secret key (required for PAM): %@\n"
+                                       "Cipher key (optional): %@\n"
+                                       "Authorization key: %@",
+            self, self.origin, (self.shouldUseSecureConnection ? @"YES" : @"NO"), (([self.publishKey length] > 0) ? self.publishKey : @"-missing-"),
+            (([self.subscriptionKey length] > 0) ? self.subscriptionKey : @"-missing-"), (([self.secretKey length] > 0) ? self.secretKey : @"-missing-"),
+            (([self.cipherKey length] > 0) ? self.cipherKey : @"-no encription key-"), (([self.authorizationKey length] > 0) ? self.authorizationKey : @"-missing-")];
 }
 
 #pragma mark -

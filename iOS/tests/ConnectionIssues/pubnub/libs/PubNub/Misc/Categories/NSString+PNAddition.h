@@ -31,6 +31,17 @@
  */
 - (NSString *)ASCIIHEXString;
 
+/**
+ Allow to truncate string to specified length and truncate by specified parameter.
+ 
+ @param length
+ Length to which string should be truncated.
+ 
+ @param lineBreakMode
+ Specify what kind of truncation logic should be used: UILineBreakModeClip, UILineBreakModeHeadTruncation, UILineBreakModeTailTruncation or UILineBreakModeMiddleTruncation.
+ */
+- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(UILineBreakMode)lineBreakMode;
+
 
 #pragma mark - Cryptography methods
 

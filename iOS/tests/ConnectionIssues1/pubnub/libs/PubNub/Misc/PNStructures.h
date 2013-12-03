@@ -9,14 +9,14 @@
 
 #pragma mark Class forward
 
-@class PNPresenceEvent, PNMessage, PNChannel, PNError, PNDate;
+@class PNPresenceEvent, PNMessage, PNChannel, PNError, PNDate, PNAccessRightsCollection;
 
 
 #ifndef PNStructures_h
 #define PNStructures_h
 
 // This enum represents possible message processing states
-typedef enum _PNMessageState {
+typedef NS_OPTIONS(NSUInteger, PNMessageState) {
 
     // Message was scheduled for processing. "processingData" field will contain message instance which was scheduled
     // for processing
@@ -29,11 +29,11 @@ typedef enum _PNMessageState {
     // PubNub client failed to send message because of some reasons. "processingData" field will contain error instance
     // which will describe error which occurred during message processing
     PNMessageSendingError
-} PNMessageState;
+};
 
 
 // This enum represents list of possible presence event types
-typedef enum _PNPresenceEventType {
+typedef NS_OPTIONS(NSUInteger, PNPresenceEventType) {
     
     // Number of persons changed in observed channel
     PNPresenceEventChanged,
@@ -46,19 +46,20 @@ typedef enum _PNPresenceEventType {
     
     // Person leaved channel because of timeout
     PNPresenceEventTimeout
-} PNPresenceEventType;
+};
+
 
 // This enum represent list of possible events which can occur during requests execution
-typedef enum _PNOperationResultEvent {
+typedef NS_OPTIONS(NSUInteger, PNOperationResultEvent) {
 
     // Stores unknown event
     PNOperationResultUnknown,
     PNOperationResultLeave = PNPresenceEventLeave
-} PNOperationResultEvent;
+};
 
 
 // This enum represents list of possible subscription states which can occur while client subscribing/restoring
-typedef enum _PNSubscriptionProcessState {
+typedef NS_OPTIONS(NSUInteger, PNSubscriptionProcessState) {
 
     // Not subscribed state (maybe some error occurred while tried to subscribe)
     PNSubscriptionProcessNotSubscribedState,
@@ -71,7 +72,43 @@ typedef enum _PNSubscriptionProcessState {
 
     // Restored subscription after connection restored
     PNSubscriptionProcessRestoredState
-} PNSubscriptionProcessState;
+};
+
+
+// This enum represents list of available channel access rights
+typedef NS_OPTIONS(unsigned long, PNAccessRights)  {
+
+    // Access rights is unknown because of error or any other reasons.
+    PNUnknownAccessRights = 0,
+
+    // \a 'read' access rights is granted.
+    PNReadAccessRight = 1 << 0,
+
+    // \a 'write' access rights is granted.
+    PNWriteAccessRight = 1 << 1,
+
+    // There is no access rights (maybe they has been revoked or expired).
+    PNNoAccessRights = 1 << 2
+};
+
+// this enum represents access right levels
+typedef NS_OPTIONS(NSInteger , PNAccessRightsLevel) {
+
+    /**
+     Access rights granted application wide (for \a 'subscribe' key).
+     */
+    PNApplicationAccessRightsLevel,
+
+    /**
+     Access rights granted for particular channel.
+     */
+    PNChannelAccessRightsLevel,
+
+    /**
+     Access rights granted for concrete user (users identified by \a 'authorization' key).
+     */
+    PNUserAccessRightsLevel,
+};
 
 
 typedef void (^PNClientConnectionSuccessBlock)(NSString *);
@@ -84,6 +121,8 @@ typedef void (^PNClientMessageProcessingBlock)(PNMessageState, id);
 typedef void (^PNClientMessageHandlingBlock)(PNMessage *);
 typedef void (^PNClientHistoryLoadHandlingBlock)(NSArray *, PNChannel *, PNDate *, PNDate *, PNError *);
 typedef void (^PNClientParticipantsHandlingBlock)(NSArray *, PNChannel *, PNError *);
+typedef void (^PNClientChannelAccessRightsChangeBlock)(PNAccessRightsCollection *, PNError *);
+typedef void (^PNClientChannelAccessRightsAuditBlock)(PNAccessRightsCollection *, PNError *);
 typedef void (^PNClientPresenceEventHandlingBlock)(PNPresenceEvent *);
 typedef void (^PNClientPresenceEnableHandlingBlock)(NSArray *, PNError *);
 typedef void (^PNClientPresenceDisableHandlingBlock)(NSArray *, PNError *);

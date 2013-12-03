@@ -13,11 +13,17 @@
 #ifndef PNImports_h
 #define PNImports_h
 
+#import "PNAccessRightsInformation.h"
+#import "PNAccessRightsCollection.h"
+#import "PNAccessRightOptions.h"
 #import "PNObservationCenter.h"
 #import "PNChannelPresence.h"
 #import "PNConfiguration.h"
 #import "PNNotifications.h"
 #import "PNPresenceEvent.h"
+
+#import "NSString+PNAddition.h"
+#import "NSData+PNAdditions.h"
 
 // Make developer's life a bit easier if small information about network is required
 #import "PNNetworkHelper.h"
