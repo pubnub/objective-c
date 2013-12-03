@@ -39,7 +39,7 @@
 
 	[PubNub clientIdentifier];
 #if TARGET_IPHONE_SIMULATOR
-	wiFiOnUrl = @"http://localhost/wiFiReconnect.php";
+	wiFiOnUrl = @"http://192.168.2.1/wiFiReconnect.php";
 #else
 	wiFiOnUrl = @"http://192.168.2.1/wiFiReconnect.php";
 #endif
@@ -133,19 +133,16 @@
     }
                          errorBlock:^(PNError *connectionError) {
 //    BOOL isControlsEnabled = connectionError.code != kPNClientConnectionFailedOnInternetFailureError;
+							 PNLog(PNLogGeneralLevel, nil, @"connectionError: %@", connectionError);
 						 }];
 }
 
 -(void)wifiOn {
-//	log.text = [log.text stringByAppendingFormat:@"%@ start reconnect\n", [NSDate date]];
-//	NSLog(@"wifiReconnect %@", [NSString stringWithContentsOfURL: [NSURL URLWithString: wiFiOnUrl] encoding: NSUTF8StringEncoding error: nil]);
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:wiFiOnUrl]
 											 cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
 
-    // создаём соединение и начинаем загрузку
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-
-//	log.text = [log.text stringByAppendingFormat:@"%@ end reconnect\n", [NSDate date]];
+	connection = nil;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -186,7 +183,7 @@
 }
 
 - (void)handleClientDidConnectToOriginNotification:(NSNotification *)notification {
-	PNLog(PNLogGeneralLevel, nil, @"handleClientDidConnectToOriginNotification: %@", notification);
+	NSLog(@"handleClientDidConnectToOriginNotification: %@", notification);
 	log.text = [log.text stringByAppendingFormat:@"%@ Connected (%2.2f sec). Start reconnect\n", [NSDate date], -[lastWiFiReconnect timeIntervalSinceNow]];
 //	[self wifiOff];
 	[self wifiOn];

@@ -39,7 +39,7 @@
 // Default file size is 5Mb
 #define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
 
-#define PNLOG_LOGGING_ENABLED 0
+#define PNLOG_LOGGING_ENABLED 1
 #define PNLOG_STORE_LOG_TO_FILE 1
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
 #define PNLOG_DELEGATE_LOGGING_ENABLED 1
@@ -426,6 +426,26 @@ NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
 
 
     return timeStamp;
+}
+
+static NSString* PNObfuscateString(NSString *string);
+NSString *PNObfuscateString(NSString *string) {
+
+    NSString *obfuscatedString = string;
+    NSUInteger minimumWidth = 3;
+    NSUInteger stringWidth = (NSUInteger)([string length]/2);
+    if (stringWidth >= minimumWidth) {
+
+        obfuscatedString = [NSString stringWithFormat:@"%@*****%@", [string substringToIndex:minimumWidth],
+                            [string substringFromIndex:([string length] - minimumWidth)]];
+    }
+    else {
+
+        obfuscatedString = [obfuscatedString substringToIndex:stringWidth];
+    }
+
+
+    return obfuscatedString;
 }
 
 #pragma clang diagnostic pop

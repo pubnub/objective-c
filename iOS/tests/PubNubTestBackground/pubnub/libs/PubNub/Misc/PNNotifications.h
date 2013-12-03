@@ -32,6 +32,8 @@ static NSString * const kPNClientConnectionDidFailWithErrorNotification = @"PNCl
 
 // Sent when PubNub client was able to subscribe on specified channel(s) (channel(s) will be passed in userInfo like plain NSArray)
 static NSString * const kPNClientSubscriptionDidCompleteNotification = @"PNClientSubscriptionDidCompleteNotification";
+static NSString * const kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification =
+        @"PNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification";
 
 // Sent when PubNub client is about to restore subscription on specified channel(s) (channel(s) will be passed in userInfo like plain NSArray)
 static NSString * const kPNClientSubscriptionWillRestoreNotification = @"PNClientSubscriptionWillRestoreNotification";
@@ -42,13 +44,16 @@ static NSString * const kPNClientSubscriptionDidRestoreNotification = @"PNClient
 // Sent when PubNub client was unable to subscribe on specified channel(s) (error will be passed in userInfo and channel(s) will be passed in
 // associatedObject like NSArray)
 static NSString * const kPNClientSubscriptionDidFailNotification = @"PNClientSubscriptionDidFailNotification";
+static NSString * const kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification = @"PNClientSubscriptionDidFailOnClientIdentifierUpdateNotification";
 
 // Sent when PubNub client successfully unsubscribed from specified channel(s) (channel(s) will be passed in userInfo like plain NSArray)
 static NSString * const kPNClientUnsubscriptionDidCompleteNotification = @"PNClientUnsubscriptionDidCompleteNotification";
+static NSString * const kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification = @"PNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification";
 
 // Sent when PubNub client failed to unsubscribe from specified channel(s) (error will be passed in userInfo and channel(s) will be passed in
 // associatedObject like NSArray)
 static NSString * const kPNClientUnsubscriptionDidFailNotification = @"PNClientUnsubscriptionDidFailNotification";
+static NSString * const kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification = @"PNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification";
 
 // Sent when PubNub client was able to enable presence on specified channel(s) (channel(s) will be passed in userInfo like plain NSArray)
 static NSString * const kPNClientPresenceEnablingDidCompleteNotification = @"PNClientPresenceEnablingDidCompleteNotification";

@@ -42,14 +42,14 @@
  * Update helper configuration and return whether it was
  * successful and error in case if there is some
  */
-- (BOOL)updateWithConfiguration:(PNConfiguration *)configuration withError:(PNError *__autoreleasing *)error;
+- (BOOL)updateWithConfiguration:(PNConfiguration *)configuration withError:(PNError **)error;
 
 /**
  * Returns reference on encrypted string which can be sent
  * to remote PubNub origin for processing.
  * In case of encryption error message will be generated.
  */
-- (NSString *)encryptedStringFromString:(NSString *)plainString error:(PNError *__autoreleasing *)error;
+- (NSString *)encryptedStringFromString:(NSString *)plainString error:(PNError *__strong *)error;
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
 /**
@@ -57,7 +57,7 @@
  * from object.
  * In case of encryption error message will be generated.
  */
-- (id)encryptedObjectFromObject:(id)objectForEncryption error:(PNError *__autoreleasing *)error;
+- (id)encryptedObjectFromObject:(id)objectForEncryption error:(PNError *__strong *)error;
 #endif
 
 /**
@@ -65,7 +65,7 @@
  * encoded server response
  * In case of decryption error message will be generated.
  */
-- (NSString *)decryptedStringFromString:(NSString *)encodedString error:(PNError *__autoreleasing *)error;
+- (NSString *)decryptedStringFromString:(NSString *)encodedString error:(PNError *__strong *)error;
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
 /**
@@ -73,7 +73,7 @@
  * encoded server response.
  * In case of encryption error message will be generated.
  */
-- (id)decryptedObjectFromObject:(id)encodedObject error:(PNError *__autoreleasing *)error;
+- (id)decryptedObjectFromObject:(id)encodedObject error:(PNError *__strong *)error;
 #endif
 
 #pragma mark -

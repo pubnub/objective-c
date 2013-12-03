@@ -116,7 +116,7 @@ static NSString * const kPNResponseServiceKey = @"service";
             }
         }
     }
-    else {
+    else if ([response.response isKindOfClass:[NSDictionary class]]){
 
         NSDictionary *responseData = response.response;
 
@@ -145,6 +145,11 @@ static NSString * const kPNResponseServiceKey = @"service";
 
             parserClass = [PNErrorResponseParser class];
         }
+    }
+    // Looks like server sent malformed JSON string (there is no array or dictionary at top level) and we should treat it as error.
+    else {
+        
+        parserClass = [PNErrorResponseParser class];
     }
 
 

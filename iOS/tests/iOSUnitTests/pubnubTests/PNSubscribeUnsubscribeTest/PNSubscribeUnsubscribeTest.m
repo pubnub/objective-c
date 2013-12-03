@@ -52,13 +52,14 @@
                                  beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
 }
 
-- (void)subscribeOnChannels:(NSArray*)pnChannels
+- (void)subscribeOnChannels:(NSArray*)pnChannels withPresenceEvent:(BOOL)presenceEvent
 {
 //    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+	NSLog(@"subscribeOnChannels");
 	__block BOOL isCompletionBlockCalled = NO;
-	[PubNub subscribeOnChannels: pnChannels
-	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
+	[PubNub subscribeOnChannels: pnChannels withPresenceEvent: presenceEvent andCompletionHandlingBlock: ^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 	 {
+		 NSLog(@"subscribeOnChannels end");
 //		 dispatch_semaphore_signal(semaphore);
 		 isCompletionBlockCalled = YES;
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
@@ -68,19 +69,23 @@
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 	 }];
     // Run loop
+	NSLog(@"subscribeOnChannels runloop");
 	for( int i=0; i<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 		isCompletionBlockCalled == NO; i++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 }
 
-- (void)unsubscribeOnChannels:(NSArray*)pnChannels
+- (void)unsubscribeOnChannels:(NSArray*)pnChannels withPresenceEvent:(BOOL)presenceEvent
 {
+	NSLog(@"unsubscribeOnChannels");
 //	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	__block BOOL isCompletionBlockCalled = NO;
 	[PubNub unsubscribeFromChannels: pnChannels
-				  withPresenceEvent:YES
+				  withPresenceEvent: presenceEvent
 		 andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError)
 	 {
+		 NSLog(@"unsubscribeOnChannels end");
 		 // Check whether "unsubscribeError" is nil or not (if not, than handle error)
 //		 dispatch_semaphore_signal(semaphore);
 		 isCompletionBlockCalled = YES;
@@ -88,31 +93,33 @@
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 	 }];
     // Run loop
+	NSLog(@"unsubscribeOnChannels runloop");
 	for( int i=0; i<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 		isCompletionBlockCalled == NO; i++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 }
 
 - (void)test10SubscribeOnChannels
 {
-	[self subscribeOnChannels: pnChannels1];
-	[self unsubscribeOnChannels: pnChannels1];
+	[self subscribeOnChannels: pnChannels1 withPresenceEvent: YES];
+	[self unsubscribeOnChannels: pnChannels1 withPresenceEvent: NO];
 
-	[self subscribeOnChannels: pnChannels2];
-	[self unsubscribeOnChannels: pnChannels1];
-	[self unsubscribeOnChannels: pnChannels2];
-	[self unsubscribeOnChannels: pnChannels1];
+	[self subscribeOnChannels: pnChannels2 withPresenceEvent: NO];
+	[self unsubscribeOnChannels: pnChannels1 withPresenceEvent: YES];
+	[self unsubscribeOnChannels: pnChannels2 withPresenceEvent: NO];
+	[self unsubscribeOnChannels: pnChannels1 withPresenceEvent: YES];
 
-	[self subscribeOnChannels: pnChannels1];
-	[self unsubscribeOnChannels: pnChannels1];
-	[self subscribeOnChannels: pnChannels1];
-	[self unsubscribeOnChannels: pnChannels1];
-	[self unsubscribeOnChannels: pnChannels2];
+	[self subscribeOnChannels: pnChannels1 withPresenceEvent: YES];
+	[self unsubscribeOnChannels: pnChannels1 withPresenceEvent: NO];
+	[self subscribeOnChannels: pnChannels1 withPresenceEvent: NO];
+	[self unsubscribeOnChannels: pnChannels1 withPresenceEvent: NO];
+	[self unsubscribeOnChannels: pnChannels2 withPresenceEvent: YES];
 
-	[self subscribeOnChannels: pnChannels2];
-	[self unsubscribeOnChannels: pnChannels2];
-	[self subscribeOnChannels: pnChannels2];
-	[self unsubscribeOnChannels: pnChannels2];
+	[self subscribeOnChannels: pnChannels2 withPresenceEvent: NO];
+	[self unsubscribeOnChannels: pnChannels2 withPresenceEvent: YES];
+	[self subscribeOnChannels: pnChannels2 withPresenceEvent: YES];
+	[self unsubscribeOnChannels: pnChannels2 withPresenceEvent: NO];
 }
 
 @end

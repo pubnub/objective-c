@@ -102,6 +102,12 @@
 + (void)setClientIdentifier:(NSString *)identifier;
 
 /**
+ * Same as +setClientIdentifier: but allow to specify on whether client catchup on channels on which it has been
+ * subscribed before or not
+ */
++ (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;
+
+/**
  * Retrieve current PubNub client identifier which will/used to
  * establish connection with PubNub services
  */
@@ -563,6 +569,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  */
 + (void)requestParticipantsListForChannel:(PNChannel *)channel
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
+
+
+#pragma mark - Crypto helper methods
+
+/**
+ * Cryptographic function which allow to decrypt AES hash stored inside 'base64' string and return object
+ */
++ (id)AESDecrypt:(id)object;
++ (id)AESDecrypt:(id)object error:(PNError **)decryptionError;
+
+/**
+ * Cryptographic function which allow to encrypt object into 'base64' string using AES and return hash string
+ */
++ (NSString *)AESEncrypt:(id)object;
++ (NSString *)AESEncrypt:(id)object error:(PNError **)encryptionError;
 
 
 #pragma mark - Instance methods

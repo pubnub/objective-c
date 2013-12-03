@@ -569,7 +569,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 }
 
 - (void)purgeStoredRequestsPool {
-
+    
     [self.storedRequestsList removeAllObjects];
     [self.storedRequests removeAllObjects];
 }
@@ -625,7 +625,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 - (void)removeStoredRequest:(PNBaseRequest *)request {
 
     if (request) {
-
+        
         [self.storedRequestsList removeObject:request.shortIdentifier];
         [self removeRequest:request fromStorage:self.storedRequests];
     }
@@ -634,7 +634,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 - (void)destroyRequest:(PNBaseRequest *)request {
 
     if (request) {
-
+        
         [self unscheduleRequest:request];
         [self removeStoredRequest:request];
         [self removeObservationFromRequest:request];
@@ -793,7 +793,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     if ([self shouldScheduleRequest:request]) {
 
         if([self.requestsQueue enqueueRequest:request outOfOrder:shouldEnqueueRequestOutOfOrder]) {
-
+            
             if (shouldObserveProcessing) {
 
                 [self.observedRequests setValue:request forKey:request.shortIdentifier];
@@ -1309,11 +1309,20 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     PNBaseRequest *request = [self observedRequestWithIdentifier:response.requestIdentifier];
     BOOL shouldObserveExecution = request != nil;
 
-    // In case if there is no request object, this mean that this is non-observer request
-    // which is stored in other storage
+    // In case if there is no request object, this mean that this is non-observer request which is stored in other storage
     if (request == nil) {
 
         request = [self requestWithIdentifier:response.requestIdentifier];
+        shouldObserveExecution = [self isWaitingRequestCompletion:request.shortIdentifier];
+    }
+    
+    // In case if arrived malformed response (completely messed) there is no chance to find out to which request it is related. This is prediction
+    // way which will allow to detect corresponding request (will be taken last one in queue).
+    // WARNING: This approach a bit risky, because it heavily rely on order of requests in queue (if something will alter it, wrong request may
+    // suffer from error handling logic.
+    if (request == nil && response.response == nil) {
+        
+        request = [self nextStoredRequest];
         shouldObserveExecution = [self isWaitingRequestCompletion:request.shortIdentifier];
     }
 
@@ -1332,8 +1341,18 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
         if (request) {
 
-            [request reset];
-            [self destroyRequest:request];
+            if ([request canRetry]) {
+                
+                [request increaseRetryCount];
+                [request resetWithRetryCount:NO];
+                
+                [self destroyRequest:request];
+            }
+            else {
+                
+                shouldResendRequest = NO;
+                [self requestsQueue:nil didFailRequestSend:request withError:response.error];
+            }
         }
     }
     // Looks like response is valid (continue)
@@ -1352,7 +1371,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
             [self processResponse:response forRequest:request];
         }
     }
-
+    
 
     if (shouldResendRequest) {
 

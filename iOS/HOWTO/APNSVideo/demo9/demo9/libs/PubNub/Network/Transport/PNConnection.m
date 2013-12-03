@@ -1308,7 +1308,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 // Attempt to restore connection after small delay defined in 'static' section of this class
                 __pn_desired_weak __typeof__ (self) weakSelf = self;
                 NSTimeInterval delay = (NSTimeInterval) kPNConnectionRetryDelay;
-                if (isReconnectingBecauseOfError) {
+                if (!isReconnectingBecauseOfError) {
 
                     delay = kPNConnectionRetryFastDelay;
                 }
@@ -1344,7 +1344,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (void)disconnect {
     
     PNBitOn(&_state, PNByUserRequest);
-    
+    self.connectionRetryCount = 0;
     
     [self disconnectByInternalRequest];
 }

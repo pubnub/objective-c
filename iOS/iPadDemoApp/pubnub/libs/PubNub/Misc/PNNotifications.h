@@ -64,6 +64,8 @@ static NSString * const kPNClientConnectionDidFailWithErrorNotification = @"PNCl
  \b userInfo contains reference on \a NSArray of \b PNChannel instances on which \b PubNub client was able to subscribe.
  */
 static NSString * const kPNClientSubscriptionDidCompleteNotification = @"PNClientSubscriptionDidCompleteNotification";
+static NSString * const kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification =
+        @"PNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification";
 
 /**
  Sent when \b PubNub client is about to restore subscription on specified set of channels. Mostly subscription
@@ -95,6 +97,7 @@ static NSString * const kPNClientSubscriptionDidRestoreNotification = @"PNClient
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
 static NSString * const kPNClientSubscriptionDidFailNotification = @"PNClientSubscriptionDidFailNotification";
+static NSString * const kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification = @"PNClientSubscriptionDidFailOnClientIdentifierUpdateNotification";
 
 /**
  Sent when \b PubNub client did complete unsubscription process for specified set of channels.
@@ -102,6 +105,7 @@ static NSString * const kPNClientSubscriptionDidFailNotification = @"PNClientSub
  \b userInfo contains reference on \a NSArray of \b PNChannel instances from which \b PubNub client did unsubscribe.
  */
 static NSString * const kPNClientUnsubscriptionDidCompleteNotification = @"PNClientUnsubscriptionDidCompleteNotification";
+static NSString * const kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification = @"PNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification";
 
 /**
  Sent when \b PubNub client did fail to unsubscribe from specified set of channels.
@@ -113,6 +117,7 @@ static NSString * const kPNClientUnsubscriptionDidCompleteNotification = @"PNCli
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
 static NSString * const kPNClientUnsubscriptionDidFailNotification = @"PNClientUnsubscriptionDidFailNotification";
+static NSString * const kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification = @"PNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification";
 
 /**
  * Sent when \b PubNub client did complete presence enabling process on specified set of channels.

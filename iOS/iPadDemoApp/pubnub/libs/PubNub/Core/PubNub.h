@@ -625,6 +625,42 @@
  
  @warning If \b PubNub client was previously connected to the service it will gracefully \a 'leave' channels on which it has been subscribed
  (\a 'leave' presence event will be generated) and subscribe back with new identifier (\a 'join' event will be generated).
+ 
+ @since 3.4.0
+ 
+ @see \b PNConfiguration class
+ 
+ @see \a +clientIdentifier
+ */
++ (void)setClientIdentifier:(NSString *)identifier;
+
+/**
+ Update current \b PubNub client identifier (unique user identifier or basically username/nickname).
+ 
+ @code
+ @endcode
+ Extends \a +setClientIdentifier: and allow to specify whether client should restore subscription on channels with last time token or re-subscribe with presence event.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub setClientIdentifier:@"pubnub-user"];
+ [PubNub connect];
+ @endcode
+ 
+ @param identifier
+ \a NSString instance which represent client identifier which will be used to identify concrete client on another
+ side of the channel route.
+ 
+ @param shouldCatchup
+ If set o \c YES \b PubNub client will try to restore subscription on channels (if subscribed) from the moment when this method has been called and 
+ all messages which has been sent into the channel from that moment will be received.
+ 
+ @warning If \b PubNub client was previously connected to the service it will gracefully \a 'leave' channels on which it has been subscribed
+ (\a 'leave' presence event will be generated) and subscribe back with new identifier (\a 'join' event will be generated).
 
  @since 3.4.0
 
@@ -632,7 +668,7 @@
  
  @see \a +clientIdentifier
  */
-+ (void)setClientIdentifier:(NSString *)identifier;
++ (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;
 
 /**
  Retrieve current \b PubNub client identifier which will/used to establish connection with \b PubNub services.
@@ -6697,6 +6733,21 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  methods for this purpose.
  */
 + (void)requestParticipantsListForChannel:(PNChannel *)channel withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
+
+
+#pragma mark - Crypto helper methods
+
+/**
+ * Cryptographic function which allow to decrypt AES hash stored inside 'base64' string and return object
+ */
++ (id)AESDecrypt:(id)object;
++ (id)AESDecrypt:(id)object error:(PNError **)decryptionError;
+
+/**
+ * Cryptographic function which allow to encrypt object into 'base64' string using AES and return hash string
+ */
++ (NSString *)AESEncrypt:(id)object;
++ (NSString *)AESEncrypt:(id)object error:(PNError **)encryptionError;
 
 
 #pragma mark - Instance methods

@@ -25,6 +25,8 @@
 	configurations = [NSMutableArray array];
     PNConfiguration *configuration = nil;
 	strings = [NSMutableArray array];
+	[strings addObject: @"				"];
+	[strings addObject: @"asdvjad  adfa asdkfjlhas half alhkashkf asfdhk1239851239847пывоадфыоафлыва"];
 	[strings addObject: @"asdvjad a"];
 	[strings addObject: @"asdvjad  adfa asdkfjlhas half alhkashkf asfdhk1239851239847пывоадфыоафлыва"];
 	[strings addObject: @"				"];
@@ -37,6 +39,7 @@
 	[strings addObject: [NSString stringWithFormat:@"%@", [NSDate date]]];
 
 	objects = [NSMutableArray array];
+	[objects addObject: @{@"hello":@"world", @"in":@[@"field", @"field2"]}];
 	[objects addObject: @{@"strings":@"asdfasdfasdfasdf asfasd"}];
 //	[objects addObject: @{@"strings":[NSNumber numberWithFloat: 1231.435]}];
 	[objects addObject: @{@"string ad aldjsasjhfd asdkfjh s":strings}];
@@ -49,7 +52,7 @@
 													  publishKey:nil
 													subscribeKey:nil
 													   secretKey:nil
-													   cipherKey:@"enigma"];
+													   cipherKey:@"my_key"];
 	STAssertNotNil( configuration, @"configuration can be nil");
 	[configurations addObject: configuration];
 ////
@@ -105,14 +108,37 @@
 			NSString *encodeString = [[PNCryptoHelper sharedInstance] encryptedStringFromString: strings[j] error: &processingError];
 			STAssertNil( processingError, @"processingError %@", processingError);
 			STAssertFalse( [strings[j] isEqual: encodeString], @"strings must be not equal");
+			processingError = nil;
 			NSString *decodeString = [[PNCryptoHelper sharedInstance] decryptedStringFromString: encodeString error: &processingError];
 			STAssertNil( processingError, @"processingError %@", processingError);
 			STAssertEqualObjects( strings[j], decodeString, @"strings not equal");
+
+
+			NSString *encrypt = [PubNub AESEncrypt: strings[j] error: &processingError];
+//			if( encrypt.length > 3 && [[encrypt substringToIndex:1] isEqualToString: @"\""] )
+//				encrypt = [encrypt substringWithRange: NSMakeRange(1, encrypt.length-2)];
+			NSLog(@"string \n%@", strings[j]);
+			NSLog(@"encrypt \n%@", encrypt);
+			STAssertTrue( encrypt.length > 0 , @"encrypt empty");
+			STAssertNil( processingError, @"AESEncrypt error, %@", processingError);
+
+			processingError = nil;
+			NSString *decrypt = [PubNub AESDecrypt: encrypt error: &processingError];
+			NSLog(@"decrypt \n%@", decrypt);
+//			if( decrypt.length > 3 && [[decrypt substringToIndex:1] isEqualToString: @"\""] )
+//				decrypt = [decrypt substringWithRange: NSMakeRange(1, decrypt.length-2)];
+			STAssertNil( processingError, @"AESDecrypt error, %@, %@", processingError, strings[j]);
+//			if( processingError != nil ) {
+//				processingError = nil;
+//				NSString *decrypt = [PubNub AESDecrypt: encrypt error: &processingError];
+//			}
+			if( processingError == nil )
+				STAssertEqualObjects( strings[j], decrypt, @"AESEncrypt != AESDecrypt (string)");
 		}
 
-#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
 		for( int j=0; j<objects.count; j++ ) {
 			PNError *processingError = nil;
+#ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
 			id encodeObject = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject: objects[j] error: &processingError];
 //			NSData *dataEncode = [NSKeyedArchiver archivedDataWithRootObject:encodeObject];
 			STAssertNil( processingError, @"processingError %@", processingError);
@@ -128,10 +154,26 @@
 				NSLog(@"isEtalonDictionary Fail \n%@\n%@", objects[j], decodeObject );
 			}
 			STAssertTrue( result, @"objects not equal");
-		}
 #endif
-	}
 
+			NSString *encrypt = [PubNub AESEncrypt: objects[j] error: &processingError];
+//			if( encrypt.length > 3 && [[encrypt substringToIndex:1] isEqualToString: @"\""] )
+//				encrypt = [encrypt substringWithRange: NSMakeRange(1, encrypt.length-2)];
+			NSLog(@"encrypt %@", encrypt);
+			STAssertTrue( encrypt.length > 0 , @"encrypt empty");
+			STAssertNil( processingError, @"AESEncrypt error", processingError);
+
+			processingError = nil;
+			id decrypt = [PubNub AESDecrypt: encrypt error: &processingError];
+			result = [objects[j] isEqual: decrypt];
+			if( result == NO ) {
+				NSLog(@"AESEncrypt != AESDecrypt (objects) \n%@\n%@", objects[j], decrypt );
+			}
+			STAssertNil( processingError, @"AESDecrypt error, %@, %@", processingError, objects[j]);
+			if( processingError == nil )
+				STAssertEqualObjects( objects[j], decrypt, @"AESEncrypt != AESDecrypt (objects)");
+		}
+	}
 
 	configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
 												 publishKey:nil

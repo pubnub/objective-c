@@ -58,24 +58,41 @@
         NSDictionary *responseData = response.response;
 
         PNError *error;
-        if (([responseData objectForKey:kPNResponseErrorPayloadKey] != nil || [responseData objectForKey:kPNResponseErrorServiceKey] != nil) &&
-            (response.statusCode == 401 || response.statusCode == 402 || response.statusCode == 403)) {
-
-            error = [PNError errorWithHTTPStatusCode:response.statusCode];
-            if ([responseData objectForKey:kPNResponseErrorPayloadKey] != nil) {
-
-                NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@",
-                                                                              kPNResponseErrorPayloadKey,
-                                                                              kPNResponseErrorChannelsKey];
-                if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
-
-                    error.associatedObject = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
-                }
+        
+        if ([response.response isKindOfClass:[NSDictionary class]]) {
+            
+            NSString *errorMessage = [responseData valueForKey:kPNResponseErrorMessageKey];
+            NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@", kPNResponseErrorPayloadKey, kPNResponseErrorChannelsKey];
+            NSArray *associatedChannels = nil;
+            if (![[responseData valueForKey:kPNResponseErrorMessageKey] isKindOfClass:[NSString class]]) {
+                
+                errorMessage = [responseData valueForKey:kPNResponseErrorAdditionalMessageKey];
+            }
+            
+            if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
+                
+                associatedChannels = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
+            }
+            
+            
+            if (([responseData objectForKey:kPNResponseErrorPayloadKey] != nil || [responseData objectForKey:kPNResponseErrorServiceKey] != nil) &&
+                (response.statusCode == 401 || response.statusCode == 402 || response.statusCode == 403)) {
+                
+                error = [PNError errorWithHTTPStatusCode:response.statusCode];
+            }
+            else {
+                
+                error = [PNError errorWithResponseErrorMessage:errorMessage];
+            }
+            
+            if (associatedChannels) {
+                
+                error.associatedObject = associatedChannels;
             }
         }
         else {
-
-            error = [PNError errorWithResponseErrorMessage:[responseData valueForKey:kPNResponseErrorMessageKey]];
+            
+            error = [PNError errorWithCode:kPNResponseMalformedJSONError];
         }
         self.error = error;
     }

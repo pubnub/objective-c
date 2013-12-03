@@ -1,4 +1,4 @@
-# PubNub 3.5.1 for iOS 5.1+ (iPhone, iPad, iPod)
+# PubNub 3.5.2 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -10,10 +10,17 @@ All requests made by the client are asynchronous, and are handled by:
 
 Detailed information on methods, constants, and notifications can be found in the corresponding header files.
 
-## If you are using iOS7, you MUST disable JSONKit support.  
-[Please follow the directions here to disable JSONKit after setting up your project.](#disabling-jsonkit---mandatory-for-ios7--xcode-5)
 
-## Important Changes from 3.4.x
+## Important Changes from Earlier Versions
+### JSONKit
+PubNub forked JSONKit and made some enhancements that remove by-default fatal warnings on XCode 5. 
+
+If you find yourself needing to use JSONKit with PubNub, [you should use the PubNub fork of JSONKit](https://github.com/pubnub/JSONKit), not the original.
+
+### 3.5.1
+JSONKit support has been refactored so that it will only use JSONKit if your iOS version does not support NSJson.  By default in 3.5.2, JSONKit is not a required library. However, if its found, and its needed, PubNub will use it.
+
+### 3.4.x
 
 If you were previously using history in 3.4.x, you will need to convert your **NSDate** parameter types to **PNDate** types, as the history methods now
 take PNDate arguments, not NSDate arguments. This is as easy as replacing:
@@ -33,22 +40,17 @@ or you will certainly get compile errors for missing files. Easiest thing to do 
 But until then...
 
 ## Adding PubNub to your project via CocoaPods
-#### **NOTE:** The CocoaPods version is also not XCode5 / iOS7 compatible (we are fixing this).
-
-It is highly advised to use the latest 3.5.1 version of PubNub directly from the repo until
-CocoaPods has been updated, as it contains many new fixes and enhancements.  
-
-If you are using XCode 4.6 and are not targetting iOS 7, then you can proceed with using CocoaPods.
+**NOTE:** Be sure you are running CocoaPods 0.26.2 or above!
 
 [These steps are documented in our Emmy-winning CocoaPod's Setup Video, check it out here!](https://vimeo.com/69284108)
 
-By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.4.2**
+By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.5.2**
 
 +   Create an empty XCode Project
 +   Add the following to your project's Podfile:
 
 ```
-pod 'PubNub', '3.4.2'
+pod 'PubNub', '3.5.2'
 ```
 
 +   Run
@@ -60,11 +62,13 @@ pod install
 +   Open the resulting workspace.
 +   Add
 
-```
-#import "PNImports.h"
+```objective-c
+        // Make this the FIRST import statement
+        #import "PNImports.h"
 ```
 
-To your project's .pch file. **It must be the first import in your pch, or it will not work correctly.**
+To your project's .pch file. 
+**Note:** It must be the first import in your pch, or it will not work correctly.
 
 [Finish up by setting up your delegate](#finishing-up-configuration-common-to-manual-and-cocoapods-setup)
 
@@ -74,20 +78,30 @@ To your project's .pch file. **It must be the first import in your pch, or it wi
 
 2. Add PNImports to your project precompile header (.pch)  
 ```objective-c
+        // Make this the FIRST import statement
         #import "PNImports.h"
 ```
-3. Add the CFNetwork.Framework, SystemConfiguration.Framework, and libz.dylib link options. Mac OS X version also require CoreWLAN.framework to be added.
+
+Add the following link options:
+
+
+* CFNetwork.Framework
+* SystemConfiguration.Framework
+* libz.dylib
+
+ 
+**NOTE:** The Mac OS X version also requires CoreWLAN.framework.
 
 ## Setting up JSONKit for legacy JSON Support
-**If you are on iOS7 / XCode 5, skip this step -- do not add JSONKit to your project!**
+### Only needed when targetting iOS 5.0 and earlier
 
-PubNub core code is ARC-compliant.  We provide JSONKit only so you can run against older versions of iOS
-which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd party) performs all memory management on it's own
-(doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
+We provide a special build of JSONKit in the iOS subdirectory (which fixes some default fatal warnings in XCode 5) only to target older versions (5 and earlier) of iOS, which do not support Apples native JSON (NSJson).
 
-1. Add the JSONKit support files to your project (/libs/JSONKit)
+PubNub core code is ARC-compliant.  But since JSONKit (which is 3rd party) performs all memory management on it's own (it doesn't support ARC), we'll show you how to remove ARC warnings for it with the -fno-objc-arc setting.
 
-2. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m (disable ARC warnings for JSONKit)
+1. Add the [JSONKit support files to your project](JSONKit).
+
+2. Set the -fno-objc-arc compile option for JSON.m and JSONKit.m
 
 ## Finishing up configuration (Common to Manual and CocoaPods setup)
 
@@ -97,50 +111,31 @@ which do not support Apples native JSON (NSJson). Since JSONKit (which is 3rd pa
         @interface PNAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate>
 ```
 
-2. In AppDelegate.m (right before the return YES line works fine)
+2. In AppDelegate.m, in application:didFinishLaunchingWithOptions: (right before the return YES line works fine), add setDelegate:
 
 ```objective-c
-        [PubNub setDelegate:self] 
+        [PubNub setDelegate:self]; 
 ```
 
-## Disabling JSONKit - Mandatory for iOS7 / XCode 5
-
-If you are on XCode 5, targetting iOS7, or otherwise wish to completely remove JSONKit from your project and filesystem,
-delete (or do not add) /libs/JSONKit, and comment out the following lines in PNJSONSerialization.m:
-
-```
-    // line 15
-    // #import "JSONKit.h"
-    
-    // line 85
-    // result = [[jsonString dataUsingEncoding:NSUTF8StringEncoding] objectFromJSONDataWithParseOptions:JKParseOptionNone error:&parsingError];
-    
-    // line 133
-    // JSONString = [object JSONString];
-```
-
-For a more detailed walkthrough of the above steps, be sure to follow the [Hello World walkthrough doc](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf) (more details on that in the next section...)
-
-
-## Lets start coding now with PubNub!
+## Start Coding now with PubNub!
 
 If you just can't wait to start using PubNub for iOS (we totally know the feeling), after performing the steps 
 from [Adding PubNub to your Project](#adding-pubnub-to-your-project):
 
-1. In your ViewController.m, add this to viewDidLoad():
+## Set config and connect
+In your ViewController.m, add this to viewDidLoad():
 
 ```obj-c
-## Set config and connect
 [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:@"mySecret"]];
 [PubNub connect];
 
-## Define a channel
+// Define a channel
 PNChannel *channel_1 = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
 
-## Subscribe on the channel
+// Subscribe on the channel
 [PubNub subscribeOnChannel:channel_1];
 
-## Publish on the channel
+// Publish on the channel
 [PubNub sendMessage:@"hello from PubNub iOS!" toChannel:channel_1];
 ```
 
@@ -154,8 +149,9 @@ PNChannel *channel_1 = [PNChannel channelWithName:@"a" shouldObservePresence:YES
 
 This results in a simple app that displays a PubNub 'Ping' message, published every second from PubNub PHP Bot.    
 
-That was just a quick and dirty demo to cut your teeth on... There are five other iOS PubNub 3.4 client demo apps available! These
-demonstrate in more detail how you can use the delegate and completion block features of the PubNub client for iOS.
+That was just a quick and dirty demo to cut your teeth on... There are other iOS for PubNub client demo apps available! These demonstrate in more detail how you can use the delegate and completion block features of the PubNub client for iOS.
+
+They include:
 
 ### SimpleSubscribe HOWTO
 
@@ -176,7 +172,7 @@ for server responses (fire and forget).
 
 ### APNSDemo
 
-The [APNSVideo](HOWTO/APNSVideo) app is the companion to the APNS Tutorial Videos -- keep reading for more info on this...
+The [APNSVideo](HOWTO/APNSVideo) app is the companion to the APNS Tutorial Videos -- [Be sure to checkout the APNS API methods before reviewing this video](#apns-methods).
 ### Deluxe iPad Full Featured Demo
 
 Once you are familiar with the [Hello World](HOWTO) app, The deluxe iPad-only app demonstrates all API functions in greater detail than
@@ -192,12 +188,11 @@ We've just added a video walkthrough, along with a sample application (based on 
 end how to setup APNS with PubNub. It includes all Apple-specific setup (which appears to be the most misunderstood) as
 well as the PubNub-specific setup, along with the end product app available in [HOWTO/APNSVideo](HOWTO/APNSVideo).
 
-If after watching the video you'd like to get a more behind-the-scenes breakdown of how PubNub and APNS work together, 
-refer to [APNS Development Notes](https://github.com/pubnub/objective-c/blob/master/iOS/README_FOR_APNS.md).
-
 #### APNS Video HOWTO ####
 
-Watch the following in order:
+[0 Review the APNS Methods API](#apns-methods)
+
+Then, watch the following in order:
 
 [1 Creating the App ID and PEM Cert File](https://vimeo.com/67419903)
 
@@ -300,13 +295,15 @@ You can use few class methods to intialise and update instance properties:
 ***NOTE: If you are using the `+defaultConfiguration` method to create your configuration instance, than you will need to update:  _kPNPublishKey_, _kPNSubscriptionKey_ and _kPNOriginHost_ keys in [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h).***
   
 PubNub client configuration is then set via:
-  
+
+```objective-c  
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];  
-        
+```
+
 After this call, your PubNub client will be configured with the default values taken from [__PNDefaultConfiguration.h__](3.4/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h) and is now ready to connect to the PubNub real-time network!
   
 Other methods which allow you to adjust the client configuration are:  
-  
+
     + (void)setConfiguration:(PNConfiguration *)configuration;  
     + (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;  
     + (void)setDelegate:(id<PNDelegate>)delegate;  
@@ -316,16 +313,24 @@ The above first two methods (which update client configuration) may require a __
 
 Changing the UUID mid-connection requires a "__soft state reset__".  A "__soft state reset__" is when the client sends an explicit `leave` request on any subscribed channels, and then resubscribes with its new UUID.
 
+
+**NOTE:** If you wish to change the client identifier, then catchup in time where you left-off before you changed client identifier, use:
+
+```objective-c
+[PubNub setClientIdentifier:@"moonlight" shouldCatchup:YES];
+```        
+        
 To access the client configuration and state, the following methods are provided:  
-    
+
     + (PubNub *)sharedInstance;  
     + (NSString *)clientIdentifier;  
     + (NSArray *)subscribedChannels;  
-    
+       
     + (BOOL)isSubscribedOnChannel:(PNChannel *)channel;  
     + (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel;  
     
     - (BOOL)isConnected;  
+
 
 ### Determing Connection State
 You can easily determine the current PubNub connection state via:
@@ -380,6 +385,25 @@ The above directive will allow this current PubNub iOS client to speak with earl
 
 It is advised for security and network/battery/power considerations to upgrade all clients to 3.4+ encryption as soon as possible, and to only use this
 backward compatibility mode if absolutely neccesary.
+
+#### Encrypt / Descrypt Methods
+
+If you wish to manually utilize the encryption logic for your own purposes (decrypt messages sent via PubNub from APNS for example), the following public methods can be used:
+
+```objective-c
+/**
+ * Cryptographic function which allow to decrypt AES hash stored inside 'base64' string and return object
+ */
++ (id)AESDecrypt:(id)object;
++ (id)AESDecrypt:(id)object error:(PNError **)decryptionError;
+
+/**
+ * Cryptographic function which allow to encrypt object into 'base64' string using AES and return hash string
+ */
++ (NSString *)AESEncrypt:(id)object;
++ (NSString *)AESEncrypt:(id)object error:(PNError **)encryptionError;
+```
+
 
 ## PubNub client methods  
 
@@ -726,6 +750,141 @@ In the following example, we pull history for the `iosdev` channel within the sp
                      }  
                  }];  
 
+## APNS Methods
+**Be sure you enabled APNS in your admin under the option "Mobile Push". If you don't, it won't work!**
+
+PubNub provides the ability to send APNS push notifications from any client (iOS, Android, Java, Ruby, etc) using the native PubNub publish() mechanism. APNS push notifications can only be received on supported iOS devices (iPad, iPhone, etc).
+
+Normally, when you publish a message, it stays on the PubNub network, and is only accessible by native PubNub subscribers.  If you want that same message to be recieved on an iOS device via APNS, you must first associate the PubNub channel with the destination device's device ID (also known as a push token).
+
+To perform this association, use one of the following:
+
+```objective-c
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
++ (void)enablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
++ (void)enablePushNotificationsOnChannels:(NSArray *)channels
+                      withDevicePushToken:(NSData *)pushToken
+               andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+```
+
+To disable this association, use one of the following:
+
+```objective-c
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
++ (void)disablePushNotificationsOnChannel:(PNChannel *)channel
+                     withDevicePushToken:(NSData *)pushToken
+              andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
++ (void)disablePushNotificationsOnChannels:(NSArray *)channels
+                       withDevicePushToken:(NSData *)pushToken
+                andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+```
+
+You can remove them all, instead of individually using:
+
+```objective-c
++ (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                         withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+```
+                         
+And to get an active list (audit) of whats currently associated:
+
+```objective-c
++ (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+                                     withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+```
+
+Check out a working example in the APNS Demo HOWTO app.
+
+### Underlying APNS REST calls
+
+If you ever wanted to directly call the underlying APNS methods directly through REST, here are the endpoints:
+
+#### Add channel(s) for a device
+
+http://pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>?add=channel,channel,...
+
+#### Remove channel(s) from a device
+
+http://pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>?remove=channel,channel,...
+
+#### Remove device (and all channel subscriptions)
+
+http://pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>/remove
+
+#### Get channels for a device
+
+http://pubsub.pubnub.com/v1/push/sub-key/<sub_key>/devices/<device>
+
+### Publish to APNS
+**Be sure you enabled APNS in your admin under the option "Mobile Push". If you don't, it won't work!**
+
+To test, publish a string (not an object!) on the associated channel via the web console.  You should receive this string
+as an APNS push message on your APNS-enabled app.
+
+If it works, you can publish an object, but it must follow a pre-defined Apple format.  More info on that here -- search for 'Examples of JSON Payloads' at 
+https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
+
+If you wish to publish **an object** (versus a string) to an APNS-enabled channel using another PubNub client, below
+we show some examples of how to do this in various languages:
+
+#### Java, BlackBerry, Android, J2ME, Codename One
+
+```java
+        Pubnub pubnub = new Pubnub("demo","demo");
+        JSONObject jso = null;
+       
+        try {
+            jso = new JSONObject("{'aps' : {'alert' : 'You got your emails.'," +
+                    "'badge' : 9,'sound' : 'bingbong.aiff'}," +
+                    "'acme 1': 42      }");
+            pubnub.publish("my_channel", jso, new Callback(){
+
+                @Override
+                public void successCallback(String arg0, Object arg1) {
+                    System.out.println(arg1);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+```
+
+#### Ruby
+
+```ruby
+pubnub.publish(
+    :channel  => 'my_channel',
+    :message => {
+
+      "aps" : {
+        "alert" : "You got your emails.",
+        "badge" : 9,
+        "sound" : "bingbong.aiff"
+      },
+      "acme 1": 42
+    }
+)
+```
+
+#### Python
+
+```python
+pubnub.publish({
+    'channel' : 'my_channel',
+    'message' : {
+      "aps" : {
+        "alert" : "You got your emails.",
+        "badge" : 9,
+        "sound" : "bingbong.aiff"
+      },
+      "acme 1": 42
+    }
+})
+```
 
 ## Error handling
 
@@ -742,7 +901,7 @@ The client provides different methods of handling different events:
 3. Observation center
 4. Notifications  
 
-##Delegate callback methods
+## Delegate callback methods
 
 In the PubNub iOS client, delegate callback methods provide one way to handle different events. At any given time, there can be only one PubNub client delegate. 
 
@@ -1246,13 +1405,15 @@ Logging can be controlled via the following booleans:
 
 in [pubnub/libs/PubNub/Misc/PNMacro.h](pubnub/libs/PubNub/Misc/PNMacro.h#L37)
 
+To disable logging, set **PNLOG_LOGGING_ENABLED** to 0.
+
 By default, all non-http response logging is enabled to file with a 10MB, single archived file log rotation.
 
     kPNLogMaximumLogFileSize (10 * 1024 * 1024)
     
 In the above, 10 represents the size in MB. Set it to the size you desire.  
 
-** Keep in mind, this file size is only checked/rotated at application start. If it rises above the max size during application run-time, it will not rotate until after the application has been restarted. **
+**Keep in mind, this file size is only checked/rotated at application start. If it rises above the max size during application run-time, it will not rotate until after the application has been restarted.**
 
 If you choose the PNLOG_STORE_LOG_TO_FILE option, you will find your log written to you app's Document directory as 
 

@@ -13,6 +13,7 @@
 
 @implementation PNCryptoHelperTest
 
+
 - (void)setUp {
 
     [super setUp];
@@ -42,40 +43,6 @@
                                                                                     error:&processingError];
 #else
     expectedResponse = @"UzIyeVhanI+QnyaNqVob2A==";
-    id decodedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:testObject error:&processingError];
-#endif
-    STAssertNil(processingError, @"String encryption failed with error: %@", processingError);
-    STAssertEqualObjects(decodedMessage, expectedResponse, @"Unexpected encrypted object");
-}
-
-- (void)testArrayEncryption {
-    
-    NSArray *testObject = @[@"seven", @"eight", @{@"food": @"Cheeseburger", @"drink": @"Coffee"}];
-    id expectedResponse = @"A3Q8UJ2N/QmCI3x6qDcEwZZbfvNki7Ai7NWUiJiivR9YG+JSaIpFUT5dFY3AJVr5Fg8ZM+dydjDqFPyx/NZQpQ==";
-    PNError *processingError = nil;
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-    NSString *decodedMessage = [[PNCryptoHelper sharedInstance] encryptedStringFromString:[NSString stringWithFormat:@"%@",
-                                                                                           [PNJSONSerialization stringFromJSONObject:testObject]]
-                                                                                    error:&processingError];
-#else
-    expectedResponse = @[@"0ZRaiDryY0rdklgVVU80pQ==", @"Ti5YyHCCUEjg\/op0Zm393w==", @{@"food": @"zu9G3gtmiAxYLpehtuQngw==", @"drink": @"vJYgOIZdbL4rRqdigAcujA=="}];
-    id decodedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:testObject error:&processingError];
-#endif
-    STAssertNil(processingError, @"String encryption failed with error: %@", processingError);
-    STAssertEqualObjects(decodedMessage, expectedResponse, @"Unexpected encrypted object");
-}
-
-- (void)testDictionaryEncryption {
-    
-    NSDictionary *testObject = @{@"Editer": @"X-code->ÇÈ°∂@#$%^&*()!", @"Language": @"Objective-c"};
-    id expectedResponse = @"XKdMklyMPIHk5XJkkAMCRm7P4jf+L5q/Owx+sfQDFHq3PPdwouV4rkhJ4gsV41VB9/Gq4E8IwnojON0kF20pDBXHRFd3qhAsnorjYnF+hwo=";
-    PNError *processingError = nil;
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-    NSString *decodedMessage = [[PNCryptoHelper sharedInstance] encryptedStringFromString:[NSString stringWithFormat:@"%@",
-                                                                                           [PNJSONSerialization stringFromJSONObject:testObject]]
-                                                                                    error:&processingError];
-#else
-    expectedResponse = @{@"Editer": @"e\/T2o0Y2ebkCZ4kqmYniQvZ7vsyY3lryf+7VNNWgecI=", @"Language": @"iJcNzxkNtWw1ktbExVn9xg=="};
     id decodedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:testObject error:&processingError];
 #endif
     STAssertNil(processingError, @"String encryption failed with error: %@", processingError);
