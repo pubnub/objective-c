@@ -103,9 +103,9 @@ static double const kPNActionRetryDelayOnPAMError = 2.0f;
 @property (nonatomic, pn_desired_weak) IBOutlet UITextField *messageTextField;
 
 /**
- Stores reference on channel for which client should retry subscription.
+ Stores reference on list of channels for which client should retry subscription.
  */
-@property (nonatomic, strong) PNChannel *channelForRetry;
+@property (nonatomic, strong) NSArray *channelsForRetry;
 
 /**
  Stores reference no message which should be resent
@@ -185,6 +185,11 @@ static double const kPNActionRetryDelayOnPAMError = 2.0f;
  */
 - (void)showNoChannelSelectedMessage;
 - (void)hideNoChannelSelectedMessage;
+
+/**
+ Show channel subscription error alert view
+ */
+- (void)showSubscriptionErrorAlertView:(PNError *)subscriptionError;
 
 @end
 
@@ -266,6 +271,29 @@ static double const kPNActionRetryDelayOnPAMError = 2.0f;
                                                              [weakSelf updateVisibleChannelsList];
                                                              [weakSelf highlightCurrentChannel];
                                                          }];
+    
+    
+    [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:weakSelf
+                                                                 withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels,
+                                                                                     PNError *subscriptionError) {
+                                                                     
+                                                                     switch (state) {
+                                                                             
+                                                                         case PNSubscriptionProcessNotSubscribedState:
+                                                                             
+                                                                             if (subscriptionError.code == kPNAPIAccessForbiddenError) {
+                                                                                 
+                                                                                 [[PNDataManager sharedInstance] clearChatHistory];
+                                                                                 [[PNDataManager sharedInstance] clearChannels];
+                                                                                 
+                                                                                 [weakSelf updateClientInformation];
+                                                                             }
+                                                                             [self showSubscriptionErrorAlertView:subscriptionError];
+                                                                             break;
+                                                                         default:
+                                                                             break;
+                                                                     }
+                                                                 }];
 
 
     // Subscribe on data manager properties change
@@ -662,54 +690,61 @@ static double const kPNActionRetryDelayOnPAMError = 2.0f;
     [[self.messageTextView viewWithTag:inChatMessageLabelTag] removeFromSuperview];
 }
 
+- (void)showSubscriptionErrorAlertView:(PNError *)subscriptionError {
+    
+    NSArray *channels = subscriptionError.associatedObject;
+    NSString *cancelButtonTitle = nil;
+    NSString *alertMessage = [NSString stringWithFormat:@"Failed to subscribe on: %@\n\nReason: %@\n\nSubscribe will be repeated in 2 seconds.",
+                              [channels lastObject], [subscriptionError localizedFailureReason]];
+    
+    if (subscriptionError.code == kPNAPIAccessForbiddenError) {
+        
+        cancelButtonTitle = @"Cancel";
+        alertMessage = [NSString stringWithFormat:@"Failed to subscribe on: %@\n\nReason: %@\n\nSubscribe will be repeated in 2 seconds.",
+                        [channels lastObject], [subscriptionError localizedFailureReason]];
+    }
+    
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Subscribe" message:alertMessage delegate:self cancelButtonTitle:cancelButtonTitle
+                                              otherButtonTitles:@"OK", nil];
+    [alertView show];
+    
+    if (subscriptionError.code == kPNAPIAccessForbiddenError) {
+        
+        __block __pn_desired_weak __typeof(self) weakSelf = self;
+        self.channelsForRetry = channels;
+        double delayInSeconds = kPNActionRetryDelayOnPAMError;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            
+            if (weakSelf.channelsForRetry) {
+                
+                [alertView dismissWithClickedButtonIndex:([alertView cancelButtonIndex] + 1) animated:YES];
+                [weakSelf creationView:nil subscribeOnChannel:[weakSelf.channelsForRetry lastObject]];
+                weakSelf.channelsForRetry = nil;
+            }
+        });
+    }
+}
+
 
 #pragma mark - Channel subscription delegate methods
 
 - (void)creationView:(PNChannelCreationView*)view subscribeOnChannel:(PNChannel *)channel {
 
-    __block __pn_desired_weak __typeof(self) weakSelf = self;
     [PubNub subscribeOnChannel:channel
    withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 
-       NSString *cancelButtonTitle = nil;
-        NSString *alertMessage = [NSString stringWithFormat:@"Subscribed on channel: %@\nTo be able to send messages, select channel from righthand list",
-                                                            channel.name];
-        if (state == PNSubscriptionProcessNotSubscribedState) {
-
-            if (subscriptionError.code == kPNAPIAccessForbiddenError) {
-                
-                cancelButtonTitle = @"Cancel";
-                alertMessage = [NSString stringWithFormat:@"Failed to subscribe on: %@\n\nReason: %@\n\nSubscribe will be repeated in 2 seconds.", channel.name, [subscriptionError localizedFailureReason]];
-            }
-            else {
-                
-                alertMessage = [NSString stringWithFormat:@"Failed to subscribe on: %@\n\nReason: %@\n\nSubscribe will be repeated in 2 seconds.", channel.name, [subscriptionError localizedFailureReason]];
-            }
-        }
-
-
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Subscribe"
-                                                            message:alertMessage
-                                                           delegate:self
-                                                  cancelButtonTitle:cancelButtonTitle
-                                                  otherButtonTitles:@"OK", nil];
-        [alertView show];
-       
-       if (subscriptionError.code == kPNAPIAccessForbiddenError) {
+       if (state != PNSubscriptionProcessNotSubscribedState && state != PNSubscriptionProcessWillRestoreState) {
            
-           weakSelf.channelForRetry = channel;
-           double delayInSeconds = kPNActionRetryDelayOnPAMError;
-           dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-           dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-               
-               if (weakSelf.channelForRetry) {
-                   
-                   [alertView dismissWithClickedButtonIndex:([alertView cancelButtonIndex] + 1) animated:YES];
-                   [weakSelf creationView:nil subscribeOnChannel:weakSelf.channelForRetry];
-                   weakSelf.channelForRetry = nil;
-               }
-           });
-       }
+           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Subscribe"
+                                                               message:[NSString stringWithFormat:@"Subscribed on channel: %@\nTo be able to send messages, select channel from righthand list",
+                                                                        channel.name]
+                                                              delegate:nil
+                                                     cancelButtonTitle:nil
+                                                     otherButtonTitles:@"OK", nil];
+           [alertView show];
+        }
    }];
 }
 
@@ -1065,7 +1100,7 @@ static double const kPNActionRetryDelayOnPAMError = 2.0f;
     // Check whether user would like to cancek retry attempt or not
     if ([alertView cancelButtonIndex] == buttonIndex) {
         
-        self.channelForRetry = nil;
+        self.channelsForRetry = nil;
         self.messageForRetry = nil;
     }
 }
