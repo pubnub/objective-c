@@ -17,7 +17,6 @@
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
-//#import "PNDataManager.h"
 #import "TestSemaphor.h"
 
 @interface HowToTests ()
@@ -478,7 +477,6 @@
 	STAssertTrue( handleClientConnectionStateChange, @"notification not called");
 }
 
-//file://localhost/Users/tuller/work/pubnub/iOS/3.4/pubnubTests/RequestTests/PNBaseRequestTest.m: error: test20SubscribeOnChannels (PNBaseRequestTest) failed: "((subscriptionError) == nil)" should be true. subscriptionError Domain=com.pubnub.pubnub; Code=106; Description="Subscription failed by timeout"; Reason="Looks like there is some packets lost because of which request failed by timeout"; Fix suggestion="Try send request again later."; Associated object=(
 
 - (void)test20SubscribeOnChannels
 {
