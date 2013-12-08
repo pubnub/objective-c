@@ -270,15 +270,18 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 #endif
         
         if (available && shouldSuspectWrongState) {
+                
+            [reachabilityMonitor startOriginLookup];
+        }
+        
+        if (!available || (available && !shouldSuspectWrongState)) {
             
-            if (shouldSuspectWrongState) {
+            if (!available) {
                 
-                [reachabilityMonitor startOriginLookup];
+                [reachabilityMonitor stopOriginLookup];
             }
-            else {
-                
-                reachabilityMonitor.lookupStatus = status;
-            }
+            
+            reachabilityMonitor.lookupStatus = status;
         }
         
         if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
