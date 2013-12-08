@@ -519,6 +519,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         
         BOOL isConnectionAvailable = responseData != nil;
         
+        NSLog(@"\n----------------------- Lookup results -----------------------\nResponse: %@\nData: %@\n---------------------------------------------------------------------", response, responseData);
+        
         if (error != nil) {
             
             switch (error.code) {
