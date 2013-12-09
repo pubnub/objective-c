@@ -24,6 +24,7 @@
 
 	int timeout;
 	int timeoutHistory;
+	int timeoutNewMessage;
 	BOOL isPNClientSubscriptionDidCompleteNotification;
 	BOOL isPNClientSubscriptionDidFailNotification;
 
@@ -36,6 +37,13 @@
 	BOOL isPNClientHistoryDownloadFailedWithErrorNotification;
 
 	int countPNClientDidReceiveMessageNotification;
+	int indexMessage;
+
+	BOOL isPNClientUnsubscriptionDidCompleteNotification;
+	BOOL isPNClientUnsubscriptionDidFailNotification;
+
+	BOOL isPNClientAccessRightsAuditDidCompleteNotification;
+	BOOL isPNClientAccessRightsAuditDidFailNotification;
 }
 
 @end
@@ -46,19 +54,21 @@
     [super setUp];
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"ch1", @"ch2"]];
-	authorizationKey = [NSString stringWithFormat:@"a1", [NSDate date]];
+	authorizationKey = [NSString stringWithFormat:@"a2", [NSDate date]];
 	timeout = 4;
 	timeoutHistory = 10;
+	timeoutNewMessage = 10;
+	indexMessage = 0;
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientConnectionStateChange:)
-//							   name: kPNClientDidConnectToOriginNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientConnectionStateChange:)
-//							   name:kPNClientDidDisconnectFromOriginNotification
-//							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientAccessRightsAuditDidCompleteNotification:)
+							   name: kPNClientAccessRightsAuditDidCompleteNotification
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientAccessRightsAuditDidFailNotification:)
+							   name:kPNClientAccessRightsAuditDidFailNotification
+							 object:nil];
 //	[notificationCenter addObserver:self
 //						   selector:@selector(handleClientConnectionStateChange:)
 //							   name:kPNClientConnectionDidFailWithErrorNotification
@@ -83,14 +93,14 @@
 //						   selector:@selector(handleClientSubscriptionProcess:)
 //							   name:kPNClientSubscriptionDidFailNotification
 //							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientUnsubscriptionProcess:)
-//							   name:kPNClientUnsubscriptionDidCompleteNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientUnsubscriptionProcess:)
-//							   name:kPNClientUnsubscriptionDidFailNotification
-//							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientUnsubscriptionDidCompleteNotification:)
+							   name:kPNClientUnsubscriptionDidCompleteNotification
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientUnsubscriptionDidFailNotification:)
+							   name:kPNClientUnsubscriptionDidFailNotification
+							 object:nil];
 //
 //	// Handle presence events
 //	[notificationCenter addObserver:self
@@ -279,18 +289,36 @@
 	[self revokeAccessRightsForApplication];
 	[self revokeAccessRightsForChannels];
 	[self startDetectNewMessage];
+	[self isApplicationCanReadExpect: NO canWriteExpect: NO];
+	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: NO];
 //////
+	[self grantAllAccessRightsForApplicationAtPeriod: 1];
+	[self isApplicationCanReadExpect: YES canWriteExpect: YES];
+	[self auditAccessRightsForApplication];
+	[self subscribeOnChannels: pnChannels isExpectError: NO];
+	[self startDetectNewMessage];
+	[self sendMessageIsExpectError: NO];
+	[self checkNewMessageIsExpect0: NO];
+	for( int j=0; j<70; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	[self sendMessageIsExpectError: YES];
+
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
 	[self sendMessageIsExpectError: YES];
 	for( int i=0; i<pnChannels.count; i++ )
-		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
+		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 2 client: authorizationKey];
+	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: YES canWriteExpect: YES];
+	[self checkNewMessageIsExpect0: YES];
+	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
 	[self checkNewMessageIsExpect0: YES];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
-	[self checkNewMessageIsExpect0: YES];
 	[self sendMessageIsExpectError: NO];
 	[self checkNewMessageIsExpect0: NO];
+	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
+	[self sendMessageIsExpectError: NO];
+	[self checkNewMessageIsExpect0: YES];
 	[self startDetectNewMessage];
-	for( int j=0; j<70; j++ )
+	for( int j=0; j<130; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	[self sendMessageIsExpectError: YES];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
@@ -298,6 +326,10 @@
 /////////////
 	for( int i=0; i<pnChannels.count; i++ )
 		[self grantWriteRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
+	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: NO canWriteExpect: YES];
+	for( int i=0; i<pnChannels.count; i++ )
+		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
+	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: YES canWriteExpect: YES];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
 	[self sendMessageIsExpectError: NO];
 	[self checkNewMessageIsExpect0: NO];
@@ -311,24 +343,31 @@
 	[self sendMessageIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
 	for( int i=0; i<pnChannels.count; i++ )
-		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 1];
+		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 2];
+	[self subscribeOnChannels: pnChannels isExpectError: NO];
 	[self checkNewMessageIsExpect0: YES];
 	[self sendMessageIsExpectError: NO];
+	[self sendMessageIsExpectError: NO];
+	[self checkNewMessageIsExpect0: NO];
+	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
+	[self subscribeOnChannels: pnChannels isExpectError: NO];//error
 	[self sendMessageIsExpectError: NO];
 	[self checkNewMessageIsExpect0: NO];
 	for( int j=0; j<70; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	[self sendMessageIsExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
+//	[self checkNewMessageIsExpect0: YES];
 //////////////
 	[self startDetectNewMessage];
 	for( int i=0; i<pnChannels.count; i++ )
 		[self grantWriteAccessRightForChannel: pnChannels[i] forPeriod: 1];
+	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: YES];
 	[self sendMessageIsExpectError: NO];
 	[self requestHistoryForChannelsIsExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
+//	[self checkNewMessageIsExpect0: YES];
 	for( int j=0; j<70; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: NO];
 	[self sendMessageIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
 	[self requestHistoryForChannelsIsExpectError: YES];
@@ -337,6 +376,7 @@
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
 	[self requestHistoryForChannelsIsExpectError: YES];
 	[self grantAllAccessRightsForChannels];
+	[self isChannelsClientAuthorizationKey: nil canReadExpect: YES canWriteExpect: YES];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
 	[self requestHistoryForChannelsIsExpectError: NO];
 	[self sendMessageIsExpectError: NO];
@@ -346,10 +386,16 @@
 	[self requestHistoryForChannelsIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
 
+	[self revokeAccessRightsForApplication];
+	[self isApplicationCanReadExpect: NO canWriteExpect: NO];
+	[self revokeAccessRightsForChannels];
+	for( int j=0; j<70; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	[self grantWriteAccessRightForChannels];
+	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: YES];
 	[self startDetectNewMessage];
 	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: YES];
+//	[self checkNewMessageIsExpect0: YES];
 	[self grantReadAccessRightForChannels];
 	[self sendMessageIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
@@ -361,7 +407,7 @@
 	[self sendMessageIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
 
-	[self grantAllAccessRightsForApplication];
+	[self grantAllAccessRightsForApplicationAtPeriod: 10];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
 	[self checkNewMessageIsExpect0: YES];
 	[self sendMessageIsExpectError: NO];
@@ -375,13 +421,12 @@
 	[self requestHistoryForChannelsIsExpectError: NO];
 	[self revokeAccessRightsForChannels];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
-	[self subscribeOnChannels: pnChannels isExpectError: YES];
 	[self requestHistoryForChannelsIsExpectError: YES];
 
-	[self grantAllAccessRightsForApplication];
+	[self grantAllAccessRightsForApplicationAtPeriod: 1];
 	[self sendMessageIsExpectError: NO];
-	[self grantAllAccessRightsForApplication];
-	[self grantAllAccessRightsForApplication];
+	[self grantAllAccessRightsForApplicationAtPeriod: 1];
+	[self grantAllAccessRightsForApplicationAtPeriod: 10];
 	[self revokeAccessRightsForApplication];
 	[self revokeAccessRightsForApplication];
 	[self sendMessageIsExpectError: YES];
@@ -390,7 +435,7 @@
 	[self revokeAccessRightsForApplication];
 	[self revokeAccessRightsForApplication];
 
-	[self grantAllAccessRightsForApplication];
+	[self grantAllAccessRightsForApplicationAtPeriod: 1];
 	[self startDetectNewMessage];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
 	[self sendMessageIsExpectError: NO];
@@ -399,12 +444,13 @@
 	[self revokeAccessRightsForApplication];
 }
 
-- (void)subscribeOnChannels:(NSArray*)channels isExpectError:(BOOL)isExpectError {
+-(void)subscribeOnChannels:(NSArray*)channels isExpectError:(BOOL)isExpectError {
 	__block BOOL isBlockCalled = NO;
 	__block NSDate *start = [NSDate date];
 	isPNClientSubscriptionDidCompleteNotification = NO;
 	isPNClientSubscriptionDidFailNotification = NO;
 
+	NSLog(@"subscribeOnChannels start");
 	[PubNub subscribeOnChannels: channels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 		 isBlockCalled = YES;
 		if( isExpectError == NO ) {
@@ -432,12 +478,52 @@
 	}
 }
 
+- (void)kPNClientUnsubscriptionDidCompleteNotification:(NSNotification *)notification {
+	NSLog( @"kPNClientUnsubscriptionDidCompleteNotification %@", notification.userInfo);
+	isPNClientUnsubscriptionDidCompleteNotification = YES;
+}
+- (void)kPNClientUnsubscriptionDidFailNotification:(NSNotification *)notification {
+	NSLog( @"kPNClientUnsubscriptionDidFailNotification %@", notification.userInfo);
+	isPNClientUnsubscriptionDidFailNotification = YES;
+}
 
--(void)grantAllAccessRightsForApplication {
+-(void)unsubscribeFromChannels:(NSArray*)channels isExpectError:(BOOL)isExpectError {
+	__block BOOL isBlockCalled = NO;
+	__block NSDate *start = [NSDate date];
+	isPNClientUnsubscriptionDidCompleteNotification = NO;
+	isPNClientUnsubscriptionDidFailNotification = NO;
+
+	NSLog(@"unsubscribeFromChannels start");
+	[PubNub unsubscribeFromChannels: channels withCompletionHandlingBlock:^(NSArray *channels, PNError *subscriptionError) {
+		isBlockCalled = YES;
+		if( isExpectError == NO ) {
+			STAssertNil( subscriptionError, @"unsubscribeFromChannels %@", subscriptionError);
+		}
+		else
+			STAssertNotNil( subscriptionError, @"request must return error %@", subscriptionError);
+
+		NSTimeInterval interval = -[start timeIntervalSinceNow];
+		NSLog(@"unsubscribeFromChannels interval %f", interval);
+		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+	}];
+	for( int j=0; j<timeout; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isBlockCalled, @"completion block not called");
+	if( isExpectError == NO ) {
+		STAssertTrue( isPNClientUnsubscriptionDidCompleteNotification, @"notification not called");
+		STAssertFalse( isPNClientUnsubscriptionDidFailNotification, @"wrong notification called");
+	}
+	if( isExpectError == YES ) {
+		STAssertFalse( isPNClientUnsubscriptionDidCompleteNotification, @"wrong notification called");
+		STAssertTrue( isPNClientUnsubscriptionDidFailNotification, @"notification not called");
+	}
+}
+
+-(void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
 	__block BOOL isBlockCalled = NO;
 	__block NSDate *start = [NSDate date];
 	isPNClientAccessRightsChangeDidCompleteNotification = NO;
-	[PubNub grantAllAccessRightsForApplicationAtPeriod: 10 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+	[PubNub grantAllAccessRightsForApplicationAtPeriod: accessPeriodDuration andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
 		isBlockCalled = YES;
 		STAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);
 		NSTimeInterval interval = -[start timeIntervalSinceNow];
@@ -472,7 +558,8 @@
 		isPNClientDidSendMessageNotification = NO;
 		isPNClientMessageSendingDidFailNotification = NO;
 		__block BOOL isBlockCalled = NO;
-		NSString *string = [NSString stringWithFormat: @"Hello PubNub %@", [NSDate date] ];
+		NSString *string = [NSString stringWithFormat: @"Hello PubNub %@, index %d", [NSDate date], indexMessage ];
+		indexMessage++;
 		NSLog(@"start sendMessage   %@", string);
 		[PubNub sendMessage: string toChannel:pnChannels[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
 				  NSLog(@"sendMessage, state %d", messageSendingState);
@@ -659,7 +746,7 @@
 	__block BOOL isBlockCalled = NO;
 	__block NSDate *start = [NSDate date];
 	isPNClientAccessRightsChangeDidCompleteNotification = NO;
-	[PubNub grantAllAccessRightsForChannel: channel forPeriod: accessPeriodDuration client: clientAuthorizationKey withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+	[PubNub grantWriteAccessRightForChannel: channel forPeriod: accessPeriodDuration client: clientAuthorizationKey withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
 		isBlockCalled = YES;
 		STAssertNil( error, @"grantWriteRightsForChannelClient %@", error);
 		NSTimeInterval interval = -[start timeIntervalSinceNow];
@@ -678,7 +765,7 @@
 }
 
 -(void)checkNewMessageIsExpect0:(BOOL)isExpect0 {
-	for( int j=0; j<timeout; j++ )
+	for( int j=0; j<timeoutNewMessage; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	if( isExpect0 == YES )
 		STAssertTrue( countPNClientDidReceiveMessageNotification==0, @"came the extra posts");
@@ -687,9 +774,94 @@
 	[self startDetectNewMessage];
 }
 
-- (void)kPNClientDidReceiveMessageNotification:(NSNotification *)notification {
+-(void)kPNClientDidReceiveMessageNotification:(NSNotification *)notification {
 	NSLog( @"kPNClientDidReceiveMessageNotification %@", notification.userInfo);
 	countPNClientDidReceiveMessageNotification++;
+}
+
+//////////////////////////////
+-(void)kPNClientAccessRightsAuditDidCompleteNotification:(NSNotification *)notification {
+	NSLog( @"kPNClientAccessRightsAuditDidCompleteNotification %@", notification.userInfo);
+	isPNClientAccessRightsAuditDidCompleteNotification = YES;
+}
+
+-(void)kPNClientAccessRightsAuditDidFailNotification:(NSNotification *)notification {
+	NSLog( @"kPNClientAccessRightsAuditDidFailNotification %@", notification.userInfo);
+	isPNClientAccessRightsAuditDidFailNotification = YES;
+}
+
+-(PNAccessRightsCollection*)auditAccessRightsForApplication {
+	__block BOOL isBlockCalled = NO;
+	__block NSDate *start = [NSDate date];
+	__block PNAccessRightsCollection *coll = nil;
+	isPNClientAccessRightsAuditDidCompleteNotification = NO;
+	isPNClientAccessRightsAuditDidFailNotification = NO;
+	[PubNub auditAccessRightsForApplicationWithCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+		isBlockCalled = YES;
+		coll = collection;
+		NSLog(@"auditAccessRightsForApplicationWithCompletionHandlingBlock \n%@", collection);
+		STAssertNil( error, @"auditAccessRightsForApplicationWithCompletionHandlingBlock %@", error);
+		NSTimeInterval interval = -[start timeIntervalSinceNow];
+		NSLog(@"auditAccessRightsForApplicationWithCompletionHandlingBlock interval %f", interval);
+		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+	}];
+	for( int j=0; j<timeout; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isBlockCalled, @"completion block not called");
+	STAssertTrue( isPNClientAccessRightsChangeDidCompleteNotification, @"notification not called");
+
+	STAssertTrue( isPNClientAccessRightsAuditDidCompleteNotification, @"notification not called");
+	STAssertFalse( isPNClientAccessRightsAuditDidFailNotification, @"wrong notification called");
+	return coll;
+}
+
+-(PNAccessRightsCollection*)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey {
+	__block BOOL isBlockCalled = NO;
+	__block NSDate *start = [NSDate date];
+	__block PNAccessRightsCollection *coll = nil;
+	isPNClientAccessRightsAuditDidCompleteNotification = NO;
+	isPNClientAccessRightsAuditDidFailNotification = NO;
+	[PubNub auditAccessRightsForChannel: channel client: clientAuthorizationKey withCompletionHandlingBlock: ^(PNAccessRightsCollection *collection, PNError *error) {
+		isBlockCalled = YES;
+		coll = collection;
+		NSLog(@"auditAccessRightsForChannel \n%@", collection);
+		STAssertNil( error, @"auditAccessRightsForChannel %@", error);
+		NSTimeInterval interval = -[start timeIntervalSinceNow];
+		NSLog(@"auditAccessRightsForChannel interval %f", interval);
+		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+	}];
+	for( int j=0; j<timeout; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isBlockCalled, @"completion block not called");
+	STAssertTrue( isPNClientAccessRightsChangeDidCompleteNotification, @"notification not called");
+
+	STAssertTrue( isPNClientAccessRightsAuditDidCompleteNotification, @"notification not called");
+	STAssertFalse( isPNClientAccessRightsAuditDidFailNotification, @"wrong notification called");
+	return coll;
+}
+
+-(void)isApplicationCanReadExpect:(BOOL)canRead canWriteExpect:(BOOL)canWrite {
+	PNAccessRightsCollection *col = [self auditAccessRightsForApplication];
+	PNAccessRightsInformation *infoApp = col.accessRightsInformationForApplication;
+	STAssertTrue( [infoApp hasReadRight] == canRead, @"wrong rights" );
+	STAssertTrue( [infoApp hasWriteRight] == canWrite, @"wrong rights" );
+}
+
+-(void)isChannelsClientAuthorizationKey:(NSString *)clientAuthorizationKey canReadExpect:(BOOL)canRead canWriteExpect:(BOOL)canWrite {
+	PNAccessRightsCollection *col = nil;
+	if( clientAuthorizationKey == nil )
+		col = [self auditAccessRightsForApplication];
+	for( int i=0; i<pnChannels.count; i++ ) {
+		PNAccessRightsInformation *info = nil;
+		if( clientAuthorizationKey == nil )
+			info = [col accessRightsInformationForChannel: pnChannels[i]];
+		else {
+			col = [self auditAccessRightsForChannel: pnChannels[i] client: clientAuthorizationKey];
+			info = [col accessRightsInformationClientAuthorizationKey: clientAuthorizationKey onChannel: pnChannels[i]];
+		}
+		STAssertTrue( [info hasReadRight] == canRead, @"wrong rights" );
+		STAssertTrue( [info hasWriteRight] == canWrite, @"wrong rights" );
+	}
 }
 
 
