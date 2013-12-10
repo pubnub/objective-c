@@ -18,7 +18,7 @@
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 
-@interface PAMTest : SenTestCase <PNDelegate> {
+@interface PAMTestError : SenTestCase <PNDelegate> {
 	NSArray *pnChannels;
 	NSString *authorizationKey;
 
@@ -48,7 +48,7 @@
 
 @end
 
-@implementation PAMTest 
+@implementation PAMTestError
 
 - (void)setUp {
     [super setUp];
@@ -69,12 +69,12 @@
 						   selector:@selector(kPNClientAccessRightsAuditDidFailNotification:)
 							   name:kPNClientAccessRightsAuditDidFailNotification
 							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientConnectionStateChange:)
-//							   name:kPNClientConnectionDidFailWithErrorNotification
-//							 object:nil];
-//
-//
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientConnectionStateChange:)
+	//							   name:kPNClientConnectionDidFailWithErrorNotification
+	//							 object:nil];
+	//
+	//
 	// Handle subscription events
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientSubscriptionDidCompleteNotification:)
@@ -89,10 +89,10 @@
 						   selector:@selector(kPNClientAccessRightsChangeDidCompleteNotification:)
 							   name:kPNClientAccessRightsChangeDidCompleteNotification
 							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientSubscriptionProcess:)
-//							   name:kPNClientSubscriptionDidFailNotification
-//							 object:nil];
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientSubscriptionProcess:)
+	//							   name:kPNClientSubscriptionDidFailNotification
+	//							 object:nil];
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientUnsubscriptionDidCompleteNotification:)
 							   name:kPNClientUnsubscriptionDidCompleteNotification
@@ -101,83 +101,83 @@
 						   selector:@selector(kPNClientUnsubscriptionDidFailNotification:)
 							   name:kPNClientUnsubscriptionDidFailNotification
 							 object:nil];
-//
-//	// Handle presence events
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientPresenceObservationEnablingProcess:)
-//							   name:kPNClientPresenceEnablingDidCompleteNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientPresenceObservationEnablingProcess:)
-//							   name:kPNClientPresenceEnablingDidFailNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientPresenceObservationDisablingProcess:)
-//							   name:kPNClientPresenceDisablingDidCompleteNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientPresenceObservationDisablingProcess:)
-//							   name:kPNClientPresenceDisablingDidFailNotification
-//							 object:nil];
-//
-//
-//	// Handle push notification state changing events
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationStateChange:)
-//												 name:kPNClientPushNotificationEnableDidCompleteNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationStateChange:)
-//												 name:kPNClientPushNotificationEnableDidFailNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationStateChange:)
-//												 name:kPNClientPushNotificationDisableDidCompleteNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationStateChange:)
-//												 name:kPNClientPushNotificationDisableDidFailNotification
-//											   object:nil];
-//
-//
-//	// Handle push notification remove events
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationRemoveProcess:)
-//												 name:kPNClientPushNotificationRemoveDidCompleteNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationRemoveProcess:)
-//												 name:kPNClientPushNotificationRemoveDidFailNotification
-//											   object:nil];
-//
-//
-//	// Handle push notification enabled channels retrieve events
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationEnabledChannels:)
-//												 name:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationEnabledChannels:)
-//												 name:kPNClientPushNotificationChannelsRetrieveDidFailNotification
-//											   object:nil];
-//
-//
-//	// Handle time token events
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientCompletedTimeTokenProcessing:)
-//							   name:kPNClientDidReceiveTimeTokenNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientCompletedTimeTokenProcessing:)
-//							   name:kPNClientDidFailTimeTokenReceiveNotification
-//							 object:nil];
-//
-//
-//	// Handle message processing events
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientMessageProcessingStateChange:)
-//							   name:kPNClientWillSendMessageNotification
-//							 object:nil];
+	//
+	//	// Handle presence events
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientPresenceObservationEnablingProcess:)
+	//							   name:kPNClientPresenceEnablingDidCompleteNotification
+	//							 object:nil];
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientPresenceObservationEnablingProcess:)
+	//							   name:kPNClientPresenceEnablingDidFailNotification
+	//							 object:nil];
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientPresenceObservationDisablingProcess:)
+	//							   name:kPNClientPresenceDisablingDidCompleteNotification
+	//							 object:nil];
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientPresenceObservationDisablingProcess:)
+	//							   name:kPNClientPresenceDisablingDidFailNotification
+	//							 object:nil];
+	//
+	//
+	//	// Handle push notification state changing events
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(handleClientPushNotificationStateChange:)
+	//												 name:kPNClientPushNotificationEnableDidCompleteNotification
+	//											   object:nil];
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(handleClientPushNotificationStateChange:)
+	//												 name:kPNClientPushNotificationEnableDidFailNotification
+	//											   object:nil];
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(handleClientPushNotificationStateChange:)
+	//												 name:kPNClientPushNotificationDisableDidCompleteNotification
+	//											   object:nil];
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(handleClientPushNotificationStateChange:)
+	//												 name:kPNClientPushNotificationDisableDidFailNotification
+	//											   object:nil];
+	//
+	//
+	//	// Handle push notification remove events
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(handleClientPushNotificationRemoveProcess:)
+	//												 name:kPNClientPushNotificationRemoveDidCompleteNotification
+	//											   object:nil];
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(handleClientPushNotificationRemoveProcess:)
+	//												 name:kPNClientPushNotificationRemoveDidFailNotification
+	//											   object:nil];
+	//
+	//
+	//	// Handle push notification enabled channels retrieve events
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(handleClientPushNotificationEnabledChannels:)
+	//												 name:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification
+	//											   object:nil];
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(handleClientPushNotificationEnabledChannels:)
+	//												 name:kPNClientPushNotificationChannelsRetrieveDidFailNotification
+	//											   object:nil];
+	//
+	//
+	//	// Handle time token events
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientCompletedTimeTokenProcessing:)
+	//							   name:kPNClientDidReceiveTimeTokenNotification
+	//							 object:nil];
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientCompletedTimeTokenProcessing:)
+	//							   name:kPNClientDidFailTimeTokenReceiveNotification
+	//							 object:nil];
+	//
+	//
+	//	// Handle message processing events
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientMessageProcessingStateChange:)
+	//							   name:kPNClientWillSendMessageNotification
+	//							 object:nil];
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientDidSendMessageNotification:)
 							   name:kPNClientDidSendMessageNotification
@@ -187,21 +187,21 @@
 							   name:kPNClientMessageSendingDidFailNotification
 							 object:nil];
 
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientMessageProcessingStateChange:)
-//							   name:kPNClientMessageSendingDidFailNotification
-//							 object:nil];
-//
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientMessageProcessingStateChange:)
+	//							   name:kPNClientMessageSendingDidFailNotification
+	//							 object:nil];
+	//
 	// Handle messages/presence event arrival
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientDidReceiveMessageNotification:)
 							   name:kPNClientDidReceiveMessageNotification
 							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientDidReceivePresenceEvent:)
-//							   name:kPNClientDidReceivePresenceEventNotification
-//							 object:nil];
-//
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientDidReceivePresenceEvent:)
+	//							   name:kPNClientDidReceivePresenceEventNotification
+	//							 object:nil];
+	//
 	// Handle message history events arrival
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientDidReceiveMessagesHistoryNotification:)
@@ -211,16 +211,16 @@
 						   selector:@selector(kPNClientHistoryDownloadFailedWithErrorNotification:)
 							   name:kPNClientHistoryDownloadFailedWithErrorNotification
 							 object:nil];
-//
-//	// Handle participants list arrival
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientHereNowProcess:)
-//							   name:kPNClientDidReceiveParticipantsListNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientHereNowProcess:)
-//							   name:kPNClientParticipantsListDownloadFailedWithErrorNotification
-//							 object:nil];
+	//
+	//	// Handle participants list arrival
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientHereNowProcess:)
+	//							   name:kPNClientDidReceiveParticipantsListNotification
+	//							 object:nil];
+	//	[notificationCenter addObserver:self
+	//						   selector:@selector(handleClientHereNowProcess:)
+	//							   name:kPNClientParticipantsListDownloadFailedWithErrorNotification
+	//							 object:nil];
 }
 
 - (void)tearDown {
@@ -291,7 +291,7 @@
 	[self startDetectNewMessage];
 	[self isApplicationCanReadExpect: NO canWriteExpect: NO];
 	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: NO];
-//////
+	//////
 	[self grantReadAccessRightForApplicationAtPeriod: 1];
 	[self isApplicationCanReadExpect: YES canWriteExpect: NO];
 	for( int i=0; i<pnChannels.count; i++ )
@@ -309,7 +309,7 @@
 	[self grantAllAccessRightsForApplicationAtPeriod: 1];
 	[self isApplicationCanReadExpect: YES canWriteExpect: YES];
 	[self auditAccessRightsForApplication];
-	[self subscribeOnChannels: pnChannels isExpectError: NO];//prev error
+	[self subscribeOnChannels: pnChannels isExpectError: NO];//error
 	[self startDetectNewMessage];
 	[self sendMessageIsExpectError: NO];
 	[self checkNewMessageIsExpect0: NO];
@@ -337,7 +337,7 @@
 	[self sendMessageIsExpectError: YES];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
-/////////////
+	/////////////
 	for( int i=0; i<pnChannels.count; i++ )
 		[self grantWriteRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
 	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: NO canWriteExpect: YES];
@@ -352,7 +352,7 @@
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	[self sendMessageIsExpectError: YES];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
-/////////////
+	/////////////
 	[self startDetectNewMessage];
 	[self sendMessageIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
@@ -370,22 +370,22 @@
 	for( int j=0; j<70; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	[self sendMessageIsExpectError: YES];
-//	[self checkNewMessageIsExpect0: YES];
-//////////////
+	//	[self checkNewMessageIsExpect0: YES];
+	//////////////
 	[self startDetectNewMessage];
 	for( int i=0; i<pnChannels.count; i++ )
 		[self grantWriteAccessRightForChannel: pnChannels[i] forPeriod: 1];
 	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: YES];
 	[self sendMessageIsExpectError: NO];
 	[self requestHistoryForChannelsIsExpectError: YES];
-//	[self checkNewMessageIsExpect0: YES];
+	//	[self checkNewMessageIsExpect0: YES];
 	for( int j=0; j<70; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: NO];
 	[self sendMessageIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
 	[self requestHistoryForChannelsIsExpectError: YES];
-/////////////
+	/////////////
 	[self startDetectNewMessage];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
 	[self requestHistoryForChannelsIsExpectError: YES];
@@ -409,7 +409,7 @@
 	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: YES];
 	[self startDetectNewMessage];
 	[self sendMessageIsExpectError: NO];
-//	[self checkNewMessageIsExpect0: YES];
+	//	[self checkNewMessageIsExpect0: YES];
 	[self grantReadAccessRightForChannels];
 	[self sendMessageIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
@@ -466,10 +466,10 @@
 
 	NSLog(@"subscribeOnChannels start");
 	[PubNub subscribeOnChannels: channels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
-		 isBlockCalled = YES;
+		isBlockCalled = YES;
 		if( isExpectError == NO ) {
-			 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
-			 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+			STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
+			STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 		}
 		else
 			STAssertNotNil( subscriptionError, @"request must return error %@", subscriptionError);
@@ -477,9 +477,9 @@
 		NSTimeInterval interval = -[start timeIntervalSinceNow];
 		NSLog(@"subscribeOnChannels interval %f", interval);
 		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
-	 }];
+	}];
 	for( int j=0; /*j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-		isBlockCalled == NO*/ j<timeout; j++ )
+				   isBlockCalled == NO*/ j<timeout; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	NSLog(@"subscribeOnChannels end");
 	STAssertTrue( isBlockCalled, @"completion block not called");
@@ -594,17 +594,17 @@
 		indexMessage++;
 		NSLog(@"start sendMessage   %@", string);
 		[PubNub sendMessage: string toChannel:pnChannels[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-				  NSLog(@"sendMessage, state %d", messageSendingState);
-				  if( messageSendingState == PNMessageSending )
-					  return;
+			NSLog(@"sendMessage, state %d", messageSendingState);
+			if( messageSendingState == PNMessageSending )
+				return;
 
-				  isBlockCalled = YES;
-				  if( isExpectError == NO ) {
-					   STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState == PNMessageSendingError %@", data);
-				  }
-				  else {
-					  STAssertTrue(messageSendingState==PNMessageSendingError, @"messageSendingState != PNMessageSendingError %@", data);
-				  }
+			isBlockCalled = YES;
+			if( isExpectError == NO ) {
+				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState == PNMessageSendingError %@", data);
+			}
+			else {
+				STAssertTrue(messageSendingState==PNMessageSendingError, @"messageSendingState != PNMessageSendingError %@", data);
+			}
 		}];
 
 		for( int j=0; j<timeout; j++ )
@@ -708,7 +708,7 @@
 			NSTimeInterval interval = -[start timeIntervalSinceNow];
 			NSLog(@"requestHistoryForChannel interval %f", interval);
 			STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
-		 }];
+		}];
 		for( int j=0; j<timeoutHistory; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( isBlockCalled, @"completion block not called");
