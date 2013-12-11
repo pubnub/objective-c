@@ -7,8 +7,26 @@
 //
 
 #import "PNConnection.h"
+#import <Security/SecureTransport.h>
+#import "PNConnection+Protected.h"
+#import "PNResponseDeserialize.h"
+#import "PNResponseProtocol.h"
+#import "PubNub+Protected.h"
+#import "PNWriteBuffer.h"
 
 @interface PNConnection (BadJson) {
 }
+
+-(NSString*)name;
+//-(int)state;
+-(CFReadStreamRef)socketReadStream;
+-(PNResponseDeserialize*)deserializer;
+-(NSMutableData*)temporaryRetrievedData;
+-(NSMutableData*)retrievedData;
+
+
+-(void)processResponse;
+-(void)handleStreamError:(CFErrorRef)error;
+
 
 @end

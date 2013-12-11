@@ -25,23 +25,23 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionErrorStateFlag)  {
 };
 
 static void PNBitOn(unsigned long *flag, unsigned long mask);
-void PNBitOn(unsigned long *flag, unsigned long mask) {
-
-    *flag |= mask;
-}
+//void PNBitOn(unsigned long *flag, unsigned long mask) {
+//
+//    *flag |= mask;
+//}
 
 static void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject);
-void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
-    if (CFObject != NULL) {
-
-        if (*((CFTypeRef*)CFObject) != NULL) {
-
-            CFRelease(*((CFTypeRef*)CFObject));
-        }
-
-        *((CFTypeRef*)CFObject) = NULL;
-    }
-}
+//void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
+//    if (CFObject != NULL) {
+//
+//        if (*((CFTypeRef*)CFObject) != NULL) {
+//
+//            CFRelease(*((CFTypeRef*)CFObject));
+//        }
+//
+//        *((CFTypeRef*)CFObject) = NULL;
+//    }
+//}
 
 @implementation PNConnection (BadJson)
 
@@ -138,6 +138,112 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
 }
 
 - (void)readStreamContent {
+
+    PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] READING ARRIVED DATA... (STATE: %d)",
+          self.name ? self.name : self, [(id)self state]);
+
+    // Check whether data available right now or not (this is non-blocking request)
+    if (CFReadStreamHasBytesAvailable(self.socketReadStream)) {
+        // Read raw data from stream
+        UInt8 buffer[kPNStreamBufferSize];
+		if( [self isNeedCloseSocket] == YES )
+			CFReadStreamClose( (CFReadStreamRef)[self performSelector:@selector(socketReadStream)]);
+        CFIndex readedBytesCount = CFReadStreamRead( (CFReadStreamRef)[self performSelector:@selector(socketReadStream)], buffer, kPNStreamBufferSize);
+
+		if( [self isNeedReturnAfterRead] == YES ) {
+			for( int j=0; j<60; j++ )
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+			//			return;
+		}
+
+		//		NSData *data = [NSData dataWithBytes: buffer length: readedBytesCount];
+		//		[data writeToFile: [NSString stringWithFormat: @"/Users/tuller/data/%ld.txt", readedBytesCount] atomically: YES];
+
+		if( [self isNeedUpdateBuffer] == YES ) {
+			[self updateBuffer: buffer];
+			readedBytesCount = 605;
+		}
+
+		if( [self isNeedUpdateBuffer1] == YES ) {
+			[self updateBuffer1: buffer+readedBytesCount];
+			readedBytesCount += 164;
+			NSString *read = [[NSString alloc] initWithBytes: buffer length: readedBytesCount encoding: NSUTF8StringEncoding];
+			NSLog(@"read \n%@", read);
+		}
+
+//        // Read raw data from stream
+//        UInt8 buffer[kPNStreamBufferSize];
+//        CFIndex readedBytesCount = CFReadStreamRead(self.socketReadStream, buffer, kPNStreamBufferSize);
+
+        // Checking whether client was able to read out some data from stream or not
+        if (readedBytesCount > 0) {
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] READED %d BYTES (STATE: %d)",
+                  self.name ? self.name : self, readedBytesCount, [(id)self state]);
+
+
+            // Check whether debugging options is enabled to show received response or not
+            if (PNLoggingEnabledForLevel(PNLogConnectionLayerHTTPLoggingLevel) || PNHTTPDumpOutputToFileEnabled()) {
+
+                NSData *tempData = [NSData dataWithBytes:buffer length:(NSUInteger)readedBytesCount];
+
+                if (PNLoggingEnabledForLevel(PNLogConnectionLayerHTTPLoggingLevel)) {
+
+                    NSString *responseString = [[NSString alloc] initWithData:tempData encoding:NSUTF8StringEncoding];
+                    if (!responseString) {
+
+                        responseString = [[NSString alloc] initWithData:tempData encoding:NSASCIIStringEncoding];
+                    }
+                    if (!responseString) {
+
+                        responseString = @"Can't striongify response. Try check response dump on file system (if enabled)";
+                    }
+
+                    PNLog(PNLogConnectionLayerHTTPLoggingLevel, self, @"[CONNECTION::%@::READ] RESPONSE: %@",
+						  self.name ? self.name : self, responseString);
+                }
+
+                PNHTTPDumpOutputToFile(tempData);
+            }
+
+            // Check whether working on data deserialization or not
+            if (self.deserializer.isDeserializing) {
+
+                PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] DESERIALIZED IS BUSY. WRITTING "
+					  "INTO TEMPORARY STORAGE (STATE: %d)",
+                      self.name ? self.name : self, readedBytesCount, [(id)self state]);
+
+                // Temporary store data in object
+                [self.temporaryRetrievedData appendBytes:buffer length:(NSUInteger)readedBytesCount];
+            }
+            else {
+
+                // Store fetched data
+                [self.retrievedData appendBytes:buffer length:(NSUInteger)readedBytesCount];
+                [self processResponse];
+            }
+        }
+        // Looks like there is no data or error occurred while tried to read out stream content
+        else if (readedBytesCount < 0) {
+
+            PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] READ ERROR (STATE: %d)",
+                  self.name ? self.name : self, [(id)self state]);
+
+            CFErrorRef error = CFReadStreamCopyError(self.socketReadStream);
+
+			unsigned long state = [(id)self state];
+			PNBitOn(&state, PNReadStreamError);
+			[(FakeStub*)self setState: state];
+            [(FakeStub*)self handleStreamError: error];
+
+			[self handleStreamError:error];
+
+            PNCFRelease(&error);
+        }
+    }
+}
+
+- (void)readStreamContent1 {
 
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] READING ARRIVED DATA... (STATE: %d)",
           [(id)self name] ? [(id)self name] : self, [(id)self state]);

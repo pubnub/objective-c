@@ -68,6 +68,7 @@
     [self prepareInterface];
 }
 
+
 #pragma mark - Interface customization
 
 - (void)prepareInterface {
@@ -99,9 +100,7 @@
 
 #pragma mark - UITextField delegate methods
 
-- (BOOL)            textField:(UITextField *)textField
-shouldChangeCharactersInRange:(NSRange)range
-            replacementString:(NSString *)string {
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 
     NSString *channelName = [textField.text stringByReplacingCharactersInRange:range withString:string];
     BOOL entered = [[channelName stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0;

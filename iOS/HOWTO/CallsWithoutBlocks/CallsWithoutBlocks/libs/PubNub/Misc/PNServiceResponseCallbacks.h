@@ -68,6 +68,12 @@ struct PNServiceResponseCallbacksStruct {
     // Name of the function which is used to
     // retrieve channel participants
     __unsafe_unretained NSString *channelParticipantsCallback;
+
+    // Name of the function which is used to change channel access rights
+    __unsafe_unretained NSString *channelAccessRightsChangeCallback;
+
+    // Name of the function which is used to request channel access rights
+    __unsafe_unretained NSString *channelAccessRightsAuditCallback;
 };
 
 extern struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks;

@@ -1298,6 +1298,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (void)handleSubscribeDidFail:(PNBaseRequest *)request withError:(PNError *)error {
 
+    BOOL shouldRestoreSubscriptionOnPreviousChannels = error.code != kPNAPIAccessForbiddenError;
     PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
                                 PNMessagingChannelSubscriptionTimeTokenRetrieve, BITS_LIST_TERMINATOR);
 
@@ -1341,14 +1342,23 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
               self, error, subscriptionRequest.channels, self.messagingState);
 
         // Checking whether user generated request or not
-        if (request.isSendingByUserRequest) {
+        if (request.isSendingByUserRequest || error.code == kPNAPIAccessForbiddenError) {
+            
+            if (error.code == kPNAPIAccessForbiddenError) {
+                
+                NSSet *channelsFromFailedRequest = [self channelsWithPresenceFromList:subscriptionRequest.channels forSubscribe:NO];
+                [self.subscribedChannelsSet minusSet:channelsFromFailedRequest];
+            }
 
             NSArray *channels = [self channelsWithOutPresenceFromList:subscriptionRequest.channels];
             [self.messagingDelegate messagingChannel:self didFailSubscribeOnChannels:channels withError:error];
         }
     }
 
-    [self restoreSubscriptionOnPreviousChannels];
+    if (shouldRestoreSubscriptionOnPreviousChannels) {
+        
+        [self restoreSubscriptionOnPreviousChannels];
+    }
 }
 
 - (void)handleUnsubscribeDidFail:(PNBaseRequest *)request withError:(PNError *)error {

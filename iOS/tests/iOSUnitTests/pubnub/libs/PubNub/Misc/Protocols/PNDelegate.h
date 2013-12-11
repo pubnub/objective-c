@@ -14,7 +14,7 @@
 
 #pragma mark Class forward
 
-@class PNPresenceEvent, PNMessage, PubNub, PNError, PNDate;
+@class PNPresenceEvent, PNMessage, PubNub, PNError, PNDate, PNAccessRightsCollection;
 
 
 @protocol PNDelegate <NSObject>
@@ -149,6 +149,58 @@
 - (void)pubnubClient:(PubNub *)client pushNotificationEnableDidFailWithError:(PNError *)error;
 
 /**
+ Called on delegate when \b PubNub client did complete access rights change operation.
+
+ @param client
+ \b PubNub client which completed request processing (this is singleton).
+
+ @param accessRightsCollection
+ Instance of \b PNAccessRightsCollection which stores set of access rights on different levels.
+ */
+- (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection;
+
+/**
+ Called on delegate when \b PubNub client did fail to change access rights.
+
+ @param client
+ \b PubNub client which failed request processing (this is singleton).
+
+ @param error
+ \b PNError instance which holds information about when wrong and why request failed. \a 'error.associatedObject'
+ contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b PubNub client tried to apply.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error;
+
+/**
+ Called on delegate when \b PubNub client did complete access rights audit operation.
+
+ @param client
+ \b PubNub client which completed request processing (this is singleton).
+
+ @param accessRightsCollection
+ Instance of \b PNAccessRightsCollection which stores set of access rights on different levels.
+ */
+- (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection;
+
+/**
+ Called on delegate when \b PubNub client did fail to audit access rights.
+
+ @param client
+ \b PubNub client which failed request processing (this is singleton).
+
+ @param error
+ \b PNError instance which holds information about when wrong and why request failed. \a 'error.associatedObject'
+ contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b PubNub client tried to apply.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error;
+
+/**
  * Called on delegate when client successfully disabled push notifications on
  * specified list of channels
  */
@@ -232,11 +284,8 @@
  * Called on delegate when client completed message history download
  * for specific channel
  */
-- (void)    pubnubClient:(PubNub *)client
-didReceiveMessageHistory:(NSArray *)messages
-              forChannel:(PNChannel *)channel
-            startingFrom:(PNDate *)startDate
-                      to:(PNDate *)endDate;
+- (void)pubnubClient:(PubNub *)client didReceiveMessageHistory:(NSArray *)messages forChannel:(PNChannel *)channel
+        startingFrom:(PNDate *)startDate to:(PNDate *)endDate;
 
 /**
  * Called on delegate when client failed to download messages history
@@ -247,17 +296,15 @@ didReceiveMessageHistory:(NSArray *)messages
  * Called on delegate when client retrieved participants list
  * for specific channel
  */
-- (void)      pubnubClient:(PubNub *)client
-didReceiveParticipantsList:(NSArray *)participantsList
-                forChannel:(PNChannel *)channel;
+- (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList
+          forChannel:(PNChannel *)channel;
 
 /**
  * Called on delegate when client failed to download participants
  * list
  */
-- (void)                     pubnubClient:(PubNub *)client
-didFailParticipantsListDownloadForChannel:(PNChannel *)channel
-                                withError:(PNError *)error;
+- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel
+           withError:(PNError *)error;
 
 
 #pragma mark - Misc methods
@@ -275,32 +322,25 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
 #pragma mark - Configuration override delegate methods
 
 /**
- * This method allow to override value passed in configuration
- * during client initialization.
- * This method called when service reachabilty reported that
- * service are available and previous session is failed because
- * of network error or even not launched.
- * We can change client configuration, but it will trigger 
+ * This method allow to override value passed in configuration during client initialization.
+ * This method called when service reachabilty reported that service are available and previous session is failed
+ * because of network error or even not launched. We can change client configuration, but it will trigger
  * client hard reset (if connected)
  */
 - (NSNumber *)shouldReconnectPubNubClient:(PubNub *)client;
 
 /**
- * This method allow to override value passed in configuration
- * during client initialization.
- * This method called when service reachabilty reported that
- * service are available and previous session is failed because
- * of network error or even not launched.
- * It allow to specify whether client should restore subscription
+ * This method allow to override value passed in configuration during client initialization.
+ * This method called when service reachabilty reported that service are available and previous session is failed
+ * because of network error or even not launched. It allow to specify whether client should restore subscription
  * or previously subscribed channels or not
  */
 - (NSNumber *)shouldResubscribeOnConnectionRestore;
 
 /**
- * This method allow to override value passed in configuration
- * during client initialization.
- * This method is called by library right after connection has been
- * restored and client was configured to restore subscription on channels.
+ * This method allow to override value passed in configuration during client initialization.
+ * This method is called by library right after connection has been restored and client was configured to restore
+ * subscription on channels.
  */
 - (NSNumber *)shouldRestoreSubscriptionFromLastTimeToken;
 
