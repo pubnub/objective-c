@@ -55,7 +55,7 @@
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"ch1", @"ch2"]];
 	authorizationKey = [NSString stringWithFormat:@"a2", [NSDate date]];
-	timeout = 5;
+	timeout = 2;
 	timeoutHistory = 10;
 	timeoutNewMessage = 10;
 	indexMessage = 0;
@@ -288,174 +288,13 @@
 
 	[self revokeAccessRightsForApplication];
 	[self revokeAccessRightsForChannels];
-	[self startDetectNewMessage];
-	[self isApplicationCanReadExpect: NO canWriteExpect: NO];
-	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: NO];
-	//////
 	[self grantReadAccessRightForApplicationAtPeriod: 1];
-	[self isApplicationCanReadExpect: YES canWriteExpect: NO];
 	for( int i=0; i<pnChannels.count; i++ )
 		[self grantWriteRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
-	[self startDetectNewMessage];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: NO canWriteExpect: YES];
-	for( int j=0; j<70; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: NO canWriteExpect: NO];
-
 
 	[self grantAllAccessRightsForApplicationAtPeriod: 1];
-	[self isApplicationCanReadExpect: YES canWriteExpect: YES];
-	[self auditAccessRightsForApplication];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];//error
-	[self startDetectNewMessage];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-	for( int j=0; j<70; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	[self sendMessageIsExpectError: YES];
-
-	[self subscribeOnChannels: pnChannels isExpectError: YES];
-	[self sendMessageIsExpectError: YES];
-	for( int i=0; i<pnChannels.count; i++ )
-		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 2 client: authorizationKey];
-	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: YES canWriteExpect: YES];
-	[self checkNewMessageIsExpect0: YES];
-	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
-	[self checkNewMessageIsExpect0: YES];
-	[self subscribeOnChannels: pnChannels isExpectError: NO];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: YES];
-	[self startDetectNewMessage];
-	for( int j=0; j<130; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	[self sendMessageIsExpectError: YES];
-	[self subscribeOnChannels: pnChannels isExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
-	/////////////
-	for( int i=0; i<pnChannels.count; i++ )
-		[self grantWriteRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
-	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: NO canWriteExpect: YES];
-	for( int i=0; i<pnChannels.count; i++ )
-		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
-	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: YES canWriteExpect: YES];
-	[self subscribeOnChannels: pnChannels isExpectError: NO];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-	[self startDetectNewMessage];
-	for( int j=0; j<70; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	[self sendMessageIsExpectError: YES];
-	[self subscribeOnChannels: pnChannels isExpectError: YES];
-	/////////////
-	[self startDetectNewMessage];
-	[self sendMessageIsExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
-	for( int i=0; i<pnChannels.count; i++ )
-		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 2];
-	[self subscribeOnChannels: pnChannels isExpectError: NO];
-	[self checkNewMessageIsExpect0: YES];
-	[self sendMessageIsExpectError: NO];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
-	[self subscribeOnChannels: pnChannels isExpectError: NO];//error
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-	for( int j=0; j<70; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	[self sendMessageIsExpectError: YES];
-	//	[self checkNewMessageIsExpect0: YES];
-	//////////////
-	[self startDetectNewMessage];
-	for( int i=0; i<pnChannels.count; i++ )
-		[self grantWriteAccessRightForChannel: pnChannels[i] forPeriod: 1];
-	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: YES];
-	[self sendMessageIsExpectError: NO];
-	[self requestHistoryForChannelsIsExpectError: YES];
-	//	[self checkNewMessageIsExpect0: YES];
-	for( int j=0; j<70; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: NO];
-	[self sendMessageIsExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
-	[self requestHistoryForChannelsIsExpectError: YES];
-	/////////////
-	[self startDetectNewMessage];
-	[self subscribeOnChannels: pnChannels isExpectError: YES];
-	[self requestHistoryForChannelsIsExpectError: YES];
-	[self grantAllAccessRightsForChannels];
-	[self isChannelsClientAuthorizationKey: nil canReadExpect: YES canWriteExpect: YES];
-	[self subscribeOnChannels: pnChannels isExpectError: NO];
-	[self requestHistoryForChannelsIsExpectError: NO];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-	[self revokeAccessRightsForChannels];
-	[self sendMessageIsExpectError: YES];
-	[self requestHistoryForChannelsIsExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
-
-	[self revokeAccessRightsForApplication];
-	[self isApplicationCanReadExpect: NO canWriteExpect: NO];
-	[self revokeAccessRightsForChannels];
-	for( int j=0; j<70; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	[self grantWriteAccessRightForChannels];
-	[self isChannelsClientAuthorizationKey: nil canReadExpect: NO canWriteExpect: YES];
-	[self startDetectNewMessage];
-	[self sendMessageIsExpectError: NO];
-	//	[self checkNewMessageIsExpect0: YES];
-	[self grantReadAccessRightForChannels];
-	[self sendMessageIsExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
-	[self requestHistoryForChannelsIsExpectError: NO];
-
-	[self revokeAccessRightsForChannels];
-	[self subscribeOnChannels: pnChannels isExpectError: YES];
-	[self startDetectNewMessage];
-	[self sendMessageIsExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
-
-	[self grantAllAccessRightsForApplicationAtPeriod: 10];
-	[self subscribeOnChannels: pnChannels isExpectError: NO];
-	[self checkNewMessageIsExpect0: YES];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-	[self requestHistoryForChannelsIsExpectError: NO];
-	[self sendMessageIsExpectError: NO];
-
-	[self revokeAccessRightsForApplication];
-	[self sendMessageIsExpectError: YES];
-	[self grantReadAccessRightForChannels];
-	[self requestHistoryForChannelsIsExpectError: NO];
-	[self revokeAccessRightsForChannels];
-	[self subscribeOnChannels: pnChannels isExpectError: YES];
-	[self requestHistoryForChannelsIsExpectError: YES];
-
-	[self grantAllAccessRightsForApplicationAtPeriod: 1];
-	[self sendMessageIsExpectError: NO];
-	[self grantAllAccessRightsForApplicationAtPeriod: 1];
-	[self grantAllAccessRightsForApplicationAtPeriod: 10];
-	[self revokeAccessRightsForApplication];
-	[self revokeAccessRightsForApplication];
-	[self sendMessageIsExpectError: YES];
-	[self grantReadAccessRightForChannels];
-	[self requestHistoryForChannelsIsExpectError: NO];
-	[self revokeAccessRightsForApplication];
-	[self revokeAccessRightsForApplication];
-
-	[self grantAllAccessRightsForApplicationAtPeriod: 1];
-	[self startDetectNewMessage];
-	[self subscribeOnChannels: pnChannels isExpectError: NO];
-	[self sendMessageIsExpectError: NO];
-	[self checkNewMessageIsExpect0: NO];
-
-	[self revokeAccessRightsForApplication];
 }
 
 -(void)subscribeOnChannels:(NSArray*)channels isExpectError:(BOOL)isExpectError {
