@@ -29,7 +29,10 @@
                   Identifier = "W_ChaosTest">
                </Test>
                <Test
-                  Identifier = "AbbreviatedPresenceTest">
+                  Identifier = "PAMTestError">
+               </Test>
+               <Test
+                  Identifier = "Configuration">
                </Test>
             </SkippedTests>
          </TestableReference>

@@ -17,7 +17,10 @@
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
+#import "PNConnection.h"
 #import "TestSemaphor.h"
+#import "Swizzler.h"
+#import "PNConnectionBadJson.h"
 
 @interface HowToTests ()
 
@@ -32,6 +35,9 @@
 	dispatch_semaphore_t semaphoreNotification;
 	NSArray *pnChannelsForReverse;
 
+	SwizzleReceipt *receiptReconnect;
+	int _reconnectCount;
+	NSNumber *_reconnectNumber;
 	BOOL handleApplicationDidEnterBackgroundState;
 	BOOL handleApplicationDidEnterForegroundState;
 	BOOL handleWorkspaceWillSleep;
@@ -52,6 +58,9 @@
 	BOOL handleClientCompletedTimeTokenProcessing;
 	BOOL pNClientDidSendMessageNotification;
 	BOOL pNClientMessageSendingDidFailNotification;
+
+	BOOL pNClientPresenceEnablingDidCompleteNotification;
+	BOOL pNClientPresenceDisablingDidCompleteNotification;
 }
 
 @property (nonatomic, retain) NSConditionLock *theLock;
@@ -61,9 +70,14 @@
 
 @implementation HowToTests
 
-- (void)setUp
-{
-    [super setUp];
+//- (void)setUp {
+//    [super setUp];
+- (void)test01Init {
+	[PubNub resetClient];
+	NSLog(@"end reset");
+	for( int j=0; j<5; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
 	semaphoreNotification = dispatch_semaphore_create(0);
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"wpdev", @"ubuntudev", @"1"]];
@@ -260,10 +274,44 @@
 							   name:kPNClientParticipantsListDownloadFailedWithErrorNotification
 							 object:nil];
 
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientPresenceEnablingDidCompleteNotification:)
+							   name:kPNClientPresenceEnablingDidCompleteNotification
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientPresenceDisablingDidCompleteNotification:)
+							   name:kPNClientPresenceDisablingDidCompleteNotification
+							 object:nil];
 
+
+	[self t05AddClientConnectionStateObserver];
+	[self t06ClientChannelSubscriptionStateObserver];
+	[self t08AddPresenceEventObserver];
+	[self t10Connect];
+	[self t20SubscribeOnChannels];
+	[self t25RequestParticipantsListForChannel];
+	[self t30RequestParticipantsListForChannel];
+	[self t35RequestServerTimeTokenWithCompletionBlock];
+	[self t40SendMessage];
+	[self t45SendMessageBig];
+	[self t50RequestHistoryForChannel];
+	[self t55RequestHistoryReverse];
+	[self t60SubscribeOnChannelsByTurns];
+	[self t900UnsubscribeFromChannels];
+	[self t910removeClientChannelSubscriptionStateObserver];
 }
 
 #pragma mark - Handler methods
+
+- (void)kPNClientPresenceEnablingDidCompleteNotification:(NSNotification *)__unused notification {
+	PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientPresenceEnablingDidCompleteNotification: %@", notification);
+	pNClientPresenceEnablingDidCompleteNotification = YES;
+}
+- (void)kPNClientPresenceDisablingDidCompleteNotification:(NSNotification *)__unused notification {
+	PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientPresenceDisablingDidCompleteNotification: %@", notification);
+	pNClientPresenceDisablingDidCompleteNotification = YES;
+}
+
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
@@ -328,17 +376,17 @@
 }
 
 - (void)handleClientMessageProcessingStateChange:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientMessageProcessingStateChange: %@", notification);
+    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientMessageProcessingStateChange: %@", notification.name);
 	handleClientMessageProcessingStateChange = YES;
 }
 
 
 - (void)kPNClientDidSendMessageNotification:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientDidSendMessageNotification: %@", notification);
+    PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientDidSendMessageNotification");
 	pNClientDidSendMessageNotification = YES;
 }
 - (void)kPNClientMessageSendingDidFailNotification:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientMessageSendingDidFailNotification: %@", notification);
+    PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientMessageSendingDidFailNotification: ");
 	pNClientMessageSendingDidFailNotification = YES;
 }
 
@@ -368,11 +416,7 @@
 	handleClientCompletedTimeTokenProcessing = YES;
 }
 
-
-- (void)tearDown
-{
-    // Tear-down code here.
-
+- (void)tearDown {
     [super tearDown];
 }
 
@@ -381,8 +425,7 @@
 
 #pragma mark - States tests
 
-- (void)test05AddClientConnectionStateObserver
-{
+- (void)t05AddClientConnectionStateObserver {
     [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
                                                         withCallbackBlock:^(NSString *origin,
                                                                             BOOL connected,
@@ -397,8 +440,7 @@
 		}];
 }
 
-- (void)test06ClientChannelSubscriptionStateObserver
-{
+- (void)t06ClientChannelSubscriptionStateObserver {
     // Subscribe application delegate on subscription updates
     // (events when client subscribe on some channel)
     __pn_desired_weak __typeof__(self) weakSelf = self;
@@ -422,7 +464,7 @@
 //																  presenceEvent);
 //                                                        }];
 //}
-- (void)test08AddPresenceEventObserver
+- (void)t08AddPresenceEventObserver
 {
     // Subscribe on presence event arrival events with block
 	__pn_desired_weak __typeof__(self) weakSelf = self;
@@ -435,8 +477,7 @@
 }
 
 
-- (void)test10Connect
-{
+- (void)t10Connect {
 	[PubNub disconnect];
 //    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
 //	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: @"key"];
@@ -475,11 +516,13 @@
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
 	STAssertTrue( handleClientConnectionStateChange, @"notification not called");
+
+//	[Swizzler swizzleSelector:@selector(reconnect) forClass:[PNConnection class] withSelector:@selector(myReconnect)];
+//	receiptReconnect = [self setReconnect];
+	_reconnectCount = 0;
 }
 
-
-- (void)test20SubscribeOnChannels
-{
+- (void)t20SubscribeOnChannels {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientSubscriptionProcess = NO;
 	[PubNub subscribeOnChannels: pnChannels
@@ -488,21 +531,6 @@
 		dispatch_semaphore_signal(semaphore);
 		STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 		STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
-//		connectedChannels = channels;
-		switch(state) {
-			case PNSubscriptionProcessNotSubscribedState:
-				// Check whether 'subscriptionError' instance is nil or not (if not, handle error)
-				break;
-			case PNSubscriptionProcessSubscribedState:
-				// Do something after subscription completed
-				break;
-			case PNSubscriptionProcessWillRestoreState:
-				// Library is about to restore subscription on channels after connection went down and restored
-				break;
-			case PNSubscriptionProcessRestoredState:
-				// Handle event that client completed resubscription
-				break;
-		}
 	}];
     // Run loop
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
@@ -511,25 +539,56 @@
 	STAssertTrue( handleClientSubscriptionProcess, @"notification not caleld");
 }
 
-//- (void)test21SubscribeOnChannelsBad
-//{
-//    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-//	[PubNub subscribeOnChannels: pnChannelsBad
-//	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-//	 {
-//		 dispatch_semaphore_signal(semaphore);
-//		 STAssertNotNil( subscriptionError, @"subscriptionError %@", subscriptionError);
-//	 }];
-//    // Run loop
-//    while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-//        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-//                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-//}
+-(void)revertPresenceObservationForChannel:(PNChannel*)channel {
+	__block NSDate *start = [NSDate date];
+	__block BOOL isCompletionBlockCalled = NO;
+	BOOL state = [PubNub isPresenceObservationEnabledForChannel: channel];
+	 if( state == NO ) {
+		pNClientPresenceEnablingDidCompleteNotification = NO;
+		[PubNub enablePresenceObservationForChannel: channel
+							  withCompletionHandlingBlock:^(NSArray *array, PNError *error)
+		 {
+			 NSTimeInterval interval = -[start timeIntervalSinceNow];
+			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+			 STAssertNil( error, @"enablePresenceObservationForChannel error %@", error);
+			 isCompletionBlockCalled = YES;
+		 }];
+		 for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+			 isCompletionBlockCalled == NO; j++ )
+			 [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+		 STAssertTrue( pNClientPresenceEnablingDidCompleteNotification==YES, @"notification not called");
 
--(void)test30RequestParticipantsListForChannel
-{
-	for( int i=0; i<pnChannels.count; i++ )
-	{
+	}
+	 else {
+		 pNClientPresenceDisablingDidCompleteNotification = NO;
+		 [PubNub disablePresenceObservationForChannel: channel
+						 withCompletionHandlingBlock:^(NSArray *array, PNError *error)
+		  {
+			  NSTimeInterval interval = -[start timeIntervalSinceNow];
+			  STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+			  STAssertNil( error, @"disablePresenceObservationForChannel error %@", error);
+			  isCompletionBlockCalled = YES;
+		  }];
+		 for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+			 isCompletionBlockCalled == NO; j++ )
+			 [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+		 STAssertTrue( pNClientPresenceDisablingDidCompleteNotification==YES, @"notification not called");
+	}
+	BOOL newState = [PubNub isPresenceObservationEnabledForChannel: channel];
+	STAssertTrue( state != newState, @"state not changed");
+	STAssertTrue(isCompletionBlockCalled, @"block not called");
+}
+
+-(void)t25RequestParticipantsListForChannel {
+	for( int i=0; i<pnChannels.count; i++ ) {
+		[self revertPresenceObservationForChannel: pnChannels[i]];
+		[self revertPresenceObservationForChannel: pnChannels[i]];
+	}
+}
+
+
+-(void)t30RequestParticipantsListForChannel {
+	for( int i=0; i<pnChannels.count; i++ ) {
 		handleClientHereNowProcess = NO;
 		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 //		PNLog(PNLogGeneralLevel, nil, @"pnChannels[i] %@", pnChannels[i]);
@@ -549,8 +608,7 @@
 	}
 }
 
--(void)test35RequestServerTimeTokenWithCompletionBlock
-{
+-(void)t35RequestServerTimeTokenWithCompletionBlock {
 	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientCompletedTimeTokenProcessing = NO;
 	[PubNub requestServerTimeTokenWithCompletionBlock:^(NSNumber *timeToken, PNError *error)
@@ -564,15 +622,15 @@
 	STAssertTrue(handleClientCompletedTimeTokenProcessing, @"notification not called");
 }
 
--(void)test40SendMessage
-{
+-(void)t40SendMessage {
 	for( int j=0; j<5; j++ ) {
 		for( int i=0; i<pnChannels.count; i++ )	{
 			pNClientDidSendMessageNotification = NO;
 			dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 			__block PNMessageState state = PNMessageSendingError;
-			/*PNMessage *helloMessage = */[PubNub sendMessage: [NSString stringWithFormat: @"Hello PubNub %d", j]
-													toChannel:pnChannels[i]
+			NSString *message = [NSString stringWithFormat: @"Hello PubNub %d", j];
+			message = [message stringByAppendingString: @" sdfфвып !№%,,%;%,.(№.(@#$^@$%&%(^)@"];
+			[PubNub sendMessage: message toChannel:pnChannels[i]
 										  withCompletionBlock:^(PNMessageState messageSendingState, id data)
 										   {
 											   if( messageSendingState != PNMessageSending )
@@ -592,32 +650,38 @@
 	}
 }
 
--(void)test45SendMessageBig
-{
+-(void)t45SendMessageBig {
 	NSMutableString *message = [NSMutableString stringWithString: @""];
 	for( int j=0; j<6; j++ ) {
 		for( int i=0; i<pnChannels.count; i++ )	{
 			pNClientDidSendMessageNotification = NO;
 			pNClientMessageSendingDidFailNotification = NO;
 			__block PNMessageState state = PNMessageSendingError;
-			[message appendFormat: @"message block <big text: asd aslkjdfh asdasljdhf fsdgdjagslkjdfh asdasljdhf fsdgdjagafdakflslkjdfh asdasljdhf fsdgdjagafdakflslkjdfh asdasljdhf fsdgdjagafdakflslkjdfh asdasljdhf fsdgdjagafdakflslkjdfh asdasljdhf fsdgdjagafdakflafdakfl> %d_%d", i, j];
-			NSLog(@"send message %d_%d with size %d", i, j, message.length);
+			[message appendFormat: @"message block ______________________ _______________________ ____________________________ _____________________________ ___________________ _______________________________ ____________________________________ ______________________ _________________ ________________________________ ___________________ %d_%d, ", i, j];
+			NSLog(@"send message %d_%d with size %lu", i, j, (unsigned long)message.length);
 			state = PNMessageSending;
+			__block NSDate *start = [NSDate date];
 			[PubNub sendMessage: message toChannel:pnChannels[i]
 			withCompletionBlock:^(PNMessageState messageSendingState, id data)
 			 {
 				 state = messageSendingState;
-				 NSLog(@"withCompletionBlock %d, message size %d", messageSendingState, message.length);
+				 if( state == PNMessageSending )
+					 return;
+				 NSTimeInterval interval = -[start timeIntervalSinceNow];
+//				 NSLog( @"test45SendMessageBig %f", interval);
+				 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+
+				 NSLog(@"withCompletionBlock %d, message size %lu", messageSendingState, (unsigned long)message.length);
 			 }];
 
-			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-				(state == PNMessageSending && pNClientDidSendMessageNotification == NO && pNClientMessageSendingDidFailNotification == NO); j++ )
+			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 ||
+				state == PNMessageSending /*|| pNClientDidSendMessageNotification == NO || pNClientMessageSendingDidFailNotification == NO)*/; j++ )
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
 			if( message.length < 1300 )
 				STAssertTrue( pNClientDidSendMessageNotification == YES && state == PNMessageSent, @"message not sent, size %d", message.length);
 			if( message.length >= 1600 ) {
-				NSLog(@"sended message %d_%d with size %d", i, j, message.length);
+				NSLog(@"sended message %d_%d with size %lu", i, j, (unsigned long)message.length);
 
 				STAssertTrue( pNClientMessageSendingDidFailNotification == YES && state == PNMessageSendingError, @"message's methods not called, size %d", message.length);
 			}
@@ -625,42 +689,29 @@
 	}
 }
 
--(NSArray*)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                              to:(PNDate *)endDate
-                           limit:(NSUInteger)limit
-                  reverseHistory:(BOOL)shouldReverseMessageHistory
-{
+-(NSArray*)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory {
 //	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	__block NSArray *history;
 	handleClientMessageHistoryProcess = NO;
 	__block BOOL isCompletionBlockCalled = NO;
 	NSDate *start = [NSDate date];
 	NSLog(@"requestHistoryForChannel start %@, end %@", startDate, endDate);
-	[PubNub requestHistoryForChannel:channel
-								from:startDate
-								  to:endDate
-							   limit:limit
-					  reverseHistory:NO
-				 withCompletionBlock:^(NSArray *messages,
-									   PNChannel *channel,
-									   PNDate *fromDate,
-									   PNDate *toDate,
-									   PNError *error)
-	 {
+	[PubNub requestHistoryForChannel:channel from:startDate to:endDate limit:limit reverseHistory:NO withCompletionBlock:^(NSArray *messages, PNChannel *ch, PNDate *fromDate, PNDate *toDate, PNError *error) {
 //		 dispatch_semaphore_signal(semaphore);
 		 isCompletionBlockCalled = YES;
 		 history = messages;
 
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
 		 NSLog(@"requestHistoryForChannel interval %f", interval);
-		 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+		 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
 		 if( startDate == nil || endDate == nil || endDate.timeToken.intValue > startDate.timeToken.intValue ) {
 			 if( error != nil )
 				 NSLog(@"requestHistoryForChannel error %@, start %@, end %@", error, startDate, endDate);
 			 STAssertNil( error, @"requestHistoryForChannel error %@", error);
 		 }
+		if( ch == nil )
+			STAssertNotNil( error, @"error cann't be nil");
 	 }];
 //	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) || handleClientMessageHistoryProcess == NO)
 //		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
@@ -673,10 +724,9 @@
 	return history;
 }
 
--(void)test50RequestHistoryForChannel
-{
-	for( int i=0; i<pnChannels.count; i++ )
-	{
+-(void)t50RequestHistoryForChannel {
+	[self requestHistoryForChannel: nil from: nil to: nil limit: 0 reverseHistory: NO];
+	for( int i=0; i<pnChannels.count; i++ ) {
 		PNDate *startDate = [PNDate dateWithDate:[NSDate dateWithTimeIntervalSinceNow:(-3600.0f)]];
 		PNDate *endDate = [PNDate dateWithDate:[NSDate date]];
 		int limit = 34;
@@ -690,8 +740,7 @@
 	}
 }
 
--(void)test55RequestHistoryReverse
-{
+-(void)t55RequestHistoryReverse {
 	__block NSNumber *timeMiddle = nil;
 	__block NSString *messageMiddle = @"";
 	for( int j=0; j<5; j++ ) {
@@ -749,32 +798,11 @@
 	}
 }
 
-//-(void)test51SendMessageBad
-//{
-//	for( int i=0; i<pnChannels.count; i++ )
-//	{
-//		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-//
-//		/*PNMessage *helloMessage = */[PubNub sendMessage:@[@"1", @"2", [NSNumber numberWithDouble:123.0], pnChannels]
-//												toChannel:pnChannels[i]
-//									  withCompletionBlock:^(PNMessageState messageSendingState, id data)
-//									   {
-//										   dispatch_semaphore_signal(semaphore);
-//										   STAssertTrue(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
-//									   }];
-//
-//		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-//			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-//									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-//	}
-//}
 
-- (void)test60SubscribeOnChannelsByTurns
-{
-	for( int i = 0; i<20; i++ )
-	{
+- (void)t60SubscribeOnChannelsByTurns {
+	for( int i = 0; i<20; i++ )	{
 //		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-//		__block BOOL isCompletionBlockCalled = NO;
+		__block BOOL isCompletionBlockCalled = NO;
 		NSString *channelName = [NSString stringWithFormat: @"%@ %d", [NSDate date], i];
 		NSArray *arr = [PNChannel channelsWithNames: @[channelName]];
 		NSDate *start = [NSDate date];
@@ -783,8 +811,8 @@
 		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 		 {
 //			 dispatch_semaphore_signal(semaphore);
-//			 isCompletionBlockCalled = YES;
-			 [[TestSemaphor sharedInstance] lift:channelName];
+			 isCompletionBlockCalled = YES;
+//			 [[TestSemaphor sharedInstance] lift:channelName];
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 NSLog(@"subscribed %f, %@", interval, channels);
 			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
@@ -800,27 +828,33 @@
 			 STAssertTrue( isSubscribed == YES, @"Channel no subecribed");
 		 }];
 		// Run loop
-//		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-//			isCompletionBlockCalled == NO; j++ )
-//			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-//		STAssertTrue( isCompletionBlockCalled, @"completion block not called, %@", channelName);
-		STAssertTrue([[TestSemaphor sharedInstance] waitForKey: channelName timeout: [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"completion block not called, %@", channelName);
+		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+			isCompletionBlockCalled == NO; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+		STAssertTrue( isCompletionBlockCalled, @"completion block not called, %@", channelName);
+		for( int j=0; /*j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1
+			&& */isCompletionBlockCalled == NO; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+//		STAssertTrue([[TestSemaphor sharedInstance] waitForKey: channelName timeout: [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"completion block not called, %@", channelName);
 	}
 }
 
 
--(void)test900UnsubscribeFromChannels
+-(void)t900UnsubscribeFromChannels
 {
 	handleClientUnsubscriptionProcess = YES;
 //	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	__block BOOL isCompletionBlockCalled = NO;
 	// Unsubscribe from set of channels and notify everyone that we are left
+	NSDate *start = [NSDate date];
 	[PubNub unsubscribeFromChannels: pnChannels
 				  withPresenceEvent:YES
 		 andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError)
 	 {
-		 // Check whether "unsubscribeError" is nil or not (if not, than handle error)
-//		 dispatch_semaphore_signal(semaphore);
+		 NSTimeInterval interval = -[start timeIntervalSinceNow];
+		 NSLog(@"unsubscribeFromChannels %f, %@", interval, channels);
+		 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+
 		 isCompletionBlockCalled = YES;
 		 STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
@@ -834,7 +868,14 @@
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue(handleClientUnsubscriptionProcess, @"notification not called");
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+
+//	[self t950ReconnectCount];
 }
+
+- (void)t910removeClientChannelSubscriptionStateObserver {
+    [[PNObservationCenter defaultCenter] removeClientChannelSubscriptionStateObserver: self];
+}
+
 //-(void)test910UnsubscribeFromChannelsBad
 //{
 //	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -852,5 +893,24 @@
 //        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 //                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 //}
+//-(void)t950ReconnectCount {
+//	[Swizzler unswizzleFromReceipt:receiptReconnect];
+//
+//	STAssertTrue(_reconnectCount == 0, @"excess reconnect");
+//}
+
+-(SwizzleReceipt*)setReconnect {
+	return [Swizzler swizzleSelector:@selector(reconnect)
+				 forInstancesOfClass:[PNConnection class]
+						   withBlock:
+			^(id object, SEL sel){
+				PNLog(PNLogGeneralLevel, nil, @"PNConnection setReconnect");
+				_reconnectCount++;
+				_reconnectNumber = [NSNumber numberWithInt: [_reconnectNumber intValue]+1];
+				[Swizzler unswizzleFromReceipt:receiptReconnect];
+				[(PNConnection*)object reconnect];
+				receiptReconnect = [self setReconnect];
+			}];
+}
 
 @end
