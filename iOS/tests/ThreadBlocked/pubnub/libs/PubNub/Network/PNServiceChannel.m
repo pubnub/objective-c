@@ -66,8 +66,7 @@
 
 #pragma mark - Instance methods
 
-- (id)initWithType:(PNConnectionChannelType)connectionChannelType
-       andDelegate:(id<PNConnectionChannelDelegate>)delegate {
+- (id)initWithType:(PNConnectionChannelType)connectionChannelType andDelegate:(id<PNConnectionChannelDelegate>)delegate {
 
     // Check whether initialization was successful or not
     if((self = [super initWithType:PNConnectionChannelService andDelegate:delegate])) {
@@ -552,7 +551,7 @@
 
     PNBaseRequest *request = (PNBaseRequest *)timer.userInfo;
     NSInteger errorCode = kPNRequestExecutionFailedByTimeoutError;
-    NSString *errorMessage = @"Message sending failed by timeout";
+    NSString *errorMessage = @"Channel's message history download failed by timeout";
     if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
 
         errorMessage = @"Time token request failed by timeout";
@@ -633,8 +632,8 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
         [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:error];
     }
     else {
-
-        [self.serviceDelegate serviceChannel:self didFailMessageSend:((PNMessagePostRequest *)request).message
+        
+        [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel
                                    withError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
 

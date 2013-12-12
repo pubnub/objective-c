@@ -38,8 +38,8 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.5.2";
-static NSString * const kPNCodebaseBranch = @"develop";
-static NSString * const kPNCodeCommitIdentifier = @"388d5a4ef0edeea40ba39c3867ef07a777356274";
+static NSString * const kPNCodebaseBranch = @"fix-t241";
+static NSString * const kPNCodeCommitIdentifier = @"a481b7bc15737dd044346a3360004c85348d8837";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
