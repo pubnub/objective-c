@@ -22,7 +22,8 @@
 #import "PNConnection.h"
 
 @interface OversizedJSON : SenTestCase <PNDelegate> {
-	BOOL _isReconnect;
+	int _reconnectCount;
+	SwizzleReceipt *receiptReconnect;
 }
 
 @end
@@ -58,6 +59,12 @@
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
+	[PubNub grantAllAccessRightsForApplicationAtPeriod: 1 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+		STAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);
+	}];
+	for( int j=0; j<10; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
     semaphore = dispatch_semaphore_create(0);
 	[PubNub subscribeOnChannels: [PNChannel channelsWithNames: @[@"channel"]]
 	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
@@ -83,8 +90,8 @@
 						  @"sender_pgid": @"49091c040dac8370bb907bd3bd670d168e1dcea8",
 						  @"ts": @(1385168393499) };
 
-	_isReconnect = 0;
-	SwizzleReceipt *receipt = [self setReconnect];
+	_reconnectCount = 0;
+	receiptReconnect = [self setReconnect];
 	[PubNub sendMessage: dic toChannel: [PNChannel channelWithName: @"channel"]
 	withCompletionBlock:^(PNMessageState messageSendingState, id data)
 	 {
@@ -92,19 +99,23 @@
 
 	for( int j=0; j<10; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	[Swizzler unswizzleFromReceipt:receipt];
+	[Swizzler unswizzleFromReceipt:receiptReconnect];
 
-	STAssertTrue(_isReconnect == 0, @"excess reconnect");
+	STAssertTrue(_reconnectCount == 0, @"excess reconnect, %d", _reconnectCount);
 }
 
 -(SwizzleReceipt*)setReconnect {
 	return [Swizzler swizzleSelector:@selector(reconnect)
 				 forInstancesOfClass:[PNConnection class]
 						   withBlock:
-			^(id self, SEL sel){
+			^(id object, SEL sel){
 				PNLog(PNLogGeneralLevel, nil, @"PNConnection setReconnect");
-				_isReconnect++;
+				_reconnectCount++;
+				[Swizzler unswizzleFromReceipt:receiptReconnect];
+				[(PNConnection*)object reconnect];
+				receiptReconnect = [self setReconnect];
 			}];
 }
+
 
 @end

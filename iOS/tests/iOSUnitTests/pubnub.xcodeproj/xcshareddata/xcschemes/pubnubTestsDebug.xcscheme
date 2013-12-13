@@ -137,10 +137,16 @@
                   Identifier = "ApnsToken">
                </Test>
                <Test
-                  Identifier = "HowToTests">
+                  Identifier = "W_ChaosTest">
                </Test>
                <Test
-                  Identifier = "W_ChaosTest">
+                  Identifier = "OversizedJSON">
+               </Test>
+               <Test
+                  Identifier = "PAMTest">
+               </Test>
+               <Test
+                  Identifier = "PAMTestError">
                </Test>
             </SkippedTests>
          </TestableReference>

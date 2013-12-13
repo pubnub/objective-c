@@ -288,16 +288,16 @@
 	[self t06ClientChannelSubscriptionStateObserver];
 	[self t08AddPresenceEventObserver];
 	[self t10Connect];
-	[self t20SubscribeOnChannels];
+//	[self t20SubscribeOnChannels];
 //	[self t25RequestParticipantsListForChannel];
 //	[self t30RequestParticipantsListForChannel];
 //	[self t35RequestServerTimeTokenWithCompletionBlock];
-	[self t40SendMessage];
-	[self t45SendMessageBig];
+//	[self t40SendMessage];
+//	[self t45SendMessageBig];
 //	[self t50RequestHistoryForChannel];
 //	[self t55RequestHistoryReverse];
-//	[self t60SubscribeOnChannelsByTurns];
-//	[self t900UnsubscribeFromChannels];
+	[self t60SubscribeOnChannelsByTurns];
+	[self t900UnsubscribeFromChannels];
 	[self t910removeClientChannelSubscriptionStateObserver];
 }
 
@@ -803,7 +803,7 @@
 	for( int i = 0; i<200; i++ )	{
 		//		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 		__block BOOL isCompletionBlockCalled = NO;
-		NSString *channelName = [NSString stringWithFormat: @"sd gsdfg sdfg sdfg sdfg sdf gsdf sdf sdf fgh dfg dfg df dfgh dfgh dfg ddfg h%@ %d", [NSDate date], i];
+		NSString *channelName = [NSString stringWithFormat: @" sdf sdfsdf asd fa adsf as %@ %d", [NSDate date], i];
 		NSArray *arr = [PNChannel channelsWithNames: @[channelName]];
 		NSDate *start = [NSDate date];
 		NSLog(@"Start subscribe to channel %@", channelName);

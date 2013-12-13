@@ -37,6 +37,7 @@
 	BOOL subscribeOnChannelsFinish;
 	BOOL participantsListForChannelFinish;
 	BOOL notifyDidDisconnectWithErrorCalled;
+	BOOL shouldReconnectPubNubClient;
 
 	dispatch_semaphore_t semaphoreNotification;
 
@@ -58,13 +59,15 @@
 	BOOL handleClientMessageHistoryProcess;
 	BOOL handleClientHereNowProcess;
 	BOOL handleClientCompletedTimeTokenProcessing;
+
+	int willConnectCount;
 }
 @end
 
 @implementation W_ChaosTest
 
 -(NSNumber *)shouldReconnectPubNubClient:(id)object {
-	return [NSNumber numberWithBool: YES];
+	return [NSNumber numberWithBool: shouldReconnectPubNubClient];
 }
 
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
@@ -86,6 +89,8 @@
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"iosdev", @"1"]];
 	pnChannelsBad = [PNChannel channelsWithNames:@[@"iosdev", @"", @""]];
+
+	shouldReconnectPubNubClient = NO;
 
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -129,6 +134,10 @@
 	[notificationCenter addObserver:self
 						   selector:@selector(handleClientConnectionStateChange:)
 							   name:kPNClientConnectionDidFailWithErrorNotification
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientWillConnectToOriginNotification:)
+							   name:kPNClientWillConnectToOriginNotification
 							 object:nil];
 
 
@@ -300,6 +309,12 @@
 }
 #endif
 
+
+- (void)kPNClientWillConnectToOriginNotification:(NSNotification *)notification {
+    NSLog(@"kPNClientWillConnectToOriginNotification");
+	willConnectCount++;
+}
+
 - (void)handleClientConnectionStateChange:(NSNotification *)notification {
     PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientConnectionStateChange: %@", notification);
 	handleClientConnectionStateChange = YES;
@@ -443,12 +458,13 @@
 	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:5]];
 }
 
-
-- (void)test10Connect
+- (void)test09Connect
 {
 	[PubNub disconnect];
 	[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 							 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+	shouldReconnectPubNubClient = NO;
+	willConnectCount = 0;
 
 	for( int i=0; i<1; i++ )
 	{
@@ -457,9 +473,31 @@
 		BOOL isConnected = [[PubNub sharedInstance] isConnected];
 		if( isConnected == YES )
 			break;
-		NSLog(@"attemt №%d", i);
 	}
-	for( int j=0; [[PubNub sharedInstance] isConnected] == NO; j++ )
+	for( int j=0; [[PubNub sharedInstance] isConnected] == NO && j<15; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
+	STAssertTrue( willConnectCount<=5, @"extra reconnect attemp");
+}
+
+
+- (void)test10Connect
+{
+	[PubNub disconnect];
+	[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+							 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+	shouldReconnectPubNubClient = YES;
+
+	for( int i=0; i<1; i++ )
+	{
+		[self resetConnection];
+
+		BOOL isConnected = [[PubNub sharedInstance] isConnected];
+		if( isConnected == YES )
+			break;
+//		NSLog(@"attemt №%d", i);
+	}
+	for( int j=0; [[PubNub sharedInstance] isConnected] == NO && j<15; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
 	BOOL isConnected = [[PubNub sharedInstance] isConnected];

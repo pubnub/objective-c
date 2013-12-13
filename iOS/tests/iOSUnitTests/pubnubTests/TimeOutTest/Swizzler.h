@@ -12,6 +12,9 @@
 + (SwizzleReceipt *)swizzleSelector:(SEL)sel
                 forInstancesOfClass:(Class)cls
                           withBlock:(id)block;
++ (SwizzleReceipt *)swizzleSelector:(SEL)sel1
+                           forClass:(Class)cls
+						 withSelector:(SEL)sel2;
 /**
  Swizzles class method; returns a receipt for unswizzling.
  */
