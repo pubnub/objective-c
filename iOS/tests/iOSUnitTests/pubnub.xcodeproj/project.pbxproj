@@ -21,6 +21,7 @@
 		5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */; };
 		5A955F7D18350CAA00AB2156 /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A955F7C18350CAA00AB2156 /* Configuration.m */; };
 		5A955F801835154C00AB2156 /* SendBigMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A955F7F1835154C00AB2156 /* SendBigMessage.m */; };
+		5A9627431843883600258236 /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9627421843883600258236 /* OversizedJSON.m */; };
 		5ABE6C42182B9F1800204DC6 /* gistfile1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */; };
 		5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */; };
 		5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */; };
@@ -216,6 +217,7 @@
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
 		5A955F7C18350CAA00AB2156 /* Configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Configuration.m; path = "../../../../../pubnub 3.5.2 XCTest/iOS/tests/iOSUnitTests/pubnubTests/Configuration.m"; sourceTree = "<group>"; };
 		5A955F7F1835154C00AB2156 /* SendBigMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendBigMessage.m; sourceTree = "<group>"; };
+		5A9627421843883600258236 /* OversizedJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OversizedJSON.m; sourceTree = "<group>"; };
 		5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gistfile1.txt; sourceTree = "<group>"; };
 		5ABE6C40182B9F1800204DC6 /* TestSemaphor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSemaphor.h; sourceTree = "<group>"; };
 		5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSemaphor.m; sourceTree = "<group>"; };

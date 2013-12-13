@@ -18,6 +18,7 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "UIApplication+PNAdditions.h"
 #endif
+#import "PNAccessRightOptions+Protected.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
 #import "PNMessagingChannel.h"
@@ -25,7 +26,6 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
-#import "PNAccessRightOptions+Protected.h"
 
 
 // ARC check
