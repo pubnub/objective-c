@@ -237,7 +237,7 @@ static int const kPNConnectionTimeout = 10.0f;
 
 // Delay after which connection should retry
 static int64_t const kPNConnectionRetryDelay = 2;
-static NSTimeInterval const kPNConnectionRetryFastDelay = 0.5f;
+static NSTimeInterval const kPNConnectionRetryFastDelay = 0.1f;
 
 // Maximum retry count which can be performed for configuration operation
 static NSUInteger const kPNMaximumConfigurationRetryCount = 3;
