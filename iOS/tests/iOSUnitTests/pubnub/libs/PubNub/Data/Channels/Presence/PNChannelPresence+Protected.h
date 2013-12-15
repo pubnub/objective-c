@@ -40,6 +40,16 @@ static NSString * const kPNPresenceObserverChannelSuffix = @"-pnpres";
  */
 + (BOOL)isPresenceObservingChannelName:(NSString *)channelName;
 
+/**
+ Construct new array which will contain only \b PNChannelPresence instances
+ 
+ @param channels
+ List of \b PNChannel and \b PNChannelPresence instances among which should be found \b PNChannelPresence
+ 
+ @return list of \b PNChannelPresence instances
+ */
++ (NSArray *)presenceChannelsFromArray:(NSArray *)array;
+
 
 #pragma mark - Instance methods
 

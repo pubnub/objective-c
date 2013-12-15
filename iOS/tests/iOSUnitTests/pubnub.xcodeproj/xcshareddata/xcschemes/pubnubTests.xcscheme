@@ -31,6 +31,51 @@
                <Test
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
+               <Test
+                  Identifier = "ApnsToken">
+               </Test>
+               <Test
+                  Identifier = "BadJsonTest">
+               </Test>
+               <Test
+                  Identifier = "PNChannelConstructor">
+               </Test>
+               <Test
+                  Identifier = "PNConnectionChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNConnectionTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoHelperTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagingChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNReachabilityTest">
+               </Test>
+               <Test
+                  Identifier = "PNServiceChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeUnsubscribeTest">
+               </Test>
+               <Test
+                  Identifier = "PNTimeTokenRequestTest">
+               </Test>
+               <Test
+                  Identifier = "TimeCommand">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
