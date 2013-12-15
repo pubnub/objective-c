@@ -26,9 +26,6 @@
                   Identifier = "ChangingChannels">
                </Test>
                <Test
-                  Identifier = "W_ChaosTest">
-               </Test>
-               <Test
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test

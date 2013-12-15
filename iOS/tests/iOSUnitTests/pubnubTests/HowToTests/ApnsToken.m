@@ -26,6 +26,7 @@
 
 	BOOL pNClientPushNotificationDisableDidCompleteNotification;
 	BOOL pNClientPushNotificationDisableDidFailNotification;
+	int pNClientPushNotificationChannelsRetrieveDidCompleteNotification;
 }
 
 @end
@@ -55,6 +56,10 @@
 											 selector:@selector(kPNClientPushNotificationDisableDidFailNotification:)
 												 name:kPNClientPushNotificationDisableDidFailNotification
 											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(kPNClientPushNotificationChannelsRetrieveDidCompleteNotification:)
+												 name:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification
+											   object:nil];
 }
 
 - (void)tearDown
@@ -70,7 +75,7 @@
 }
 
 - (void)kPNClientPushNotificationEnableDidFailNotification:(NSNotification *)__unused notification {
-	NSLog(@"kPNClientPushNotificationEnableDidFailNotification");
+	NSLog(@"kPNClientPushNotificationEnableDidFailNotification %@", notification);
 	pNClientPushNotificationEnableDidFailNotification = YES;
 }
 //////////////////////
@@ -82,6 +87,11 @@
 - (void)kPNClientPushNotificationDisableDidFailNotification:(NSNotification *)__unused notification {
 	NSLog(@"kPNClientPushNotificationDisableDidFailNotification");
 	pNClientPushNotificationDisableDidFailNotification = YES;
+}
+
+- (void)kPNClientPushNotificationChannelsRetrieveDidCompleteNotification:(NSNotification *)__unused notification {
+	NSLog(@"kPNClientPushNotificationChannelsRetrieveDidCompleteNotification");
+	pNClientPushNotificationChannelsRetrieveDidCompleteNotification++;
 }
 //////////////////////////////////////////////////////////////////
 
@@ -96,7 +106,7 @@
 
 		[PubNub setDelegate:self];
 		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: nil cipherKey: nil];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5" cipherKey: nil authorizationKey: @"authorizationKey"];
 		[PubNub setConfiguration: configuration];
 
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
@@ -113,9 +123,19 @@
 	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
+	[PubNub grantAllAccessRightsForApplicationAtPeriod: 1 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+		STAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);
+	}];
+	for( int j=0; j<10; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
+	[self t20SubscribeOnChannels];
+	[self t30EnablePushNotificationsOnChannels];
+	[self t40DisablePushNotificationsOnChannels];
 }
 
-- (void)test20SubscribeOnChannels
+- (void)t20SubscribeOnChannels
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	[PubNub subscribeOnChannels: pnChannels
@@ -129,7 +149,7 @@
                                  beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 }
 
--(void)test30EnablePushNotificationsOnChannels {
+-(void)t30EnablePushNotificationsOnChannels {
 	__block BOOL isCompletionBlockCalled = NO;
 	NSData *pushToken = nil;
 
@@ -142,7 +162,7 @@
 		 STAssertNotNil( error, @"enablePushNotificationsOnChannels must return error");
 	 }];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 /*||
-		(isCompletionBlockCalled == NO || pNClientPushNotificationEnableDidFailNotification == NO)*/; j++ )
+																						(isCompletionBlockCalled == NO || pNClientPushNotificationEnableDidFailNotification == NO)*/; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( pNClientPushNotificationEnableDidFailNotification, @"notification not called");
@@ -156,7 +176,7 @@
 		 STAssertNotNil( error, @"enablePushNotificationsOnChannels must return error");
 	 }];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 /*||
-		(isCompletionBlockCalled == NO || pNClientPushNotificationEnableDidFailNotification == NO)*/; j++ )
+																						(isCompletionBlockCalled == NO || pNClientPushNotificationEnableDidFailNotification == NO)*/; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( pNClientPushNotificationEnableDidFailNotification, @"notification not called");
@@ -171,13 +191,13 @@
 		 STAssertNil( error, @"enablePushNotificationsOnChannels error %@", error);
 	 }];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 /*||
-		(isCompletionBlockCalled == NO || pNClientPushNotificationEnableDidCompleteNotification == NO)*/; j++ )
+																						(isCompletionBlockCalled == NO || pNClientPushNotificationEnableDidCompleteNotification == NO)*/; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( pNClientPushNotificationEnableDidCompleteNotification, @"notification not called");
 }
 
--(void)test40DisablePushNotificationsOnChannels {
+-(void)t40DisablePushNotificationsOnChannels {
 	__block BOOL isCompletionBlockCalled = NO;
 	NSData *pushToken = nil;
 
@@ -190,25 +210,55 @@
 		 STAssertNotNil( error, @"disablePushNotificationsOnChannels must return error");
 	 }];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 /*||
-		(isCompletionBlockCalled == NO || pNClientPushNotificationDisableDidFailNotification == NO)*/; j++ )
+																						(isCompletionBlockCalled == NO || pNClientPushNotificationDisableDidFailNotification == NO)*/; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( pNClientPushNotificationDisableDidFailNotification, @"notification not called");
 
+
+	isCompletionBlockCalled = NO;
+	pNClientPushNotificationChannelsRetrieveDidCompleteNotification = 0;
+	pushToken = [@"12345678123456781234567812345678" dataUsingEncoding: NSUTF8StringEncoding];
+	[PubNub requestPushNotificationEnabledChannelsForDevicePushToken: pushToken withCompletionHandlingBlock:
+	 ^(NSArray *channels, PNError *error) {
+		 isCompletionBlockCalled = YES;
+		 STAssertNil( error, @"requestPushNotificationEnabledChannelsForDevicePushToken error %@", error);
+		 STAssertTrue( channels.count == pnChannels.count, @"channel's arrays are not equal, \n %@, \n %@", pnChannels, channels);
+		 NSLog( @"channel with push: \n %@, \n %@", pnChannels, channels);
+	 }];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+	STAssertTrue( pNClientPushNotificationChannelsRetrieveDidCompleteNotification==1, @"notification must be called once");
+
 	isCompletionBlockCalled = NO;
 	pNClientPushNotificationDisableDidCompleteNotification = NO;
 	pNClientPushNotificationDisableDidFailNotification = NO;
-	pushToken = [@"12345678123456781234567812345678" dataUsingEncoding: NSUTF8StringEncoding];
 	[PubNub disablePushNotificationsOnChannels: pnChannels withDevicePushToken:pushToken andCompletionHandlingBlock:
 	 ^(NSArray *channels, PNError *error) {
 		 isCompletionBlockCalled = YES;
 		 STAssertNil( error, @"disablePushNotificationsOnChannels error %@", error);
 	 }];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 /*||
-		(isCompletionBlockCalled == NO || pNClientPushNotificationDisableDidCompleteNotification == NO)*/; j++ )
+																						(isCompletionBlockCalled == NO || pNClientPushNotificationDisableDidCompleteNotification == NO)*/; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( pNClientPushNotificationDisableDidCompleteNotification, @"notification not called");
+
+	isCompletionBlockCalled = NO;
+	pNClientPushNotificationChannelsRetrieveDidCompleteNotification = 0;
+	pushToken = [@"12345678123456781234567812345678" dataUsingEncoding: NSUTF8StringEncoding];
+	[PubNub requestPushNotificationEnabledChannelsForDevicePushToken: pushToken withCompletionHandlingBlock:
+	 ^(NSArray *channels, PNError *error) {
+		 isCompletionBlockCalled = YES;
+		 STAssertNil( error, @"requestPushNotificationEnabledChannelsForDevicePushToken error %@", error);
+		 STAssertTrue( channels.count == 0, @"channel's array are not empty, \n %@", channels);
+		 NSLog( @"channel with push: \n %@", channels);
+	 }];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+	STAssertTrue( pNClientPushNotificationChannelsRetrieveDidCompleteNotification==1, @"notification must be called once");
 }
 
 @end
