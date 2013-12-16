@@ -156,10 +156,11 @@
 
 		__block BOOL isCompletionBlockCalled = NO;
 		[PubNub subscribeOnChannels: [PNChannel channelsWithNames: @[@"channel"]]
-		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
+		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error)
 		 {
 			 isCompletionBlockCalled = YES;
-			 STAssertNil(subscriptionError, @"subscribeOnChannels subscriptionError %@", subscriptionError);
+			 if( error != nil )
+				 STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError, @"invalid error %@", error);
 		 }];
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 			isCompletionBlockCalled == NO; j++ )
@@ -176,7 +177,9 @@
 			 if( messageSendingState == PNMessageSending )
 				 return;
 			 isCompletionBlockCalled = YES;
-			 STAssertTrue( messageSendingState == PNMessageSent, @"sendMessage error %@", data);
+			 PNError *error = data;
+			 if( error != nil )
+				 STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError, @"invalid error %@", error);
 		 }];
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 			isCompletionBlockCalled == NO; j++ )
@@ -193,8 +196,8 @@
 		[PubNub setDelegate:self];
 		[PubNub setConfiguration: configuration];
 	});
-	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-		_isDidConnectToOrigin == NO && _isConnectionDidFailWithError == NO; j++ )
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 /*&&
+		_isDidConnectToOrigin == NO && _isConnectionDidFailWithError == NO*/; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	return _isDidConnectToOrigin;
 }
