@@ -130,6 +130,9 @@
                <Test
                   Identifier = "OversizedJSON">
                </Test>
+               <Test
+                  Identifier = "TimeOutTest">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

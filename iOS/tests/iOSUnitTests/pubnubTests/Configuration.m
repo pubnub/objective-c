@@ -146,10 +146,12 @@
 		if( [configurations[i] isEqual:[PubNub sharedInstance].configuration] == YES )
 			continue;
 
-		[self connectWithConfiguration: configurations[i]];
+		BOOL isConnect = [self connectWithConfiguration: configurations[i]];
+		if( isConnect == NO )
+			continue;
 		STAssertTrue( _isDidConnectToOrigin == YES || _isConnectionDidFailWithError == YES, @"not connect");
 		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration ], @"configurations are not equals" );
-			
+
 		__block BOOL isCompletionBlockCalled = NO;
 		[PubNub subscribeOnChannels: [PNChannel channelsWithNames: @[@"channel"]]
 		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
@@ -160,6 +162,10 @@
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 			isCompletionBlockCalled == NO; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+		STAssertTrue( isCompletionBlockCalled, @"block not called" );
+
+		if( isCompletionBlockCalled == NO )
+			continue;
 
 		isCompletionBlockCalled = NO;
 		[PubNub sendMessage: @"my message" toChannel: [PNChannel channelWithName: @"channel"]
@@ -173,21 +179,25 @@
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 			isCompletionBlockCalled == NO; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+		STAssertTrue( isCompletionBlockCalled, @"block not called" );
 	}
 }
 
-- (void)connectWithConfiguration:(PNConfiguration*)configuration
+- (BOOL)connectWithConfiguration:(PNConfiguration*)configuration
 {
+	__block BOOL isCompletionBlockCalled = NO;
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-
+		isCompletionBlockCalled = YES;
 		[PubNub setDelegate:self];
 		[PubNub setConfiguration: configuration];
 	});
-	while( _isDidConnectToOrigin == NO && _isConnectionDidFailWithError == NO )
-		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+		_isDidConnectToOrigin == NO && _isConnectionDidFailWithError == NO; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isCompletionBlockCalled, @"block not called" );
+	return isCompletionBlockCalled;
 }
 
 -(void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
