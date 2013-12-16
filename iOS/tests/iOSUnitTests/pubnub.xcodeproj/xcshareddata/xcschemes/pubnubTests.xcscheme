@@ -59,12 +59,6 @@
                   Identifier = "PNServiceChannelTest">
                </Test>
                <Test
-                  Identifier = "PNSubscribeRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeUnsubscribeTest">
-               </Test>
-               <Test
                   Identifier = "PNTimeTokenRequestTest">
                </Test>
                <Test
@@ -72,6 +66,48 @@
                </Test>
                <Test
                   Identifier = "TimeOutTest">
+               </Test>
+               <Test
+                  Identifier = "CatchupTest">
+               </Test>
+               <Test
+                  Identifier = "Configuration">
+               </Test>
+               <Test
+                  Identifier = "HowToTests">
+               </Test>
+               <Test
+                  Identifier = "OversizedJSON">
+               </Test>
+               <Test
+                  Identifier = "PAMTestError">
+               </Test>
+               <Test
+                  Identifier = "PNBaseRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNHereNowRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNLatencyMeasureRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNLeaveRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessageHistoryRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagePostRequestTest">
+               </Test>
+               <Test
+                  Identifier = "SendBigMessage">
+               </Test>
+               <Test
+                  Identifier = "W_ChaosTest">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeRequestTest">
                </Test>
             </SkippedTests>
          </TestableReference>

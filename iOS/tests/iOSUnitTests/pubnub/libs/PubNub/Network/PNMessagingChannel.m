@@ -1121,11 +1121,22 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self scheduleRequest:subscribeRequest
           shouldObserveProcessing:!PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents)];
         }
+        else if (PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents)) {
+            
+            // Reconnect messaging channel to free up long-poll on server
+            [self reconnect];
+        }
     }
     else {
 
         // Schedule immediately that client unsubscribed from suggested channels
         [self.messagingDelegate messagingChannel:self didUnsubscribeFromChannels:channels sequenced:NO ];
+        
+        if (PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents)) {
+            
+            // Reconnect messaging channel to free up long-poll on server
+            [self reconnect];
+        }
     }
 }
 
