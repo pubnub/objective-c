@@ -108,9 +108,11 @@
     [super tearDown];
 }
 
-- (void)test10Connect
-{
-	[PubNub disconnect];
+- (void)test10Connect {
+	[PubNub resetClient];
+	NSLog(@"end reset");
+	for( int j=0; j<5; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
@@ -185,19 +187,16 @@
 
 - (BOOL)connectWithConfiguration:(PNConfiguration*)configuration
 {
-	__block BOOL isCompletionBlockCalled = NO;
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-		isCompletionBlockCalled = YES;
 		[PubNub setDelegate:self];
 		[PubNub setConfiguration: configuration];
 	});
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 		_isDidConnectToOrigin == NO && _isConnectionDidFailWithError == NO; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	STAssertTrue( isCompletionBlockCalled, @"block not called" );
-	return isCompletionBlockCalled;
+	return _isDidConnectToOrigin;
 }
 
 -(void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {

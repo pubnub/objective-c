@@ -26,9 +26,6 @@
                   Identifier = "PNTimeTokenRequestTest">
                </Test>
                <Test
-                  Identifier = "PNSubscribeUnsubscribeTest">
-               </Test>
-               <Test
                   Identifier = "PNSubscribeRequestTest">
                </Test>
                <Test
@@ -132,6 +129,9 @@
                </Test>
                <Test
                   Identifier = "TimeOutTest">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeUnsubscribeTest">
                </Test>
             </SkippedTests>
          </TestableReference>
