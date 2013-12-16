@@ -435,6 +435,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 - (void)disconnectWithReset:(BOOL)shouldResetCommunicationChannel {
 
     PNBitClear(&_messagingState);
+    self.oldSubscribedChannelsSet = nil;
 
     // Forward to the super class
     [super disconnect];
@@ -946,6 +947,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 [subscribeRequest resetTimeToken];
             }
             
+            [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
             [self scheduleRequest:subscribeRequest shouldObserveProcessing:PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve)];
         }
         else {
