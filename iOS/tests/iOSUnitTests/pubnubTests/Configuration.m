@@ -149,26 +149,30 @@
 		[self connectWithConfiguration: configurations[i]];
 		STAssertTrue( _isDidConnectToOrigin == YES || _isConnectionDidFailWithError == YES, @"not connect");
 		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration ], @"configurations are not equals" );
-
-		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+			
+		__block BOOL isCompletionBlockCalled = NO;
 		[PubNub subscribeOnChannels: [PNChannel channelsWithNames: @[@"channel"]]
 		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 		 {
-			 dispatch_semaphore_signal(semaphore);
+			 isCompletionBlockCalled = YES;
 			 STAssertNil(subscriptionError, @"subscribeOnChannels subscriptionError %@", subscriptionError);
 		 }];
-		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW)) [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+			isCompletionBlockCalled == NO; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
-		semaphore = dispatch_semaphore_create(0);
+		isCompletionBlockCalled = NO;
 		[PubNub sendMessage: @"my message" toChannel: [PNChannel channelWithName: @"channel"]
 		withCompletionBlock:^(PNMessageState messageSendingState, id data)
 		 {
 			 if( messageSendingState == PNMessageSending )
 				 return;
-			 dispatch_semaphore_signal(semaphore);
+			 isCompletionBlockCalled = YES;
 			 STAssertTrue( messageSendingState == PNMessageSent, @"sendMessage error %@", data);
 		 }];
-		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW)) [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+			isCompletionBlockCalled == NO; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	}
 }
 
