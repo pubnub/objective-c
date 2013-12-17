@@ -1,9 +1,27 @@
 
 
 #import "ConnectionIssuesAppDelegate.h"
+#import "PNReachability.h"
 #import "PubNub.h"
 
 @implementation ConnectionIssuesAppDelegate
+
+typedef enum _PNReachabilityStatus {
+
+    // PubNub services reachability wasn't tested yet
+    PNReachabilityStatusUnknown,
+
+    // PubNub services can't be reached at this moment (looks like network/internet failure occurred)
+    PNReachabilityStatusNotReachable,
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    // PubNub service is reachable over cellular channel (EDGE or 3G)
+    PNReachabilityStatusReachableViaCellular,
+#endif
+
+    // PubNub services is available over WiFi
+    PNReachabilityStatusReachableViaWiFi
+} PNReachabilityStatus;
 
 #pragma mark - UIApplication delegate methods
 
@@ -247,6 +265,22 @@
 //	NSRange range = NSMakeRange(log.text.length - 1, 1);
 //	[log scrollRangeToVisible:range];
 	[self subscribeOnChannels];
+
+	int64_t delay = 10;
+	dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+	dispatch_after(time, dispatch_get_main_queue(), ^(void) {
+		PNReachability *serviceReachability = [[PubNub sharedInstance] performSelector:@selector(reachability)];
+		NSLog(@"PNReachability status %d", (int)[serviceReachability performSelector:@selector(status)]);
+		if( (int)[serviceReachability performSelector:@selector(status)] == PNReachabilityStatusNotReachable &&
+		   (int)[serviceReachability performSelector:@selector(status)] == PNReachabilityStatusNotReachable ) {
+			[self performSelector: @selector(errorSelectorInvalidReachabilityStatus)];
+		}
+		NSLog(@"PNReachability lookupStatus %d", (int)[serviceReachability performSelector:@selector(lookupStatus)]);
+		if( (int)[serviceReachability performSelector:@selector(lookupStatus)] == PNReachabilityStatusNotReachable &&
+		   (int)[serviceReachability performSelector:@selector(lookupStatus)] == PNReachabilityStatusNotReachable ) {
+			[self performSelector: @selector(errorSelectorInvalidReachabilityStatus)];
+		}
+	});
 }
 
 - (void)handleClientDidDisconnectToOriginNotification:(NSNotification *)notification {
@@ -301,6 +335,22 @@
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 		[self addMessagetoLog: @"turning off WifI"];
 		[self wifiOff];
+
+		int64_t delay = 15;
+		dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+		dispatch_after(time, dispatch_get_main_queue(), ^(void) {
+			PNReachability *serviceReachability = [[PubNub sharedInstance] performSelector:@selector(reachability)];
+			NSLog(@"PNReachability status %d", (int)[serviceReachability performSelector:@selector(status)]);
+			if( (int)[serviceReachability performSelector:@selector(status)] == PNReachabilityStatusReachableViaCellular ||
+			    (int)[serviceReachability performSelector:@selector(status)] == PNReachabilityStatusReachableViaWiFi ) {
+				[self performSelector: @selector(errorSelectorInvalidReachabilityStatus)];
+			}
+			NSLog(@"PNReachability lookupStatus %d", (int)[serviceReachability performSelector:@selector(lookupStatus)]);
+			if( (int)[serviceReachability performSelector:@selector(lookupStatus)] == PNReachabilityStatusReachableViaCellular ||
+			   (int)[serviceReachability performSelector:@selector(lookupStatus)] == PNReachabilityStatusReachableViaWiFi ) {
+				[self performSelector: @selector(errorSelectorInvalidReachabilityStatus)];
+			}
+		});
 	});
 
 	delayInSeconds = 30;
