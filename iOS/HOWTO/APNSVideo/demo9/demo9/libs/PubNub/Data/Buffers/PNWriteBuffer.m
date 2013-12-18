@@ -76,6 +76,7 @@ static NSUInteger const kPNWriteBufferSize = 4096;
         
         // Allocate buffer for HTTP payload
         buffer = malloc((size_t)self.length);
+		NSLog(@"httpPayload UTF8String \n%s", [httpPayload UTF8String]);
         strncpy(buffer, [httpPayload UTF8String], (size_t)self.length);
     }
     
