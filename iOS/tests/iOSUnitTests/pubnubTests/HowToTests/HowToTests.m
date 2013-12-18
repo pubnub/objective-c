@@ -21,6 +21,7 @@
 #import "TestSemaphor.h"
 #import "Swizzler.h"
 #import "PNConnectionBadJson.h"
+#import "PNMessageHistoryRequest.h"
 
 @interface HowToTests ()
 
@@ -288,14 +289,14 @@
 	[self t06ClientChannelSubscriptionStateObserver];
 	[self t08AddPresenceEventObserver];
 	[self t10Connect];
-//	[self t20SubscribeOnChannels];
-//	[self t25RequestParticipantsListForChannel];
-//	[self t30RequestParticipantsListForChannel];
-//	[self t35RequestServerTimeTokenWithCompletionBlock];
-//	[self t40SendMessage];
-//	[self t45SendMessageBig];
-//	[self t50RequestHistoryForChannel];
-//	[self t55RequestHistoryReverse];
+	[self t20SubscribeOnChannels];
+	[self t25RequestParticipantsListForChannel];
+	[self t30RequestParticipantsListForChannel];
+	[self t35RequestServerTimeTokenWithCompletionBlock];
+	[self t40SendMessage];
+	[self t45SendMessageBig];
+	[self t50RequestHistoryForChannel];
+	[self t55RequestHistoryReverse];
 	[self t60SubscribeOnChannelsByTurns];
 	[self t900UnsubscribeFromChannels];
 	[self t910removeClientChannelSubscriptionStateObserver];
@@ -671,7 +672,7 @@
 				 //				 NSLog( @"test45SendMessageBig %f", interval);
 				 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
-				 NSLog(@"withCompletionBlock %d, message size %lu", messageSendingState, (unsigned long)message.length);
+				 NSLog(@"withCompletionBlock %u, message size %lu", messageSendingState, (unsigned long)message.length);
 			 }];
 
 			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 ||
@@ -696,6 +697,16 @@
 	__block BOOL isCompletionBlockCalled = NO;
 	NSDate *start = [NSDate date];
 	NSLog(@"requestHistoryForChannel start %@, end %@", startDate, endDate);
+	PNMessageHistoryRequest *request = [PNMessageHistoryRequest messageHistoryRequestForChannel:channel
+																						   from:startDate
+																							 to:endDate
+																						  limit:limit
+																				 reverseHistory:shouldReverseMessageHistory];
+	PNWriteBuffer *buffer = [request buffer];
+	NSString *string = [NSString stringWithUTF8String: (char*)buffer.buffer];
+	NSLog(@"buffer:\n%@", string);
+	STAssertTrue( [string rangeOfString: [PubNub sharedInstance].configuration.subscriptionKey].location != NSNotFound, @"subscriptionKey not found");
+
 	[PubNub requestHistoryForChannel:channel from:startDate to:endDate limit:limit reverseHistory:NO withCompletionBlock:^(NSArray *messages, PNChannel *ch, PNDate *fromDate, PNDate *toDate, PNError *error) {
 		//		 dispatch_semaphore_signal(semaphore);
 		isCompletionBlockCalled = YES;
