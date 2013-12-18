@@ -13,6 +13,7 @@
 
 @interface PNBackgroundAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate, CLLocationManagerDelegate> {
 	CLLocationManager *locationManager;
+	int currentInterval;
 }
 
 
@@ -21,6 +22,7 @@
 
 @property (nonatomic, strong) UIWindow *window;
 @property NSString *lastTimeToken;
+@property NSString *lastClientIdentifier;
 
 #pragma mark -
 

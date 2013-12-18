@@ -23,6 +23,9 @@
 		PNSubscribeRequest *subscribeRequest = (PNSubscribeRequest*)currentRequest;
 		NSString *newTimeToken = [subscribeRequest performSelector:@selector(updateTimeToken)];
 
+		if( delegate.lastClientIdentifier != nil && [delegate.lastClientIdentifier isEqualToString:[PubNub clientIdentifier]] == NO )
+			[delegate performSelector: @selector(errorSelectorDifferentClientId) withObject: nil];
+		NSLog(@"\nclient id old %@ \nclient id new %@", delegate.lastClientIdentifier, [PubNub clientIdentifier]);
 		if( delegate.lastTimeToken == nil || [delegate.lastTimeToken isEqualToString: @"0"] == YES )
 			delegate.lastTimeToken = nil;
 		else {
@@ -35,7 +38,7 @@
 				 }];
 			}
 			else
-				[delegate performSelector: @selector(errorSelector) withObject: nil];
+				[delegate performSelector: @selector(errorSelectorDifferentTimeToken) withObject: nil];
 
 			delegate.lastTimeToken = nil;
 		}

@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate> {
+	NSString *returnToId;
+	int afterSeconds;
+}
 
 @property (strong, nonatomic) UIWindow *window;
 
