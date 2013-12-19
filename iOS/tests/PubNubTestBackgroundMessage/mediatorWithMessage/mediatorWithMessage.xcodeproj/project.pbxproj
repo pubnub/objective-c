@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5AC38A4317F1C0E000956E69 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFC8166FD94D00E07B40 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		5AC38A4417F1C0E000956E69 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 7966DFCC166FDC7C00E07B40 /* JSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		5AC38A7E17F1C0E000956E69 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AC38A3717F1B28500956E69 /* CoreLocation.framework */; };
 		5AC38A7F17F1C0E000956E69 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */; };
 		5AC38A8017F1C0E000956E69 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32230166DF847006DB535 /* CoreGraphics.framework */; };
@@ -249,10 +247,6 @@
 		5ADD208D186223B600B32F8D /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		5ADD208E186223B600B32F8D /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
 		792C1F3F16777BD40054E18E /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		7966DFC7166FD94D00E07B40 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
-		7966DFC8166FD94D00E07B40 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
-		7966DFCB166FDC7C00E07B40 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
-		7966DFCC166FDC7C00E07B40 /* JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
 		79C3222C166DF847006DB535 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		79C3222E166DF847006DB535 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		79C32230166DF847006DB535 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -565,17 +559,6 @@
 			path = Transport;
 			sourceTree = "<group>";
 		};
-		7966DFC6166FD94D00E07B40 /* JSONKit */ = {
-			isa = PBXGroup;
-			children = (
-				7966DFC7166FD94D00E07B40 /* JSONKit.h */,
-				7966DFC8166FD94D00E07B40 /* JSONKit.m */,
-				7966DFCB166FDC7C00E07B40 /* JSON.h */,
-				7966DFCC166FDC7C00E07B40 /* JSON.m */,
-			);
-			path = JSONKit;
-			sourceTree = "<group>";
-		};
 		79C3221D166DF846006DB535 = {
 			isa = PBXGroup;
 			children = (
@@ -636,7 +619,6 @@
 			isa = PBXGroup;
 			children = (
 				5ADD1FE0186223B600B32F8D /* PubNub */,
-				7966DFC6166FD94D00E07B40 /* JSONKit */,
 			);
 			path = libs;
 			sourceTree = "<group>";
@@ -734,7 +716,6 @@
 				5ADD2099186223B600B32F8D /* PNChannelHistoryParser.m in Sources */,
 				5ADD20BF186223B600B32F8D /* PNPushNotificationsRemoveRequest.m in Sources */,
 				5ADD2098186223B600B32F8D /* PNChannelEventsResponseParser.m in Sources */,
-				5AC38A4317F1C0E000956E69 /* JSONKit.m in Sources */,
 				5ADD20B7186223B600B32F8D /* PNBaseRequest.m in Sources */,
 				5ADD2097186223B600B32F8D /* PNActionResponseParser.m in Sources */,
 				5ADD20BA186223B600B32F8D /* PNLatencyMeasureRequest.m in Sources */,
@@ -746,7 +727,6 @@
 				5ADD20B3186223B600B32F8D /* NSMutableArray+PNAdditions.m in Sources */,
 				5ADD20C1186223B600B32F8D /* PNSubscribeRequest.m in Sources */,
 				5ADD20C0186223B600B32F8D /* PNPushNotificationsStateChangeRequest.m in Sources */,
-				5AC38A4417F1C0E000956E69 /* JSON.m in Sources */,
 				5ADD209D186223B600B32F8D /* PNPushNotificationsEnabledChannelsParser.m in Sources */,
 				5ADD2090186223B600B32F8D /* PubNub.m in Sources */,
 				5ADD2094186223B600B32F8D /* PNPresenceEvent.m in Sources */,

@@ -22,13 +22,13 @@
 #pragma mark - Weaks
 
 #ifndef pn_desired_weak
-    #if __has_feature(objc_arc_weak)
-        #define pn_desired_weak weak
-        #define __pn_desired_weak __weak
-    #else
-        #define pn_desired_weak unsafe_unretained
-        #define __pn_desired_weak __unsafe_unretained
-    #endif // __has_feature(objc_arc_weak)
+#if __has_feature(objc_arc_weak)
+#define pn_desired_weak weak
+#define __pn_desired_weak __weak
+#else
+#define pn_desired_weak unsafe_unretained
+#define __pn_desired_weak __unsafe_unretained
+#endif // __has_feature(objc_arc_weak)
 #endif // pn_desired_weak
 
 
@@ -39,8 +39,14 @@
 // Default file size is 5Mb
 #define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
 
-#define PNLOG_LOGGING_ENABLED 1
-#define PNLOG_STORE_LOG_TO_FILE 0
+#if COCOAPODS == 1
+	#define PNLOG_LOGGING_ENABLED 0
+	#define PNLOG_STORE_LOG_TO_FILE 0
+#else
+	#define PNLOG_LOGGING_ENABLED 1
+	#define PNLOG_STORE_LOG_TO_FILE 1
+#endif
+
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
 #define PNLOG_DELEGATE_LOGGING_ENABLED 1
 #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
@@ -55,34 +61,34 @@
 #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
 
 #ifdef PN_TESTING
-    #undef PNLOG_LOGGING_ENABLED
-    #define PNLOG_LOGGING_ENABLED 1
-    #undef PNLOG_STORE_LOG_TO_FILE
-    #define PNLOG_STORE_LOG_TO_FILE 1
-    #undef PNLOG_GENERAL_LOGGING_ENABLED
-    #define PNLOG_GENERAL_LOGGING_ENABLED 1
-    #undef PNLOG_DELEGATE_LOGGING_ENABLED
-    #define PNLOG_DELEGATE_LOGGING_ENABLED 1
-    #undef PNLOG_REACHABILITY_LOGGING_ENABLED
-    #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
-    #undef PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED
-    #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
-    #undef PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED
-    #define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
-    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 1
-    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 1
-    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
-    #undef PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED
-    #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
-    #undef PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED
-    #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
-    #undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED
-    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
-    #undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED
-    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
+#undef PNLOG_LOGGING_ENABLED
+#define PNLOG_LOGGING_ENABLED 1
+#undef PNLOG_STORE_LOG_TO_FILE
+#define PNLOG_STORE_LOG_TO_FILE 1
+#undef PNLOG_GENERAL_LOGGING_ENABLED
+#define PNLOG_GENERAL_LOGGING_ENABLED 1
+#undef PNLOG_DELEGATE_LOGGING_ENABLED
+#define PNLOG_DELEGATE_LOGGING_ENABLED 1
+#undef PNLOG_REACHABILITY_LOGGING_ENABLED
+#define PNLOG_REACHABILITY_LOGGING_ENABLED 1
+#undef PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED
+#define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
+#undef PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED
+#define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
+#undef PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED
+#define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 1
+#undef PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED
+#define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 1
+#undef PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED
+#define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
+#undef PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED
+#define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
+#undef PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED
+#define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
+#undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
+#undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
 #endif
 
 typedef enum _PNLogLevels {
@@ -111,57 +117,57 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
 
         case PNLogGeneralLevel:
 
-                isLoggingEnabledForLevel = PNLOG_GENERAL_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_GENERAL_LOGGING_ENABLED == 1;
             break;
 
         case PNLogDelegateLevel:
 
-                isLoggingEnabledForLevel = PNLOG_DELEGATE_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_DELEGATE_LOGGING_ENABLED == 1;
             break;
 
         case PNLogReachabilityLevel:
 
-                isLoggingEnabledForLevel = PNLOG_REACHABILITY_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_REACHABILITY_LOGGING_ENABLED == 1;
             break;
 
         case PNLogDeserializerInfoLevel:
 
-                isLoggingEnabledForLevel = PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED == 1;
             break;
 
         case PNLogDeserializerErrorLevel:
 
-                isLoggingEnabledForLevel = PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED == 1;
             break;
 
         case PNLogConnectionLayerErrorLevel:
 
-                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED == 1;
             break;
 
         case PNLogConnectionLayerInfoLevel:
 
-                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED == 1;
             break;
 
         case PNLogConnectionLayerHTTPLoggingLevel:
 
-                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED == 1;
             break;
 
         case PNLogCommunicationChannelLayerErrorLevel:
 
-                isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED == 1;
             break;
 
         case PNLogCommunicationChannelLayerWarnLevel:
 
-                isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED == 1;
             break;
 
         case PNLogCommunicationChannelLayerInfoLevel:
 
-                isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED == 1;
+			isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED == 1;
             break;
     }
 
@@ -326,7 +332,7 @@ void PNLog(PNLogLevels level, id sender, ...) {
                 break;
             case PNLogDeserializerInfoLevel:
             case PNLogConnectionLayerInfoLevel:
-	        case PNLogConnectionLayerHTTPLoggingLevel:
+			case PNLogConnectionLayerHTTPLoggingLevel:
             case PNLogCommunicationChannelLayerInfoLevel:
 
                 additionalData = @"{INFO}";
@@ -426,6 +432,26 @@ NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
 
 
     return timeStamp;
+}
+
+static NSString* PNObfuscateString(NSString *string);
+NSString *PNObfuscateString(NSString *string) {
+
+    NSString *obfuscatedString = string;
+    NSUInteger minimumWidth = 3;
+    NSUInteger stringWidth = (NSUInteger)([string length]/2);
+    if (stringWidth >= minimumWidth) {
+
+        obfuscatedString = [NSString stringWithFormat:@"%@*****%@", [string substringToIndex:minimumWidth],
+                            [string substringFromIndex:([string length] - minimumWidth)]];
+    }
+    else {
+
+        obfuscatedString = [obfuscatedString substringToIndex:stringWidth];
+    }
+
+
+    return obfuscatedString;
 }
 
 #pragma clang diagnostic pop

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5AC38A3A17F1C0E000956E69"
-               BuildableName = "pubnubTestBackground Background.app"
+               BuildableName = "mediatorWithMessage Background.app"
                BlueprintName = "mediatorWithMessageBackground"
                ReferencedContainer = "container:mediatorWithMessage.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5AC38A3A17F1C0E000956E69"
-            BuildableName = "pubnubTestBackground Background.app"
+            BuildableName = "mediatorWithMessage Background.app"
             BlueprintName = "mediatorWithMessageBackground"
             ReferencedContainer = "container:mediatorWithMessage.xcodeproj">
          </BuildableReference>
@@ -52,7 +52,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5AC38A3A17F1C0E000956E69"
-            BuildableName = "pubnubTestBackground Background.app"
+            BuildableName = "mediatorWithMessage Background.app"
             BlueprintName = "mediatorWithMessageBackground"
             ReferencedContainer = "container:mediatorWithMessage.xcodeproj">
          </BuildableReference>
@@ -70,7 +70,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5AC38A3A17F1C0E000956E69"
-            BuildableName = "pubnubTestBackground Background.app"
+            BuildableName = "mediatorWithMessage Background.app"
             BlueprintName = "mediatorWithMessageBackground"
             ReferencedContainer = "container:mediatorWithMessage.xcodeproj">
          </BuildableReference>

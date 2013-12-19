@@ -84,6 +84,60 @@
     return asciiString;
 }
 
+- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(UILineBreakMode)lineBreakMode {
+    
+    NSString *truncatedString = self;
+    if (length < self.length) {
+        
+        switch (lineBreakMode) {
+                
+            case UILineBreakModeHeadTruncation:
+                {
+                    NSUInteger index = (self.length - length);
+                    if (index + 1 < self.length) {
+                        
+                        index++;
+                    }
+                    truncatedString = [NSString stringWithFormat:@"…%@", [self substringFromIndex:index]];
+                }
+                break;
+            case UILineBreakModeMiddleTruncation:
+                {
+                    NSUInteger maximumHalfLength = ceilf(length * 0.5f);
+                    if (maximumHalfLength == (self.length * 0.5f)) {
+                        
+                        maximumHalfLength = MAX(maximumHalfLength - 2, MAX(maximumHalfLength - 1, 0));
+                    }
+                    
+                    truncatedString = [NSString stringWithFormat:@"%@…%@", [self substringToIndex:maximumHalfLength],
+                                       [self substringFromIndex:(self.length - maximumHalfLength)]];
+                }
+                break;
+            case UILineBreakModeTailTruncation:
+                {
+                    NSUInteger index = length;
+                    if (index - 1 > 0) {
+                        
+                        index--;
+                    }
+                    truncatedString = [NSString stringWithFormat:@"%@…", [self substringToIndex:index]];
+                }
+                break;
+                
+            default:
+                
+                if (lineBreakMode != UILineBreakModeCharacterWrap && lineBreakMode != UILineBreakModeWordWrap) {
+                    
+                    truncatedString = [self substringToIndex:length];
+                }
+                break;
+        }
+    }
+    
+    
+    return truncatedString;
+}
+
 
 #pragma mark - Cryptography methods
 

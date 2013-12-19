@@ -361,12 +361,19 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                request.closeConnection = NO;
 
                BOOL isSubscribeRequest = [request isKindOfClass:[PNSubscribeRequest class]];
-               if ([request isKindOfClass:[PNSubscribeRequest class]] && self.isRestoringSubscriptionOnResume) {
+               if (isSubscribeRequest && self.isRestoringSubscriptionOnResume) {
 
                    if (!useLastTimeToken) {
 
                        [(PNSubscribeRequest *)request resetTimeToken];
                    }
+                   
+                   PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
+                                               BITS_LIST_TERMINATOR);
+                   PNBitOn(&_messagingState, PNMessagingChannelRestoringSubscription);
+                   
+                   // Notify delegate that messaging channel is about to restore subscription on previous channels
+                   [self.messagingDelegate messagingChannel:self willRestoreSubscriptionOnChannels:((PNSubscribeRequest *)request).channels];
                }
 
                // Check whether client is waiting for request completion
@@ -851,7 +858,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // presence modification logic
     if (!isPresenceModification && [[self channelsWithOutPresenceFromList:[channelsSet allObjects]] count] == 0) {
 
-        PNBitOn(&channelsPresence, PNMessagingChannelEnablingPresence);
+        unsigned long updatedChannelsPresence = channelsPresence;
+        PNBitOn(&updatedChannelsPresence, PNMessagingChannelEnablingPresence);
+        channelsPresence = updatedChannelsPresence;
         isPresenceModification = YES;
     }
 
@@ -1162,10 +1171,13 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] LEAVE REQUEST RESULT: %@ (STATE: %d)",
               self, parser, self.messagingState);
 
+        PNOperationResultEvent result = PNOperationResultLeave;
+        shouldRemoveChannels = YES;
+        
         // Ensure that parsed data has numeric data, which will mean that this is status code or event enum value
         if ([[parser parsedData] isKindOfClass:[NSNumber class]]) {
 
-            PNOperationResultEvent result = (PNOperationResultEvent)[[parser parsedData] intValue];
+            result = (PNOperationResultEvent)[[parser parsedData] intValue];
             shouldRemoveChannels = result == PNOperationResultLeave;
         }
     }
@@ -1286,6 +1298,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (void)handleSubscribeDidFail:(PNBaseRequest *)request withError:(PNError *)error {
 
+    BOOL shouldRestoreSubscriptionOnPreviousChannels = error.code != kPNAPIAccessForbiddenError;
     PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
                                 PNMessagingChannelSubscriptionTimeTokenRetrieve, BITS_LIST_TERMINATOR);
 
@@ -1329,14 +1342,23 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
               self, error, subscriptionRequest.channels, self.messagingState);
 
         // Checking whether user generated request or not
-        if (request.isSendingByUserRequest) {
+        if (request.isSendingByUserRequest || error.code == kPNAPIAccessForbiddenError) {
+            
+            if (error.code == kPNAPIAccessForbiddenError) {
+                
+                NSSet *channelsFromFailedRequest = [self channelsWithPresenceFromList:subscriptionRequest.channels forSubscribe:NO];
+                [self.subscribedChannelsSet minusSet:channelsFromFailedRequest];
+            }
 
             NSArray *channels = [self channelsWithOutPresenceFromList:subscriptionRequest.channels];
             [self.messagingDelegate messagingChannel:self didFailSubscribeOnChannels:channels withError:error];
         }
     }
 
-    [self restoreSubscriptionOnPreviousChannels];
+    if (shouldRestoreSubscriptionOnPreviousChannels) {
+        
+        [self restoreSubscriptionOnPreviousChannels];
+    }
 }
 
 - (void)handleUnsubscribeDidFail:(PNBaseRequest *)request withError:(PNError *)error {
@@ -1832,7 +1854,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] WILL START REQUEST PROCESSING: %@ [BODY: %@](STATE: %d)",
-          self, request, request.resourcePath, self.messagingState);
+          self, request, request.debugResourcePath, self.messagingState);
 
 
     // Check whether connection should be closed for resubscribe
@@ -1853,7 +1875,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 - (void)requestsQueue:(PNRequestsQueue *)queue didSendRequest:(PNBaseRequest *)request {
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DID SEND REQUEST: %@ [BODY: %@][WAITING FOR COMPLETION? %@](STATE: %d)",
-          self, request, request.resourcePath, [self isWaitingRequestCompletion:request.shortIdentifier] ? @"YES" : @"NO", self.messagingState);
+          self, request, request.debugResourcePath, [self isWaitingRequestCompletion:request.shortIdentifier] ? @"YES" : @"NO", self.messagingState);
 
     // Check whether non-initial subscription request has been sent
     if ([request isKindOfClass:[PNSubscribeRequest class]]) {
@@ -2078,7 +2100,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     if (![request canRetry]) {
 
         PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@](STATE: %d)",
-              self, request, request.resourcePath, self.messagingState);
+              self, request, request.debugResourcePath, self.messagingState);
 
         // Removing failed request from queue
         [self destroyRequest:request];
@@ -2097,7 +2119,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 - (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DID CANCEL REQUEST: %@ [BODY: %@](STATE: %d)",
-          self, request, request.resourcePath, self.messagingState);
+          self, request, request.debugResourcePath, self.messagingState);
 
 
     if ([request isKindOfClass:[PNSubscribeRequest class]]) {

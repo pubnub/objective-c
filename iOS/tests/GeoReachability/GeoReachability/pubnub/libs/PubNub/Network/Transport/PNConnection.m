@@ -1344,7 +1344,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (void)disconnect {
     
     PNBitOn(&_state, PNByUserRequest);
-    
+    self.connectionRetryCount = 0;
     
     [self disconnectByInternalRequest];
 }
@@ -2005,7 +2005,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                                 PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::WRITE] WRITTEN PART OF "
                                         "REQUEST BODY (%d/%d BYTES)(STATE: %d)",
-                                      self.name ? self.name : self, bytesWritten, self.writeBuffer.length, self.state);
+                                      self.name ? self.name : self, (self.writeBuffer.offset + bytesWritten), self.writeBuffer.length, self.state);
 
                                 self.writeStreamCanHandleData = NO;
 

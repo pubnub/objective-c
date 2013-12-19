@@ -41,6 +41,20 @@
 @property (nonatomic, assign) NSUInteger retryCount;
 
 
+#pragma mark - Instance methods
+
+/**
+ Compose and output request resource path and depending on whether it should be used to send request or to be shown
+ in console, it will obfuscate some inner data.
+
+ @param forConsole
+ If set to \c YES some secret information will be obfuscated or shown in original form if set to \c NO.
+
+ @return composed resource path which can be used for request and console output
+ */
+- (NSString *)resourcePath:(BOOL)forConsole;
+
+
 @end
 
 
@@ -78,6 +92,18 @@
     
     PNLog(PNLogCommunicationChannelLayerWarnLevel, self, @" THIS METHOD SHOULD BE RELOADED IN SUBCLASS");
     
+    return [self resourcePath:NO];
+}
+
+- (NSString *)debugResourcePath {
+
+    return [self resourcePath:YES];
+}
+
+- (NSString *)resourcePath:(BOOL)forConsole {
+
+    PNLog(PNLogCommunicationChannelLayerWarnLevel, self, @" THIS METHOD SHOULD BE RELOADED IN SUBCLASS");
+
     return @"/";
 }
 
@@ -87,8 +113,16 @@
 }
 
 - (void)reset {
+    
+    [self resetWithRetryCount:YES];
+}
 
-    self.retryCount = 0;
+- (void)resetWithRetryCount:(BOOL)shouldResetRetryCountInformation {
+    
+    if (shouldResetRetryCountInformation) {
+        
+        self.retryCount = 0;
+    }
     self.processing = NO;
     self.processed = NO;
 }

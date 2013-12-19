@@ -95,12 +95,6 @@
                   Identifier = "PNMessagePostRequestTest">
                </Test>
                <Test
-                  Identifier = "PNCryptoHelperTest">
-               </Test>
-               <Test
-                  Identifier = "PNCryptoTest">
-               </Test>
-               <Test
                   Identifier = "BadJsonTest">
                </Test>
                <Test
@@ -147,6 +141,12 @@
                </Test>
                <Test
                   Identifier = "PAMTestError">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoHelperTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoTest">
                </Test>
             </SkippedTests>
          </TestableReference>

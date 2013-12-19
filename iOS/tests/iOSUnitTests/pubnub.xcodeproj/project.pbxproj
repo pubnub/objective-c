@@ -938,7 +938,6 @@
 			isa = PBXGroup;
 			children = (
 				5ACA67D0185B81F300C2B214 /* PubNub */,
-				79C32274166DFA42006DB535 /* Classes */,
 				79C32283166DFA56006DB535 /* Resources */,
 				79C32233166DF847006DB535 /* Supporting Files */,
 			);
@@ -948,6 +947,7 @@
 		79C32233166DF847006DB535 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				79C32274166DFA42006DB535 /* Classes */,
 				79C32238166DF847006DB535 /* main.m */,
 				79C3223A166DF847006DB535 /* pubnub-Prefix.pch */,
 			);

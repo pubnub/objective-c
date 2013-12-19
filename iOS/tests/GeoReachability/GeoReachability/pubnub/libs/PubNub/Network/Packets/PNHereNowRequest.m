@@ -27,8 +27,7 @@
 
 #pragma mark - Properties
 
-// Stores reference on channel for which participants
-// list will be requested
+// Stores reference on channel for which participants list will be requested
 @property (nonatomic, strong) PNChannel *channel;
 
 
@@ -76,7 +75,13 @@
                                       ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
+- (NSString *)debugResourcePath {
 
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+
+    return [resourcePathComponents componentsJoinedByString:@"/"];
+}
 
 #pragma mark -
 

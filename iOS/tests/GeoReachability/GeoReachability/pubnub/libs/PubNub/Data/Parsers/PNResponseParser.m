@@ -13,19 +13,20 @@
 //
 
 #import "PNResponseParser.h"
+#import "PNAccessRightsResponseParser+Protected.h"
+#import "PNPushNotificationsEnabledChannelsParser.h"
 #import "PNHereNowResponseParser+Protected.h"
 #import "PNActionResponseParser+Protected.h"
 #import "PNOperationStatusResponseParser.h"
 #import "PNErrorResponseParser+Protected.h"
 #import "PNChannelEventsResponseParser.h"
+#import "PNServiceResponseCallbacks.h"
 #import "PNTimeTokenResponseParser.h"
 #import "PNHereNowResponseParser.h"
 #import "PNActionResponseParser.h"
+#import "PNChannelHistoryParser.h"
 #import "PNErrorResponseParser.h"
 #import "PNResponse.h"
-#import "PNChannelHistoryParser.h"
-#import "PNServiceResponseCallbacks.h"
-#import "PNPushNotificationsEnabledChannelsParser.h"
 
 
 // ARC check
@@ -34,6 +35,11 @@
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
 
+
+#pragma mark Static
+
+// Stores reference on key which is used to store service name in response
+static NSString * const kPNResponseServiceKey = @"service";
 
 
 #pragma mark - Private interface methods
@@ -110,28 +116,40 @@
             }
         }
     }
-    else {
+    else if ([response.response isKindOfClass:[NSDictionary class]]){
 
         NSDictionary *responseData = response.response;
 
-        // Check whether response arrived as result of specific action
-        // execution
+        // Check whether response arrived as result of specific action execution
         if ([responseData objectForKey:kPNResponseActionKey]) {
 
             parserClass = [PNActionResponseParser class];
         }
-        // Check whether result is result for "Here now" request
-        // execution or not
+        // Check whether result is result for "Here now" request execution or not
         else if ([responseData objectForKey:kPNResponseUUIDKey] &&
                  [responseData objectForKey:kPNResponseOccupancyKey]) {
 
             parserClass = [PNHereNowResponseParser class];
+        }
+        // Check whether response arrived as result of channel access rights change or not
+        else if ([responseData objectForKey:kPNResponsePayloadKey] && [responseData objectForKey:kPNResponseServiceKey] &&
+                ![responseData objectForKey:kPNResponseErrorMessageKey]) {
+            
+            if ([[responseData valueForKey:kPNResponseServiceKey] isEqualToString:kPNAccessServiceName]) {
+                
+                parserClass = [PNAccessRightsResponseParser class];
+            }
         }
         // Check whether error report response arrived
         else if ([responseData objectForKey:kPNResponseErrorMessageKey]) {
 
             parserClass = [PNErrorResponseParser class];
         }
+    }
+    // Looks like server sent malformed JSON string (there is no array or dictionary at top level) and we should treat it as error.
+    else {
+        
+        parserClass = [PNErrorResponseParser class];
     }
 
 
