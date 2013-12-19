@@ -127,8 +127,8 @@
 
     return [NSString stringWithFormat:@"%@/publish/%@/%@/%@/%@/%@_%@/%@?uuid=%@%@",
                     kPNRequestAPIVersionPrefix,
-                    [PubNub sharedInstance].configuration.publishKey,
-                    [PubNub sharedInstance].configuration.subscriptionKey,
+                    [[PubNub sharedInstance].configuration.publishKey percentEscapedString],
+                    [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                     [self signature],
                     [self.message.channel escapedName],
                     [self callbackMethodName],
@@ -141,8 +141,8 @@
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([PubNub sharedInstance].configuration.publishKey)];
-    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.publishKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

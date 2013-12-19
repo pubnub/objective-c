@@ -1332,12 +1332,12 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     if ([notification.name isEqualToString:kPNClientDidReceiveMessagesHistoryNotification]) {
 
         history = (PNMessagesHistory *)notification.userInfo;
-        channel = history.channel;
+        channel = ([history.channel isKindOfClass:[NSArray class]] ? [(NSArray *)history.channel lastObject] : history.channel);
     }
     else {
 
         error = (PNError *)notification.userInfo;
-        channel = error.associatedObject;
+        channel = ([error.associatedObject isKindOfClass:[NSArray class]] ? [(NSArray *)error.associatedObject lastObject] : error.associatedObject);
     }
 
     // Retrieving list of observers (including one time and persistent observers)
@@ -1432,12 +1432,12 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     if ([notification.name isEqualToString:kPNClientDidReceiveParticipantsListNotification]) {
 
         participants = (PNHereNow *)notification.userInfo;
-        channel = participants.channel;
+        channel = ([participants.channel isKindOfClass:[NSArray class]] ? [(NSArray *)participants.channel lastObject] : participants.channel);
     }
     else {
 
         error = (PNError *)notification.userInfo;
-        channel = error.associatedObject;
+        channel = ([error.associatedObject isKindOfClass:[NSArray class]] ? [(NSArray *)error.associatedObject lastObject] : error.associatedObject);
     }
 
     // Retrieving list of observers (including one time and persistent observers)

@@ -124,7 +124,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 5;
         [description appendFormat:@" users: %@;", self.clientsAuthorizationKeys];
     }
 
-    [description appendFormat:@" access period duration: %d>", self.accessPeriodDuration];
+    [description appendFormat:@" access period duration: %lu>", (unsigned long)self.accessPeriodDuration];
 
 
     return description;

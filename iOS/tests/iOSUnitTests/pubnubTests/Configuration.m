@@ -108,9 +108,17 @@
     [super tearDown];
 }
 
+<<<<<<< HEAD
 - (void)test10Connect
 {
 	[PubNub disconnect];
+=======
+- (void)test10Connect {
+	[PubNub resetClient];
+	NSLog(@"end reset");
+	for( int j=0; j<5; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+>>>>>>> fix-t241
 
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
@@ -146,6 +154,7 @@
 		if( [configurations[i] isEqual:[PubNub sharedInstance].configuration] == YES )
 			continue;
 
+<<<<<<< HEAD
 		[self connectWithConfiguration: configurations[i]];
 		STAssertTrue( _isDidConnectToOrigin == YES || _isConnectionDidFailWithError == YES, @"not connect");
 		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration ], @"configurations are not equals" );
@@ -161,11 +170,37 @@
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
 		semaphore = dispatch_semaphore_create(0);
+=======
+		BOOL isConnect = [self connectWithConfiguration: configurations[i]];
+		if( isConnect == NO )
+			continue;
+		STAssertTrue( _isDidConnectToOrigin == YES || _isConnectionDidFailWithError == YES, @"not connect");
+		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration ], @"configurations are not equals" );
+
+		__block BOOL isCompletionBlockCalled = NO;
+		[PubNub subscribeOnChannels: [PNChannel channelsWithNames: @[@"channel"]]
+		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error)
+		 {
+			 isCompletionBlockCalled = YES;
+			 if( error != nil )
+				 STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError, @"invalid error %@", error);
+		 }];
+		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+			isCompletionBlockCalled == NO; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+		STAssertTrue( isCompletionBlockCalled, @"block not called" );
+
+		if( isCompletionBlockCalled == NO )
+			continue;
+
+		isCompletionBlockCalled = NO;
+>>>>>>> fix-t241
 		[PubNub sendMessage: @"my message" toChannel: [PNChannel channelWithName: @"channel"]
 		withCompletionBlock:^(PNMessageState messageSendingState, id data)
 		 {
 			 if( messageSendingState == PNMessageSending )
 				 return;
+<<<<<<< HEAD
 			 dispatch_semaphore_signal(semaphore);
 			 STAssertTrue( messageSendingState == PNMessageSent, @"sendMessage error %@", data);
 		 }];
@@ -175,10 +210,26 @@
 }
 
 - (void)connectWithConfiguration:(PNConfiguration*)configuration
+=======
+			 isCompletionBlockCalled = YES;
+			 PNError *error = data;
+			 if( error != nil )
+				 STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError, @"invalid error %@", error);
+		 }];
+		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+			isCompletionBlockCalled == NO; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+		STAssertTrue( isCompletionBlockCalled, @"block not called" );
+	}
+}
+
+- (BOOL)connectWithConfiguration:(PNConfiguration*)configuration
+>>>>>>> fix-t241
 {
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+<<<<<<< HEAD
 
 		[PubNub setDelegate:self];
 		[PubNub setConfiguration: configuration];
@@ -186,6 +237,15 @@
 	while( _isDidConnectToOrigin == NO && _isConnectionDidFailWithError == NO )
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+=======
+		[PubNub setDelegate:self];
+		[PubNub setConfiguration: configuration];
+	});
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 /*&&
+		_isDidConnectToOrigin == NO && _isConnectionDidFailWithError == NO*/; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	return _isDidConnectToOrigin;
+>>>>>>> fix-t241
 }
 
 -(void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {

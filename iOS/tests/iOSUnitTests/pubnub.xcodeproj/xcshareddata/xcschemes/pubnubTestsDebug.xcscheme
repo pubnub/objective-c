@@ -23,7 +23,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "PNSubscribeUnsubscribeTest">
+                  Identifier = "PNTimeTokenRequestTest">
                </Test>
                <Test
                   Identifier = "PNSubscribeRequestTest">
@@ -38,31 +38,19 @@
                   Identifier = "ChangingChannels">
                </Test>
                <Test
+                  Identifier = "BadJsonTest">
+               </Test>
+               <Test
                   Identifier = "CatchupTest">
                </Test>
                <Test
-                  Identifier = "TimeOutTest/test30ParticipantsListForChannelTimeout">
-               </Test>
-               <Test
-                  Identifier = "TimeOutTest/test30ParticipantsListForChannelTimeout1">
-               </Test>
-               <Test
-                  Identifier = "TimeOutTest/test40RequestHistoryForChannelTimeout">
-               </Test>
-               <Test
-                  Identifier = "TimeOutTest/test60RequestServerTimeTimeout">
-               </Test>
-               <Test
-                  Identifier = "TimeOutTest">
+                  Identifier = "ApnsToken">
                </Test>
                <Test
                   Identifier = "PNBaseRequestTest">
                </Test>
                <Test
                   Identifier = "PNChannelConstructor">
-               </Test>
-               <Test
-                  Identifier = "PNConnectionChannelTest">
                </Test>
                <Test
                   Identifier = "PNConnectionTest">
@@ -74,10 +62,31 @@
                   Identifier = "PNLatencyMeasureRequestTest">
                </Test>
                <Test
+                  Identifier = "HowToTests/test50RequestHistoryForChannel">
+               </Test>
+               <Test
                   Identifier = "TimeCommand/testHandleOriginLookup20">
                </Test>
                <Test
                   Identifier = "TimeCommand">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test20SubscribeOnChannels">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test30RequestParticipantsListForChannel">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test35RequestServerTimeTokenWithCompletionBlock">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test40SendMessage">
+               </Test>
+               <Test
+                  Identifier = "HowToTests/test55RequestHistoryReverse">
+               </Test>
+               <Test
+                  Identifier = "W_ChaosTest">
                </Test>
                <Test
                   Identifier = "AbbreviatedPresenceTest">
@@ -95,49 +104,34 @@
                   Identifier = "PNMessagePostRequestTest">
                </Test>
                <Test
-                  Identifier = "BadJsonTest">
-               </Test>
-               <Test
-                  Identifier = "SendMessage">
-               </Test>
-               <Test
-                  Identifier = "HowToTests/test55RequestHistoryReverse">
-               </Test>
-               <Test
-                  Identifier = "HowToTests/test60SubscribeOnChannelsByTurns">
-               </Test>
-               <Test
-                  Identifier = "HowToTests/test40SendMessage">
-               </Test>
-               <Test
-                  Identifier = "HowToTests/test35RequestServerTimeTokenWithCompletionBlock">
-               </Test>
-               <Test
-                  Identifier = "PNTimeTokenRequestTest">
+                  Identifier = "HowToTests">
                </Test>
                <Test
                   Identifier = "SendBigMessage">
                </Test>
                <Test
-                  Identifier = "Configuration">
+                  Identifier = "PNCryptoHelperTest">
                </Test>
                <Test
-                  Identifier = "ClientIdentifier">
-               </Test>
-               <Test
-                  Identifier = "ApnsToken">
-               </Test>
-               <Test
-                  Identifier = "W_ChaosTest">
-               </Test>
-               <Test
-                  Identifier = "OversizedJSON">
+                  Identifier = "PNCryptoTest">
                </Test>
                <Test
                   Identifier = "PAMTest">
                </Test>
                <Test
                   Identifier = "PAMTestError">
+               </Test>
+               <Test
+                  Identifier = "OversizedJSON">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeUnsubscribeTest">
+               </Test>
+               <Test
+                  Identifier = "PNConnectionChannelTest">
                </Test>
                <Test
                   Identifier = "PNCryptoHelperTest">
