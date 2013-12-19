@@ -163,12 +163,14 @@
 
 		PNChannel *pnChannel = [PNChannel channelWithName: [NSString stringWithFormat: @"mediatorWithMessage"]];
 
+		[PubNub grantAllAccessRightsForApplicationAtPeriod: 1440 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+			[PubNub subscribeOnChannels: @[pnChannel]
+			withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
+			 {
+				 [self openUrl];
+			 }];
+		}];
 
-		[PubNub subscribeOnChannels: @[pnChannel]
-		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-		 {
-			 [self openUrl];
-		 }];
 
     }
                          errorBlock:^(PNError *connectionError) {

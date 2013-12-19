@@ -161,8 +161,12 @@
 	[PubNub sendMessage:[NSString stringWithFormat: @"mediatorWithMessage, %@", [NSDate date]] toChannel:pnChannel
 	withCompletionBlock:^(PNMessageState messageSendingState, id data)
 	 {
-//		 if( messageSendingState == PNMessageSent )
+		 if( messageSendingState == PNMessageSent )
 			 [self performSelector: @selector(openUrl) withObject: nil afterDelay: 20.0];
+		 if( messageSendingState == PNMessageSendingError ) {
+			 NSLog(@"PNMessageSendingError %@", data);
+			 [self performSelector: @selector(errorSelectorMessage)];
+		 }
 	 }];
 }
 
