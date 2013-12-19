@@ -29,6 +29,9 @@
 // Stores reference on message body
 @property (nonatomic, strong) id message;
 
+// Stores whether message should be compressed or not
+@property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
+
 // Stores reference on channel to which this message
 // should be sent
 @property (nonatomic, strong) PNChannel *channel;
@@ -46,7 +49,7 @@
  * object object and target channel
  * Message should be in stringified JSON format
  */
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel error:(PNError **)error;
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage error:(PNError **)error;
 
 /**
  * Return reference on message data object which will represent
@@ -60,7 +63,7 @@
 /**
  * Initialize object instance with text and channel
  */
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel;
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 - (void)setReceiveDate:(PNDate *)receiveDate;
 

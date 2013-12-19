@@ -43,6 +43,7 @@ static NSMutableDictionary *_channelsCache = nil;
 @property (nonatomic, assign) NSUInteger participantsCount;
 @property (nonatomic, strong) NSMutableArray *participantsList;
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
+@property (nonatomic, assign, getter = isAbleToResetTimeToken) BOOL ableToResetTimeToken;
 @property (nonatomic, assign, getter = isLinkedWithPresenceObservationChannel)BOOL linkedWithPresenceObservationChannel;
 
 
@@ -182,6 +183,8 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     if((self = [super init])) {
         
         [self resetUpdateTimeToken];
+        self.ableToResetTimeToken = YES;
+		self.updateTimeToken = @"0";
         self.name = channelName;
         self.participantsList = [NSMutableArray array];
     }
@@ -207,9 +210,35 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     return self;
 }
 
+- (void)setUpdateTimeToken:(NSString *)updateTimeToken {
+
+    if (![self isTimeTokenChangeLocked]) {
+
+        _updateTimeToken = updateTimeToken;
+    }
+}
+
 - (void)resetUpdateTimeToken {
-    
-    self.updateTimeToken = @"0";
+
+    if (![self isTimeTokenChangeLocked]) {
+
+        self.updateTimeToken = @"0";
+    }
+}
+
+- (BOOL)isTimeTokenChangeLocked {
+
+    return !self.isAbleToResetTimeToken;
+}
+
+- (void)lockTimeTokenChange {
+
+    self.ableToResetTimeToken = NO;
+}
+
+- (void)unlockTimeTokenChange {
+
+    self.ableToResetTimeToken = YES;
 }
 
 - (NSArray *)participants {

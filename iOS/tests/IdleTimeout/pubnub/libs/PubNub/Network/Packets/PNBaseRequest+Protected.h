@@ -13,10 +13,29 @@
 #import "PNBaseRequest.h"
 
 
+#pragma mark Structures
+
+/**
+ This enumerator lists available HTTP methods which can be used for request sending
+ */
+typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
+    
+    /**
+     Request will be sent as plain GET request and all data will be sent via request URL
+     */
+    PNRequestGETMethod,
+    
+    /**
+     Request will be sent as POST request which may split parameters which should be send between POST body and URL string
+     */
+    PNRequestPOSTMethod
+};
+
+
 @interface PNBaseRequest (Protected)
 
 
-#pragma mark Properties
+#pragma mark - Properties
 
 // Stores reference on whether connection should be closed before sending this message or not
 @property (nonatomic, assign, getter = shouldCloseConnection) BOOL closeConnection;
@@ -71,9 +90,34 @@
 - (NSString *)requestPath;
 
 /**
- * Require from request fully prepared HTTP payload which will be sent to the PubNub service
+ Each subclass may have it's own rule for request sending method.
+ 
+ @note By default if subclass won't owerride this method it will return \c PNRequestGETMethod.
+ 
+ @return one of \b PNRequestHTTPMethod enumerator fields which is set by any particular request.
  */
-- (NSString *)HTTPPayload;
+- (PNRequestHTTPMethod)HTTPMethod;
+
+/**
+ In case if \c -HTTPMethod will return \c PNRequestPOSTMethod this value will be checked on whether POST body should be compressed or not.
+ 
+ @return \c YES if HTTP POST body should be GZIPed before appending to HTTP packet.
+ */
+- (BOOL)shouldCompressPOSTBody;
+
+/**
+ Retrieve reference on POST body which should be appended to HTTP payload before sending to the \b PubNub service.
+ 
+ @return serialized into \b NSData instance POST body.
+ */
+- (NSData *)POSTBody;
+
+/**
+ Require from request fully prepared HTTP payload which will be sent to the PubNub service.
+ 
+ @return \b NSData instance with serialized HTTP payload.
+ */
+- (NSData *)HTTPPayload;
 
 #pragma mark -
 

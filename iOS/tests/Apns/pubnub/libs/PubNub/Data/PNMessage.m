@@ -38,6 +38,9 @@
 // should be sent
 @property (nonatomic, strong) PNChannel *channel;
 
+// Stores whether message should be compressed or not
+@property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
+
 // Stores reference on message body
 @property (nonatomic, strong) id message;
 
@@ -59,7 +62,7 @@
 
 #pragma mark - Class methods
 
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel error:(PNError **)error {
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage error:(PNError **)error {
 
     PNMessage *messageObject = nil;
     BOOL isValidMessage = NO;
@@ -73,7 +76,7 @@
     // Ensure that all parameters provided and they are valid or not
     if (isValidMessage && channel != nil) {
 
-        messageObject = [[[self class] alloc] initWithObject:object forChannel:channel];
+        messageObject = [[[self class] alloc] initWithObject:object forChannel:channel compressed:shouldCompressMessage];
     }
     // Looks like some conditions not met
     else {
@@ -102,72 +105,7 @@
 + (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate {
 
     PNMessage *message = [[self class] new];
-    message.message = messageBody;
-    if ([PNCryptoHelper sharedInstance].isReady) {
-        
-        NSInteger processingErrorCode = -1;
-        PNError *processingError = nil;
-        
-        // Check whether arrived message is string and should be
-        // encrypted
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-        BOOL isExpectedDataType = [message.message isKindOfClass:[NSString class]];
-#else
-        BOOL isExpectedDataType = [message.message isKindOfClass:[NSString class]] ||
-                                  [message.message isKindOfClass:[NSArray class]] ||
-                                  [message.message isKindOfClass:[NSDictionary class]];
-#endif
-        if (isExpectedDataType) {
-
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-            NSString *decodedMessage = [[PNCryptoHelper sharedInstance] decryptedStringFromString:message.message
-                                                                                            error:&processingError];
-#else
-            id decodedMessage = [[PNCryptoHelper sharedInstance] decryptedObjectFromObject:message.message
-                                                                                     error:&processingError];
-#endif
-            
-            if (decodedMessage == nil && processingError == nil) {
-                
-                processingErrorCode = kPNCryptoInputDataProcessingError;
-            }
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-            if (processingError == nil && processingErrorCode < 0) {
-
-                [PNJSONSerialization JSONObjectWithString:decodedMessage
-                                          completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
-
-                                              message.message = result;
-                                          }
-                                               errorBlock:^(NSError *error) {
-
-                                                   PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
-                                               }];
-            }
-#else
-            message.message = decodedMessage;
-#endif
-        }
-        else {
-            
-            processingErrorCode = kPNCryptoInputDataProcessingError;
-        }
-        
-        if (processingError != nil || processingErrorCode > 0) {
-            
-            if (processingErrorCode > 0) {
-                
-                processingError = [PNError errorWithCode:processingErrorCode];
-            }
-
-            PNLog(PNLogGeneralLevel,
-                  message,
-                  @" Message decoding failed because of error: %@",
-                  processingError);
-            
-            message.message = @"DECRYPTION_ERROR";
-        }
-    }
+    message.message = [PubNub AESDecrypt:messageBody];
     message.channel = channel;
     message.receiveDate = messagePostDate;
 
@@ -178,7 +116,7 @@
 
 #pragma mark - Instance methods
 
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel {
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
@@ -188,6 +126,7 @@
         self.message = [PNCryptoHelper sharedInstance].isReady ? object : [PNJSONSerialization stringFromJSONObject:object];
 #endif
         self.channel = channel;
+        self.compressMessage = shouldCompressMessage;
     }
 
 

@@ -52,11 +52,6 @@
 #pragma mark - Instance methods
 
 /**
- * Retrieve reference on encrypted message
- */
-- (NSString *)encryptedMessageWithError:(PNError **)encryptionError;
-
-/**
  * Retrieve message post request signature
  */
 - (NSString *)signature;
@@ -99,6 +94,21 @@
     return PNServiceResponseCallbacks.sendMessageCallback;
 }
 
+- (PNRequestHTTPMethod)HTTPMethod {
+    
+    return self.message.shouldCompressMessage ? PNRequestPOSTMethod : PNRequestGETMethod;
+}
+
+- (BOOL)shouldCompressPOSTBody {
+    
+    return self.message.shouldCompressMessage;
+}
+
+- (NSData *)POSTBody {
+    
+    return [self.preparedMessage dataUsingEncoding:NSUTF8StringEncoding];
+}
+
 - (NSString *)resourcePath {
 
     if (self.preparedMessage == nil) {
@@ -109,8 +119,8 @@
         PNError *encryptionError;
         if ([PNCryptoHelper sharedInstance].isReady) {
 
-            message = [self encryptedMessageWithError:&encryptionError];
-
+            message = [PubNub AESEncrypt:self.message.message error:&encryptionError];
+            
             if (encryptionError != nil) {
 
                 PNLog(PNLogCommunicationChannelLayerErrorLevel,
@@ -120,43 +130,44 @@
             }
         }
 
+        if ([self HTTPMethod] == PNRequestGETMethod) {
+            
         // Encode message with % so it will be delivered w/o damages to
         // the PubNub service
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-        self.preparedMessage = [message percentEscapedString];
+            self.preparedMessage = [message percentEscapedString];
 #else
-        self.preparedMessage = [message nonStringPercentEscapedString];
+            self.preparedMessage = [message nonStringPercentEscapedString];
 #endif
+        }
+        else {
+            
+            self.preparedMessage = message;
+        }
     }
+    
+    NSMutableString *resourcePath = [NSMutableString stringWithFormat:@"/publish/%@/%@/%@/%@/%@_%@", [PubNub sharedInstance].configuration.publishKey,
+                                     [PubNub sharedInstance].configuration.subscriptionKey, [self signature], [self.message.channel escapedName],
+                                     [self callbackMethodName], self.shortIdentifier];
+    
+    if (!self.message.shouldCompressMessage) {
+        
+        [resourcePath appendFormat:@"/%@", self.preparedMessage];
+    }
+    
+    [resourcePath appendFormat:@"?uuid=%@%@", self.clientIdentifier,
+                               ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @"")];
 
-
-    return [NSString stringWithFormat:@"%@/publish/%@/%@/%@/%@/%@_%@/%@?uuid=%@%@",
-                    kPNRequestAPIVersionPrefix,
-                    [PubNub sharedInstance].configuration.publishKey,
-                    [PubNub sharedInstance].configuration.subscriptionKey,
-                    [self signature],
-                    [self.message.channel escapedName],
-                    [self callbackMethodName],
-                    self.shortIdentifier,
-                    self.preparedMessage,
-                    self.clientIdentifier,
-					([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+    return resourcePath;
 }
 
-- (NSString *)encryptedMessageWithError:(PNError **)encryptionError {
+- (NSString *)debugResourcePath {
 
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-    NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:self.message.message
-                                                                                          error:encryptionError];
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([PubNub sharedInstance].configuration.publishKey)];
+    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
 
-    return [NSString stringWithFormat:@"\"%@\"", encryptedData];
-#else
-    id encryptedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:self.message.message
-                                                                                       error:encryptionError];
-    NSString *encryptedData = [PNJSONSerialization stringFromJSONObject:encryptedMessage];
-
-    return [NSString stringWithFormat:@"%@", encryptedData];
-#endif
+    return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
 - (NSString *)signature {

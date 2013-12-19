@@ -39,7 +39,11 @@
 // Default file size is 5Mb
 #define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
 
-#define PNLOG_LOGGING_ENABLED 0
+#if COCOAPODS == 1
+    #define PNLOG_LOGGING_ENABLED 0
+#else
+    #define PNLOG_LOGGING_ENABLED 1
+#endif
 #define PNLOG_STORE_LOG_TO_FILE 1
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
 #define PNLOG_DELEGATE_LOGGING_ENABLED 1

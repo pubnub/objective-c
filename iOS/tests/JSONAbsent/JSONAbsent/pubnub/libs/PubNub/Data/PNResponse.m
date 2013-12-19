@@ -47,7 +47,9 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     .sendMessageCallback = @"m",
     .timeTokenCallback = @"t",
     .messageHistoryCallback = @"h",
-    .channelParticipantsCallback = @"p"
+    .channelParticipantsCallback = @"p",
+    .channelAccessRightsChangeCallback = @"arc",
+    .channelAccessRightsAuditCallback = @"arr"
 };
 
 

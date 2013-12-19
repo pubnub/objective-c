@@ -51,8 +51,7 @@
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"%@/time/%@_%@%@",
-            kPNRequestAPIVersionPrefix,
+    return [NSString stringWithFormat:@"/time/%@_%@%@",
             [self callbackMethodName],
             self.shortIdentifier,
             ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];

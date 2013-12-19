@@ -94,6 +94,21 @@
     return PNServiceResponseCallbacks.sendMessageCallback;
 }
 
+- (PNRequestHTTPMethod)HTTPMethod {
+    
+    return self.message.shouldCompressMessage ? PNRequestPOSTMethod : PNRequestGETMethod;
+}
+
+- (BOOL)shouldCompressPOSTBody {
+    
+    return self.message.shouldCompressMessage;
+}
+
+- (NSData *)POSTBody {
+    
+    return [self.preparedMessage dataUsingEncoding:NSUTF8StringEncoding];
+}
+
 - (NSString *)resourcePath {
 
     if (self.preparedMessage == nil) {
@@ -115,27 +130,35 @@
             }
         }
 
+        if ([self HTTPMethod] == PNRequestGETMethod) {
+            
         // Encode message with % so it will be delivered w/o damages to
         // the PubNub service
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-        self.preparedMessage = [message percentEscapedString];
+            self.preparedMessage = [message percentEscapedString];
 #else
-        self.preparedMessage = [message nonStringPercentEscapedString];
+            self.preparedMessage = [message nonStringPercentEscapedString];
 #endif
+        }
+        else {
+            
+            self.preparedMessage = message;
+        }
     }
+    
+    NSMutableString *resourcePath = [NSMutableString stringWithFormat:@"/publish/%@/%@/%@/%@/%@_%@", [PubNub sharedInstance].configuration.publishKey,
+                                     [PubNub sharedInstance].configuration.subscriptionKey, [self signature], [self.message.channel escapedName],
+                                     [self callbackMethodName], self.shortIdentifier];
+    
+    if (!self.message.shouldCompressMessage) {
+        
+        [resourcePath appendFormat:@"/%@", self.preparedMessage];
+    }
+    
+    [resourcePath appendFormat:@"?uuid=%@%@", self.clientIdentifier,
+                               ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @"")];
 
-
-    return [NSString stringWithFormat:@"%@/publish/%@/%@/%@/%@/%@_%@/%@?uuid=%@%@",
-                    kPNRequestAPIVersionPrefix,
-                    [PubNub sharedInstance].configuration.publishKey,
-                    [PubNub sharedInstance].configuration.subscriptionKey,
-                    [self signature],
-                    [self.message.channel escapedName],
-                    [self callbackMethodName],
-                    self.shortIdentifier,
-                    self.preparedMessage,
-                    self.clientIdentifier,
-					([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+    return resourcePath;
 }
 
 - (NSString *)debugResourcePath {

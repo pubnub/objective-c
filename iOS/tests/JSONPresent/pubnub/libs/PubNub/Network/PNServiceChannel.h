@@ -53,7 +53,7 @@
 /**
  * Generate object sending request to specified channel
  */
-- (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
  * Sends configured message request to the PubNub service
