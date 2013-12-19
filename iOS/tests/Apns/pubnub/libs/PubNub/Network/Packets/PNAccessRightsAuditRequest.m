@@ -109,7 +109,7 @@
         [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel percentEscapedString]]];
     }
 
-    [parameters addObject:[NSString stringWithFormat:@"timestamp=%d", [self requestTimestamp]]];
+    [parameters addObject:[NSString stringWithFormat:@"timestamp=%lu", (unsigned long)[self requestTimestamp]]];
 
     [signature appendString:[parameters componentsJoinedByString:@"&"]];
     [signature setString:PNHMACSHA256String([PubNub sharedInstance].configuration.secretKey, signature)];
@@ -153,14 +153,21 @@
     }
 
 
-    return [NSString stringWithFormat:@"/v1/auth/audit/sub-key/%@?%@callback=%@_%@%@&timestamp=%d&signature=%@",
-                    [PubNub sharedInstance].configuration.subscriptionKey,
+    return [NSString stringWithFormat:@"/v1/auth/audit/sub-key/%@?%@callback=%@_%@%@&timestamp=%lu&signature=%@",
+                    [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                     (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey percentEscapedString]] : @""),
                     [self callbackMethodName], self.shortIdentifier,
                     (channel ? [NSString stringWithFormat:@"&channel=%@", [channel percentEscapedString]] : @""),
-                    [self requestTimestamp], [self PAMSignature]];
+                    (unsigned long)[self requestTimestamp], [self PAMSignature]];
 }
 
+- (NSString *)debugResourcePath {
+    
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    
+    return [resourcePathComponents componentsJoinedByString:@"/"];
+}
 
 #pragma mark -
 

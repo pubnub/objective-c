@@ -22,7 +22,6 @@
 #pragma mark - Weaks
 
 #ifndef pn_desired_weak
-<<<<<<< HEAD
 #if __has_feature(objc_arc_weak)
 #define pn_desired_weak weak
 #define __pn_desired_weak __weak
@@ -30,15 +29,6 @@
 #define pn_desired_weak unsafe_unretained
 #define __pn_desired_weak __unsafe_unretained
 #endif // __has_feature(objc_arc_weak)
-=======
-    #if __has_feature(objc_arc_weak)
-        #define pn_desired_weak weak
-        #define __pn_desired_weak __weak
-    #else
-        #define pn_desired_weak unsafe_unretained
-        #define __pn_desired_weak __unsafe_unretained
-    #endif // __has_feature(objc_arc_weak)
->>>>>>> fix-t241
 #endif // pn_desired_weak
 
 
@@ -50,7 +40,6 @@
 #define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
 
 #if COCOAPODS == 1
-<<<<<<< HEAD
 	#define PNLOG_LOGGING_ENABLED 0
 	#define PNLOG_STORE_LOG_TO_FILE 0
 #else
@@ -58,13 +47,6 @@
 	#define PNLOG_STORE_LOG_TO_FILE 1
 #endif
 
-=======
-    #define PNLOG_LOGGING_ENABLED 0
-#else
-    #define PNLOG_LOGGING_ENABLED 1
-#endif
-#define PNLOG_STORE_LOG_TO_FILE 1
->>>>>>> fix-t241
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
 #define PNLOG_DELEGATE_LOGGING_ENABLED 1
 #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
@@ -79,7 +61,6 @@
 #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
 
 #ifdef PN_TESTING
-<<<<<<< HEAD
 #undef PNLOG_LOGGING_ENABLED
 #define PNLOG_LOGGING_ENABLED 1
 #undef PNLOG_STORE_LOG_TO_FILE
@@ -108,36 +89,6 @@
 #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
 #undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED
 #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
-=======
-    #undef PNLOG_LOGGING_ENABLED
-    #define PNLOG_LOGGING_ENABLED 1
-    #undef PNLOG_STORE_LOG_TO_FILE
-    #define PNLOG_STORE_LOG_TO_FILE 1
-    #undef PNLOG_GENERAL_LOGGING_ENABLED
-    #define PNLOG_GENERAL_LOGGING_ENABLED 1
-    #undef PNLOG_DELEGATE_LOGGING_ENABLED
-    #define PNLOG_DELEGATE_LOGGING_ENABLED 1
-    #undef PNLOG_REACHABILITY_LOGGING_ENABLED
-    #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
-    #undef PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED
-    #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
-    #undef PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED
-    #define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
-    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 1
-    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 1
-    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
-    #undef PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED
-    #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
-    #undef PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED
-    #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
-    #undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED
-    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
-    #undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED
-    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
->>>>>>> fix-t241
 #endif
 
 typedef enum _PNLogLevels {
@@ -166,101 +117,57 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
 
         case PNLogGeneralLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_GENERAL_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_GENERAL_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogDelegateLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_DELEGATE_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_DELEGATE_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogReachabilityLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_REACHABILITY_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_REACHABILITY_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogDeserializerInfoLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogDeserializerErrorLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogConnectionLayerErrorLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogConnectionLayerInfoLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogConnectionLayerHTTPLoggingLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogCommunicationChannelLayerErrorLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogCommunicationChannelLayerWarnLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
 
         case PNLogCommunicationChannelLayerInfoLevel:
 
-<<<<<<< HEAD
 			isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED == 1;
-=======
-                isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED == 1;
->>>>>>> fix-t241
             break;
     }
 
@@ -425,11 +332,7 @@ void PNLog(PNLogLevels level, id sender, ...) {
                 break;
             case PNLogDeserializerInfoLevel:
             case PNLogConnectionLayerInfoLevel:
-<<<<<<< HEAD
 			case PNLogConnectionLayerHTTPLoggingLevel:
-=======
-	        case PNLogConnectionLayerHTTPLoggingLevel:
->>>>>>> fix-t241
             case PNLogCommunicationChannelLayerInfoLevel:
 
                 additionalData = @"{INFO}";
@@ -553,8 +456,4 @@ NSString *PNObfuscateString(NSString *string) {
 
 #pragma clang diagnostic pop
 
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> fix-t241
