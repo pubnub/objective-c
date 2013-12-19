@@ -1214,8 +1214,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     if (shouldRemoveChannels) {
         
-        [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
         [self.subscribedChannelsSet minusSet:[self channelsWithPresenceFromList:channels forSubscribe:NO]];
+        [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
     }
 
 
