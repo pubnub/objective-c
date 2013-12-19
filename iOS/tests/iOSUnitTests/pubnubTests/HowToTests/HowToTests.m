@@ -672,7 +672,7 @@
 				 //				 NSLog( @"test45SendMessageBig %f", interval);
 				 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
-				 NSLog(@"withCompletionBlock %u, message size %lu", messageSendingState, (unsigned long)message.length);
+				 NSLog(@"withCompletionBlock %lu, message size %lu", messageSendingState, (unsigned long)message.length);
 			 }];
 
 			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 ||
@@ -843,8 +843,8 @@
 			isCompletionBlockCalled == NO; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( isCompletionBlockCalled, @"completion block not called, %@", channelName);
-		for( int j=0; /*j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1
-					   && */isCompletionBlockCalled == NO; j++ )
+		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1
+					   && isCompletionBlockCalled == NO; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		//		STAssertTrue([[TestSemaphor sharedInstance] waitForKey: channelName timeout: [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"completion block not called, %@", channelName);
 	}

@@ -157,7 +157,8 @@
 			 dispatch_semaphore_signal(semaphore);
 			 STAssertNil(subscriptionError, @"subscribeOnChannels subscriptionError %@", subscriptionError);
 		 }];
-		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW)) [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+		for( int i=0; i<10; i++ )
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
 		semaphore = dispatch_semaphore_create(0);
 		[PubNub sendMessage: @"my message" toChannel: [PNChannel channelWithName: @"channel"]
@@ -168,7 +169,8 @@
 			 dispatch_semaphore_signal(semaphore);
 			 STAssertTrue( messageSendingState == PNMessageSent, @"sendMessage error %@", data);
 		 }];
-		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW)) [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+		for( int i=0; i<10; i++ )
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	}
 }
 

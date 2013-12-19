@@ -125,9 +125,6 @@
                   Identifier = "ClientIdentifier">
                </Test>
                <Test
-                  Identifier = "ChannelLimitTest">
-               </Test>
-               <Test
                   Identifier = "ApnsToken">
                </Test>
                <Test
@@ -147,6 +144,9 @@
                </Test>
                <Test
                   Identifier = "PNCryptoTest">
+               </Test>
+               <Test
+                  Identifier = "HowToTests">
                </Test>
             </SkippedTests>
          </TestableReference>

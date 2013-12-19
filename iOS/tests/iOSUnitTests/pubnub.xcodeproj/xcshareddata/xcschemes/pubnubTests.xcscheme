@@ -28,6 +28,24 @@
                <Test
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
+               <Test
+                  Identifier = "BadJsonTest">
+               </Test>
+               <Test
+                  Identifier = "CatchupTest">
+               </Test>
+               <Test
+                  Identifier = "Configuration">
+               </Test>
+               <Test
+                  Identifier = "ChannelLimitTest">
+               </Test>
+               <Test
+                  Identifier = "ClientIdentifier">
+               </Test>
+               <Test
+                  Identifier = "ApnsToken">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

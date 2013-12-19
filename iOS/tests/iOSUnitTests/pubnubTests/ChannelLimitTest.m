@@ -168,26 +168,27 @@
 	NSLog(@"[PubNub subscribedChannels] %@", [PubNub subscribedChannels]);
 	for( int i=0; /*[PubNub subscribedChannels].count > 0*/ i < arrChannel.count; i++) {
 		__block PNChannel *channel = arrChannel[i];
-		__block BOOL isBlockCalled = NO;
+		__block int blockCount = 0;
 		NSLog(@"start unsubscribeFromChannels %@", channel);
 		clientUnsubscriptionDidCompleteNotificationCount = 0;
 		[PubNub unsubscribeFromChannels: @[channel] withPresenceEvent:YES andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
 			NSLog(@"unsubscribeFromChannels %@", channel);
-			NSLog(@"isSubscribedOnChannel %d", [PubNub isSubscribedOnChannel: channel]);
+			NSLog(@"block isSubscribedOnChannel %d", [PubNub isSubscribedOnChannel: channel]);
 			STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
-			isBlockCalled = YES;
+			blockCount++;
 		}];
-		for( int j=0; j<5 /*isBlockCalled == 0 || clientUnsubscriptionDidCompleteNotificationCount == 0*/; j++ )
+		for( int j=0; j<8 /*isBlockCalled == 0 || clientUnsubscriptionDidCompleteNotificationCount == 0*/; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue(clientUnsubscriptionDidCompleteNotificationCount>0, @"notification not called");
 		STAssertFalse(clientUnsubscriptionDidCompleteNotificationCount>1, @"notification called repeatedly, %d", clientUnsubscriptionDidCompleteNotificationCount);
-		STAssertTrue(isBlockCalled==YES, @"block not called");
+		STAssertTrue(blockCount>0, @"block not called");
+		STAssertFalse(blockCount>1, @"block called repeatedly, %d", blockCount);
 	}
 }
 
 -(void)kPNClientUnsubscriptionDidCompleteNotification:(NSNotification*)notification {
 	NSLog(@"kPNClientUnsubscriptionDidCompleteNotification %@", notification.userInfo);
-	NSLog(@"isSubscribedOnChannel %d", [PubNub isSubscribedOnChannel: (PNChannel*)notification.userInfo]);
+//	NSLog(@"isSubscribedOnChannel %d", [PubNub isSubscribedOnChannel: (PNChannel*)notification.userInfo]);
 	clientUnsubscriptionDidCompleteNotificationCount++;
 }
 

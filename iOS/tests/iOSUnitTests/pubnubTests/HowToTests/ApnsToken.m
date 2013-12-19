@@ -124,7 +124,7 @@
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
-	[PubNub grantAllAccessRightsForApplicationAtPeriod: 1 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+	[PubNub grantAllAccessRightsForApplicationAtPeriod: 10 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
 		STAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);
 	}];
 	for( int j=0; j<10; j++ )
