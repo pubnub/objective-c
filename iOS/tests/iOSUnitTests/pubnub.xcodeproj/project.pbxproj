@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		5A198E881815405B00D20005 /* BadJsonTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848C17FCA9B100D8DD4E /* BadJsonTest.m */; };
 		5A198E891815410400D20005 /* TimeOutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */; };
-		5A198E8E181547FF00D20005 /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
 		5A198E931815884500D20005 /* CatchupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E921815884500D20005 /* CatchupTest.m */; };
 		5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E97181593EC00D20005 /* ChangingChannels.m */; };
 		5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */; };
+		5A4826D718632BBF008370E2 /* ChannelLimitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4826D618632BBF008370E2 /* ChannelLimitTest.m */; };
 		5A955F801835154C00AB2156 /* SendBigMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A955F7F1835154C00AB2156 /* SendBigMessage.m */; };
 		5A96274018437E8A00258236 /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A96273F18437E8A00258236 /* OversizedJSON.m */; };
 		5ABE6C42182B9F1800204DC6 /* gistfile1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */; };
@@ -167,7 +167,6 @@
 		79DC83611773A8680061A76C /* PNCryptoHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DC83601773A8680061A76C /* PNCryptoHelperTest.m */; };
 		79ECCF361675DFB5005E83B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */; };
 		963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848E17FCA9B100D8DD4E /* FakeStub.m */; };
-		963A849317FCA9B100D8DD4E /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
 		9645C115174FDA7D00F82D09 /* PNReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */; };
 		9645C117174FDA7D00F82D09 /* PNBaseRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FC174FDA7D00F82D09 /* PNBaseRequestTest.m */; };
 		9645C118174FDA7D00F82D09 /* PNHereNowRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FE174FDA7D00F82D09 /* PNHereNowRequestTest.m */; };
@@ -204,6 +203,7 @@
 		5A198E921815884500D20005 /* CatchupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatchupTest.m; sourceTree = "<group>"; };
 		5A198E97181593EC00D20005 /* ChangingChannels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangingChannels.m; sourceTree = "<group>"; };
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
+		5A4826D618632BBF008370E2 /* ChannelLimitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelLimitTest.m; sourceTree = "<group>"; };
 		5A955F7F1835154C00AB2156 /* SendBigMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendBigMessage.m; sourceTree = "<group>"; };
 		5A96273F18437E8A00258236 /* OversizedJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OversizedJSON.m; sourceTree = "<group>"; };
 		5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gistfile1.txt; sourceTree = "<group>"; };
@@ -945,6 +945,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5A4826D618632BBF008370E2 /* ChannelLimitTest.m */,
 				5AEA31E018475C25002A2E4F /* ClientIdentifier */,
 				5A96274118437E9200258236 /* OversizedJSON */,
 				5ABE6C3E182B9F1000204DC6 /* TestSemaphor */,
@@ -1263,7 +1264,6 @@
 				5ACA68DD185B81F300C2B214 /* PNPushNotificationsEnabledChannelsRequest.m in Sources */,
 				5ACA6889185B81F300C2B214 /* PNPresenceEvent.m in Sources */,
 				5ACA68D1185B81F300C2B214 /* PNChangeAccessRightsRequest.m in Sources */,
-				5A198E8E181547FF00D20005 /* PNConnectionBadJson.m in Sources */,
 				5ACA6891185B81F300C2B214 /* PNChannelEventsResponseParser.m in Sources */,
 				5ACA68CD185B81F300C2B214 /* PNAccessRightsAuditRequest.m in Sources */,
 				5ACA68AF185B81F300C2B214 /* PNError.m in Sources */,
@@ -1344,6 +1344,7 @@
 				9645C11D174FDA7D00F82D09 /* PNMessagePostRequestTest.m in Sources */,
 				5ACA68BA185B81F300C2B214 /* PNOperationStatus.m in Sources */,
 				9645C11E174FDA7D00F82D09 /* PNSubscribeRequestTest.m in Sources */,
+				5A4826D718632BBF008370E2 /* ChannelLimitTest.m in Sources */,
 				9645C11F174FDA7D00F82D09 /* PNTimeTokenRequestTest.m in Sources */,
 				5ACA689A185B81F300C2B214 /* PNOperationStatusResponseParser.m in Sources */,
 				5ACA68CC185B81F300C2B214 /* UIApplication+PNAdditions.m in Sources */,
@@ -1390,7 +1391,6 @@
 				5ACA6892185B81F300C2B214 /* PNChannelEventsResponseParser.m in Sources */,
 				5ACA689E185B81F300C2B214 /* PNResponseDeserialize.m in Sources */,
 				5ACA689C185B81F300C2B214 /* PNPushNotificationsEnabledChannelsParser.m in Sources */,
-				963A849317FCA9B100D8DD4E /* PNConnectionBadJson.m in Sources */,
 				5A96274018437E8A00258236 /* OversizedJSON.m in Sources */,
 				5ACA68C4185B81F300C2B214 /* NSDate+PNAdditions.m in Sources */,
 				5ACA68A8185B81F300C2B214 /* PNAccessRightsInformation.m in Sources */,
