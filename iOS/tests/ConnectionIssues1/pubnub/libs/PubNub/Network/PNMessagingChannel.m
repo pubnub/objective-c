@@ -873,6 +873,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         // In case if client currently connected to PubNub services, we should send leave event
         NSMutableSet *subscriptionChannelsSet = [NSMutableSet setWithArray:[self unsubscribeFromChannelsWithPresenceEvent:withPresenceEvent byUserRequest:NO]];
+        [self.oldSubscribedChannelsSet setSet:subscriptionChannelsSet];
         [subscriptionChannelsSet unionSet:channelsSet];
         
         PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[subscriptionChannelsSet allObjects] byUserRequest:YES];
@@ -883,7 +884,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                              willSubscribeOnChannels:[self channelsWithOutPresenceFromList:[channelsSet allObjects]]
                                            sequenced:([channelsForPresenceEnabling count] || [channelsForPresenceDisabling count])];
         }
-            
+        
         if ([channelsForPresenceEnabling count]) {
             
             subscribeRequest.channelsForPresenceEnabling = [channelsForPresenceEnabling allObjects];
@@ -947,7 +948,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 [subscribeRequest resetTimeToken];
             }
             
-            [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
             [self scheduleRequest:subscribeRequest shouldObserveProcessing:PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve)];
         }
         else {
@@ -1214,8 +1214,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     if (shouldRemoveChannels) {
         
-        [self.subscribedChannelsSet minusSet:[self channelsWithPresenceFromList:channels forSubscribe:NO]];
         [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
+        [self.subscribedChannelsSet minusSet:[self channelsWithPresenceFromList:channels forSubscribe:NO]];
     }
 
 
@@ -1962,6 +1962,10 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 NSMutableSet *existingChannelsSet = [NSMutableSet setWithArray:[self channelsWithOutPresenceFromList:[self.oldSubscribedChannelsSet allObjects]]];
                 [existingChannelsSet minusSet:[NSSet setWithArray:[self channelsWithOutPresenceFromList:subscribeRequest.channelsForSubscription]]];
                 [self.subscribedChannelsSet unionSet:[NSSet setWithArray:subscribeRequest.channels]];
+                if ([existingChannelsSet count]) {
+                    
+                    [self.subscribedChannelsSet minusSet:existingChannelsSet];
+                }
                 [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
                 
                 // Check whether failed to subscribe on set of channels or not

@@ -134,7 +134,7 @@
             [presenceEnabledChannels enumerateObjectsUsingBlock:^(PNChannelPresence *presenceChannel, NSUInteger presenceChannelIdx,
                                                                   BOOL *presenceChannelEnumeratorStop) {
                 
-                if ([[presenceChannel observedChannel] isEqual:channel]) {
+                if ([[presenceChannel observedChannel] isEqual:[channel valueForKey:@"observedChannel"]]) {
                     
                     [updatedSet removeObject:presenceChannel];
                     *presenceChannelEnumeratorStop = YES;
