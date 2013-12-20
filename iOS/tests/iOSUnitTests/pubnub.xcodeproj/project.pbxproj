@@ -143,6 +143,7 @@
 		5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */; };
 		5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */; };
 		5AD394BD18280F390057443C /* ApnsToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD394BC18280F390057443C /* ApnsToken.m */; };
+		5AE3AEBF1864602500704422 /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
 		79299476167C8D7A00F7F8CE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */; };
 		79299478167C8D8D00F7F8CE /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 792C1F3F16777BD40054E18E /* CFNetwork.framework */; };
 		792C1F4016777BD50054E18E /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 792C1F3F16777BD40054E18E /* CFNetwork.framework */; };
@@ -1312,6 +1313,7 @@
 				5ACA6880185B81F300C2B214 /* PNObservationCenter.m in Sources */,
 				5ACA68B2185B81F300C2B214 /* PNHereNow.m in Sources */,
 				5ACA68A0185B81F300C2B214 /* PNResponseParser.m in Sources */,
+				5AE3AEBF1864602500704422 /* PNConnectionBadJson.m in Sources */,
 				5ACA68A4185B81F300C2B214 /* PNAccessRightOptions.m in Sources */,
 				5ACA68C0185B81F300C2B214 /* NSArray+PNAdditions.m in Sources */,
 				5ACA68AE185B81F300C2B214 /* PNDate.m in Sources */,

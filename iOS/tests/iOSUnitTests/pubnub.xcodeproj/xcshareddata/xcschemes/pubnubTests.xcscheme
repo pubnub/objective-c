@@ -35,16 +35,16 @@
                   Identifier = "CatchupTest">
                </Test>
                <Test
-                  Identifier = "Configuration">
+                  Identifier = "ClientIdentifier">
                </Test>
                <Test
                   Identifier = "ChannelLimitTest">
                </Test>
                <Test
-                  Identifier = "ClientIdentifier">
+                  Identifier = "ApnsToken">
                </Test>
                <Test
-                  Identifier = "ApnsToken">
+                  Identifier = "Configuration">
                </Test>
             </SkippedTests>
          </TestableReference>
