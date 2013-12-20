@@ -249,7 +249,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Make reachability flags human-readable
     PNReachabilityStatus status = PNReachabilityStatusForFlags(flags);
     BOOL available = [reachabilityMonitor isServiceAvailableForStatus:status];
-
+    
     if (!reachabilityMonitor.isNotificationsSuspended) {
 
         PNLog(PNLogReachabilityLevel, reachabilityMonitor, @"{CALLBACK} PubNub services reachability flags changes: "
@@ -263,9 +263,25 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         reachabilityMonitor.reachabilityFlags = flags;
         reachabilityMonitor.reachabilityStatus = status;
         
-        if (available) {
-            
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+#else
+        BOOL shouldSuspectWrongState = YES;
+#endif
+        
+        if (available && shouldSuspectWrongState) {
+                
             [reachabilityMonitor startOriginLookup];
+        }
+        
+        if (!available || (available && !shouldSuspectWrongState)) {
+            
+            if (!available) {
+                
+                [reachabilityMonitor stopOriginLookup];
+            }
+            
+            reachabilityMonitor.lookupStatus = status;
         }
         
         if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
@@ -502,6 +518,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         self.simulatingNetworkSwitchEvent = NO;
         
         BOOL isConnectionAvailable = responseData != nil;
+        
+        NSLog(@"\n----------------------- Lookup results -----------------------\nResponse: %@\nData: %@\n---------------------------------------------------------------------", response, responseData);
         
         if (error != nil) {
             
