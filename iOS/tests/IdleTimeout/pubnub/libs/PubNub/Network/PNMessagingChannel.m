@@ -1219,7 +1219,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
 
 
-    if (isLeavingByUserRequest) {
+    if (isLeavingByUserRequest && ![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
 
         [self.messagingDelegate messagingChannel:self
                       didUnsubscribeFromChannels:[self channelsWithOutPresenceFromList:channels]
