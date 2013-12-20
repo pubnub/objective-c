@@ -142,7 +142,7 @@
     [self initializePubNubClient];
 
 #if !TARGET_IPHONE_SIMULATOR
-	NSLog(@"token\n%@\n%@", [[NSUserDefaults standardUserDefaults] objectForKey: @"deviceToken"],
+	NSLog(@"token:\n%@\n%@", [[NSUserDefaults standardUserDefaults] objectForKey: @"deviceToken"],
 		  [[NSUserDefaults standardUserDefaults] objectForKey: @"devToken"]);
 	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"deviceToken"] == nil ||
 	   [[NSUserDefaults standardUserDefaults] objectForKey: @"devToken"] == nil )

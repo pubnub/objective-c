@@ -62,9 +62,6 @@
                   Identifier = "ApnsToken">
                </Test>
                <Test
-                  Identifier = "TimeOutTest">
-               </Test>
-               <Test
                   Identifier = "PNBaseRequestTest">
                </Test>
                <Test
@@ -137,7 +134,13 @@
                   Identifier = "PNCryptoTest">
                </Test>
                <Test
-                  Identifier = "Configuration">
+                  Identifier = "PAMTestError">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest">
+               </Test>
+               <Test
+                  Identifier = "PAMTest">
                </Test>
             </SkippedTests>
          </TestableReference>

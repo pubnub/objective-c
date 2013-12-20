@@ -40,7 +40,7 @@ static CGSize const inChatMessageSize = {.width=524.0f,.height=669.0f};
 
 static NSUInteger const inChatMessageLabelTag = 878;
 
-static double const kPNActionRetryDelayOnPAMError = 2.0f;
+static double const kPNActionRetryDelayOnPAMError = 15.0f;
 
 
 #pragma mark - Private interface methods
@@ -545,8 +545,9 @@ static double const kPNActionRetryDelayOnPAMError = 2.0f;
             
             if (((PNError *)object).code == kPNAPIAccessForbiddenError) {
                 
-                alertMessage = [NSString stringWithFormat:@"Message sending failed: %@\nChannel: %@\n\nReason: %@\n\nMessage sending will be repeated in 2 seconds.",
-                                message, [PNDataManager sharedInstance].currentChannel.name, [((PNError *)object) localizedFailureReason]];
+                alertMessage = [NSString stringWithFormat:@"You can't send messahe \"%@\" to \"%@\" - Reason: Your auth key is incorrect or has been revoked. "
+                                "Set a valid auth key to stop this error.\n\nSubscribe will be repeated in %d seconds.",
+                                message, [PNDataManager sharedInstance].currentChannel.name, (int)kPNActionRetryDelayOnPAMError];
                 
                 cancelButtonTitle = @"Cancel";
             }
@@ -700,8 +701,9 @@ static double const kPNActionRetryDelayOnPAMError = 2.0f;
     if (subscriptionError.code == kPNAPIAccessForbiddenError) {
         
         cancelButtonTitle = @"Cancel";
-        alertMessage = [NSString stringWithFormat:@"Failed to subscribe on: %@\n\nReason: %@\n\nSubscribe will be repeated in 2 seconds.",
-                        [channels lastObject], [subscriptionError localizedFailureReason]];
+        alertMessage = [NSString stringWithFormat:@"You do not have access to channel \"%@\" - Reason: Your auth key is incorrect or has been revoked. "
+                                                   "Set a valid auth key to stop this error.\n\nSubscribe will be repeated in %d seconds.",
+                        [[channels lastObject] name], (int)kPNActionRetryDelayOnPAMError];
     }
     
     

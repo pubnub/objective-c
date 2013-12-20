@@ -132,9 +132,15 @@
 	STAssertTrue(isCompletionBlockCalled, @"Completion block not called");
 //	if( isCompletionBlockCalled == YES )
 //		STAssertEqualsWithAccuracy( interval, kPNConnectionIdleTimeout, 10, @"Timeout connectWithSuccessBlock no correct, %f instead of %f", interval, kPNConnectionIdleTimeout);
+	[self t20SubscriptionRequestTimeout];
+	[self t30ParticipantsListForChannelTimeout];
+	[self t30ParticipantsListForChannelTimeout1];
+	[self t40RequestHistoryForChannelTimeout];
+	[self t50SendMessageTimeout];
+	[self t60RequestServerTimeTimeout];
 }
 
-- (void)test20SubscriptionRequestTimeout
+- (void)t20SubscriptionRequestTimeout
 {
 	[self resetConnection];
 
@@ -166,7 +172,7 @@
           channel, error);
 	notificationParticipantsListCalled = YES;
 }
-- (void)test30ParticipantsListForChannelTimeout
+- (void)t30ParticipantsListForChannelTimeout
 {
 	[self resetConnection];
 
@@ -196,7 +202,7 @@
 	[Swizzler unswizzleFromReceipt:receipt];
 }
 
-- (void)test30ParticipantsListForChannelTimeout1
+- (void)t30ParticipantsListForChannelTimeout1
 {
 	for( int i=0; i<pnChannels.count; i++ )
 	{
@@ -234,7 +240,7 @@
 	notificationFailHistoryDownloadCalled = YES;
 }
 
-- (void)test40RequestHistoryForChannelTimeout
+- (void)t40RequestHistoryForChannelTimeout
 {
 	for( int i=0; i<pnChannels.count; i++ )
 	{
@@ -283,7 +289,7 @@
 	pNClientMessageSendingDidFailNotification = YES;
 }
 
-- (void)test50SendMessageTimeout
+- (void)t50SendMessageTimeout
 {
 	for( int i=0; i<pnChannels.count; i++ )
 	{
@@ -334,7 +340,7 @@
 	notificationTokenReceiveDidFailCallled = YES;
 }
 
--(void)test60RequestServerTimeTimeout
+-(void)t60RequestServerTimeTimeout
 {
 	[self resetConnection];
 
