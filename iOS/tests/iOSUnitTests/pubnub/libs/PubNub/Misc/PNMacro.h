@@ -57,8 +57,8 @@
 #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
-#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 0
-#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
 
 #ifdef PN_TESTING
 #undef PNLOG_LOGGING_ENABLED
@@ -217,6 +217,9 @@ void PNLogDumpOutputToFile(NSString *output) {
         // Retrieve path to the 'Documents' folder
         NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
         NSString *consoleDumpFilePath = [documentsFolder stringByAppendingPathComponent:@"pubnub-console-dump.txt"];
+//		if( PNLOG_LOGGING_ENABLED ) {
+//			NSLog(@"consoleDumpFilePath %@", consoleDumpFilePath);
+//		}
 
         output = [[[NSDate date] consoleOutputTimestamp] stringByAppendingFormat:@"> %@\n", output];
 

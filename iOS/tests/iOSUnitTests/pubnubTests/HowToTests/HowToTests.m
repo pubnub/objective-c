@@ -294,7 +294,7 @@
 	[self t30RequestParticipantsListForChannel];
 	[self t35RequestServerTimeTokenWithCompletionBlock];
 	[self t40SendMessage];
-	[self t45SendMessageBig];
+//	[self t45SendMessageBig];
 	[self t50RequestHistoryForChannel];
 	[self t55RequestHistoryReverse];
 	[self t60SubscribeOnChannelsByTurns];
@@ -672,7 +672,7 @@
 				 //				 NSLog( @"test45SendMessageBig %f", interval);
 				 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
-				 NSLog(@"withCompletionBlock %lu, message size %lu", messageSendingState, (unsigned long)message.length);
+				 NSLog(@"withCompletionBlock %d, message size %lu", (int)messageSendingState, (unsigned long)message.length);
 			 }];
 
 			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 ||
@@ -811,7 +811,7 @@
 
 
 - (void)t60SubscribeOnChannelsByTurns {
-	for( int i = 0; i<200; i++ )	{
+	for( int i = 0; i<20; i++ )	{
 		//		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 		__block BOOL isCompletionBlockCalled = NO;
 		NSString *channelName = [NSString stringWithFormat: @" sdf sdfsdf asd fa adsf as %@ %d", [NSDate date], i];
@@ -843,10 +843,8 @@
 			isCompletionBlockCalled == NO; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( isCompletionBlockCalled, @"completion block not called, %@", channelName);
-		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1
-					   && isCompletionBlockCalled == NO; j++ )
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-		//		STAssertTrue([[TestSemaphor sharedInstance] waitForKey: channelName timeout: [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"completion block not called, %@", channelName);
+		if( isCompletionBlockCalled == NO )
+			return;
 	}
 }
 

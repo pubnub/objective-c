@@ -47,17 +47,16 @@
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
 
 			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
-			dispatch_semaphore_signal(semaphore);
+//			dispatch_semaphore_signal(semaphore);
 		}
 							 errorBlock:^(PNError *connectionError) {
 								 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
-								 dispatch_semaphore_signal(semaphore);
+//								 dispatch_semaphore_signal(semaphore);
 								 STFail(@"connectionError %@", connectionError);
 							 }];
 	});
-	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+	for( int j=0; j<10; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
 	[PubNub grantAllAccessRightsForApplicationAtPeriod: 10 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
 		STAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);

@@ -153,7 +153,10 @@
 		if( isConnect == NO )
 			continue;
 		STAssertTrue( _isDidConnectToOrigin == YES || _isConnectionDidFailWithError == YES, @"not connect");
-		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration ], @"configurations are not equals" );
+		NSLog(@"configurations\n%@\n|\n%@", configurations[i], [PubNub sharedInstance].configuration );
+		if( [PubNub sharedInstance].configuration == nil )
+			continue;
+		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration], @"configurations are not equals, %@\n%@", configurations[i], [PubNub sharedInstance].configuration );
 
 		__block BOOL isCompletionBlockCalled = NO;
 		[PubNub subscribeOnChannels: [PNChannel channelsWithNames: @[@"channel"]]
