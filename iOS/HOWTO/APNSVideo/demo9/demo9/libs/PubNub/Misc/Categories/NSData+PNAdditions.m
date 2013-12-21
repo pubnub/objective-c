@@ -11,6 +11,13 @@
 #include <zlib.h>
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub data category must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Static
 
 static NSUInteger GZIPWindowBits = 47;
@@ -164,7 +171,7 @@ static unsigned char decodeCharTable[256] =
     // Iterate over the bytes
     for (int i=0; i < [self length]*0.5f; ++i) {
 
-      [stringBuffer appendFormat:@"%02X", (NSUInteger)dataBuffer[i]];
+      [stringBuffer appendFormat:@"%02lX", (unsigned long)dataBuffer[i]];
     }
 
 
@@ -192,15 +199,15 @@ static unsigned char decodeCharTable[256] =
     }
     else {
 
-        unsigned fullLength = [self length];
-        unsigned halfLength = [self length] / 2;
+        NSUInteger fullLength = [self length];
+        NSUInteger halfLength = [self length] / 2;
 
         NSMutableData *decompressed = [NSMutableData dataWithLength:fullLength + halfLength];
         BOOL done = NO;
         int status;
         z_stream stream;
         stream.next_in = (Bytef *)[self bytes];
-        stream.avail_in = [self length];
+        stream.avail_in = (uInt)fullLength;
         stream.total_out = 0;
         stream.zalloc = Z_NULL;
         stream.zfree = Z_NULL;
@@ -214,7 +221,7 @@ static unsigned char decodeCharTable[256] =
                     [decompressed increaseLengthBy:halfLength];
                 }
                 stream.next_out = [decompressed mutableBytes] + stream.total_out;
-                stream.avail_out = [decompressed length] - stream.total_out;
+                stream.avail_out = (uInt)([decompressed length] - stream.total_out);
 
                 // Inflate another chunk.
                 status = inflate(&stream, Z_SYNC_FLUSH);

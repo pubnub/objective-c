@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'PubNub'
-  s.version      = '3.4.2'
+  s.version      = '3.5.2'
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'Sergey Mamontov' => 'support@pubnub.com',
@@ -8,46 +8,45 @@ Pod::Spec.new do |s|
   }
   s.source = {
     :git => 'https://github.com/pubnub/objective-c.git',
-    :tag => 'v3.4.2'
+    :tag => 'v3.5.2'
   }
   
   # A list of file patterns which select the source files that should be
   # added to the Pods project. If the pattern is a directory then the
   # path will automatically have '*.{h,m,mm,c,cpp}' appended.
   #  
-  s.source_files = 'iOS/3.4/pubnub/libs/PubNub/Misc/Categories',
-   'iOS/3.4/pubnub/libs/PubNub/Data',
-   'iOS/3.4/pubnub/libs/PubNub/Misc',
-   'iOS/3.4/pubnub/libs/PubNub/Misc/Protocols',
-   'iOS/3.4/pubnub/libs/PubNub/Core',
-   'iOS/3.4/pubnub/libs/PubNub/Data/Channels',
-   'iOS/3.4/pubnub/libs/PubNub/Data/Crypto',
-   'iOS/3.4/pubnub/libs/PubNub/Network/Packets',
-   'iOS/3.4/pubnub/libs/PubNub/Data/Buffers',
-   'iOS/3.4/pubnub/libs/PubNub/Network',
-   'iOS/3.4/pubnub/libs/PubNub/Network/Transport',
-   'iOS/3.4/pubnub/libs/PubNub/Data/Channels/Presence',
-   'iOS/3.4/pubnub/libs/PubNub/Data/Parsers',
+  s.source_files = 'iOS/iPadDemoApp/pubnub/libs/PubNub/Misc/Categories',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Misc',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Misc/Protocols',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Core',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Channels',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Crypto',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Network/Packets',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Buffers',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Network',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Network/Transport',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Channels/Presence',
+   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Parsers',
    'PNConstants.h'
 
-  s.ios.deployment_target = '5.0'
+  s.ios.deployment_target = '5.1'
   s.osx.deployment_target = '10.7'
 
-  s.ios.prefix_header_file = 'iOS/3.4/pubnub/pubnub-Prefix.pch'
+  s.ios.prefix_header_file = 'iOS/iPadDemoApp/pubnub/pubnub-Prefix.pch'
   
   s.requires_arc = true
   s.frameworks =  'CFNetwork', 'SystemConfiguration'
   s.library   = 'z'
-  
-  s.dependency 'JSONKit', '~> 1.4'
+  s.osx.frameworks = 'CoreWLAN'
   s.osx.prefix_header_contents = <<-EOS
 #import "PNImports.h"
 EOS
   
   s.homepage = 'http://www.pubnub.com/'
-  s.license = {
-	    :type => 'MIT',
-    	:text => <<-LICENSE
+  s.license = %{
+    :type => 'MIT',
+    :text => <<-LICENSE'
 PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks
 Copyright (c) 2013 PubNub Inc.
 http://www.pubnub.com/
@@ -79,3 +78,4 @@ LICENSE
   }
 
 end
+

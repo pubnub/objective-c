@@ -23,6 +23,13 @@
 #import "PNConstants.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub message post request must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Private interface methods
 
 @interface PNMessagePostRequest ()
@@ -43,11 +50,6 @@
 
 
 #pragma mark - Instance methods
-
-/**
- * Retrieve reference on encrypted message
- */
-- (NSString *)encryptedMessageWithError:(PNError **)encryptionError;
 
 /**
  * Retrieve message post request signature
@@ -102,8 +104,8 @@
         PNError *encryptionError;
         if ([PNCryptoHelper sharedInstance].isReady) {
 
-            message = [self encryptedMessageWithError:&encryptionError];
-
+            message = [PubNub AESEncrypt:self.message.message error:&encryptionError];
+            
             if (encryptionError != nil) {
 
                 PNLog(PNLogCommunicationChannelLayerErrorLevel,
@@ -136,25 +138,19 @@
 					([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
-- (NSString *)encryptedMessageWithError:(PNError **)encryptionError {
+- (NSString *)debugResourcePath {
 
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-    NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:self.message.message
-                                                                                          error:encryptionError];
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([PubNub sharedInstance].configuration.publishKey)];
+    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
 
-    return [NSString stringWithFormat:@"\"%@\"", encryptedData];
-#else
-    id encryptedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:self.message.message
-                                                                                       error:encryptionError];
-    NSString *encryptedData = [PNJSONSerialization stringFromJSONObject:encryptedMessage];
-
-    return [NSString stringWithFormat:@"%@", encryptedData];
-#endif
+    return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
 - (NSString *)signature {
 
     NSString *signature = @"0";
+#if PN_SHOULD_USE_SIGNATURE
     NSString *secretKey = [PubNub sharedInstance].configuration.secretKey;
     if ([secretKey length] > 0) {
 
@@ -168,9 +164,9 @@
 
         signature = PNHMACSHA256String(secretKey, signedRequestPath);
     }
+#endif
 
-
-    return @"0";
+    return signature;
 }
 
 #pragma mark -

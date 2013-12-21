@@ -17,6 +17,13 @@
 #import "PNBaseRequest+Protected.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub write buffer must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Static
 
 // Stores reference on maximum write TCP
@@ -94,6 +101,12 @@ static NSUInteger const kPNWriteBufferSize = 4096;
 - (CFIndex)bufferLength {
     
     return MIN(kPNWriteBufferSize, self.length);
+}
+
+- (void)reset {
+
+    self.sendingBytes = NO;
+    self.offset = 0;
 }
 
 - (NSString *)description {

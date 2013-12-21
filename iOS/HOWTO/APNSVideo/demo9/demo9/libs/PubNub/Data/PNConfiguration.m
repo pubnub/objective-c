@@ -11,7 +11,15 @@
 //
 
 #import "PNDefaultConfiguration.h"
+#import "PNPrivateMacro.h"
 #import "PNConstants.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub configuration must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Private interface methods
@@ -205,6 +213,95 @@
     return shouldReset;
 }
 
+- (BOOL)isEqual:(PNConfiguration *)configuration {
+
+    BOOL isEqual = configuration != nil;
+
+    if (isEqual) {
+
+        isEqual = [self.origin isEqualToString:configuration.origin];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.publishKey isEqualToString:configuration.publishKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.subscriptionKey isEqualToString:configuration.subscriptionKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.secretKey isEqualToString:configuration.secretKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.cipherKey isEqualToString:configuration.cipherKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = [self.authorizationKey isEqualToString:configuration.authorizationKey];
+    }
+
+    if (isEqual) {
+
+        isEqual = self.nonSubscriptionRequestTimeout == configuration.nonSubscriptionRequestTimeout;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldResubscribeOnConnectionRestore && configuration.shouldResubscribeOnConnectionRestore;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldRestoreSubscriptionFromLastTimeToken &&
+                  configuration.shouldRestoreSubscriptionFromLastTimeToken;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.canIgnoreSecureConnectionRequirement && configuration.canIgnoreSecureConnectionRequirement;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldReduceSecurityLevelOnError && configuration.shouldReduceSecurityLevelOnError;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldUseSecureConnection && configuration.shouldUseSecureConnection;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldAutoReconnectClient && configuration.shouldAutoReconnectClient;
+    }
+
+    if (isEqual) {
+
+        isEqual = self.shouldAcceptCompressedResponse && configuration.shouldAcceptCompressedResponse;
+    }
+
+
+    return isEqual;
+}
+
+- (BOOL)shouldKillDNSCache {
+    
+    return ![self.origin isEqualToString:self.realOrigin];
+}
+
 - (void)shouldKillDNSCache:(BOOL)shouldKillDNSCache {
 
     if (shouldKillDNSCache) {
@@ -213,7 +310,8 @@
                                                                                      kPNServiceMainDomain]
                                                                          withString:@""];
 
-        self.origin = [NSString stringWithFormat:@"%@-%d.%@", subDomain, PNRandomInteger(), kPNServiceMainDomain];
+        self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)PNRandomInteger(),
+                        kPNServiceMainDomain];
     }
     else {
 

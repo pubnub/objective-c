@@ -18,7 +18,6 @@
 #import "PNOperationStatusResponseParser.h"
 #import "PNErrorResponseParser+Protected.h"
 #import "PNChannelEventsResponseParser.h"
-#import "PNPresenceEvent+Protected.h"
 #import "PNTimeTokenResponseParser.h"
 #import "PNHereNowResponseParser.h"
 #import "PNActionResponseParser.h"
@@ -27,6 +26,13 @@
 #import "PNChannelHistoryParser.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNPushNotificationsEnabledChannelsParser.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub response parser must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 
@@ -104,7 +110,7 @@
             }
         }
     }
-    else {
+    else if ([response.response isKindOfClass:[NSDictionary class]]){
 
         NSDictionary *responseData = response.response;
 
@@ -126,6 +132,11 @@
 
             parserClass = [PNErrorResponseParser class];
         }
+    }
+    // Looks like server sent malformed JSON string (there is no array or dictionary at top level) and we should treat it as error.
+    else {
+        
+        parserClass = [PNErrorResponseParser class];
     }
 
 

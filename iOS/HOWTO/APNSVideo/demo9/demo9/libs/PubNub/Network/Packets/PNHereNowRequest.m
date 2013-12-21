@@ -13,6 +13,13 @@
 #import "PubNub+Protected.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub here now request must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Private interface methods
 
 @interface PNHereNowRequest ()
@@ -69,7 +76,13 @@
                                       ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
+- (NSString *)debugResourcePath {
 
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+
+    return [resourcePathComponents componentsJoinedByString:@"/"];
+}
 
 #pragma mark -
 

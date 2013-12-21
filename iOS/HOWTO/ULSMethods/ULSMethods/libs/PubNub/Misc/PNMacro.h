@@ -11,9 +11,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CommonCrypto/CommonCryptor.h>
-#import <CommonCrypto/CommonHMAC.h>
-#import "NSData+PNAdditions.h"
+#import "NSDate+PNAdditions.h"
 #include <stdlib.h>
 
 
@@ -30,13 +28,21 @@
     #else
         #define pn_desired_weak unsafe_unretained
         #define __pn_desired_weak __unsafe_unretained
-    #endif
-#endif
+    #endif // __has_feature(objc_arc_weak)
+#endif // pn_desired_weak
 
 
 #pragma mark - Logging
 
+// Stores maximum file syze which should be stored on file system.
+// As soon as limit will be reached, beginning of the file will be truncated.
+// Default file size is 5Mb
+#define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
+
+#define PNLOG_LOGGING_ENABLED 1
+#define PNLOG_STORE_LOG_TO_FILE 1
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
+#define PNLOG_DELEGATE_LOGGING_ENABLED 1
 #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
 #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
 #define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
@@ -45,20 +51,57 @@
 #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
 #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 0
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
+
+#ifdef PN_TESTING
+    #undef PNLOG_LOGGING_ENABLED
+    #define PNLOG_LOGGING_ENABLED 1
+    #undef PNLOG_STORE_LOG_TO_FILE
+    #define PNLOG_STORE_LOG_TO_FILE 1
+    #undef PNLOG_GENERAL_LOGGING_ENABLED
+    #define PNLOG_GENERAL_LOGGING_ENABLED 1
+    #undef PNLOG_DELEGATE_LOGGING_ENABLED
+    #define PNLOG_DELEGATE_LOGGING_ENABLED 1
+    #undef PNLOG_REACHABILITY_LOGGING_ENABLED
+    #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
+    #undef PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED
+    #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
+    #undef PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED
+    #define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
+    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 1
+    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 1
+    #undef PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED
+    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
+    #undef PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED
+    #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
+    #undef PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED
+    #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
+    #undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED
+    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 1
+    #undef PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED
+    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 1
+#endif
 
 typedef enum _PNLogLevels {
     PNLogGeneralLevel,
+    PNLogDelegateLevel,
     PNLogReachabilityLevel,
     PNLogDeserializerInfoLevel,
     PNLogDeserializerErrorLevel,
     PNLogConnectionLayerErrorLevel,
     PNLogConnectionLayerInfoLevel,
+    PNLogConnectionLayerHTTPLoggingLevel,
     PNLogCommunicationChannelLayerErrorLevel,
     PNLogCommunicationChannelLayerWarnLevel,
     PNLogCommunicationChannelLayerInfoLevel
 } PNLogLevels;
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
 static BOOL PNLoggingEnabledForLevel(PNLogLevels level);
 BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
 
@@ -69,6 +112,11 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
         case PNLogGeneralLevel:
 
                 isLoggingEnabledForLevel = PNLOG_GENERAL_LOGGING_ENABLED == 1;
+            break;
+
+        case PNLogDelegateLevel:
+
+                isLoggingEnabledForLevel = PNLOG_DELEGATE_LOGGING_ENABLED == 1;
             break;
 
         case PNLogReachabilityLevel:
@@ -96,6 +144,11 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
                 isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED == 1;
             break;
 
+        case PNLogConnectionLayerHTTPLoggingLevel:
+
+                isLoggingEnabledForLevel = PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED == 1;
+            break;
+
         case PNLogCommunicationChannelLayerErrorLevel:
 
                 isLoggingEnabledForLevel = PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED == 1;
@@ -116,6 +169,137 @@ BOOL PNLoggingEnabledForLevel(PNLogLevels level) {
     return isLoggingEnabledForLevel;
 }
 
+static BOOL PNHTTPDumpOutputToFileEnabled();
+BOOL PNHTTPDumpOutputToFileEnabled() {
+
+    return PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED == 1;
+}
+
+static NSString* PNHTTPDumpOutputFolderPath();
+NSString* PNHTTPDumpOutputFolderPath() {
+
+    // Retrieve path to the 'Documents' folder
+    NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+
+
+    return [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
+}
+
+static NSString* PNHTTPDumpOutputFilePath();
+NSString* PNHTTPDumpOutputFilePath() {
+
+    return [PNHTTPDumpOutputFolderPath() stringByAppendingFormat:@"/response-%@.dmp", [[NSDate date] consoleOutputTimestamp]];
+}
+
+static void PNHTTPDumpOutputToFile(NSData *data);
+void PNHTTPDumpOutputToFile(NSData *data) {
+
+    if (PNHTTPDumpOutputToFileEnabled()) {
+
+        if(![data writeToFile:PNHTTPDumpOutputFilePath() atomically:YES]){
+
+            NSLog(@"CAN'T SAVE DUMP: %@", data);
+        }
+    }
+}
+
+static void PNLogDumpOutputToFile(NSString *output);
+void PNLogDumpOutputToFile(NSString *output) {
+
+    if (PNLOG_STORE_LOG_TO_FILE) {
+
+        // Retrieve path to the 'Documents' folder
+        NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        NSString *consoleDumpFilePath = [documentsFolder stringByAppendingPathComponent:@"pubnub-console-dump.txt"];
+
+        output = [[[NSDate date] consoleOutputTimestamp] stringByAppendingFormat:@"> %@\n", output];
+
+
+        FILE *consoleDumpFilePointer = fopen([consoleDumpFilePath UTF8String], "a+");
+        if (consoleDumpFilePointer == NULL) {
+
+            NSLog(@"PNLog: Can't open console dump file (%@)", consoleDumpFilePath);
+        }
+        else {
+
+            const char *cOutput = [output UTF8String];
+            fwrite(cOutput, strlen(cOutput), 1, consoleDumpFilePointer);
+            fclose(consoleDumpFilePointer);
+        }
+    }
+}
+
+static void PNLogDumpFileTruncate();
+void PNLogDumpFileTruncate() {
+
+
+    if (PNLOG_STORE_LOG_TO_FILE) {
+
+        // Retrieve path to the 'Documents' folder
+        NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        NSString *consoleDumpFilePath = [documentsFolder stringByAppendingPathComponent:@"pubnub-console-dump.txt"];
+        NSString *oldConsoleDumpFilePath = [documentsFolder stringByAppendingPathComponent:@"pubnub-console-dump.1.txt"];
+
+
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:consoleDumpFilePath]) {
+
+            NSError *attributesFetchError = nil;
+            NSDictionary *fileInformation = [fileManager attributesOfItemAtPath:consoleDumpFilePath
+                                                                          error:&attributesFetchError];
+            if (attributesFetchError == nil) {
+
+                unsigned long long consoleDumpFileSize = [(NSNumber *)[fileInformation valueForKey:NSFileSize] unsignedLongLongValue];
+
+
+                NSLog(@"PNLog: Current console dump file size is %lld bytes (maximum allowed: %d bytes)",
+                      consoleDumpFileSize, kPNLogMaximumLogFileSize);
+
+                if (consoleDumpFileSize > kPNLogMaximumLogFileSize) {
+
+                    NSError *oldLogDeleteError = nil;
+                    if ([fileManager fileExistsAtPath:oldConsoleDumpFilePath]) {
+
+                        [fileManager removeItemAtPath:oldConsoleDumpFilePath error:&oldLogDeleteError];
+                    }
+
+                    if (oldLogDeleteError == nil) {
+
+                        NSError *fileCopyError;
+                        [fileManager copyItemAtPath:consoleDumpFilePath toPath:oldConsoleDumpFilePath error:&fileCopyError];
+
+                        if (fileCopyError == nil) {
+
+                            if ([fileManager fileExistsAtPath:consoleDumpFilePath]) {
+
+                                NSError *currentLogDeleteError = nil;
+                                [fileManager removeItemAtPath:consoleDumpFilePath error:&currentLogDeleteError];
+
+                                if (currentLogDeleteError != nil) {
+
+                                    NSLog(@"PNLog: Can't remove current console dump log (%@) because of error: %@",
+                                          consoleDumpFilePath, currentLogDeleteError);
+                                }
+                            }
+                        }
+                        else {
+
+                            NSLog(@"PNLog: Can't copy current log (%@) to new location (%@) because of error: %@",
+                                  consoleDumpFilePath, oldConsoleDumpFilePath, fileCopyError);
+                        }
+                    }
+                    else {
+
+                        NSLog(@"PNLog: Can't remove old console dump log (%@) because of error: %@",
+                              oldConsoleDumpFilePath, oldLogDeleteError);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 static void PNLog(PNLogLevels level, id sender, ...);
 void PNLog(PNLogLevels level, id sender, ...) {
 
@@ -132,123 +316,74 @@ void PNLog(PNLogLevels level, id sender, ...) {
     NSString *additionalData = nil;
 
 
-    switch (level) {
+    if (PNLoggingEnabledForLevel(level)) {
 
-        case PNLogGeneralLevel:
-        case PNLogReachabilityLevel:
+        switch (level) {
 
-            if (PNLoggingEnabledForLevel(level)) {
+            case PNLogDelegateLevel:
 
-                additionalData = @"";
-            }
-            break;
-        case PNLogDeserializerInfoLevel:
-        case PNLogConnectionLayerInfoLevel:
-        case PNLogCommunicationChannelLayerInfoLevel:
-
-            if (PNLoggingEnabledForLevel(level)) {
+                additionalData = @"{DELEGATE}";
+                break;
+            case PNLogDeserializerInfoLevel:
+            case PNLogConnectionLayerInfoLevel:
+	        case PNLogConnectionLayerHTTPLoggingLevel:
+            case PNLogCommunicationChannelLayerInfoLevel:
 
                 additionalData = @"{INFO}";
-            }
-            break;
-        case PNLogDeserializerErrorLevel:
-        case PNLogConnectionLayerErrorLevel:
-        case PNLogCommunicationChannelLayerErrorLevel:
-
-            if (PNLoggingEnabledForLevel(level)) {
+                break;
+            case PNLogDeserializerErrorLevel:
+            case PNLogConnectionLayerErrorLevel:
+            case PNLogCommunicationChannelLayerErrorLevel:
 
                 additionalData = @"{ERROR}";
-            }
-            break;
-        case PNLogCommunicationChannelLayerWarnLevel:
-
-            if (PNLoggingEnabledForLevel(level)) {
+                break;
+            case PNLogCommunicationChannelLayerWarnLevel:
 
                 additionalData = @"{WARN}";
-            }
-            break;
+                break;
+            default:
+
+                additionalData = @"";
+                break;
+        }
     }
 
 
     if(formattedLog != nil && additionalData != nil) {
 
-        NSLog(@"%@%@", [NSString stringWithFormat:formattedLog, additionalData], formattedLogString);
+        NSString *consoleString = [NSString stringWithFormat:@"%@%@", [NSString stringWithFormat:formattedLog, additionalData], formattedLogString];
+#if PNLOG_LOGGING_ENABLED == 1
+        NSLog(@"%@", consoleString);
+#endif
+        PNLogDumpOutputToFile(consoleString);
     }
 }
 
-static void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject);
-void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
-    if (CFObject != NULL) {
 
-        if (*((CFTypeRef*)CFObject) != NULL) {
-            
-            CFRelease(*((CFTypeRef*)CFObject));
+#pragma mark - Misc functions
+
+static void PNDebugPrepare();
+void PNDebugPrepare() {
+
+    PNLogDumpFileTruncate();
+    if (PNHTTPDumpOutputToFileEnabled()) {
+
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+
+        // Check whether HTTP responses dump folder exists or not
+        NSString *dumpsFolderPath = PNHTTPDumpOutputFolderPath();
+        if (![fileManager fileExistsAtPath:dumpsFolderPath isDirectory:NULL]) {
+
+            [fileManager createDirectoryAtPath:dumpsFolderPath withIntermediateDirectories:YES
+                                    attributes:nil error:NULL];
         }
-        
-        *((CFTypeRef*)CFObject) = NULL;
     }
-}
-
-static NSNull* PNNillIfNotSet(id object);
-NSNull* PNNillIfNotSet(id object) {
-
-    return (object ? object : [NSNull null]);
-}
-
-static NSUInteger PNRandomValueInRange(NSRange valuesRange);
-NSUInteger PNRandomValueInRange(NSRange valuesRange) {
-    
-    return valuesRange.location + (random() % (valuesRange.length - valuesRange.location));
-}
-
-static NSString* PNUniqueIdentifier();
-NSString* PNUniqueIdentifier() {
-
-    // Generating new unique identifier
-    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-    CFStringRef cfUUID = CFUUIDCreateString(kCFAllocatorDefault, uuid);
-    
-    // release the UUID
-    CFRelease(uuid);
-
-    
-    return [(NSString *)CFBridgingRelease(cfUUID) lowercaseString];
-}
-
-static NSString* PNShortenedIdentifierFromUUID(NSString *uuid);
-NSString* PNShortenedIdentifierFromUUID(NSString *uuid) {
-    
-    NSMutableString *shortenedUUID = [NSMutableString string];
-    
-    NSArray *components = [uuid componentsSeparatedByString:@"-"];
-    [components enumerateObjectsUsingBlock:^(NSString *group, NSUInteger groupIdx, BOOL *groupEnumeratorStop) {
-        
-        NSRange randomValueRange = NSMakeRange(PNRandomValueInRange(NSMakeRange(0, [group length])), 1);
-        [shortenedUUID appendString:[group substringWithRange:randomValueRange]];
-    }];
-    
-    
-    return shortenedUUID;
-}
-
-static NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken);
-NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
-
-    unsigned long long int longLongValue = [timeToken unsignedLongLongValue];
-    NSTimeInterval timeStamp = longLongValue;
-    if (longLongValue > INT32_MAX) {
-
-        timeStamp = ((NSTimeInterval)longLongValue)/10000000.0f;
-    }
-
-
-    return timeStamp;
 }
 
 static NSNumber* PNTimeTokenFromDate(NSDate *date);
 NSNumber* PNTimeTokenFromDate(NSDate *date) {
 
-    unsigned long long int longLongValue = ((NSTimeInterval)[date timeIntervalSince1970])*10000000;
+    unsigned long long int longLongValue = ((unsigned long long int)[date timeIntervalSince1970])*10000000;
 
 
     return [NSNumber numberWithUnsignedLongLong:longLongValue];
@@ -279,36 +414,40 @@ NSString* PNStringFromUnsignedLongLongNumber(id timeToken) {
     return timeToken;
 }
 
-static NSString *PNHMACSHA256String(NSString *key, NSString *signedData);
-NSString *PNHMACSHA256String(NSString *key, NSString *signedData) {
+static NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken);
+NSTimeInterval PNUnixTimeStampFromTimeToken(NSNumber *timeToken) {
 
-    const char *cKey = [key cStringUsingEncoding:NSUTF8StringEncoding];
-    const char *cSignedData = [signedData cStringUsingEncoding:NSUTF8StringEncoding];
+    unsigned long long int longLongValue = [timeToken unsignedLongLongValue];
+    NSTimeInterval timeStamp = longLongValue;
+    if (longLongValue > INT32_MAX) {
 
-    unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
-
-    CCHmac(kCCHmacAlgSHA256, cKey, strlen(cKey), cSignedData, strlen(cSignedData), cHMAC);
-    NSData *HMACData = [[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)];
+        timeStamp = ((NSTimeInterval)longLongValue)/10000000.0f;
+    }
 
 
-    return [HMACData HEXString];
+    return timeStamp;
 }
 
-static BOOL PNIsUserGeneratedUUID(NSString *uuid);
-BOOL PNIsUserGeneratedUUID(NSString *uuid) {
+static NSString* PNObfuscateString(NSString *string);
+NSString *PNObfuscateString(NSString *string) {
 
-    NSString *uuidSearchRegex = @"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-    NSPredicate *generatedUUIDCheckPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", uuidSearchRegex];
+    NSString *obfuscatedString = string;
+    NSUInteger minimumWidth = 3;
+    NSUInteger stringWidth = (NSUInteger)([string length]/2);
+    if (stringWidth >= minimumWidth) {
+
+        obfuscatedString = [NSString stringWithFormat:@"%@*****%@", [string substringToIndex:minimumWidth],
+                            [string substringFromIndex:([string length] - minimumWidth)]];
+    }
+    else {
+
+        obfuscatedString = [obfuscatedString substringToIndex:stringWidth];
+    }
 
 
-    return ![generatedUUIDCheckPredicate evaluateWithObject:uuid];
+    return obfuscatedString;
 }
 
-static NSInteger PNRandomInteger();
-NSInteger PNRandomInteger() {
-
-    return (arc4random() %(INT32_MAX)-1);
-}
-
+#pragma clang diagnostic pop
 
 #endif

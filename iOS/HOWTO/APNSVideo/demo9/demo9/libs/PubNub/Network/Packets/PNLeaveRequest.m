@@ -18,6 +18,13 @@
 #import "PubNub+Protected.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub leave request must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 @interface PNLeaveRequest ()
 
 
@@ -89,6 +96,14 @@
                                       [self callbackMethodName],
                                       self.shortIdentifier,
                                       ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+}
+
+- (NSString *)debugResourcePath {
+
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+
+    return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
 #pragma mark -

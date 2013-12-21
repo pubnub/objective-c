@@ -32,17 +32,12 @@
 // Stores whether channel presence observation is required
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
 
-// Stores whether channel presence observation flag was set by
-// developer or not
-@property (nonatomic, assign, getter = isUserDefinedPresenceObservation)BOOL userDefinedPresenceObservation;
+// Stores whether channel presence observation flag was set by developer or not
+@property (nonatomic, assign, getter = isLinkedWithPresenceObservationChannel) BOOL linkedWithPresenceObservationChannel;
 
-// Stores number of participants for particular
-// channel (this number fetched from presence API
-// if it is used and updated when requested list
-// of participants)
-// INFO: it may differ in count from participants
-//       name because of nature of this value
-//       update logic
+// Stores number of participants for particular channel (this number fetched from presence API if it is used and
+// updated when requested list of participants)
+// INFO: it may differ in count from participants name because of nature of this value update logic
 @property (nonatomic, assign) NSUInteger participantsCount;
 
 // Last presence update date
@@ -57,13 +52,16 @@
 + (void)purgeChannelsCache;
 
 /**
- * Retrieve reference on channel by it's name and update presence
- * observing settings by request
+ * Retrieve reference on channel by it's name and update presence observing settings by request
  */
 + (id)            channelWithName:(NSString *)channelName
             shouldObservePresence:(BOOL)observePresence
 shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag;
 
+/**
+ * Allow to fetch largest time token inside channels group
+ */
++ (NSString *)largestTimetokenFromChannels:(NSArray *)channels;
 
 #pragma mark - Instance methods
 
@@ -73,9 +71,8 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag;
 - (BOOL)isPresenceObserver;
 
 /**
- * Depending on whether channel was configured
- * to receive presence events or not it will
- * return presence observing channel
+ * Depending on whether channel was configured to receive presence events or not it will return presence observing
+ * channel
  */
 - (PNChannelPresence *)presenceObserver;
 
@@ -85,20 +82,17 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag;
 - (void)setName:(NSString *)name;
 
 /**
- * Returns reference on channel name which cane be sent
- * in GET HTTP request to the PubNub service
+ * Returns reference on channel name which cane be sent in GET HTTP request to the PubNub service
  */
 - (NSString *)escapedName;
 
 /**
- * Updating cached channel data with information arrived
- * from presence event
+ * Updating cached channel data with information arrived from presence event
  */
 - (void)updateWithEvent:(PNPresenceEvent *)event;
 
 /**
- * Updating cached channel data with participants list
- * information
+ * Updating cached channel data with participants list information
  */
 - (void)updateWithParticipantsList:(PNHereNow *)hereNow;
 
@@ -111,6 +105,13 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag;
  * Will reset channel last update time token to "0"
  */
 - (void)resetUpdateTimeToken;
+
+/**
+ * Allow to lock/unlock ability to reset channel time token (maybe required because of some feature needs)
+ */
+- (BOOL)isTimeTokenChangeLocked;
+- (void)lockTimeTokenChange;
+- (void)unlockTimeTokenChange;
 
 #pragma mark -
 

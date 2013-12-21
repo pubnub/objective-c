@@ -16,7 +16,13 @@
 #import "PNHereNow+Protected.h"
 #import "PNError+Protected.h"
 #import "PubNub+Protected.h"
-#import "PNPresenceEvent.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub observation center must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Static
@@ -198,6 +204,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                                  object:nil];
         [notificationCenter addObserver:self
                                selector:@selector(handleClientSubscriptionProcess:)
+                                   name:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientSubscriptionProcess:)
                                    name:kPNClientSubscriptionWillRestoreNotification
                                  object:nil];
         [notificationCenter addObserver:self
@@ -209,12 +219,24 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                                    name:kPNClientSubscriptionDidFailNotification
                                  object:nil];
         [notificationCenter addObserver:self
+                               selector:@selector(handleClientSubscriptionProcess:)
+                                   name:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
                                selector:@selector(handleClientUnsubscriptionProcess:)
                                    name:kPNClientUnsubscriptionDidCompleteNotification
                                  object:nil];
         [notificationCenter addObserver:self
                                selector:@selector(handleClientUnsubscriptionProcess:)
+                                   name:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientUnsubscriptionProcess:)
                                    name:kPNClientUnsubscriptionDidFailNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleClientUnsubscriptionProcess:)
+                                   name:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification
                                  object:nil];
 
         // Handle presence events
@@ -907,7 +929,8 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     PNSubscriptionProcessState state = PNSubscriptionProcessNotSubscribedState;
 
     // Check whether arrived notification that subscription failed or not
-    if ([notification.name isEqualToString:kPNClientSubscriptionDidFailNotification]) {
+    if ([notification.name isEqualToString:kPNClientSubscriptionDidFailNotification] ||
+        [notification.name isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
 
         error = (PNError *)notification.userInfo;
         channels = error.associatedObject;
@@ -932,13 +955,34 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 
     // Retrieving list of observers (including one time and persistent observers)
-    NSArray *observers = [self observersForEvent:PNObservationEvents.clientSubscriptionOnChannels];
+    __block NSArray *observers = [self observersForEvent:PNObservationEvents.clientSubscriptionOnChannels];
+    if ([notification.name isEqualToString:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification] ||
+        [notification.name isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
 
-    // Clean one time observers for specific event
-    [self removeOneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels];
+        NSArray *oneTimeEventObservers = [self oneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels];
+        if ([oneTimeEventObservers count]) {
 
-    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
-                                            NSUInteger observerDataIdx,
+            [oneTimeEventObservers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
+
+                if ([[observerData valueForKey:PNObservationObserverData.observer] isEqual:[PubNub sharedInstance]]) {
+
+                    observers = @[observerData];
+                    [self removeObserver:[observerData valueForKey:PNObservationObserverData.observer]
+                                forEvent:PNObservationEvents.clientSubscriptionOnChannels
+                            oneTimeEvent:YES];
+                    *observerDataEnumeratorStop = YES;
+                }
+            }];
+        }
+    }
+    else {
+
+        // Clean one time observers for specific event
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels];
+    }
+
+    [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
                                             BOOL *observerDataEnumeratorStop) {
 
         // Call handling blocks
@@ -954,7 +998,8 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientUnsubscriptionDidCompleteNotification]) {
+    if ([notification.name isEqualToString:kPNClientUnsubscriptionDidCompleteNotification] ||
+        [notification.name isEqualToString:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification]) {
 
         channels = (NSArray *)notification.userInfo;
     }
@@ -965,10 +1010,33 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    NSArray *observers = [self observersForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
+    __block NSArray *observers = [self observersForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
+    if ([notification.name isEqualToString:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification] ||
+        [notification.name isEqualToString:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification]) {
 
-    // Clean one time observers for specific event
-    [self removeOneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
+        NSArray *oneTimeEventObservers = [self oneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
+        if ([oneTimeEventObservers count]) {
+
+            [oneTimeEventObservers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                                NSUInteger observerDataIdx,
+                                                                BOOL *observerDataEnumeratorStop) {
+
+                if ([[observerData valueForKey:PNObservationObserverData.observer] isEqual:[PubNub sharedInstance]]) {
+
+                    observers = @[observerData];
+                    [self removeObserver:[observerData valueForKey:PNObservationObserverData.observer]
+                                forEvent:PNObservationEvents.clientUnsubscribeFromChannels
+                            oneTimeEvent:YES];
+                    *observerDataEnumeratorStop = YES;
+                }
+            }];
+        }
+    }
+    else {
+
+        // Clean one time observers for specific event
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
+    }
 
     [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
                                             NSUInteger observerDataIdx,
@@ -1410,11 +1478,15 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     [notificationCenter removeObserver:self name:kPNClientConnectionDidFailWithErrorNotification object:nil];
 
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientSubscriptionWillRestoreNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidRestoreNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidFailNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidCompleteNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidFailNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification object:nil];
 
     [notificationCenter removeObserver:self name:kPNClientPresenceEnablingDidCompleteNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientPresenceEnablingDidFailNotification object:nil];

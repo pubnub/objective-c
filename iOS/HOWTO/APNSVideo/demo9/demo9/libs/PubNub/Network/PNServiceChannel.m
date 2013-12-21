@@ -25,6 +25,7 @@
 #import "PNConnectionChannel+Protected.h"
 #import "PNOperationStatus+Protected.h"
 #import "PNHereNowRequest+Protected.h"
+#import "NSInvocation+PNAdditions.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
 #import "PNMessage+Protected.h"
@@ -35,31 +36,13 @@
 #import "PNResponseParser.h"
 #import "PNRequestsQueue.h"
 #import "PNResponse.h"
-#import "PNPushNotificationsStateChangeRequest.h"
-#import "NSInvocation+PNAdditions.h"
-#import "PNError+Protected.h"
 
 
-#pragma mark Private interface methods
-
-@interface PNServiceChannel ()
-
-
-#pragma mark - Instance methods
-
-/**
- * Check whether response should be processed on
- * this communication channel or not
- */
-- (BOOL)shouldHandleResponse:(PNResponse *)response;
-
-- (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;
-
-
-#pragma mark - Handler methods
-
-
-@end
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub service connection channel must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark - Public interface methods
@@ -306,9 +289,148 @@
     }
 }
 
+- (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error {
+
+    // Check whether request is 'Latency meter' request or not
+    if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
+
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" LATENCY METER REQUEST SENDING FAILED");
+    }
+            // Check whether request is 'Time token' request or not
+    else if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
+
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" TIME TOKEN MESSAGE PROCESSING HAS BEEN FAILED: %@",
+              error);
+
+        [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
+    }
+            // Check whether this is 'Push notification state change' request or not
+    else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
+
+        NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
+        NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION [%@] REQUEST HAS BEEN FAILED: %@",
+              [targetState uppercaseString], error);
+
+        if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
+
+            [self.serviceDelegate serviceChannel:self
+        didFailPushNotificationEnableForChannels:channels
+                                       withError:error];
+        }
+        else {
+
+            [self.serviceDelegate serviceChannel:self
+       didFailPushNotificationDisableForChannels:channels
+                                       withError:error];
+        }
+    }
+            // Check whether this is 'Push notification remove' request or not
+    else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
+
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION REMOVE REQUEST HAS BEEN FAILED: %@",
+              error);
+
+        [self.serviceDelegate serviceChannel:self
+     didFailPushNotificationsRemoveWithError:error];
+    }
+            // Check whether this is 'Push notification enabled channels' request or not
+    else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
+
+        PNLog(PNLogCommunicationChannelLayerErrorLevel,
+              self,
+              @" PUSH NOTIFICATION ENABLED CHANNELS REQUEST HAS BEEN FAILED: %@",
+              error);
+
+        [self.serviceDelegate           serviceChannel:self
+didFailPushNotificationEnabledChannelsReceiveWithError:error];
+    }
+            // Check whether this is 'Post message' request or not
+    else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
+
+        // Notify delegate about that message can't be send
+        [self.serviceDelegate serviceChannel:self
+                          didFailMessageSend:((PNMessagePostRequest *)request).message
+                                   withError:error];
+    }
+            // Check whether this is 'Message history' request or not
+    else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
+
+        // Notify delegate about message history download failed
+        [self.serviceDelegate serviceChannel:self
+             didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel
+                                   withError:error];
+    }
+            // Check whether this is 'Here now' request or not
+    else if ([request isKindOfClass:[PNHereNowRequest class]]) {
+
+        // Notify delegate about participants list can't be downloaded
+        [self.serviceDelegate serviceChannel:self
+       didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel
+                                   withError:error];
+    }
+}
+
+- (void)makeScheduledRequestsFail:(NSArray *)requestsList withError:(PNError *)processingError {
+
+    PNError *error = processingError;
+    if (error == nil) {
+
+        error = [PNError errorWithCode:kPNRequestExecutionFailedOnInternetFailureError];
+    }
+
+    [requestsList enumerateObjectsUsingBlock:^(NSString *requestIdentifier, NSUInteger requestIdentifierIdx,
+                                               BOOL *requestIdentifierEnumeratorStop) {
+
+        PNBaseRequest *request = [self requestWithIdentifier:requestIdentifier];
+
+        // Removing failed request from queue
+        [self destroyRequest:request];
+
+        [self handleRequestProcessingDidFail:request withError:error];
+    }];
+}
+
+- (void)rescheduleStoredRequests:(NSArray *)requestsList {
+
+    if ([requestsList count] > 0) {
+
+        [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
+                                       usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+                                                    BOOL *requestIdentifierEnumeratorStop) {
+
+               PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+
+               [request reset];
+               request.closeConnection = NO;
+
+               // Check whether client is waiting for request completion
+               BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+
+               // Clean up query (if request has been stored in it)
+               [self destroyRequest:request];
+
+               // Send request back into queue with higher priority among other requests
+               [self scheduleRequest:request
+             shouldObserveProcessing:isWaitingForCompletion
+                          outOfOrder:YES
+                    launchProcessing:NO];
+           }];
+
+        [self scheduleNextRequest];
+    }
+}
+
 - (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
 
-    return YES;
+    BOOL shouldStoreRequest = YES;
+    if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
+
+        shouldStoreRequest = request.isSendingByUserRequest;
+    }
+
+
+    return shouldStoreRequest;
 }
 
 
@@ -333,7 +455,6 @@
         [self.serviceDelegate serviceChannel:self didFailMessageSend:messageObject withError:error];
     }
 
-
     return messageObject;
 }
 
@@ -345,7 +466,6 @@
         [self sendMessage:message.message toChannel:message.channel];
     }
 }
-
 
 #pragma mark - Handler methods
 
@@ -427,65 +547,11 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
 
     // Check whether connection available or not
+    [[PubNub sharedInstance].reachability refreshReachabilityState];
     if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
 
         // Asking to schedule next request
         [self scheduleNextRequest];
-    }
-}
-
-
-#pragma mark - Connection delegate methods
-
-- (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
-
-    if ([self shouldHandleResponse:response]) {
-
-        [super connection:connection didReceiveResponse:response];
-
-
-        BOOL shouldResendRequest = response.error.code == kPNResponseMalformedJSONError;
-
-        // Retrieve reference on observer request
-        PNBaseRequest *request = [self observedRequestWithIdentifier:response.requestIdentifier];
-        BOOL shouldObserveExecution = request != nil;
-
-        // Check whether response is valid or not
-        if (shouldResendRequest) {
-
-            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" RECEIVED MALFORMED RESPONSE: %@", response);
-
-            if (request == nil) {
-
-                request = [super storedRequestWithIdentifier:response.requestIdentifier];
-            }
-            [request reset];
-
-            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RESCHEDULING REQUEST: %@", request);
-        }
-        // Looks like response is valid (continue)
-        else {
-
-            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" RECIEVED RESPONSE: %@", response);
-
-            [self destroyRequest:request];
-            [self processResponse:response forRequest:request];
-        }
-
-
-        // Check whether connection available or not
-        if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
-            
-            if (shouldResendRequest) {
-                
-                [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution];
-            }
-            else {
-                
-                // Asking to schedule next request
-                [self scheduleNextRequest];
-            }
-        }
     }
 }
 
@@ -500,7 +566,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" WILL START REQUEST PROCESSING: %@ [BODY: %@]",
           request,
-          request.resourcePath);
+          request.debugResourcePath);
 
 
     // Check whether this is 'Message post' request or not
@@ -519,7 +585,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" DID SEND REQUEST: %@ [BODY: %@]",
           request,
-          request.resourcePath);
+          request.debugResourcePath);
 
 
     // If we are not waiting for request completion, inform delegate
@@ -557,90 +623,19 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" DID FAIL TO SEND REQUEST: %@ [BODY: %@]",
           request,
-          request.resourcePath);
+          request.debugResourcePath);
 
 
     // Check whether request can be rescheduled or not
     if (![request canRetry]) {
 
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@]",
+              self, request, request.debugResourcePath);
+
         // Removing failed request from queue
         [self destroyRequest:request];
 
-
-        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" REQUEST PROCESSING FAILED: %@", request);
-
-        // Check whether request is 'Latency meter' request or not
-        if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
-
-            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" LATENCY METER REQUEST SENDING FAILED");
-        }
-        // Check whether request is 'Time token' request or not
-        else if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
-
-            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" TIME TOKEN MESSAGE PROCESSING HAS BEEN FAILED: %@",
-                  error);
-
-            [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
-        }
-        // Check whether this is 'Push notification state change' request or not
-        else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
-
-            NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
-            NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
-            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION [%@] REQUEST HAS BEEN FAILED: %@",
-                    [targetState uppercaseString], error);
-
-            if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
-
-                [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels withError:error];
-            }
-            else {
-
-                [self.serviceDelegate serviceChannel:self didFailPushNotificationDisableForChannels:channels withError:error];
-            }
-        }
-        // Check whether this is 'Push notification remove' request or not
-        else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
-
-            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION REMOVE REQUEST HAS BEEN FAILED: %@",
-                    error);
-
-            [self.serviceDelegate serviceChannel:self
-         didFailPushNotificationsRemoveWithError:error];
-        }
-        // Check whether this is 'Push notification enabled channels' request or not
-        else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
-
-            PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION ENABLED CHANNELS REQUEST HAS BEEN FAILED: %@",
-                    error);
-
-            [self.serviceDelegate       serviceChannel:self
-didFailPushNotificationEnabledChannelsReceiveWithError:error];
-        }
-        // Check whether this is 'Post message' request or not
-        else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
-
-            // Notify delegate about that message can't be send
-            [self.serviceDelegate serviceChannel:self
-                              didFailMessageSend:((PNMessagePostRequest *)request).message
-                                       withError:error];
-        }
-        // Check whether this is 'Message history' request or not
-        else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
-
-            // Notify delegate about message history download failed
-            [self.serviceDelegate serviceChannel:self
-                 didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel
-                                       withError:error];
-        }
-        // Check whether this is 'Here now' request or not
-        else if ([request isKindOfClass:[PNHereNowRequest class]]) {
-
-            // Notify delegate about participants list can't be downloaded
-            [self.serviceDelegate serviceChannel:self
-           didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel
-                                       withError:error];
-        }
+        [self handleRequestProcessingDidFail:request withError:error];
     }
 
 
@@ -653,9 +648,6 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
 
-    // Forward to the super class
-    [super requestsQueue:queue didCancelRequest:request];
-
     // Check whether request is 'Latency meter' request or not
     if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
 
@@ -665,6 +657,9 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
         // is not interested in delayed response on network measurements
         [self destroyRequest:request];
     }
+
+    // Forward to the super class
+    [super requestsQueue:queue didCancelRequest:request];
 }
 
 - (BOOL)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request {
@@ -673,7 +668,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
 
     // Check whether leave request has been sent to PubNub
     // services or not
-    if ([request isKindOfClass:[PNLeaveRequest class]]) {
+    if ([self isWaitingRequestCompletion:request.shortIdentifier]) {
 
         shouldRemoveRequest = NO;
     }

@@ -10,8 +10,15 @@
 //
 
 #import "PNCryptoHelper.h"
-#import <CommonCrypto/CommonCrypto.h>
 #import "NSString+PNAddition.h"
+#import "PNPrivateImports.h"
+
+
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub crypto helper must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
 
 
 #pragma mark Types
@@ -58,7 +65,7 @@ static NSData *_cryptorKeyData = nil;
  * from original array in it.
  * In case of encryption error message will be generated.
  */
-- (NSArray *)arrayOfEnryptedValues:(NSArray *)arrayForEncryption error:(PNError *__autoreleasing *)error;
+- (NSArray *)arrayOfEnryptedValues:(NSArray *)arrayForEncryption error:(PNError *__strong *)error;
 
 /**
  * Returns reference on dictionary with encrypted values
@@ -66,13 +73,13 @@ static NSData *_cryptorKeyData = nil;
  * In case of encryption error message will be generated.
  */
 - (NSDictionary *)dictionaryOfEnryptedValues:(NSDictionary *)dictionaryForEncryption
-                                       error:(PNError *__autoreleasing *)error;
+                                       error:(PNError *__strong *)error;
 /**
  * Returns reference array with decrypted values
  * from original array in it.
  * In case of encryption error message will be generated.
  */
-- (NSArray *)arrayOfDecryptedValues:(NSArray *)arrayForDecryption error:(PNError *__autoreleasing *)error;
+- (NSArray *)arrayOfDecryptedValues:(NSArray *)arrayForDecryption error:(PNError *__strong *)error;
 
 /**
  * Returns reference dictionary with decrypted values
@@ -80,20 +87,20 @@ static NSData *_cryptorKeyData = nil;
  * In case of encryption error message will be generated.
  */
 - (NSDictionary *)dictionaryOfDecryptedValues:(NSDictionary *)dictionaryForDecryption
-                                        error:(PNError *__autoreleasing *)error;
+                                        error:(PNError *__strong *)error;
 #endif
 
 /**
  * Process data with specified cryptor and input data
  */
-- (CCCryptorStatus)getProcessedData:(NSData * __autoreleasing *)outputData
+- (CCCryptorStatus)getProcessedData:(NSData **)outputData
                       fromInputData:(NSData *)inputData
                     withCryptorType:(PNCryptorType)cryptorType;
 
 /**
  * Process specified string and return processing result
  */
-- (NSString *)processString:(NSString *)string cryptorType:(PNCryptorType)cryptorType error:(PNError *__autoreleasing *)error;
+- (NSString *)processString:(NSString *)string cryptorType:(PNCryptorType)cryptorType error:(PNError *__strong *)error;
 
 
 #pragma mark - Misc methods
@@ -155,7 +162,7 @@ static NSData *_cryptorKeyData = nil;
 
 #pragma mark - Instance methods
 
-- (BOOL)updateWithConfiguration:(PNConfiguration *)configuration withError:(PNError *__autoreleasing *)error {
+- (BOOL)updateWithConfiguration:(PNConfiguration *)configuration withError:(PNError **)error {
 
     _configuration = configuration;
     [self updateCipherData];
@@ -216,13 +223,13 @@ static NSData *_cryptorKeyData = nil;
     return cryptorInitError == nil;
 }
 
-- (NSString *)encryptedStringFromString:(NSString *)plainString error:(PNError **)error {
+- (NSString *)encryptedStringFromString:(NSString *)plainString error:(PNError *__strong *)error {
 
     return [self processString:plainString cryptorType:PNCryptorEncrypt error:error];
 }
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-- (id)encryptedObjectFromObject:(id)objectForEncryption error:(PNError *__autoreleasing *)error {
+- (id)encryptedObjectFromObject:(id)objectForEncryption error:(PNError *__strong *)error {
 
     id encryptedMessage = nil;
 
@@ -243,7 +250,7 @@ static NSData *_cryptorKeyData = nil;
     return encryptedMessage;
 }
 
-- (NSArray *)arrayOfEnryptedValues:(NSArray *)arrayForEncryption error:(PNError *__autoreleasing *)error {
+- (NSArray *)arrayOfEnryptedValues:(NSArray *)arrayForEncryption error:(PNError *__strong *)error {
 
     NSMutableArray *messages = [NSMutableArray arrayWithCapacity:[arrayForEncryption count]];
     [arrayForEncryption enumerateObjectsUsingBlock:^(id objectForEncryption,
@@ -251,7 +258,7 @@ static NSData *_cryptorKeyData = nil;
                                                      BOOL *objectEnumeratorStop) {
 
         id encryptedObject = [self encryptedObjectFromObject:objectForEncryption error:error];
-        if ((error != NULL && *error == NULL) && encryptedObject != nil) {
+        if (((error != NULL && *error == NULL) || error == NULL) && encryptedObject != nil) {
 
             [messages addObject:encryptedObject];
         }
@@ -266,7 +273,7 @@ static NSData *_cryptorKeyData = nil;
 }
 
 - (NSDictionary *)dictionaryOfEnryptedValues:(NSDictionary *)dictionaryForEncryption
-                                       error:(PNError *__autoreleasing *)error {
+                                       error:(PNError *__strong *)error {
 
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[dictionaryForEncryption count]];
     [dictionaryForEncryption enumerateKeysAndObjectsUsingBlock:^(id key,
@@ -274,7 +281,7 @@ static NSData *_cryptorKeyData = nil;
                                                                  BOOL *objectEnumeratorStop) {
 
         id encryptedObject = [self encryptedObjectFromObject:objectForEncryption error:error];
-        if ((error != NULL && *error == NULL) && encryptedObject != nil) {
+        if (((error != NULL && *error == NULL) || error == NULL) && encryptedObject != nil) {
 
             [dictionary setValue:encryptedObject forKey:key];
         }
@@ -289,34 +296,36 @@ static NSData *_cryptorKeyData = nil;
 }
 #endif
 
-- (NSString *)decryptedStringFromString:(NSString *)encodedString error:(PNError **)error {
+- (NSString *)decryptedStringFromString:(NSString *)encodedString error:(PNError *__strong *)error {
 
     return [self processString:encodedString cryptorType:PNCryptorDecrypt error:error];
 }
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-- (id)decryptedObjectFromObject:(id)encodedObject error:(PNError *__autoreleasing *)error {
+- (id)decryptedObjectFromObject:(id)encodedObject error:(PNError *__strong *)error {
 
     id decryptedMessage = nil;
 
-    if ([encodedObject isKindOfClass:[NSString class]]) {
-
-        decryptedMessage = [self decryptedStringFromString:encodedObject error:error];
+    if ((error != NULL && *error == nil) || error == NULL) {
+        
+        if ([encodedObject isKindOfClass:[NSString class]]) {
+            
+            decryptedMessage = [self decryptedStringFromString:encodedObject error:error];
+        }
+        else if ([encodedObject isKindOfClass:[NSArray class]]) {
+            
+            decryptedMessage = [self arrayOfDecryptedValues:encodedObject error:error];
+        }
+        else if ([encodedObject isKindOfClass:[NSDictionary class]]) {
+            
+            decryptedMessage = [self dictionaryOfDecryptedValues:encodedObject error:error];
+        }
     }
-    else if ([encodedObject isKindOfClass:[NSArray class]]) {
-
-        decryptedMessage = [self arrayOfDecryptedValues:encodedObject error:error];
-    }
-    else if ([encodedObject isKindOfClass:[NSDictionary class]]) {
-
-        decryptedMessage = [self dictionaryOfDecryptedValues:encodedObject error:error];
-    }
-
-
+    
     return decryptedMessage;
 }
 
-- (NSArray *)arrayOfDecryptedValues:(NSArray *)arrayForDecryption error:(PNError *__autoreleasing *)error {
+- (NSArray *)arrayOfDecryptedValues:(NSArray *)arrayForDecryption error:(PNError *__strong *)error {
 
     NSMutableArray *messages = [NSMutableArray arrayWithCapacity:[arrayForDecryption count]];
     [arrayForDecryption enumerateObjectsUsingBlock:^(id objectForDecryption,
@@ -324,7 +333,7 @@ static NSData *_cryptorKeyData = nil;
                                                      BOOL *objectEnumeratorStop) {
 
         id decryptedObject = [self decryptedObjectFromObject:objectForDecryption error:error];
-        if ((error != NULL && *error == NULL) && decryptedObject != nil) {
+        if (((error != NULL && *error == NULL) || error == NULL) && decryptedObject != nil) {
 
             [messages addObject:decryptedObject];
         }
@@ -339,7 +348,7 @@ static NSData *_cryptorKeyData = nil;
 }
 
 - (NSDictionary *)dictionaryOfDecryptedValues:(NSDictionary *)dictionaryForDecryption
-                                        error:(PNError *__autoreleasing *)error {
+                                        error:(PNError *__strong *)error {
 
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[dictionaryForDecryption count]];
     [dictionaryForDecryption enumerateKeysAndObjectsUsingBlock:^(id key,
@@ -347,7 +356,7 @@ static NSData *_cryptorKeyData = nil;
                                                                  BOOL *objectEnumeratorStop) {
 
         id decryptedObject = [self decryptedObjectFromObject:objectForDecryption error:error];
-        if ((error != NULL && *error == NULL) && decryptedObject != nil) {
+        if (((error != NULL && *error == NULL) || error == NULL) && decryptedObject != nil) {
 
             [dictionary setValue:decryptedObject forKey:key];
         }
@@ -362,7 +371,7 @@ static NSData *_cryptorKeyData = nil;
 }
 #endif
 
-- (CCCryptorStatus)getProcessedData:(NSData * __autoreleasing *)outputData
+- (CCCryptorStatus)getProcessedData:(NSData **)outputData
                       fromInputData:(NSData *)inputData
                     withCryptorType:(PNCryptorType)cryptorType {
 
@@ -397,11 +406,6 @@ static NSData *_cryptorKeyData = nil;
                 size_t remainingUnprocessedDataLength;
                 processingStatus = CCCryptorFinal(cryptor, processedDataEndPointer, unfilledSize, &remainingUnprocessedDataLength);
                 [processedData setLength:(updatedProcessedDataLength+remainingUnprocessedDataLength)];
-                
-                if (unfilledSize > 0 && remainingUnprocessedDataLength == 0) {
-                    
-                    processingStatus = kCCDecodeError;
-                }
             }
 
 
@@ -412,6 +416,16 @@ static NSData *_cryptorKeyData = nil;
 
                     *outputData = processedData;
                 }
+                
+                if (cryptorType == PNCryptorDecrypt) {
+                    
+                    // Check whether length of processed data is zero when input data has positive value (maybe AES decryptor parsed as empty string
+                    // but it should be treated as error)
+                    if ([inputData length] > 0 && [processedData length] == 0) {
+                        
+                        processingStatus = kCCDecodeError;
+                    }
+                }
             }
         }
         CCCryptorRelease(cryptor);
@@ -421,7 +435,7 @@ static NSData *_cryptorKeyData = nil;
     return processingStatus;
 }
 
-- (NSString *)processString:(NSString *)string cryptorType:(PNCryptorType)cryptorType error:(PNError *__autoreleasing *)error {
+- (NSString *)processString:(NSString *)string cryptorType:(PNCryptorType)cryptorType error:(PNError *__strong *)error {
     
     NSString *processedString = string;
     NSInteger errorCode = -1;

@@ -14,6 +14,13 @@
 #import "PubNub+Protected.h"
 
 
+// ARC check
+#if !__has_feature(objc_arc)
+#error PubNub messages history request must be built with ARC.
+// You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
+#endif
+
+
 #pragma mark Private interface methods
 
 @interface PNMessageHistoryRequest ()
@@ -129,7 +136,7 @@
 
     // Check whether user specified limit or not
     self.limit = self.limit > 0 ? self.limit : 100;
-    [parameters appendFormat:@"&count=%u", self.limit];
+    [parameters appendFormat:@"&count=%ld", (unsigned long)self.limit];
     [parameters appendFormat:@"&reverse=%@", self.shouldRevertMessages?@"true":@"false"];
 
 
@@ -138,6 +145,14 @@
                     [self.channel escapedName],
                     parameters,
                     ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+}
+
+- (NSString *)debugResourcePath {
+
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+
+    return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
 #pragma mark -
