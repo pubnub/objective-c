@@ -920,6 +920,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 
                 // Reset last update time token for channels in list
                 [subscribeRequest.channels makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
+                [subscribeRequest resetTimeToken];
             }
             
             PNBitsOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve, PNMessagingChannelSubscriptionWaitingForEvents,
@@ -1097,7 +1098,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self destroyByRequestClass:[PNLeaveRequest class]];
 
             if ([currentlySubscribedChannels count] == 0) {
-				[self destroyByRequestClass:[PNSubscribeRequest class]];
+                
+                [self destroyByRequestClass:[PNSubscribeRequest class]];
+
                 [self handleLeaveRequestCompletionForChannels:[channelsWithPresence allObjects]
                                                  withResponse:nil
                                                 byUserRequest:isLeavingByUserRequest];

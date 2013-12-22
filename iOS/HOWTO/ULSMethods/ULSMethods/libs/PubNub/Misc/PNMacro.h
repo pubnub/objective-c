@@ -22,13 +22,13 @@
 #pragma mark - Weaks
 
 #ifndef pn_desired_weak
-#if __has_feature(objc_arc_weak)
-#define pn_desired_weak weak
-#define __pn_desired_weak __weak
-#else
-#define pn_desired_weak unsafe_unretained
-#define __pn_desired_weak __unsafe_unretained
-#endif // __has_feature(objc_arc_weak)
+    #if __has_feature(objc_arc_weak)
+        #define pn_desired_weak weak
+        #define __pn_desired_weak __weak
+    #else
+        #define pn_desired_weak unsafe_unretained
+        #define __pn_desired_weak __unsafe_unretained
+    #endif // __has_feature(objc_arc_weak)
 #endif // pn_desired_weak
 
 
