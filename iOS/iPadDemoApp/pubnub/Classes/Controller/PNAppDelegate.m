@@ -125,21 +125,6 @@
     [self.window makeKeyAndVisible];
     
     [self initializePubNubClient];
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-    [PubNub connect];
-    [PubNub subscribeOnChannel:[PNChannel channelWithName:@"iosdev2"] withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
-                                                                                                    PNError *subscribeError) {
-        
-        [PubNub enablePresenceObservationForChannels:subscribedChannels
-                         withCompletionHandlingBlock:^(NSArray *channelsWithPresence, PNError *presenceEnabledError) {
-                             
-                             [PubNub disablePresenceObservationForChannels:channelsWithPresence
-                                               withCompletionHandlingBlock:^(NSArray *channelsWithOutPresence, PNError *presenceDisableError) {
-                                 
-                                                   NSLog(@"IS ENABLED? %@", [PubNub isPresenceObservationEnabledForChannel:[channelsWithOutPresence lastObject]] ? @"YES" : @"NO");
-                             }];
-                         }];
-    }];
     
     return YES;
 }
