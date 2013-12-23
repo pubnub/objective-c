@@ -23,6 +23,7 @@
 	NSMutableArray *configurations;
 	BOOL _isDidConnectToOrigin;
 	BOOL _isConnectionDidFailWithError;
+	BOOL _isError;
 }
 
 @end
@@ -100,6 +101,17 @@
 	//												  secretKey:nil
 	//												  cipherKey:@"enigma"];
 	//	[configurations addObject: configuration];
+
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientErrorNotification:)
+							   name:kPNClientErrorNotification
+							 object:nil];
+}
+
+-(void)kPNClientErrorNotification:(NSNotification*)notification {
+	NSLog(@"kPNClientErrorNotification %@", notification);
+	_isError = YES;
 }
 
 - (void)tearDown
@@ -149,8 +161,9 @@
 		if( [configurations[i] isEqual:[PubNub sharedInstance].configuration] == YES )
 			continue;
 
+		_isError = NO;
 		BOOL isConnect = [self connectWithConfiguration: configurations[i]];
-		if( isConnect == NO )
+		if( isConnect == NO || _isError == YES )
 			continue;
 		STAssertTrue( _isDidConnectToOrigin == YES || _isConnectionDidFailWithError == YES, @"not connect");
 		NSLog(@"configurations\n%@\n|\n%@", configurations[i], [PubNub sharedInstance].configuration );
@@ -159,14 +172,17 @@
 		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration], @"configurations are not equals, %@\n%@", configurations[i], [PubNub sharedInstance].configuration );
 
 		__block BOOL isCompletionBlockCalled = NO;
+		__block NSDate *start = [NSDate date];
 		[PubNub subscribeOnChannels: [PNChannel channelsWithNames: @[@"channel"]]
-		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error)
-		 {
+		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) 		 {
 			 isCompletionBlockCalled = YES;
+			NSTimeInterval interval = -[start timeIntervalSinceNow];
+			PNLog(PNLogGeneralLevel, self, @"subscribeOnChannels %f", interval);
+			STAssertTrue( interval < [PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout+1, @"timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout);
 			 if( error != nil )
 				 STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError, @"invalid error %@", error);
 		 }];
-		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+30 &&
 			isCompletionBlockCalled == NO; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( isCompletionBlockCalled, @"block not called" );
@@ -188,6 +204,11 @@
 		for( int i=0; i<10; i++ )
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	}
+}
+
+- (void)pubnubClient:(PubNub *)client error:(PNError *)error {
+	NSLog(@"pubnubClient error %@", error);
+	_isError = YES;
 }
 
 //- (void)connectWithConfiguration:(PNConfiguration*)configuration

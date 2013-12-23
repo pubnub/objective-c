@@ -419,6 +419,8 @@
 
 - (void)tearDown {
     [super tearDown];
+
+    [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver: self];
 }
 
 #pragma mark - PubNub client delegate methods

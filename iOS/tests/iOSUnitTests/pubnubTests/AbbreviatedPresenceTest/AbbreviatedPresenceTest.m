@@ -36,7 +36,8 @@
 	[notificationCenter addObserver:self
 						   selector:@selector(handleClientDidReceivePresenceEvent:)
 							   name:kPNClientDidReceivePresenceEventNotification
-							 object:nil];}
+							 object:nil];
+}
 
 - (void)test10Connect
 {
