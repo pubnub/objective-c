@@ -246,7 +246,7 @@ NSString *PNHMACSHA256String(NSString *key, NSString *signedData) {
     NSData *HMACData = [[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)];
 
 
-    return [HMACData HEXString];
+    return [HMACData base64Encoding];
 }
 
 static BOOL PNIsUserGeneratedUUID(NSString *uuid);

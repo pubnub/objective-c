@@ -90,12 +90,20 @@
 - (NSString *)resourcePath {
 
     return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@",
-                                      [PubNub sharedInstance].configuration.subscriptionKey,
+                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
                                       self.clientIdentifier,
                                       [self callbackMethodName],
                                       self.shortIdentifier,
                                       ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+}
+
+- (NSString *)debugResourcePath {
+
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+
+    return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
 #pragma mark -

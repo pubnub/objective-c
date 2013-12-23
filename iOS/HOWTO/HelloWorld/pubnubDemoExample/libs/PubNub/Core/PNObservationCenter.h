@@ -64,8 +64,8 @@
  */
 - (void)addClientPresenceEnablingObserver:(id)observer withCallbackBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
 - (void)removeClientPresenceEnablingObserver:(id)observer;
-- (void)addClientAsPresenceDisablingObserver:(id)observer withCallbackBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
-- (void)removeClientAsPresenceDisablingObserver:(id)observer;
+- (void)addClientPresenceDisablingObserver:(id)observer withCallbackBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
+- (void)removeClientPresenceDisablingObserver:(id)observer;
 
 
 #pragma mark - APNS interaction observation
@@ -156,6 +156,18 @@
  */
 - (void)addMessageHistoryProcessingObserver:(id)observer withBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 - (void)removeMessageHistoryProcessingObserver:(id)observer;
+
+
+#pragma mark - PAM observer
+
+/**
+ * Add/remove observer for PAM manipulation and audit.
+ * After event will be fired this observation request will be removed from queue.
+ */
+- (void)addAccessRightsChangeObserver:(id)observer withBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+- (void)removeAccessRightsObserver:(id)observer;
+- (void)addAccessRightsAuditObserver:(id)observer withBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+- (void)removeAccessRightsAuditObserver:(id)observer;
 
 
 #pragma mark - Participants observing

@@ -66,6 +66,10 @@
 
         errorCode = kPNAPIAccessForbiddenError;
     }
+    else if (statusCode == 402) {
+
+        errorCode = kPNAPINotAvailableOrNotEnabledError;
+    }
 
 
     return [self errorWithCode:errorCode];;
@@ -228,6 +232,10 @@
 
                 errorDescription = @"PubNub API access denied";
                 break;
+            case kPNAPINotAvailableOrNotEnabledError:
+
+                errorDescription = @"PubNub API not available or not enabled";
+                break;
             case kPNMessageHasNoContentError:
             case kPNMessageHasNoChannelError:
             case kPNTooLongMessageError:
@@ -238,6 +246,10 @@
             case kPNPushNotificationsNotEnabledError:
 
                 errorDescription = @"PubNub client can't work with APNS API";
+                break;
+            case kPNSecretKeyNotSpecifiedError:
+
+                errorDescription = @"PubNub client can't work with PAM API";
                 break;
             case kPNDevicePushTokenIsEmptyError:
                 
@@ -372,6 +384,10 @@
                              "denied because the 'auth' key supplied does not posess the adequate permissions for "
                              "this resource";
             break;
+        case kPNAPINotAvailableOrNotEnabledError:
+
+            failureReason = @"Looks like API which you try to used is not enabled or require for payment.";
+            break;
         case kPNMessageHasNoContentError:
 
             failureReason = @"Looks like message has an empty or non-existant body";
@@ -392,6 +408,10 @@
 
             failureReason = @"Looks like APNS (push notifications) weren't enabled for this subscribe key. Enable at "
                              "http://admin.pubnub.com and try again";
+            break;
+        case kPNSecretKeyNotSpecifiedError:
+
+            failureReason = @"Looks like PubNub client 'secret' key not specified during configuration.";
             break;
         case kPNDevicePushTokenIsEmptyError:
             
@@ -529,6 +549,11 @@
             fixSuggestion = @"Ensure that you specified a valid 'authorizationKey'. If the key is correct, then "
                              "access is currently denied for this key.";
             break;
+        case kPNAPINotAvailableOrNotEnabledError:
+
+            fixSuggestion = @"Please visit https://admin.pubnub.com and check whether your application has access "
+                             "(API enabled) to the API which you tried to use.";
+            break;
         case kPNMessageHasNoContentError:
 
             fixSuggestion = @"Ensure that you are not sending an empty message (maybe there are only spaces in it?).";
@@ -545,6 +570,10 @@
         case kPNPushNotificationsNotEnabledError:
 
             fixSuggestion = @"Please visit https://admin.pubnub.com to enable the push notification (APNS) feature.";
+            break;
+        case kPNSecretKeyNotSpecifiedError:
+
+            fixSuggestion = @"Please visit http://admin.pubnub.com to find 'secret' key which you should use.";
             break;
         case kPNDevicePushTokenIsEmptyError:
             

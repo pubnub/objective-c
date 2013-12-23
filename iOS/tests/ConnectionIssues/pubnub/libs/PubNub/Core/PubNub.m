@@ -18,6 +18,7 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "UIApplication+PNAdditions.h"
 #endif
+#import "PNAccessRightOptions+Protected.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
 #import "PNMessagingChannel.h"
@@ -36,9 +37,9 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.5.2";
+static NSString * const kPNLibraryVersion = @"3.5.3";
 static NSString * const kPNCodebaseBranch = @"master";
-static NSString * const kPNCodeCommitIdentifier = @"0d8140a6d2a183ac8bd2e49e1d36ede006dfcf43";
+static NSString * const kPNCodeCommitIdentifier = @"275c326c03f163eb805ce10c8bf37016891a5ab4";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -147,6 +148,30 @@ static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
 
 + (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
                                              withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+
+
+#pragma mark - PAM management
+
+/**
+ * Same as +changeAccessRightsForChannel:accessRights:forPeriod:withCompletionHandlingBlock: but allow to specify authorization
+ * key for which access rights on specific channel should be set.
+ *
+ * Only last call of this method will call completion block. If you need to track push notification disabling process
+ * from many places, use PNObservationCenter methods for this purpose.
+ */
++ (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
+                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
+          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+
++ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
+                                      clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
+                  withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+
++ (void)auditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+
++ (void)postponeAuditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
+                 withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
 
 #pragma mark - Presence management
 
@@ -306,22 +331,26 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 /**
  * This method will notify delegate about that subscription failed with error
  */
-- (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error;
+- (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error
+                            completeLockingOperation:(BOOL)shouldCompleteLockingOperation;
 
 /**
  * This method will notify delegate about that unsubscription failed with error
  */
-- (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error;
+- (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error
+                              completeLockingOperation:(BOOL)shouldCompleteLockingOperation;
 
 /**
  * This method will notify delegate about that presence enabling failed with error
  */
-- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error;
+- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error
+                                completeLockingOperation:(BOOL)shouldCompleteLockingOperation;
 
 /**
  * This method will notify delegate about that presence disabling failed with error
  */
-- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error;
+- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error
+                                 completeLockingOperation:(BOOL)shouldCompleteLockingOperation;
 
 /**
  * This method will notify delegate about that push notification enabling failed with error
@@ -342,6 +371,30 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
  * This method will notify delegate about that push notification enabled channels list retrieval request failed with error
  */
 - (void)notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:(PNError *)error;
+
+/**
+ This method will notify delegate about that access rights change failed with error.
+
+ @param error
+ Instance of \b PNError which describes what exactly happened and why this error occurred. \a 'error.associatedObject'
+  contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b PubNub client tried to apply.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)notifyDelegateAboutAccessRightsChangeFailedWithError:(PNError *)error;
+
+/**
+ This method will notify delegate about that access rights audit failed with error.
+
+ @param error
+ Instance of \b PNError which describes what exactly happened and why this error occurred. \a 'error.associatedObject'
+  contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b PubNub client tried to apply.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)notifyDelegateAboutAccessRightsAuditFailedWithError:(PNError *)error;
 
 /**
  * This method will notify delegate about that time token retrieval failed because of error
@@ -661,7 +714,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     PNLog(PNLogGeneralLevel, [self sharedInstance], @"REACHABILITY NOT CHECKED YET. LIBRARY WILL "
                             "CONTINUE CONNECTION IF REACHABILITY WILL REPORT NETWORK AVAILABILITY (STATE: %@)",
                           [self humanReadableStateFrom:[self sharedInstance].state]);
-
+                    
                     [self sharedInstance].asyncLockingOperationInProgress = YES;
                     [self sharedInstance].connectOnServiceReachabilityCheck = YES;
                     [self sharedInstance].connectOnServiceReachability = NO;
@@ -927,6 +980,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 #pragma mark - Client configuration methods
 
++ (PNConfiguration *)configuration {
+    
+    return [[self sharedInstance].configuration copy];
+}
+
 + (void)setConfiguration:(PNConfiguration *)configuration {
     
     [self setupWithConfiguration:configuration andDelegate:[self sharedInstance].delegate];
@@ -1093,7 +1151,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                             weakSharedInstance.updatingClientIdentifier = NO;
                             [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
 
-                            [weakSharedInstance notifyDelegateAboutSubscriptionFailWithError:resubscriptionError];
+                            [weakSharedInstance notifyDelegateAboutSubscriptionFailWithError:resubscriptionError
+                                                                    completeLockingOperation:YES];
                         }
                     };
 
@@ -1126,7 +1185,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     };
 
                     void(^unsubscribeBlock)(void) = ^{
-
+                        
                         weakSharedInstance.asyncLockingOperationInProgress = NO;
                         [self unsubscribeFromChannels:allChannels withPresenceEvent:YES
                            andCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
@@ -1269,8 +1328,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
-    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO SUBSCRIBE ON CHANNELS: %@ (STATE: %@)",
-          channels, [self humanReadableStateFrom:[self sharedInstance].state]);
+    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO SUBSCRIBE ON CHANNELS: %@ (WITH PRESENCE? %@) (STATE: %@)",
+          channels, (withPresenceEvent ? @"YES" : @"NO"), [self humanReadableStateFrom:[self sharedInstance].state]);
     
     [self performAsyncLockingBlock:^{
 
@@ -1301,7 +1360,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNError *subscriptionError = [PNError errorWithCode:statusCode];
             subscriptionError.associatedObject = channels;
             
-            [[self sharedInstance] notifyDelegateAboutSubscriptionFailWithError:subscriptionError];
+            [[self sharedInstance] notifyDelegateAboutSubscriptionFailWithError:subscriptionError
+                                                       completeLockingOperation:YES];
             
             
             if (handlerBlock) {
@@ -1373,8 +1433,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
      andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
 
-    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO UNSUBSCRIBE FROM CHANNELS: %@ (STATE: %@)",
-          channels, [self humanReadableStateFrom:[self sharedInstance].state]);
+    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO UNSUBSCRIBE FROM CHANNELS: %@ (WITH PRESENCE? %@) (STATE: %@)",
+          channels, (withPresenceEvent ? @"YES" : @"NO"), [self humanReadableStateFrom:[self sharedInstance].state]);
     
     [self performAsyncLockingBlock:^{
 
@@ -1405,7 +1465,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNError *unsubscriptionError = [PNError errorWithCode:statusCode];
             unsubscriptionError.associatedObject = channels;
 
-            [[self sharedInstance] notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError];
+            [[self sharedInstance] notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError
+                                                         completeLockingOperation:YES];
 
 
             if (handlerBlock) {
@@ -1751,6 +1812,497 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 
+#pragma mark - PAM management
+
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantReadAccessRightForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
+}
+
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
+                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:nil accessRights:PNReadAccessRight clients:nil
+                              forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantWriteAccessRightForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
+}
+
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
+                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:nil accessRights:PNWriteAccessRight clients:nil
+                              forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantAllAccessRightsForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
+}
+
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
+                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:nil accessRights:(PNReadAccessRight | PNWriteAccessRight) clients:nil
+                              forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)revokeAccessRightsForApplication {
+
+    [self revokeAccessRightsForApplicationWithCompletionHandlingBlock:nil];
+}
+
++ (void)revokeAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:nil accessRights:PNNoAccessRights clients:nil forPeriod:0
+            withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
+}
+
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self grantReadAccessRightForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
+              withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                                client:(NSString *)clientAuthorizationKey {
+
+    [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
+             withCompletionHandlingBlock:nil];
+}
+
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                                client:(NSString *)clientAuthorizationKey
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration
+                                 clients:(clientAuthorizationKey ? @[clientAuthorizationKey] : nil)
+             withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantReadAccessRightForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
+}
+
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
+                                          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:channels accessRights:PNReadAccessRight clients:nil
+                              forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                               clients:(NSArray *)clientsAuthorizationKeys {
+
+    [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
+             withCompletionHandlingBlock:nil];
+
+}
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                               clients:(NSArray *)clientsAuthorizationKeys
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:(channel ? @[channel] : nil) accessRights:PNReadAccessRight
+                                clients:clientsAuthorizationKeys forPeriod:accessPeriodDuration
+            withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
+}
+
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self grantWriteAccessRightForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
+              withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                                                                client:(NSString *)clientAuthorizationKey {
+
+    [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
+              withCompletionHandlingBlock:nil];
+}
+
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                                 client:(NSString *)clientAuthorizationKey
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration
+                                  clients:(clientAuthorizationKey ? @[clientAuthorizationKey] : nil)
+              withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantWriteAccessRightForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
+}
+
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
+             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:channels accessRights:PNWriteAccessRight clients:nil
+                              forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                                clients:(NSArray *)clientsAuthorizationKeys {
+
+    [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
+              withCompletionHandlingBlock:nil];
+}
+
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                                clients:(NSArray *)clientsAuthorizationKeys
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:(channel ? @[channel] : nil) accessRights:PNWriteAccessRight
+                                clients:clientsAuthorizationKeys forPeriod:accessPeriodDuration
+            withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
+}
+
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self grantAllAccessRightsForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
+              withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                                client:(NSString *)clientAuthorizationKey {
+
+    [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
+             withCompletionHandlingBlock:nil];
+}
+
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                                client:(NSString *)clientAuthorizationKey
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration
+                                 clients:(clientAuthorizationKey ? @[clientAuthorizationKey] : nil)
+             withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
+
+    [self grantAllAccessRightsForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
+}
+
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:channels accessRights:(PNReadAccessRight | PNWriteAccessRight)
+                                clients:nil forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                               clients:(NSArray *)clientsAuthorizationKeys {
+
+    [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
+             withCompletionHandlingBlock:nil];
+}
+
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
+                               clients:(NSArray *)clientsAuthorizationKeys
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:(channel ? @[channel] : nil)
+                           accessRights:(PNReadAccessRight | PNWriteAccessRight)
+                                clients:clientsAuthorizationKeys
+                              forPeriod:accessPeriodDuration
+            withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel {
+
+    [self revokeAccessRightsForChannel:channel withCompletionHandlingBlock:nil];
+}
+
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self revokeAccessRightsForChannels:(channel ? @[channel] : nil) withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey {
+
+    [self revokeAccessRightsForChannel:channel client:clientAuthorizationKey withCompletionHandlingBlock:nil];
+}
+
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self revokeAccessRightsForChannel:channel clients:(clientAuthorizationKey ? @[clientAuthorizationKey] : nil)
+           withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)revokeAccessRightsForChannels:(NSArray *)channels {
+
+    [self revokeAccessRightsForChannels:channels withCompletionHandlingBlock:nil];
+}
+
++ (void)revokeAccessRightsForChannels:(NSArray *)channels
+          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:channels accessRights:PNNoAccessRights clients:nil forPeriod:0
+            withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys {
+
+    [self revokeAccessRightsForChannel:channel clients:clientsAuthorizationKeys withCompletionHandlingBlock:nil];
+}
+
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self changeAccessRightsForChannels:(channel ? @[channel] : nil) accessRights:PNNoAccessRights
+                                clients:clientsAuthorizationKeys forPeriod:0 withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
+                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
+          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+    
+    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO CHANGE ACCESS RIGHTS (STATE: %@)",
+          [self humanReadableStateFrom:[self sharedInstance].state]);
+
+
+    // Initialize arrays in case if used specified \a 'nil' for \a 'channels' and/or \a 'clientsAuthorizationKeys'
+    channels = channels ? channels : @[];
+    clientsAuthorizationKeys = clientsAuthorizationKeys ? clientsAuthorizationKeys : @[];
+
+
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsAccessRightsChangeObserver];
+        
+        
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && [[self sharedInstance].configuration.secretKey length]) {
+            
+            PNLog(PNLogGeneralLevel, [self sharedInstance], @"CHANGE ACCESS RIGHTS (STATE: %@)",
+                  [self humanReadableStateFrom:[self sharedInstance].state]);
+            
+            if (handlerBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsAccessRightsChangeObserverWithBlock:[handlerBlock copy]];
+            }
+
+            [[[self sharedInstance] serviceChannel] changeAccessRightsForChannels:channels accessRights:accessRights
+                                                                authorizationKeys:clientsAuthorizationKeys
+                                                                        forPeriod:accessPeriodDuration];
+        }
+        // Looks like client can't send request because of some reasons
+        else {
+            
+            PNLog(PNLogGeneralLevel, [self sharedInstance], @"CAN'T CHANGE ACCESS RIGHTS (STATE: %@)",
+                  [self humanReadableStateFrom:[self sharedInstance].state]);
+
+            PNAccessRightOptions *options = [PNAccessRightOptions accessRightOptionsForApplication:[self sharedInstance].configuration.subscriptionKey
+                                                                                        withRights:accessRights
+                                                                                          channels:channels
+                                                                                           clients:clientsAuthorizationKeys
+                                                                                      accessPeriod:accessPeriodDuration];
+            if (![[self sharedInstance].configuration.secretKey length]) {
+
+                statusCode = kPNSecretKeyNotSpecifiedError;
+            }
+            PNError *accessRightChangeError = [PNError errorWithCode:statusCode];
+            accessRightChangeError.associatedObject = options;
+
+            [[self sharedInstance] notifyDelegateAboutAccessRightsChangeFailedWithError:accessRightChangeError];
+            
+            if (handlerBlock) {
+                
+                handlerBlock(nil, accessRightChangeError);
+            }
+            
+        }
+    }
+           postponedExecutionBlock:^{
+               
+               PNLog(PNLogGeneralLevel, [self sharedInstance], @"POSTPONE ACCESS RIGHTS CHANGE (STATE: %@)",
+                     [self humanReadableStateFrom:[self sharedInstance].state]);
+
+               [self postponeChangeAccessRightsForChannels:channels accessRights:accessRights
+                                                   clients:clientsAuthorizationKeys forPeriod:accessPeriodDuration
+                               withCompletionHandlingBlock:handlerBlock];
+               
+    }];
+    
+}
+
++ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels
+                                 accessRights:(PNAccessRights)accessRights
+                                      clients:(NSArray *)clientsAuthorizationKeys
+                                    forPeriod:(NSUInteger)accessPeriodDuration
+                  withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+    
+    SEL selector = @selector(changeAccessRightsForChannels:accessRights:clients:forPeriod:withCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[channels, [NSNumber numberWithUnsignedLong:accessRights],
+                                              clientsAuthorizationKeys, [NSNumber numberWithInteger:accessPeriodDuration],
+                                              PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
+}
+
++ (void)auditAccessRightsForApplication {
+
+    [self auditAccessRightsForApplicationWithCompletionHandlingBlock:nil];
+}
+
++ (void)auditAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    [self auditAccessRightsForChannel:nil withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)auditAccessRightsForChannel:(PNChannel *)channel {
+
+    [self auditAccessRightsForChannel:nil withCompletionHandlingBlock:nil];
+}
+
++ (void)auditAccessRightsForChannel:(PNChannel *)channel withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    [self auditAccessRightsForChannels:(channel ? @[channel] : nil) withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey {
+
+    [self auditAccessRightsForChannel:channel client:clientAuthorizationKey withCompletionHandlingBlock:nil];
+}
+
++ (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
+        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    [self auditAccessRightsForChannel:channel clients:(clientAuthorizationKey ? @[clientAuthorizationKey] : nil)
+          withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)auditAccessRightsForChannels:(NSArray *)channels {
+
+    [self auditAccessRightsForChannels:channels withCompletionHandlingBlock:nil];
+}
+
++ (void)auditAccessRightsForChannels:(NSArray *)channels
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    [self auditAccessRightsForChannels:channels clients:nil withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)auditAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys {
+
+    [self auditAccessRightsForChannel:channel clients:clientsAuthorizationKeys withCompletionHandlingBlock:nil];
+}
+
++ (void)auditAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
+        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    [self auditAccessRightsForChannels:(channel ? @[channel] : nil) clients:clientsAuthorizationKeys
+           withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)auditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO AUDIT ACCESS RIGHTS (STATE: %@)",
+          [self humanReadableStateFrom:[self sharedInstance].state]);
+
+
+    // Initialize arrays in case if used specified \a 'nil' for \a 'channels' and/or \a 'clientsAuthorizationKeys'
+    channels = channels ? channels : @[];
+    clientsAuthorizationKeys = clientsAuthorizationKeys ? clientsAuthorizationKeys : @[];
+
+
+    [self performAsyncLockingBlock:^{
+
+        [[PNObservationCenter defaultCenter] removeClientAsAccessRightsAuditObserver];
+
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && [[self sharedInstance].configuration.secretKey length]) {
+
+            PNLog(PNLogGeneralLevel, [self sharedInstance], @"ACCESS RIGHTS AUDIT (STATE: %@)",
+                  [self humanReadableStateFrom:[self sharedInstance].state]);
+
+            if (handlerBlock) {
+
+                [[PNObservationCenter defaultCenter] addClientAsAccessRightsAuditObserverWithBlock:[handlerBlock copy]];
+            }
+
+            [[self sharedInstance].serviceChannel auditAccessRightsForChannels:channels
+                                                                       clients:clientsAuthorizationKeys];
+        }
+        // Looks like client can't send request because of some reasons
+        else {
+
+            PNLog(PNLogGeneralLevel, [self sharedInstance], @"CAN'T AUDIT ACCESS RIGHTS (STATE: %@)",
+                  [self humanReadableStateFrom:[self sharedInstance].state]);
+
+            PNAccessRightOptions *options = [PNAccessRightOptions accessRightOptionsForApplication:[self sharedInstance].configuration.subscriptionKey
+                                                                                        withRights:PNUnknownAccessRights
+                                                                                          channels:channels
+                                                                                           clients:clientsAuthorizationKeys
+                                                                                      accessPeriod:0];
+            if (![[self sharedInstance].configuration.secretKey length]) {
+
+                statusCode = kPNSecretKeyNotSpecifiedError;
+            }
+            PNError *accessRightAuditError = [PNError errorWithCode:statusCode];
+            accessRightAuditError.associatedObject = options;
+
+            [[self sharedInstance] notifyDelegateAboutAccessRightsAuditFailedWithError:accessRightAuditError];
+
+
+            if (handlerBlock) {
+
+                handlerBlock(nil, accessRightAuditError);
+            }
+
+        }
+    }
+            postponedExecutionBlock:^{
+
+                PNLog(PNLogGeneralLevel, [self sharedInstance], @"POSTPONE ACCESS RIGHTS AUDIT (STATE: %@)",
+                      [self humanReadableStateFrom:[self sharedInstance].state]);
+
+                [self postponeAuditAccessRightsForChannels:channels clients:clientsAuthorizationKeys
+                               withCompletionHandlingBlock:handlerBlock];
+            }];
+}
+
++ (void)postponeAuditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
+                 withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    SEL selector = @selector(auditAccessRightsForChannels:clients:withCompletionHandlingBlock:);
+    [[self sharedInstance] postponeSelector:selector
+                                  forObject:self
+                             withParameters:@[channels, clientsAuthorizationKeys, PNNillIfNotSet(handlerBlock)]
+                                 outOfOrder:NO];
+}
+
+
 #pragma mark - Presence management
 
 + (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel {
@@ -1825,7 +2377,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             presenceEnableError.associatedObject = channels;
             
             
-            [[self sharedInstance] notifyDelegateAboutPresenceEnablingFailWithError:presenceEnableError];
+            [[self sharedInstance] notifyDelegateAboutPresenceEnablingFailWithError:presenceEnableError
+                                                           completeLockingOperation:YES];
             
             if (handlerBlock != nil) {
                 
@@ -1903,7 +2456,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             presencedisableError.associatedObject = channels;
             
             
-            [[self sharedInstance] notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError];
+            [[self sharedInstance] notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError
+                                                            completeLockingOperation:YES];
             
             if (handlerBlock != nil) {
                 
@@ -2617,7 +3171,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                     PNLog(PNLogGeneralLevel, weakSelf, @"INTERNET CONNECITON AVAILABLE. TRY TO CONNECT (STATE: %@)",
                           [weakSelf humanReadableStateFrom:weakSelf.state]);
-
+                    
                     weakSelf.asyncLockingOperationInProgress = NO;
                     
                     [[weakSelf class] connect];
@@ -2673,7 +3227,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         
                         // Check whether should restore connection or not
                         if([weakSelf shouldRestoreConnection] || weakSelf.shouldConnectOnServiceReachability) {
-
+                            
                             weakSelf.asyncLockingOperationInProgress = NO;
                             if(!weakSelf.shouldConnectOnServiceReachability){
 
@@ -3173,7 +3727,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                                 PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION. REACHABILITY CHECK "
                                       "COMPLETED (STATE: %@)", [self humanReadableStateFrom:self.state]);
-
+                                
                                 self.asyncLockingOperationInProgress = NO;
                                 self.restoringConnection = YES;
 
@@ -3223,7 +3777,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                 PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION. WAS CONNECTED BEFORE. (STATE: %@)",
                       [self humanReadableStateFrom:self.state]);
-
+                
                 self.asyncLockingOperationInProgress = NO;
                 self.restoringConnection = YES;
                 
@@ -3233,7 +3787,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         }
         // Check whether connection has been closed because PubNub client updates it's configuration
         else if (self.state == PNPubNubClientStateDisconnectingOnConfigurationChange) {
-
+            
             self.asyncLockingOperationInProgress = NO;
             
             // Close connection to PubNub services
@@ -3343,7 +3897,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @"SUSPENDING...");
 
             self.state = PNPubNubClientStateSuspended;
-
+            
             self.asyncLockingOperationInProgress = NO;
             [self.messagingChannel suspend];
             [self.serviceChannel suspend];
@@ -3399,7 +3953,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @"RESUMING...");
 
             self.state = PNPubNubClientStateConnected;
-
+            
             self.asyncLockingOperationInProgress = NO;
             [self.messagingChannel resume];
             [self.serviceChannel resume];
@@ -3437,7 +3991,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         PNLog(PNLogGeneralLevel, self, @"SUSPENDING...");
 
         self.state = PNPubNubClientStateSuspended;
-
+        
         self.asyncLockingOperationInProgress = NO;
         [self.messagingChannel suspend];
         [self.serviceChannel suspend];
@@ -3495,7 +4049,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @"RESUMING...");
 
             self.state = PNPubNubClientStateConnected;
-
+            
             self.asyncLockingOperationInProgress = NO;
             [self.messagingChannel resume];
             [self.serviceChannel resume];
@@ -3549,9 +4103,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext {
-
+    
     self.asyncLockingOperationInProgress = NO;
-
 
     // Perform post completion block
     // INFO: This is done to handle situation when some block may launch locking operation
@@ -3672,7 +4225,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [invocationsForFlush enumerateObjectsUsingBlock:^(NSInvocation *postponedInvocation,
                                                      NSUInteger postponedInvocationIdx,
                                                      BOOL *postponedInvocationEnumeratorStop) {
-
+        
         self.asyncLockingOperationInProgress = NO;
         if (postponedInvocation && shouldExecute) {
 
@@ -3714,6 +4267,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 
                 NSUInteger unsignedInteger = [(NSNumber *) parameter unsignedIntegerValue];
                 [methodInvocation setArgument:&unsignedInteger atIndex:parameterIndex];
+            }
+            else if (strcmp(parameterType, @encode(unsigned long)) == 0) {
+
+                NSUInteger unsignedInteger = [(NSNumber *) parameter unsignedLongValue];
+                [methodInvocation setArgument:&unsignedInteger atIndex:parameterIndex];
+            }
+            else if (strcmp(parameterType, @encode(NSInteger)) == 0) {
+                
+                NSInteger signedInteger = [(NSNumber *)parameter integerValue];
+                [methodInvocation setArgument:&signedInteger atIndex:parameterIndex];
             }
         }
         else {
@@ -3777,14 +4340,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
-- (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error {
+- (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error
+                            completeLockingOperation:(BOOL)shouldCompleteLockingOperation {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         if (!self.isUpdatingClientIdentifier) {
 
         	PNLog(PNLogGeneralLevel, self, @"FAILED TO SUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
-	
+
         	// Check whether delegate is able to handle subscription error or not
         	if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
 
@@ -3794,7 +4358,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 	        }
     	    PNLog(PNLogDelegateLevel, self, @" PubNub client failed to subscribe because of error: %@", error);
 
-	
+
     	    [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
         }
         else {
@@ -3804,13 +4368,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [self sendNotification:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification withObject:error];
         }
+    };
+
+    if (shouldCompleteLockingOperation) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error {
+- (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error
+                              completeLockingOperation:(BOOL)shouldCompleteLockingOperation {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         if (!self.isUpdatingClientIdentifier) {
 
@@ -3835,13 +4408,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [self sendNotification:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification withObject:error];
         }
+    };
+
+    if (shouldCompleteLockingOperation) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error {
+- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error
+                                completeLockingOperation:(BOOL)shouldCompleteLockingOperation {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO ENABLE PRESENCE (STATE: %@)",
               [self humanReadableStateFrom:self.state]);
@@ -3858,13 +4440,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
         [self sendNotification:kPNClientPresenceEnablingDidFailNotification withObject:error];
+    };
+
+    if (shouldCompleteLockingOperation) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error {
+- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error
+                                 completeLockingOperation:(BOOL)shouldCompleteLockingOperation {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO DISABLE PRESENCE (STATE: %@)",
               [self humanReadableStateFrom:self.state]);
@@ -3881,8 +4472,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
         [self sendNotification:kPNClientPresenceDisablingDidFailNotification withObject:error];
+    };
+
+    if (shouldCompleteLockingOperation) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
 - (void)notifyDelegateAboutPushNotificationsEnableFailedWithError:(PNError *)error {
@@ -3981,6 +4580,44 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
         [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidFailNotification withObject:error];
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)notifyDelegateAboutAccessRightsChangeFailedWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        PNLog(PNLogGeneralLevel, self, @"FAILED TO CHANGE ACCESS RIGHTS (STATE: %@)",
+              [self humanReadableStateFrom:self.state]);
+
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:accessRightsChangeDidFailWithError:)]) {
+
+            [self.delegate pubnubClient:self accessRightsChangeDidFailWithError:error];
+        }
+        PNLog(PNLogDelegateLevel, self, @" PubNub client failed to change access rights because of error: %@", error);
+
+
+        [self sendNotification:kPNClientAccessRightsChangeDidFailNotification withObject:error];
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)notifyDelegateAboutAccessRightsAuditFailedWithError:(PNError *)error {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        PNLog(PNLogGeneralLevel, self, @"FAILED TO AUDIT ACCESS RIGHTS (STATE: %@)",
+              [self humanReadableStateFrom:self.state]);
+
+        if ([self.delegate respondsToSelector:@selector(pubnubClient:accessRightsAuditDidFailWithError:)]) {
+
+            [self.delegate pubnubClient:self accessRightsAuditDidFailWithError:error];
+        }
+        PNLog(PNLogDelegateLevel, self, @" PubNub client failed to audit access rights because of error: %@", error);
+
+
+        [self sendNotification:kPNClientAccessRightsAuditDidFailNotification withObject:error];
     }
                                 shouldStartNext:YES];
 }
@@ -4130,8 +4767,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object {
     
-    // Send notification to all who is interested in it
-    // (observation center will track it as well)
+    // Send notification to all who is interested in it (observation center will track it as well)
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self userInfo:object];
 }
 
@@ -4252,28 +4888,30 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self handleLockingOperationComplete:YES];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willSubscribeOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willSubscribeOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL SUBSCRIBE ON: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     self.restoringConnection = NO;
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlingBlock)(void) = ^{
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
             if (!self.isUpdatingClientIdentifier) {
 
 				PNLog(PNLogGeneralLevel, self, @"SUBSCRIBED ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
-	
+
 				if ([self shouldChannelNotifyAboutEvent:channel]) {
 
 					// Check whether delegate can handle subscription on channel or not
@@ -4297,27 +4935,37 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 				}
 			}
 		}
-	}
-                                shouldStartNext:YES];
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlingBlock shouldStartNext:YES];
+    }
+    else {
+
+        handlingBlock();
+    }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL RESTORE SUBSCRIPTION ON: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 
     [self notifyDelegateAboutResubscribeWillStartOnChannels:channels];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     self.restoringConnection = NO;
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlingBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"RESTORED SUBSCRIPTION ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
 
@@ -4336,31 +4984,40 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
         }
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlingBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlingBlock();
+    }
 }
 
-- (void)  messagingChannel:(PNMessagingChannel *)channel
-didFailSubscribeOnChannels:(NSArray *)channels
-                 withError:(PNError *)error {
+- (void)messagingChannel:(PNMessagingChannel *)channel didFailSubscribeOnChannels:(NSArray *)channels
+               withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channels;
-    [self notifyDelegateAboutSubscriptionFailWithError:error];
+    [self notifyDelegateAboutSubscriptionFailWithError:error completeLockingOperation:!isSequenced];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willUnsubscribeFromChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willUnsubscribeFromChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL UNSUBSCRIBE FROM: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFromChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFromChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
@@ -4391,39 +5048,48 @@ didFailSubscribeOnChannels:(NSArray *)channels
 				}
 			}
 		}
-	}
-                                shouldStartNext:YES];
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
+    }
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)    messagingChannel:(PNMessagingChannel *)channel
-didFailUnsubscribeOnChannels:(NSArray *)channels
-                   withError:(PNError *)error {
+- (void)messagingChannel:(PNMessagingChannel *)channel didFailUnsubscribeOnChannels:(NSArray *)channels
+               withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channels;
-    [self notifyDelegateAboutUnsubscriptionFailWithError:error];
+    [self notifyDelegateAboutUnsubscriptionFailWithError:error completeLockingOperation:!isSequenced];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willEnablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willEnablePresenceObservationOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL ENABLE PRESENCE ON: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"DID ENABLE PRESENCE ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
-        
+
         if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
-            
+
             // Check whether delegate can handle new message arrival or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)]) {
-                
+
                 [self.delegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)
                                     withObject:self
                                     withObject:channels];
@@ -4434,39 +5100,48 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
             [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channels];
         }
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)         messagingChannel:(PNMessagingChannel *)messagingChannel
-didFailPresenceEnablingOnChannels:(NSArray *)channels
-                        withError:(PNError *)error {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceEnablingOnChannels:(NSArray *)channels
+               withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channels;
-    [self notifyDelegateAboutPresenceEnablingFailWithError:error];
+    [self notifyDelegateAboutPresenceEnablingFailWithError:error completeLockingOperation:!isSequenced];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willDisablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willDisablePresenceObservationOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL DISABLE PRESENCE ON: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"DID DISABLE PRESENCE ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
-        
+
         if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
-            
+
             // Check whether delegate can handle new message arrival or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)]) {
-                
+
                 [self.delegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)
                                     withObject:self
                                     withObject:channels];
@@ -4474,19 +5149,26 @@ didFailPresenceEnablingOnChannels:(NSArray *)channels
             PNLog(PNLogDelegateLevel, self, @" PubNub client successfully disabled presence observation on channels: "
                     "%@", channels);
 
-            
+
             [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channels];
         }
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)          messagingChannel:(PNMessagingChannel *)messagingChannel
-didFailPresenceDisablingOnChannels:(NSArray *)channels
-                         withError:(PNError *)error {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceDisablingOnChannels:(NSArray *)channels
+               withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channels;
-    [self notifyDelegateAboutPresenceDisablingFailWithError:error];
+    [self notifyDelegateAboutPresenceDisablingFailWithError:error completeLockingOperation:!isSequenced];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didReceiveMessage:(PNMessage *)message {
@@ -4538,6 +5220,68 @@ didFailPresenceDisablingOnChannels:(NSArray *)channels
 
 
 #pragma mark - Service channel delegate methods
+
+- (void)serviceChannel:(PNServiceChannel *)channel didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        PNLog(PNLogGeneralLevel, self, @"ACCESS RIGHTS CHANGED (STATE: %@)", [self humanReadableStateFrom:self.state]);
+
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
+
+            // Check whether delegate is able to handle access rights change event or not
+            SEL selector = @selector(pubnubClient:didChangeAccessRights:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:accessRightsCollection];
+                #pragma clang diagnostic pop
+            }
+            PNLog(PNLogDelegateLevel, self, @" PubNub client changed access rights: %@", accessRightsCollection);
+
+
+            [self sendNotification:kPNClientAccessRightsChangeDidCompleteNotification withObject:accessRightsCollection];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel accessRightsChangeDidFailWithError:(PNError *)error {
+
+    [self notifyDelegateAboutAccessRightsChangeFailedWithError:error];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+    [self handleLockingOperationBlockCompletion:^{
+
+        PNLog(PNLogGeneralLevel, self, @"ACCESS RIGHTS AUDITED (STATE: %@)", [self humanReadableStateFrom:self.state]);
+
+        if ([self shouldChannelNotifyAboutEvent:channel]) {
+
+            // Check whether delegate is able to handle access rights change event or not
+            SEL selector = @selector(pubnubClient:didAuditAccessRights:);
+            if ([self.delegate respondsToSelector:selector]) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.delegate performSelector:selector withObject:self withObject:accessRightsCollection];
+                #pragma clang diagnostic pop
+            }
+            PNLog(PNLogDelegateLevel, self, @" PubNub client audited access rights: %@", accessRightsCollection);
+
+
+            [self sendNotification:kPNClientAccessRightsAuditDidCompleteNotification withObject:accessRightsCollection];
+        }
+    }
+                                shouldStartNext:YES];
+}
+
+- (void)serviceChannel:(PNServiceChannel *)channel accessRightsAuditDidFailWithError:(PNError *)error {
+
+    [self notifyDelegateAboutAccessRightsAuditFailedWithError:error];
+}
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveTimeToken:(NSNumber *)timeToken {
 

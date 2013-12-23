@@ -52,11 +52,6 @@
 #pragma mark - Instance methods
 
 /**
- * Retrieve reference on encrypted message
- */
-- (NSString *)encryptedMessageWithError:(PNError **)encryptionError;
-
-/**
  * Retrieve message post request signature
  */
 - (NSString *)signature;
@@ -109,8 +104,8 @@
         PNError *encryptionError;
         if ([PNCryptoHelper sharedInstance].isReady) {
 
-            message = [self encryptedMessageWithError:&encryptionError];
-
+            message = [PubNub AESEncrypt:self.message.message error:&encryptionError];
+            
             if (encryptionError != nil) {
 
                 PNLog(PNLogCommunicationChannelLayerErrorLevel,
@@ -132,8 +127,8 @@
 
     return [NSString stringWithFormat:@"%@/publish/%@/%@/%@/%@/%@_%@/%@?uuid=%@%@",
                     kPNRequestAPIVersionPrefix,
-                    [PubNub sharedInstance].configuration.publishKey,
-                    [PubNub sharedInstance].configuration.subscriptionKey,
+                    [[PubNub sharedInstance].configuration.publishKey percentEscapedString],
+                    [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                     [self signature],
                     [self.message.channel escapedName],
                     [self callbackMethodName],
@@ -143,20 +138,13 @@
 					([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
-- (NSString *)encryptedMessageWithError:(PNError **)encryptionError {
+- (NSString *)debugResourcePath {
 
-#ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-    NSString *encryptedData = [[PNCryptoHelper sharedInstance] encryptedStringFromString:self.message.message
-                                                                                          error:encryptionError];
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.publishKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
 
-    return [NSString stringWithFormat:@"\"%@\"", encryptedData];
-#else
-    id encryptedMessage = [[PNCryptoHelper sharedInstance] encryptedObjectFromObject:self.message.message
-                                                                                       error:encryptionError];
-    NSString *encryptedData = [PNJSONSerialization stringFromJSONObject:encryptedMessage];
-
-    return [NSString stringWithFormat:@"%@", encryptedData];
-#endif
+    return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
 - (NSString *)signature {

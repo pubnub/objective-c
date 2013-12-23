@@ -138,7 +138,7 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
 }
 
 - (void)readStreamContent {
-
+//	NSLog(@"readStreamContent");
     PNLog(PNLogConnectionLayerInfoLevel, self, @"[CONNECTION::%@::READ] READING ARRIVED DATA... (STATE: %d)",
           [(id)self name] ? [(id)self name] : self, [(id)self state]);
 
@@ -168,8 +168,8 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
 		if( [self isNeedUpdateBuffer1] == YES ) {
 			[self updateBuffer1: buffer+readedBytesCount];
 			readedBytesCount += 164;
-			NSString *read = [[NSString alloc] initWithBytes: buffer length: readedBytesCount encoding: NSUTF8StringEncoding];
-			NSLog(@"read \n%@", read);
+//			NSString *read = [[NSString alloc] initWithBytes: buffer length: readedBytesCount encoding: NSUTF8StringEncoding];
+//			NSLog(@"read \n%@", read);
 		}
 
         // Checking whether client was able to read out some data from stream or not
@@ -253,5 +253,10 @@ void fakeReadStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void
     // Configuring connection channel instance as client for read stream with described set of handling events
     CFReadStreamSetClient(readStream, options, fakeReadStreamCallback, /*&client*/ NULL);
 }
+
+- (void)myReconnect {
+	[self reconnect];
+}
+
 
 @end

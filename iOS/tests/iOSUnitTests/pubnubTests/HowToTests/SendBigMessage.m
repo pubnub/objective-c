@@ -97,6 +97,7 @@
 		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5" cipherKey: @"cipherKey"];
 		[PubNub setConfiguration: configuration];
 
+
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
 
 			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
@@ -107,14 +108,24 @@
 								 dispatch_semaphore_signal(semaphore);
 								 STFail(@"connectionError %@", connectionError);
 							 }];
+		for( int j=0; j<10; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	});
 	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
+	[PubNub grantAllAccessRightsForApplicationAtPeriod: 10 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+		STAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);
+	}];
+	for( int j=0; j<10; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
+	[self t20SubscribeOnChannels];
 }
 
 
-- (void)test20SubscribeOnChannels
+- (void)t20SubscribeOnChannels
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	[PubNub subscribeOnChannels: pnChannels
@@ -128,9 +139,10 @@
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                  beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+	[self t45SendMessageBig];
 }
 
--(void)test45SendMessageBig
+-(void)t45SendMessageBig
 {
 	NSMutableString *message = [NSMutableString stringWithString: @""];
 	for( int j=0; j<6; j++ ) {
@@ -141,7 +153,7 @@
 			willSendMessage = nil;
 			__block PNMessageState state = PNMessageSendingError;
 			[message appendFormat: @"message block <big text: asd adskfjasf dkjlasdlfkjasdfk jlasdf kljasdf jlasd fjasdlfkj lasdkj aslkfj salj faslkj fsj asdlkfj aslj fsaldjf asljkf asdkl; as;ldj fasl;jkf aslfjk asljdf  aslkjdfh asdasljdhf fsdgdjagafdakfl> %d_%d", i, j];
-			NSLog(@"send message %d_%d with size %d", i, j, message.length);
+			NSLog(@"send message %d_%d with size %lu", i, j, (unsigned long)message.length);
 			PNLog(PNLogGeneralLevel, self, @"send message %d_%d with size %d", i, j, message.length);
 
 			state = PNMessageSending;
@@ -170,13 +182,10 @@
 				STAssertTrue( pNClientMessageSendingDidFailNotification == YES && state == PNMessageSendingError, @"message's methods not called, size %d", message.length);
 		}
 	}
+	[self t50RequestHistoryForChannel];
 }
 
--(NSArray*)requestHistoryForChannel:(PNChannel *)channel
-							   from:(PNDate *)startDate
-								 to:(PNDate *)endDate
-							  limit:(NSUInteger)limit
-					 reverseHistory:(BOOL)shouldReverseMessageHistory
+-(NSArray*)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
 {
 	//	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	__block NSArray *history;
@@ -205,7 +214,7 @@
 	return history;
 }
 
--(void)test50RequestHistoryForChannel
+-(void)t50RequestHistoryForChannel
 {
 	for( int i=0; i<pnChannels.count; i++ )
 	{
@@ -217,9 +226,10 @@
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: endDate limit: 0 reverseHistory: NO];
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: nil limit: 0 reverseHistory: NO];
 	}
+	[self t900UnsubscribeFromChannels];
 }
 
--(void)test900UnsubscribeFromChannels
+-(void)t900UnsubscribeFromChannels
 {
 	__block BOOL isCompletionBlockCalled = NO;
 	[PubNub unsubscribeFromChannels: pnChannels

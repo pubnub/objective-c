@@ -249,7 +249,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Make reachability flags human-readable
     PNReachabilityStatus status = PNReachabilityStatusForFlags(flags);
     BOOL available = [reachabilityMonitor isServiceAvailableForStatus:status];
-
+    
     if (!reachabilityMonitor.isNotificationsSuspended) {
 
         PNLog(PNLogReachabilityLevel, reachabilityMonitor, @"{CALLBACK} PubNub services reachability flags changes: "
@@ -263,9 +263,25 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         reachabilityMonitor.reachabilityFlags = flags;
         reachabilityMonitor.reachabilityStatus = status;
         
-        if (available) {
-            
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+#else
+        BOOL shouldSuspectWrongState = YES;
+#endif
+        
+        if (available && shouldSuspectWrongState) {
+                
             [reachabilityMonitor startOriginLookup];
+        }
+        
+        if (!available || (available && !shouldSuspectWrongState)) {
+            
+            if (!available) {
+                
+                [reachabilityMonitor stopOriginLookup];
+            }
+            
+            reachabilityMonitor.lookupStatus = status;
         }
         
         if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
@@ -501,7 +517,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         // connection state in non appropriate state
         self.simulatingNetworkSwitchEvent = NO;
         
-        BOOL isConnectionAvailable = YES;
+        BOOL isConnectionAvailable = responseData != nil;
         
         if (error != nil) {
             
@@ -540,7 +556,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                                                                        code:response.statusCode lastResponseOnConnection:NO];
             PNResponseParser *parser = [PNResponseParser parserForResponse:timetokenResponse];
             
-            isConnectionAvailable = [parser parsedData] != nil;
+            isConnectionAvailable = [parser parsedData] != nil && ![[parser parsedData] isKindOfClass:[PNError class]];
         }
 
         if ([self isServiceAvailableForStatus:self.reachabilityStatus] && shouldSuspectWrongState) {
@@ -1065,6 +1081,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                 // Simulate disconnected event (disconnected from previous interface, WiFi point or old IP address)
                 isServiceConnected = NO;
                 self.currentNetworkAddress = nil;
+                PNReachabilityStatus originalReachabilityStatus = self.reachabilityStatus;
                 self.reachabilityStatus = PNReachabilityStatusNotReachable;
                 _status = self.reachabilityStatus;
                 self.simulatingNetworkSwitchEvent = YES;
@@ -1084,6 +1101,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                               weakSelf.reachabilityFlags);
 
                         weakSelf.simulatingNetworkSwitchEvent = NO;
+                        weakSelf.reachabilityStatus = originalReachabilityStatus;
                         weakSelf.status = newStatus;
                     }
                 });

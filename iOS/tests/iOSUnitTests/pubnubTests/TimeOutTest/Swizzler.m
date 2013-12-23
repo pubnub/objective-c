@@ -31,6 +31,18 @@
   return receipt;
 }
 
++ (SwizzleReceipt *)_replaceMethod:(Method)method1 withMethod:(Method)method2
+{
+	SwizzleReceipt *receipt = [[SwizzleReceipt alloc] init];
+
+	receipt->_method = method1;
+	receipt->_originalIMP = method_getImplementation(method1);
+
+	method_setImplementation(method1, (IMP)method2);
+
+	return receipt;
+}
+
 + (void)_bracket:(void (^)(void))block finally:(void (^)(void))afterBlock
 {
   @try {
@@ -57,15 +69,41 @@
 }
 
 + (SwizzleReceipt *)swizzleSelector:(SEL)sel
+                forInstancesOfClass:(Class)cls
+                          withSelector:(id)block
+{
+	Method method = class_getInstanceMethod(cls, sel);
+	NSAssert(method != NULL,
+			 @"class_getInstanceMethod(%s, %s) failed.",
+			 class_getName(cls),
+			 sel_getName(sel));
+	return [Swizzler _replaceMethod:method withBlock:block];
+}
+
+
++ (SwizzleReceipt *)swizzleSelector:(SEL)sel
                            forClass:(Class)cls
                           withBlock:(id)block
 {
-  Method method = class_getClassMethod(cls, sel);
-  NSAssert(method != NULL,
+	Method method = class_getClassMethod(cls, sel);
+	NSAssert(method != NULL,
+			 @"class_getClassMethod(%s, %s) failed.",
+			 class_getName(cls),
+			 sel_getName(sel));
+	return [Swizzler _replaceMethod:method withBlock:block];
+}
+
++ (SwizzleReceipt *)swizzleSelector:(SEL)sel1
+                           forClass:(Class)cls
+                          withSelector:(SEL)sel2
+{
+  Method method1 = class_getInstanceMethod(cls, sel1);
+  Method method2 = class_getInstanceMethod(cls, sel2);
+  NSAssert(method1 != NULL && method2 != NULL,
            @"class_getClassMethod(%s, %s) failed.",
            class_getName(cls),
-           sel_getName(sel));
-  return [Swizzler _replaceMethod:method withBlock:block];
+           sel_getName(sel1));
+  return [Swizzler _replaceMethod:method1 withMethod:method2];
 }
 
 + (void)unswizzleFromReceipt:(SwizzleReceipt *)receipt

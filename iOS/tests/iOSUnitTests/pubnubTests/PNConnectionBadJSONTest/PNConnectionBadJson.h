@@ -11,4 +11,7 @@
 @interface PNConnection (BadJson) {
 }
 
+- (void)myReconnect;
+
+
 @end

@@ -173,6 +173,18 @@
 - (void)removeClientAsHistoryDownloadObserver;
 
 
+#pragma mark - PAM observer
+
+/**
+ * Add/remove observer for PAM manipulation and audit.
+ * After event will be fired this observation request will be removed from queue.
+ */
+- (void)addClientAsAccessRightsChangeObserverWithBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+- (void)removeClientAsAccessRightsChangeObserver;
+- (void)addClientAsAccessRightsAuditObserverWithBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+- (void)removeClientAsAccessRightsAuditObserver;
+
+
 #pragma mark - Participants observer
 
 /**

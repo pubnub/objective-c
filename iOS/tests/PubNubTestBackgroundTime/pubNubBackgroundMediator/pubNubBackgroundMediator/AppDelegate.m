@@ -16,6 +16,8 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+	NSLog(@"launchOptions %@", launchOptions);
+	[[UIApplication sharedApplication] setIdleTimerDisabled: YES];
 
 	MasterViewController *masterViewController = [[MasterViewController alloc] initWithNibName:@"MasterViewController" bundle:nil];
 	self.navigationController = [[UINavigationController alloc] initWithRootViewController:masterViewController];
@@ -26,7 +28,25 @@
 }
 
 -(void)openUrl {
-	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: @"myappTimetoken://"]];
+	if( returnToId != nil )
+		[[UIApplication sharedApplication] openURL: [NSURL URLWithString: [NSString stringWithFormat: @"%@://", returnToId]]];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+	NSLog(@"openURL %@, %@, %@", url, sourceApplication, annotation);
+	NSString *parameterString = [[[url absoluteString] componentsSeparatedByString: @"://?"] objectAtIndex: 1];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	for (NSString *param in [parameterString componentsSeparatedByString:@"&"]) {
+		NSArray *elts = [param componentsSeparatedByString:@"="];
+		if([elts count] < 2)
+			continue;
+		[params setObject:[elts objectAtIndex:1] forKey:[elts objectAtIndex:0]];
+	}
+	NSLog(@"params %@", params);
+	afterSeconds = [params[@"afterSeconds"] intValue];
+	returnToId = params[@"returnToId"];
+	[self performSelector: @selector(openUrl) withObject: nil afterDelay: afterSeconds];
+	return YES;
 }
 
 
@@ -51,7 +71,7 @@
 {
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 
-	[self performSelector: @selector(openUrl) withObject: nil afterDelay: 10.0];
+//	[self performSelector: @selector(openUrl) withObject: nil afterDelay: afterSeconds];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

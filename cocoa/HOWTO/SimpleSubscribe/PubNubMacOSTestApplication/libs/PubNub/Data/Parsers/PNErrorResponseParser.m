@@ -61,19 +61,33 @@
         
         if ([response.response isKindOfClass:[NSDictionary class]]) {
             
-            if ([responseData objectForKey:kPNResponseErrorPayloadKey] != nil &&
-                (response.statusCode == 401 || response.statusCode == 403)) {
+            NSString *errorMessage = [responseData valueForKey:kPNResponseErrorMessageKey];
+            NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@", kPNResponseErrorPayloadKey, kPNResponseErrorChannelsKey];
+            NSArray *associatedChannels = nil;
+            if (![[responseData valueForKey:kPNResponseErrorMessageKey] isKindOfClass:[NSString class]]) {
+                
+                errorMessage = [responseData valueForKey:kPNResponseErrorAdditionalMessageKey];
+            }
+            
+            if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
+                
+                associatedChannels = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
+            }
+            
+            
+            if (([responseData objectForKey:kPNResponseErrorPayloadKey] != nil || [responseData objectForKey:kPNResponseErrorServiceKey] != nil) &&
+                (response.statusCode == 401 || response.statusCode == 402 || response.statusCode == 403)) {
                 
                 error = [PNError errorWithHTTPStatusCode:response.statusCode];
-                NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@", kPNResponseErrorPayloadKey, kPNResponseErrorChannelsKey];
-                if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
-                    
-                    error.associatedObject = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
-                }
             }
             else {
                 
-                error = [PNError errorWithResponseErrorMessage:[responseData valueForKey:kPNResponseErrorMessageKey]];
+                error = [PNError errorWithResponseErrorMessage:errorMessage];
+            }
+            
+            if (associatedChannels) {
+                
+                error.associatedObject = associatedChannels;
             }
         }
         else {

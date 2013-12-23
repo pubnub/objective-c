@@ -21,6 +21,7 @@
 //
 
 #import "PNServiceChannel.h"
+#import "PNAccessRightsCollection+Protected.h"
 #import "PNMessageHistoryRequest+Protected.h"
 #import "PNConnectionChannel+Protected.h"
 #import "PNOperationStatus+Protected.h"
@@ -65,8 +66,7 @@
 
 #pragma mark - Instance methods
 
-- (id)initWithType:(PNConnectionChannelType)connectionChannelType
-       andDelegate:(id<PNConnectionChannelDelegate>)delegate {
+- (id)initWithType:(PNConnectionChannelType)connectionChannelType andDelegate:(id<PNConnectionChannelDelegate>)delegate {
 
     // Check whether initialization was successful or not
     if((self = [super initWithType:PNConnectionChannelService andDelegate:delegate])) {
@@ -87,7 +87,9 @@
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.pushNotificationRemoveCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.sendMessageCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelParticipantsCallback] ||
-            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.messageHistoryCallback]);
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.messageHistoryCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsChangeCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsAuditCallback]);
 }
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request {
@@ -263,8 +265,7 @@
         }
         else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
 
-            // Check whether there is no error while retrieved list of channels on which
-            // push notifications was enabled
+            // Check whether there is no error while retrieved list of channels on which push notifications was enabled
             if (![parsedData isKindOfClass:[PNError class]]) {
 
                 PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PUSH NOTIFICATIONS ENABLED CHANNELS LIST RECEIVED. SERVICE RESPONSE: %@",
@@ -279,6 +280,52 @@
                       parsedData);
 
                 [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:parsedData];
+            }
+        }
+        else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
+
+            PNAccessRightOptions *options = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
+            
+            // Check whether there is no error while tried to change access rights.
+            if (![parsedData isKindOfClass:[PNError class]]) {
+                
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" ACCESS RIGHTS SUCCESSFULLY CHANGED. SERVICE RESPONSE: %@",
+                      parsedData);
+
+                [(PNAccessRightsCollection *)parsedData correlateAccessRightsWithOptions:options];
+                [self.serviceDelegate serviceChannel:self didChangeAccessRights:parsedData];
+            }
+            else {
+
+                ((PNError *)parsedData).associatedObject = options;
+
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" ACCESS RIGHTS CHANGE FAILED WITH ERROR: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:parsedData];
+            }
+        }
+        else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
+
+            PNAccessRightOptions *options = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
+
+            // Check whether there is no error while tried to audit access rights.
+            if (![parsedData isKindOfClass:[PNError class]]) {
+
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" ACCESS RIGHTS SUCCESSFULLY AUDITED. SERVICE "
+                      "RESPONSE: %@", parsedData);
+
+                [(PNAccessRightsCollection *)parsedData correlateAccessRightsWithOptions:options];
+                [self.serviceDelegate serviceChannel:self didAuditAccessRights:parsedData];
+            }
+            else {
+
+                ((PNError *)parsedData).associatedObject = options;
+
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" ACCESS RIGHTS AUDIT FAILED WITH ERROR: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:parsedData];
             }
         }
         else {
@@ -296,7 +343,7 @@
 
         PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" LATENCY METER REQUEST SENDING FAILED");
     }
-            // Check whether request is 'Time token' request or not
+    // Check whether request is 'Time token' request or not
     else if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
 
         PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" TIME TOKEN MESSAGE PROCESSING HAS BEEN FAILED: %@",
@@ -304,7 +351,28 @@
 
         [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
     }
-            // Check whether this is 'Push notification state change' request or not
+    // Check whether this is 'Post message' request or not
+    else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
+
+        // Notify delegate about that message can't be send
+        [self.serviceDelegate serviceChannel:self didFailMessageSend:((PNMessagePostRequest *)request).message
+                                   withError:error];
+    }
+    // Check whether this is 'Message history' request or not
+    else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
+
+        // Notify delegate about message history download failed
+        [self.serviceDelegate serviceChannel:self
+             didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel withError:error];
+    }
+    // Check whether this is 'Here now' request or not
+    else if ([request isKindOfClass:[PNHereNowRequest class]]) {
+
+        // Notify delegate about participants list can't be downloaded
+        [self.serviceDelegate serviceChannel:self
+       didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel withError:error];
+    }
+    // Check whether this is 'Push notification state change' request or not
     else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
 
         NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
@@ -314,60 +382,50 @@
 
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 
-            [self.serviceDelegate serviceChannel:self
-        didFailPushNotificationEnableForChannels:channels
+            [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels
                                        withError:error];
         }
         else {
 
-            [self.serviceDelegate serviceChannel:self
-       didFailPushNotificationDisableForChannels:channels
+            [self.serviceDelegate serviceChannel:self didFailPushNotificationDisableForChannels:channels
                                        withError:error];
         }
     }
-            // Check whether this is 'Push notification remove' request or not
+    // Check whether this is 'Push notification remove' request or not
     else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
 
         PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PUSH NOTIFICATION REMOVE REQUEST HAS BEEN FAILED: %@",
               error);
 
-        [self.serviceDelegate serviceChannel:self
-     didFailPushNotificationsRemoveWithError:error];
+        [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:error];
     }
-            // Check whether this is 'Push notification enabled channels' request or not
+    // Check whether this is 'Push notification enabled channels' request or not
     else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
 
-        PNLog(PNLogCommunicationChannelLayerErrorLevel,
-              self,
-              @" PUSH NOTIFICATION ENABLED CHANNELS REQUEST HAS BEEN FAILED: %@",
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self,
+              @" PUSH NOTIFICATION ENABLED CHANNELS REQUEST HAS BEEN FAILED: %@", error);
+
+        [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:error];
+    }
+    // Check whether this is 'Access rights change' request or not
+    else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
+
+        error.associatedObject = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
+
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" ACCESS RIGHTS CHANGE FAILED WITH ERROR: %@",
               error);
 
-        [self.serviceDelegate           serviceChannel:self
-didFailPushNotificationEnabledChannelsReceiveWithError:error];
+        [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:error];
     }
-            // Check whether this is 'Post message' request or not
-    else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
+    // Check whether this is 'Access rights audit' request or not
+    else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
 
-        // Notify delegate about that message can't be send
-        [self.serviceDelegate serviceChannel:self
-                          didFailMessageSend:((PNMessagePostRequest *)request).message
-                                   withError:error];
-    }
-            // Check whether this is 'Message history' request or not
-    else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
+        error.associatedObject = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
 
-        // Notify delegate about message history download failed
-        [self.serviceDelegate serviceChannel:self
-             didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel
-                                   withError:error];
-    }
-            // Check whether this is 'Here now' request or not
-    else if ([request isKindOfClass:[PNHereNowRequest class]]) {
+        PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" ACCESS RIGHTS AUDIT FAILED WITH ERROR: %@",
+              error);
 
-        // Notify delegate about participants list can't be downloaded
-        [self.serviceDelegate serviceChannel:self
-       didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel
-                                   withError:error];
+        [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:error];
     }
 }
 
@@ -467,13 +525,33 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
     }
 }
 
+
+#pragma mark - PAM manipulation methods
+
+- (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
+        authorizationKeys:(NSArray *)authorizationKeys forPeriod:(NSUInteger)accessPeriod {
+
+    [self scheduleRequest:[PNChangeAccessRightsRequest changeAccessRightsRequestForChannels:channels
+                                                                               accessRights:accessRights
+                                                                                    clients:authorizationKeys
+                                                                                  forPeriod:accessPeriod]
+  shouldObserveProcessing:YES];
+}
+- (void)auditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys {
+
+    [self scheduleRequest:[PNAccessRightsAuditRequest accessRightsAuditRequestForChannels:channels
+                                                                               andClients:clientsAuthorizationKeys]
+  shouldObserveProcessing:YES];
+}
+
+
 #pragma mark - Handler methods
 
 - (void)handleTimeoutTimer:(NSTimer *)timer {
 
     PNBaseRequest *request = (PNBaseRequest *)timer.userInfo;
     NSInteger errorCode = kPNRequestExecutionFailedByTimeoutError;
-    NSString *errorMessage = @"Message sending failed by timeout";
+    NSString *errorMessage = @"Channel's message history download failed by timeout";
     if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
 
         errorMessage = @"Time token request failed by timeout";
@@ -481,12 +559,12 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
         [self.serviceDelegate serviceChannel:self
             receiveTimeTokenDidFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
-    else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
+    // Check whether this is 'Post message' request or not
+    else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
-        errorMessage = @"Channel history request failed by timeout";
+        errorMessage = @"Message post failed by timeout";
 
-        [self.serviceDelegate serviceChannel:self
-             didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel
+        [self.serviceDelegate serviceChannel:self didFailMessageSend:((PNMessagePostRequest *)request).message
                                    withError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
     else if ([request isKindOfClass:[PNHereNowRequest class]]) {
@@ -535,10 +613,27 @@ didFailPushNotificationEnabledChannelsReceiveWithError:error];
         [self.serviceDelegate           serviceChannel:self
 didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
-    else {
+    else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
 
-        [self.serviceDelegate serviceChannel:self
-                          didFailMessageSend:((PNMessagePostRequest *)request).message
+        errorMessage = @"Access rights change failed by timeout";
+
+        PNError *error = [PNError errorWithMessage:errorMessage code:errorCode];
+        error.associatedObject = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
+
+        [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:error];
+    }
+    else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
+
+        errorMessage = @"Access rights audit failed by timeout";
+
+        PNError *error = [PNError errorWithMessage:errorMessage code:errorCode];
+        error.associatedObject = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
+
+        [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:error];
+    }
+    else {
+        
+        [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel
                                    withError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
 
