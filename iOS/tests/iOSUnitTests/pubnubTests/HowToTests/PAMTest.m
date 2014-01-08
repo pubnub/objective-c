@@ -56,8 +56,8 @@
 	pnChannels = [PNChannel channelsWithNames:@[@"ch1", @"ch2"]];
 	authorizationKey = [NSString stringWithFormat:@"a2", [NSDate date]];
 	timeout = 5;
-	timeoutHistory = 10;
-	timeoutNewMessage = 10;
+	timeoutHistory = 16;
+	timeoutNewMessage = 12;
 	indexMessage = 0;
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
@@ -313,6 +313,7 @@
 	[self startDetectNewMessage];
 	[self sendMessageIsExpectError: NO];
 	[self checkNewMessageIsExpect0: NO];
+	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
 	for( int j=0; j<70; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	[self sendMessageIsExpectError: YES];
@@ -351,6 +352,7 @@
 	for( int j=0; j<70; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	[self sendMessageIsExpectError: YES];
+	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
 /////////////
 	[self startDetectNewMessage];
@@ -386,6 +388,7 @@
 	[self checkNewMessageIsExpect0: YES];
 	[self requestHistoryForChannelsIsExpectError: YES];
 /////////////
+	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
 	[self startDetectNewMessage];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
 	[self requestHistoryForChannelsIsExpectError: YES];
@@ -412,9 +415,10 @@
 //	[self checkNewMessageIsExpect0: YES];
 	[self grantReadAccessRightForChannels];
 	[self sendMessageIsExpectError: YES];
-	[self checkNewMessageIsExpect0: YES];
+//	[self checkNewMessageIsExpect0: YES];
 	[self requestHistoryForChannelsIsExpectError: NO];
 
+	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
 	[self revokeAccessRightsForChannels];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
 	[self startDetectNewMessage];
@@ -433,6 +437,7 @@
 	[self sendMessageIsExpectError: YES];
 	[self grantReadAccessRightForChannels];
 	[self requestHistoryForChannelsIsExpectError: NO];
+	[self unsubscribeFromChannels: pnChannels isExpectError: NO];
 	[self revokeAccessRightsForChannels];
 	[self subscribeOnChannels: pnChannels isExpectError: YES];
 	[self requestHistoryForChannelsIsExpectError: YES];
