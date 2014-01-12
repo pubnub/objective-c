@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A058045187D59B400EA8D47 /* PAMTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A058044187D59B400EA8D47 /* PAMTest.m */; };
 		5A198E881815405B00D20005 /* BadJsonTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A848C17FCA9B100D8DD4E /* BadJsonTest.m */; };
 		5A198E891815410400D20005 /* TimeOutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */; };
 		5A198E931815884500D20005 /* CatchupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E921815884500D20005 /* CatchupTest.m */; };
@@ -201,6 +202,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5A058044187D59B400EA8D47 /* PAMTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMTest.m; sourceTree = "<group>"; };
 		5A198E921815884500D20005 /* CatchupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatchupTest.m; sourceTree = "<group>"; };
 		5A198E97181593EC00D20005 /* ChangingChannels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangingChannels.m; sourceTree = "<group>"; };
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
@@ -847,6 +849,7 @@
 				5ACCA97F17F3202400FE90CF /* HowToTests.h */,
 				5ACCA98017F3202400FE90CF /* HowToTests.m */,
 				5A955F7F1835154C00AB2156 /* SendBigMessage.m */,
+				5A058044187D59B400EA8D47 /* PAMTest.m */,
 				5ACA68F4185B844600C2B214 /* PAMTestError.m */,
 			);
 			path = HowToTests;
@@ -1340,6 +1343,7 @@
 				9645C11B174FDA7D00F82D09 /* PNLeaveRequestTest.m in Sources */,
 				5ACA68C2185B81F300C2B214 /* NSData+PNAdditions.m in Sources */,
 				5ACA6882185B81F300C2B214 /* PubNub.m in Sources */,
+				5A058045187D59B400EA8D47 /* PAMTest.m in Sources */,
 				5ACA68E2185B81F300C2B214 /* PNPushNotificationsStateChangeRequest.m in Sources */,
 				9645C11C174FDA7D00F82D09 /* PNMessageHistoryRequestTest.m in Sources */,
 				5ACA68B8185B81F300C2B214 /* PNMessagesHistory.m in Sources */,

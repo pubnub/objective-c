@@ -119,9 +119,6 @@
                   Identifier = "PAMTest">
                </Test>
                <Test
-                  Identifier = "PAMTestError">
-               </Test>
-               <Test
                   Identifier = "OversizedJSON">
                </Test>
                <Test
@@ -141,6 +138,12 @@
                </Test>
                <Test
                   Identifier = "HowToTests">
+               </Test>
+               <Test
+                  Identifier = "ChannelLimitTest">
+               </Test>
+               <Test
+                  Identifier = "Configuration">
                </Test>
             </SkippedTests>
          </TestableReference>
