@@ -5,16 +5,16 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>A4A0AF33-6C77-4515-93C5-F1022D3273B0</string>
+	<string>4CB46D0A-9513-4FBE-9871-0A8A6566CE2E</string>
 	<key>IDESourceControlProjectName</key>
-	<string>ConnectionIssues1</string>
+	<string>pubnub</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>152B8CFC-0616-4196-878C-3D39BCE2B3A4</key>
 		<string>https://github.com/pubnub/objective-c.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>iOS/tests/ConnectionIssues1/ConnectionIssues1.xcodeproj/project.xcworkspace</string>
+	<string>iOS/tests/iOSUnitTests/pubnub.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>152B8CFC-0616-4196-878C-3D39BCE2B3A4</key>
