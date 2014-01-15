@@ -23,6 +23,8 @@
 	self.window.rootViewController = navController;
 
 
+	isWillRestoreSubscriptionOnChannelsDelegate = YES;
+	isDidRestoreSubscriptionOnChannelsDelegate = YES;
     [self initializePubNubClient];
 
 	currentInterval = 10;
@@ -52,7 +54,12 @@
 -(void)openUrl {
 	if( countNewMessage != 1 )
 		[self performSelector: @selector(errorSelectorCountNewMessage)];
+	if( isWillRestoreSubscriptionOnChannelsDelegate == NO || isDidRestoreSubscriptionOnChannelsDelegate == NO )
+		[self performSelector: @selector(errorSelectorRestore)];
 	countNewMessage = 0;
+	isWillRestoreSubscriptionOnChannelsDelegate = NO;
+	isDidRestoreSubscriptionOnChannelsDelegate = NO;
+
 	NSString *url = [NSString stringWithFormat: @"mediatorWithMessage://"];
 	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: url]];
 }
@@ -226,5 +233,16 @@
 	if( [string rangeOfString: @"mediatorWithMessage"].location != NSNotFound )
 		countNewMessage++;
 }
+
+- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels {
+	NSLog(@"WillRestoreSubscriptionOnChannelsDelegate");
+	isWillRestoreSubscriptionOnChannelsDelegate = YES;
+}
+
+- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels {
+	NSLog(@"DidRestoreSubscriptionOnChannelsDelegate");
+	isDidRestoreSubscriptionOnChannelsDelegate = YES;
+}
+
 
 @end
