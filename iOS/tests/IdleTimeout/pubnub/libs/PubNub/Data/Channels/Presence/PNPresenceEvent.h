@@ -15,10 +15,15 @@
 #import "PNStructures.h"
 
 
+#pragma mark Class forward
+
+@class PNClient;
+
+
 @interface PNPresenceEvent : NSObject
 
 
-#pragma mark Properties
+#pragma mark - Properties
 
 // Stores reference on presence event type
 @property (nonatomic, readonly, assign) PNPresenceEventType type;
@@ -27,9 +32,10 @@
 // date
 @property (nonatomic, readonly, strong) PNDate *date;
 
-// Stores reference on user identifier which
-// is triggered presence event
-@property (nonatomic, readonly, copy) NSString *uuid;
+/**
+ Stores reference on client for which presence event has been generated.
+ */
+@property (nonatomic, readonly, strong) PNClient *client;
 
 // Stores reference on number of persons in channel
 // on which this event is occurred
@@ -38,6 +44,13 @@
 // Stores reference on channel on which this event
 // is fired
 @property (nonatomic, readonly, assign) PNChannel *channel;
+
+/**
+ Stores reference on user identifier which is triggered presence event.
+
+ Deprecated. Will be DISCARDED in 3.6.0.
+ */
+@property (nonatomic, readonly, copy) NSString *uuid DEPRECATED_MSG_ATTRIBUTE("Use 'client.identifier' instead.");
 
 
 #pragma mark - Class methods

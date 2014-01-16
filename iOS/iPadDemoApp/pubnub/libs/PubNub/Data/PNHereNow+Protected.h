@@ -9,14 +9,6 @@
 #import "PNHereNow.h"
 
 
-#pragma mark Externs
-
-/**
- Used for \b PNClient instances in case if client identifier is unknown.
- */
-NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
-
-
 #pragma mark - Private interface methods
 
 @interface PNHereNow ()

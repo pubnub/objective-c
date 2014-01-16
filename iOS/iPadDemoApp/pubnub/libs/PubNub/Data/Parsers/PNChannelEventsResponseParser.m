@@ -11,6 +11,7 @@
 #import "PNChannelPresence+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #import "PNChannelEvents+Protected.h"
+#import "PNResponse+Protected.h"
 
 
 // ARC check

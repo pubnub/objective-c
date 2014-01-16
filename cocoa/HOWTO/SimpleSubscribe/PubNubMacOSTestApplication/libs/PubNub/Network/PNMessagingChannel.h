@@ -59,20 +59,54 @@
 - (BOOL)isSubscribedForChannel:(PNChannel *)channel;
 
 /**
- * Will subscribe client for set of channels. This request will add provided channels set to the list of channels
-  * on which client already subscribed.
- *
- * Warning: if client connected to the PubNub service the this method will force client to send "leave" command
- *          to all channels on which client subscribed and then re-subscribe with new channels list (this is required
- *          so presence event will trigger on specified channels)
+ Method will initiate subscription on specified set of channels. This request will add provided channels set to the
+ list of channels on which client already subscribed.
+
+ @param channels
+ List of \b PNChannel instances on which it should subscribe.
+
+ @note By default this method will generate presence event on channels on which client already subscribed.
  */
 - (void)subscribeOnChannels:(NSArray *)channels;
 
 /**
- * Same function as -subscribeOnChannels: but also allow to specify whether 'leave' presence event should be
- * generated or not
+ Method will initiate subscription on specified set of channels. This request will add provided channels set to the
+ list of channels on which client already subscribed.
+
+ @code
+ @endcode
+ This method extends \a -subscribeOnChannels: and allow to specify whether presence event should be generated or not.
+
+ @param channels
+ List of \b PNChannel instances on which it should subscribe.
+
+ @param withPresenceEvent
+ If set to \c YES than it will send \a 'leave' presence event on channels (if subscribed at some) and than generate
+ \a 'join' event for old and new one channels.
+
  */
 - (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent;
+
+/**
+ Method will initiate subscription on specified set of channels. This request will add provided channels set to the
+ list of channels on which client already subscribed.
+
+ @code
+ @endcode
+ This method extends \a -subscribeOnChannels: and allow to specify whether presence event should be generated or not.
+
+ @param channels
+ List of \b PNChannel instances on which it should subscribe.
+
+ @param withPresenceEvent
+ If set to \c YES than it will send \a 'leave' presence event on channels (if subscribed at some) and than generate
+ \a 'join' event for old and new one channels.
+
+ @param metadata
+ \b NSDictionary instance with list of parameters which should be bound to the client.
+ */
+- (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
+                andMetadata:(NSDictionary *)metadata;
 
 /**
  * Will unsubscribe from all channels with which it communicate now. This method also will trigger 'leave'

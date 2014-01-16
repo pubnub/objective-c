@@ -183,6 +183,7 @@
         self.acceptCompressedResponse = kPNShouldAcceptCompressedResponse;
         self.nonSubscriptionRequestTimeout = kPNNonSubscriptionRequestTimeout;
         self.subscriptionRequestTimeout = kPNSubscriptionRequestTimeout;
+        self.presenceExpirationTimeout = kPNPresenceExpirationTimeout;
 
         // Checking whether user changed origin host from default
         // or not
@@ -208,6 +209,7 @@
     configuration.acceptCompressedResponse = self.shouldAcceptCompressedResponse;
     configuration.nonSubscriptionRequestTimeout = self.nonSubscriptionRequestTimeout;
     configuration.subscriptionRequestTimeout = self.subscriptionRequestTimeout;
+    configuration.presenceExpirationTimeout = self.presenceExpirationTimeout;
     
     
     return configuration;
@@ -222,7 +224,8 @@
 
         // Checking whether critical configuration information has been changed or not
         if ((self.shouldUseSecureConnection != configuration.shouldUseSecureConnection) ||
-            ![self.origin isEqualToString:configuration.origin] || ![self.authorizationKey isEqualToString:configuration.authorizationKey]) {
+            ![self.origin isEqualToString:configuration.origin] || ![self.authorizationKey isEqualToString:configuration.authorizationKey] ||
+            self.presenceExpirationTimeout != configuration.presenceExpirationTimeout) {
 
             shouldReset = YES;
         }
@@ -312,6 +315,11 @@
 
 
     return isEqual;
+}
+
+- (void)setPresenceExpirationTimeout:(NSTimeInterval)presenceExpirationTimeout {
+
+    _presenceExpirationTimeout = MIN(kPNMaximumHeartbeatTimeout, presenceExpirationTimeout);
 }
 
 - (BOOL)shouldKillDNSCache {

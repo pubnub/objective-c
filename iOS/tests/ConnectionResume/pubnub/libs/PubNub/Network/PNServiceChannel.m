@@ -23,12 +23,13 @@
 #import "PNServiceChannel.h"
 #import "PNAccessRightsCollection+Protected.h"
 #import "PNMessageHistoryRequest+Protected.h"
+#import "PNClient.h"
 #import "PNConnectionChannel+Protected.h"
 #import "PNOperationStatus+Protected.h"
-#import "PNHereNowRequest+Protected.h"
 #import "NSInvocation+PNAdditions.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
+#import "PNResponse+Protected.h"
 #import "PNMessage+Protected.h"
 #import "PNHereNow+Protected.h"
 #import "PNChannel+Protected.h"
@@ -36,7 +37,8 @@
 #import "PNRequestsImport.h"
 #import "PNResponseParser.h"
 #import "PNRequestsQueue.h"
-#import "PNResponse.h"
+#import "PNClient.h"
+#import "PNClient+Protected.h"
 
 
 // ARC check
@@ -80,6 +82,8 @@
 - (BOOL)shouldHandleResponse:(PNResponse *)response {
 
     return ([response.callbackMethod hasPrefix:PNServiceResponseCallbacks.latencyMeasureMessageCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.metadataRetrieveCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.metadataUpdateCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.timeTokenCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelPushNotificationsEnableCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelPushNotificationsDisableCallback] ||
@@ -87,9 +91,11 @@
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.pushNotificationRemoveCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.sendMessageCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelParticipantsCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.participantChannelsCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.messageHistoryCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsChangeCallback] ||
-            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsAuditCallback]);
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsAuditCallback] ||
+            [response.callbackMethod hasPrefix:@"0"]);
 }
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request {
@@ -106,6 +112,24 @@
                          andNetworkBandwidth:[(PNLatencyMeasureRequest *)request bandwidthToLoadResponse:response]];
     }
     else {
+
+        if ([request isKindOfClass:[PNHereNowRequest class]]) {
+
+            PNChannel *channel = ((PNHereNowRequest *)request).channel;
+            response.additionalData = channel;
+        }
+        else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
+
+            NSString *identifier = ((PNWhereNowRequest *)request).identifier;
+            response.additionalData = identifier;
+        }
+        else if ([request isKindOfClass:[PNClientMetadataRequest class]] ||
+                [request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+
+            NSString *identifier = [request valueForKey:@"clientIdentifier"];
+            PNChannel *channel = [request valueForKey:@"channel"];
+            response.additionalData = [PNClient clientForIdentifier:identifier channel:channel andData:nil];
+        }
 
         PNResponseParser *parser = [PNResponseParser parserForResponse:response];
         id parsedData = [parser parsedData];
@@ -126,6 +150,47 @@
                 [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:parsedData];
             }
         }
+        // Check whether request was sent for metadata retrieval
+        else if ([request isKindOfClass:[PNClientMetadataRequest class]]) {
+
+            // Check whether there is no error while loading participants list
+            if (![parsedData isKindOfClass:[PNError class]]) {
+
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PARTICIPANT METADATA DOWNLOADED. SERVICE RESPONSE: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self didReceiveClientMetadata:parsedData];
+            }
+            else {
+
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PARTICIPANT METADATA DOWNLOAD FAILED WITH ERROR: %@",
+                      parsedData);
+
+                ((PNError *)parsedData).associatedObject = response.additionalData;
+                [self.serviceDelegate serviceChannel:self clientMetadataReceiveDidFailWithError:parsedData];
+            }
+        }
+        // Check whether request was sent for metadata update
+        else if ([request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+
+            // Check whether there is no error while loading participants list
+            if (![parsedData isKindOfClass:[PNError class]]) {
+
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PARTICIPANT METADATA UPDATED. SERVICE RESPONSE: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self didUpdateClientMetadata:parsedData];
+            }
+            else {
+
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PARTICIPANT METADATA UPDATE FAILED WITH ERROR: %@",
+                      parsedData);
+
+                ((PNError *)parsedData).associatedObject = response.additionalData;
+                [self.serviceDelegate serviceChannel:self clientMetadataUpdateDidFailWithError:parsedData];
+            }
+        }
+
         // Check whether request was sent for message posting
         else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
@@ -182,7 +247,7 @@
 
             PNChannel *channel = ((PNHereNowRequest *)request).channel;
 
-            // Check whether there is no error while loading messages history
+            // Check whether there is no error while loading participants list
             if (![parsedData isKindOfClass:[PNError class]]) {
 
                 ((PNHereNow *)parsedData).channel = channel;
@@ -199,6 +264,28 @@
                       parsedData);
 
                 [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannel:channel withError:parsedData];
+            }
+        }
+        // Check whether request was sent for participant channels list or not
+        else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
+
+            NSString *identifier = ((PNWhereNowRequest *)request).identifier;
+
+            // Check whether there is no error while loading channels
+            if (![parsedData isKindOfClass:[PNError class]]) {
+
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PARTICIPANT CHANNELS LIST DOWNLOADED. SERVICE RESPONSE: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self didReceiveParticipantChannelsList:parsedData];
+            }
+            else {
+
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PARTICIPANT CHANNELS LIST DOWNLOAD FAILED WITH ERROR: %@",
+                      parsedData);
+
+                [self.serviceDelegate serviceChannel:self didFailParticipantChannelsListLoadForIdentifier:identifier
+                        withError:parsedData];
             }
         }
         else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
@@ -351,6 +438,25 @@
 
         [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
     }
+    // Check whether request was sent for metadata retrieval / update
+    else if ([request isKindOfClass:[PNClientMetadataRequest class]] ||
+            [request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+
+        error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
+                                                       channel:[request valueForKey:@"channel"]
+                                                       andData:nil];
+
+        SEL errorSelector = @selector(serviceChannel:clientMetadataReceiveDidFailWithError:);
+        if ([request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+
+            errorSelector = @selector(serviceChannel:clientMetadataUpdateDidFailWithError:);
+        }
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:errorSelector withObject:self withObject:error];
+        #pragma clang diagnostic pop
+    }
     // Check whether this is 'Post message' request or not
     else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
@@ -371,6 +477,13 @@
         // Notify delegate about participants list can't be downloaded
         [self.serviceDelegate serviceChannel:self
        didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel withError:error];
+    }
+    // Check whether this is 'Where now' request or not
+    else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
+
+        // Notify delegate about participant channels list can't be downloaded.
+        [self.serviceDelegate serviceChannel:self
+                didFailParticipantChannelsListLoadForIdentifier:((PNWhereNowRequest *)request).identifier withError:error];
     }
     // Check whether this is 'Push notification state change' request or not
     else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
@@ -559,6 +672,28 @@
         [self.serviceDelegate serviceChannel:self
             receiveTimeTokenDidFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
+    // Check whether request was sent for metadata retrieval / update
+    else if ([request isKindOfClass:[PNClientMetadataRequest class]] ||
+            [request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+
+        errorMessage = @"Client metadata request failed by timeout";
+
+        SEL errorSelector = @selector(serviceChannel:clientMetadataReceiveDidFailWithError:);
+        if ([request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+
+            errorMessage = @"Client metadata update failed by timeout";
+            errorSelector = @selector(serviceChannel:clientMetadataUpdateDidFailWithError:);
+        }
+        PNError *error = [PNError errorWithMessage:errorMessage code:errorCode];
+        error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
+                                                       channel:[request valueForKey:@"channel"]
+                                                       andData:nil];
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [self.delegate performSelector:errorSelector withObject:self withObject:error];
+        #pragma clang diagnostic pop
+    }
     // Check whether this is 'Post message' request or not
     else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
@@ -574,6 +709,14 @@
         [self.serviceDelegate serviceChannel:self
        didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel
                                    withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+    }
+    else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
+
+        errorMessage = @"\"Where now\" request failed by timeout";
+
+        [self.serviceDelegate serviceChannel:self
+                didFailParticipantChannelsListLoadForIdentifier:((PNWhereNowRequest *)request).identifier
+                withError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
     else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
 

@@ -1,15 +1,15 @@
-//
-//  PNHereNowResponseParser.h
-// 
-//
-//  Created by moonlight on 1/15/13.
-//
-//
+/**
 
+ @author Sergey Mamontov
+ @version 3.4.0
+ @copyright © 2009-13 PubNub Inc.
+
+ */
 
 #import "PNHereNowResponseParser.h"
 #import "PNHereNowResponseParser+Protected.h"
 #import "PNHereNow+Protected.h"
+#import "PNClient+Protected.h"
 #import "PNResponse.h"
 
 
@@ -20,22 +20,7 @@
 #endif
 
 
-#pragma mark Private interface methods
-
-@interface PNHereNowResponseParser ()
-
-
-#pragma mark - Properties
-
-// Stores reference on object which stores information
-// about who is in the channel and how many of them
-@property (nonatomic, strong) PNHereNow *hereNow;
-
-
-@end
-
-
-#pragma mark - Public interface methods
+#pragma mark Public interface methods
 
 @implementation PNHereNowResponseParser
 
@@ -61,8 +46,34 @@
         NSDictionary *responseData = response.response;
 
         self.hereNow = [PNHereNow new];
-        self.hereNow.participants = [responseData objectForKey:kPNResponseUUIDKey];
-        self.hereNow.participantsCount = [[responseData objectForKey:kPNResponseOccupancyKey] unsignedIntValue];
+        NSDictionary *channels = [responseData objectForKey:kPNResponseChannelsKey];
+        if (!channels) {
+
+            channels = @{((PNChannel *)response.additionalData).name: @{
+                                        kPNResponseUUIDKey: [responseData objectForKey:kPNResponseUUIDKey],
+                                   kPNResponseOccupancyKey: [responseData objectForKey:kPNResponseOccupancyKey]
+            }};
+        }
+        NSMutableArray *participants = [NSMutableArray array];
+        [channels enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelParticipantsInformation,
+                                                      BOOL *channelNamesEnumeratorStop) {
+
+            NSArray *participantsInChannel = [self clientsFromData:[channelParticipantsInformation objectForKey:kPNResponseUUIDKey]
+                                                        forChannel:[PNChannel channelWithName:channelName]];
+            [participants addObjectsFromArray:participantsInChannel];
+
+            NSUInteger participantsCount = [[channelParticipantsInformation objectForKey:kPNResponseOccupancyKey] unsignedIntValue];
+            NSUInteger differenceInParticipantsCount = participantsCount - [participantsInChannel count];
+            if (differenceInParticipantsCount > 0) {
+
+                for (int i = 0; i < differenceInParticipantsCount; i++) {
+
+                    [participants addObject:[PNClient anonymousClientForChannel:[PNChannel channelWithName:channelName]]];
+                }
+            }
+        }];
+        self.hereNow.participants = [NSArray arrayWithArray:participants];
+        self.hereNow.participantsCount = [participants count];
     }
 
 
@@ -72,6 +83,41 @@
 - (id)parsedData {
 
     return self.hereNow;
+}
+
+#pragma mark - Misc methods
+
+- (NSArray *)clientsFromData:(NSArray *)clientsInformation forChannel:(PNChannel *)channel {
+
+    NSMutableArray *clients = [NSMutableArray array];
+    [clientsInformation enumerateObjectsUsingBlock:^(id clientInformation, NSUInteger clientInformationIdx,
+                                                     BOOL *clientInformationEnumerator) {
+
+        [clients addObject:[self clientFromData:clientInformation forChannel:channel]];
+    }];
+
+    return clients;
+}
+
+- (PNClient *)clientFromData:(id)clientInformation forChannel:(PNChannel *)channel {
+
+    NSString *clientIdentifier = nil;
+    NSDictionary *metadata = nil;
+
+    // Looks like we received detailed information about client.
+    if ([clientInformation respondsToSelector:@selector(allKeys)]) {
+
+        clientIdentifier = [clientInformation valueForKey:kPNResponseClientUUIDKey];
+        metadata = [clientInformation valueForKey:kPNResponseClientMetadataKey];
+    }
+    // Plain client identifier is received.
+    else {
+
+        clientIdentifier = clientInformation;
+    }
+
+
+    return [PNClient clientForIdentifier:clientIdentifier channel:channel andData:metadata];
 }
 
 - (NSString *)description {

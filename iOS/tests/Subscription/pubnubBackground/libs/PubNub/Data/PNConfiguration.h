@@ -36,38 +36,49 @@
 // requests to report that request failed
 @property (nonatomic, assign) NSTimeInterval nonSubscriptionRequestTimeout;
 
-// Stores timeout which is used for subscription
-// requests to report that request failed
+// Stores timeout which is used for subscription requests to report that request failed
 @property (nonatomic, assign) NSTimeInterval subscriptionRequestTimeout;
 
-// Stores whether client should restore subscription on channels after connection
-// has been restored or not
+/**
+ Stores whether connection should be restored if it failed in previous session or not.
+ */
+@property (nonatomic, assign, getter = shouldAutoReconnectClient) BOOL autoReconnectClient;
+
+/**
+ Stores whether client should restore subscription on channels after connection has been restored or not.
+ */
 @property (nonatomic, assign, getter = shouldResubscribeOnConnectionRestore) BOOL resubscribeOnConnectionRestore;
 
-// Stores whether client should restore subscription on channel with last time token
-// or should use "0" time token for initial subscription
+/**
+ Stores whether client should restore subscription on channel with last time token or should use "0" time token
+ for initial subscription.
+ */
 @property (nonatomic, assign, getter = shouldRestoreSubscriptionFromLastTimeToken) BOOL restoreSubscriptionFromLastTimeToken;
 
-// Stores whether client can ignore security
-// requirements and connection using plain HTTP
-// connection in case of SSL error
-@property (nonatomic, assign, getter = canIgnoreSecureConnectionRequirement) BOOL ignoreSecureConnectionRequirement;
-
-// Stores whether SSL security rules should be
-// lowered when connection error occurs or not
-@property (nonatomic, assign, getter = shouldReduceSecurityLevelOnError) BOOL reduceSecurityLevelOnError;
-
-// Stores whether connection should be established
-// with SSL support or not
+/**
+ Stores whether connection should be established with SSL support or not.
+ */
 @property (nonatomic, assign, getter = shouldUseSecureConnection) BOOL useSecureConnection;
 
-// Stores whether connection should be restored
-// if it failed in previous session or not
-@property (nonatomic, assign, getter = shouldAutoReconnectClient) BOOL autoReconnectClient;
+/**
+ Stores whether SSL security rules should be lowered when connection error occurs or not.
+ */
+@property (nonatomic, assign, getter = shouldReduceSecurityLevelOnError) BOOL reduceSecurityLevelOnError;
+
+/**
+ Stores whether client can ignore security requirements and connection using plain HTTP connection in case of SSL
+ error.
+ */
+@property (nonatomic, assign, getter = canIgnoreSecureConnectionRequirement) BOOL ignoreSecureConnectionRequirement;
 
 // Stores whether client should accept GZIP responses
 // from remote origin or not
 @property (nonatomic, assign, getter = shouldAcceptCompressedResponse) BOOL acceptCompressedResponse;
+
+/**
+ Stores timeout which is used by server to kick inactive clients (by UUID).
+ */
+@property (nonatomic, assign) NSTimeInterval presenceExpirationTimeout;
 
 
 #pragma mark - Class methods
@@ -80,8 +91,7 @@
 + (PNConfiguration *)defaultConfiguration;
 
 /**
- * Retrieve reference on lightweight configuration which
- * require only few parameters from user
+ Retrieve reference on lightweight configuration which require only few parameters from user.
  */
 + (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
                                     subscribeKey:(NSString *)subscribeKey
@@ -101,8 +111,7 @@
                            authorizationKey:(NSString *)authorizationKey;
 
 /**
- * Retrieve reference on configuration with full
- * set of options specified by user
+ Retrieve reference on configuration with full set of options specified by user.
  */
 + (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
                                  publishKey:(NSString *)publishKey

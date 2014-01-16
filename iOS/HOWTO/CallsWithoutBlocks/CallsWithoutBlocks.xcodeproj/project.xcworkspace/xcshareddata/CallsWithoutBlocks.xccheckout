@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>BD8F06F6-6B3A-493C-A745-D7910697FB4D</string>
+	<string>974E737C-B8E7-4CF6-804A-62DCE1045BD1</string>
 	<key>IDESourceControlProjectName</key>
 	<string>CallsWithoutBlocks</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>390F4CE6-C368-4B61-BAF1-74CDD1844E51</key>
-		<string>https://github.com/pubnub/objective-c</string>
+		<key>B29C7BEE-7903-417C-9052-0EDCB71B3526</key>
+		<string>ssh://github.com/pubnub/objective-c.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>iOS/HOWTO/CallsWithoutBlocks/CallsWithoutBlocks.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>390F4CE6-C368-4B61-BAF1-74CDD1844E51</key>
+		<key>B29C7BEE-7903-417C-9052-0EDCB71B3526</key>
 		<string>../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/pubnub/objective-c</string>
+	<string>ssh://github.com/pubnub/objective-c.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>390F4CE6-C368-4B61-BAF1-74CDD1844E51</string>
+	<string>B29C7BEE-7903-417C-9052-0EDCB71B3526</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>390F4CE6-C368-4B61-BAF1-74CDD1844E51</string>
+			<string>B29C7BEE-7903-417C-9052-0EDCB71B3526</string>
 			<key>IDESourceControlWCCName</key>
-			<string>pubnub 3.5</string>
+			<string>pubnub develop</string>
 		</dict>
 	</array>
 </dict>

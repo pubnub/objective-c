@@ -1,18 +1,17 @@
-//
-//  PNChannelEventsResponseParser.h
-// 
-//
-//  Created by moonlight on 1/15/13.
-//
-//
+/**
 
+ @author Sergey Mamontov
+ @version 3.4.0
+ @copyright © 2009-13 PubNub Inc.
+
+ */
 
 #import "PNPrivateImports.h"
 #import "PNChannelEventsResponseParser.h"
 #import "PNChannelPresence+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #import "PNChannelEvents+Protected.h"
-#import "PNResponse.h"
+#import "PNResponse+Protected.h"
 
 
 // ARC check
@@ -24,13 +23,19 @@
 
 #pragma mark Static
 
-// Stores reference on index under which events list is stored
+/**
+ Stores reference on index under which events list is stored.
+ */
 static NSUInteger const kPNResponseEventsListElementIndex = 0;
 
-// Stores reference on index under which channels list is stored
+/**
+ Stores reference on index under which channels list is stored.
+ */
 static NSUInteger const kPNResponseChannelsListElementIndex = 2;
 
-// Stores reference on time token element index in response for events
+/**
+ Stores reference on time token element index in response for events.
+ */
 static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 
@@ -41,8 +46,13 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 #pragma mark - Properties
 
-// Stores reference on even data object which holds all information about events
+/**
+ Stores reference on even data object which holds all information about events.
+ */
 @property (nonatomic, strong) PNChannelEvents *events;
+
+
+#pragma mark -
 
 
 @end
@@ -97,9 +107,7 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
         if ([events count] > 0) {
 
             NSMutableArray *eventObjects = [NSMutableArray arrayWithCapacity:[events count]];
-            [events enumerateObjectsUsingBlock:^(id event,
-                                                 NSUInteger eventIdx,
-                                                 BOOL *eventEnumeratorStop) {
+            [events enumerateObjectsUsingBlock:^(id event, NSUInteger eventIdx, BOOL *eventEnumeratorStop) {
 
                 PNChannel *channel = nil;
                 if ([channels count] > 0) {
@@ -146,10 +154,8 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p) <time token: %@, events: %@>",
-                                      NSStringFromClass([self class]), self,
-                                      self.events.timeToken,
-                                      self.events.events];
+    return [NSString stringWithFormat:@"%@ (%p) <time token: %@, events: %@>", NSStringFromClass([self class]), self,
+                                      self.events.timeToken, self.events.events];
 }
 
 #pragma mark -

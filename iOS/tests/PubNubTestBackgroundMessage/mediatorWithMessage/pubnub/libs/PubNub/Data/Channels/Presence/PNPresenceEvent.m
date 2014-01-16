@@ -13,6 +13,8 @@
 
 
 #import "PNPresenceEvent+Protected.h"
+#import "PNClient+Protected.h"
+#import "PNClient.h"
 
 
 // ARC check
@@ -22,12 +24,18 @@
 #endif
 
 
+#pragma mark Class forward
+
+@class PNClient;
+
+
 #pragma mark Structures
 
 struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     .action = @"action",
     .timestamp = @"timestamp",
     .uuid = @"uuid",
+    .data = @"data",
     .occupancy = @"occupancy"
 };
 
@@ -39,23 +47,11 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
 #pragma mark Properties
 
-// Stores reference on presence event type
 @property (nonatomic, assign) PNPresenceEventType type;
-
-// Stores reference on presence occurrence
-// date
+@property (nonatomic, strong) PNClient *client;
 @property (nonatomic, strong) PNDate *date;
-
-// Stores reference on user identifier which
-// is triggered presence event
 @property (nonatomic, copy) NSString *uuid;
-
-// Stores reference on number of persons in channel
-// on which this event is occurred
 @property (nonatomic, assign) NSUInteger occupancy;
-
-// Stores reference on channel on which this event
-// is fired
 @property (nonatomic, assign) PNChannel *channel;
 
 
@@ -108,15 +104,32 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
         NSNumber *timestamp = [presenceResponse valueForKey:PNPresenceEventDataKeys.timestamp];
         self.date = [PNDate dateWithToken:timestamp];
 
-        // Extracting user identifier from response
-        self.uuid = [presenceResponse valueForKey:PNPresenceEventDataKeys.uuid];
-
         // Extracting channel occupancy from response
         self.occupancy = [[presenceResponse valueForKey:PNPresenceEventDataKeys.occupancy] unsignedIntegerValue];
+        
+        // Extracting client specific metadata
+        self.client = [PNClient clientForIdentifier:[presenceResponse valueForKey:PNPresenceEventDataKeys.uuid]
+                                            channel:nil
+                                            andData:[presenceResponse valueForKey:PNPresenceEventDataKeys.data]];
+        
+        /**
+         DEPRECATED. WILL BE COMPLETELY REMOVED IN PubNub 3.5.5
+         */
+        // Extracting user identifier from response
+        _uuid = [presenceResponse valueForKey:PNPresenceEventDataKeys.uuid];
     }
     
     
     return self;
+}
+
+
+#pragma mark - Misc methods
+
+- (void)setChannel:(PNChannel *)channel {
+
+    _channel = channel;
+    self.client.channel = channel;
 }
 
 - (NSString *)description {
@@ -136,13 +149,9 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     }
 
 
-    return [NSString stringWithFormat:@"%@ \nEVENT: %@%@\nDATE: %@\nOCCUPANCY: %ld\nCHANNEL: %@",
-                    NSStringFromClass([self class]),
-                    action,
-                    self.uuid ? [NSString stringWithFormat:@"\nUSER IDENTIFIER: %@", self.uuid] : @"",
-                    self.date,
-                    (unsigned long)self.occupancy,
-                    self.channel];
+    return [NSString stringWithFormat:@"%@\nEVENT: %@%@\nDATE: %@\nOCCUPANCY: %ld\nCHANNEL: %@",
+                    NSStringFromClass([self class]), action, [NSString stringWithFormat:@"\nCLIENT: %@", self.client],
+                    self.date, (unsigned long)self.occupancy, self.channel];
 }
 
 #pragma mark -

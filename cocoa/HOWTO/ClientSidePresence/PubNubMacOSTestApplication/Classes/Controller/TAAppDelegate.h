@@ -14,7 +14,7 @@
 @property PNChannel *myChannel;
 
 @property NSTimer *pingPongTimer;
-@property NSString *presenceChannel;
+@property id presenceChannel;
 @property NSMutableDictionary *occupants;
 @property (weak) IBOutlet NSTextFieldCell *textView;
 @property (weak) IBOutlet NSTextFieldCell *presenceView;

@@ -64,7 +64,7 @@
     }
 
     [_imageView setHidden:YES];
-    [_requestOutpu setText:[NSString stringWithFormat:@"%@ completed. \Results: %@", opName, results]];
+    [_requestOutpu setText:[NSString stringWithFormat:@"%@ completed. \nResults: %@", opName, results]];
 }
 
 - (IBAction)enablePush:(id)sender {
@@ -101,7 +101,7 @@
 
 - (void)processChannels:(NSArray *)channels withError:(PNError *)error withOp:(NSString *)op {
 
-    NSMutableString *result = [[NSMutableArray alloc] init];
+    id result = nil;
 
     if (error == nil)
             result = [[channels valueForKey:@"name"] componentsJoinedByString:@", "];

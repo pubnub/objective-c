@@ -22,7 +22,7 @@
 #import "PNActionResponseParser.h"
 #import "PNChannelHistoryParser.h"
 #import "PNErrorResponseParser.h"
-#import "PNPrivateImports.h"
+#import "PNResponse+Protected.h"
 
 
 // ARC check

@@ -28,6 +28,15 @@ static NSTimeInterval const kPNConnectionIdleTimeout = 310.0f;
 static NSTimeInterval const kPNNonSubscriptionRequestTimeout = 10.0f;
 static NSTimeInterval const kPNSubscriptionRequestTimeout = 10.0f;
 
+/**
+ This value used by server to identify when it should kick subscribed user (UUID during \b PubNub configuration) by
+ timeout.
+
+ Default value is set to \b 0.0 which mean that server will timeout client by default inactivity timeout (depend on
+ server configuration and conditions).
+ */
+static NSTimeInterval const kPNPresenceExpirationTimeout = 0.0f;
+
 // This flag tells whether client should reduce SSL rules when connecting to remote origin because of connection
 // error (which probably caused by SSL certificate validation error) If set to YES,
 // client will try to preserve SSL security but will use not so strict rules as for remote origin SSL certificate

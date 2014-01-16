@@ -14,13 +14,65 @@
 
 #pragma mark Class forward
 
-@class PNServiceChannel, PNMessagesHistory, PNResponse, PNHereNow, PNAccessRightsCollection;
+@class PNServiceChannel, PNMessagesHistory, PNResponse, PNHereNow, PNAccessRightsCollection, PNClient;
 
 
 @protocol PNServiceChannelDelegate<NSObject>
 
 
 @required
+
+/**
+ Sent to the delegate when \b PubNub client successfully retrieved metadata for client.
+
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+
+ @param client
+ \b PNClient instance which hold information on for who this response and metadata for him on concrete channel.
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didReceiveClientMetadata:(PNClient *)client;
+
+/**
+ Sent to the delegate when \b PubNub client did fail to retrieve metadata for client.
+
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+
+ @param error
+ \b PNError instance which holds information about what went wrong and why request failed. \a 'error.associatedObject'
+ contains reference on \b PNClient instance which will allow to review for whom request has been made.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel clientMetadataReceiveDidFailWithError:(PNError *)error;
+
+/**
+ Sent to the delegate when \b PubNub client successfully updated metadata for client.
+
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+
+ @param client
+ \b PNClient instance which hold information on for who this response and updated metadata on concrete channel.
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didUpdateClientMetadata:(PNClient *)client;
+
+/**
+ Sent to the delegate when \b PubNub client did fail to update metadata for client.
+
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+
+ @param error
+ \b PNError instance which holds information about what went wrong and why request failed. \a 'error.associatedObject'
+ contains reference on \b PNClient instance which will allow to review for whom request has been made.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel clientMetadataUpdateDidFailWithError:(PNError *)error;
 
 /**
  Sent to the delegate when \b PubNub client successfully changed access rights.
@@ -41,7 +93,7 @@
  \b PubNub client which failed request processing (this is singleton).
 
  @param error
- \b PNError instance which holds information about when wrong and why request failed. \a 'error.associatedObject'
+ \b PNError instance which holds information about what went wrong and why request failed. \a 'error.associatedObject'
  contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b PubNub client tried to apply.
 
  @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
@@ -68,7 +120,7 @@
  \b PubNub client which failed request processing (this is singleton).
 
  @param error
- \b PNError instance which holds information about when wrong and why request failed. \a 'error.associatedObject'
+ \b PNError instance which holds information about what went wrong and why request failed. \a 'error.associatedObject'
  contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b
  PubNub client used for audition.
 
@@ -162,40 +214,61 @@ didReceiveNetworkLatency:(double)latency
 - (void)serviceChannel:(PNServiceChannel *)channel didSendMessage:(PNMessage *)message;
 
 /**
- * Sent to the delegate if PubNub reported with
- * processing error or message was unable to send
- * because of some other issues
+ * Sent to the delegate if PubNub reported with processing error or message was unable to send because of some other
+ * issues.
  */
-- (void)serviceChannel:(PNServiceChannel *)channel
-    didFailMessageSend:(PNMessage *)message
-             withError:(PNError *)error;
+- (void)serviceChannel:(PNServiceChannel *)channel didFailMessageSend:(PNMessage *)message withError:(PNError *)error;
 
 /**
- * Sent to the delegate when PubNub service responded
- * on history download request
+ * Sent to the delegate when PubNub service responded on history download request.
  */
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveMessagesHistory:(PNMessagesHistory *)history;
 
 /**
- * Sent to the delegate when PubNub service refused to
- * return history for specified channel
+ * Sent to the delegate when PubNub service refused to return history for specified channel.
  */
-- (void)         serviceChannel:(PNServiceChannel *)serviceChannel
-didFailHisoryDownloadForChannel:(PNChannel *)channel
-                      withError:(PNError *)error;
+- (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailHisoryDownloadForChannel:(PNChannel *)channel
+             withError:(PNError *)error;
 
 /**
- * Sent to the delegate when PubNub service responded on
- * participants list request
+ * Sent to the delegate when PubNub service responded on participants list request.
  */
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantsList:(PNHereNow *)participants;
 
 /**
- * Sent to the delegate when PubNub service failed to retrieve
- * participants list for specified channel
+ * Sent to the delegate when PubNub service failed to retrieve participants list for specified channel
  */
-- (void)               serviceChannel:(PNServiceChannel *)serviceChannel
-didFailParticipantsListLoadForChannel:(PNChannel *)channel
-                            withError:(PNError *)error;
+- (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantsListLoadForChannel:(PNChannel *)channel
+             withError:(PNError *)error;
+
+/**
+ Sent to the delegate when PubNub service responded on participant channels list request.
+
+ @param serviceChannel
+ \b PNServiceChannel instance which triggered event.
+
+ @param participantChannels
+ \b PNWhereNow instance which hold information about channels and client identifier for which they has been requested.
+
+ @since 3.6.0
+ */
+- (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantChannelsList:(PNWhereNow *)participantChannels;
+
+/**
+ Sent to the delegate when PubNub service failed to retrieve participants list for specified channel.
+
+ @param serviceChannel
+ \b PNServiceChannel instance which triggered event.
+
+ @param clientIdentifier
+ Identifier for which channels list has been requested,
+
+ @param error
+ \b PNError instance which allow to understand why request failed.
+
+ @since 3.6.0
+ */
+- (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantChannelsListLoadForIdentifier:(NSString *)clientIdentifier
+             withError:(PNError *)error;
 
 @end

@@ -35,14 +35,16 @@
 
 #pragma mark - Class methods
 
-+ (PNSubscribeRequest *)subscribeRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest;
-+ (PNSubscribeRequest *)subscribeRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest;
++ (PNSubscribeRequest *)subscribeRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest
+                                      withMetadata:(NSDictionary *)metadata;
++ (PNSubscribeRequest *)subscribeRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest
+                                      withMetadata:(NSDictionary *)metadata;
 
 
 #pragma mark - Instance methods
 
-- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest;
-- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest;
+- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest withMetadata:(NSDictionary *)metadata;
+- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest withMetadata:(NSDictionary *)metadata;
 
 /**
  * Check whether this is initial subscription request which will mean that it's update time token is '0'

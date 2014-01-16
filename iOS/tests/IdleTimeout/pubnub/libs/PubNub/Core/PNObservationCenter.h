@@ -42,6 +42,21 @@
 - (void)removeClientConnectionStateObserver:(id)observer;
 
 
+#pragma mark - Client metadata retrieval / update observation
+
+/**
+ Add/remove observer which would like to know when \b PubNub client retrieve metadata.
+ */
+- (void)addClientMetadataRequestObserver:(id)observer withBlock:(PNClientMetadataRetrieveHandlingBlock)handleBlock;
+- (void)removeClientMetadataRequestObserver:(id)observer;
+
+/**
+ Add/remove observer which would like to know when \b PubNub client update metadata.
+ */
+- (void)addClientMetadataUpdateObserver:(id)observer withBlock:(PNClientMetadataUpdateHandlingBlock)handleBlock;
+- (void)removeClientMetadataUpdateObserver:(id)observer;
+
+
 #pragma mark - Client channels action/event observation
 
 /**
@@ -178,6 +193,10 @@
 - (void)addChannelParticipantsListProcessingObserver:(id)observer
                                            withBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 - (void)removeChannelParticipantsListProcessingObserver:(id)observer;
+
+- (void)addClientParticipantChannelsListDownloadObserver:(id)observer
+                                                 withBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
+- (void)removeClientParticipantChannelsListDownloadObserver:(id)observer;
 
 #pragma mark -
 

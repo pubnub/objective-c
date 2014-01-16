@@ -18,7 +18,40 @@
 #endif
 
 
-#pragma mark Private interface methods
+#pragma mark Structures
+
+struct PNServiceResponseServiceDataKeysStruct PNServiceResponseServiceDataKeys = {
+
+    .name = @"service",
+    .statusCode = @"status",
+    .errorState = @"error",
+    .message = @"message",
+    .response = @"payload",
+    .privateData = @"^_(.*?)_(?=[^\\s])"
+};
+
+struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
+
+    .latencyMeasureMessageCallback = @"lm",
+    .metadataRetrieveCallback = @"mr",
+    .metadataUpdateCallback = @"mu",
+    .subscriptionCallback = @"s",
+    .leaveChannelCallback = @"lv",
+    .channelPushNotificationsEnableCallback = @"cpe",
+    .channelPushNotificationsDisableCallback = @"cpd",
+    .pushNotificationEnabledChannelsCallback = @"pec",
+    .pushNotificationRemoveCallback = @"pnr",
+    .sendMessageCallback = @"m",
+    .timeTokenCallback = @"t",
+    .messageHistoryCallback = @"h",
+    .channelParticipantsCallback = @"p",
+    .participantChannelsCallback = @"pc",
+    .channelAccessRightsChangeCallback = @"arc",
+    .channelAccessRightsAuditCallback = @"arr"
+};
+
+
+#pragma mark - Private interface methods
 
 @interface PNResponse (Private)
 

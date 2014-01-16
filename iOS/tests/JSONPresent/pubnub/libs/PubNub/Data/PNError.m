@@ -204,6 +204,7 @@
             case kPNRequestExecutionFailedOnInternetFailureError:
             case kPNRequestExecutionFailedClientNotReadyError:
             case kPNRequestExecutionFailedClientSuspendedError:
+            case kPNInvalidMetadataPayloadError:
 
                 errorDescription = @"PubNub client can't perform request";
                 break;
@@ -396,6 +397,10 @@
 
             failureReason = @"Looks like the target channel for the message has not been specified";
             break;
+        case kPNInvalidMetadataPayloadError:
+
+            failureReason = @"Looks like invalid metadata has been used for request.";
+            break;
         case kPNMessageObjectError:
 
             failureReason = @"Looks like no message object was passed";
@@ -561,6 +566,11 @@
         case kPNMessageHasNoChannelError:
 
             fixSuggestion = @"Ensure that you specified a valid channel for this message.";
+            break;
+        case kPNInvalidMetadataPayloadError:
+
+            fixSuggestion = @"Make sure that your metadata values supported (integer, "
+                    "float or string) and your keys doesn't start with \"pn\" or \"_\".";
             break;
         case kPNTooLongMessageError:
 

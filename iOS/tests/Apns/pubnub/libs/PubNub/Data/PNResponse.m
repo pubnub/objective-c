@@ -1,18 +1,12 @@
-//
-//  PNResponse.m
-//  pubnub
-//
-//  This class instance designed to store
-//  binary response from backend with some
-//  additional information which will help
-//  to understand some metrics.
-//
-//
-//  Created by Sergey Mamontov on 12/20/12.
-//
-//
+/**
 
-#import "PNResponse.h"
+ @author Sergey Mamontov
+ @version 3.4.0
+ @copyright © 2009-13 PubNub Inc.
+
+ */
+
+#import "PNResponse+Protected.h"
 #import "PNJSONSerialization.h"
 #import "PNRequestsImport.h"
 
@@ -24,20 +18,23 @@
 #endif
 
 
-#pragma mark Static
-
-// Stores index of callback method name in array which was created by splitting callback method from JSONP by '_' sign
-static NSUInteger const kPNResponseCallbackMethodNameIndex = 0;
-
-// Stores index of request identifier in array which was created by splitting callback method from JSONP by '_' sign
-static NSUInteger const kPNResponseRequestIdentifierIndex = 1;
-
-
 #pragma mark Structures
 
+struct PNServiceResponseServiceDataKeysStruct PNServiceResponseServiceDataKeys = {
+
+    .name = @"service",
+    .statusCode = @"status",
+    .errorState = @"error",
+    .message = @"message",
+    .response = @"payload",
+    .privateData = @"^_(.*?)_(?=[^\\s])"
+};
+
 struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
-    
+
     .latencyMeasureMessageCallback = @"lm",
+    .metadataRetrieveCallback = @"mr",
+    .metadataUpdateCallback = @"mu",
     .subscriptionCallback = @"s",
     .leaveChannelCallback = @"lv",
     .channelPushNotificationsEnableCallback = @"cpe",
@@ -48,6 +45,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     .timeTokenCallback = @"t",
     .messageHistoryCallback = @"h",
     .channelParticipantsCallback = @"p",
+    .participantChannelsCallback = @"pc",
     .channelAccessRightsChangeCallback = @"arc",
     .channelAccessRightsAuditCallback = @"arr"
 };
@@ -55,19 +53,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 #pragma mark - Private interface methods
 
-@interface PNResponse ()
-
-
-#pragma mark - Properties
-
-@property (nonatomic, strong) NSData *content;
-@property (nonatomic, assign) NSInteger statusCode;
-@property (nonatomic, assign) NSUInteger size;
-@property (nonatomic, strong) PNError *error;
-@property (nonatomic, copy) NSString *requestIdentifier;
-@property (nonatomic, copy) NSString *callbackMethod;
-@property (nonatomic, assign, getter = isLastResponseOnConnection) BOOL lastResponseOnConnection;
-@property (nonatomic, strong) id response;
+@interface PNResponse (Private)
 
 
 #pragma mark - Instance methods
@@ -75,7 +61,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 #pragma mark - Handler methods
 
 /**
- * Handle JSON encoding error and try perform additional tasks to silently fallback this error
+ Handle JSON encoding error and try perform additional tasks to silently fallback this error.
+
+ @param errorCode
+ JSON Parsing error.
  */
 - (void)handleJSONDecodeErrorWithCode:(NSUInteger)errorCode;
 
@@ -83,17 +72,34 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 #pragma mark - Misc methods
 
 /**
- * If user is using cypher key to send request than it will be used to decode server response
+ If user is using cypher key to send request than it will be used to decode server response.
+
+ @return Current implementation just provide cleaned data.
  */
 - (NSString *)decodedResponse;
 
 /**
- * In case of JSON parsing error, this method will allow to pull out information about request and callback
- * function from partial response
+ Extract service parameters from response (server send additional data which help to identify service which privded
+ response and state of request processing.
  */
-- (void)getCallbackFunction:(NSString **)callback
-          requestIdentifier:(NSString **)identifier
-                   fromData:(NSData *)responseData;
+- (void)extractServiceData;
+
+/**
+ In case of JSON parsing error, this method will allow to pull out information about request and callback function
+ from partial response.
+
+ @param callback
+ Reference on \b NSString variable inside of which \a callback name will be stored.
+
+ @param identifier
+ Reference on \b NSString variable inside of which request identifier will be stored.
+
+ @param responseData
+ RAW data from which response should be extracted (basically JSON(P) will be parsed).
+ */
+- (void)getCallbackFunction:(NSString **)callback requestIdentifier:(NSString **)identifier fromData:(NSData *)responseData;
+
+#pragma mark -
 
 
 @end
@@ -106,31 +112,18 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 #pragma mark Class methods
 
-/**
- * Retrieve instance which will hold information about HTTP response body and size of whole response
- * (including HTTP headers)
- */
-+ (PNResponse *)responseWithContent:(NSData *)content
-                               size:(NSUInteger)responseSize
-                               code:(NSInteger)statusCode
++ (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode
            lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
     
-    return [[[self class] alloc] initWithContent:content
-                                            size:responseSize
-                                            code:statusCode
+    return [[[self class] alloc] initWithContent:content size:responseSize code:statusCode
                         lastResponseOnConnection:isLastResponseOnConnection];
 }
 
 
 #pragma mark - Instance methods
 
-/**
- * Initialize response instance with response body content data, response size and status code (HTTP status code)
- */
-- (id)initWithContent:(NSData *)content
-                 size:(NSUInteger)responseSize
-                 code:(NSInteger)statusCode
-        lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
+- (id)    initWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode
+ lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
     
     // Check whether initialization was successful or not
     if((self = [super init])) {
@@ -138,6 +131,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         self.content = content;
         self.size = responseSize;
         self.statusCode = statusCode;
+        self.privateData = [NSMutableDictionary dictionary];
         self.lastResponseOnConnection = isLastResponseOnConnection;
 
         
@@ -168,6 +162,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
                                               self.response = result;
                                           }
+
+                                          [weakSelf extractServiceData];
                                       }
                                            errorBlock:^(NSError *error) {
 
@@ -175,9 +171,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                                [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
         }
-        // Looks like message can't be decoded event from RAW response
-        // looks like malformed data arrived with characters which can't
-        // be encoded
+        // Looks like message can't be decoded event from RAW response looks like malformed data arrived with
+        // characters which can't be encoded.
         else {
 
             PNLog(PNLogGeneralLevel, self, @"FAILED TO DECODE DATA");
@@ -214,9 +209,92 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     return [encodedString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
-- (void)getCallbackFunction:(NSString **)callback
-          requestIdentifier:(NSString **)identifier
-                   fromData:(NSData *)responseData {
+- (void)extractServiceData {
+
+    // Checking on whether we got dictionary or not
+    if ([self.response respondsToSelector:@selector(allKeys)]) {
+
+        NSMutableDictionary *processedData = [self.response mutableCopy];
+
+        // Check whether response contains information about service which provided response or not.
+        if ([processedData objectForKey:PNServiceResponseServiceDataKeys.name]) {
+
+            self.serviceName = [processedData valueForKey:PNServiceResponseServiceDataKeys.name];
+            [processedData removeObjectForKey:PNServiceResponseServiceDataKeys.name];
+        }
+
+        // Check whether response contains service specific request processing status code or not
+        if ([processedData objectForKey:PNServiceResponseServiceDataKeys.statusCode]) {
+
+            self.statusCode = [[processedData objectForKey:PNServiceResponseServiceDataKeys.statusCode] integerValue];
+            [processedData removeObjectForKey:PNServiceResponseServiceDataKeys.statusCode];
+        }
+
+        // Check whether response contains information about whether this is error clarification or not.
+        if ([processedData objectForKey:PNServiceResponseServiceDataKeys.errorState]) {
+
+            self.errorResponse = [[processedData objectForKey:PNServiceResponseServiceDataKeys.errorState] boolValue];
+            [processedData removeObjectForKey:PNServiceResponseServiceDataKeys.errorState];
+        }
+
+        // Check whether response contains service populated message or not.
+        if ([processedData objectForKey:PNServiceResponseServiceDataKeys.message]) {
+
+            self.message = [processedData objectForKey:PNServiceResponseServiceDataKeys.message];
+            [processedData removeObjectForKey:PNServiceResponseServiceDataKeys.message];
+        }
+
+        // Check whether server messed up and there is actual error or not.
+        if (!self.isErrorResponse && self.statusCode != kPNHTTPStatusCodeOK && !self.error && self.message) {
+
+            self.error = [PNError errorWithResponseErrorMessage:self.message];
+            self.errorResponse = YES;
+        }
+
+        // Check whether response contains key under which service response is stored or not.
+        BOOL isPayloadFound = [processedData objectForKey:PNServiceResponseServiceDataKeys.response] != nil;
+        if (isPayloadFound) {
+
+            self.response = [processedData objectForKey:PNServiceResponseServiceDataKeys.response];
+            [processedData removeObjectForKey:PNServiceResponseServiceDataKeys.response];
+        }
+
+        NSArray *unprocessedDataKeys = [processedData allKeys];
+        [unprocessedDataKeys enumerateObjectsUsingBlock:^(NSString *dataKey, NSUInteger dataKeyIdx,
+                                                             BOOL *dataKeyEnumeratorStop) {
+
+            // Checking on whether key conforms to PubNub service "private" data template or not.
+            if ([dataKey rangeOfString:PNServiceResponseServiceDataKeys.privateData
+                               options:NSRegularExpressionSearch].location != NSNotFound) {
+
+                [self.privateData setValue:[processedData valueForKey:dataKey] forKey:dataKey];
+                [processedData removeObjectForKey:dataKey];
+            }
+        }];
+
+        unprocessedDataKeys = [processedData allKeys];
+        if ([unprocessedDataKeys count]) {
+
+            if (isPayloadFound) {
+
+                NSMutableDictionary *responseForModification = [self.response mutableCopy];
+                [unprocessedDataKeys enumerateObjectsUsingBlock:^(NSString *dataKey, NSUInteger dataKeyIdx,
+                                                                  BOOL *dataKeyEnumeratorStop) {
+
+                    [responseForModification setValue:[processedData valueForKey:dataKey] forKey:dataKey];
+                    [processedData removeObjectForKey:dataKey];
+                }];
+                self.response = [NSDictionary dictionaryWithDictionary:responseForModification];
+            }
+            else {
+
+                self.response = [NSDictionary dictionaryWithDictionary:processedData];
+            }
+        }
+    }
+}
+
+- (void)getCallbackFunction:(NSString **)callback requestIdentifier:(NSString **)identifier fromData:(NSData *)responseData {
 
 
     // Trying to extract callback method and request identifier
@@ -262,15 +340,14 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %ld\nCONNECTION WILL BE CLOSE? %@\nRESPONSE SIZE: %ld\nRESPONSE CONTENT SIZE: %ld\nIS JSONP: %@\nCALLBACK METHOD: %@\nREQUEST IDENTIFIER: %@\nRESPONSE: %@\n",
-                                      (long)self.statusCode,
-                                      self.isLastResponseOnConnection ? @"YES" : @"NO",
-                                      (unsigned long)[self.content length],
-                                      (unsigned long)self.size,
-                                      self.callbackMethod ? @"YES" : @"NO",
-                                      self.callbackMethod,
-                                      self.requestIdentifier,
-                                      self.response];
+    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %ld\nSTATUS MESSAGE: %@\nIS ERROR RESPONSE? %@"
+                                       "\nCONNECTION WILL BE CLOSE? %@\nRESPONSE SIZE: %ld\nRESPONSE CONTENT SIZE: %ld"
+                                       "\nIS JSONP: %@\nCALLBACK METHOD: %@\nSERVICE NAME: %@\nREQUEST IDENTIFIER: %@"
+                                       "\nRESPONSE: %@\nADDITIONAL DATA: %@\n",
+                                      (long)self.statusCode, self.message, self.isErrorResponse ? @"YES" : @"NO",
+                                      self.isLastResponseOnConnection ? @"YES" : @"NO", (unsigned long)[self.content length],
+                                      (unsigned long)self.size, self.callbackMethod ? @"YES" : @"NO", self.callbackMethod,
+                                      self.serviceName, self.requestIdentifier, self.response, self.additionalData];
 }
 
 #pragma mark -

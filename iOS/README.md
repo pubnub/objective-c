@@ -656,6 +656,7 @@ Here are some subscribe examples:
     }  
 }
 }];
+```
 
 The client of course also provides a set of methods which allow you to unsubscribe from channels:  
 ```objc
@@ -1254,10 +1255,10 @@ Usage example:
 
               // There should be a reason because of which subscription failed and it can be found in 'error' instance.
               //
-              // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use -localizedDescription /
-              // -localizedFailureReason and -localizedRecoverySuggestion to get human readable description for error).
-              // 'error.associatedObject' contains array of PNChannel instances on which PubNub client was unable to
-              // subscribe.
+              // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and 
+              // use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+              // description for error). 'error.associatedObject' contains array of PNChannel instances on which 
+              // PubNub client was unable to subscribe.
               break;
           case PNSubscriptionProcessSubscribedState:
 
@@ -1274,10 +1275,10 @@ Usage example:
 
                             // PubNub client did fail to update metadata.
                             //
-                            // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
-                            // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable description 
-                            // for error). 'error.associatedObject' contains PNClient instance which client for which
-                            // PubNub client was unable to update metadata.
+                            // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and
+                            // use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get 
+                            // human readable description for error). 'error.associatedObject' contains PNClient instance 
+                            // for which PubNub client was unable to update metadata.
                           }
                         }];
               }];
@@ -1561,7 +1562,8 @@ Example usage follows:
 ```objc
 - (void)pubnubClient:(PubNub *)client pushNotificationsRemoveFromChannelsDidFailWithError:(PNError *)error {
 
-  PNLog(PNLogGeneralLevel, self, @"PubNub client failed remove push notifications from channels because of error: %@", error);
+  PNLog(PNLogGeneralLevel, self, @"PubNub client failed remove push notifications from channels because of error: %@",
+        error);
 }
 ```
 ####- (void)pubnubClient:(PubNub *)client didReceivePushNotificationEnabledChannels:(NSArray *)channels;
@@ -1641,10 +1643,10 @@ Example usage follows:
 This delegate method is called when PubNub client was unable to receive client metadata. "error" will contain details of this error.  
 Example usage follows:
 ```objc
-- (void)pubnubClient:(PubNub *)client didReceiveClientMetadata:(PNClient *)remoteClient {
+- (void)pubnubClient:(PubNub *)client clientMetadataRetrieveDidFailWithError:(PNError *)error {
 
-  PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to receive metadata for client %@ on channel %@ because of error: %@",
-        ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
+  PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to receive metadata for client %@ on channel %@ because of "
+        "error: %@", ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
 }
 ```
 ####- (void)pubnubClient:(PubNub *)client didUpdateClientMetadata:(PNClient *)remoteClient;
@@ -1665,8 +1667,8 @@ Example usage follows:
 ```objc
 - (void)pubnubClient:(PubNub *)client clientMetadataUpdateDidFailWithError:(PNError *)error {
 
-  PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to update metadata for client %@ at channel %@ because of error: %@",
-        ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
+  PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to update metadata for client %@ at channel %@ because of "
+        "error: %@", ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
 }
 ```
 ####- (void)pubnubClient:(PubNub *)client didReceiveTimeToken:(NSNumber *)timeToken;  

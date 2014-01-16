@@ -49,7 +49,7 @@
             eventString = @"Timeout";
         }
 
-        eventString = [NSString stringWithFormat:@"%@ : %@", event.uuid, eventString];
+        eventString = [NSString stringWithFormat:@"%@ : %@", event.client.identifier, eventString];
 
         [presenceView setText:[eventString stringByAppendingFormat:@"\n%@\n", presenceView.text]];
 

@@ -28,7 +28,6 @@
 #import "PNMacro.h"
 
 #import "PNBaseRequest+Protected.h"
-#import "PNResponse+Protected.h"
 #import "PNWhereNow+Protected.h"
 
 #endif // PNPrivateImports_h
