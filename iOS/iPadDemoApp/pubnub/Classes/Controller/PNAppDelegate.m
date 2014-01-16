@@ -9,9 +9,6 @@
 #import "PNAppDelegate.h"
 #import "PNIdentificationViewController.h"
 #import "PNPrivateMacro.h"
-#import "PNClient.h"
-#import "PNClient+Protected.h"
-#import "PNError+Protected.h"
 
 
 #pragma mark Private interface methods
@@ -272,7 +269,7 @@
 - (void)pubnubClient:(PubNub *)client didReceiveClientMetadata:(PNClient *)remoteClient {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client successfully received metadata for client %@ on channel %@: %@ ",
-         remoteClient.identifier, remoteClient.channel, remoteClient.data);
+          remoteClient.identifier, remoteClient.channel, remoteClient.data);
 }
 
 - (void)pubnubClient:(PubNub *)client clientMetadataRetrieveDidFailWithError:(PNError *)error {
@@ -284,7 +281,7 @@
 - (void)pubnubClient:(PubNub *)client didUpdateClientMetadata:(PNClient *)remoteClient {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client successfully updated metadata for client %@ at channel %@: %@ ",
-         remoteClient.identifier, remoteClient.channel, remoteClient.data);
+          remoteClient.identifier, remoteClient.channel, remoteClient.data);
 }
 
 - (void)pubnubClient:(PubNub *)client clientMetadataUpdateDidFailWithError:(PNError *)error {

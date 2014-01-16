@@ -129,8 +129,10 @@ static NSMutableArray *pendingInvocations = nil;
 + (void)postponeRequestClientMetadata:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
    witCompletionHandlingBlock:(PNClientMetadataRetrieveHandlingBlock)handlerBlock;
 
-+ (void)postponeUpdateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata forChannel:(PNChannel *)channel
-  witCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock;
++ (void)postponeUpdateClientMetadata:(NSString *)clientIdentifier
+                            metadata:(NSDictionary *)clientMetadata
+                          forChannel:(PNChannel *)channel
+         withCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock;
 
 
 #pragma mark - Channels subscription management
@@ -1395,11 +1397,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                   forChannel:(PNChannel *)channel {
 
     [self updateClientMetadata:clientIdentifier metadata:clientMetadata forChannel:channel
-    witCompletionHandlingBlock:nil];
+   withCompletionHandlingBlock:nil];
 }
 
-+ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata forChannel:(PNChannel *)channel
-  witCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock {
++ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata
+                  forChannel:(PNChannel *)channel
+ withCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock {
 
 
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO UPDATE CLIENT METADATA FOR IDENTIFIER %@ ON CHANNEL %@ TO: %@ (STATE: %@)",
@@ -1455,14 +1458,15 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                      [self humanReadableStateFrom:[self sharedInstance].state]);
 
                [self postponeUpdateClientMetadata:clientIdentifier metadata:clientMetadata forChannel:channel
-                       witCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
+                      withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
            }];
 }
 
-+ (void)postponeUpdateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata forChannel:(PNChannel *)channel
-          witCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock {
++ (void)postponeUpdateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata
+                          forChannel:(PNChannel *)channel
+         withCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock {
 
-    [[self sharedInstance] postponeSelector:@selector(updateClientMetadata:metadata:forChannel:witCompletionHandlingBlock:)
+    [[self sharedInstance] postponeSelector:@selector(updateClientMetadata:metadata:forChannel:withCompletionHandlingBlock:)
                                   forObject:self
                              withParameters:@[PNNillIfNotSet(clientIdentifier), PNNillIfNotSet(clientMetadata),
                                               PNNillIfNotSet(channel), PNNillIfNotSet(handlerBlock)]
@@ -1490,16 +1494,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 + (void) subscribeOnChannel:(PNChannel *)channel
 withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
-    [self subscribeOnChannel:channel metadata:nil withCompletionHandlingBlock:handlerBlock];
+    [self subscribeOnChannel:channel withMetadata:nil andCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)subscribeOnChannel:(PNChannel *)channel metadata:(NSDictionary *)clientMetadata {
++ (void)subscribeOnChannel:(PNChannel *)channel withMetadata:(NSDictionary *)clientMetadata {
 
-    [self subscribeOnChannel:channel metadata:clientMetadata withCompletionHandlingBlock:nil];
+    [self subscribeOnChannel:channel withMetadata:clientMetadata andCompletionHandlingBlock:nil];
 }
 
-+ (void)subscribeOnChannel:(PNChannel *)channel metadata:(NSDictionary *)clientMetadata
-        withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
++ (void) subscribeOnChannel:(PNChannel *)channel withMetadata:(NSDictionary *)clientMetadata
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
     [self subscribeOnChannel:channel withPresenceEvent:YES metadata:clientMetadata andCompletionHandlingBlock:handlerBlock];
 }
@@ -1515,13 +1519,15 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
     [self subscribeOnChannel:channel withPresenceEvent:withPresenceEvent metadata:nil andCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent metadata:(NSDictionary *)clientMetadata {
++ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
+                  metadata:(NSDictionary *)clientMetadata {
 
     [self subscribeOnChannel:channel withPresenceEvent:withPresenceEvent metadata:clientMetadata andCompletionHandlingBlock:nil];
 }
 
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent metadata:(NSDictionary *)clientMetadata
-andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
++ (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
+                   metadata:(NSDictionary *)clientMetadata
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
     [self subscribeOnChannels:@[channel] withPresenceEvent:withPresenceEvent metadata:clientMetadata
    andCompletionHandlingBlock:handlerBlock];
@@ -1535,16 +1541,16 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 + (void)subscribeOnChannels:(NSArray *)channels
 withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
-    [self subscribeOnChannels:channels metadata:nil withCompletionHandlingBlock:handlerBlock];
+    [self subscribeOnChannels:channels withMetadata:nil andCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)subscribeOnChannels:(NSArray *)channels metadata:(NSDictionary *)clientMetadata {
++ (void)subscribeOnChannels:(NSArray *)channels withMetadata:(NSDictionary *)clientMetadata {
 
-    [self subscribeOnChannels:channels metadata:clientMetadata withCompletionHandlingBlock:nil];
+    [self subscribeOnChannels:channels withMetadata:clientMetadata andCompletionHandlingBlock:nil];
 }
 
-+ (void)subscribeOnChannels:(NSArray *)channels metadata:(NSDictionary *)clientMetadata
-withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
++ (void)subscribeOnChannels:(NSArray *)channels withMetadata:(NSDictionary *)clientMetadata
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
     [self subscribeOnChannels:channels withPresenceEvent:YES metadata:clientMetadata andCompletionHandlingBlock:handlerBlock];
 }
@@ -3089,13 +3095,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                     andCompletionBlock:handleBlock];
 }
 
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired clientMetadata:(BOOL)shouldFetchClientMetadata {
++ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
+                                      clientMetadata:(BOOL)shouldFetchClientMetadata {
 
     [self requestParticipantsListWithClientIdentifiers:isClientIdentifiersRequired clientMetadata:shouldFetchClientMetadata
                                     andCompletionBlock:nil];
 }
 
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired clientMetadata:(BOOL)shouldFetchClientMetadata
++ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
+                                      clientMetadata:(BOOL)shouldFetchClientMetadata
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
 
     [self requestParticipantsListForChannel:nil clientIdentifiersRequired:isClientIdentifiersRequired
@@ -3112,13 +3120,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self requestParticipantsListForChannel:channel clientIdentifiersRequired:YES withCompletionBlock:handleBlock];
 }
 
-+ (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired {
++ (void)requestParticipantsListForChannel:(PNChannel *)channel
+                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired {
 
     [self requestParticipantsListForChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired
                         withCompletionBlock:nil];
 }
 
-+ (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
++ (void)requestParticipantsListForChannel:(PNChannel *)channel
+                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
 
     [self requestParticipantsListForChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired

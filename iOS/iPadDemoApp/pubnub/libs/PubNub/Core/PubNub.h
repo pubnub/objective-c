@@ -800,8 +800,9 @@
 
  @since 3.6.0
  */
-+ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata forChannel:(PNChannel *)channel
-  witCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock;
++ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata
+                                                        forChannel:(PNChannel *)channel
+                                       withCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock;
 
 
 #pragma mark - Channels subscription management
@@ -1102,7 +1103,7 @@
  [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
  [PubNub connect];
  [PubNub subscribeOnChannel:[PNChannel channelsWithName:@"iosdev"]
-                   metadata:@{"firstName":"John", "lastName":"Appleseed", "age":240}];
+               withMetadata:@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}];
  @endcode
 
  And handle it with delegates:
@@ -1182,7 +1183,7 @@
 
  @see +subscribeOnChannel:withCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel metadata:(NSDictionary *)clientMetadata;
++ (void)subscribeOnChannel:(PNChannel *)channel withMetadata:(NSDictionary *)clientMetadata;
 
 /**
  Subscribe client to one more channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on which
@@ -1190,7 +1191,7 @@
 
  @code
  @endcode
- This method extends \a +subscribeOnChannel:metadata: and allow to specify subscription process state change handler
+ This method extends \a +subscribeOnChannel:withMetadata: and allow to specify subscription process state change handler
  block.
 
  @code
@@ -1201,8 +1202,8 @@
  [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
  [PubNub connect];
  [PubNub subscribeOnChannel:[PNChannel channelsWithName:@"iosdev"]
-     metadata:@{"firstName":"John", "lastName":"Appleseed", "age":240}
-  withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+               withMetadata:@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}
+ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 
       switch (state) {
           case PNSubscriptionProcessNotSubscribedState:
@@ -1309,8 +1310,8 @@
 
  @sse +subscribeOnChannel:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel metadata:(NSDictionary *)clientMetadata
-        withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void) subscribeOnChannel:(PNChannel *)channel withMetadata:(NSDictionary *)clientMetadata
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 /**
  Subscribe client to one more channel.
@@ -1546,7 +1547,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  [PubNub connect];
  [PubNub subscribeOnChannel:[PNChannel channelsWithName:@"macosdev"]];
  [PubNub subscribeOnChannel:[PNChannel channelsWithName:@"iosdev"] withPresenceEvent:NO
-     metadata:@{"firstName":"John", "lastName":"Appleseed", "age":240}];
+     metadata:@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}];
  @endcode
 
  And handle it with delegates:
@@ -1629,7 +1630,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannel:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent metadata:(NSDictionary *)clientMetadata;
++ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
+                  metadata:(NSDictionary *)clientMetadata;
 
 /**
  Subscribe client to one more channel.
@@ -1648,8 +1650,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  [PubNub connect];
  [PubNub subscribeOnChannel:[PNChannel channelsWithName:@"macosdev"]];
  [PubNub subscribeOnChannel:[PNChannel channelsWithName:@"iosdev"] withPresenceEvent:YES
-                   metadata:@{"firstName":"John", "lastName":"Appleseed", "age":240}
-  withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+                   metadata:@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}
+ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 
       switch (state) {
           case PNSubscriptionProcessNotSubscribedState:
@@ -1762,8 +1764,9 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannel:withPresenceEvent:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent metadata:(NSDictionary *)clientMetadata
-andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
+                   metadata:(NSDictionary *)clientMetadata
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence to channels on which
@@ -1978,7 +1981,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
  [PubNub connect];
  [PubNub subscribeOnChannels:[PNChannel channelsWithNames:@[@"iosdev", @"macosdev"]]
-                    metadata:@{"firstName":"John", "lastName":"Appleseed", "age":240}];
+                withMetadata:@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}];
  @endcode
 
  And handle it with delegates:
@@ -2058,7 +2061,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannels:withCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels metadata:(NSDictionary *)clientMetadata;
++ (void)subscribeOnChannels:(NSArray *)channels withMetadata:(NSDictionary *)clientMetadata;
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels
@@ -2066,7 +2069,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @code
  @endcode
- This method extends \a +subscribeOnChannels:metadata: and allow to specify subscription process state change handler block.
+ This method extends \a +subscribeOnChannels:withMetadata: and allow to specify subscription process state change handler block.
 
  @code
  @endcode
@@ -2076,8 +2079,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
  [PubNub connect];
  [PubNub subscribeOnChannels:[PNChannel channelsWithNames:@[@"iosdev", @"macosdev"]]
-                    metadata:@{"firstName":"John", "lastName":"Appleseed", "age":240}
-  withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+                withMetadata:@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}
+  andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 
       switch (state) {
           case PNSubscriptionProcessNotSubscribedState:
@@ -2187,8 +2190,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannels:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels metadata:(NSDictionary *)clientMetadata
-withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void)subscribeOnChannels:(NSArray *)channels withMetadata:(NSDictionary *)clientMetadata
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 /**
  Subscribe client to the set of new channels.
@@ -2424,7 +2427,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  [PubNub connect];
  [PubNub subscribeOnChannel:[PNChannel channelsWithName:@"pubnub"]];
  [PubNub subscribeOnChannels:[PNChannel channelsWithNames:@[@"iosdev", @"macosdev"]] withPresenceEvent:YES
-                    metadata:@{"firstName":"John", "lastName":"Appleseed", "age":240}];
+                    metadata:@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}];
  @endcode
 
  And handle it with delegates:
@@ -2526,8 +2529,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  [PubNub connect];
  [PubNub subscribeOnChannel:[PNChannel channelsWithName:@"pubnub"]];
  [PubNub subscribeOnChannels:[PNChannel channelsWithNames:@[@"iosdev", @"macosdev"]] withPresenceEvent:YES
-                    metadata:@{"firstName":"John", "lastName":"Appleseed", "age":240}
-  withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+                    metadata:@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}
+  andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 
       switch (state) {
           case PNSubscriptionProcessNotSubscribedState:
@@ -5623,7 +5626,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow message posting to \a 'iosdev' channel for \b 10 minutes. 
- But despite tha fact that \a 'iosdev' channel access rights allow only subscription, \b PubNub client allowed to post 
+ But despite the fact that \a 'iosdev' channel access rights allow only subscription, \b PubNub client allowed to post
  messages to any channels because of upper-layer configuration (\a 'application' access level allow message posting to any 
  channels for \b 10 minutes).
 
@@ -5742,7 +5745,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow message posting to \a 'iosdev' channel for \b 10 minutes. 
- But despite tha fact that \a 'iosdev' channel access rights allow only subscription, \b PubNub client allowed to post 
+ But despite the fact that \a 'iosdev' channel access rights allow only subscription, \b PubNub client allowed to post
  messages to any channels because of upper-layer configuration (\a 'application' access level allow message posting to any 
  channels for \b 10 minutes).
 
@@ -5849,8 +5852,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow message posting for client with \a 'spectator' authorization key 
- into \a 'iosdev' channel for \b 10 minutes. But despite tha fact that \a 'iosdev' channel access rights allow only subscription for \a 'spectator', 
- \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'channel' access level allow message
+ into \a 'iosdev' channel for \b 10 minutes. But despite the fact that \a 'iosdev' channel access rights allow only
+ subscription for \a 'spectator', \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'channel' access level allow message
  posting to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -5974,8 +5977,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow message posting for client with \a 'spectator' authorization key 
- into \a 'iosdev' channel for \b 10 minutes. But despite tha fact that \a 'iosdev' channel access rights allow only subscription for \a 'spectator', 
- \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'channel' access level allow message
+ into \a 'iosdev' channel for \b 10 minutes. But despite the fact that \a 'iosdev' channel access rights allow only
+ subscription for \a 'spectator', \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'channel' access level allow message
  posting to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -6087,8 +6090,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow message posting to \a 'iosdev', \a 'androiddev' and \a 'macosdev' channels
- for \b 10 minutes. But despite tha fact that \a 'iosdev', \a 'androiddev' and \a 'macosdev' channels access rights allow only subscription,
- \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'application' access level allow message 
+ for \b 10 minutes. But despite the fact that \a 'iosdev', \a 'androiddev' and \a 'macosdev' channels access rights
+ allow only subscription, \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'application' access level allow message
  posting to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -6206,8 +6209,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow message posting to \a 'iosdev', \a 'androiddev' and \a 'macosdev' channels
- for \b 10 minutes. But despite tha fact that \a 'iosdev', \a 'androiddev' and \a 'macosdev' channels access rights allow only subscription,
- \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'application' access level allow message 
+ for \b 10 minutes. But despite the fact that \a 'iosdev', \a 'androiddev' and \a 'macosdev' channels access rights
+ allow only subscription, \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'application' access level allow message
  posting to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -6313,8 +6316,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow message posting for clients with \a 'spectator' and \a 'visitor' 
- authorization keys into \a 'iosdev' channel for \b 10 minutes. But despite tha fact that \a 'iosdev' channel access rights allow 
- only subscription for \a 'spectator' and \a 'visitor', \b PubNub client allowed to post messages to any channels because of upper-layer 
+ authorization keys into \a 'iosdev' channel for \b 10 minutes. But despite the fact that \a 'iosdev' channel access
+ rights allow only subscription for \a 'spectator' and \a 'visitor', \b PubNub client allowed to post messages to any channels because of upper-layer
  configuration (\a 'channel' access level allow message posting to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -6438,8 +6441,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
  
  Code above configure access rights in a way, which won't allow message posting for clients with \a 'spectator' and \a 'visitor'
- authorization keys into \a 'iosdev' channel for \b 10 minutes. But despite tha fact that \a 'iosdev' channel access rights allow
- only subscription for \a 'spectator' and \a 'visitor', \b PubNub client allowed to post messages to any channels because of upper-layer
+ authorization keys into \a 'iosdev' channel for \b 10 minutes. But despite the fact that \a 'iosdev' channel access
+ rights allow only subscription for \a 'spectator' and \a 'visitor', \b PubNub client allowed to post messages to any channels because of upper-layer
  configuration (\a 'channel' access level allow message posting to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -6551,8 +6554,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow subscription to \a 'iosdev' channel for \b 10 minutes. 
- But despite tha fact that \a 'iosdev' channel access rights allow only message posting, \b PubNub client allowed to post 
- subscribe to any channels because of upper-layer configuration (\a 'application' access level allow subscription
+ But despite the fact that \a 'iosdev' channel access rights allow only message posting,
+ \b PubNub client allowed to post subscribe to any channels because of upper-layer configuration (\a 'application' access level allow subscription
  to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -6670,7 +6673,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow subscription to \a 'iosdev' channel for \b 10 minutes. 
- But despite tha fact that \a 'iosdev' channel access rights allow only message posting, \b PubNub client allowed to post 
+ But despite the fact that \a 'iosdev' channel access rights allow only message posting, \b PubNub client allowed to post
  subscribe to any channels because of upper-layer configuration (\a 'application' access level allow subscription
  to any channels for \b 10 minutes).
 
@@ -6782,8 +6785,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow subscription to \a 'iosdev', \a 'androiddev' and \a 'macosdev' channels
- for \b 10 minutes. But despite tha fact that\a 'iosdev', \a 'androiddev' and \a 'macosdev' channels access rights allow only message posting,
- \b PubNub client allowed to post subscribe to any channels because of upper-layer configuration (\a 'application' access level allow subscription
+ for \b 10 minutes. But despite the fact that\a 'iosdev', \a 'androiddev' and \a 'macosdev' channels access rights
+ allow only message posting, \b PubNub client allowed to post subscribe to any channels because of upper-layer configuration (\a 'application' access level allow subscription
  to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -6901,8 +6904,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
 
  Code above configure access rights in a way, which won't allow subscription to \a 'iosdev', \a 'androiddev' and \a 'macosdev' channels
- for \b 10 minutes. But despite tha fact that\a 'iosdev', \a 'androiddev' and \a 'macosdev' channels access rights allow only message posting,
- \b PubNub client allowed to post subscribe to any channels because of upper-layer configuration (\a 'application' access level allow subscription
+ for \b 10 minutes. But despite the fact that\a 'iosdev', \a 'androiddev' and \a 'macosdev' channels access rights
+ allow only message posting, \b PubNub client allowed to post subscribe to any channels because of upper-layer configuration (\a 'application' access level allow subscription
  to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -7008,9 +7011,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
  
  Code above configure access rights in a way, which won't allow subscription on \a 'iosdev' channel for clients with \a 'spectator' and \a 'visitor'
- authorization keys for \b 10 minutes. But despite tha fact that \a 'iosdev' channel access rights allow
- only subscription for \a 'spectator' and \a 'visitor', \b PubNub client allowed to post messages to any channels because of upper-layer
- configuration (\a 'channel' access level allow message posting to any channels for \b 10 minutes).
+ authorization keys for \b 10 minutes. But despite the fact that \a 'iosdev' channel access rights allow only subscription for \a 'spectator' and \a 'visitor', \b PubNub client allowed to post messages to any channels because of upper-layer configuration (\a 'channel' access level allow message posting to any channels for \b 10 minutes).
 
  And handle it with delegates:
  @code
@@ -7140,8 +7141,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
  @endcode
  
  Code above configure access rights in a way, which won't allow message posting for clients with \a 'spectator' and \a 'visitor'
- authorization keys into \a 'iosdev' channel for \b 10 minutes. But despite tha fact that \a 'iosdev' channel access rights allow
- only subscription for \a 'spectator' and \a 'visitor', \b PubNub client allowed to post messages to any channels because of upper-layer
+ authorization keys into \a 'iosdev' channel for \b 10 minutes. But despite the fact that \a 'iosdev' channel access
+ rights allow only subscription for \a 'spectator' and \a 'visitor', \b PubNub client allowed to post messages to any channels because of upper-layer
  configuration (\a 'channel' access level allow message posting to any channels for \b 10 minutes).
 
  And handle it with delegates:
@@ -9455,7 +9456,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
  @since 3.6.0
  */
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired clientMetadata:(BOOL)shouldFetchClientMetadata;
++ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
+                                      clientMetadata:(BOOL)shouldFetchClientMetadata;
 
 /**
  Request list of participants for all channels.
@@ -9489,7 +9491,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
  @since 3.6.0
  */
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired clientMetadata:(BOOL)shouldFetchClientMetadata
++ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
+                                      clientMetadata:(BOOL)shouldFetchClientMetadata
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
 /**
@@ -9547,7 +9550,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
  @since 3.6.0
  */
-+ (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired;
++ (void)requestParticipantsListForChannel:(PNChannel *)channel
+                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired;
 
 /**
  Request list of participants for specified channel. Depending on whether \a 'isIdentifiersListRequired' is set to \C
@@ -9584,7 +9588,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
  @since 3.6.0
  */
-+ (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
++ (void)requestParticipantsListForChannel:(PNChannel *)channel
+                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
 /**
