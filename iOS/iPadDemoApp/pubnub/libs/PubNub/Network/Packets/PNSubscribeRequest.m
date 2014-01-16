@@ -48,6 +48,11 @@
 // Stores reference on client identifier on the moment of request creation
 @property (nonatomic, copy) NSString *clientIdentifier;
 
+/**
+ Stores user-provided metadata which should be appended to the client subscription.
+ */
+@property (nonatomic, strong) NSDictionary *metadata;
+
 // Stores whether leave request was sent to subscribe on new channels or as result of user request
 @property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;
 
@@ -64,24 +69,26 @@
 
 #pragma mark - Class methods
 
-+ (PNSubscribeRequest *)subscribeRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest {
++ (PNSubscribeRequest *)subscribeRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest
+                                      withMetadata:(NSDictionary *)metadata {
     
-    return [self subscribeRequestForChannels:@[channel] byUserRequest:isSubscribingByUserRequest];
+    return [self subscribeRequestForChannels:@[channel] byUserRequest:isSubscribingByUserRequest withMetadata:metadata];
 }
 
-+ (PNSubscribeRequest *)subscribeRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest {
++ (PNSubscribeRequest *)subscribeRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest
+                                      withMetadata:(NSDictionary *)metadata {
     
-    return [[[self class] alloc] initForChannels:channels byUserRequest:isSubscribingByUserRequest];
+    return [[[self class] alloc] initForChannels:channels byUserRequest:isSubscribingByUserRequest withMetadata:metadata];
 }
 
 #pragma mark - Instance methods
 
-- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest {
+- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest withMetadata:(NSDictionary *)metadata {
     
-    return [self initForChannels:@[channel] byUserRequest:isSubscribingByUserRequest];
+    return [self initForChannels:@[channel] byUserRequest:isSubscribingByUserRequest withMetadata:metadata];
 }
 
-- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest {
+- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest withMetadata:(NSDictionary *)metadata {
     
     // Check whether initialization successful or not
     if((self = [super init])) {
@@ -89,6 +96,7 @@
         self.sendingByUserRequest = isSubscribingByUserRequest;
         self.channels = [NSArray arrayWithArray:channels];
         self.clientIdentifier = [PubNub escapedClientIdentifier];
+        self.metadata = metadata;
 
         
         // Retrieve largest update time token from set of channels (sorting to make larger token to be at
@@ -170,15 +178,23 @@
 }
 
 - (NSString *)resourcePath {
-    
-    return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@%@",
-            kPNRequestAPIVersionPrefix,
-            [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-            [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-            [self callbackMethodName],
-            self.shortIdentifier,
-            self.updateTimeToken,
-            self.clientIdentifier,
+
+    NSString *pnexpiresValue = @"";
+    if ([PubNub sharedInstance].configuration.presenceExpirationTimeout > 0.0f && [self isInitialSubscription]) {
+
+        pnexpiresValue = [NSString stringWithFormat:@"&pnexpires=%d",
+                          (int)[PubNub sharedInstance].configuration.presenceExpirationTimeout];
+    }
+    NSString *metadata = @"";
+    if (self.metadata) {
+
+        metadata = [NSString stringWithFormat:@"&metadata=%@",
+                        [[PNJSONSerialization stringFromJSONObject:self.metadata] percentEscapedString]];
+    }
+    return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@",
+            kPNRequestAPIVersionPrefix, [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+            [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","], [self callbackMethodName],
+            self.shortIdentifier, self.updateTimeToken, self.clientIdentifier, pnexpiresValue, metadata,
 			([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 

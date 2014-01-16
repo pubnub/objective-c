@@ -21,6 +21,8 @@
 #import "PNConfiguration.h"
 #import "PNNotifications.h"
 #import "PNPresenceEvent.h"
+#import "PNWhereNow.h"
+#import "PNHereNow.h"
 
 #import "NSString+PNAddition.h"
 #import "NSData+PNAdditions.h"

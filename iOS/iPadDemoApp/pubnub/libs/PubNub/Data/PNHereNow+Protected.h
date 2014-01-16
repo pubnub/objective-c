@@ -1,22 +1,25 @@
-//
-//  PNHereNow+Protected.h
-//  pubnub
-//
-//  This header file used by library internal
-//  components which require to access to some
-//  methods and properties which shouldn't be
-//  visible to other application components
-//
-//  Created by Sergey Mamontov.
-//
-//
+/**
+ Extending \b PNHereNow class with properties which can be used internally by \b PubNub client.
+
+ @author Sergey Mamontov
+ @version 3.4.0
+ @copyright © 2009-13 PubNub Inc.
+ */
 
 #import "PNHereNow.h"
 
 
-#pragma mark Private interface methods
+#pragma mark Externs
 
-@interface PNHereNow (Protected)
+/**
+ Used for \b PNClient instances in case if client identifier is unknown.
+ */
+NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
+
+
+#pragma mark - Private interface methods
+
+@interface PNHereNow ()
 
 
 #pragma mark - Properties
