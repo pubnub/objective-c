@@ -14,7 +14,30 @@
 #import "PNMessage.h"
 
 
-#pragma mark Class forward
+#pragma mark Struct
+
+struct PNMessageDataKeysStruct {
+
+    /**
+     Stores key under which message will be encoded.
+     */
+    __unsafe_unretained NSString *message;
+
+    /**
+     Stores key under which channel name will be encoded.
+     */
+    __unsafe_unretained NSString *channel;
+
+    /**
+     Stores key under which message receive will be encoded.
+     */
+    __unsafe_unretained NSString *date;
+};
+
+extern struct PNMessageDataKeysStruct PNMessageDataKeys;
+
+
+#pragma mark - Class forward
 
 @class PNChannel, PNDate;
 
