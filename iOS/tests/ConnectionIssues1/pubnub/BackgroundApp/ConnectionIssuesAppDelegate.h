@@ -14,6 +14,13 @@
 	NSDate *startHistory;
 	NSDate *startTimeToken;
 	float delta;
+
+	BOOL isPNSubscriptionProcessWillRestoreStateObserver;
+	BOOL isPNSubscriptionProcessRestoredStateObserver;
+	BOOL isWillRestoreSubscriptionOnChannelsDelegate;
+	BOOL isDidRestoreSubscriptionOnChannelsDelegate;
+	BOOL isPNClientSubscriptionWillRestoreNotification;
+	BOOL isPNClientSubscriptionDidRestoreNotification;
 }
 
 @property (nonatomic, strong) UIWindow *window;
