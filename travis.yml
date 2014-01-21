@@ -1,0 +1,10 @@
+before_install:
+ - sudo systemsetup -settimezone Europe/Zaporozhye
+
+language: objective-c
+script: xcodebuild test -project iOS/tests/iOSUnitTests/pubnub.xcodeproj -scheme pubnubTestsDebug -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+
+# whitelist
+branches:
+only:
+- bots
