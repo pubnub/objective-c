@@ -22,12 +22,6 @@
 #endif
 
 
-#pragma mark Static
-
-// Stores default access rights grant period
-static NSInteger const kPNDefaultGrantPeriod = 5;
-
-
 #pragma mark - Private interface declaration
 
 @interface PNChangeAccessRightsRequest ()
