@@ -170,7 +170,7 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     
     NSMutableArray *dataTree = [NSMutableArray array];
     
-    NSArray *channelAccessRightsInformation = [self.collection accessRightsInformationForAllChannels];
+    NSArray *channelAccessRightsInformationList = [self.collection accessRightsInformationForAllChannels];
     NSArray *usersAccessRightsInformation = [self.collection accessRightsInformationForAllClientAuthorizationKeys];
     if (self.collection.level == PNApplicationAccessRightsLevel) {
         
@@ -186,10 +186,10 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     }
     if (self.collection.level != PNUserAccessRightsLevel) {
         
-        if ([channelAccessRightsInformation count]) {
+        if ([channelAccessRightsInformationList count]) {
             
             NSMutableArray *sectionData = [NSMutableArray array];
-            [channelAccessRightsInformation enumerateObjectsUsingBlock:^(PNAccessRightsInformation *channelAccessRightsInformation,
+            [channelAccessRightsInformationList enumerateObjectsUsingBlock:^(PNAccessRightsInformation *channelAccessRightsInformation,
                                                                          NSUInteger channelAccessRightsInformationIdx,
                                                                          BOOL *channelAccessRightsInformationEnumeratorStop) {
                 [sectionData addObject:@{
