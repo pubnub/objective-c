@@ -70,7 +70,7 @@ static NSInteger const kPNDefaultGrantPeriod = 5;
 + (PNChangeAccessRightsRequest *)changeAccessRightsRequestForChannels:(NSArray *)channels
                                                          accessRights:(PNAccessRights)accessRights
                                                               clients:(NSArray *)clientsAuthorizationKey
-                                                            forPeriod:(NSUInteger)accessPeriod {
+                                                            forPeriod:(NSInteger)accessPeriod {
 
     return [[self alloc] initWithChannels:channels accessRights:accessRights clients:clientsAuthorizationKey
                                    period:accessPeriod];
@@ -80,7 +80,7 @@ static NSInteger const kPNDefaultGrantPeriod = 5;
 #pragma mark - Instance methods
 
 - (id)initWithChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                                                clients:(NSArray *)clientsAuthorizationKey period:(NSUInteger)accessPeriod {
+                                                clients:(NSArray *)clientsAuthorizationKey period:(NSInteger)accessPeriod {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {

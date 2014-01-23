@@ -3790,7 +3790,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'application' access level.
@@ -3818,7 +3818,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
 
 /**
  Grant \a 'read' access right on \a 'application' access level which will be valid for specified amount of time.
@@ -3907,7 +3907,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'application' access level.
@@ -3943,7 +3943,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
@@ -4012,7 +4012,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'application' access level.
@@ -4040,7 +4040,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
 
 /**
  Grant \a 'write' access right on \a 'application' access level which will be valid for specified amount of time.
@@ -4129,7 +4129,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'application' access level.
@@ -4165,7 +4165,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                          andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
@@ -4233,7 +4233,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @warning \a 'application' access level is top-layer of access tree. If any of child access levels (\a 'channel' or
  \a 'user') grant only one of \a 'read' or \a 'write' access rights, \b PubNub client will ignore them and provide
@@ -4258,7 +4258,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration;
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
 
 /**
  Grant \a 'read'/ \a 'write' access rights on \a 'application' access level which will be valid for specified amount of time.
@@ -4345,7 +4345,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @warning \a 'application' access level is top-layer of access tree. If any of child access levels (\a 'channel' or
  \a 'user') grant only one of \a 'read' or \a 'write' access rights, \b PubNub client will ignore them and provide
@@ -4378,7 +4378,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
@@ -4629,7 +4629,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'channel' access level.
@@ -4660,7 +4660,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForApplicationAtPeriod:
  */
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -4748,7 +4748,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'channel' access level.
@@ -4786,7 +4786,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForApplicationAtPeriod:
  */
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
@@ -4855,7 +4855,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'user' access level.
@@ -4891,7 +4891,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey;
 
 /**
@@ -4980,7 +4980,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'user' access level.
@@ -5023,7 +5023,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
@@ -5093,7 +5093,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'channel' access level.
@@ -5124,7 +5124,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForApplicationAtPeriod:
  */
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -5212,7 +5212,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'channel' access level.
@@ -5250,7 +5250,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForApplicationAtPeriod:
  */
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
@@ -5319,7 +5319,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'user' access level.
@@ -5355,7 +5355,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys;
 
 /**
@@ -5444,7 +5444,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'user' access level.
@@ -5487,7 +5487,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
@@ -5557,7 +5557,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'channel' access level.
@@ -5588,7 +5588,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantReadAccessRightForApplicationAtPeriod:
  */
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -5676,7 +5676,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'channel' access level.
@@ -5714,11 +5714,11 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantReadAccessRightForApplicationAtPeriod:
  */
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                  client:(NSString *)clientAuthorizationKey;
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                  client:(NSString *)clientAuthorizationKey
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
@@ -5788,7 +5788,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'channel' access level.
@@ -5819,7 +5819,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantReadAccessRightForApplicationAtPeriod:
  */
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -5907,7 +5907,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'channel' access level.
@@ -5945,7 +5945,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantReadAccessRightForApplicationAtPeriod:
  */
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
              withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
@@ -6014,7 +6014,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'user' access level.
@@ -6057,7 +6057,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantReadAccessRightForChannel:forPeriod:
  */
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys;
 
 /**
@@ -6146,7 +6146,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 5 minutes).
+ @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'user' access level.
@@ -6189,24 +6189,24 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +grantReadAccessRightForChannel:forPeriod:
  */
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
@@ -8214,7 +8214,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @endcode
  
  @param message
- Objecti which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray, 
+ Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
  \c NSDictionary .
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.

@@ -92,7 +92,7 @@
  @see \a -auditAccessRightsForChannels:clients:
  */
 - (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                    authorizationKeys:(NSArray *)authorizationKeys forPeriod:(NSUInteger)accessPeriod;
+                    authorizationKeys:(NSArray *)authorizationKeys forPeriod:(NSInteger)accessPeriod;
 
 /**
  Audit access rights for specific object (object defined by set of parameters).
