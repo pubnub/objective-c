@@ -791,26 +791,60 @@ If you have enabled the history feature for your account, the following methods 
 + (void)requestFullHistoryForChannel:(PNChannel *)channel 
                  withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
++ (void)requestFullHistoryForChannel:(PNChannel *)channel includingTimeToken:(BOOL)shouldIncludeTimeToken;
++ (void)requestFullHistoryForChannel:(PNChannel *)channel includingTimeToken:(BOOL)shouldIncludeTimeToken
+                 withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate;
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+              includingTimeToken:(BOOL)shouldIncludeTimeToken;
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+              includingTimeToken:(BOOL)shouldIncludeTimeToken 
+              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate;
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+              includingTimeToken:(BOOL)shouldIncludeTimeToken;
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+              includingTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit;
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+              includingTimeToken:(BOOL)shouldIncludeTimeToken;
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+              includingTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit;
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
            withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
+              includingTimeToken:(BOOL)shouldIncludeTimeToken;
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
+              includingTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit 
-+                 reverseHistory:(BOOL)shouldReverseMessageHistory;
+                  reverseHistory:(BOOL)shouldReverseMessageHistory;
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit 
-+                 reverseHistory:(BOOL)shouldReverseMessageHistory
+                  reverseHistory:(BOOL)shouldReverseMessageHistory
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken;
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
@@ -818,6 +852,12 @@ If you have enabled the history feature for your account, the following methods 
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
                 reverseHistory:(BOOL)shouldReverseMessageHistory  
            withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken;
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 ```
 
 The first two methods will receive the full message history for a specified channel.  ***Be careful, this could be a lot of messages, and consequently, a very long process!***
@@ -830,7 +870,7 @@ the **start** value will be omitted from the server request. Likewise with:
 ```objc
 [PubNub requestHistoryForChannel:myChannel from:myStartDate to:nil limit:100 reverseHistory:YES];
 ```
-the **end** value will be omitted from the server request.  Setting both start and end to nil:
+the **end** value will be omitted from the server request. Setting both start and end to nil:
 ```objc
 [PubNub requestHistoryForChannel:myChannel from:nil to:nil limit:100 reverseHistory:YES];
 ```
@@ -846,6 +886,28 @@ int limit = 34;
                   reverseHistory:NO withCompletionBlock:^(NSArray *messages, PNChannel *channel, 
                                                           PNDate *startDate, PNDate *endDate, PNError *error) {  
                                    
+  if (error == nil) {
+
+    // PubNub client successfully retrieved history for channel. 
+  }
+  else {
+
+      // PubNub did fail to retrieve history for specified channel and reason can be found in error instance.
+      //
+      // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+      // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+      // description for error). 'error.associatedObject' contains array of PNChannel ]instances from which PubNub client
+      // was unable to unsubscribe.
+  }
+}];
+```
+
+In the following example, we pull all messages from `iosdev` channel history:
+```objc
+[PubNub requestFullHistoryForChannel:[PNChannel channelWithName:@"iosdev"] includingTimeToken:YES
+                 withCompletionBlock:^(NSArray *messages, PNChannel *channel, PNDate *startDate, 
+                                       PNDate *endDate, PNError *error) {
+
   if (error == nil) {
 
     // PubNub client successfully retrieved history for channel. 
