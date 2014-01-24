@@ -35,22 +35,16 @@
                   Identifier = "CatchupTest">
                </Test>
                <Test
-                  Identifier = "BadJsonTest">
-               </Test>
-               <Test
                   Identifier = "ChannelLimitTest">
                </Test>
                <Test
-                  Identifier = "HowToTests">
-               </Test>
-               <Test
-                  Identifier = "Configuration">
-               </Test>
-               <Test
-                  Identifier = "OversizedJSON">
-               </Test>
-               <Test
                   Identifier = "PAMTest">
+               </Test>
+               <Test
+                  Identifier = "TimeOutTest">
+               </Test>
+               <Test
+                  Identifier = "TimeCommand">
                </Test>
             </SkippedTests>
          </TestableReference>
