@@ -102,6 +102,22 @@
 + (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate {
 
     PNMessage *message = [[self class] new];
+
+    // Check whether message body contains time token included from history API or not
+    if ([messageBody isKindOfClass:[NSDictionary class]]) {
+
+        if ([messageBody objectForKey:kPNMessageTimeTokenKey])  {
+
+            messagePostDate = [PNDate dateWithToken:[messageBody objectForKey:kPNMessageTimeTokenKey]];
+        }
+
+        // Extract real message
+        if ([messageBody objectForKey:kPNMessageTimeTokenKey]) {
+
+            messageBody = [messageBody valueForKey:kPNMessageBodyKey];
+        }
+    }
+
     message.message = [PubNub AESDecrypt:messageBody];
     message.channel = channel;
     message.receiveDate = messagePostDate;
