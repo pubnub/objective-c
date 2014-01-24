@@ -8,7 +8,6 @@
 
 #import "PNAppDelegate.h"
 #import "PNIdentificationViewController.h"
-#import "PNPrivateMacro.h"
 
 
 #pragma mark Private interface methods
