@@ -13,9 +13,9 @@
 	CLLocationManager *locationManager;
 	int currentInterval;
 	int countNewMessage;
+	BOOL isWillRestoreSubscriptionOnChannelsDelegate;
+	BOOL isDidRestoreSubscriptionOnChannelsDelegate;
 }
-
-
 
 #pragma mark Properties
 

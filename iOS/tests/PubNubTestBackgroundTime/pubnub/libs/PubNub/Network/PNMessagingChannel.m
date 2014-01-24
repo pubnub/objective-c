@@ -382,8 +382,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
                if (isSubscribeRequest) {
 
-                   NSString *timeToken = [PNChannel largestTimetokenFromChannels:((PNSubscribeRequest *)request).channels];
-                   isWaitingForCompletion = [timeToken isEqualToString:@"0"];
+                   isWaitingForCompletion = [(PNSubscribeRequest *)request isInitialSubscription];
                }
 
                // Clean up query (if request has been stored in it)
@@ -543,8 +542,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             request.closeConnection = NO;
         }
 
-        PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
-                                    BITS_LIST_TERMINATOR);
+        if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
+            
+            PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
+                      BITS_LIST_TERMINATOR);
+        }
 
         if (isLeavingByUserRequest) {
 
@@ -1726,9 +1728,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         self.restoringSubscriptionOnResume = YES;
 
         if ([self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self]) {
-
-            PNBitOff(&_messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
-            PNBitOn(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
+            
+            PNBitOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
+            PNBitOn(&_messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
         }
     }
 
@@ -1972,12 +1974,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
                 
                 // Check whether failed to subscribe on set of channels or not
-                if ([channelsForSubscription count]) {
+                if ([channelsForSubscription count] || PNBitIsOn(self.messagingState, PNMessagingChannelRestoringSubscription)) {
 
                     BOOL isInSequence = ([existingChannelsSet count] || [subscribeRequest.channelsForPresenceEnabling count] ||
                                          [subscribeRequest.channelsForPresenceDisabling count]);
                     
                     if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringSubscription)) {
+                        
+                        if (![channelsForSubscription count]) {
+                            
+                            channelsForSubscription = [NSMutableSet setWithArray:[self channelsWithOutPresenceFromList:[self.oldSubscribedChannelsSet allObjects]]];
+                        }
                         
                         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] RESTORED SUBSCRIPTION ON CHANNELS: %@\n(STATE: %d)",
                               self, channelsForSubscription, self.messagingState);
