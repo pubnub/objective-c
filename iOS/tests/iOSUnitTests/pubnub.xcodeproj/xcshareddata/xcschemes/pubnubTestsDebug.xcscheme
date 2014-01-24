@@ -41,9 +41,6 @@
                   Identifier = "TimeCommand/testHandleOriginLookup20">
                </Test>
                <Test
-                  Identifier = "TimeCommand">
-               </Test>
-               <Test
                   Identifier = "HowToTests/test20SubscribeOnChannels">
                </Test>
                <Test
@@ -59,22 +56,10 @@
                   Identifier = "HowToTests/test55RequestHistoryReverse">
                </Test>
                <Test
-                  Identifier = "W_ChaosTest">
-               </Test>
-               <Test
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
-                  Identifier = "SendBigMessage">
-               </Test>
-               <Test
-                  Identifier = "PAMTest">
-               </Test>
-               <Test
                   Identifier = "OversizedJSON">
-               </Test>
-               <Test
-                  Identifier = "TimeOutTest">
                </Test>
                <Test
                   Identifier = "ChannelLimitTest">
@@ -83,58 +68,10 @@
                   Identifier = "Configuration">
                </Test>
                <Test
-                  Identifier = "PAMTestError">
+                  Identifier = "PAMTest">
                </Test>
                <Test
-                  Identifier = "PNBaseRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNChannelConstructor">
-               </Test>
-               <Test
-                  Identifier = "PNConnectionChannelTest">
-               </Test>
-               <Test
-                  Identifier = "PNConnectionTest">
-               </Test>
-               <Test
-                  Identifier = "PNCryptoHelperTest">
-               </Test>
-               <Test
-                  Identifier = "PNCryptoTest">
-               </Test>
-               <Test
-                  Identifier = "PNHereNowRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNLatencyMeasureRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNLeaveRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNMessageHistoryRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNMessagePostRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNMessagingChannelTest">
-               </Test>
-               <Test
-                  Identifier = "PNReachabilityTest">
-               </Test>
-               <Test
-                  Identifier = "PNServiceChannelTest">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeUnsubscribeTest">
-               </Test>
-               <Test
-                  Identifier = "PNTimeTokenRequestTest">
+                  Identifier = "TimeOutTest">
                </Test>
             </SkippedTests>
          </TestableReference>

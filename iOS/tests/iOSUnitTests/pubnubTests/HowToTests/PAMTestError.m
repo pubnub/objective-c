@@ -55,7 +55,7 @@
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"ch1", @"ch2"]];
 	authorizationKey = [NSString stringWithFormat:@"a2", [NSDate date]];
-	timeout = 2;
+	timeout = 6;
 	timeoutHistory = 10;
 	timeoutNewMessage = 10;
 	indexMessage = 0;

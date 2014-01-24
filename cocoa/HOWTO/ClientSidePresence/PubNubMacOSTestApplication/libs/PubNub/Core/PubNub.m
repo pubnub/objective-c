@@ -37,9 +37,9 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.5.3";
-static NSString * const kPNCodebaseBranch = @"fix-t255";
-static NSString * const kPNCodeCommitIdentifier = @"df08e24ddbb8e76ef27365eed5ce0436822f5da7";
+static NSString * const kPNLibraryVersion = @"3.5.4";
+static NSString * const kPNCodebaseBranch = @"master";
+static NSString * const kPNCodeCommitIdentifier = @"11183e57fde39474f5e7ac719473702805fca0af";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -160,11 +160,13 @@ static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
  * from many places, use PNObservationCenter methods for this purpose.
  */
 + (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
+                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSInteger)accessPeriodDuration
           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
-+ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                                      clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
++ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels
+                                 accessRights:(PNAccessRights)accessRights
+                                      clients:(NSArray *)clientsAuthorizationKeys
+                                    forPeriod:(NSInteger)accessPeriodDuration
                   withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 + (void)auditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
@@ -1815,36 +1817,36 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 #pragma mark - PAM management
 
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantReadAccessRightForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
 }
 
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:nil accessRights:PNReadAccessRight clients:nil
                               forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantWriteAccessRightForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                          andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:nil accessRights:PNWriteAccessRight clients:nil
                               forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantAllAccessRightsForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:nil accessRights:(PNReadAccessRight | PNWriteAccessRight) clients:nil
@@ -1862,26 +1864,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self grantReadAccessRightForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
               withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey {
 
     [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
              withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1890,26 +1892,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
              withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantReadAccessRightForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
                                           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:channels accessRights:PNReadAccessRight clients:nil
                               forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys {
 
     [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
              withCompletionHandlingBlock:nil];
 
 }
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1918,26 +1920,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self grantWriteAccessRightForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
               withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                                                 client:(NSString *)clientAuthorizationKey {
 
     [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
               withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                  client:(NSString *)clientAuthorizationKey
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1946,26 +1948,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
               withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantWriteAccessRightForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
              withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:channels accessRights:PNWriteAccessRight clients:nil
                               forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys {
 
     [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
               withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1974,26 +1976,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self grantAllAccessRightsForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
               withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey {
 
     [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
              withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -2002,26 +2004,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
              withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantAllAccessRightsForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:channels accessRights:(PNReadAccessRight | PNWriteAccessRight)
                                 clients:nil forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys {
 
     [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
              withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -2080,7 +2082,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
+                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSInteger)accessPeriodDuration
           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
     
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO CHANGE ACCESS RIGHTS (STATE: %@)",
@@ -2153,10 +2155,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
 }
 
-+ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels
-                                 accessRights:(PNAccessRights)accessRights
++ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
                                       clients:(NSArray *)clientsAuthorizationKeys
-                                    forPeriod:(NSUInteger)accessPeriodDuration
+                                    forPeriod:(NSInteger)accessPeriodDuration
                   withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
     
     SEL selector = @selector(changeAccessRightsForChannels:accessRights:clients:forPeriod:withCompletionHandlingBlock:);
@@ -2967,18 +2968,25 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     // Check whether user provided JSON string or not.
     if ([PNJSONSerialization isJSONString:object]) {
 
-        __block id decodedJSONObject = nil;
-        [PNJSONSerialization JSONObjectWithString:object
-                                  completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
+        if ([object isKindOfClass:[NSString class]]) {
+            
+            __block id decodedJSONObject = nil;
+            [PNJSONSerialization JSONObjectWithString:object
+                                      completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
 
                                       decodedJSONObject = result;
                                   }
                                        errorBlock:^(NSError *error) {
 
-                                           PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
-                                       }];
-
+                                               PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
+                                           }];
+            
         object = decodedJSONObject;
+        }
+        else {
+            
+            decryptedObject = object;
+        }
     }
 
     if ([PNCryptoHelper sharedInstance].isReady) {
@@ -4341,6 +4349,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 
                 NSInteger signedInteger = [(NSNumber *)parameter integerValue];
                 [methodInvocation setArgument:&signedInteger atIndex:parameterIndex];
+            }
+            else if (strcmp(parameterType, @encode(id)) == 0) {
+
+                [methodInvocation setArgument:&parameter atIndex:parameterIndex];
             }
         }
         else {

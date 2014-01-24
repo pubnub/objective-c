@@ -529,7 +529,8 @@
 #pragma mark - PAM manipulation methods
 
 - (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-        authorizationKeys:(NSArray *)authorizationKeys forPeriod:(NSUInteger)accessPeriod {
+                                                     authorizationKeys:(NSArray *)authorizationKeys
+                                                             forPeriod:(NSInteger)accessPeriod {
 
     [self scheduleRequest:[PNChangeAccessRightsRequest changeAccessRightsRequestForChannels:channels
                                                                                accessRights:accessRights

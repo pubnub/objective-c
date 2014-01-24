@@ -33,13 +33,13 @@
 + (PNChangeAccessRightsRequest *)changeAccessRightsRequestForChannels:(NSArray *)channels
                                                          accessRights:(PNAccessRights)accessRights
                                                               clients:(NSArray *)clientsAuthorizationKey
-                                                            forPeriod:(NSUInteger)accessPeriod;
+                                                            forPeriod:(NSInteger)accessPeriod;
 
 
 #pragma mark - Instance methods
 
 - (id)initWithChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-               clients:(NSArray *)clientsAuthorizationKey period:(NSUInteger)accessPeriod;
+               clients:(NSArray *)clientsAuthorizationKey period:(NSInteger)accessPeriod;
 
 #pragma mark -
 

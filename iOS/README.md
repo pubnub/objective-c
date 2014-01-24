@@ -1,4 +1,4 @@
-# PubNub 3.5.3 for iOS 5.1+ (iPhone, iPad, iPod)
+# PubNub 3.5.4 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -197,6 +197,12 @@ well as the PubNub-specific setup, along with the end product app available in [
 Then, watch the following in order:
 
 [1 Creating the App ID and PEM Cert File](https://vimeo.com/67419903)
+
+An easy way to generate the cert/keypair [can be found here](http://code.google.com/p/apns-php/wiki/CertificateCreation#Generate_a_Push_Certificate)
+
+Verify your cert was created correctly by running this command (replace with your key/cert name):
+
+    openssl s_client -connect gateway.sandbox.push.apple.com:2195 -cert server_certificates_bundle_sandbox.pem -key server_certificates_bundle_sandbox.pem
 
 [2 Create the Provisioning Profile](https://vimeo.com/67420404)
 
@@ -1060,66 +1066,66 @@ PubNub provides ability to control who has access and what he can do there. Ther
   
 PubNub client provide large set of methods which allow to specify any aspect of access rights in the way which will keep your code clean and small (a lot of designated methods).
 ```objc
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                          andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 + (void)revokeAccessRightsForApplication;
 + (void)revokeAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey;
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys;
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                  client:(NSString *)clientAuthorizationKey;
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                  client:(NSString *)clientAuthorizationKey
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
              withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys;
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration;
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys;
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
