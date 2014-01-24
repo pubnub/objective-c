@@ -1,3 +1,6 @@
+01-24-2014 - 3.5.4
+. fixes issues regarding sending/receiving data when going from foreground/background/foreground
+
 12-23-2013 - 3.5.3
 . added PAM Grant/Revoke functionality
 . added PAM features to demo app
