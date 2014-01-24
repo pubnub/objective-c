@@ -642,10 +642,23 @@
 				 STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
 			 }];
 
+
 			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
 				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-			//			while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
+
+			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
+			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+				state = messageSendingState;
+				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
+			}];
+
+			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
@@ -723,8 +736,8 @@
 				NSLog(@"requestHistoryForChannel error %@, start %@, end %@", error, startDate, endDate);
 			STAssertNil( error, @"requestHistoryForChannel error %@", error);
 		}
-		if( ch == nil )
-			STAssertNotNil( error, @"error cann't be nil");
+//		if( ch == nil )
+//			STAssertNotNil( error, @"error cann't be nil");
 	}];
 	//	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) || handleClientMessageHistoryProcess == NO)
 	//		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode

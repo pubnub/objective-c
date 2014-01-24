@@ -104,9 +104,6 @@
                   Identifier = "PNMessagePostRequestTest">
                </Test>
                <Test
-                  Identifier = "HowToTests">
-               </Test>
-               <Test
                   Identifier = "SendBigMessage">
                </Test>
                <Test
@@ -114,9 +111,6 @@
                </Test>
                <Test
                   Identifier = "PNCryptoTest">
-               </Test>
-               <Test
-                  Identifier = "PAMTest">
                </Test>
                <Test
                   Identifier = "OversizedJSON">
@@ -137,13 +131,16 @@
                   Identifier = "PNCryptoTest">
                </Test>
                <Test
-                  Identifier = "HowToTests">
-               </Test>
-               <Test
                   Identifier = "ChannelLimitTest">
                </Test>
                <Test
                   Identifier = "Configuration">
+               </Test>
+               <Test
+                  Identifier = "PAMTestError">
+               </Test>
+               <Test
+                  Identifier = "PAMTest">
                </Test>
             </SkippedTests>
          </TestableReference>

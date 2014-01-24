@@ -98,13 +98,17 @@
 
     if (self.preparedMessage == nil) {
 
-        NSString *message = self.message.message;
+        id message = self.message.message;
+        if ([message isKindOfClass:[NSNumber class]]) {
+
+            message = [(NSNumber *)message stringValue];
+        }
 
         // Retrieve reference on encrypted message (if possible)
         PNError *encryptionError;
         if ([PNCryptoHelper sharedInstance].isReady) {
 
-            message = [PubNub AESEncrypt:self.message.message error:&encryptionError];
+            message = [PubNub AESEncrypt:message error:&encryptionError];
             
             if (encryptionError != nil) {
 

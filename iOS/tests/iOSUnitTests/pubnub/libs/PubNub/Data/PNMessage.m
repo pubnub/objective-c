@@ -65,7 +65,14 @@
     BOOL isValidMessage = NO;
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
     object = object?[PNJSONSerialization stringFromJSONObject:object]:@"";
-    isValidMessage = [[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0;
+    if (![object isKindOfClass:[NSNumber class]]) {
+
+        isValidMessage = [[object stringByReplacingOccurrencesOfString:@" " withString:@""] length] > 0;
+    }
+    else {
+
+        isValidMessage = YES;
+    }
 #else
     isValidMessage = object != nil;
 #endif
