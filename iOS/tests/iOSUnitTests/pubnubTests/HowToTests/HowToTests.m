@@ -649,18 +649,18 @@
 			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
 
 
-			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
-			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-				state = messageSendingState;
-				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
-			}];
-
-			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
+//			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
+//			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+//				state = messageSendingState;
+//				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
+//			}];
+//
+//			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+//				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
+//				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+//			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+//									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+//			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
 		}
 	}
 }
@@ -753,16 +753,74 @@
 				STAssertNil( message.receiveDate, @"");
 		}
 	else {
-		float time = -9999;
+		float time = 0;
 		for( int i=0; i<history.count; i++ ) {
 			PNMessage *message = history[i];
 			STAssertNotNil( message.receiveDate, @"");
 			PNDate *date = message.receiveDate;
-			STAssertTrue( time < [date.date timeIntervalSinceNow], @"");
+			if( i<0 )
+				STAssertTrue( time < [date.date timeIntervalSinceNow], @"");
 			time = [date.date timeIntervalSinceNow];
 		}
 	}
 	return history;
+}
+
+-(NSArray*)requestFullHistoryForChannel:(PNChannel *)channel includingTimeToken:(BOOL)shouldIncludeTimeToken {
+	handleClientMessageHistoryProcess = NO;
+	__block BOOL isCompletionBlockCalled = NO;
+	NSDate *start = [NSDate date];
+	__block NSArray *history;
+	[PubNub requestFullHistoryForChannel:channel includingTimeToken:(BOOL)shouldIncludeTimeToken withCompletionBlock:^(NSArray *messages, PNChannel *ch, PNDate *fromDate, PNDate *toDate, PNError *error) {
+		isCompletionBlockCalled = YES;
+		history = messages;
+
+		NSTimeInterval interval = -[start timeIntervalSinceNow];
+		NSLog(@"requestHistoryForChannel interval %f", interval);
+		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+	}];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+		isCompletionBlockCalled == NO; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+	STAssertTrue( handleClientMessageHistoryProcess, @"notification not called");
+	if( shouldIncludeTimeToken == NO )
+		for( int i=0; i<history.count; i++ ) {
+			PNMessage *message = history[i];
+			if( shouldIncludeTimeToken == NO )
+				STAssertNil( message.receiveDate, @"");
+		}
+	else {
+		float time = 0;
+		for( int i=0; i<history.count; i++ ) {
+			PNMessage *message = history[i];
+			STAssertNotNil( message.receiveDate, @"");
+			PNDate *date = message.receiveDate;
+			NSLog(@"[date.date timeIntervalSinceNow] %f", [date.date timeIntervalSinceNow]);
+			if( i<0 )
+				STAssertTrue( time < [date.date timeIntervalSinceNow], @"");
+			time = [date.date timeIntervalSinceNow];
+		}
+	}
+	return history;
+}
+
+-(void)requestFullHistoryForChannel:(PNChannel *)channel {
+	handleClientMessageHistoryProcess = NO;
+	__block BOOL isCompletionBlockCalled = NO;
+	NSDate *start = [NSDate date];
+
+	[PubNub requestFullHistoryForChannel:channel withCompletionBlock:^(NSArray *messages, PNChannel *ch, PNDate *fromDate, PNDate *toDate, PNError *error) {
+		isCompletionBlockCalled = YES;
+		NSTimeInterval interval = -[start timeIntervalSinceNow];
+		NSLog(@"requestHistoryForChannel interval %f", interval);
+		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+	}];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+		isCompletionBlockCalled == NO; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+	STAssertTrue( handleClientMessageHistoryProcess, @"notification not called");
 }
 
 -(void)t50RequestHistoryForChannel {
@@ -778,6 +836,9 @@
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: endDate limit: limit reverseHistory: NO includingTimeToken: NO];
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: endDate limit: 0 reverseHistory: NO includingTimeToken: YES];
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: nil limit: 0 reverseHistory: NO includingTimeToken: NO];
+		[self requestFullHistoryForChannel: pnChannels[i]];
+		[self requestFullHistoryForChannel: pnChannels[i] includingTimeToken: YES];
+		[self requestFullHistoryForChannel: pnChannels[i] includingTimeToken: NO];
 	}
 }
 
@@ -828,8 +889,7 @@
 		NSArray *messages = [self requestHistoryForChannel: pnChannelsForReverse[i] from: nil to: nil limit: 0 reverseHistory: NO includingTimeToken: NO];
 		STAssertTrue( messages.count > 0, @"empty history");
 		NSArray *messagesReverse = [self requestHistoryForChannel: pnChannelsForReverse[i] from: [PNDate dateWithToken: timeMiddle] to: nil limit: NO reverseHistory: YES includingTimeToken: YES];
-		for( int j=0; j<messagesReverse.count-1; j++ )
-		{
+		for( int j=0; j<messagesReverse.count-1; j++ ) {
 			PNMessage *messageReverse = messagesReverse[j];
 			STAssertTrue( [(NSString*)(messageReverse.message) compare: messageMiddle] != NSOrderedDescending, @"invalid message order, %@ %@", messageReverse.message, messageMiddle);
 

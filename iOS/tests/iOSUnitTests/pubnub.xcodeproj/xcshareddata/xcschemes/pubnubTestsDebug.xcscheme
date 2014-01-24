@@ -85,6 +85,57 @@
                <Test
                   Identifier = "PAMTestError">
                </Test>
+               <Test
+                  Identifier = "PNBaseRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNChannelConstructor">
+               </Test>
+               <Test
+                  Identifier = "PNConnectionChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNConnectionTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoHelperTest">
+               </Test>
+               <Test
+                  Identifier = "PNCryptoTest">
+               </Test>
+               <Test
+                  Identifier = "PNHereNowRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNLatencyMeasureRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNLeaveRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessageHistoryRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagePostRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagingChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNReachabilityTest">
+               </Test>
+               <Test
+                  Identifier = "PNServiceChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeUnsubscribeTest">
+               </Test>
+               <Test
+                  Identifier = "PNTimeTokenRequestTest">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
