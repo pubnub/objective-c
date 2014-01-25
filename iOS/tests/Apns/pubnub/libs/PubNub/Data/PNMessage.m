@@ -45,6 +45,8 @@
 // (doesn't work for history, only for presence events)
 @property (nonatomic, strong) PNDate *receiveDate;
 
+@property (nonatomic, strong) PNDate *date;
+
 // Stores reference on timetoken when this message was received
 @property (nonatomic, strong) NSNumber *timeToken;
 
@@ -158,7 +160,7 @@
                                       NSStringFromClass([self class]),
                                       self,
                                       self.message,
-                                      self.receiveDate,
+                                      (self.receiveDate ? self.receiveDate : self.date),
                                       self.channel.name];
 }
 

@@ -17,10 +17,6 @@
 
 #import <Foundation/Foundation.h>
 
-#pragma mark Class forward
-
-@class PNChannel;
-
 
 @interface PNMessage : NSObject
 
@@ -37,6 +33,9 @@
 // Stores reference on date when this message was received
 // (doesn't work for history, only for presence events)
 @property (nonatomic, readonly, strong) PNDate *receiveDate;
+
+// Stores reference on date when this message has been sent to the target channel.
+@property (nonatomic, readonly, strong) PNDate *date;
 
 #pragma mark -
 
