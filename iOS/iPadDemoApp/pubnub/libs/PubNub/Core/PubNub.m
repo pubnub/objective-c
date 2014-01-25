@@ -37,8 +37,8 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.5.3";
-static NSString * const kPNCodebaseBranch = @"fix-zd3978";
+static NSString * const kPNLibraryVersion = @"3.5.4";
+static NSString * const kPNCodebaseBranch = @"feature-pt64287520";
 static NSString * const kPNCodeCommitIdentifier = @"9002434b2d7b85dad4fd426118281f3bbba6d5c4";
 
 // Stores reference on singleton PubNub instance
@@ -3912,14 +3912,24 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     //
 }
 
-- (void)connectionChannelDidResume:(PNConnectionChannel *)channel {
+- (void)connectionChannelDidResume:(PNConnectionChannel *)channel requireWarmUp:(BOOL)isWarmingUpRequired {
 
-    [self warmUpConnection:channel];
+    // Checking whether connection should be 'warmed up' to keep it open or not.
+    if (isWarmingUpRequired) {
+
+        [self warmUpConnection:channel];
+    }
 
     // Check whether on resume there is no async locking operation is running
     if (!self.asyncLockingOperationInProgress) {
 
         [self handleLockingOperationComplete:YES];
+    }
+
+    // Checking whether all communication channels connected or not
+    if ([self.messagingChannel isConnected] && [self.serviceChannel isConnected]) {
+
+        [self notifyDelegateAboutConnectionToOrigin:self.configuration.origin];
     }
 }
 
