@@ -54,7 +54,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
             self.channels = channels;
         }
 
-        self.accessPeriodDuration = accessPeriodDuration > 0 ? accessPeriodDuration : kPNDefaulfAccessPeriodDuration;
+        self.accessPeriodDuration = accessPeriodDuration >= 0 ? accessPeriodDuration : kPNDefaulfAccessPeriodDuration;
         if (self.rights == PNUnknownAccessRights) {
 
             self.accessPeriodDuration = 0;
