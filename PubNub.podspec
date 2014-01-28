@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'PubNub'
-  s.version      = '3.5.3'
+  s.version      = ‘3.5.4’
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'Sergey Mamontov' => 'support@pubnub.com',
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   }
   s.source = {
     :git => 'https://github.com/pubnub/objective-c.git',
-    :tag => 'v3.5.3'
+    :tag => 'v3.5.4’
   }
   
   # A list of file patterns which select the source files that should be
@@ -71,7 +71,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks
-Copyright (c) 2013 PubNub Inc.
+Copyright (c) 2014 PubNub Inc.
 http://www.pubnub.com/
 http://www.pubnub.com/terms
 LICENSE
