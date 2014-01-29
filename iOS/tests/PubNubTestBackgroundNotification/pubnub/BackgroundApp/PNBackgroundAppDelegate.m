@@ -28,6 +28,8 @@
 	currentInterval = 10;
 
 	[PubNub clientIdentifier];
+	isPNClientDidConnectToOriginNotification = YES;
+	isDidConnectToOrigin = YES;
 	[self connect];
 
     return YES;
@@ -39,15 +41,23 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	NSLog(@"applicationWillEnterForeground");
+	[self performSelector: @selector(openUrl) withObject: nil afterDelay: 20];
 }
 
 
 -(void)openUrl {
 	NSLog(@"openUrl with interval %d", currentInterval);
 	NSString *url = [NSString stringWithFormat: @"myappMediatorTimetoken://?returnToId=%@&afterSeconds=%d", @"myappTimetoken", currentInterval];
-	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: url]];
+
 	if( currentInterval < 15*60 )
 		currentInterval *= 2;
+	if( isPNClientDidConnectToOriginNotification == NO )
+		[self performSelector: @selector(selectorErrorNotificationConnect)];
+	if( isDidConnectToOrigin == NO )
+		[self performSelector: @selector(selectorErrorDidConnect)];
+	isPNClientDidConnectToOriginNotification = NO;
+	isDidConnectToOrigin = NO;
+	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: url]];
 }
 
 - (void)initializePubNubClient {
@@ -56,18 +66,8 @@
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
-	[notificationCenter addObserver:self
-						   selector:@selector(handleClientConnectionStateChange:)
-							   name:kPNClientDidConnectToOriginNotification
-							 object:nil];
-	[notificationCenter addObserver:self
-						   selector:@selector(handleClientConnectionStateChange:)
-							   name:kPNClientDidDisconnectFromOriginNotification
-							 object:nil];
-	[notificationCenter addObserver:self
-						   selector:@selector(handleClientConnectionStateChange:)
-							   name:kPNClientConnectionDidFailWithErrorNotification
-							 object:nil];
+	[notificationCenter addObserver:self selector:@selector(kPNClientDidConnectToOriginNotification:)
+							   name:kPNClientDidConnectToOriginNotification object:nil];
 
     // Subscribe for client connection state change (observe when client will be disconnected)
     [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
@@ -143,23 +143,8 @@
 - (void)connect {
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
-
-		PNChannel *pnChannel = [PNChannel channelWithName: [NSString stringWithFormat: @"%@", [NSDate date]]];
-
-		[PubNub subscribeOnChannels: @[pnChannel]
-		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-		 {
-
-			[PubNub sendMessage:@"Hello PubNub" toChannel:pnChannel
-										   withCompletionBlock:^(PNMessageState messageSendingState, id data)
-											{
-												if( messageSendingState == PNMessageSent )
-													[self performSelector: @selector(openUrl) withObject: nil afterDelay: 5.0];
-											}];
-
-		 }];
-
-    }
+		[self openUrl];
+	}
                          errorBlock:^(PNError *connectionError) {
 	 }];
 }
@@ -168,43 +153,14 @@
 	return NO;
 }
 
-- (NSNumber *)shouldRestoreSubscriptionFromLastTimeToken {
-    NSNumber *shouldRestoreSubscriptionFromLastTimeToken = @(YES);
-    NSString *lastTimeToken = @"0";
-
-    if ([[PubNub subscribedChannels] count] > 0) {
-
-        lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
-		self.lastClientIdentifier = [PubNub clientIdentifier];
-    }
-
-    NSLog( @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
-		  [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
-
-
-    return shouldRestoreSubscriptionFromLastTimeToken;
+-(void)kPNClientDidConnectToOriginNotification:(NSNotification*)notification {
+	NSLog(@"kPNClientDidConnectToOriginNotification %@", notification);
+	isPNClientDidConnectToOriginNotification = YES;
 }
 
-- (void)handleClientConnectionStateChange:(NSNotification *)notification {
-
-    // Default field values
-    BOOL connected = YES;
-    PNError *connectionError = nil;
-    NSString *origin = @"";
-
-    if([notification.name isEqualToString:kPNClientDidConnectToOriginNotification] ||
-       [notification.name isEqualToString:kPNClientDidDisconnectFromOriginNotification]) {
-
-        origin = (NSString *)notification.userInfo;
-        connected = [notification.name isEqualToString:kPNClientDidConnectToOriginNotification];
-    }
-    else if([notification.name isEqualToString:kPNClientConnectionDidFailWithErrorNotification]) {
-
-        connected = NO;
-        connectionError = (PNError *)notification.userInfo;
-    }
-
-    // Retrieving list of observers (including one time and persistent observers)
+- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
+	NSLog(@"didConnectToOrigin %@", origin);
+	isDidConnectToOrigin = YES;
 }
 
 
