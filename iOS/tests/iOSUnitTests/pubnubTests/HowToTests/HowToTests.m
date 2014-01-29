@@ -62,6 +62,8 @@
 
 	BOOL pNClientPresenceEnablingDidCompleteNotification;
 	BOOL pNClientPresenceDisablingDidCompleteNotification;
+
+	NSDate *dateMessage;
 }
 
 @property (nonatomic, retain) NSConditionLock *theLock;
@@ -392,7 +394,10 @@
 		STAssertTrue( message.date != nil, @"");
 		NSDate *date = [message.date date];
 		NSTimeInterval interval = -[date timeIntervalSinceNow];
-		STAssertTrue( interval < 0 && interval > - 200, @"invalid message.date - %f", interval);
+		STAssertTrue( interval < 200 && interval > - 200, @"invalid message.date - %f", interval);
+		if( dateMessage != nil )
+			STAssertTrue( [dateMessage compare: date] == NSOrderedAscending, @"invalid timetoken" );
+		dateMessage = date;
 	}
 }
 
