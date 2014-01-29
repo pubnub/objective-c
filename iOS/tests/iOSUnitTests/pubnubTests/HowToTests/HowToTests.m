@@ -395,6 +395,28 @@
 - (void)handleClientDidReceiveMessage:(NSNotification *)notification {
     PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientDidReceiveMessage: %@", notification);
 	handleClientDidReceiveMessage = YES;
+
+	PNMessage *message = (PNMessage*)notification.userInfo;
+
+	BOOL isWrite = [message writeToFileAtPath: @"/invalidPath/"];
+	STAssertFalse( isWrite, @"invalid result");
+	isWrite = [message writeToFileAtPath: @"/invalidPath/file.txt"];
+	STAssertFalse( isWrite, @"invalid result");
+
+	NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+	NSString *filePath = [documentsFolder stringByAppendingPathComponent:@"message.txt"];
+	isWrite = [message writeToFileAtPath: filePath];
+	STAssertTrue( isWrite, @"invalid result");
+
+	PNMessage *loadedMessage = [PNMessage messageFromFileAtPath: @"/invalidPath/file.txt"];
+	STAssertNil( loadedMessage, @"strange message");
+
+	loadedMessage = [PNMessage messageFromFileAtPath: filePath];
+	STAssertNotNil( loadedMessage, @"invalid message");
+	STAssertTrue( [loadedMessage.message isEqual: message.message], @"");
+	STAssertTrue( [loadedMessage.channel.name isEqualToString: message.channel.name], @"");
+	NSLog(@"dates\n%@\n\n%@", loadedMessage.receiveDate, message.receiveDate);
+	STAssertTrue( [loadedMessage.receiveDate.date isEqual: message.receiveDate.date], @"");
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
@@ -723,8 +745,8 @@
 				NSLog(@"requestHistoryForChannel error %@, start %@, end %@", error, startDate, endDate);
 			STAssertNil( error, @"requestHistoryForChannel error %@", error);
 		}
-		if( ch == nil )
-			STAssertNotNil( error, @"error cann't be nil");
+//		if( ch == nil )
+//			STAssertNotNil( error, @"error cann't be nil");
 	}];
 	//	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) || handleClientMessageHistoryProcess == NO)
 	//		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
