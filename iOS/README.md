@@ -258,83 +258,83 @@ You can use few class methods to intialise and update instance properties:
 3. Update the configuration instance using this next set of parameters:  
 
     1. Timeout after which the library will report any ***non-subscription-related*** request (here now, leave, message history, message post, time token) or execution failure.  
-```objc
-nonSubscriptionRequestTimeout  
-``` 
-        __Default:__ 15 seconds (_kPNNonSubscriptionRequestTimeout_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
-        
+        ```objc
+        nonSubscriptionRequestTimeout  
+        ```
+        __Default:__ 15 seconds (_kPNNonSubscriptionRequestTimeout_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))   
+
     2.  Timeout after which the library will report ***subscription-related*** request (subscribe on channel(s)) execution failure.
         The default configuration value is stored inside [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h) under __kPNSubscriptionRequestTimeout__ key.
-```objc
-subscriptionRequestTimeout  
-```
+        ```objc
+        subscriptionRequestTimeout  
+        ```
         __Default:__ 310 seconds (_kPNSubscriptionRequestTimeout_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))
         ***Please consult with PubNub support before setting this value lower than the default to avoid incurring additional charges.***
     
     3. Client will pass this value during subscription to inform it after which period of inactivity (when client will stop send ping to the server) it should mark client and __timed out__.
-```objc
-presenceExpirationTimeout
-```
+        ```objc
+        presenceExpirationTimeout
+        ```
         __Default:__ 0 seconds (_kPNPresenceExpirationTimeout_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h)) which will force server to use it's own timeout value.
 
     4. After experiencing network connectivity loss, if network access is restored, should the client reconnect to PubNub, or stay disconnected?
-```objc
-(getter = shouldAutoReconnectClient) autoReconnectClient  
-```
+        ```objc
+        (getter = shouldAutoReconnectClient) autoReconnectClient  
+        ```
         __Default:__ YES (_kPNShouldAutoReconnectClient_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
          
         This can also be controlled via returning __@(YES)__ or __@(NO)__ via the __shouldReconnectPubNubClient:__ delegate.
     
     5. If autoReconnectClient == YES, after experiencing network connectivity loss and subsequent reconnect, should the client resume (aka  "catchup") to where it left off before the disconnect?
-```objc
-(getter = shouldResubscribeOnConnectionRestore) resubscribeOnConnectionRestore
-```
+        ```objc
+        (getter = shouldResubscribeOnConnectionRestore) resubscribeOnConnectionRestore
+        ```
         __Default:__ YES (_kPNShouldResubscribeOnConnectionRestore_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
          
         This can also be controlled via returning __@(YES)__ or __@(NO)__ via the __shouldResubscribeOnConnectionRestore__ delegate.
     
     6. Upon connection restore, should the PubNub client "catch-up" to where it left off upon reconnecting?
-```objc
-(getter = shouldRestoreSubscriptionFromLastTimeToken) restoreSubscriptionFromLastTimeToken
-```
+        ```objc
+        (getter = shouldRestoreSubscriptionFromLastTimeToken) restoreSubscriptionFromLastTimeToken
+        ```
          __Default:__ YES (_kPNShouldRestoreSubscriptionFromLastTimeToken key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))
          
          This can also be controlled via returning __@(YES)__ or __@(NO)__ via the __shouldRestoreSubscriptionFromLastTimeToken__ delegate.
 
     7. Should the PubNub client establish the connection to PubNub using SSL?
-```objc
-(getter = shouldUseSecureConnection) useSecureConnection  
-```
+        ```objc
+        (getter = shouldUseSecureConnection) useSecureConnection  
+        ```
         __Default:__ YES (_kPNSecureConnectionRequired__ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
     8. When SSL is enabled, should PubNub client ignore all SSL certificate-handshake issues and still continue in SSL mode if it experiences issues handshaking across local proxies, firewalls, etc?
-```objc
-(getter = shouldReduceSecurityLevelOnError) reduceSecurityLevelOnError
-```
+        ```objc
+        (getter = shouldReduceSecurityLevelOnError) reduceSecurityLevelOnError
+        ```
         __Default:__ YES (_kPNShouldReduceSecurityLevelOnError_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
     9. When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
-```objc
-(getter = canIgnoreSecureConnectionRequirement) ignoreSecureConnectionRequirement
-```
+        ```objc
+        (getter = canIgnoreSecureConnectionRequirement) ignoreSecureConnectionRequirement
+        ```
         __Default:__ YES (_kPNCanIgnoreSecureConnectionRequirement_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
     10. To reduce incoming traffic client can be configured to accept compressed responses from server and this property specify on whether it should do so or not?  
-```objc
-(getter = shouldAcceptCompressedResponse) acceptCompressedResponse
-```
+        ```objc
+        (getter = shouldAcceptCompressedResponse) acceptCompressedResponse
+        ```
         __Default:__ YES (_kPNShouldAcceptCompressedResponse_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
 
     11. When this value is set client will enable encryption on published and received messages.
-```objc
-cipherKey
-```
+        ```objc
+        cipherKey
+        ```
         __Default:__ nil (_kPNCipherKey_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
 
     12. If client should work with PAM it should be configured with appropriate authorization key which will be used by PAM for access management.
-```objc
-authorizationKey
-```
+        ```objc
+        authorizationKey
+        ```
         __Default:__ nil (_kPNAuthorizationKey_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
   
 ***NOTE: If you are using the `+defaultConfiguration` method to create your configuration instance, then you will need to update:  _kPNPublishKey_, _kPNSubscriptionKey_ and _kPNOriginHost_ keys in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h).***
@@ -1956,30 +1956,32 @@ A full list of notifications are stored in [__PNNotifications.h__](iPadDemoApp/p
 
 Logging can be controlled via the following booleans:
 
-    #define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
+```c
+#define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
 
-    #define PNLOG_LOGGING_ENABLED 1
-    #define PNLOG_STORE_LOG_TO_FILE 1
-    #define PNLOG_GENERAL_LOGGING_ENABLED 1
-    #define PNLOG_DELEGATE_LOGGING_ENABLED 1
-    #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
-    #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
-    #define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 1
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 1
-    #define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
-    #define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
-    #define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
-    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 0
-    #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
-
+#define PNLOG_LOGGING_ENABLED 1
+#define PNLOG_STORE_LOG_TO_FILE 1
+#define PNLOG_GENERAL_LOGGING_ENABLED 1
+#define PNLOG_DELEGATE_LOGGING_ENABLED 1
+#define PNLOG_REACHABILITY_LOGGING_ENABLED 1
+#define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
+#define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
+#define PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED 1
+#define PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED 1
+#define PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED 1
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 0
+#define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
+```
 in [pubnub/libs/PubNub/Misc/PNMacro.h](pubnub/libs/PubNub/Misc/PNMacro.h#L37)
 
 To disable logging, set **PNLOG_LOGGING_ENABLED** to 0.
 
 By default, all non-http response logging is enabled to file with a 10MB, single archived file log rotation.
-
-    kPNLogMaximumLogFileSize (10 * 1024 * 1024)
+```c
+kPNLogMaximumLogFileSize (10 * 1024 * 1024)
+```
     
 In the above, 10 represents the size in MB. Set it to the size you desire.  
 
