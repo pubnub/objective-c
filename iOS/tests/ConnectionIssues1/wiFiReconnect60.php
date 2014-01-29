@@ -1,13 +1,8 @@
 <?
-	$command = " device=\"$(networksetup -listallhardwareports | grep -E '(Wi-Fi|AirPort)' -A 1 | grep -o \"en.\")\" \n ";
-	$command .= " val=off \n";
-	$command .= " networksetup -setairportpower \$device \$val \n";
+echo date('l jS \of F Y h:i:s A');
+echo "<br>";
 
-	$command .= " sleep 60 \n";
+$output = shell_exec( "./wiFiReconnect60.sh" );
+echo date('l jS \of F Y h:i:s A');
 
-	$command .= " val=on \n";
-	$command .= " networksetup -setairportpower \$device \$val \n";
-
-	$output = shell_exec( $command );
-	echo "$command";
 ?>

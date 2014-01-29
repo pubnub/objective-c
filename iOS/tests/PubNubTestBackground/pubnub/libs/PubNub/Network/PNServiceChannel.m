@@ -214,6 +214,11 @@
 
                 PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" MESSAGE HAS BEEN SENT. SERVICE RESPONSE: %@", parsedData);
 
+                // Storing message sent date.
+                if ([parsedData isKindOfClass:[PNOperationStatus class]]) {
+
+                    message.date = [PNDate dateWithToken:((PNOperationStatus *)parsedData).timeToken];
+                }
                 [self.serviceDelegate serviceChannel:self didSendMessage:message];
             }
         }
@@ -642,7 +647,8 @@
 #pragma mark - PAM manipulation methods
 
 - (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-        authorizationKeys:(NSArray *)authorizationKeys forPeriod:(NSUInteger)accessPeriod {
+                                                     authorizationKeys:(NSArray *)authorizationKeys
+                                                             forPeriod:(NSInteger)accessPeriod {
 
     [self scheduleRequest:[PNChangeAccessRightsRequest changeAccessRightsRequestForChannels:channels
                                                                                accessRights:accessRights

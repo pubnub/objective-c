@@ -54,7 +54,7 @@
  */
 + (PNAccessRightOptions *)accessRightOptionsForApplication:(NSString *)applicationKey withRights:(PNAccessRights)rights
                                                   channels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
-                                              accessPeriod:(NSUInteger)accessPeriodDuration;
+                                              accessPeriod:(NSInteger)accessPeriodDuration;
 
 
 #pragma mark - Instance methods
@@ -84,7 +84,7 @@
  request options.
  */
 - (id)initWithApplication:(NSString *)applicationKey withRights:(PNAccessRights)rights channels:(NSArray *)channels
-                  clients:(NSArray *)clientsAuthorizationKeys accessPeriod:(NSUInteger)accessPeriodDuration;
+                  clients:(NSArray *)clientsAuthorizationKeys accessPeriod:(NSInteger)accessPeriodDuration;
 
 #pragma mark -
 

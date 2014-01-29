@@ -8,7 +8,6 @@
 
 #import "PNAppDelegate.h"
 #import "PNIdentificationViewController.h"
-#import "PNPrivateMacro.h"
 
 
 #pragma mark Private interface methods
@@ -126,13 +125,13 @@
 
     [self initializePubNubClient];
 
+    
     return YES;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
     // You are free to register channel for push notifications right from this callback or store device push token in property and use it later.
-    [PubNub enablePushNotificationsOnChannel:[PNChannel channelWithName:@"iosdev"] withDevicePushToken:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {

@@ -422,8 +422,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
                if (isSubscribeRequest) {
 
-                   NSString *timeToken = [PNChannel largestTimetokenFromChannels:((PNSubscribeRequest *)request).channels];
-                   isWaitingForCompletion = [timeToken isEqualToString:@"0"];
+                   isWaitingForCompletion = [(PNSubscribeRequest *)request isInitialSubscription];
                }
 
                // Clean up query (if request has been stored in it)
