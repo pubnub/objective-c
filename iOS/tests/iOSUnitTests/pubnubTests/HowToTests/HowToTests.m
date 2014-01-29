@@ -62,6 +62,8 @@
 
 	BOOL pNClientPresenceEnablingDidCompleteNotification;
 	BOOL pNClientPresenceDisablingDidCompleteNotification;
+
+	NSDate *dateMessage;
 }
 
 @property (nonatomic, retain) NSConditionLock *theLock;
@@ -81,7 +83,7 @@
 
 	semaphoreNotification = dispatch_semaphore_create(0);
     [PubNub setDelegate:self];
-	pnChannels = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"wpdev", @"ubuntudev", @"1"]];
+	pnChannels = [PNChannel channelsWithNames:@[@"iosdev1", @"andoirddev1", @"wpdev1", @"ubuntudev1", @"11"]];
 	pnChannelsBad = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"wpdev", @"", @""]];
 	pnChannelsForReverse = [PNChannel channelsWithNames:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
 
@@ -385,7 +387,20 @@
 - (void)kPNClientDidSendMessageNotification:(NSNotification *)notification {
     PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientDidSendMessageNotification");
 	pNClientDidSendMessageNotification = YES;
+
+	PNMessage *message = (PNMessage*)notification.userInfo;
+	NSLog(@"message dates %@, %@", message.date, message.receiveDate);
+	if( [message.message isKindOfClass: [NSString class]] == YES && [message.message rangeOfString: @"Hello PubNub"].location != NSNotFound ) {
+		STAssertTrue( message.date != nil, @"");
+		NSDate *date = [message.date date];
+		NSTimeInterval interval = -[date timeIntervalSinceNow];
+		STAssertTrue( interval < 200 && interval > - 200, @"invalid message.date - %f", interval);
+		if( dateMessage != nil )
+			STAssertTrue( [dateMessage compare: date] == NSOrderedAscending, @"invalid timetoken" );
+		dateMessage = date;
+	}
 }
+
 - (void)kPNClientMessageSendingDidFailNotification:(NSNotification *)notification {
     PNLog(PNLogGeneralLevel, self, @"NSNotification kPNClientMessageSendingDidFailNotification: ");
 	pNClientMessageSendingDidFailNotification = YES;
@@ -395,6 +410,7 @@
 - (void)handleClientDidReceiveMessage:(NSNotification *)notification {
     PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientDidReceiveMessage: %@", notification);
 	handleClientDidReceiveMessage = YES;
+
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
@@ -421,6 +437,7 @@
     [super tearDown];
 
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver: self];
+	[NSThread sleepForTimeInterval:1.0];
 }
 
 #pragma mark - PubNub client delegate methods

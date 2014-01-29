@@ -46,9 +46,10 @@ static NSString * const kPNMessageTimeTokenKey = @"timetoken";
 // should be sent
 @property (nonatomic, strong) PNChannel *channel;
 
-// Stores reference on date when this message was received
-// (doesn't work for history, only for presence events)
+// Stores reference on date when this message was received (doesn't work for history, only for presence events).
 @property (nonatomic, strong) PNDate *receiveDate;
+
+@property (nonatomic, strong) PNDate *date;
 
 
 
