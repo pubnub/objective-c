@@ -510,8 +510,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 #else
     BOOL shouldSuspectWrongState = YES;
 #endif
-    
-    if(shouldSuspectWrongState) {
+
+    if(shouldSuspectWrongState && !self.isNotificationsSuspended) {
         
         // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
         // connection state in non appropriate state
@@ -608,6 +608,10 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             
             self.lookupStatus = PNReachabilityStatusNotReachable;
         }
+    }
+    else if (self.isNotificationsSuspended) {
+        
+        PNLog(PNLogReachabilityLevel, self, @"{UPLINK} Service state changed while suspended");
     }
 }
 
