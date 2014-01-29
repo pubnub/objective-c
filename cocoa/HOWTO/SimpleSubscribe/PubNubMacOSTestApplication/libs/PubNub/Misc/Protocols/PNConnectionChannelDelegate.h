@@ -86,7 +86,7 @@
  * Sent to the PubNub client when connection channel resumed it's operation
  * and ready to process requests
  */
-- (void)connectionChannelDidResume:(PNConnectionChannel *)channel;
+- (void)connectionChannelDidResume:(PNConnectionChannel *)channel requireWarmUp:(BOOL)isWarmingUpRequired;
 
 /**
  * Sent to the delegate each timer when connection channel want to ensure on whether it can connect or it is
