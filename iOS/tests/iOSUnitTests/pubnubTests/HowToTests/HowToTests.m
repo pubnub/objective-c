@@ -394,7 +394,7 @@
 		STAssertTrue( message.date != nil, @"");
 		NSDate *date = [message.date date];
 		NSTimeInterval interval = -[date timeIntervalSinceNow];
-		STAssertTrue( interval < 200 && interval > - 200, @"invalid message.date - %f", interval);
+		STAssertTrue( interval < 300 && interval > - 300, @"invalid message.date - %f", interval);
 		if( dateMessage != nil )
 			STAssertTrue( [dateMessage compare: date] == NSOrderedAscending, @"invalid timetoken" );
 		dateMessage = date;
@@ -411,6 +411,27 @@
     PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientDidReceiveMessage: %@", notification);
 	handleClientDidReceiveMessage = YES;
 
+	PNMessage *message = (PNMessage*)notification.userInfo;
+
+	BOOL isWrite = [message writeToFileAtPath: @"/invalidPath/"];
+	STAssertFalse( isWrite, @"invalid result");
+	isWrite = [message writeToFileAtPath: @"/invalidPath/file.txt"];
+	STAssertFalse( isWrite, @"invalid result");
+
+	NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+	NSString *filePath = [documentsFolder stringByAppendingPathComponent:@"message.txt"];
+	isWrite = [message writeToFileAtPath: filePath];
+	STAssertTrue( isWrite, @"invalid result");
+
+	PNMessage *loadedMessage = [PNMessage messageFromFileAtPath: @"/invalidPath/file.txt"];
+	STAssertNil( loadedMessage, @"strange message");
+
+	loadedMessage = [PNMessage messageFromFileAtPath: filePath];
+	STAssertNotNil( loadedMessage, @"invalid message");
+	STAssertTrue( [loadedMessage.message isEqual: message.message], @"");
+	STAssertTrue( [loadedMessage.channel.name isEqualToString: message.channel.name], @"");
+	NSLog(@"dates\n%@\n\n%@", loadedMessage.receiveDate, message.receiveDate);
+	STAssertTrue( [loadedMessage.receiveDate.date isEqual: message.receiveDate.date], @"");
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
@@ -679,19 +700,18 @@
 									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
 
+			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
+			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+				state = messageSendingState;
+				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
+			}];
 
-//			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
-//			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-//				state = messageSendingState;
-//				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
-//			}];
-//
-//			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-//				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
-//				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-//			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-//									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-//			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
+			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
 		}
 	}
 }
@@ -913,21 +933,23 @@
 		}
 	}
 
-	for( int i=0; i<pnChannelsForReverse.count; i++ )
-	{
-		//		PNDate *startDate = [PNDate dateWithDate:[NSDate dateWithTimeIntervalSinceNow:(-3600.0f)]];
-		//		PNDate *endDate = [PNDate dateWithDate:[NSDate date]];
-		NSArray *messages = [self requestHistoryForChannel: pnChannelsForReverse[i] from: nil to: nil limit: 0 reverseHistory: NO includingTimeToken: NO];
-		STAssertTrue( messages.count > 0, @"empty history");
-		NSArray *messagesReverse = [self requestHistoryForChannel: pnChannelsForReverse[i] from: [PNDate dateWithToken: timeMiddle] to: nil limit: NO reverseHistory: YES includingTimeToken: YES];
-		for( int j=0; j<messagesReverse.count-1; j++ ) {
-			PNMessage *messageReverse = messagesReverse[j];
-			STAssertTrue( [(NSString*)(messageReverse.message) compare: messageMiddle] != NSOrderedDescending, @"invalid message order, %@ %@", messageReverse.message, messageMiddle);
+		for( int i=0; i<pnChannelsForReverse.count; i++ ) {
+			//		PNDate *startDate = [PNDate dateWithDate:[NSDate dateWithTimeIntervalSinceNow:(-3600.0f)]];
+			//		PNDate *endDate = [PNDate dateWithDate:[NSDate date]];
+			NSArray *messages = [self requestHistoryForChannel: pnChannelsForReverse[i] from: nil to: nil limit: 0 reverseHistory: NO includingTimeToken: NO];
+			STAssertTrue( messages.count > 0, @"empty history");
+			NSArray *messagesReverse = [self requestHistoryForChannel: pnChannelsForReverse[i] from: [PNDate dateWithToken: timeMiddle] to: nil limit: NO reverseHistory: YES includingTimeToken: YES];
+			for( int j=0; j<messagesReverse.count-1; j++ ) {
+			{
+				PNMessage *messageReverse = messagesReverse[j];
+				STAssertTrue( [(NSString*)(messageReverse.message) compare: messageMiddle] != NSOrderedDescending, @"invalid message order, %@ %@", messageReverse.message, messageMiddle);
 
-			PNMessage *messageReverse1 = messagesReverse[j+1];
-			STAssertTrue( [messageReverse.message compare: messageReverse1.message] == NSOrderedAscending, @"invalid message order, %@ %@\n %@ %@", messageReverse, messageReverse1, messageReverse.receiveDate, messageReverse1.receiveDate);
+				PNMessage *messageReverse1 = messagesReverse[j+1];
+				STAssertTrue( [messageReverse.message compare: messageReverse1.message] == NSOrderedAscending, @"invalid message order, %@ %@\n %@ %@", messageReverse, messageReverse1, messageReverse.receiveDate, messageReverse1.receiveDate);
+			}
 		}
-	}
+
+		}
 }
 
 

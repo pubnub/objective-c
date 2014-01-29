@@ -80,6 +80,7 @@
 		5AC38A8817F1C0E000956E69 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 79C32285166DFA56006DB535 /* InfoPlist.strings */; };
 		5AC38AA517F1C18E00956E69 /* PNBackgroundAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC38AA417F1C18E00956E69 /* PNBackgroundAppDelegate.m */; };
 		5AC38AAA17F1C20100956E69 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC38AA817F1C20100956E69 /* main.m */; };
+		5AF932DC18997B2E00241C5C /* PNReachability+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF932DB18997B2E00241C5C /* PNReachability+Test.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +263,8 @@
 		5AC38AA417F1C18E00956E69 /* PNBackgroundAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNBackgroundAppDelegate.m; path = BackgroundApp/PNBackgroundAppDelegate.m; sourceTree = "<group>"; };
 		5AC38AA817F1C20100956E69 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BackgroundApp/main.m; sourceTree = "<group>"; };
 		5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = pubNubBackgroundMediator.xcodeproj; path = pubNubBackgroundMediator/pubNubBackgroundMediator.xcodeproj; sourceTree = "<group>"; };
+		5AF932DA18997B2E00241C5C /* PNReachability+Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNReachability+Test.h"; sourceTree = "<group>"; };
+		5AF932DB18997B2E00241C5C /* PNReachability+Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PNReachability+Test.m"; sourceTree = "<group>"; };
 		792C1F3F16777BD40054E18E /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7966DFC7166FD94D00E07B40 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		7966DFC8166FD94D00E07B40 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
@@ -641,6 +644,8 @@
 				5AC38AA417F1C18E00956E69 /* PNBackgroundAppDelegate.m */,
 				5A15AA2F1811967200A911DC /* PubNub+Suspend.h */,
 				5A15AA301811967200A911DC /* PubNub+Suspend.m */,
+				5AF932DA18997B2E00241C5C /* PNReachability+Test.h */,
+				5AF932DB18997B2E00241C5C /* PNReachability+Test.m */,
 				79C32281166DFA50006DB535 /* libs */,
 				79C32283166DFA56006DB535 /* Resources */,
 				79C32233166DF847006DB535 /* Supporting Files */,
@@ -803,6 +808,7 @@
 				5AC38A4417F1C0E000956E69 /* JSON.m in Sources */,
 				5A5BBC4C189920C2008FEB1F /* PNAccessRightsResponseParser.m in Sources */,
 				5A5BBC6E189920C2008FEB1F /* PNChangeAccessRightsRequest.m in Sources */,
+				5AF932DC18997B2E00241C5C /* PNReachability+Test.m in Sources */,
 				5A5BBC5C189920C2008FEB1F /* PNDate.m in Sources */,
 				5A5BBC69189920C2008FEB1F /* NSMutableArray+PNAdditions.m in Sources */,
 				5A5BBC55189920C2008FEB1F /* PNResponseParser.m in Sources */,

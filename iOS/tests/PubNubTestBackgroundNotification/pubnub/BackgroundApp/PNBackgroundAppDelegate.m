@@ -27,12 +27,21 @@
 
 	currentInterval = 10;
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleApplicationDidEnterBackgroundState:)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
+
 	[PubNub clientIdentifier];
 	isPNClientDidConnectToOriginNotification = YES;
 	isDidConnectToOrigin = YES;
 	[self connect];
 
     return YES;
+}
+
+- (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
+	NSLog(@"handleApplicationDidEnterBackgroundState");
 }
 
 -(void)applicationDidEnterBackground:(UIApplication *)application {

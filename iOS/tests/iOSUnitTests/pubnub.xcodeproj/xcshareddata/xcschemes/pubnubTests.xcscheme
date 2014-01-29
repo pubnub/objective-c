@@ -23,9 +23,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "ChangingChannels">
-               </Test>
-               <Test
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
@@ -35,16 +32,19 @@
                   Identifier = "CatchupTest">
                </Test>
                <Test
+                  Identifier = "ChangingChannels">
+               </Test>
+               <Test
                   Identifier = "ChannelLimitTest">
                </Test>
                <Test
                   Identifier = "PAMTest">
                </Test>
                <Test
-                  Identifier = "TimeOutTest">
+                  Identifier = "TimeCommand">
                </Test>
                <Test
-                  Identifier = "TimeCommand">
+                  Identifier = "TimeOutTest">
                </Test>
             </SkippedTests>
          </TestableReference>
