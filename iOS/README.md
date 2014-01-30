@@ -47,7 +47,7 @@ By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods 
 +   Add the following to your project's Podfile:
 
 ```
-pod 'PubNub', '3.5.4'
+pod 'PubNub', '3.5.5'
 ```
 
 +   Run
