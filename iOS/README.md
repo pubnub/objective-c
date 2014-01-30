@@ -36,9 +36,6 @@ PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567]; // C
 Also, there are new files in the libary that were not present in iPadDemoApp.x. Be sure when updating the library that you add these new files to your project,
 or you will certainly get compile errors for missing files. Easiest thing to do is remove all PubNub files, and add the new PubNub files back.
 
-## Coming Soon... XCode Project Template Support!
-But until then...
-
 ## Adding PubNub to your project via CocoaPods
 **NOTE:** Be sure you are running CocoaPods 0.26.2 or above!
 
