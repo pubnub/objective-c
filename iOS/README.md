@@ -75,7 +75,7 @@ To your project's .pch file.
 
 2. Add PNImports to your project precompile header (.pch)  
 ```objc
-// Make this the FIRST import statement
+// Make this the LAST import statement
 #import "PNImports.h"
 ```
 
