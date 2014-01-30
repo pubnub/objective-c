@@ -180,7 +180,7 @@
 - (NSString *)resourcePath {
 
     NSString *pnexpiresValue = @"";
-    if ([PubNub sharedInstance].configuration.presenceExpirationTimeout > 0.0f && [self isInitialSubscription]) {
+    if ([PubNub sharedInstance].configuration.presenceExpirationTimeout > 0.0f) {
 
         pnexpiresValue = [NSString stringWithFormat:@"&pnexpires=%d",
                           (int)[PubNub sharedInstance].configuration.presenceExpirationTimeout];
