@@ -59,7 +59,7 @@
     [[mockRequest expect] setStartDate:mockStartDate];
     [[mockRequest expect] setEndDate:mockEndDate];
     
-    PNMessageHistoryRequest *request = [mockRequest initForChannel:mockChannel from:mockStartDate to:mockEndDate limit:0 reverseHistory:NO];
+    PNMessageHistoryRequest *request = [mockRequest initForChannel: mockChannel from: mockStartDate to: mockEndDate limit:0 reverseHistory: NO includingTimeToken: NO];
     
     STAssertNotNil(request, @"Cannot initialize request");
     
@@ -69,7 +69,7 @@
 #pragma mark - Interaction tests
 
 - (void)testMessageHistoryRequestForChannel {
-    STAssertNotNil([PNMessageHistoryRequest messageHistoryRequestForChannel:nil from:nil to:nil limit:0 reverseHistory:NO], @"Cannot initialize PNMessageHistoryRequest");
+    STAssertNotNil([PNMessageHistoryRequest messageHistoryRequestForChannel: nil from: nil to: nil limit: 0 reverseHistory: NO includingTimeToken: YES], @"Cannot initialize PNMessageHistoryRequest");
 }
 
 @end

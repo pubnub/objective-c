@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>ABEAB9F8-38BD-4932-85AB-24FB616C9FD2</string>
+	<string>55DDAE2F-88F4-4CC3-9EC6-479606873392</string>
 	<key>IDESourceControlProjectName</key>
 	<string>PubNubDemo</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>390F4CE6-C368-4B61-BAF1-74CDD1844E51</key>
-		<string>https://github.com/pubnub/objective-c</string>
+		<key>05B51DCA-C040-494B-94E0-D490909C382E</key>
+		<string>https://github.com/pubnub/objective-c/</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>iOS/HOWTO/SimpleSubscribe/PubNubDemo.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>390F4CE6-C368-4B61-BAF1-74CDD1844E51</key>
+		<key>05B51DCA-C040-494B-94E0-D490909C382E</key>
 		<string>../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/pubnub/objective-c</string>
+	<string>https://github.com/pubnub/objective-c/</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>390F4CE6-C368-4B61-BAF1-74CDD1844E51</string>
+	<string>05B51DCA-C040-494B-94E0-D490909C382E</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>390F4CE6-C368-4B61-BAF1-74CDD1844E51</string>
+			<string>05B51DCA-C040-494B-94E0-D490909C382E</string>
 			<key>IDESourceControlWCCName</key>
-			<string>pubnub 3.5</string>
+			<string>pubnup master</string>
 		</dict>
 	</array>
 </dict>

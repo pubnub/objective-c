@@ -31,6 +31,7 @@
 
 	[PubNub clientIdentifier];
 	countNewMessage = 1;
+	countSession = 0;
 	[self connect];
 
     return YES;
@@ -52,11 +53,14 @@
 
 
 -(void)openUrl {
-	if( countNewMessage != 1 )
+	if( countNewMessage != 1 && countSession%2 == 0 )
 		[self performSelector: @selector(errorSelectorCountNewMessage)];
-	if( isWillRestoreSubscriptionOnChannelsDelegate == NO || isDidRestoreSubscriptionOnChannelsDelegate == NO )
-		[self performSelector: @selector(errorSelectorRestore)];
+	if( isWillRestoreSubscriptionOnChannelsDelegate == NO )
+		[self performSelector: @selector(errorSelectorWillRestore)];
+	if( isDidRestoreSubscriptionOnChannelsDelegate == NO )
+		[self performSelector: @selector(errorSelectorDidRestore)];
 	countNewMessage = 0;
+	countSession++;
 	isWillRestoreSubscriptionOnChannelsDelegate = NO;
 	isDidRestoreSubscriptionOnChannelsDelegate = NO;
 
@@ -189,7 +193,6 @@
 }
 
 - (NSNumber *)shouldRestoreSubscriptionFromLastTimeToken {
-    NSNumber *shouldRestoreSubscriptionFromLastTimeToken = @(YES);
     NSString *lastTimeToken = @"0";
 
     if ([[PubNub subscribedChannels] count] > 0) {
@@ -198,11 +201,10 @@
 		self.lastClientIdentifier = [PubNub clientIdentifier];
     }
 
+	BOOL shouldRestoreSubscriptionFromLastTimeToken = (countSession%2 == 0);
     NSLog( @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
-		  [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
-
-
-    return shouldRestoreSubscriptionFromLastTimeToken;
+		  shouldRestoreSubscriptionFromLastTimeToken?@"YES":@"NO", lastTimeToken);
+    return @(shouldRestoreSubscriptionFromLastTimeToken);
 }
 
 - (void)handleClientConnectionStateChange:(NSNotification *)notification {

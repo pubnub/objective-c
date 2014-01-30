@@ -17,7 +17,6 @@
 
 #import "PNMessage+Protected.h"
 #import "PNJSONSerialization.h"
-#import "PNCryptoHelper.h"
 
 
 // ARC check
@@ -26,10 +25,19 @@
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
 
+#pragma mark Structures
 
-#pragma mark Private interface methods
+struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
-@interface PNMessage ()
+    .message = @"message",
+    .channel = @"channel",
+    .date = @"date"
+};
+
+
+#pragma mark - Private interface methods
+
+@interface PNMessage () <NSCoding>
 
 
 #pragma mark - Properties
@@ -44,6 +52,8 @@
 // Stores reference on date when this message was received
 // (doesn't work for history, only for presence events)
 @property (nonatomic, strong) PNDate *receiveDate;
+
+@property (nonatomic, strong) PNDate *date;
 
 // Stores reference on timetoken when this message was received
 @property (nonatomic, strong) NSNumber *timeToken;
@@ -109,6 +119,22 @@
 + (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate {
 
     PNMessage *message = [[self class] new];
+
+    // Check whether message body contains time token included from history API or not
+    if ([messageBody isKindOfClass:[NSDictionary class]]) {
+
+        if ([messageBody objectForKey:kPNMessageTimeTokenKey])  {
+
+            messagePostDate = [PNDate dateWithToken:[messageBody objectForKey:kPNMessageTimeTokenKey]];
+        }
+
+        // Extract real message
+        if ([messageBody objectForKey:kPNMessageTimeTokenKey]) {
+
+            messageBody = [messageBody valueForKey:kPNMessageBodyKey];
+        }
+    }
+
     message.message = [PubNub AESDecrypt:messageBody];
     message.channel = channel;
     message.receiveDate = messagePostDate;
@@ -117,8 +143,51 @@
     return message;
 }
 
++ (PNMessage *)messageFromFileAtPath:(NSString *)messageFilePath {
+
+    PNMessage *message = nil;
+    if (messageFilePath) {
+
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:messageFilePath]) {
+
+            message = [NSKeyedUnarchiver unarchiveObjectWithFile:messageFilePath];
+        }
+    }
+
+
+    return message;
+}
+
 
 #pragma mark - Instance methods
+
+- (id)initWithCoder:(NSCoder *)decoder {
+
+    // Checking whether valid decoder data has been provided or not.
+    if ([decoder containsValueForKey:PNMessageDataKeys.message] &&
+        [decoder containsValueForKey:PNMessageDataKeys.channel]) {
+
+        // Check whether initialization has been successful or not
+        if ((self = [super init])) {
+
+            self.message = [decoder decodeObjectForKey:PNMessageDataKeys.message];
+            self.channel = [PNChannel channelWithName:[decoder decodeObjectForKey:PNMessageDataKeys.channel]];
+
+            if ([decoder containsValueForKey:PNMessageDataKeys.date]) {
+
+                self.receiveDate = [PNDate dateWithToken:[decoder decodeObjectForKey:PNMessageDataKeys.date]];
+            }
+        }
+    }
+    else {
+
+        self = nil;
+    }
+
+
+    return self;
+}
 
 - (id)initWithObject:(id)object forChannel:(PNChannel *)channel {
 
@@ -136,13 +205,46 @@
     return self;
 }
 
+- (BOOL)writeToFileAtPath:(NSString *)messageStoreFilePath {
+
+    BOOL isWritten = NO;
+    if (messageStoreFilePath) {
+
+        NSError *storeError = nil;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:messageStoreFilePath]) {
+
+            [fileManager removeItemAtPath:messageStoreFilePath error:&storeError];
+        }
+
+        if (storeError == nil) {
+
+            isWritten = [NSKeyedArchiver archiveRootObject:self toFile:messageStoreFilePath];
+        }
+    }
+
+
+    return isWritten;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+
+    [coder encodeObject:self.message forKey:PNMessageDataKeys.message];
+    [coder encodeObject:self.channel.name forKey:PNMessageDataKeys.channel];
+
+    if (self.receiveDate) {
+
+        [coder encodeObject:self.receiveDate.timeToken forKey:PNMessageDataKeys.date];
+    }
+}
+
 - (NSString *)description {
 
     return [NSString stringWithFormat:@"%@ (%p): <message: %@, date: %@, channel: %@>",
                                       NSStringFromClass([self class]),
                                       self,
                                       self.message,
-                                      self.receiveDate,
+                                      (self.receiveDate ? self.receiveDate : self.date),
                                       self.channel.name];
 }
 

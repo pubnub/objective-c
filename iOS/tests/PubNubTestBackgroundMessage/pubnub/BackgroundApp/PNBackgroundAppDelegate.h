@@ -15,6 +15,7 @@
 	int countNewMessage;
 	BOOL isWillRestoreSubscriptionOnChannelsDelegate;
 	BOOL isDidRestoreSubscriptionOnChannelsDelegate;
+	int countSession;
 }
 
 #pragma mark Properties

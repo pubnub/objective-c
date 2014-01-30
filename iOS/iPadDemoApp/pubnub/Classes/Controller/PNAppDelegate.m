@@ -124,6 +124,7 @@
     [self.window makeKeyAndVisible];
     
     [self initializePubNubClient];
+
     
     return YES;
 }

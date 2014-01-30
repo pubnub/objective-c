@@ -42,6 +42,7 @@
 											   subscribeKey:@"sadasfsad"
 												  secretKey:nil
 												  cipherKey:@"my_key"];
+	configuration.useSecureConnection = NO;
 	[configurations addObject: configuration];
 
 	configuration = [PNConfiguration configurationForOrigin:@"punsub.pubnub.com"
@@ -49,6 +50,7 @@
 											   subscribeKey:@"asdfadas asd"
 												  secretKey:nil
 												  cipherKey:@" asdashd asd fsdkl faskd asdkf kasldf "];
+	configuration.useSecureConnection = YES;
 	[configurations addObject: configuration];
 	////
 	configuration = [PNConfiguration configurationForOrigin:@"punsub1.pubnub.com"
@@ -56,6 +58,7 @@
 											   subscribeKey:@"a a as a "
 												  secretKey:nil
 												  cipherKey:@"chaos.pubnub.com"];
+	configuration.useSecureConnection = NO;
 	[configurations addObject: configuration];
 	////
 	configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
@@ -63,6 +66,7 @@
 											   subscribeKey:@"aaaaasdfaaaa"
 												  secretKey:nil
 												  cipherKey:@"enigma"];
+	configuration.useSecureConnection = YES;
 	[configurations addObject: configuration];
 	////
 	configuration = [PNConfiguration configurationForOrigin:@"pubsub2.pubnub.com"
@@ -70,6 +74,7 @@
 											   subscribeKey:@"enigma"
 												  secretKey:nil
 												  cipherKey:@"chaos.pubnub.com"];
+	configuration.useSecureConnection = NO;
 	[configurations addObject: configuration];
 	////
 	configuration = [PNConfiguration configurationForOrigin:@"google.com.ua"
@@ -77,6 +82,7 @@
 											   subscribeKey:@"enigma"
 												  secretKey:nil
 												  cipherKey:@"chaos.pubnub.com"];
+	configuration.useSecureConnection = YES;
 	[configurations addObject: configuration];
 	////
 	configuration = [PNConfiguration configurationForOrigin:@"google.com"
@@ -84,13 +90,15 @@
 											   subscribeKey:@"enigma"
 												  secretKey:nil
 												  cipherKey:@"chaos.pubnub.com"];
+	configuration.useSecureConnection = NO;
 	[configurations addObject: configuration];
-	//	////
+	////
 	configuration = [PNConfiguration configurationForOrigin:@"mail.ru"
 												 publishKey:@"enigma"
 											   subscribeKey:@"enigma"
 												  secretKey:nil
 												  cipherKey:@"chaos.pubnub.com"];
+	configuration.useSecureConnection = YES;
 	[configurations addObject: configuration];
 
 	[configurations addObject: [PNConfiguration defaultConfiguration]];
@@ -169,6 +177,11 @@
 		NSLog(@"configurations\n%@\n|\n%@", configurations[i], [PubNub sharedInstance].configuration );
 		if( [PubNub sharedInstance].configuration == nil )
 			continue;
+		if( [configurations[i] isEqual: [PubNub sharedInstance].configuration] == NO ) {
+			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
+			BOOL isEqual = [configurations[i] isEqual: [PubNub sharedInstance].configuration];
+			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
+		}
 		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration], @"configurations are not equals, %@\n%@", configurations[i], [PubNub sharedInstance].configuration );
 
 		__block BOOL isCompletionBlockCalled = NO;
