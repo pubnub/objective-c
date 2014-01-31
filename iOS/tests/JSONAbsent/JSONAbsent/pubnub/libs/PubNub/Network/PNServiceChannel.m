@@ -853,6 +853,12 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
             // Notify delegate about that message post request will be sent now
             [self.serviceDelegate serviceChannel:self didSendMessage:((PNMessagePostRequest *)request).message];
         }
+        // In case if this is any other request for whichwe don't expect completion, we should clean it up from stored
+        // requests list.
+        else {
+            
+            [self removeStoredRequest:request];
+        }
     }
 
 

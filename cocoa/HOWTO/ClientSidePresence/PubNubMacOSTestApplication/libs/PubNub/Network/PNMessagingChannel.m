@@ -2122,6 +2122,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 }
             }
         }
+        // In case if this is any other request for whichwe don't expect completion, we should clean it up from stored
+        // requests list.
+        else {
+            
+            [self removeStoredRequest:request];
+        }
     }
 
     [self scheduleNextRequest];
