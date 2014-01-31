@@ -61,7 +61,7 @@
     if ((self = [super init])) {
 
         self.sendingByUserRequest = YES;
-        self.pushToken = [pushToken HEXPushToken];
+        self.pushToken = [[pushToken HEXPushToken] lowercaseString];
     }
 
 
