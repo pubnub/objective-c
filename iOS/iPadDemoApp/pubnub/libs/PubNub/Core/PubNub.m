@@ -4300,7 +4300,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)connectionChannelDidSuspend:(PNConnectionChannel *)channel {
 
-    //
+    if ([self.messagingChannel isSuspended] && [self.serviceChannel isSuspended]) {
+        
+        [self stopHeartbeatTimer];
+    }
 }
 
 - (void)connectionChannelWillResume:(PNConnectionChannel *)channel {
@@ -4326,6 +4329,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     if ([self.messagingChannel isConnected] && [self.serviceChannel isConnected]) {
 
         [self notifyDelegateAboutConnectionToOrigin:self.configuration.origin];
+        [self launchHeartbeatTimer];
     }
 }
 
@@ -4363,7 +4367,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     // Checking whether we are still connected and there is some channels for which we can create this heartbeat
     // request.
-    if ([self isConnected] && [[[self class] subscribedChannels] count] &&
+    if ([self isConnected] && ![self isResuming] && [[[self class] subscribedChannels] count] &&
         self.configuration.presenceExpirationTimeout > 0.0f) {
 
         // Prepare and send request w/o observation (it mean that any response for request will be ignored
@@ -4637,7 +4641,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self stopHeartbeatTimer];
 
 
-    if ([self isConnected] && [[[self class] subscribedChannels] count] &&
+    if ([self isConnected] && ![self isResuming] && [[[self class] subscribedChannels] count] &&
         self.configuration.presenceExpirationTimeout > 0.0f) {
 
         NSTimeInterval interval = MAX(kPNDefaultHeartbeatTimeout,
