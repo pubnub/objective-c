@@ -162,6 +162,7 @@
 		5ADD30E4189AC9EE00688B3E /* PNResponseDeserializeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ADD30E3189AC9EE00688B3E /* PNResponseDeserializeTest.m */; };
 		5AE3AEBF1864602500704422 /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
 		5AEF50E6189BF538000A79BE /* PNResponseParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AEF50E5189BF538000A79BE /* PNResponseParserTest.m */; };
+		5AEF50E8189C0E57000A79BE /* PNTimeTokenResponseParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AEF50E7189C0E57000A79BE /* PNTimeTokenResponseParserTest.m */; };
 		79299476167C8D7A00F7F8CE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */; };
 		79299478167C8D8D00F7F8CE /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 792C1F3F16777BD40054E18E /* CFNetwork.framework */; };
 		792C1F4016777BD50054E18E /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 792C1F3F16777BD40054E18E /* CFNetwork.framework */; };
@@ -424,6 +425,7 @@
 		5ADD30E1189AC6DB00688B3E /* PNPushNotificationsEnabledChannelsParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPushNotificationsEnabledChannelsParserTest.m; path = pubnubTests/PNPushNotificationsEnabledChannelsParserTest.m; sourceTree = SOURCE_ROOT; };
 		5ADD30E3189AC9EE00688B3E /* PNResponseDeserializeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNResponseDeserializeTest.m; path = pubnubTests/PNResponseDeserializeTest.m; sourceTree = SOURCE_ROOT; };
 		5AEF50E5189BF538000A79BE /* PNResponseParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNResponseParserTest.m; path = pubnubTests/PNResponseParserTest.m; sourceTree = SOURCE_ROOT; };
+		5AEF50E7189C0E57000A79BE /* PNTimeTokenResponseParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNTimeTokenResponseParserTest.m; path = pubnubTests/PNTimeTokenResponseParserTest.m; sourceTree = SOURCE_ROOT; };
 		792C1F3F16777BD40054E18E /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		79C32228166DF847006DB535 /* pubnub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pubnub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C3222C166DF847006DB535 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -742,6 +744,7 @@
 				5AEF50E5189BF538000A79BE /* PNResponseParserTest.m */,
 				5ACA6803185B81F300C2B214 /* PNTimeTokenResponseParser.h */,
 				5ACA6804185B81F300C2B214 /* PNTimeTokenResponseParser.m */,
+				5AEF50E7189C0E57000A79BE /* PNTimeTokenResponseParserTest.m */,
 			);
 			path = Parsers;
 			sourceTree = "<group>";
@@ -1398,6 +1401,7 @@
 				5ADD3092189AADFD00688B3E /* PNWriteBufferTest.m in Sources */,
 				5ACA68BC185B81F300C2B214 /* PNRequestsQueue.m in Sources */,
 				9645C115174FDA7D00F82D09 /* PNReachabilityTest.m in Sources */,
+				5AEF50E8189C0E57000A79BE /* PNTimeTokenResponseParserTest.m in Sources */,
 				5ACA68DA185B81F300C2B214 /* PNMessageHistoryRequest.m in Sources */,
 				5ADD308B189AADFD00688B3E /* PNActionResponseParserTest.m in Sources */,
 				5ACA68D4185B81F300C2B214 /* PNHereNowRequest.m in Sources */,
