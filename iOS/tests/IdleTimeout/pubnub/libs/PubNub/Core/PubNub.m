@@ -37,9 +37,9 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.5.4";
+static NSString * const kPNLibraryVersion = @"3.5.5";
 static NSString * const kPNCodebaseBranch = @"feature-pn392";
-static NSString * const kPNCodeCommitIdentifier = @"126d988e1a2c7ff1f5f15e40235e3f9be213d50b";
+static NSString * const kPNCodeCommitIdentifier = @"14b2e16843a867d4317b65c094ab70b8ca55f0c4";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -4378,7 +4378,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             else if (strcmp(parameterType, @encode(NSInteger)) == 0) {
                 
                 NSInteger signedInteger = [(NSNumber *)parameter integerValue];
-                [methodInvocation setArgument:&signedInteger atIndex:parameterIndex];
+                [methodInvocation setArgument:&
+                 signedInteger atIndex:parameterIndex];
             }
             else if (strcmp(parameterType, @encode(id)) == 0) {
 

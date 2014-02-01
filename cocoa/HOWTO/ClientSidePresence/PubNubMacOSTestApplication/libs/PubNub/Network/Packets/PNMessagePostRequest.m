@@ -109,35 +109,35 @@
     return [self.preparedMessage dataUsingEncoding:NSUTF8StringEncoding];
 }
 
-- (NSString *)resourcePath {
-
-    if (self.preparedMessage == nil) {
-
+- (NSString *)preparedMessage {
+    
+    if (_preparedMessage == nil) {
+        
         id message = self.message.message;
         if ([message isKindOfClass:[NSNumber class]]) {
-
+            
             message = [(NSNumber *)message stringValue];
         }
-
+        
         // Retrieve reference on encrypted message (if possible)
         PNError *encryptionError;
         if ([PNCryptoHelper sharedInstance].isReady) {
-
+            
             message = [PubNub AESEncrypt:message error:&encryptionError];
             
             if (encryptionError != nil) {
-
+                
                 PNLog(PNLogCommunicationChannelLayerErrorLevel,
-                        self,
-                        @"Message encryption failed with error: %@\nUnencrypted message will be sent.",
-                        encryptionError);
+                      self,
+                      @"Message encryption failed with error: %@\nUnencrypted message will be sent.",
+                      encryptionError);
             }
         }
-
+        
         if ([self HTTPMethod] == PNRequestGETMethod) {
             
-        // Encode message with % so it will be delivered w/o damages to
-        // the PubNub service
+            // Encode message with % so it will be delivered w/o damages to
+            // the PubNub service
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
             self.preparedMessage = [message percentEscapedString];
 #else
@@ -149,6 +149,12 @@
             self.preparedMessage = message;
         }
     }
+    
+    
+    return _preparedMessage;
+}
+
+- (NSString *)resourcePath {
     
     NSMutableString *resourcePath = [NSMutableString stringWithFormat:@"/publish/%@/%@/%@/%@/%@_%@",
                                      [[PubNub sharedInstance].configuration.publishKey percentEscapedString],
