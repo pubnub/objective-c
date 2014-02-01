@@ -13,7 +13,7 @@
 #pragma mark Static
 
 // Stores default access period duration (while granted access will be valid)
-static NSUInteger const kPNDefaulfAccessPeriodDuration = 5;
+static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
 
 
 #pragma mark - Public interface implementation
@@ -25,7 +25,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 5;
 
 + (PNAccessRightOptions *)accessRightOptionsForApplication:(NSString *)applicationKey withRights:(PNAccessRights)rights
                                                   channels:(NSArray *)channels clients:(NSArray *)clientsAccessKeys
-                                              accessPeriod:(NSUInteger)accessPeriodDuration {
+                                              accessPeriod:(NSInteger)accessPeriodDuration {
 
     return [[self alloc] initWithApplication:applicationKey withRights:rights channels:channels
                                      clients:clientsAccessKeys accessPeriod:accessPeriodDuration];
@@ -35,7 +35,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 5;
 #pragma mark - Instance methods
 
 - (id)initWithApplication:(NSString *)applicationKey withRights:(PNAccessRights)rights channels:(NSArray *)channels
-                  clients:(NSArray *)clientsAuthorizationKeys accessPeriod:(NSUInteger)accessPeriodDuration {
+                  clients:(NSArray *)clientsAuthorizationKeys accessPeriod:(NSInteger)accessPeriodDuration {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
@@ -54,7 +54,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 5;
             self.channels = channels;
         }
 
-        self.accessPeriodDuration = accessPeriodDuration > 0 ? accessPeriodDuration : kPNDefaulfAccessPeriodDuration;
+        self.accessPeriodDuration = accessPeriodDuration >= 0 ? accessPeriodDuration : kPNDefaulfAccessPeriodDuration;
         if (self.rights == PNUnknownAccessRights) {
 
             self.accessPeriodDuration = 0;
@@ -124,7 +124,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 5;
         [description appendFormat:@" users: %@;", self.clientsAuthorizationKeys];
     }
 
-    [description appendFormat:@" access period duration: %d>", self.accessPeriodDuration];
+    [description appendFormat:@" access period duration: %lu>", (unsigned long)self.accessPeriodDuration];
 
 
     return description;

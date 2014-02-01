@@ -70,7 +70,7 @@ static NSInteger const kPNDefaultGrantPeriod = 5;
 + (PNChangeAccessRightsRequest *)changeAccessRightsRequestForChannels:(NSArray *)channels
                                                          accessRights:(PNAccessRights)accessRights
                                                               clients:(NSArray *)clientsAuthorizationKey
-                                                            forPeriod:(NSUInteger)accessPeriod {
+                                                            forPeriod:(NSInteger)accessPeriod {
 
     return [[self alloc] initWithChannels:channels accessRights:accessRights clients:clientsAuthorizationKey
                                    period:accessPeriod];
@@ -80,7 +80,7 @@ static NSInteger const kPNDefaultGrantPeriod = 5;
 #pragma mark - Instance methods
 
 - (id)initWithChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                                                clients:(NSArray *)clientsAuthorizationKey period:(NSUInteger)accessPeriod {
+                                                clients:(NSArray *)clientsAuthorizationKey period:(NSInteger)accessPeriod {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
@@ -129,8 +129,8 @@ static NSInteger const kPNDefaultGrantPeriod = 5;
 
     [parameters addObject:[NSString stringWithFormat:@"r=%@",
                            PNBitIsOn(self.accessRightOptions.rights, PNReadAccessRight) ? @"1" : @"0"]];
-    [parameters addObject:[NSString stringWithFormat:@"timestamp=%d", [self requestTimestamp]]];
-    [parameters addObject:[NSString stringWithFormat:@"ttl=%d", self.accessRightOptions.accessPeriodDuration]];
+    [parameters addObject:[NSString stringWithFormat:@"timestamp=%lu", (unsigned long)[self requestTimestamp]]];
+    [parameters addObject:[NSString stringWithFormat:@"ttl=%lu", (unsigned long)self.accessRightOptions.accessPeriodDuration]];
     [parameters addObject:[NSString stringWithFormat:@"w=%@",
                            PNBitIsOn(self.accessRightOptions.rights, PNWriteAccessRight) ? @"1" : @"0"]];
 
@@ -176,14 +176,22 @@ static NSInteger const kPNDefaultGrantPeriod = 5;
     }
 
 
-    return [NSString stringWithFormat:@"/v1/auth/grant/sub-key/%@?%@callback=%@_%@%@&%@&timestamp=%d&ttl=%d&signature"
-                                       "=%@&%@", [PubNub sharedInstance].configuration.subscriptionKey,
+    return [NSString stringWithFormat:@"/v1/auth/grant/sub-key/%@?%@callback=%@_%@%@&%@&timestamp=%lu&ttl=%lu&signature"
+                                       "=%@&%@", [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                     (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey percentEscapedString]] : @""),
                     [self callbackMethodName], self.shortIdentifier,
                     (channel ? [NSString stringWithFormat:@"&channel=%@", [channel percentEscapedString]] : @""),
                     [NSString stringWithFormat:@"r=%@", PNBitIsOn(self.accessRightOptions.rights, PNReadAccessRight) ? @"1" : @"0"],
-                    [self requestTimestamp], self.accessRightOptions.accessPeriodDuration, [self PAMSignature],
+                    (unsigned long)[self requestTimestamp], (unsigned long)self.accessRightOptions.accessPeriodDuration, [self PAMSignature],
                     [NSString stringWithFormat:@"w=%@", PNBitIsOn(self.accessRightOptions.rights, PNWriteAccessRight) ? @"1" : @"0"]];
+}
+
+- (NSString *)debugResourcePath {
+    
+    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    
+    return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
 #pragma mark -

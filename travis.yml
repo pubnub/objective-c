@@ -1,0 +1,8 @@
+before_install:
+- sudo systemsetup -settimezone Europe/Zaporozhye
+
+language: objective-c
+script:
+- xcodebuild build -project cocoa/PubNubMacOSTestApplication/PubNubMacOSTestApplication.xcodeproj
+- xcodebuild build -project iOS/iPadDemoApp/pubnub.xcodeproj -sdk iphonesimulator ARCHS=i386 ONLY_ACTIVE_ARCH=YES VALID_ARCHS=i386
+- xcodebuild test -project iOS/tests/iOSUnitTests/pubnub.xcodeproj -scheme travis-ci -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO GCC_PREPROCESSOR_DEFINITIONS="COCOAPODS=1" 

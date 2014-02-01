@@ -13,6 +13,7 @@
 //
 
 #import "PNSubscribeRequest+Protected.h"
+#import "PNChannelPresence+Protected.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
 #import "PNChannel+Protected.h"
@@ -49,6 +50,8 @@
 
 // Stores whether leave request was sent to subscribe on new channels or as result of user request
 @property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;
+
+@property (nonatomic, assign, getter = isPerformingMultipleActions) BOOL performingMultipleActions;
 
 
 @end
@@ -125,18 +128,30 @@
 
             [updatedSet addObjectsFromArray:self.channelsForPresenceEnabling];
         }
-        // In case if user specified set of channels for which presence should be disabled,
-        // remove them from overall channels list
-        if ([self.channelsForPresenceDisabling count] > 0) {
-
-            [updatedSet minusSet:[NSSet setWithArray:self.channelsForPresenceDisabling]];
-        }
+        NSArray *presenceEnabledChannels = [PNChannelPresence presenceChannelsFromArray:_channels];
+        [self.channelsForPresenceDisabling enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+            
+            [presenceEnabledChannels enumerateObjectsUsingBlock:^(PNChannelPresence *presenceChannel, NSUInteger presenceChannelIdx,
+                                                                  BOOL *presenceChannelEnumeratorStop) {
+                
+                if ([[presenceChannel observedChannel] isEqual:[channel valueForKey:@"observedChannel"]]) {
+                    
+                    [updatedSet removeObject:presenceChannel];
+                    *presenceChannelEnumeratorStop = YES;
+                }
+            }];
+        }];
 
         channels = [updatedSet allObjects];
     }
 
 
     return channels;
+}
+
+- (NSArray *)channelsForSubscription {
+    
+    return _channels;
 }
 
 - (BOOL)isInitialSubscription {
@@ -157,7 +172,7 @@
 - (NSString *)resourcePath {
     
     return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@",
-            [PubNub sharedInstance].configuration.subscriptionKey,
+            [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
             [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
             [self callbackMethodName],
             self.shortIdentifier,
@@ -169,7 +184,7 @@
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

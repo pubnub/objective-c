@@ -1,3 +1,17 @@
+12-23-2013 - 3.5.3
+. added PAM Grant/Revoke functionality
+. added PAM features to demo app
+. fixed bug where kPNClientUnsubscriptionDidCompleteNotification may be called more than once
+. added a UI to the APNS Demo App
+. fixed a bug where history request could hang client
+. improve reachability state detection time
+. fixed bug where requestParticipantsListForChannel completion block may not be called
+. make delegate methods report that subscription is restored upon suspend resume
+. make encryption methods public in order to encrypt/decrypt external (eg APNS) messages
+. fork JSONKit to support XCode 5 without warnings
+. fixed bug when sending non-default (LMS) sized messages
+. removed pncl artifacts from git repo
+
 11-18-2013 - 3.5.2
 . obscure keys in log files
 . fixed an issue when switching from WiFi to Cellular in background with background app configuration

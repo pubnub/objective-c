@@ -84,14 +84,14 @@
     return asciiString;
 }
 
-- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(UILineBreakMode)lineBreakMode {
+- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode {
     
     NSString *truncatedString = self;
     if (length < self.length) {
         
         switch (lineBreakMode) {
                 
-            case UILineBreakModeHeadTruncation:
+            case NSLineBreakByTruncatingHead:
                 {
                     NSUInteger index = (self.length - length);
                     if (index + 1 < self.length) {
@@ -101,7 +101,7 @@
                     truncatedString = [NSString stringWithFormat:@"…%@", [self substringFromIndex:index]];
                 }
                 break;
-            case UILineBreakModeMiddleTruncation:
+            case NSLineBreakByTruncatingMiddle:
                 {
                     NSUInteger maximumHalfLength = ceilf(length * 0.5f);
                     if (maximumHalfLength == (self.length * 0.5f)) {
@@ -113,7 +113,7 @@
                                        [self substringFromIndex:(self.length - maximumHalfLength)]];
                 }
                 break;
-            case UILineBreakModeTailTruncation:
+            case NSLineBreakByTruncatingTail:
                 {
                     NSUInteger index = length;
                     if (index - 1 > 0) {
@@ -126,7 +126,7 @@
                 
             default:
                 
-                if (lineBreakMode != UILineBreakModeCharacterWrap && lineBreakMode != UILineBreakModeWordWrap) {
+                if (lineBreakMode != NSLineBreakByCharWrapping && lineBreakMode != NSLineBreakByWordWrapping) {
                     
                     truncatedString = [self substringToIndex:length];
                 }

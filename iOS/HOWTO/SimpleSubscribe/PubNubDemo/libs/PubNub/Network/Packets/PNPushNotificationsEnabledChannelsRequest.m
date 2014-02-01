@@ -81,7 +81,7 @@
 - (NSString *)resourcePath {
 
     return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@?callback=%@_%@&uuid=%@%@",
-                                      [PubNub sharedInstance].configuration.subscriptionKey,
+                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       self.pushToken,
                                       [self callbackMethodName],
                                       self.shortIdentifier,
@@ -92,7 +92,7 @@
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

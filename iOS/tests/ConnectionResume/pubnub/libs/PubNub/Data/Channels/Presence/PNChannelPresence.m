@@ -63,6 +63,15 @@
     return [channelName hasSuffix:kPNPresenceObserverChannelSuffix];
 }
 
++ (NSArray *)presenceChannelsFromArray:(NSArray *)array {
+    
+    // Compose filtering predicate to retrieve list of channels which are not presence observing channels
+    NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"isPresenceObserver = YES"];
+    
+    
+    return [array filteredArrayUsingPredicate:filterPredicate];
+}
+
 
 #pragma mark - Instance methods
 

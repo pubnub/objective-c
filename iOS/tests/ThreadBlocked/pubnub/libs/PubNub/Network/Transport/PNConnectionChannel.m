@@ -1036,12 +1036,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     }
 
 
-    if (isExpected && doesWarmingUpRequired) {
+    if (isExpected) {
 
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] RESUMED (STATE: %d)",
               self.name, self.state);
 
-        [self.delegate connectionChannelDidResume:self];
+        [self.delegate connectionChannelDidResume:self requireWarmUp:doesWarmingUpRequired];
     }
 }
 

@@ -388,7 +388,7 @@
 
 #pragma mark - States tests
 
-- (void)test05AddClientConnectionStateObserver
+- (void)t05AddClientConnectionStateObserver
 {
     [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
                                                         withCallbackBlock:^(NSString *origin,
@@ -404,7 +404,7 @@
 	 }];
 }
 
-- (void)test06ClientChannelSubscriptionStateObserver
+- (void)t06ClientChannelSubscriptionStateObserver
 {
     // Subscribe application delegate on subscription updates
     // (events when client subscribe on some channel)
@@ -419,7 +419,7 @@
 	 }];
 }
 
-- (void)test08AddPresenceEventObserver
+- (void)t08AddPresenceEventObserver
 {
     // Subscribe on presence event arrival events with block
 	__pn_desired_weak __typeof__(self) weakSelf = self;
@@ -478,10 +478,21 @@
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
 	STAssertTrue( willConnectCount<=5, @"extra reconnect attemp");
+
+	[self t10Connect];
+	[self t05AddClientConnectionStateObserver];
+	[self t06ClientChannelSubscriptionStateObserver];
+	[self t08AddPresenceEventObserver];
+	[self t20SubscribeOnChannels];
+	[self t30RequestParticipantsListForChannel];
+	[self t35RequestServerTimeTokenWithCompletionBlock];
+	[self t40RequestHistoryForChannel];
+	[self t50SendMessage];
+	[self t900UnsubscribeFromChannels];
 }
 
 
-- (void)test10Connect
+- (void)t10Connect
 {
 	[PubNub disconnect];
 	[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
@@ -504,7 +515,7 @@
 	STAssertTrue( isConnected, @"not connection");
 }
 
-- (void)test20SubscribeOnChannels
+- (void)t20SubscribeOnChannels
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientSubscriptionProcess = NO;
@@ -537,7 +548,7 @@
 	STAssertTrue( handleClientSubscriptionProcess, @"notification not caleld");
 }
 
--(void)test30RequestParticipantsListForChannel
+-(void)t30RequestParticipantsListForChannel
 {
 	for( int i=0; i<pnChannels.count; i++ )
 	{
@@ -560,7 +571,7 @@
 	}
 }
 
--(void)test35RequestServerTimeTokenWithCompletionBlock
+-(void)t35RequestServerTimeTokenWithCompletionBlock
 {
 	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientCompletedTimeTokenProcessing = NO;
@@ -602,7 +613,7 @@
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 }
 
--(void)test40RequestHistoryForChannel
+-(void)t40RequestHistoryForChannel
 {
 	for( int i=0; i<pnChannels.count; i++ )
 	{
@@ -615,7 +626,7 @@
 	}
 }
 
--(void)test50SendMessage
+-(void)t50SendMessage
 {
 	for( int i=0; i<pnChannels.count; i++ )
 	{
@@ -655,7 +666,7 @@
 }
 
 
--(void)test900UnsubscribeFromChannels
+-(void)t900UnsubscribeFromChannels
 {
 	handleClientUnsubscriptionProcess = YES;
 	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);

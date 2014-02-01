@@ -113,13 +113,17 @@
 
     if (self.preparedMessage == nil) {
 
-        NSString *message = self.message.message;
+        id message = self.message.message;
+        if ([message isKindOfClass:[NSNumber class]]) {
+
+            message = [(NSNumber *)message stringValue];
+        }
 
         // Retrieve reference on encrypted message (if possible)
         PNError *encryptionError;
         if ([PNCryptoHelper sharedInstance].isReady) {
 
-            message = [PubNub AESEncrypt:self.message.message error:&encryptionError];
+            message = [PubNub AESEncrypt:message error:&encryptionError];
             
             if (encryptionError != nil) {
 
@@ -146,9 +150,11 @@
         }
     }
     
-    NSMutableString *resourcePath = [NSMutableString stringWithFormat:@"/publish/%@/%@/%@/%@/%@_%@", [PubNub sharedInstance].configuration.publishKey,
-                                     [PubNub sharedInstance].configuration.subscriptionKey, [self signature], [self.message.channel escapedName],
-                                     [self callbackMethodName], self.shortIdentifier];
+    NSMutableString *resourcePath = [NSMutableString stringWithFormat:@"/publish/%@/%@/%@/%@/%@_%@",
+                                     [[PubNub sharedInstance].configuration.publishKey percentEscapedString],
+                                     [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+                                     [self signature], [self.message.channel escapedName], [self callbackMethodName],
+                                     self.shortIdentifier];
     
     if (!self.message.shouldCompressMessage) {
         
@@ -164,8 +170,8 @@
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([PubNub sharedInstance].configuration.publishKey)];
-    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([PubNub sharedInstance].configuration.subscriptionKey)];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.publishKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

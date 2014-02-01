@@ -57,6 +57,11 @@
             ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
 }
 
+- (NSString *)debugResourcePath {
+    
+    return [self resourcePath];
+}
+
 #pragma mark -
 
 

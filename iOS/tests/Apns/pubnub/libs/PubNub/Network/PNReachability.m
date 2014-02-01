@@ -249,7 +249,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Make reachability flags human-readable
     PNReachabilityStatus status = PNReachabilityStatusForFlags(flags);
     BOOL available = [reachabilityMonitor isServiceAvailableForStatus:status];
-
+    
     if (!reachabilityMonitor.isNotificationsSuspended) {
 
         PNLog(PNLogReachabilityLevel, reachabilityMonitor, @"{CALLBACK} PubNub services reachability flags changes: "
@@ -263,9 +263,25 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         reachabilityMonitor.reachabilityFlags = flags;
         reachabilityMonitor.reachabilityStatus = status;
         
-        if (available) {
-            
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+#else
+        BOOL shouldSuspectWrongState = YES;
+#endif
+        
+        if (available && shouldSuspectWrongState) {
+                
             [reachabilityMonitor startOriginLookup];
+        }
+        
+        if (!available || (available && !shouldSuspectWrongState)) {
+            
+            if (!available) {
+                
+                [reachabilityMonitor stopOriginLookup];
+            }
+            
+            reachabilityMonitor.lookupStatus = status;
         }
         
         if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
@@ -494,8 +510,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 #else
     BOOL shouldSuspectWrongState = YES;
 #endif
-    
-    if(shouldSuspectWrongState) {
+
+    if(shouldSuspectWrongState && !self.isNotificationsSuspended) {
         
         // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
         // connection state in non appropriate state
@@ -592,6 +608,10 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             
             self.lookupStatus = PNReachabilityStatusNotReachable;
         }
+    }
+    else if (self.isNotificationsSuspended) {
+        
+        PNLog(PNLogReachabilityLevel, self, @"{UPLINK} Service state changed while suspended");
     }
 }
 

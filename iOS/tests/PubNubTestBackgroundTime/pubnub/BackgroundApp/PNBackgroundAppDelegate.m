@@ -23,18 +23,12 @@
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
 	self.window.rootViewController = navController;
 
-
     [self initializePubNubClient];
 
-//	locationManager = [[CLLocationManager alloc] init];
-//	[locationManager setDelegate:self];
-//	//Only applies when in foreground otherwise it is very significant changes
-//	[locationManager setDesiredAccuracy:kCLLocationAccuracyHundredMeters];
-//	[locationManager startUpdatingLocation];
+	currentInterval = 10;
 
 	[PubNub clientIdentifier];
 	[self connect];
-
 
     return YES;
 }
@@ -49,18 +43,12 @@
 
 
 -(void)openUrl {
-	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: @"myappMediatorTimetoken://"]];
+	NSLog(@"openUrl with interval %d", currentInterval);
+	NSString *url = [NSString stringWithFormat: @"myappMediatorTimetoken://?returnToId=%@&afterSeconds=%d", @"myappTimetoken", currentInterval];
+	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: url]];
+	if( currentInterval < 15*60 )
+		currentInterval *= 2;
 }
-
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-    CLLocationCoordinate2D currentCoordinates = newLocation.coordinate;
-    NSLog(@"Entered new Location with the coordinates Latitude: %f Longitude: %f", currentCoordinates.latitude, currentCoordinates.longitude);
-}
-
-- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-    NSLog(@"Unable to start location manager. Error:%@", [error description]);
-}
-
 
 - (void)initializePubNubClient {
 
@@ -165,7 +153,8 @@
 			[PubNub sendMessage:@"Hello PubNub" toChannel:pnChannel
 										   withCompletionBlock:^(PNMessageState messageSendingState, id data)
 											{
-												[self performSelector: @selector(openUrl) withObject: nil afterDelay: 5.0];
+												if( messageSendingState == PNMessageSent )
+													[self performSelector: @selector(openUrl) withObject: nil afterDelay: 5.0];
 											}];
 
 		 }];
@@ -186,9 +175,10 @@
     if ([[PubNub subscribedChannels] count] > 0) {
 
         lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
+		self.lastClientIdentifier = [PubNub clientIdentifier];
     }
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
+    NSLog( @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
 		  [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
 
 

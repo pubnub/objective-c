@@ -9,11 +9,20 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-	delta = 0.5;
+	delta = 11;
     // Configure application window and its content
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [[UIViewController alloc] init];
     [self.window makeKeyAndVisible];
+
+	isPNSubscriptionProcessWillRestoreStateObserver = YES;
+	isPNSubscriptionProcessRestoredStateObserver = YES;
+
+	isWillRestoreSubscriptionOnChannelsDelegate = YES;
+	isDidRestoreSubscriptionOnChannelsDelegate = YES;
+
+	isPNClientSubscriptionWillRestoreNotification = YES;
+	isPNClientSubscriptionDidRestoreNotification = YES;
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self
@@ -22,16 +31,16 @@
 							 object:nil];
 
 	[notificationCenter addObserver:self
-						   selector:@selector(handleClientDidDisconnectToOriginNotification:)
+						   selector:@selector(kPNClientDidDisconnectFromOriginNotification:)
 							   name:kPNClientDidDisconnectFromOriginNotification
 							 object:nil];
 	[notificationCenter addObserver:self
-						   selector:@selector(handleClientDidDisconnectToOriginNotification:)
+						   selector:@selector(kPNClientConnectionDidFailWithErrorNotification:)
 							   name:kPNClientConnectionDidFailWithErrorNotification
 							 object:nil];
 
 	[notificationCenter addObserver:self
-						   selector:@selector(handleClientSubscriptionProcess:)
+						   selector:@selector(kPNClientSubscriptionDidRestoreNotification:)
 							   name:kPNClientSubscriptionDidRestoreNotification
 							 object:nil];
 
@@ -85,10 +94,10 @@
 
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-	[notificationCenter addObserver:self
-						   selector:@selector(handleClientSubscriptionProcess:)
-							   name:kPNClientSubscriptionDidFailNotification
-							 object:nil];
+//	[notificationCenter addObserver:self
+//						   selector:@selector(handleClientSubscriptionProcess:)
+//							   name:kPNClientSubscriptionDidFailNotification
+//							 object:nil];
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientMessageSendingDidFailNotification:)
 							   name:kPNClientMessageSendingDidFailNotification
@@ -124,38 +133,27 @@
                                                                  withCallbackBlock:^(PNSubscriptionProcessState state,
                                                                                      NSArray *channels,
                                                                                      PNError *subscriptionError) {
+		 switch (state) {
+			 case PNSubscriptionProcessNotSubscribedState:
+				 PNLog(PNLogGeneralLevel, weakSelf,  @"{BLOCK-P} PubNub client subscription failed with error: %@",  subscriptionError);
+				 break;
 
-																	 switch (state) {
+			 case PNSubscriptionProcessSubscribedState:
+				 PNLog(PNLogGeneralLevel, weakSelf,   @"{BLOCK-P} PubNub client subscribed on channels: %@",  channels);
+				 break;
 
-																		 case PNSubscriptionProcessNotSubscribedState:
+			 case PNSubscriptionProcessWillRestoreState:
+//				 [self addMessagetoLog: [NSString stringWithFormat: @"PubNub client will restore subscribed on channels: %@", channels]];
+				 isPNSubscriptionProcessWillRestoreStateObserver = YES;
+				 [self addMessagetoLog: @"PNSubscriptionProcessWillRestoreStateObserver"];
+				 break;
 
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client subscription failed with error: %@",
-																				   subscriptionError);
-																			 break;
-
-																		 case PNSubscriptionProcessSubscribedState:
-
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client subscribed on channels: %@",
-																				   channels);
-																			 break;
-
-																		 case PNSubscriptionProcessWillRestoreState:
-
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
-																				   channels);
-																			 break;
-
-																		 case PNSubscriptionProcessRestoredState:
-
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
-																				   channels);
-																			 break;
-																	 }
-																 }];
+			 case PNSubscriptionProcessRestoredState:
+				 isPNSubscriptionProcessRestoredStateObserver = YES;
+				 [self addMessagetoLog: [NSString stringWithFormat: @"PNSubscriptionProcessRestoredStateObserver, restores subscribed on channels: %@", channels]];
+				 break;
+		 }
+	 }];
 
     // Subscribe on message arrival events with block
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:weakSelf
@@ -206,55 +204,37 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 	NSLog(@"connection didReceiveResponse");
-    // A response has been received, this is where we initialize the instance var you created
-    // so that we can append data to it in the didReceiveData method
-    // Furthermore, this method is called each time there is a redirect so reinitializing it
-    // also serves to clear it
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    // Append the new data to the instance variable you declared
 	NSLog(@"connection didReceiveData");
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection
                   willCacheResponse:(NSCachedURLResponse*)cachedResponse {
 	NSLog(@"connection willCacheResponse");
-    // Return nil to indicate not necessary to store a cached response for this connection
     return nil;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 	NSLog(@"connection connectionDidFinishLoading");
-    // The request is complete and data has been received
-    // You can parse the stuff in your instance variable now
-
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
 	NSLog(@"connection didFailWithError %@", error);
-    // The request has failed for some reason!
-    // Check the error var
 }
 
 - (void)handleClientDidConnectToOriginNotification:(NSNotification *)notification {
 	[self addMessagetoLog: [NSString stringWithFormat: @"handleClientDidConnectToOriginNotification: %@", notification]];
-//	log.text = [log.text stringByAppendingFormat:@"%@ Connected (%2.2f sec). Start reconnect\n", [NSDate date], -[lastWiFiReconnect timeIntervalSinceNow]];
-////	[self wifiOff];
-//	[self wifiOn];
-//	log.text = [log.text stringByAppendingFormat:@"%@ reconnected wifi\n", [NSDate date]];
-//	lastWiFiReconnect = [NSDate dateWithTimeIntervalSinceNow: 20];
-//	NSRange range = NSMakeRange(log.text.length - 1, 1);
-//	[log scrollRangeToVisible:range];
-	[self subscribeOnChannels];
+	[self performSelector: @selector(subscribeOnChannels) withObject: nil afterDelay: 20];
 }
 
-- (void)handleClientDidDisconnectToOriginNotification:(NSNotification *)notification {
-	PNLog(PNLogGeneralLevel, nil, @"handleClientDidDisconnectToOriginNotification: %@", notification);
-	log.text = [log.text stringByAppendingFormat:@"%@ %@\n", [NSDate date], notification.name];
+- (void)kPNClientConnectionDidFailWithErrorNotification:(NSNotification *)notification {
+	[self addMessagetoLog: @"kPNClientConnectionDidFailWithErrorNotification"];
+}
 
-	NSRange range = NSMakeRange(log.text.length - 1, 1);
-	[log scrollRangeToVisible:range];
+- (void)kPNClientDidDisconnectFromOriginNotification:(NSNotification *)notification {
+	[self addMessagetoLog: notification.name];
 }
 
 
@@ -262,10 +242,15 @@
 {
 	[self addMessagetoLog: @"start subscribeOnChannels"];
 	pnChannels = [PNChannel channelsWithNames:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
+	__block NSDate *start = [NSDate date];
 	[PubNub subscribeOnChannels: pnChannels
 	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 	 {
-		 [self addMessagetoLog: [NSString stringWithFormat: @"subscribeOnChannels, %@ %@", (subscriptionError==nil) ? @"" : @"error",  (subscriptionError== nil) ? @"" : subscriptionError]];
+		 NSTimeInterval interval = -[start timeIntervalSinceNow];
+//		 if( interval > delta )
+//			 [self performSelector: @selector(errorSelectorSubscribeOnChannels)];
+
+		 [self addMessagetoLog: [NSString stringWithFormat: @"subscribeOnChannels, %@ %@, interval %f", (subscriptionError==nil) ? @"" : @"error",  (subscriptionError== nil) ? @"" : subscriptionError, interval]];
 //		 if( subscriptionError != nil )
 //			 [self performSelector: @selector(errorSelector)];
 
@@ -273,16 +258,40 @@
 		 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		 dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 			 [self sendMessages];
+			 [self requestParticipantsListForChannel];
 		 });
 	}];
+}
+
+-(void)requestParticipantsListForChannel {
+	for( int i=0; i<pnChannels.count; i++ ) {
+		__block NSNumber *isBlockCalled = [NSNumber numberWithBool: NO];
+		[self addMessagetoLog: [NSString stringWithFormat: @"requestParticipants, ch № %d", i]];
+		__block NSDate *start = [NSDate date];
+		[PubNub requestParticipantsListForChannel:pnChannels[i] withCompletionBlock:^(NSArray *udids, PNChannel *channel, PNError *error)
+		{
+			NSTimeInterval interval = -[start timeIntervalSinceNow];
+			[self addMessagetoLog: [NSString stringWithFormat: @"requestParticipants finish, err %@, interval %f", error, interval]];
+			if( interval > delta )
+				[self performSelector: @selector(errorSelectorServerTimeToken)];
+			NSLog(@"udids %@", udids);
+			isBlockCalled = [NSNumber numberWithBool: YES];
+		}];
+		int64_t delayInSeconds = 15;
+		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+		dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+			[self addMessagetoLog: [NSString stringWithFormat: @"requestParticipants block called: %d", [isBlockCalled boolValue]]];
+			if( [isBlockCalled boolValue] == NO )
+				[self performSelector: @selector(errorSelectorRequestParticipantsListForChannel)];
+		});
+	}
 }
 
 - (void)handleClientConnectionStateChange:(NSNotification *)notification {
 }
 
--(void)sendMessages
-{
-	NSLog(@"sendMessages");
+-(void)sendMessages {
+	[self addMessagetoLog:@"sendMessages"];
 	for( int i=0; i<pnChannels.count; i++ )
 	{
 		[PubNub sendMessage: [NSString stringWithFormat: @"Hello PubNub, %@", [NSDate date]]
@@ -296,10 +305,29 @@
 }
 
 -(void)startTest {
-	int64_t delayInSeconds = 15;
+//	if( isPNSubscriptionProcessWillRestoreStateObserver == NO )
+//		[self performSelector: @selector(errorSelectorPNSubscriptionProcessRestoredState)];
+	if( isPNSubscriptionProcessWillRestoreStateObserver == NO || isPNSubscriptionProcessRestoredStateObserver == NO || isWillRestoreSubscriptionOnChannelsDelegate == NO || isDidRestoreSubscriptionOnChannelsDelegate == NO || isPNClientSubscriptionWillRestoreNotification == NO || isPNClientSubscriptionDidRestoreNotification == NO )
+		[self performSelector: @selector(errorSelectorRestore)];
+
+	int64_t delayInSeconds = 14;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+		[self requestParticipantsListForChannel];
+	});
+
+	delayInSeconds = 15;
+	popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 		[self addMessagetoLog: @"turning off WifI"];
+		isPNSubscriptionProcessWillRestoreStateObserver = NO;
+		isPNSubscriptionProcessRestoredStateObserver = NO;
+
+		isWillRestoreSubscriptionOnChannelsDelegate = NO;
+		isDidRestoreSubscriptionOnChannelsDelegate = NO;
+
+		isPNClientSubscriptionWillRestoreNotification = NO;
+		isPNClientSubscriptionDidRestoreNotification = NO;
 		[self wifiOff];
 	});
 
@@ -309,31 +337,42 @@
 		[self sendMessagesForFail];
 		[self requestHistoryForChannelFail];
 		[self requestServerTimeTokenWithCompletionBlock];
+		[self requestParticipantsListForChannel];
 	});
 }
 
 -(void)sendMessagesForFail
 {
-	[self addMessagetoLog: @"sendMessagesForFail"];
-	startSendMessage = [NSDate date];
+	//[self addMessagetoLog: @"sendMessagesForFail start"];
 	for( int i=0; i<pnChannels.count; i++ )
 	{
-		__block NSDate *start = [NSDate date];
-		[PubNub sendMessage: [NSString stringWithFormat: @"Hello PubNub, %@", [NSDate date]]
+		__block NSDate *start;
+		startSendMessage = [NSDate date];
+		[self addMessagetoLog: [NSString stringWithFormat: @"sendMessagesForFail start, channel № %d", i]];
+		[PubNub sendMessage: [NSString stringWithFormat: @"Hello PubNub (fail), %@", [NSDate date]]
 				  toChannel:pnChannels[i]
 		withCompletionBlock:^(PNMessageState messageSendingState, id data)
 		 {
+			 if( messageSendingState == PNMessageSending ) {
+				 [self addMessagetoLog: @"PNMessageSending"];
+				startSendMessage = [NSDate date];
+				start = [NSDate date];
+				return;
+			 }
+
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 [self addMessagetoLog: [NSString stringWithFormat: @"send message for fail, state %d, interval %f", messageSendingState, interval]];
 			 if( interval > delta )
-				 [self performSelector: @selector(errorSelectorSendMesage)];
+				 [self performSelector: @selector(errorSelectorSendMessage)];
 		 }];
 		NSLog(@"sendMessage");
 	}
 }
 
 -(void)kPNClientMessageSendingDidFailNotification:(NSNotification*)notification {
+	[self addMessagetoLog: [NSString stringWithFormat: @"kPNClientMessageSendingDidFailNotification %@", notification]];
 	NSTimeInterval interval = -[startSendMessage timeIntervalSinceNow];
+	[self addMessagetoLog: [NSString stringWithFormat: @"kPNClientMessageSendingDidFailNotification, interval %f", interval]];
 	if( interval > delta )
 		[self performSelector: @selector(errorSelectorPNClientMessageSendingDidFailNotification)];
 	[self addMessagetoLog: [NSString stringWithFormat: @"kPNClientMessageSendingDidFailNotification, interval %f", interval]];
@@ -354,9 +393,9 @@
 				 withCompletionBlock:^(NSArray *messages, PNChannel *channel, PNDate *startDate, PNDate *endDate, PNError *error)
 	 {
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
-		 if( interval > delta )
-			 [self performSelector: @selector(errorSelectorHistoryForChannel)];
 		 [self addMessagetoLog: [NSString stringWithFormat: @"history channel fail, error %@, interval %f", error, interval]];
+//		 if( interval > delta )
+//			 [self performSelector: @selector(errorSelectorHistoryForChannel)];
 	 }];
 }
 
@@ -389,52 +428,61 @@
 	[PubNub requestServerTimeTokenWithCompletionBlock:^(NSNumber *timeToken, PNError *error)
 	 {
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
+		 [self addMessagetoLog: [NSString stringWithFormat: @"requestServerTimeToken, error %@, interval %f", error, interval]];
 		 if( interval > delta )
 			 [self performSelector: @selector(errorSelectorServerTimeToken)];
-		 [self addMessagetoLog: [NSString stringWithFormat: @"requestServerTimeToken, error %@, interval %f", error, interval]];
 	 }];
 }
 
 -(void)kPNClientDidFailTimeTokenReceiveNotification:(NSNotification*)notification {
 	NSTimeInterval interval = -[startTimeToken timeIntervalSinceNow];
+	[self addMessagetoLog: [NSString stringWithFormat: @"kPNClientDidFailTimeTokenReceiveNotification, interval %f", interval]];
 	if( interval > delta )
 		[self performSelector: @selector(errorSelectorPNClientDidFailTimeTokenReceiveNotification)];
-	[self addMessagetoLog: [NSString stringWithFormat: @"kPNClientDidFailTimeTokenReceiveNotification, interval %f", interval]];
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)handleClientSubscriptionProcess:(NSNotification *)notification {
-    NSArray *channels = nil;
-//    PNError *error = nil;
-    PNSubscriptionProcessState state = PNSubscriptionProcessNotSubscribedState;
-
-    // Check whether arrived notification that subscription failed or not
-    if ([notification.name isEqualToString:kPNClientSubscriptionDidFailNotification] ||
-        [notification.name isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
-    }
-    else {
-
-        // Retrieve list of channels on which event is occurred
-        channels = (NSArray *)notification.userInfo;
-        state = PNSubscriptionProcessSubscribedState;
-
-        // Check whether arrived notification that subscription will be restored
-        if ([notification.name isEqualToString:kPNClientSubscriptionWillRestoreNotification]) {
-
-            state = PNSubscriptionProcessWillRestoreState;
-        }
-        // Check whether arrived notification that subscription restored
-        else if ([notification.name isEqualToString:kPNClientSubscriptionDidRestoreNotification]) {
-
-            state = PNSubscriptionProcessRestoredState;
-			[self startTest];
-        }
-    }
-
-}
+//- (void)handleClientSubscriptionProcess:(NSNotification *)notification {
+//    NSArray *channels = nil;
+////    PNError *error = nil;
+//    PNSubscriptionProcessState state = PNSubscriptionProcessNotSubscribedState;
+//
+//    // Check whether arrived notification that subscription failed or not
+//    if ([notification.name isEqualToString:kPNClientSubscriptionDidFailNotification] ||
+//        [notification.name isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
+//    }
+//    else {
+//
+//        // Retrieve list of channels on which event is occurred
+//        channels = (NSArray *)notification.userInfo;
+//        state = PNSubscriptionProcessSubscribedState;
+//
+//        // Check whether arrived notification that subscription will be restored
+//        if ([notification.name isEqualToString:kPNClientSubscriptionWillRestoreNotification]) {
+//
+//            state = PNSubscriptionProcessWillRestoreState;
+//        }
+//        // Check whether arrived notification that subscription restored
+//        else if ([notification.name isEqualToString:kPNClientSubscriptionDidRestoreNotification]) {
+//
+//            state = PNSubscriptionProcessRestoredState;
+//			[self startTest];
+//        }
+//    }
+//}
 
 -(void)subscriptionWillRestoreNotification:(NSNotification *)notification {
-//	[self startTest];
+	isPNClientSubscriptionWillRestoreNotification = YES;
+	[self addMessagetoLog: @"kPNClientSubscriptionWillRestoreNotification"];
+}
+
+-(void)kPNClientSubscriptionDidRestoreNotification:(NSNotification *)notification {
+	isPNClientSubscriptionDidRestoreNotification = YES;
+	[self addMessagetoLog: @"kPNClientSubscriptionDidRestoreNotification"];
+//	if( isPNClientSubscriptionWillRestoreNotification == NO )
+//		[self performSelector: @selector(errorSelectorSubscriptionWillRestoreNotification)];
+
+//	[self performSelector: @selector(startTest) withObject: nil afterDelay: 10];
 }
 
 -(NSNumber *)shouldRestoreSubscriptionFromLastTimeToken {
@@ -444,6 +492,18 @@
 -(void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
 	NSLog(@"- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin");
 //	[self startTest];
+}
+
+- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels {
+	isWillRestoreSubscriptionOnChannelsDelegate = YES;
+	[self addMessagetoLog: @"WillRestoreSubscriptionOnChannelsDelegate"];
+}
+
+- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels {
+	isDidRestoreSubscriptionOnChannelsDelegate = YES;
+	[self addMessagetoLog:@"DidRestoreSubscriptionOnChannelsDelegate"];
+//	if( isWillRestoreSubscriptionOnChannelsDelegate == NO )
+//		[self performSelector: @selector(errorSelectorDidRestoreSubscriptionOnChannels)];
 }
 
 

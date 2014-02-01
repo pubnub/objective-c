@@ -97,6 +97,7 @@
 		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5" cipherKey: @"cipherKey"];
 		[PubNub setConfiguration: configuration];
 
+
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
 
 			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
@@ -107,12 +108,14 @@
 								 dispatch_semaphore_signal(semaphore);
 								 STFail(@"connectionError %@", connectionError);
 							 }];
+		for( int j=0; j<10; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	});
 	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
-	[PubNub grantAllAccessRightsForApplicationAtPeriod: 1 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+	[PubNub grantAllAccessRightsForApplicationAtPeriod: 10 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
 		STAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);
 	}];
 	for( int j=0; j<10; j++ )

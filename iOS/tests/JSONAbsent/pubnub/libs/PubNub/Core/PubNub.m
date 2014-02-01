@@ -37,9 +37,9 @@
 
 #pragma mark Static
 
-static NSString * const kPNLibraryVersion = @"3.5.2";
+static NSString * const kPNLibraryVersion = @"3.5.4";
 static NSString * const kPNCodebaseBranch = @"feature-pn392";
-static NSString * const kPNCodeCommitIdentifier = @"9ec85cc6f4a141f80c5ea5b8f56072b5b0b1f0ce";
+static NSString * const kPNCodeCommitIdentifier = @"126d988e1a2c7ff1f5f15e40235e3f9be213d50b";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -160,11 +160,13 @@ static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
  * from many places, use PNObservationCenter methods for this purpose.
  */
 + (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
+                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSInteger)accessPeriodDuration
           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
-+ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                                      clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
++ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels
+                                 accessRights:(PNAccessRights)accessRights
+                                      clients:(NSArray *)clientsAuthorizationKeys
+                                    forPeriod:(NSInteger)accessPeriodDuration
                   withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 + (void)auditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
@@ -196,6 +198,7 @@ static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
 
 + (void)postponeRequestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                                    limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
+                      includingTimeToken:(BOOL)shouldIncludeTimeToken
                      withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
 
@@ -331,22 +334,26 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 /**
  * This method will notify delegate about that subscription failed with error
  */
-- (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error;
+- (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error
+                            completeLockingOperation:(BOOL)shouldCompleteLockingOperation;
 
 /**
  * This method will notify delegate about that unsubscription failed with error
  */
-- (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error;
+- (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error
+                              completeLockingOperation:(BOOL)shouldCompleteLockingOperation;
 
 /**
  * This method will notify delegate about that presence enabling failed with error
  */
-- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error;
+- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error
+                                completeLockingOperation:(BOOL)shouldCompleteLockingOperation;
 
 /**
  * This method will notify delegate about that presence disabling failed with error
  */
-- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error;
+- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error
+                                 completeLockingOperation:(BOOL)shouldCompleteLockingOperation;
 
 /**
  * This method will notify delegate about that push notification enabling failed with error
@@ -710,7 +717,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     PNLog(PNLogGeneralLevel, [self sharedInstance], @"REACHABILITY NOT CHECKED YET. LIBRARY WILL "
                             "CONTINUE CONNECTION IF REACHABILITY WILL REPORT NETWORK AVAILABILITY (STATE: %@)",
                           [self humanReadableStateFrom:[self sharedInstance].state]);
-
+                    
                     [self sharedInstance].asyncLockingOperationInProgress = YES;
                     [self sharedInstance].connectOnServiceReachabilityCheck = YES;
                     [self sharedInstance].connectOnServiceReachability = NO;
@@ -1147,7 +1154,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                             weakSharedInstance.updatingClientIdentifier = NO;
                             [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
 
-                            [weakSharedInstance notifyDelegateAboutSubscriptionFailWithError:resubscriptionError];
+                            [weakSharedInstance notifyDelegateAboutSubscriptionFailWithError:resubscriptionError
+                                                                    completeLockingOperation:YES];
                         }
                     };
 
@@ -1180,7 +1188,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     };
 
                     void(^unsubscribeBlock)(void) = ^{
-
+                        
                         weakSharedInstance.asyncLockingOperationInProgress = NO;
                         [self unsubscribeFromChannels:allChannels withPresenceEvent:YES
                            andCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
@@ -1323,8 +1331,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
-    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO SUBSCRIBE ON CHANNELS: %@ (STATE: %@)",
-          channels, [self humanReadableStateFrom:[self sharedInstance].state]);
+    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO SUBSCRIBE ON CHANNELS: %@ (WITH PRESENCE? %@) (STATE: %@)",
+          channels, (withPresenceEvent ? @"YES" : @"NO"), [self humanReadableStateFrom:[self sharedInstance].state]);
     
     [self performAsyncLockingBlock:^{
 
@@ -1355,7 +1363,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNError *subscriptionError = [PNError errorWithCode:statusCode];
             subscriptionError.associatedObject = channels;
             
-            [[self sharedInstance] notifyDelegateAboutSubscriptionFailWithError:subscriptionError];
+            [[self sharedInstance] notifyDelegateAboutSubscriptionFailWithError:subscriptionError
+                                                       completeLockingOperation:YES];
             
             
             if (handlerBlock) {
@@ -1427,8 +1436,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
      andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
 
-    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO UNSUBSCRIBE FROM CHANNELS: %@ (STATE: %@)",
-          channels, [self humanReadableStateFrom:[self sharedInstance].state]);
+    PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO UNSUBSCRIBE FROM CHANNELS: %@ (WITH PRESENCE? %@) (STATE: %@)",
+          channels, (withPresenceEvent ? @"YES" : @"NO"), [self humanReadableStateFrom:[self sharedInstance].state]);
     
     [self performAsyncLockingBlock:^{
 
@@ -1459,7 +1468,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNError *unsubscriptionError = [PNError errorWithCode:statusCode];
             unsubscriptionError.associatedObject = channels;
 
-            [[self sharedInstance] notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError];
+            [[self sharedInstance] notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError
+                                                         completeLockingOperation:YES];
 
 
             if (handlerBlock) {
@@ -1807,36 +1817,36 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 #pragma mark - PAM management
 
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantReadAccessRightForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
 }
 
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:nil accessRights:PNReadAccessRight clients:nil
                               forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantWriteAccessRightForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                          andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:nil accessRights:PNWriteAccessRight clients:nil
                               forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantAllAccessRightsForApplicationAtPeriod:accessPeriodDuration andCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:nil accessRights:(PNReadAccessRight | PNWriteAccessRight) clients:nil
@@ -1854,26 +1864,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self grantReadAccessRightForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
               withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey {
 
     [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
              withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1882,26 +1892,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
              withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantReadAccessRightForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
                                           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:channels accessRights:PNReadAccessRight clients:nil
                               forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys {
 
     [self grantReadAccessRightForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
              withCompletionHandlingBlock:nil];
 
 }
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1910,26 +1920,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self grantWriteAccessRightForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
               withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                                                 client:(NSString *)clientAuthorizationKey {
 
     [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
               withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                  client:(NSString *)clientAuthorizationKey
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1938,26 +1948,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
               withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantWriteAccessRightForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
              withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:channels accessRights:PNWriteAccessRight clients:nil
                               forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys {
 
     [self grantWriteAccessRightForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
               withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1966,26 +1976,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self grantAllAccessRightsForChannels:(channel ? @[channel] : nil) forPeriod:accessPeriodDuration
               withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey {
 
     [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration client:clientAuthorizationKey
              withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -1994,26 +2004,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
              withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration {
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration {
 
     [self grantAllAccessRightsForChannels:channels forPeriod:accessPeriodDuration withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
     [self changeAccessRightsForChannels:channels accessRights:(PNReadAccessRight | PNWriteAccessRight)
                                 clients:nil forPeriod:accessPeriodDuration withCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys {
 
     [self grantAllAccessRightsForChannel:channel forPeriod:accessPeriodDuration clients:clientsAuthorizationKeys
              withCompletionHandlingBlock:nil];
 }
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSUInteger)accessPeriodDuration
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
@@ -2072,7 +2082,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)accessPeriodDuration
+                              clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSInteger)accessPeriodDuration
           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
     
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO CHANGE ACCESS RIGHTS (STATE: %@)",
@@ -2145,10 +2155,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
 }
 
-+ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels
-                                 accessRights:(PNAccessRights)accessRights
++ (void)postponeChangeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
                                       clients:(NSArray *)clientsAuthorizationKeys
-                                    forPeriod:(NSUInteger)accessPeriodDuration
+                                    forPeriod:(NSInteger)accessPeriodDuration
                   withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
     
     SEL selector = @selector(changeAccessRightsForChannels:accessRights:clients:forPeriod:withCompletionHandlingBlock:);
@@ -2370,7 +2379,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             presenceEnableError.associatedObject = channels;
             
             
-            [[self sharedInstance] notifyDelegateAboutPresenceEnablingFailWithError:presenceEnableError];
+            [[self sharedInstance] notifyDelegateAboutPresenceEnablingFailWithError:presenceEnableError
+                                                           completeLockingOperation:YES];
             
             if (handlerBlock != nil) {
                 
@@ -2448,7 +2458,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             presencedisableError.associatedObject = channels;
             
             
-            [[self sharedInstance] notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError];
+            [[self sharedInstance] notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError
+                                                            completeLockingOperation:YES];
             
             if (handlerBlock != nil) {
                 
@@ -2648,120 +2659,185 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (void)requestFullHistoryForChannel:(PNChannel *)channel {
     
-    [self requestFullHistoryForChannel:channel withCompletionBlock:nil];
+    [self requestFullHistoryForChannel:channel includingTimeToken:NO];
 }
 
 + (void)requestFullHistoryForChannel:(PNChannel *)channel
                  withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
     
-    [self requestHistoryForChannel:channel from:nil to:nil withCompletionBlock:handleBlock];
+    [self requestFullHistoryForChannel:channel includingTimeToken:NO withCompletionBlock:handleBlock];
+}
+
++ (void)requestFullHistoryForChannel:(PNChannel *)channel includingTimeToken:(BOOL)shouldIncludeTimeToken {
+    
+    [self requestFullHistoryForChannel:channel includingTimeToken:shouldIncludeTimeToken withCompletionBlock:nil];
+}
+
++ (void)requestFullHistoryForChannel:(PNChannel *)channel includingTimeToken:(BOOL)shouldIncludeTimeToken
+                 withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:nil includingTimeToken:shouldIncludeTimeToken
+               withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate {
     
-    [self requestHistoryForChannel:channel from:startDate to:nil];
+    [self requestHistoryForChannel:channel from:startDate includingTimeToken:NO];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate includingTimeToken:NO withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate includingTimeToken:(BOOL)shouldIncludeTimeToken {
+    
+    [self requestHistoryForChannel:channel from:startDate includingTimeToken:shouldIncludeTimeToken
+               withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate includingTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+
+    [self requestHistoryForChannel:channel from:startDate to:nil includingTimeToken:shouldIncludeTimeToken
+               withCompletionBlock:handleBlock];
 }
 
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate {
     
-    [self requestHistoryForChannel:channel from:startDate to:endDate withCompletionBlock:nil];
+    [self requestHistoryForChannel:channel from:startDate to:endDate includingTimeToken:NO];
 }
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
     
-    [self requestHistoryForChannel:channel from:startDate to:nil withCompletionBlock:handleBlock];
-}
-
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                              to:(PNDate *)endDate
-             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
-    
-    [self requestHistoryForChannel:channel from:startDate to:endDate limit:0 withCompletionBlock:handleBlock];
-}
-
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                           limit:(NSUInteger)limit {
-    
-    [self requestHistoryForChannel:channel from:startDate to:nil limit:limit];
-}
-
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                              to:(PNDate *)endDate
-                           limit:(NSUInteger)limit {
-    
-    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit withCompletionBlock:nil];
-}
-
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                           limit:(NSUInteger)limit
-             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
-    
-    [self requestHistoryForChannel:channel from:startDate to:nil limit:limit withCompletionBlock:handleBlock];
-}
-
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                              to:(PNDate *)endDate
-                           limit:(NSUInteger)limit
-             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
-    
-    [self requestHistoryForChannel:channel
-                              from:startDate
-                                to:endDate
-                             limit:limit
-                    reverseHistory:NO
+    [self requestHistoryForChannel:channel from:startDate to:endDate includingTimeToken:NO
                withCompletionBlock:handleBlock];
 }
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                           limit:(NSUInteger)limit
-                  reverseHistory:(BOOL)shouldReverseMessageHistory {
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+              includingTimeToken:(BOOL)shouldIncludeTimeToken {
     
-    [self requestHistoryForChannel:channel from:startDate to:nil limit:limit reverseHistory:shouldReverseMessageHistory];
-}
-
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                              to:(PNDate *)endDate
-                           limit:(NSUInteger)limit
-                  reverseHistory:(BOOL)shouldReverseMessageHistory {
-    
-    [self requestHistoryForChannel:channel
-                              from:startDate
-                                to:endDate
-                             limit:limit
-                    reverseHistory:shouldReverseMessageHistory
+    [self requestHistoryForChannel:channel from:startDate to:endDate includingTimeToken:shouldIncludeTimeToken
                withCompletionBlock:nil];
 }
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                           limit:(NSUInteger)limit
-                  reverseHistory:(BOOL)shouldReverseMessageHistory
-             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+              includingTimeToken:(BOOL)shouldIncludeTimeToken withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
     
-    [self requestHistoryForChannel:channel
-                              from:startDate
-                                to:nil
-                             limit:limit
-                    reverseHistory:shouldReverseMessageHistory
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:0 includingTimeToken:shouldIncludeTimeToken
                withCompletionBlock:handleBlock];
 }
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel
-                            from:(PNDate *)startDate
-                              to:(PNDate *)endDate
-                           limit:(NSUInteger)limit
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit {
+    
+    [self requestHistoryForChannel:channel from:startDate limit:limit includingTimeToken:NO];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate limit:limit includingTimeToken:NO withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+              includingTimeToken:(BOOL)shouldIncludeTimeToken {
+    
+    [self requestHistoryForChannel:channel from:startDate limit:limit includingTimeToken:shouldIncludeTimeToken
+               withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+              includingTimeToken:(BOOL)shouldIncludeTimeToken withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate to:nil limit:limit includingTimeToken:shouldIncludeTimeToken
+               withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+                           limit:(NSUInteger)limit {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit includingTimeToken:NO];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+                           limit:(NSUInteger)limit withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit includingTimeToken:NO
+               withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
+              includingTimeToken:(BOOL)shouldIncludeTimeToken {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit includingTimeToken:shouldIncludeTimeToken
+               withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
+              includingTimeToken:(BOOL)shouldIncludeTimeToken withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit reverseHistory:NO
+                includingTimeToken:shouldIncludeTimeToken withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory {
+    
+    [self requestHistoryForChannel:channel from:startDate limit:limit reverseHistory:shouldReverseMessageHistory
+                includingTimeToken:NO];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate limit:limit reverseHistory:shouldReverseMessageHistory
+                includingTimeToken:NO withCompletionBlock:handleBlock];
+}
 
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken {
+    
+    [self requestHistoryForChannel:channel from:startDate limit:limit reverseHistory:shouldReverseMessageHistory
+                includingTimeToken:shouldIncludeTimeToken withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate to:nil limit:limit reverseHistory:shouldReverseMessageHistory
+                includingTimeToken:shouldIncludeTimeToken withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+                           limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit reverseHistory:shouldReverseMessageHistory
+                includingTimeToken:NO];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+                           limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit reverseHistory:shouldReverseMessageHistory
+                includingTimeToken:NO withCompletionBlock:handleBlock];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken {
+    
+    [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit reverseHistory:shouldReverseMessageHistory
+                includingTimeToken:shouldIncludeTimeToken withCompletionBlock:nil];
+}
+
++ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
+                  reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken
+             withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+    
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO REQUEST HISTORY FOR CHANNEL: %@ (STATE: %@)",
           channel, [self humanReadableStateFrom:[self sharedInstance].state]);
     
@@ -2770,7 +2846,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
         if (statusCode == 0) {
-
+            
             PNLog(PNLogGeneralLevel, [self sharedInstance], @"REQUEST HISTORY FOR CHANNEL: %@ (STATE: %@)",
                   channel, [self humanReadableStateFrom:[self sharedInstance].state]);
             
@@ -2781,15 +2857,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
             
             PNMessageHistoryRequest *request = [PNMessageHistoryRequest messageHistoryRequestForChannel:channel
-                                                                                                   from:startDate
-                                                                                                     to:endDate
-                                                                                                  limit:limit
-                                                                                         reverseHistory:shouldReverseMessageHistory];
+                                                                from:startDate to:endDate limit:limit
+                                                      reverseHistory:shouldReverseMessageHistory
+                                                  includingTimeToken:shouldIncludeTimeToken];
             [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
         // Looks like client can't send request because of some reasons
         else {
-
+            
             PNLog(PNLogGeneralLevel, [self sharedInstance], @"CAN'T REQUEST HISTORY FOR CHANNEL: %@ (STATE: %@)",
                   channel, [self humanReadableStateFrom:[self sharedInstance].state]);
             
@@ -2797,35 +2872,34 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             sendingError.associatedObject = channel;
             
             [[self sharedInstance] notifyDelegateAboutHistoryDownloadFailedWithError:sendingError];
-
+            
             if (handleBlock) {
-
+                
                 handleBlock(nil, channel, startDate, endDate, sendingError);
             }
         }
     }
            postponedExecutionBlock:^{
-
+               
                PNLog(PNLogGeneralLevel, [self sharedInstance], @"POSTPONE HISTORY REQUEST FOR CHANNEL: %@ (STATE: %@)",
                      channel, [self humanReadableStateFrom:[self sharedInstance].state]);
 
                [self postponeRequestHistoryForChannel:channel from:startDate to:endDate limit:limit
                                        reverseHistory:shouldReverseMessageHistory
+                                   includingTimeToken:shouldIncludeTimeToken
                                   withCompletionBlock:(handleBlock ? [handleBlock copy] : nil)];
            }];
 }
 
 + (void)postponeRequestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                                    limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
+                      includingTimeToken:(BOOL)shouldIncludeTimeToken
                      withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
-    
-    [[self sharedInstance] postponeSelector:@selector(requestHistoryForChannel:from:to:limit:reverseHistory:withCompletionBlock:)
-                                  forObject:self
-                             withParameters:@[PNNillIfNotSet(channel),
-                                              PNNillIfNotSet(startDate),
-                                              PNNillIfNotSet(endDate),
-                                              @(limit),
-                                              @(shouldReverseMessageHistory),
+
+    SEL selector = @selector(requestHistoryForChannel:from:to:limit:reverseHistory:includingTimeToken:withCompletionBlock:);
+    [[self sharedInstance] postponeSelector:selector forObject:self
+                             withParameters:@[PNNillIfNotSet(channel), PNNillIfNotSet(startDate), PNNillIfNotSet(endDate),
+                                              @(limit), @(shouldReverseMessageHistory), @(shouldIncludeTimeToken),
                                               PNNillIfNotSet(handleBlock)]
                                  outOfOrder:NO];
 }
@@ -2914,18 +2988,25 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     // Check whether user provided JSON string or not.
     if ([PNJSONSerialization isJSONString:object]) {
 
-        __block id decodedJSONObject = nil;
-        [PNJSONSerialization JSONObjectWithString:object
-                                  completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
+        if ([object isKindOfClass:[NSString class]]) {
+            
+            __block id decodedJSONObject = nil;
+            [PNJSONSerialization JSONObjectWithString:object
+                                      completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
 
                                       decodedJSONObject = result;
                                   }
                                        errorBlock:^(NSError *error) {
 
-                                           PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
-                                       }];
-
-        object = decodedJSONObject;
+                                               PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
+                                           }];
+            
+            object = decodedJSONObject;
+        }
+        else {
+            
+            decryptedObject = object;
+        }
     }
 
     if ([PNCryptoHelper sharedInstance].isReady) {
@@ -3182,7 +3263,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                     PNLog(PNLogGeneralLevel, weakSelf, @"INTERNET CONNECITON AVAILABLE. TRY TO CONNECT (STATE: %@)",
                           [weakSelf humanReadableStateFrom:weakSelf.state]);
-
+                    
                     weakSelf.asyncLockingOperationInProgress = NO;
                     
                     [[weakSelf class] connect];
@@ -3238,7 +3319,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         
                         // Check whether should restore connection or not
                         if([weakSelf shouldRestoreConnection] || weakSelf.shouldConnectOnServiceReachability) {
-
+                            
                             weakSelf.asyncLockingOperationInProgress = NO;
                             if(!weakSelf.shouldConnectOnServiceReachability){
 
@@ -3738,7 +3819,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                                 PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION. REACHABILITY CHECK "
                                       "COMPLETED (STATE: %@)", [self humanReadableStateFrom:self.state]);
-
+                                
                                 self.asyncLockingOperationInProgress = NO;
                                 self.restoringConnection = YES;
 
@@ -3788,7 +3869,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                 PNLog(PNLogGeneralLevel, self, @"CLIENT SHOULD RESTORE CONNECTION. WAS CONNECTED BEFORE. (STATE: %@)",
                       [self humanReadableStateFrom:self.state]);
-
+                
                 self.asyncLockingOperationInProgress = NO;
                 self.restoringConnection = YES;
                 
@@ -3798,7 +3879,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         }
         // Check whether connection has been closed because PubNub client updates it's configuration
         else if (self.state == PNPubNubClientStateDisconnectingOnConfigurationChange) {
-
+            
             self.asyncLockingOperationInProgress = NO;
             
             // Close connection to PubNub services
@@ -3851,14 +3932,24 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     //
 }
 
-- (void)connectionChannelDidResume:(PNConnectionChannel *)channel {
+- (void)connectionChannelDidResume:(PNConnectionChannel *)channel requireWarmUp:(BOOL)isWarmingUpRequired {
 
-    [self warmUpConnection:channel];
+    // Checking whether connection should be 'warmed up' to keep it open or not.
+    if (isWarmingUpRequired) {
+
+        [self warmUpConnection:channel];
+    }
 
     // Check whether on resume there is no async locking operation is running
     if (!self.asyncLockingOperationInProgress) {
 
         [self handleLockingOperationComplete:YES];
+    }
+
+    // Checking whether all communication channels connected or not
+    if ([self.messagingChannel isConnected] && [self.serviceChannel isConnected]) {
+
+        [self notifyDelegateAboutConnectionToOrigin:self.configuration.origin];
     }
 }
 
@@ -3908,7 +3999,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @"SUSPENDING...");
 
             self.state = PNPubNubClientStateSuspended;
-
+            
             self.asyncLockingOperationInProgress = NO;
             [self.messagingChannel suspend];
             [self.serviceChannel suspend];
@@ -3964,7 +4055,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @"RESUMING...");
 
             self.state = PNPubNubClientStateConnected;
-
+            
             self.asyncLockingOperationInProgress = NO;
             [self.messagingChannel resume];
             [self.serviceChannel resume];
@@ -4002,7 +4093,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         PNLog(PNLogGeneralLevel, self, @"SUSPENDING...");
 
         self.state = PNPubNubClientStateSuspended;
-
+        
         self.asyncLockingOperationInProgress = NO;
         [self.messagingChannel suspend];
         [self.serviceChannel suspend];
@@ -4060,7 +4151,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @"RESUMING...");
 
             self.state = PNPubNubClientStateConnected;
-
+            
             self.asyncLockingOperationInProgress = NO;
             [self.messagingChannel resume];
             [self.serviceChannel resume];
@@ -4114,9 +4205,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext {
-
+    
     self.asyncLockingOperationInProgress = NO;
-
 
     // Perform post completion block
     // INFO: This is done to handle situation when some block may launch locking operation
@@ -4237,7 +4327,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [invocationsForFlush enumerateObjectsUsingBlock:^(NSInvocation *postponedInvocation,
                                                      NSUInteger postponedInvocationIdx,
                                                      BOOL *postponedInvocationEnumeratorStop) {
-
+        
         self.asyncLockingOperationInProgress = NO;
         if (postponedInvocation && shouldExecute) {
 
@@ -4289,6 +4379,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 
                 NSInteger signedInteger = [(NSNumber *)parameter integerValue];
                 [methodInvocation setArgument:&signedInteger atIndex:parameterIndex];
+            }
+            else if (strcmp(parameterType, @encode(id)) == 0) {
+
+                [methodInvocation setArgument:&parameter atIndex:parameterIndex];
             }
         }
         else {
@@ -4352,14 +4446,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 }
 
-- (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error {
+- (void)notifyDelegateAboutSubscriptionFailWithError:(PNError *)error
+                            completeLockingOperation:(BOOL)shouldCompleteLockingOperation {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         if (!self.isUpdatingClientIdentifier) {
 
         	PNLog(PNLogGeneralLevel, self, @"FAILED TO SUBSCRIBE (STATE: %@)", [self humanReadableStateFrom:self.state]);
-	
+
         	// Check whether delegate is able to handle subscription error or not
         	if ([self.delegate respondsToSelector:@selector(pubnubClient:subscriptionDidFailWithError:)]) {
 
@@ -4369,7 +4464,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 	        }
     	    PNLog(PNLogDelegateLevel, self, @" PubNub client failed to subscribe because of error: %@", error);
 
-	
+
     	    [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
         }
         else {
@@ -4379,13 +4474,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [self sendNotification:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification withObject:error];
         }
+    };
+
+    if (shouldCompleteLockingOperation) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error {
+- (void)notifyDelegateAboutUnsubscriptionFailWithError:(PNError *)error
+                              completeLockingOperation:(BOOL)shouldCompleteLockingOperation {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         if (!self.isUpdatingClientIdentifier) {
 
@@ -4410,13 +4514,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [self sendNotification:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification withObject:error];
         }
+    };
+
+    if (shouldCompleteLockingOperation) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error {
+- (void)notifyDelegateAboutPresenceEnablingFailWithError:(PNError *)error
+                                completeLockingOperation:(BOOL)shouldCompleteLockingOperation {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO ENABLE PRESENCE (STATE: %@)",
               [self humanReadableStateFrom:self.state]);
@@ -4433,13 +4546,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
         [self sendNotification:kPNClientPresenceEnablingDidFailNotification withObject:error];
+    };
+
+    if (shouldCompleteLockingOperation) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error {
+- (void)notifyDelegateAboutPresenceDisablingFailWithError:(PNError *)error
+                                 completeLockingOperation:(BOOL)shouldCompleteLockingOperation {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"FAILED TO DISABLE PRESENCE (STATE: %@)",
               [self humanReadableStateFrom:self.state]);
@@ -4456,8 +4578,16 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
         [self sendNotification:kPNClientPresenceDisablingDidFailNotification withObject:error];
+    };
+
+    if (shouldCompleteLockingOperation) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
 - (void)notifyDelegateAboutPushNotificationsEnableFailedWithError:(PNError *)error {
@@ -4864,28 +4994,30 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self handleLockingOperationComplete:YES];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willSubscribeOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willSubscribeOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL SUBSCRIBE ON: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     self.restoringConnection = NO;
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlingBlock)(void) = ^{
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
             if (!self.isUpdatingClientIdentifier) {
 
 				PNLog(PNLogGeneralLevel, self, @"SUBSCRIBED ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
-	
+
 				if ([self shouldChannelNotifyAboutEvent:channel]) {
 
 					// Check whether delegate can handle subscription on channel or not
@@ -4909,27 +5041,37 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 				}
 			}
 		}
-	}
-                                shouldStartNext:YES];
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlingBlock shouldStartNext:YES];
+    }
+    else {
+
+        handlingBlock();
+    }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL RESTORE SUBSCRIPTION ON: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 
     [self notifyDelegateAboutResubscribeWillStartOnChannels:channels];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     self.restoringConnection = NO;
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlingBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"RESTORED SUBSCRIPTION ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
 
@@ -4948,31 +5090,40 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
         }
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlingBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlingBlock();
+    }
 }
 
-- (void)  messagingChannel:(PNMessagingChannel *)channel
-didFailSubscribeOnChannels:(NSArray *)channels
-                 withError:(PNError *)error {
+- (void)messagingChannel:(PNMessagingChannel *)channel didFailSubscribeOnChannels:(NSArray *)channels
+               withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channels;
-    [self notifyDelegateAboutSubscriptionFailWithError:error];
+    [self notifyDelegateAboutSubscriptionFailWithError:error completeLockingOperation:!isSequenced];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willUnsubscribeFromChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willUnsubscribeFromChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL UNSUBSCRIBE FROM: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFromChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFromChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
@@ -5003,39 +5154,48 @@ didFailSubscribeOnChannels:(NSArray *)channels
 				}
 			}
 		}
-	}
-                                shouldStartNext:YES];
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
+    }
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)    messagingChannel:(PNMessagingChannel *)channel
-didFailUnsubscribeOnChannels:(NSArray *)channels
-                   withError:(PNError *)error {
+- (void)messagingChannel:(PNMessagingChannel *)channel didFailUnsubscribeOnChannels:(NSArray *)channels
+               withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channels;
-    [self notifyDelegateAboutUnsubscriptionFailWithError:error];
+    [self notifyDelegateAboutUnsubscriptionFailWithError:error completeLockingOperation:!isSequenced];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willEnablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willEnablePresenceObservationOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL ENABLE PRESENCE ON: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"DID ENABLE PRESENCE ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
-        
+
         if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
-            
+
             // Check whether delegate can handle new message arrival or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)]) {
-                
+
                 [self.delegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)
                                     withObject:self
                                     withObject:channels];
@@ -5046,39 +5206,48 @@ didFailUnsubscribeOnChannels:(NSArray *)channels
 
             [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channels];
         }
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)         messagingChannel:(PNMessagingChannel *)messagingChannel
-didFailPresenceEnablingOnChannels:(NSArray *)channels
-                        withError:(PNError *)error {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceEnablingOnChannels:(NSArray *)channels
+               withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channels;
-    [self notifyDelegateAboutPresenceEnablingFailWithError:error];
+    [self notifyDelegateAboutPresenceEnablingFailWithError:error completeLockingOperation:!isSequenced];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willDisablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willDisablePresenceObservationOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
     PNLog(PNLogGeneralLevel, self, @"WILL DISABLE PRESENCE ON: %@", channels);
 
     if ([self isConnected]) {
-
+        
         self.asyncLockingOperationInProgress = YES;
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOnChannels:(NSArray *)channels
+               sequenced:(BOOL)isSequenced {
 
-    [self handleLockingOperationBlockCompletion:^{
+    void(^handlerBlock)(void) = ^{
 
         PNLog(PNLogGeneralLevel, self, @"DID DISABLE PRESENCE ON CHANNELS (STATE: %@)", [self humanReadableStateFrom:self.state]);
-        
+
         if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
-            
+
             // Check whether delegate can handle new message arrival or not
             if ([self.delegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)]) {
-                
+
                 [self.delegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)
                                     withObject:self
                                     withObject:channels];
@@ -5086,19 +5255,26 @@ didFailPresenceEnablingOnChannels:(NSArray *)channels
             PNLog(PNLogDelegateLevel, self, @" PubNub client successfully disabled presence observation on channels: "
                     "%@", channels);
 
-            
+
             [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channels];
         }
+    };
+
+    if (!isSequenced) {
+
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
-                                shouldStartNext:YES];
+    else {
+
+        handlerBlock();
+    }
 }
 
-- (void)          messagingChannel:(PNMessagingChannel *)messagingChannel
-didFailPresenceDisablingOnChannels:(NSArray *)channels
-                         withError:(PNError *)error {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceDisablingOnChannels:(NSArray *)channels
+               withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channels;
-    [self notifyDelegateAboutPresenceDisablingFailWithError:error];
+    [self notifyDelegateAboutPresenceDisablingFailWithError:error completeLockingOperation:!isSequenced];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didReceiveMessage:(PNMessage *)message {

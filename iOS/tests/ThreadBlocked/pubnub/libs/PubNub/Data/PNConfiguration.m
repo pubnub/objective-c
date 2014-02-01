@@ -277,37 +277,37 @@
 
     if (isEqual) {
 
-        isEqual = (self.shouldResubscribeOnConnectionRestore && configuration.shouldResubscribeOnConnectionRestore);
+        isEqual = (self.shouldResubscribeOnConnectionRestore == configuration.shouldResubscribeOnConnectionRestore);
     }
 
     if (isEqual) {
 
-        isEqual = (self.shouldRestoreSubscriptionFromLastTimeToken && configuration.shouldRestoreSubscriptionFromLastTimeToken);
+        isEqual = (self.shouldRestoreSubscriptionFromLastTimeToken == configuration.shouldRestoreSubscriptionFromLastTimeToken);
     }
 
     if (isEqual) {
 
-        isEqual = (self.canIgnoreSecureConnectionRequirement && configuration.canIgnoreSecureConnectionRequirement);
+        isEqual = (self.canIgnoreSecureConnectionRequirement == configuration.canIgnoreSecureConnectionRequirement);
     }
 
     if (isEqual) {
 
-        isEqual = (self.shouldReduceSecurityLevelOnError && configuration.shouldReduceSecurityLevelOnError);
+        isEqual = (self.shouldReduceSecurityLevelOnError == configuration.shouldReduceSecurityLevelOnError);
     }
 
     if (isEqual) {
 
-        isEqual = (self.shouldUseSecureConnection && configuration.shouldUseSecureConnection);
+        isEqual = (self.shouldUseSecureConnection == configuration.shouldUseSecureConnection);
     }
 
     if (isEqual) {
 
-        isEqual = (self.shouldAutoReconnectClient && configuration.shouldAutoReconnectClient);
+        isEqual = (self.shouldAutoReconnectClient == configuration.shouldAutoReconnectClient);
     }
 
     if (isEqual) {
 
-        isEqual = (self.shouldAcceptCompressedResponse && configuration.shouldAcceptCompressedResponse);
+        isEqual = (self.shouldAcceptCompressedResponse == configuration.shouldAcceptCompressedResponse);
     }
 
 

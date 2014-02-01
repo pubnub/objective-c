@@ -27,7 +27,7 @@
     [super setUp];
     [PubNub setDelegate:self];
 	pnChannels1 = [PNChannel channelsWithNames:@[@"iosdev1", @"andoirddev1", @"wpdev1", @"ubuntudev1", [NSString stringWithFormat:@"%@", [NSDate date]]]];
-	pnChannels2 = [PNChannel channelsWithNames:@[@"iosdev2", @"andoirddev2", @"wpdev2", @"ubuntudev2", [NSString stringWithFormat:@"%@", [NSDate date]]]];
+	pnChannels2 = [PNChannel channelsWithNames:@[@"iosdev2", @"andoirddev2", @"wpdev2", @"ubuntudev2", [NSString stringWithFormat:@"%@ - 1", [NSDate date]]]];
 
 //	[PubNub resetClient];
 	[PubNub disconnect];

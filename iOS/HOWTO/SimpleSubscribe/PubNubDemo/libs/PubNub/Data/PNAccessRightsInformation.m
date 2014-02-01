@@ -121,7 +121,7 @@
         [description appendFormat:@" channel: %@;", self.channel];
     }
 
-    [description appendFormat:@" access period duration: %d>", self.accessPeriodDuration];
+    [description appendFormat:@" access period duration: %lu>", (unsigned long)self.accessPeriodDuration];
 
 
     return description;
