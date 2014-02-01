@@ -3,6 +3,9 @@
 . didConnectToOrigin is fired when application resumes from background
 . fixed an uplink ping bug
 . removed unused vars and audited for newlines
+. timetoken is now available from didSendMessage delegate in PNMessage reference via date property
+
+
 
 01-24-2014 - 3.5.4
 . fixes issues regarding sending/receiving data when going from foreground/background/foreground
