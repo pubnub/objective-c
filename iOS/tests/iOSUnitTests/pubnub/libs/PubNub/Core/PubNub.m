@@ -1542,9 +1542,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
             
             PNPushNotificationsStateChangeRequest *request;
-            request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
-                                                                                 toState:PNPushNotificationsState.enable
-                                                                             forChannels:channels];
+            request = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken:pushToken
+                                                                                toState:PNPushNotificationsState.enable
+                                                                            forChannels:channels];
             [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
         // Looks like client can't send request because of some reasons
@@ -1631,9 +1631,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
             
             PNPushNotificationsStateChangeRequest *request;
-            request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
-                                                                                 toState:PNPushNotificationsState.disable
-                                                                             forChannels:channels];
+            request = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken:pushToken
+                                                                                toState:PNPushNotificationsState.disable
+                                                                            forChannels:channels];
             [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
         // Looks like client can't send request because of some reasons

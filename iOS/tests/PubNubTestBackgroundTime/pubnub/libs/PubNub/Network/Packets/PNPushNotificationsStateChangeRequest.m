@@ -65,16 +65,16 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 
 #pragma mark - Class methods
 
-+ (PNPushNotificationsStateChangeRequest *)reqauestWithDevicePushToken:(NSData *)pushToken
-                                                               toState:(NSString *)pushNotificationState
-                                                            forChannel:(PNChannel *)channel {
++ (PNPushNotificationsStateChangeRequest *)requestWithDevicePushToken:(NSData *)pushToken
+                                                              toState:(NSString *)pushNotificationState
+                                                           forChannel:(PNChannel *)channel {
 
-    return [self reqauestWithDevicePushToken:pushToken toState:pushNotificationState forChannels:@[channel]];
+    return [self requestWithDevicePushToken:pushToken toState:pushNotificationState forChannels:@[channel]];
 }
 
-+ (PNPushNotificationsStateChangeRequest *)reqauestWithDevicePushToken:(NSData *)pushToken
-                                                               toState:(NSString *)pushNotificationState
-                                                           forChannels:(NSArray *)channels {
++ (PNPushNotificationsStateChangeRequest *)requestWithDevicePushToken:(NSData *)pushToken
+                                                              toState:(NSString *)pushNotificationState
+                                                          forChannels:(NSArray *)channels {
 
     return [[self alloc] initWithToken:pushToken forChannels:channels state:pushNotificationState];
 }

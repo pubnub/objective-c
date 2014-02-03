@@ -50,12 +50,12 @@ extern struct PNPushNotificationsStateStruct PNPushNotificationsState;
 /**
  * pushNotificationState should be one of the PNPushNotificationsStateStruct fields
  */
-+ (PNPushNotificationsStateChangeRequest *)reqauestWithDevicePushToken:(NSData *)pushToken
-                                                               toState:(NSString *)pushNotificationState
-                                                            forChannel:(PNChannel *)channel;
-+ (PNPushNotificationsStateChangeRequest *)reqauestWithDevicePushToken:(NSData *)pushToken
-                                                               toState:(NSString *)pushNotificationState
-                                                           forChannels:(NSArray *)channels;
++ (PNPushNotificationsStateChangeRequest *)requestWithDevicePushToken:(NSData *)pushToken
+                                                              toState:(NSString *)pushNotificationState
+                                                           forChannel:(PNChannel *)channel;
++ (PNPushNotificationsStateChangeRequest *)requestWithDevicePushToken:(NSData *)pushToken
+                                                              toState:(NSString *)pushNotificationState
+                                                          forChannels:(NSArray *)channels;
 
 
 #pragma mark - Instance methods
