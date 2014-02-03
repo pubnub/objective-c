@@ -23,6 +23,8 @@
 @property NSString *lastTimeToken;
 @property NSString *lastClientIdentifier;
 
+@property NSDate *lastResetCall;
+
 #pragma mark -
 
 
