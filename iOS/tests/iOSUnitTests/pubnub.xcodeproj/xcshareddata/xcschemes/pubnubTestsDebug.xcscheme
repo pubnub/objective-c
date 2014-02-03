@@ -26,9 +26,6 @@
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
-                  Identifier = "ApnsToken">
-               </Test>
-               <Test
                   Identifier = "BadJsonTest">
                </Test>
                <Test
@@ -155,6 +152,12 @@
                   Identifier = "PNReachabilityTest">
                </Test>
                <Test
+                  Identifier = "PNResponseDeserializeTest">
+               </Test>
+               <Test
+                  Identifier = "PNResponseParserTest">
+               </Test>
+               <Test
                   Identifier = "PNServiceChannelTest">
                </Test>
                <Test
@@ -165,6 +168,9 @@
                </Test>
                <Test
                   Identifier = "PNTimeTokenRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNTimeTokenResponseParserTest">
                </Test>
                <Test
                   Identifier = "PNWriteBufferTest">

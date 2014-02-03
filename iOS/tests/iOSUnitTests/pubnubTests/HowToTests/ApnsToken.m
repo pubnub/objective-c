@@ -19,6 +19,10 @@
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 
+#import "PNPushNotificationsRemoveRequest.h"
+#import "PNPushNotificationsEnabledChannelsRequest.h"
+#import "PNPushNotificationsStateChangeRequest.h"
+
 @interface ApnsToken : SenTestCase <PNDelegate>{
 	NSArray *pnChannels;
 	BOOL pNClientPushNotificationEnableDidCompleteNotification;
@@ -95,8 +99,7 @@
 }
 //////////////////////////////////////////////////////////////////
 
-- (void)test10Connect
-{
+- (void)test10Connect {
 	[PubNub disconnect];
 
 	int64_t delayInSeconds = 2;
@@ -106,7 +109,7 @@
 
 		[PubNub setDelegate:self];
 		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5" cipherKey: nil authorizationKey: @"authorizationKey"];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5" cipherKey: nil authorizationKey: @"authorization_key"];
 		[PubNub setConfiguration: configuration];
 
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
@@ -130,13 +133,25 @@
 	for( int j=0; j<10; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
+	[self t15PushTokenLowercase];
 	[self t20SubscribeOnChannels];
 	[self t30EnablePushNotificationsOnChannels];
 	[self t40DisablePushNotificationsOnChannels];
 }
 
-- (void)t20SubscribeOnChannels
-{
+-(void)t15PushTokenLowercase {
+	NSString *pushUpperCase = @"PuSh UpperCase 123ABCDE";
+	PNPushNotificationsRemoveRequest *requestRemove = [PNPushNotificationsRemoveRequest requestWithDevicePushToken: [pushUpperCase dataUsingEncoding:NSUTF8StringEncoding]];
+	STAssertTrue( [[requestRemove resourcePath] isEqualToString: [[requestRemove resourcePath] lowercaseString]] == YES, @"");
+
+	PNPushNotificationsEnabledChannelsRequest *requestEnabled = [PNPushNotificationsEnabledChannelsRequest requestWithDevicePushToken: [pushUpperCase dataUsingEncoding:NSUTF8StringEncoding]];
+	STAssertTrue( [[requestEnabled resourcePath] isEqualToString: [[requestEnabled resourcePath] lowercaseString]] == YES, @"");
+
+	PNPushNotificationsStateChangeRequest *requestChange = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken: [pushUpperCase dataUsingEncoding:NSUTF8StringEncoding] toState: @"" forChannels: @[]];
+	STAssertTrue( [[requestChange resourcePath] isEqualToString: [[requestChange resourcePath] lowercaseString]] == YES, @"");
+}
+
+- (void)t20SubscribeOnChannels {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	[PubNub subscribeOnChannels: pnChannels
 	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
