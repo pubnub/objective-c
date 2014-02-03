@@ -22,6 +22,7 @@
 
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
 	self.window.rootViewController = navController;
+	navController.topViewController.navigationItem.title = @"Mediator";
 
 
     [self initializePubNubClient];
@@ -153,7 +154,7 @@
 	if( pnChannel == nil )
 		[self connect];
 	else
-		[self sendMessage];
+		[self performSelector: @selector(sendMessage) withObject: nil afterDelay: 15];
 	return YES;
 }
 
