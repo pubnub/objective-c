@@ -41,7 +41,7 @@
 {
     [super setUp];
     [PubNub setDelegate:self];
-	pnChannels = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"wpdev", @"ubuntudev", @"1"]];
+	pnChannels = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev"]];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(kPNClientPushNotificationEnableDidCompleteNotification:)
