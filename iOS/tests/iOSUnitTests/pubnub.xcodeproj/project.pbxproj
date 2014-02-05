@@ -148,6 +148,7 @@
 		5AD5894218A251D300B72653 /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5893E18A251D300B72653 /* PNConfigurationTest.m */; };
 		5AD5894318A251D300B72653 /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5893F18A251D300B72653 /* PNDateTest.m */; };
 		5AD5894418A251D300B72653 /* PNErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5894018A251D300B72653 /* PNErrorTest.m */; };
+		5AD5894618A25D2D00B72653 /* PNJSONSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5894518A25D2D00B72653 /* PNJSONSerializationTest.m */; };
 		5ADD3088189AADFD00688B3E /* ClientIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ADD307D189AADFD00688B3E /* ClientIdentifier.m */; };
 		5ADD3089189AADFD00688B3E /* PNAccessRightOptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ADD307E189AADFD00688B3E /* PNAccessRightOptionsTest.m */; };
 		5ADD308A189AADFD00688B3E /* PNAccessRightsCollectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ADD307F189AADFD00688B3E /* PNAccessRightsCollectionTest.m */; };
@@ -415,6 +416,7 @@
 		5AD5893E18A251D300B72653 /* PNConfigurationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConfigurationTest.m; sourceTree = "<group>"; };
 		5AD5893F18A251D300B72653 /* PNDateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDateTest.m; sourceTree = "<group>"; };
 		5AD5894018A251D300B72653 /* PNErrorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNErrorTest.m; sourceTree = "<group>"; };
+		5AD5894518A25D2D00B72653 /* PNJSONSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNJSONSerializationTest.m; path = pubnubTests/PNJSONSerializationTest.m; sourceTree = SOURCE_ROOT; };
 		5ADD307D189AADFD00688B3E /* ClientIdentifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientIdentifier.m; sourceTree = "<group>"; };
 		5ADD307E189AADFD00688B3E /* PNAccessRightOptionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightOptionsTest.m; sourceTree = "<group>"; };
 		5ADD307F189AADFD00688B3E /* PNAccessRightsCollectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightsCollectionTest.m; sourceTree = "<group>"; };
@@ -657,6 +659,7 @@
 				5ACA681B185B81F300C2B214 /* PNHereNow.m */,
 				5ACA681C185B81F300C2B214 /* PNJSONSerialization.h */,
 				5ACA681D185B81F300C2B214 /* PNJSONSerialization.m */,
+				5AD5894518A25D2D00B72653 /* PNJSONSerializationTest.m */,
 				5ACA681E185B81F300C2B214 /* PNMessage+Protected.h */,
 				5ACA681F185B81F300C2B214 /* PNMessage.h */,
 				5ACA6820185B81F300C2B214 /* PNMessage.m */,
@@ -1405,6 +1408,7 @@
 				5ADD3088189AADFD00688B3E /* ClientIdentifier.m in Sources */,
 				5ACA68EC185B81F300C2B214 /* PNReachability.m in Sources */,
 				5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */,
+				5AD5894618A25D2D00B72653 /* PNJSONSerializationTest.m in Sources */,
 				5A198E931815884500D20005 /* CatchupTest.m in Sources */,
 				5ADD3092189AADFD00688B3E /* PNWriteBufferTest.m in Sources */,
 				5ACA68BC185B81F300C2B214 /* PNRequestsQueue.m in Sources */,
