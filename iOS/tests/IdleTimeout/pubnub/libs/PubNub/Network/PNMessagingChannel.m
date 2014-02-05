@@ -737,8 +737,10 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
                 [channels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
             }
+
             PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channels
-                                                                                     byUserRequest:YES withMetadata:nil];
+                                                                                     byUserRequest:YES
+                                                                                      withMetadata:request.metadata];
             if (shouldModifyPresence) {
                 
                 subscribeRequest.channelsForPresenceEnabling = request.channelsForPresenceEnabling;
@@ -1043,7 +1045,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
                   "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
 
-            [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels sequenced:NO];
+            [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels sequenced:NO
+                                        withMetadata:metadata];
         }
     }
 }
@@ -2053,8 +2056,10 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON CHANNELS: %@\n(STATE: %d)",
                               self, channelsForSubscription, self.messagingState);
                         
-                        [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:[channelsForSubscription allObjects]
-                                                       sequenced:isInSequence];
+                        [self.messagingDelegate messagingChannel:self
+                                          didSubscribeOnChannels:[channelsForSubscription allObjects]
+                                                       sequenced:isInSequence
+                                                    withMetadata:((PNSubscribeRequest *)request).metadata];
                     }
                 }
                 

@@ -33,9 +33,12 @@
  @param channel
  \b PNChannel instance which identify target for which heartbeat should be sent.
 
+ @param metadata
+ \b NSDictionary instance which hold metadata information for concrete channel.
+
  @return Configured \b PNHeartbeatRequest request which can be used in lower layers.
  */
-+ (PNHeartbeatRequest *)heartbeatRequestForChannel:(PNChannel *)channel;
++ (PNHeartbeatRequest *)heartbeatRequestForChannel:(PNChannel *)channel withMetadata:(NSDictionary *)metadata;
 
 /**
  Create and initialize heartbeat request for set of channels.
@@ -43,9 +46,12 @@
  @param channels
  List of \b PNChannel instances which identify target for which heartbeat should be sent.
 
+ @param metadata
+ \b NSDictionary instance which hold list of metadata for all channels for which heartbeat request is preformed.
+
  @return Configured \b PNHeartbeatRequest request which can be used in lower layers.
  */
-+ (PNHeartbeatRequest *)heartbeatRequestForChannels:(NSArray *)channels;
++ (PNHeartbeatRequest *)heartbeatRequestForChannels:(NSArray *)channels withMetadata:(NSDictionary *)metadata;
 
 
 #pragma mark - Instance methods
@@ -56,9 +62,12 @@
  @param channels
  List of \b PNChannel instances which identify target for which heartbeat should be sent.
 
+ @param metadata
+ \b NSDictionary instance which hold list of metadata for all channels for which heartbeat request is preformed.
+
  @return Initialized \b PNHeartbeatRequest request which can be used in lower layers.
  */
-- (id)initWithChannels:(NSArray *)channels;
+- (id)initWithChannels:(NSArray *)channels withMetadata:(NSDictionary *)metadata;
 
 #pragma mark -
 

@@ -28,6 +28,11 @@
 @property (nonatomic, strong) NSArray *channelsForPresenceEnabling;
 @property (nonatomic, strong) NSArray *channelsForPresenceDisabling;
 
+/**
+ Stores user-provided metadata which should be appended to the client subscription.
+ */
+@property (nonatomic, strong) NSDictionary *metadata;
+
 
 #pragma mark - Instance methods
 

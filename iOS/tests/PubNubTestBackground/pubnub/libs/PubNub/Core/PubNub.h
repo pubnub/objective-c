@@ -757,8 +757,7 @@
  @note You can delete previously configured key from metadata by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's metadata at specified channel.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @since 3.6.0
  */
@@ -795,8 +794,7 @@
  @warning Only last call of this method will call completion block. If you need to track participants loading events
  from many places, use PNObservationCenter methods for this purpose.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @since 3.6.0
  */
@@ -1167,8 +1165,7 @@
  @note You can delete previously configured key from metadata by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's metadata at specified channel.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified metadata) and will subscribe to another
  one, it will override old metadata (if keys are the same or will add new keys into old one).
@@ -1294,8 +1291,7 @@
  @warning Only last call of this method will call completion block. If you need to track subscribe process from many places, use \b PNObservationCenter
  methods for this purpose.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified metadata) and will subscribe to another
  one, it will override old metadata (if keys are the same or will add new keys into old one).
@@ -1614,8 +1610,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @note You can delete previously configured key from metadata by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's metadata at specified channel.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified metadata) and will subscribe to another
  one, it will override old metadata (if keys are the same or will add new keys into old one).
@@ -1748,8 +1743,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @warning Only last call of this method will call completion block. If you need to track subscribe process from many places,
  use \b PNObservationCenter methods for this purpose.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified metadata) and will subscribe to another
  one, it will override old metadata (if keys are the same or will add new keys into old one).
@@ -2045,8 +2039,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @note You can delete previously configured key from metadata by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's metadata at specified channel.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified metadata) and will subscribe to another
  one, it will override old metadata (if keys are the same or will add new keys into old one).
@@ -2174,8 +2167,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @warning Only last call of this method will call completion block. If you need to track subscribe process from many places,
  use \b PNObservationCenter methods for this purpose.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified metadata) and will subscribe to another
  one, it will override old metadata (if keys are the same or will add new keys into old one).
@@ -2494,8 +2486,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @note You can delete previously configured key from metadata by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's metadata at specified channel.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified metadata) and will subscribe to another
  one, it will override old metadata (if keys are the same or will add new keys into old one).
@@ -2627,8 +2618,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @warning Only last call of this method will call completion block. If you need to track subscribe process from many places,
  use \b PNObservationCenter methods for this purpose.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string. Used keys
- can't start with "pn" prefix.
+ @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified metadata) and will subscribe to another
  one, it will override old metadata (if keys are the same or will add new keys into old one).

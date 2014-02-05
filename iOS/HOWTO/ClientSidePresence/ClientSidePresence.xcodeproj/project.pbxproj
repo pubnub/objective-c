@@ -65,6 +65,7 @@
 		5A624175185B8C4500ADE6C3 /* PNServiceChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A624136185B8C4500ADE6C3 /* PNServiceChannel.m */; };
 		5A624176185B8C4500ADE6C3 /* PNConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A62413A185B8C4500ADE6C3 /* PNConnection.m */; };
 		5A624177185B8C4500ADE6C3 /* PNConnectionChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A62413D185B8C4500ADE6C3 /* PNConnectionChannel.m */; };
+		79471DE818A259F800EEE9A0 /* PNCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 79471DE718A259F800EEE9A0 /* PNCache.m */; };
 		79EA374F1887AE7800DB3CE3 /* PNWhereNow.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EA374D1887AE7800DB3CE3 /* PNWhereNow.m */; };
 		79EA37531887AE8500DB3CE3 /* PNClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EA37511887AE8500DB3CE3 /* PNClient.m */; };
 		79EA375B1887AE9900DB3CE3 /* PNClientMetadataResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EA37551887AE9900DB3CE3 /* PNClientMetadataResponseParser.m */; };
@@ -254,6 +255,8 @@
 		5A62413B185B8C4500ADE6C3 /* PNConnectionChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnectionChannel+Protected.h"; sourceTree = "<group>"; };
 		5A62413C185B8C4500ADE6C3 /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		5A62413D185B8C4500ADE6C3 /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
+		79471DE618A259F800EEE9A0 /* PNCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCache.h; sourceTree = "<group>"; };
+		79471DE718A259F800EEE9A0 /* PNCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCache.m; sourceTree = "<group>"; };
 		79EA374B1887AE7800DB3CE3 /* PNResponse+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNResponse+Protected.h"; sourceTree = "<group>"; };
 		79EA374C1887AE7800DB3CE3 /* PNWhereNow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNWhereNow.h; sourceTree = "<group>"; };
 		79EA374D1887AE7800DB3CE3 /* PNWhereNow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNWhereNow.m; sourceTree = "<group>"; };
@@ -374,6 +377,8 @@
 				5A6240D5185B8C4400ADE6C3 /* PNError+Protected.h */,
 				5A6240D6185B8C4400ADE6C3 /* PNError.h */,
 				5A6240D7185B8C4400ADE6C3 /* PNError.m */,
+				79471DE618A259F800EEE9A0 /* PNCache.h */,
+				79471DE718A259F800EEE9A0 /* PNCache.m */,
 				5A6240D8185B8C4400ADE6C3 /* PNHereNow+Protected.h */,
 				5A6240D9185B8C4400ADE6C3 /* PNHereNow.h */,
 				5A6240DA185B8C4400ADE6C3 /* PNHereNow.m */,
@@ -797,6 +802,7 @@
 				5A62416B185B8C4500ADE6C3 /* PNMessageHistoryRequest.m in Sources */,
 				5A624146185B8C4500ADE6C3 /* PNActionResponseParser.m in Sources */,
 				5A62415A185B8C4500ADE6C3 /* PNMessagesHistory.m in Sources */,
+				79471DE818A259F800EEE9A0 /* PNCache.m in Sources */,
 				5A62415C185B8C4500ADE6C3 /* PNRequestsQueue.m in Sources */,
 				79EA375B1887AE9900DB3CE3 /* PNClientMetadataResponseParser.m in Sources */,
 				5A62413E185B8C4500ADE6C3 /* PNObservationCenter.m in Sources */,

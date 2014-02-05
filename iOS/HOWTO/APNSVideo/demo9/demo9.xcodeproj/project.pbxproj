@@ -70,6 +70,7 @@
 		793B2D2A1887A32600E5AA1B /* PNClientMetadataResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 793B2D271887A32600E5AA1B /* PNClientMetadataResponseParser.m */; };
 		793B2D2B1887A32600E5AA1B /* PNClientMetadataUpdateResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 793B2D291887A32600E5AA1B /* PNClientMetadataUpdateResponseParser.m */; };
 		793B2D2F1887A33000E5AA1B /* PNWhereNowResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 793B2D2D1887A33000E5AA1B /* PNWhereNowResponseParser.m */; };
+		79471DE218A2594200EEE9A0 /* PNCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 79471DE118A2594200EEE9A0 /* PNCache.m */; };
 		79EA37181887A8CF00DB3CE3 /* NSDictionary+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EA37171887A8CF00DB3CE3 /* NSDictionary+PNAdditions.m */; };
 		79EA371F1887A90100DB3CE3 /* PNClientMetadataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EA371A1887A90100DB3CE3 /* PNClientMetadataRequest.m */; };
 		79EA37201887A90100DB3CE3 /* PNClientMetadataUpdateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EA371D1887A90100DB3CE3 /* PNClientMetadataUpdateRequest.m */; };
@@ -267,6 +268,8 @@
 		793B2D2C1887A33000E5AA1B /* PNWhereNowResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNWhereNowResponseParser.h; sourceTree = "<group>"; };
 		793B2D2D1887A33000E5AA1B /* PNWhereNowResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNWhereNowResponseParser.m; sourceTree = "<group>"; };
 		793B2D2E1887A33000E5AA1B /* PNWhereNowResponseParser+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNWhereNowResponseParser+Protected.h"; sourceTree = "<group>"; };
+		79471DE018A2594200EEE9A0 /* PNCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCache.h; sourceTree = "<group>"; };
+		79471DE118A2594200EEE9A0 /* PNCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCache.m; sourceTree = "<group>"; };
 		79EA37151887A8A800DB3CE3 /* PNResponse+Protected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNResponse+Protected.h"; sourceTree = "<group>"; };
 		79EA37161887A8CF00DB3CE3 /* NSDictionary+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+PNAdditions.h"; sourceTree = "<group>"; };
 		79EA37171887A8CF00DB3CE3 /* NSDictionary+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+PNAdditions.m"; sourceTree = "<group>"; };
@@ -370,6 +373,8 @@
 				793B2D1F1887A2F400E5AA1B /* PNClient.m */,
 				5AE3AE1A1864556B00704422 /* PNDate.h */,
 				5AE3AE1B1864556B00704422 /* PNDate.m */,
+				79471DE018A2594200EEE9A0 /* PNCache.h */,
+				79471DE118A2594200EEE9A0 /* PNCache.m */,
 				5AE3AE1C1864556B00704422 /* PNError+Protected.h */,
 				5AE3AE1D1864556B00704422 /* PNError.h */,
 				5AE3AE1E1864556B00704422 /* PNError.m */,
@@ -802,6 +807,7 @@
 				5AE3AE921864556B00704422 /* PNOperationStatusResponseParser.m in Sources */,
 				5AE3AEB21864556B00704422 /* PNMessageHistoryRequest.m in Sources */,
 				5AE3AE8D1864556B00704422 /* PNActionResponseParser.m in Sources */,
+				79471DE218A2594200EEE9A0 /* PNCache.m in Sources */,
 				5AE3AEA11864556B00704422 /* PNMessagesHistory.m in Sources */,
 				793B2D2A1887A32600E5AA1B /* PNClientMetadataResponseParser.m in Sources */,
 				5AE3AEA31864556B00704422 /* PNRequestsQueue.m in Sources */,

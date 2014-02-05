@@ -13,6 +13,9 @@
 #import "PubNub.h"
 
 
+@class PNCache;
+
+
 #pragma mark Static
 
 typedef enum _PNPubNubClientState {
@@ -57,6 +60,8 @@ typedef enum _PNPubNubClientState {
  Stores reference on configuration which was used to perform initial PubNub client initialization.
  */
 @property (nonatomic, strong) PNConfiguration *configuration;
+
+@property (nonatomic, strong) PNCache *cache;
 
 /**
  Stores reference on current client identifier.

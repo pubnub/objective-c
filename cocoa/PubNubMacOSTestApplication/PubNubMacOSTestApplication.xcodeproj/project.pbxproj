@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7935AE7717CD81FA0040632B /* CoreWLAN.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7935AE7617CD81FA0040632B /* CoreWLAN.framework */; };
 		7935AE8D17CEDB9F0040632B /* PNNetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7935AE8C17CEDB9F0040632B /* PNNetworkHelper.m */; };
+		79471DDF18A2591800EEE9A0 /* PNCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 79471DDE18A2591800EEE9A0 /* PNCache.m */; };
 		797D096717253898007A9D9A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797D096617253898007A9D9A /* Cocoa.framework */; };
 		797D097317253898007A9D9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D097217253898007A9D9A /* main.m */; };
 		797D0A2317253961007A9D9A /* TAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D098617253960007A9D9A /* TAAppDelegate.m */; };
@@ -92,6 +93,8 @@
 		7935AE7617CD81FA0040632B /* CoreWLAN.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreWLAN.framework; path = System/Library/Frameworks/CoreWLAN.framework; sourceTree = SDKROOT; };
 		7935AE8B17CEDB9F0040632B /* PNNetworkHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNetworkHelper.h; sourceTree = "<group>"; };
 		7935AE8C17CEDB9F0040632B /* PNNetworkHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNNetworkHelper.m; sourceTree = "<group>"; };
+		79471DDD18A2591800EEE9A0 /* PNCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCache.h; sourceTree = "<group>"; };
+		79471DDE18A2591800EEE9A0 /* PNCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCache.m; sourceTree = "<group>"; };
 		797D096317253898007A9D9A /* PubNubMacOSTestApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNubMacOSTestApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		797D096617253898007A9D9A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		797D096917253898007A9D9A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -600,6 +603,8 @@
 				B56A4ED8CE4074AF5901009B /* PNDate.m */,
 				B56A4235AF6CFCB56DDD82AF /* PNError.h */,
 				B56A446E2A4F2770A3DE0CE6 /* PNError.m */,
+				79471DDD18A2591800EEE9A0 /* PNCache.h */,
+				79471DDE18A2591800EEE9A0 /* PNCache.m */,
 				79EA38101887B40900DB3CE3 /* PNClient+Protected.h */,
 				79EA380E1887B40900DB3CE3 /* PNClient.h */,
 				79EA380F1887B40900DB3CE3 /* PNClient.m */,
@@ -859,6 +864,7 @@
 				79EA38361887B4CF00DB3CE3 /* PNAccessRightOptions.m in Sources */,
 				B56A4180A52CFFCA769D07B1 /* PNOperationStatus.m in Sources */,
 				79EA38381887B4CF00DB3CE3 /* PNAccessRightsInformation.m in Sources */,
+				79471DDF18A2591800EEE9A0 /* PNCache.m in Sources */,
 				B56A4914FAE7D0FE244F15CF /* PNJSONSerialization.m in Sources */,
 				B56A4DD99C4180EDF3771E46 /* NSData+PNAdditions.m in Sources */,
 				79EA382C1887B44200DB3CE3 /* PNWhereNowRequest.m in Sources */,

@@ -36,6 +36,12 @@
  */
 @property (nonatomic, copy) NSString *clientIdentifier;
 
+/**
+ Stores reference on metadata \b NSDictionary instance which should be sent along with acknowledgment that client is
+ still active.
+ */
+@property (nonatomic, strong) NSDictionary *metadata;
+
 #pragma mark -
 
 
@@ -49,20 +55,20 @@
 
 #pragma mark - Class methods
 
-+ (PNHeartbeatRequest *)heartbeatRequestForChannel:(PNChannel *)channel {
++ (PNHeartbeatRequest *)heartbeatRequestForChannel:(PNChannel *)channel withMetadata:(NSDictionary *)metadata {
 
-    return [self heartbeatRequestForChannels:@[channel]];
+    return [self heartbeatRequestForChannels:@[channel] withMetadata:metadata];
 }
 
-+ (PNHeartbeatRequest *)heartbeatRequestForChannels:(NSArray *)channels {
++ (PNHeartbeatRequest *)heartbeatRequestForChannels:(NSArray *)channels withMetadata:(NSDictionary *)metadata {
 
-    return [[self alloc] initWithChannels:channels];
+    return [[self alloc] initWithChannels:channels withMetadata:metadata];
 }
 
 
 #pragma mark - Instance methods
 
-- (id)initWithChannels:(NSArray *)channels {
+- (id)initWithChannels:(NSArray *)channels withMetadata:(NSDictionary *)metadata {
 
     // Check whether initialization successful or not
     if ((self = [super init])) {
@@ -70,6 +76,7 @@
         self.sendingByUserRequest = NO;
         self.channels = [NSArray arrayWithArray:channels];
         self.clientIdentifier = [PubNub escapedClientIdentifier];
+        self.metadata = metadata;
     }
 
 
@@ -78,10 +85,17 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/heartbeat?uuid=%@%@",
+    NSString *metadata = @"";
+    if (self.metadata) {
+
+        metadata = [NSString stringWithFormat:@"&metadata=%@",
+                    [[PNJSONSerialization stringFromJSONObject:self.metadata] percentEscapedString]];
+    }
+
+    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/heartbeat?uuid=%@%@%@",
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      self.clientIdentifier,
+                                      self.clientIdentifier, metadata,
                                       ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 

@@ -15,8 +15,7 @@
 #pragma mark - Instance methods
 
 /**
- Validate provided dictionary and check whether keys doesn't start with "pn" or "_" prefixes and whether values are:
- int, float string.
+ Validate provided dictionary and check whether values are: int, float string.
 
  @return \c YES if provided dictionary conforms to the requirements.
  */

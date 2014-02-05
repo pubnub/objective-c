@@ -19,6 +19,7 @@
 #import "PNChannel+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNConstants.h"
+#import "PNCache.h"
 
 
 // ARC check
@@ -96,7 +97,7 @@
         self.sendingByUserRequest = isSubscribingByUserRequest;
         self.channels = [NSArray arrayWithArray:channels];
         self.clientIdentifier = [PubNub escapedClientIdentifier];
-        self.metadata = metadata;
+        self.metadata = (metadata ? metadata : [[PubNub sharedInstance].cache metadataForChannels:channels]);
 
         
         // Retrieve largest update time token from set of channels (sorting to make larger token to be at
