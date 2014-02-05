@@ -17,7 +17,6 @@
 		5A93EC12189817B000751662 /* HistoryPamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A93EC11189817B000751662 /* HistoryPamTest.m */; };
 		5A955F801835154C00AB2156 /* SendBigMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A955F7F1835154C00AB2156 /* SendBigMessage.m */; };
 		5A96274018437E8A00258236 /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A96273F18437E8A00258236 /* OversizedJSON.m */; };
-		5ABE6C42182B9F1800204DC6 /* gistfile1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */; };
 		5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */; };
 		5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */; };
 		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
@@ -145,6 +144,10 @@
 		5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */; };
 		5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */; };
 		5AD394BD18280F390057443C /* ApnsToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD394BC18280F390057443C /* ApnsToken.m */; };
+		5AD5894118A251D300B72653 /* PNAccessRightsInformationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5893D18A251D300B72653 /* PNAccessRightsInformationTest.m */; };
+		5AD5894218A251D300B72653 /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5893E18A251D300B72653 /* PNConfigurationTest.m */; };
+		5AD5894318A251D300B72653 /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5893F18A251D300B72653 /* PNDateTest.m */; };
+		5AD5894418A251D300B72653 /* PNErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5894018A251D300B72653 /* PNErrorTest.m */; };
 		5ADD3088189AADFD00688B3E /* ClientIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ADD307D189AADFD00688B3E /* ClientIdentifier.m */; };
 		5ADD3089189AADFD00688B3E /* PNAccessRightOptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ADD307E189AADFD00688B3E /* PNAccessRightOptionsTest.m */; };
 		5ADD308A189AADFD00688B3E /* PNAccessRightsCollectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ADD307F189AADFD00688B3E /* PNAccessRightsCollectionTest.m */; };
@@ -228,7 +231,6 @@
 		5A93EC11189817B000751662 /* HistoryPamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryPamTest.m; sourceTree = "<group>"; };
 		5A955F7F1835154C00AB2156 /* SendBigMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendBigMessage.m; sourceTree = "<group>"; };
 		5A96273F18437E8A00258236 /* OversizedJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OversizedJSON.m; sourceTree = "<group>"; };
-		5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gistfile1.txt; sourceTree = "<group>"; };
 		5ABE6C40182B9F1800204DC6 /* TestSemaphor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSemaphor.h; sourceTree = "<group>"; };
 		5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSemaphor.m; sourceTree = "<group>"; };
 		5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeCommand.m; path = TimeCommand/TimeCommand.m; sourceTree = "<group>"; };
@@ -409,6 +411,10 @@
 		5ACF73C917F417F80058E029 /* PNSubscribeUnsubscribeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNSubscribeUnsubscribeTest.h; path = PNSubscribeUnsubscribeTest/PNSubscribeUnsubscribeTest.h; sourceTree = "<group>"; };
 		5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNSubscribeUnsubscribeTest.m; path = PNSubscribeUnsubscribeTest/PNSubscribeUnsubscribeTest.m; sourceTree = "<group>"; };
 		5AD394BC18280F390057443C /* ApnsToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApnsToken.m; sourceTree = "<group>"; };
+		5AD5893D18A251D300B72653 /* PNAccessRightsInformationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightsInformationTest.m; sourceTree = "<group>"; };
+		5AD5893E18A251D300B72653 /* PNConfigurationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConfigurationTest.m; sourceTree = "<group>"; };
+		5AD5893F18A251D300B72653 /* PNDateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDateTest.m; sourceTree = "<group>"; };
+		5AD5894018A251D300B72653 /* PNErrorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNErrorTest.m; sourceTree = "<group>"; };
 		5ADD307D189AADFD00688B3E /* ClientIdentifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientIdentifier.m; sourceTree = "<group>"; };
 		5ADD307E189AADFD00688B3E /* PNAccessRightOptionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightOptionsTest.m; sourceTree = "<group>"; };
 		5ADD307F189AADFD00688B3E /* PNAccessRightsCollectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightsCollectionTest.m; sourceTree = "<group>"; };
@@ -572,7 +578,6 @@
 		5ABE6C3E182B9F1000204DC6 /* TestSemaphor */ = {
 			isa = PBXGroup;
 			children = (
-				5ABE6C3F182B9F1800204DC6 /* gistfile1.txt */,
 				5ABE6C40182B9F1800204DC6 /* TestSemaphor.h */,
 				5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */,
 			);
@@ -928,6 +933,10 @@
 		5ADD307C189AADDB00688B3E /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				5AD5893D18A251D300B72653 /* PNAccessRightsInformationTest.m */,
+				5AD5893E18A251D300B72653 /* PNConfigurationTest.m */,
+				5AD5893F18A251D300B72653 /* PNDateTest.m */,
+				5AD5894018A251D300B72653 /* PNErrorTest.m */,
 				5ADD307D189AADFD00688B3E /* ClientIdentifier.m */,
 				5ADD307E189AADFD00688B3E /* PNAccessRightOptionsTest.m */,
 				5ADD307F189AADFD00688B3E /* PNAccessRightsCollectionTest.m */,
@@ -1271,7 +1280,6 @@
 				79C3225B166DF848006DB535 /* InfoPlist.strings in Resources */,
 				79C32290166DFA56006DB535 /* InfoPlist.strings in Resources */,
 				79C32294166DFA56006DB535 /* Default-568h@2x.png in Resources */,
-				5ABE6C42182B9F1800204DC6 /* gistfile1.txt in Resources */,
 				79C32296166DFA56006DB535 /* Default.png in Resources */,
 				79C32298166DFA56006DB535 /* Default@2x.png in Resources */,
 			);
@@ -1404,6 +1412,7 @@
 				5AEF50E8189C0E57000A79BE /* PNTimeTokenResponseParserTest.m in Sources */,
 				5ACA68DA185B81F300C2B214 /* PNMessageHistoryRequest.m in Sources */,
 				5ADD308B189AADFD00688B3E /* PNActionResponseParserTest.m in Sources */,
+				5AD5894218A251D300B72653 /* PNConfigurationTest.m in Sources */,
 				5ACA68D4185B81F300C2B214 /* PNHereNowRequest.m in Sources */,
 				9645C117174FDA7D00F82D09 /* PNBaseRequestTest.m in Sources */,
 				5ADD3090189AADFD00688B3E /* PNErrorResponseParserTest.m in Sources */,
@@ -1426,12 +1435,14 @@
 				5ACA68CC185B81F300C2B214 /* UIApplication+PNAdditions.m in Sources */,
 				9645C120174FDA7D00F82D09 /* PNConnectionChannelTest.m in Sources */,
 				5ACA6896185B81F300C2B214 /* PNErrorResponseParser.m in Sources */,
+				5AD5894118A251D300B72653 /* PNAccessRightsInformationTest.m in Sources */,
 				5ACA68B0185B81F300C2B214 /* PNError.m in Sources */,
 				5AEF50E6189BF538000A79BE /* PNResponseParserTest.m in Sources */,
 				5ACA9445185F1103001BB8DA /* Configuration.m in Sources */,
 				5ACA68DC185B81F300C2B214 /* PNMessagePostRequest.m in Sources */,
 				9645C121174FDA7D00F82D09 /* PNConnectionTest.m in Sources */,
 				5ACA68AC185B81F300C2B214 /* PNConfiguration.m in Sources */,
+				5AD5894318A251D300B72653 /* PNDateTest.m in Sources */,
 				5ACA68B4185B81F300C2B214 /* PNJSONSerialization.m in Sources */,
 				5ADD30DE189ABEEA00688B3E /* PNHereNowResponseParserTest.m in Sources */,
 				5ADD30E4189AC9EE00688B3E /* PNResponseDeserializeTest.m in Sources */,
@@ -1472,6 +1483,7 @@
 				5ACA68AA185B81F300C2B214 /* PNChannelEvents.m in Sources */,
 				5ACA68EE185B81F300C2B214 /* PNServiceChannel.m in Sources */,
 				5ACA68F0185B81F300C2B214 /* PNConnection.m in Sources */,
+				5AD5894418A251D300B72653 /* PNErrorTest.m in Sources */,
 				963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */,
 				5ACA6892185B81F300C2B214 /* PNChannelEventsResponseParser.m in Sources */,
 				5ACA689E185B81F300C2B214 /* PNResponseDeserialize.m in Sources */,
