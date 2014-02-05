@@ -23,6 +23,7 @@
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
 #import "PNConstants.h"
+#import "PNCache.h"
 
 
 // ARC check
@@ -74,6 +75,11 @@ static NSMutableArray *pendingInvocations = nil;
 
 // Reference on channels which is used to send service messages to PubNub service
 @property (nonatomic, strong) PNServiceChannel *serviceChannel;
+
+/**
+ Stores reference on local \b PubNub cache instance which will cache some portion of data.
+ */
+@property (nonatomic, strong) PNCache *cache;
 
 // Stores reference on client delegate
 @property (nonatomic, pn_desired_weak) id<PNDelegate> delegate;
@@ -835,6 +841,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             PNLog(PNLogGeneralLevel, [self sharedInstance], @"DISCONNECTING... (STATE: %@)",
                   [self humanReadableStateFrom:[self sharedInstance].state]);
+
+            [[self sharedInstance].cache purgeAllMetadata];
 
             [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnabledChannelsObserver];
             [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
@@ -4371,7 +4379,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.configuration.presenceExpirationTimeout > 0.0f) {
 
         // Prepare and send request w/o observation (it mean that any response for request will be ignored
-        [self sendRequest:[PNHeartbeatRequest heartbeatRequestForChannels:[[self class] subscribedChannels]]
+        NSArray *channels = [[self class] subscribedChannels];
+        [self sendRequest:[PNHeartbeatRequest heartbeatRequestForChannels:channels
+                                                             withMetadata:[self.cache metadataForChannels:channels]]
   shouldObserveProcessing:NO];
     }
 }
@@ -5489,11 +5499,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannels:(NSArray *)channels
-               sequenced:(BOOL)isSequenced {
+               sequenced:(BOOL)isSequenced withMetadata:(NSDictionary *)metadata {
 
     self.restoringConnection = NO;
 
     void(^handlingBlock)(void) = ^{
+
+        // Storing new data for channels.
+        [self.cache storeMetadata:metadata forChannels:channels];
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
@@ -5613,6 +5626,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                sequenced:(BOOL)isSequenced {
 
     void(^handlerBlock)(void) = ^{
+
+        // Removing cached data for channels set.
+        [self.cache purgeMetadataForChannels:channels];
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
@@ -5825,6 +5841,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self handleLockingOperationBlockCompletion:^{
 
         PNLog(PNLogGeneralLevel, self, @"CLIENT METADATA RETRIEVED (STATE: %@)", [self humanReadableStateFrom:self.state]);
+
+        // In case if there is no error and client identifier is the same as this one,
+        // client will store retrieved metadata in cache.
+        if ([client.identifier isEqualToString:self.clientIdentifier]) {
+
+            [self.cache storeMetadata:client.data forChannel:client.channel];
+        }
+
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
@@ -6274,6 +6298,9 @@ didReceiveNetworkLatency:(double)latency
 #pragma mark - Memory management
 
 - (void)dealloc {
+
+    [self.cache purgeAllMetadata];
+    self.cache = nil;
     
     PNLog(PNLogGeneralLevel, self, @"Destroyed");
 }
