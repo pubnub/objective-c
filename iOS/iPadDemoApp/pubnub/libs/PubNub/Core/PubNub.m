@@ -3615,6 +3615,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [[self class] showVserionInfo];
 
         self.state = PNPubNubClientStateCreated;
+        self.cache = [PNCache new];
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
         pendingInvocations = [NSMutableArray array];
@@ -5789,6 +5790,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didReceiveMessage:(PNMessage *)message {
 
     PNLog(PNLogGeneralLevel, self, @"RECEIVED MESSAGE (STATE: %@)", [self humanReadableStateFrom:self.state]);
+    [self launchHeartbeatTimer];
     
     if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
         
@@ -5816,6 +5818,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 
     PNLog(PNLogGeneralLevel, self, @"RECEIVED EVENT (STATE: %@)", [self humanReadableStateFrom:self.state]);
+    [self launchHeartbeatTimer];
     
     if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
         
