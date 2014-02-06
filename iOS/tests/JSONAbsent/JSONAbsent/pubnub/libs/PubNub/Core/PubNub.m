@@ -37,7 +37,7 @@
 
 static NSString * const kPNLibraryVersion = @"3.5.5";
 static NSString * const kPNCodebaseBranch = @"presence-v3";
-static NSString * const kPNCodeCommitIdentifier = @"890bb85c9e1ee0f13cdf8902b24ef7fc9ac3dbb0";
+static NSString * const kPNCodeCommitIdentifier = @"77cabddbcaab34b5feda0145b8789492be499638";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -3615,6 +3615,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [[self class] showVserionInfo];
 
         self.state = PNPubNubClientStateCreated;
+        self.cache = [PNCache new];
         self.launchSessionIdentifier = PNUniqueIdentifier();
         self.reachability = [PNReachability serviceReachability];
         pendingInvocations = [NSMutableArray array];
@@ -5789,6 +5790,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didReceiveMessage:(PNMessage *)message {
 
     PNLog(PNLogGeneralLevel, self, @"RECEIVED MESSAGE (STATE: %@)", [self humanReadableStateFrom:self.state]);
+    [self launchHeartbeatTimer];
     
     if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
         
@@ -5816,6 +5818,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
 
     PNLog(PNLogGeneralLevel, self, @"RECEIVED EVENT (STATE: %@)", [self humanReadableStateFrom:self.state]);
+    [self launchHeartbeatTimer];
     
     if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
         

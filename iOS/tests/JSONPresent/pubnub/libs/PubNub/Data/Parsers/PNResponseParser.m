@@ -116,7 +116,8 @@
         NSDictionary *responseData = response.response;
 
         // Check whether response arrived as result of specific action execution.
-        if ([responseData objectForKey:kPNResponseActionKey]) {
+        if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.leaveChannelCallback] ||
+            [responseData objectForKey:kPNResponseActionKey]) {
 
             parserClass = [PNActionResponseParser class];
         }
