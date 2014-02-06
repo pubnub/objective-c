@@ -171,8 +171,7 @@
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@%@",
-            kPNRequestAPIVersionPrefix,
+    return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@",
             [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
             [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
             [self callbackMethodName],

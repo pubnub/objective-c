@@ -80,7 +80,6 @@
 
 -(void)testStringFromJSONObject {
 	STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @"message"] isEqualToString: @"\"message\""], @"");
-	STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @(123)] isEqualToString: @"123"], @"");
 	STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @(123)] isEqual: @(123)], @"");
 	STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @[@"message"]] isEqualToString: @"[\"message\"]"], @"");
 	STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @{@"key":@"object"}] isEqualToString: @"{\"key\":\"object\"}"], @"");

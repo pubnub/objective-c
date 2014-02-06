@@ -25,7 +25,7 @@
 
 - (void)setUp {
     [super setUp];
-	request = [PNMessagePostRequest postMessageRequestWithMessage: [PNMessage messageWithObject: @"message" forChannel: nil error:nil]];
+	request = [PNMessagePostRequest postMessageRequestWithMessage: [PNMessage messageWithObject: @"message" forChannel: nil compressed: NO error:nil]];
 	buffer = [PNWriteBuffer writeBufferForRequest: request];
 }
 

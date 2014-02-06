@@ -39,6 +39,16 @@
  */
 - (NSString *)HEXString;
 
+
+#pragma mark - Compression / Decompression methods
+
+/**
+ Retrieve GZIP compressed data using deflate algorithm.
+ 
+ @return \b NSData instance with deflated data compressed with default compression ratio.
+ */
+- (NSData *)GZIPDeflate;
+
 /**
  * Retrieve uncompressed GZIP data
  */

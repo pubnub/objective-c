@@ -106,9 +106,9 @@
 - (void)testHTTPPayload {
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
     
-    NSString *payload = [baseRequest HTTPPayload];
+    NSData *payload = [baseRequest HTTPPayload];
     
-    STAssertTrue([payload isKindOfClass:[NSString class]], @"Payload should be a string");
+    STAssertTrue([payload isKindOfClass:[NSData class]], @"Payload should be a string");
     STAssertTrue([payload length] > 0, @"Payload should has length more than zero");
 }
 

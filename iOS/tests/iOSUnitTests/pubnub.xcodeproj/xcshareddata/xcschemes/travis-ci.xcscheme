@@ -107,18 +107,6 @@
                   Identifier = "PNReachabilityTest">
                </Test>
                <Test
-                  Identifier = "PNServiceChannelTest">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeRequestTest">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeUnsubscribeTest">
-               </Test>
-               <Test
-                  Identifier = "PNTimeTokenRequestTest">
-               </Test>
-               <Test
                   Identifier = "SendBigMessage">
                </Test>
                <Test

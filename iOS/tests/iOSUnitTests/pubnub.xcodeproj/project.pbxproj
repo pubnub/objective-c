@@ -1592,6 +1592,7 @@
 				GCC_PREFIX_HEADER = "pubnub/pubnub-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/pubnub/Resources/General/pubnub-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -1634,6 +1635,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/include\"";
 				INFOPLIST_FILE = "pubnubTests/pubnubTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/lib\"";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-force_load",

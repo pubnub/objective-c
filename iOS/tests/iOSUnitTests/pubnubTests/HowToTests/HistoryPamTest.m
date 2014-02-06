@@ -178,7 +178,7 @@
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
-	for( int j=0; j<5; j++ ) {
+	for( int j=0; j<2; j++ ) {
 		[self revokeAccessRightsForApplication];
 		[self revokeAccessRightsForChannels];
 

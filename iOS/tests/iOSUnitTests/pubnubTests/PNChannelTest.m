@@ -186,7 +186,7 @@
 	[channel updateWithParticipantsList: hereNow];
 
 	STAssertEqualsWithAccuracy( [[channel.presenceUpdateDate date] timeIntervalSinceNow], 0.0, 1, @"");
-	STAssertEquals( channel.participantsCount, hereNow.participantsCount, @"");
+	STAssertTrue( channel.participantsCount == hereNow.participantsCount, @"");
 	STAssertTrue( [channel.participantsList indexOfObject: @"participant"] != NSNotFound, @"");
 	STAssertTrue( channel.participantsList.count == 1, @"");
 }

@@ -1962,7 +1962,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         }
 
                         if (writeStreamIsAbleToSend() && self.writeBuffer != nil) {
-
+                            
                             // Try write data into write stream
                             CFIndex bytesWritten = CFWriteStreamWrite(self.socketWriteStream, [self.writeBuffer buffer],
                                                                       [self.writeBuffer bufferLength]);

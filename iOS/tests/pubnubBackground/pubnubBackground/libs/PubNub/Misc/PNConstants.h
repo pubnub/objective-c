@@ -28,10 +28,6 @@ static NSString * const kPNClientName = @"Obj-C-MacOS";
 
 #pragma mark - Request constants
 
-// Stores resource path prefix which will allow to change
-// API version on the flight
-static NSString * const kPNRequestAPIVersionPrefix = @"";
-
 // Stores reference on PubNub service domain
 static NSString * const kPNServiceMainDomain = @"pubnub.com";
 

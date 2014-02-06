@@ -26,9 +26,6 @@
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
-                  Identifier = "ApnsToken">
-               </Test>
-               <Test
                   Identifier = "CatchupTest">
                </Test>
                <Test

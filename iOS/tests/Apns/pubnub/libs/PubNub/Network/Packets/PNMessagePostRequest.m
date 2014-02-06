@@ -94,52 +94,83 @@
     return PNServiceResponseCallbacks.sendMessageCallback;
 }
 
-- (NSString *)resourcePath {
+- (PNRequestHTTPMethod)HTTPMethod {
+    
+    return self.message.shouldCompressMessage ? PNRequestPOSTMethod : PNRequestGETMethod;
+}
 
-    if (self.preparedMessage == nil) {
+- (BOOL)shouldCompressPOSTBody {
+    
+    return self.message.shouldCompressMessage;
+}
 
+- (NSData *)POSTBody {
+    
+    return [self.preparedMessage dataUsingEncoding:NSUTF8StringEncoding];
+}
+
+- (NSString *)preparedMessage {
+    
+    if (_preparedMessage == nil) {
+        
         id message = self.message.message;
         if ([message isKindOfClass:[NSNumber class]]) {
-
+            
             message = [(NSNumber *)message stringValue];
         }
-
+        
         // Retrieve reference on encrypted message (if possible)
         PNError *encryptionError;
         if ([PNCryptoHelper sharedInstance].isReady) {
-
+            
             message = [PubNub AESEncrypt:message error:&encryptionError];
             
             if (encryptionError != nil) {
-
+                
                 PNLog(PNLogCommunicationChannelLayerErrorLevel,
-                        self,
-                        @"Message encryption failed with error: %@\nUnencrypted message will be sent.",
-                        encryptionError);
+                      self,
+                      @"Message encryption failed with error: %@\nUnencrypted message will be sent.",
+                      encryptionError);
             }
         }
-
-        // Encode message with % so it will be delivered w/o damages to
-        // the PubNub service
+        
+        if ([self HTTPMethod] == PNRequestGETMethod) {
+            
+            // Encode message with % so it will be delivered w/o damages to
+            // the PubNub service
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-        self.preparedMessage = [message percentEscapedString];
+            self.preparedMessage = [message percentEscapedString];
 #else
-        self.preparedMessage = [message nonStringPercentEscapedString];
+            self.preparedMessage = [message nonStringPercentEscapedString];
 #endif
+        }
+        else {
+            
+            self.preparedMessage = message;
+        }
     }
+    
+    
+    return _preparedMessage;
+}
 
+- (NSString *)resourcePath {
+    
+    NSMutableString *resourcePath = [NSMutableString stringWithFormat:@"/publish/%@/%@/%@/%@/%@_%@",
+                                     [[PubNub sharedInstance].configuration.publishKey percentEscapedString],
+                                     [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+                                     [self signature], [self.message.channel escapedName], [self callbackMethodName],
+                                     self.shortIdentifier];
+    
+    if (!self.message.shouldCompressMessage) {
+        
+        [resourcePath appendFormat:@"/%@", self.preparedMessage];
+    }
+    
+    [resourcePath appendFormat:@"?uuid=%@%@", self.clientIdentifier,
+                               ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @"")];
 
-    return [NSString stringWithFormat:@"%@/publish/%@/%@/%@/%@/%@_%@/%@?uuid=%@%@",
-                    kPNRequestAPIVersionPrefix,
-                    [[PubNub sharedInstance].configuration.publishKey percentEscapedString],
-                    [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                    [self signature],
-                    [self.message.channel escapedName],
-                    [self callbackMethodName],
-                    self.shortIdentifier,
-                    self.preparedMessage,
-                    self.clientIdentifier,
-					([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+    return resourcePath;
 }
 
 - (NSString *)debugResourcePath {
