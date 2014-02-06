@@ -22,6 +22,7 @@
 
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
 	self.window.rootViewController = navController;
+	navController.topViewController.title = @"Mediator";
 
 
     [self initializePubNubClient];
@@ -158,7 +159,7 @@
 }
 
 -(void)sendMessage {
-	[PubNub sendMessage:[NSString stringWithFormat: @"mediatorWithMessage, %@", [NSDate date]] toChannel:pnChannel
+	[PubNub sendMessage:[NSString stringWithFormat: @"mediatorWithMessage, %@", [NSDate date]] toChannel:pnChannel compressed: YES
 	withCompletionBlock:^(PNMessageState messageSendingState, id data)
 	 {
 		 if( messageSendingState == PNMessageSent )

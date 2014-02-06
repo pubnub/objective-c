@@ -170,9 +170,6 @@
                   Identifier = "PNWriteBufferTest">
                </Test>
                <Test
-                  Identifier = "SendBigMessage">
-               </Test>
-               <Test
                   Identifier = "TimeCommand">
                </Test>
                <Test

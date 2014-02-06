@@ -170,6 +170,7 @@
     [resourcePath appendFormat:@"?uuid=%@%@", self.clientIdentifier,
                                ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @"")];
 
+	NSLog(@"resourcePath \n%@", resourcePath);
     return resourcePath;
 }
 

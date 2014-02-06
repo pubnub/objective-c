@@ -10,7 +10,7 @@
 #define PNDefaultConfiguration_h
 
 // Stores reference on host URL which is used to access PubNub services
-static NSString * const kPNOriginHost = @"pubsub.pubnub.com";
+static NSString * const kPNOriginHost = @"post-devbuild.pubnub.com";
 
 // Stores reference on keys which is required to establish connection and send packets to it
 static NSString * const kPNPublishKey = @"demo";
