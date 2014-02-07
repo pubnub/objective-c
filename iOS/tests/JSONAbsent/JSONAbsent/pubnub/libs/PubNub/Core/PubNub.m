@@ -190,7 +190,7 @@ static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
 
 #pragma mark - Messages processing methods
 
-+ (void)postponeSendMessage:(id)message toChannel:(PNChannel *)channel
++ (void)postponeSendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
         withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 
@@ -1542,9 +1542,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
             
             PNPushNotificationsStateChangeRequest *request;
-            request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
-                                                                                 toState:PNPushNotificationsState.enable
-                                                                             forChannels:channels];
+            request = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken:pushToken
+                                                                                toState:PNPushNotificationsState.enable
+                                                                            forChannels:channels];
             [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
         // Looks like client can't send request because of some reasons
@@ -1631,9 +1631,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             }
             
             PNPushNotificationsStateChangeRequest *request;
-            request = [PNPushNotificationsStateChangeRequest reqauestWithDevicePushToken:pushToken
-                                                                                 toState:PNPushNotificationsState.disable
-                                                                             forChannels:channels];
+            request = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken:pushToken
+                                                                                toState:PNPushNotificationsState.disable
+                                                                            forChannels:channels];
             [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
         // Looks like client can't send request because of some reasons
@@ -2555,25 +2555,35 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel {
     
-    return [self sendMessage:message toChannel:channel withCompletionBlock:nil];
+    return [self sendMessage:message toChannel:channel compressed:NO];
 }
 
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel
-       withCompletionBlock:(PNClientMessageProcessingBlock)success {
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
+    
+    return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage withCompletionBlock:nil];
+}
 
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success {
+    
+    return [self sendMessage:message toChannel:channel compressed:NO withCompletionBlock:success];
+}
+
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+       withCompletionBlock:(PNClientMessageProcessingBlock)success {
+    
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO SEND MESSAGE: %@ ON CHANNEL: %@ (STATE: %@)",
           message, channel, [self humanReadableStateFrom:[self sharedInstance].state]);
     
     // Create object instance
     PNError *error = nil;
-    PNMessage *messageObject = [PNMessage messageWithObject:message forChannel:channel error:&error];
+    PNMessage *messageObject = [PNMessage messageWithObject:message forChannel:channel compressed:shouldCompressMessage error:&error];
     
     [self performAsyncLockingBlock:^{
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
         if (statusCode == 0 && error == nil) {
-
+            
             PNLog(PNLogGeneralLevel, [self sharedInstance], @"SEND MESSAGE: %@ ON CHANNEL: %@ (STATE: %@)",
                   message, channel, [self humanReadableStateFrom:[self sharedInstance].state]);
             
@@ -2587,7 +2597,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         }
         // Looks like client can't send request because of some reasons
         else {
-
+            
             PNLog(PNLogGeneralLevel, [self sharedInstance], @"CAN'T SEND MESSAGE: %@ ON CHANNEL: %@ (STATE: %@)",
                   message, channel, [self humanReadableStateFrom:[self sharedInstance].state]);
             
@@ -2604,34 +2614,44 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         }
     }
            postponedExecutionBlock:^{
-
+               
                PNLog(PNLogGeneralLevel, [self sharedInstance], @"POSTPONE MESSAGE SENDING (STATE: %@)",
                      [self humanReadableStateFrom:[self sharedInstance].state]);
                
-               [self postponeSendMessage:message toChannel:channel withCompletionBlock:(success ? [success copy] : nil)];
+               [self postponeSendMessage:message toChannel:channel compressed:shouldCompressMessage withCompletionBlock:(success ? [success copy] : nil)];
            }];
     
     
     return messageObject;
 }
 
-+ (void)postponeSendMessage:(id)message toChannel:(PNChannel *)channel
++ (void)postponeSendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
         withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
-    [[self sharedInstance] postponeSelector:@selector(sendMessage:toChannel:withCompletionBlock:)
+    [[self sharedInstance] postponeSelector:@selector(sendMessage:toChannel:compressed:withCompletionBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(message), PNNillIfNotSet(channel), PNNillIfNotSet((id)success)]
+                             withParameters:@[PNNillIfNotSet(message), PNNillIfNotSet(channel), @(shouldCompressMessage), PNNillIfNotSet((id)success)]
                                  outOfOrder:NO];
 }
 
 + (void)sendMessage:(PNMessage *)message {
     
-    [self sendMessage:message withCompletionBlock:nil];
+    [self sendMessage:message compressed:NO];
+}
+
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage {
+    
+    [self sendMessage:message.message toChannel:message.channel compressed:shouldCompressMessage withCompletionBlock:nil];
 }
 
 + (void)sendMessage:(PNMessage *)message withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
-    [self sendMessage:message.message toChannel:message.channel withCompletionBlock:success];
+    [self sendMessage:message.message compressed:NO withCompletionBlock:success];
+}
+
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success {
+    
+    [self sendMessage:message.message toChannel:message.channel compressed:shouldCompressMessage withCompletionBlock:success];
 }
 
 
@@ -2981,7 +3001,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                                PNLog(PNLogGeneralLevel, self, @"MESSAGE DECODING ERROR: %@", error);
                                            }];
             
-        object = decodedJSONObject;
+            object = decodedJSONObject;
         }
         else {
             
@@ -4358,7 +4378,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             else if (strcmp(parameterType, @encode(NSInteger)) == 0) {
                 
                 NSInteger signedInteger = [(NSNumber *)parameter integerValue];
-                [methodInvocation setArgument:&signedInteger atIndex:parameterIndex];
+                [methodInvocation setArgument:&
+                 signedInteger atIndex:parameterIndex];
             }
             else if (strcmp(parameterType, @encode(id)) == 0) {
 

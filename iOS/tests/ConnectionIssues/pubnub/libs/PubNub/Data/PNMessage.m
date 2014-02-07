@@ -31,6 +31,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
     .message = @"message",
     .channel = @"channel",
+    .compress = @"compressed",
     .date = @"date"
 };
 
@@ -45,6 +46,9 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 // Stores reference on channel to which this message
 // should be sent
 @property (nonatomic, strong) PNChannel *channel;
+
+// Stores whether message should be compressed or not
+@property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
 
 // Stores reference on message body
 @property (nonatomic, strong) id message;
@@ -69,7 +73,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
 #pragma mark - Class methods
 
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel error:(PNError **)error {
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage error:(PNError **)error {
 
     PNMessage *messageObject = nil;
     BOOL isValidMessage = NO;
@@ -90,7 +94,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     // Ensure that all parameters provided and they are valid or not
     if (isValidMessage && channel != nil) {
 
-        messageObject = [[[self class] alloc] initWithObject:object forChannel:channel];
+        messageObject = [[[self class] alloc] initWithObject:object forChannel:channel compressed:shouldCompressMessage];
     }
     // Looks like some conditions not met
     else {
@@ -178,6 +182,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
                 self.receiveDate = [PNDate dateWithToken:[decoder decodeObjectForKey:PNMessageDataKeys.date]];
             }
+            self.compressMessage = [[decoder decodeObjectForKey:PNMessageDataKeys.compress] boolValue];
         }
     }
     else {
@@ -189,7 +194,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     return self;
 }
 
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel {
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
@@ -199,6 +204,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
         self.message = [PNCryptoHelper sharedInstance].isReady ? object : [PNJSONSerialization stringFromJSONObject:object];
 #endif
         self.channel = channel;
+        self.compressMessage = shouldCompressMessage;
     }
 
 
@@ -236,6 +242,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
         [coder encodeObject:self.receiveDate.timeToken forKey:PNMessageDataKeys.date];
     }
+    [coder encodeObject:@(self.shouldCompressMessage) forKey:PNMessageDataKeys.compress];
 }
 
 - (NSString *)description {

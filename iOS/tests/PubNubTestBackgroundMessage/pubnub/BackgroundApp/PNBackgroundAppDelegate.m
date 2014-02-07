@@ -21,6 +21,7 @@
 
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
 	self.window.rootViewController = navController;
+	navController.topViewController.title = @"Pubnub";
 
 
 	isWillRestoreSubscriptionOnChannelsDelegate = YES;
@@ -38,8 +39,8 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-	NSLog(@"openURL %@, %@, %@", url, sourceApplication, annotation);
-	[self performSelector:@selector(openUrl) withObject:nil afterDelay:15];
+//	NSLog(@"openURL %@, %@, %@", url, sourceApplication, annotation);
+	[self performSelector:@selector(openUrl) withObject:nil afterDelay:20];
 	return YES;
 }
 
@@ -64,6 +65,7 @@
 	isWillRestoreSubscriptionOnChannelsDelegate = NO;
 	isDidRestoreSubscriptionOnChannelsDelegate = NO;
 
+	NSLog(@"open Mediator---------------------------------------------------------------------------");
 	NSString *url = [NSString stringWithFormat: @"mediatorWithMessage://"];
 	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: url]];
 }
@@ -244,6 +246,8 @@
 - (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels {
 	NSLog(@"DidRestoreSubscriptionOnChannelsDelegate");
 	isDidRestoreSubscriptionOnChannelsDelegate = YES;
+	if( countNewMessage > 0 )
+		[self performSelector: @selector(errorSelectorExpectMessage)];
 }
 
 

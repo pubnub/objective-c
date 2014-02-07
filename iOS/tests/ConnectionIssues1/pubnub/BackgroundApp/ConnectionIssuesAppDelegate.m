@@ -502,8 +502,8 @@
 - (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels {
 	isDidRestoreSubscriptionOnChannelsDelegate = YES;
 	[self addMessagetoLog:@"DidRestoreSubscriptionOnChannelsDelegate"];
-//	if( isWillRestoreSubscriptionOnChannelsDelegate == NO )
-//		[self performSelector: @selector(errorSelectorDidRestoreSubscriptionOnChannels)];
+	if( isWillRestoreSubscriptionOnChannelsDelegate == NO )
+		[self performSelector: @selector(errorSelectorDidRestoreSubscriptionOnChannels)];
 }
 
 

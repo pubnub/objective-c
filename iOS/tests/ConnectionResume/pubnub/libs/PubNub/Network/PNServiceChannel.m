@@ -499,11 +499,11 @@
 
 #pragma mark - Messages processing methods
 
-- (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel {
+- (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
 
     // Create object instance
     PNError *error = nil;
-    PNMessage *messageObject = [PNMessage messageWithObject:object forChannel:channel error:&error];
+    PNMessage *messageObject = [PNMessage messageWithObject:object forChannel:channel compressed:shouldCompressMessage error:&error];
 
     // Checking whether
     if (messageObject) {
@@ -526,7 +526,7 @@
     if (message) {
 
         // Schedule message sending request
-        [self sendMessage:message.message toChannel:message.channel];
+        [self sendMessage:message.message toChannel:message.channel compressed:message.shouldCompressMessage];
     }
 }
 

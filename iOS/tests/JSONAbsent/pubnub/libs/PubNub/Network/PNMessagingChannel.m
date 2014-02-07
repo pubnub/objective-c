@@ -395,6 +395,26 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                     launchProcessing:NO];
            }];
 
+        // Try to check whether there is leave request or not in stack
+        if ([self hasRequestsWithClass:[PNLeaveRequest class]]) {
+
+            PNBaseRequest *request = [[self requestsWithClass:[PNLeaveRequest class]] lastObject];
+            if (request) {
+
+               // Check whether client is waiting for request completion
+               BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+
+               // Clean up query (if request has been stored in it)
+               [self destroyRequest:request];
+
+               // Send request back into queue with higher priority among other requests
+               [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
+                    launchProcessing:NO];
+            }
+
+        }
+
+
         [self scheduleNextRequest];
     }
 }
@@ -643,18 +663,18 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             shouldSendUpdateSubscriptionRequest = NO;
 
             // Check whether user want to unsubscribe from all channels or not
-            __block BOOL isLeavingAllChannles = NO;
+            __block BOOL isLeavingAllChanneles = NO;
             NSArray *leaveRequests  = [self requestsWithClass:[PNLeaveRequest class]];
             [leaveRequests enumerateObjectsUsingBlock:^(PNLeaveRequest *leaveRequest, NSUInteger leaveRequestIdx,
                     BOOL *leaveRequestEnumeratorStop) {
 
-                if (!isLeavingAllChannles) {
+                if (!isLeavingAllChanneles) {
 
                     // Check whether we already found request which will unsubscribe from all channels or not
                     NSSet *leaveChannelsSet = [NSSet setWithArray:leaveRequest.channels];
                     if ([leaveChannelsSet isEqualToSet:self.subscribedChannelsSet]) {
 
-                        isLeavingAllChannles = YES;
+                        isLeavingAllChanneles = YES;
                     }
                 }
                 else {
@@ -664,7 +684,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             }];
 
             // Check whether is leaving only partial channels and there is no subscribe request for rest of the channels
-            if ([leaveRequests count] > 0 && !isLeavingAllChannles && ![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
+            if ([leaveRequests count] > 0 && !isLeavingAllChanneles && ![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
 
                 [self destroyByRequestClass:[PNLeaveRequest class]];
                 shouldSendUpdateSubscriptionRequest = YES;
@@ -693,11 +713,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self destroyByRequestClass:[PNLeaveRequest class]];
             [self destroyByRequestClass:[PNSubscribeRequest class]];
 
+            NSMutableSet *channelsForSubscription = [NSMutableSet setWithArray:channels];
+            if (request) {
+
+                [channelsForSubscription addObjectsFromArray:[request channelsForSubscription]];
+            }
             if ([[channels lastObject] isTimeTokenChangeLocked]) {
 
-                [channels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
+                [channelsForSubscription makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
             }
-            PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channels byUserRequest:YES];
+            PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[channelsForSubscription allObjects]
+                                                                                     byUserRequest:YES];
             if (shouldModifyPresence) {
                 
                 subscribeRequest.channelsForPresenceEnabling = request.channelsForPresenceEnabling;
@@ -1266,7 +1292,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 
         // Update channels state update time token
-        NSMutableArray *channelsForTokenUpdate = [NSMutableArray arrayWithArray:[self.subscribedChannelsSet allObjects]];
+        NSMutableSet *channelsForTokenUpdate = [self.subscribedChannelsSet mutableCopy];
         [channelsForTokenUpdate addObjectsFromArray:request.channels];
         [channelsForTokenUpdate makeObjectsPerformSelector:@selector(setUpdateTimeToken:) withObject:timeToken];
 

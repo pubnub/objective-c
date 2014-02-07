@@ -12,7 +12,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PNBaseRequest.h"
+#import "PNBaseRequest+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
@@ -168,21 +168,66 @@
     return [NSString stringWithFormat:@"http://%@%@", [PubNub sharedInstance].configuration.origin, [self resourcePath]];
 }
 
-- (NSString *)HTTPPayload {
+- (PNRequestHTTPMethod)HTTPMethod {
+    
+    return PNRequestGETMethod;
+}
 
+- (BOOL)shouldCompressPOSTBody {
+    
+    return NO;
+}
+
+- (NSData *)POSTBody {
+    
+    return nil;
+}
+
+- (NSData *)HTTPPayload {
+
+    NSMutableString *plainPayload = [NSMutableString string];
+    NSMutableData *payloadData = [NSMutableData data];
     NSString *acceptEncoding = @"";
-    if ([PubNub sharedInstance].configuration.shouldAcceptCompressedResponse) {
+    if ([PubNub sharedInstance].configuration.shouldAcceptCompressedResponse || [self shouldCompressPOSTBody]) {
 
         acceptEncoding = @"Accept-Encoding: gzip, deflate\r\n";
     }
-
     
-    return [NSString stringWithFormat:@"GET %@ HTTP/1.1\r\nHost: %@\r\nV: %@\r\nUser-Agent: %@\r\nAccept: */*\r\n%@\r\n",
-            [self resourcePath],
-            [PubNub sharedInstance].configuration.origin,
-            kPNClientVersion,
-            kPNClientName,
-            acceptEncoding];
+    NSString *HTTPMethod = @"GET";
+    NSData *postBody = nil;
+    if ([self HTTPMethod] == PNRequestPOSTMethod) {
+        
+        HTTPMethod = @"POST";
+        postBody = [self POSTBody];
+        
+        if ([self shouldCompressPOSTBody]) {
+            
+            postBody = [postBody GZIPDeflate];
+        }
+    }
+    
+    [plainPayload appendFormat:@"%@ %@ HTTP/1.1\r\nHost: %@\r\nV: %@\r\nUser-Agent: %@\r\nAccept: */*\r\n%@",
+     HTTPMethod, [self resourcePath], [PubNub sharedInstance].configuration.origin, kPNClientVersion, kPNClientName,
+     acceptEncoding];
+    
+    if (postBody) {
+        
+        [plainPayload appendFormat:@"Content-Encoding: gzip\r\nContent-Length: %lu\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n", (unsigned long)[postBody length]];
+    }
+    else {
+        
+        [plainPayload appendString:@"\r\n"];
+    }
+    
+    [payloadData appendData:[plainPayload dataUsingEncoding:NSUTF8StringEncoding]];
+    if (postBody) {
+        
+        [payloadData appendData:postBody];
+        [payloadData appendData:[@"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    
+    return payloadData;
 }
 
 #pragma mark -
