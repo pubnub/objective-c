@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'PubNub'
-  s.version      = ‘3.5.6'
+  s.version      = '3.5.6'
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'Sergey Mamontov' => 'support@pubnub.com',
