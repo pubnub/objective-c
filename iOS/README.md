@@ -717,16 +717,16 @@ To use the Presence feature in your app, the follow methods are provided:
 + (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel;
 + (void)enablePresenceObservationForChannel:(PNChannel *)channel;
 + (void)enablePresenceObservationForChannel:(PNChannel *)channel 
-+               withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
+                withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
 + (void)enablePresenceObservationForChannels:(NSArray *)channels;
 + (void)enablePresenceObservationForChannels:(NSArray *)channels 
-+                withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
+                 withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
 + (void)disablePresenceObservationForChannel:(PNChannel *)channel;  
 + (void)disablePresenceObservationForChannel:(PNChannel *)channel 
-+                withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
+                 withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
 + (void)disablePresenceObservationForChannels:(NSArray *)channels;
 + (void)disablePresenceObservationForChannels:(NSArray *)channels 
-+                 withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
+                  withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
 ```
     
 ### Who is "Here Now" ?
