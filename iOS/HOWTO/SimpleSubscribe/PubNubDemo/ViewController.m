@@ -73,16 +73,25 @@
         int64_t delayInSeconds = 1.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 
-            // then subscribe on channel a
-            PNChannel *myChannel = [PNChannel channelWithName:@"zz" shouldObservePresence:YES];
             NSMutableDictionary *currentState = [[NSMutableDictionary alloc] init];
             NSMutableDictionary *zzState = [[NSMutableDictionary alloc] init];
+
+            // then subscribe on channel zz
+            PNChannel *myChannel = [PNChannel channelWithName:@"zz" shouldObservePresence:YES];
+
 
             [zzState setObject:@"demo app started" forKey:@"appEvent"];
             [currentState setObject:zzState forKey:@"zz"];
 
 
             [PubNub subscribeOnChannel:myChannel withMetadata:currentState];
+
+            int64_t delayInSeconds = 5.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                // grab global occupancy list 5s later
+                [PubNub requestParticipantsListWithClientIdentifiers:NO clientMetadata:YES];
+
+            });
 
         }); }
             // In case of error you always can pull out error code and identify what happened and what you can do // additional information is stored inside error's localizedDescription, localizedFailureReason and
@@ -102,6 +111,8 @@
                              [connectionErrorAlert addButtonWithTitle:@"OK"];
                              [connectionErrorAlert show];
                          }];
+
+
 }
 
 - (void)didReceiveMemoryWarning {
