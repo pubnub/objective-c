@@ -754,6 +754,17 @@ There is a set of methods which provide you access to the presence data:
 + (void)requestParticipantsListForChannel:(PNChannel *)channel 
                 clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
++ (void)requestParticipantsListForChannel:(PNChannel *)channel
+                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                           clientMetadata:(BOOL)shouldFetchClientMetadata;
++ (void)requestParticipantsListForChannel:(PNChannel *)channel
+                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                           clientMetadata:(BOOL)shouldFetchClientMetadata   
+                      withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
+
++ (void)requestParticipantChannelsList:(NSString *)clientIdentifier;
++ (void)requestParticipantChannelsList:(NSString *)clientIdentifier
+                   withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
 ```
 Example:  
 ```objc
