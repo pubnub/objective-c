@@ -58,10 +58,13 @@
     }];
 
 
-    // Do any additional setup after loading the view, typically from a nib.
+    PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com"  publishKey:@"demo" subscribeKey:@"demo" secretKey:@"demo"];
 
-    // amongst other things, set the sub/pub keys to demo
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
+    // Set the presence heartbeat to 5s
+    myConfig.presenceExpirationTimeout = 5;
+
+    [PubNub setConfiguration:myConfig];
+
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
 
         PNLog(PNLogGeneralLevel, self, @"{BLOCK} PubNub client connected to: %@", origin);
@@ -71,8 +74,15 @@
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 
             // then subscribe on channel a
-            PNChannel *myChannel = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
-            [PubNub subscribeOnChannel:myChannel];
+            PNChannel *myChannel = [PNChannel channelWithName:@"zz" shouldObservePresence:YES];
+            NSMutableDictionary *currentState = [[NSMutableDictionary alloc] init];
+            NSMutableDictionary *zzState = [[NSMutableDictionary alloc] init];
+
+            [zzState setObject:@"demo app started" forKey:@"appEvent"];
+            [currentState setObject:zzState forKey:@"zz"];
+
+
+            [PubNub subscribeOnChannel:myChannel withMetadata:currentState];
 
         }); }
             // In case of error you always can pull out error code and identify what happened and what you can do // additional information is stored inside error's localizedDescription, localizedFailureReason and
