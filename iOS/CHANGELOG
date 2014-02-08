@@ -1,4 +1,9 @@
-01-30-2013 - 3.5.5
+02-07-2014 - 3.5.6
+. added ability to send messages compressed
+. fix for timetoken race condition on failed leave
+. always send apns deviceid in lowercase to PN servers
+
+01-30-2014 - 3.5.5
 . history can now optionally returned associated timetoken for each message
 . didConnectToOrigin is fired when application resumes from background
 . fixed an uplink ping bug
