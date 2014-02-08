@@ -81,16 +81,6 @@
 		5AF932DC18997B2E00241C5C /* PNReachability+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AF932DB18997B2E00241C5C /* PNReachability+Test.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		5ACCA9DA17F342F200FE90CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5ACCA9AA17F342F000FE90CF;
-			remoteInfo = pubNubBackgroundMediator;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		5A15AA2F1811967200A911DC /* PubNub+Suspend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PubNub+Suspend.h"; path = "BackgroundApp/PubNub+Suspend.h"; sourceTree = "<group>"; };
 		5A15AA301811967200A911DC /* PubNub+Suspend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PubNub+Suspend.m"; path = "BackgroundApp/PubNub+Suspend.m"; sourceTree = "<group>"; };
@@ -260,7 +250,6 @@
 		5AC38AA317F1C18E00956E69 /* PNBackgroundAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNBackgroundAppDelegate.h; path = BackgroundApp/PNBackgroundAppDelegate.h; sourceTree = "<group>"; };
 		5AC38AA417F1C18E00956E69 /* PNBackgroundAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNBackgroundAppDelegate.m; path = BackgroundApp/PNBackgroundAppDelegate.m; sourceTree = "<group>"; };
 		5AC38AA817F1C20100956E69 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BackgroundApp/main.m; sourceTree = "<group>"; };
-		5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = pubNubBackgroundMediator.xcodeproj; path = pubNubBackgroundMediator/pubNubBackgroundMediator.xcodeproj; sourceTree = "<group>"; };
 		5AF932DA18997B2E00241C5C /* PNReachability+Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNReachability+Test.h"; sourceTree = "<group>"; };
 		5AF932DB18997B2E00241C5C /* PNReachability+Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PNReachability+Test.m"; sourceTree = "<group>"; };
 		792C1F3F16777BD40054E18E /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -576,18 +565,9 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		5ACCA9D717F342F000FE90CF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5ACCA9DB17F342F200FE90CF /* pubNubBackgroundMediator.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		79C3221D166DF846006DB535 = {
 			isa = PBXGroup;
 			children = (
-				5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */,
 				79C32232166DF847006DB535 /* PubNubBackground */,
 				79C3222B166DF847006DB535 /* Frameworks */,
 				79C32229166DF847006DB535 /* Products */,
@@ -709,28 +689,12 @@
 			mainGroup = 79C3221D166DF846006DB535;
 			productRefGroup = 79C32229166DF847006DB535 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 5ACCA9D717F342F000FE90CF /* Products */;
-					ProjectRef = 5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				5AC38A3A17F1C0E000956E69 /* pubnubTestBackgroundBackground */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		5ACCA9DB17F342F200FE90CF /* pubNubBackgroundMediator.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = pubNubBackgroundMediator.app;
-			remoteRef = 5ACCA9DA17F342F200FE90CF /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5AC38A8717F1C0E000956E69 /* Resources */ = {

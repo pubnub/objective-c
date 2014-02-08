@@ -34,7 +34,7 @@
 
 - (id)init {
 
-    // Check whether initializarion successful or not
+    // Check whether initialization successful or not
     if((self = [super init])) {
 
         self.sendingByUserRequest = YES;

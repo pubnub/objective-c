@@ -32,8 +32,7 @@
     [PubNub setDelegate:self];
 }
 
-- (void)test10Connect
-{
+- (void)test10Connect {
 	[PubNub disconnect];
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
@@ -61,12 +60,12 @@
 
 	BOOL isConnect = [[PubNub sharedInstance] isConnected];
 	STAssertTrue( isConnect, @"not connected");
+
+	[self t20SubscribeOnChannelsByTurns];
 }
 
--(void)test20SubscribeOnChannelsByTurns
-{
-	for( int i = 0; i<90; i++ )
-	{
+-(void)t20SubscribeOnChannelsByTurns {
+	for( int i = 0; i<90; i++ ) {
 		//		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 		__block BOOL isCompletionBlockCalled = NO;
 		NSString *channelName = [NSString stringWithFormat: @"%@ %d", [NSDate date], i];

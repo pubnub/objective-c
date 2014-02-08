@@ -26,6 +26,9 @@
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
+                  Identifier = "ApnsToken">
+               </Test>
+               <Test
                   Identifier = "BadJsonTest">
                </Test>
                <Test
@@ -83,6 +86,9 @@
                   Identifier = "PNAccessRightsCollectionTest">
                </Test>
                <Test
+                  Identifier = "PNAccessRightsInformationTest">
+               </Test>
+               <Test
                   Identifier = "PNActionResponseParserTest">
                </Test>
                <Test
@@ -104,6 +110,9 @@
                   Identifier = "PNChannelTest">
                </Test>
                <Test
+                  Identifier = "PNConfigurationTest">
+               </Test>
+               <Test
                   Identifier = "PNConnectionChannelTest">
                </Test>
                <Test
@@ -116,7 +125,13 @@
                   Identifier = "PNCryptoTest">
                </Test>
                <Test
+                  Identifier = "PNDateTest">
+               </Test>
+               <Test
                   Identifier = "PNErrorResponseParserTest">
+               </Test>
+               <Test
+                  Identifier = "PNErrorTest">
                </Test>
                <Test
                   Identifier = "PNHereNowRequestTest">
@@ -174,6 +189,9 @@
                </Test>
                <Test
                   Identifier = "PNWriteBufferTest">
+               </Test>
+               <Test
+                  Identifier = "SendBigMessage">
                </Test>
                <Test
                   Identifier = "TimeCommand">

@@ -78,7 +78,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
 
 - (BOOL)isEnablingAllAccessRights {
 
-	return PNBitsIsOn(self.rights, YES, PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR);
+    return PNBitsIsOn(self.rights, YES, PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR);
 }
 
 - (BOOL)isRevokingAccessRights {

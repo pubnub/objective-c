@@ -159,7 +159,7 @@
 }
 
 -(void)sendMessage {
-	[PubNub sendMessage:[NSString stringWithFormat: @"mediatorWithMessage, %@", [NSDate date]] toChannel:pnChannel compressed: YES
+	[PubNub sendMessage:[NSString stringWithFormat: @"mediatorWithMessage, %@", [NSDate date]] toChannel:pnChannel compressed: NO
 	withCompletionBlock:^(PNMessageState messageSendingState, id data)
 	 {
 		 if( messageSendingState == PNMessageSent )

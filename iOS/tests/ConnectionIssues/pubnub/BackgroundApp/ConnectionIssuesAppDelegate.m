@@ -39,9 +39,9 @@
 
 	[PubNub clientIdentifier];
 #if TARGET_IPHONE_SIMULATOR
-	wiFiOnUrl = @"http://192.168.2.1/wiFiReconnect.php";
+	wiFiOnUrl = @"http://192.168.2.1/wiFiReconnect60.php";
 #else
-	wiFiOnUrl = @"http://192.168.2.1/wiFiReconnect.php";
+	wiFiOnUrl = @"http://192.168.2.1/wiFiReconnect60.php";
 #endif
 
 	lastWiFiReconnect = [NSDate date];

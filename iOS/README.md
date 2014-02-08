@@ -1,4 +1,4 @@
-# PubNub 3.5.4 for iOS 5.1+ (iPhone, iPad, iPod)
+# PubNub 3.5.6 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -36,21 +36,18 @@ PNDate *startDate = [PNDate dateWithToken:[NSNumber numberWithInt:1234567]; // C
 Also, there are new files in the libary that were not present in iPadDemoApp.x. Be sure when updating the library that you add these new files to your project,
 or you will certainly get compile errors for missing files. Easiest thing to do is remove all PubNub files, and add the new PubNub files back.
 
-## Coming Soon... XCode Project Template Support!
-But until then...
-
 ## Adding PubNub to your project via CocoaPods
 **NOTE:** Be sure you are running CocoaPods 0.26.2 or above!
 
 [These steps are documented in our Emmy-winning CocoaPod's Setup Video, check it out here!](https://vimeo.com/69284108)
 
-By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.5.3**
+By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods version is 3.5.4**
 
 +   Create an empty XCode Project
 +   Add the following to your project's Podfile:
 
 ```
-pod 'PubNub', '3.5.3'
+pod 'PubNub', '3.5.6'
 ```
 
 +   Run
@@ -78,7 +75,7 @@ To your project's .pch file.
 
 2. Add PNImports to your project precompile header (.pch)  
 ```objc
-// Make this the FIRST import statement
+// Make this the LAST import statement
 #import "PNImports.h"
 ```
 

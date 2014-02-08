@@ -31,7 +31,7 @@
 	PNDate *pnDate = [PNDate dateWithDate: date];
 	STAssertTrue( pnDate != nil, @"");
 	NSLog(@"dates:\n%@\n%@\n%f", pnDate.date, date, [pnDate.date timeIntervalSinceDate: date]);
-	STAssertTrue( [pnDate.date timeIntervalSinceDate: date] < 1 && [pnDate.date timeIntervalSinceDate: date] > 1, @"");
+	STAssertTrue( [pnDate.date timeIntervalSinceDate: date] > -1 && [pnDate.date timeIntervalSinceDate: date] < 1, @"");
 }
 
 -(void)testInitWithTimeToken {
