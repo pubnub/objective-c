@@ -791,7 +791,7 @@ Example:
 Each of presence methods allow to specify whether client identifiers required or not (if not, than response will contain list of PNClient instances with **unknown** identifier set). Also methods allow to specify whether client's metadata should be fetched as well or not.  
 All client information now represented with [**PNClinet**](iPadDemoApp/pubnub/libs/PubNub/Data/PNClinet.h).    
 
-### Where is now
+### Where Now
 
 This feature allow to pull out full list of subscribers along with information on which channels they subscribed at this moment.
 
@@ -826,6 +826,72 @@ Usage is very simple:
   
 All client information now represented with [**PNClinet**](iPadDemoApp/pubnub/libs/PubNub/Data/PNClinet.h).  
 **NOTE: Too frequent usage of this API may force server to disable it for you on some period of time. Don't misuse this API.**
+
+### Presence State Data - Setting and Changing it
+
+PubNub client provide endpoints for client's metadata manipulation. They allow you to get or set / update existing values.  
+
+```objc
++ (void)requestClientMetadata:(NSString *)clientIdentifier forChannel:(PNChannel *)channel;
++ (void)requestClientMetadata:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
+  withCompletionHandlingBlock:(PNClientMetadataRetrieveHandlingBlock)handlerBlock;
++ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata
+                  forChannel:(PNChannel *)channel;
++ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata 
++                 forChannel:(PNChannel *)channel
+ withCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock;
+```
+  
+Usage example:
+```objc
+[PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+[PubNub setClientIdentifier:@"demouser"];
+[PubNub connect];
+[PubNub subscribeOnChannel:[PNChannel channelsWithName:@"iosdev"]
+  withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+ 
+      switch (state) {
+          case PNSubscriptionProcessNotSubscribedState:
+
+              // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+              //
+              // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and 
+              // use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+              // description for error). 'error.associatedObject' contains array of PNChannel instances on which 
+              // PubNub client was unable to subscribe.
+              break;
+          case PNSubscriptionProcessSubscribedState:
+
+              [PubNub updateClientMetadata:[PubNub clientIdentifier]
+                                          metadata:@{@"firstName": @"John", @"lastName": @"Appleseed", @"age": @(240)}
+                                        forChannel:((PNClient *)[array lastObject]).channel
+                        witCompletionHandlingBlock:^(PNClient *updatedClient, PNError *updateError) {
+
+                          if (error == nil) {
+
+                            // PubNub client successfully updated metadata.
+                          }
+                          else {
+
+                            // PubNub client did fail to update metadata.
+                            //
+                            // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and
+                            // use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get 
+                            // human readable description for error). 'error.associatedObject' contains PNClient instance 
+                            // for which PubNub client was unable to update metadata.
+                          }
+                        }];
+              }];
+              break;
+      }
+}];
+```
+  
+If you need to remove some value from metadata dictionary, you can pass `[NSNull null]` for key, which you want to reset.  
+Keys used in metadata dictionary shouldn't start with: "_" or "pn". Values should be one of: NSNumber (int, float) or NSString.  
+
+**NOTE: Values remain bound to the client while it subscribed at specific channel. As soon as you will unsubscribe or subscribe to another set of channels enabling presence event generation or client will timeout, server will destroy stored client's metadata.**
+
 
 ### Timetoken
 
@@ -1306,70 +1372,6 @@ Here is a small demo of how this methods can be used:
 ```
 Code above configure access rights in a way, which won't allow message posting for clients with _spectator_ and _visitor_ authorization keys into _iosdev_ channel for **10** minutes. But despite the fact that _iosdev_ channel access rights allow only subscription for _spectator_ and _visitor_, PubNub client allowed to post messages to any channels because of upper-layer configuration (__channel__ access level allow message posting to any channels for **10** minutes).
 
-### Metadata manipulation methods.
-
-PubNub client provide endpoints for client's metadata manipulation. They allow you to get or set / update existing values.  
-
-```objc
-+ (void)requestClientMetadata:(NSString *)clientIdentifier forChannel:(PNChannel *)channel;
-+ (void)requestClientMetadata:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
-  withCompletionHandlingBlock:(PNClientMetadataRetrieveHandlingBlock)handlerBlock;
-+ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata
-                  forChannel:(PNChannel *)channel;
-+ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata 
-+                 forChannel:(PNChannel *)channel
- withCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock;
-```
-  
-Usage example:
-```objc
-[PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
-[PubNub setClientIdentifier:@"demouser"];
-[PubNub connect];
-[PubNub subscribeOnChannel:[PNChannel channelsWithName:@"iosdev"]
-  withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
- 
-      switch (state) {
-          case PNSubscriptionProcessNotSubscribedState:
-
-              // There should be a reason because of which subscription failed and it can be found in 'error' instance.
-              //
-              // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and 
-              // use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
-              // description for error). 'error.associatedObject' contains array of PNChannel instances on which 
-              // PubNub client was unable to subscribe.
-              break;
-          case PNSubscriptionProcessSubscribedState:
-
-              [PubNub updateClientMetadata:[PubNub clientIdentifier]
-                                          metadata:@{@"firstName": @"John", @"lastName": @"Appleseed", @"age": @(240)}
-                                        forChannel:((PNClient *)[array lastObject]).channel
-                        witCompletionHandlingBlock:^(PNClient *updatedClient, PNError *updateError) {
-
-                          if (error == nil) {
-
-                            // PubNub client successfully updated metadata.
-                          }
-                          else {
-
-                            // PubNub client did fail to update metadata.
-                            //
-                            // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and
-                            // use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get 
-                            // human readable description for error). 'error.associatedObject' contains PNClient instance 
-                            // for which PubNub client was unable to update metadata.
-                          }
-                        }];
-              }];
-              break;
-      }
-}];
-```
-  
-If you need to remove some value from metadata dictionary, you can pass `[NSNull null]` for key, which you want to reset.  
-Keys used in metadata dictionary shouldn't start with: "_" or "pn". Values should be one of: NSNumber (int, float) or NSString.  
-
-**NOTE: Values remain bound to the client while it subscribed at specific channel. As soon as you will unsubscribe or subscribe to another set of channels enabling presence event generation or client will timeout, server will destroy stored client's metadata.**
 
 
 ## Error handling
