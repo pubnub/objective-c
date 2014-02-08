@@ -842,7 +842,32 @@ PubNub client provide endpoints for client's metadata manipulation. They allow y
  withCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock;
 ```
   
-Usage example:
+#### Example: Set state at subscribe time
+This JOIN event will include the state information:
+
+    {"action":"join", "timestamp":1391818344, "data":{"appEvent":"demo app started"}, "uuid":"SimpleSubscribe", "occupancy":3}
+
+
+```objc
+
+            NSMutableDictionary *currentState = [[NSMutableDictionary alloc] init];
+            NSMutableDictionary *zzState = [[NSMutableDictionary alloc] init];
+            
+            // Set UUID
+            [PubNub setClientIdentifier:@"SimpleSubscribe"];
+
+            // Set Channel
+            PNChannel *myChannel = [PNChannel channelWithName:@"zz" shouldObservePresence:YES];
+
+            [zzState setObject:@"demo app started" forKey:@"appEvent"];
+            [currentState setObject:zzState forKey:@"zz"];
+
+            // Subscribe with State at Join Time
+            [PubNub subscribeOnChannel:myChannel withMetadata:currentState];
+```
+
+#### Example: Modify State post-subscribe time
+
 ```objc
 [PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
 [PubNub setClientIdentifier:@"demouser"];
