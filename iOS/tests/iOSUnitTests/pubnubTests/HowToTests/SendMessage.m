@@ -199,8 +199,7 @@
 
     semaphore = dispatch_semaphore_create(0);
 	[PubNub subscribeOnChannels: pnChannels
-	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-	 {
+	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 		 dispatch_semaphore_signal(semaphore);
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
@@ -240,7 +239,7 @@
 	NSLog(@"sendNextMessage |%@|", messages[0]);
 	[PubNub sendMessage:messages[0] toChannel:pnChannels[0] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
 		STAssertTrue( messageSendingState != 2, @"error %@\nmessage: %@", data, messages[0]);
-		NSLog(@"sendMessage %d", messageSendingState);
+		NSLog(@"sendMessage %lu", messageSendingState);
 
 		if( messageSendingState != PNMessageSending ) {
 			[messages removeObjectAtIndex: 0];
