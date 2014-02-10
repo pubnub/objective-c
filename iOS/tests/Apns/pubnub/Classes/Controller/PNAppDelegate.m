@@ -138,7 +138,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [PNIdentificationViewController new];
     [self.window makeKeyAndVisible];
-	[application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+//	[application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     [self initializePubNubClient];
 
 #if !TARGET_IPHONE_SIMULATOR
