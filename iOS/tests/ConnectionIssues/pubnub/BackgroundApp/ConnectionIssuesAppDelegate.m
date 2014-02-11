@@ -45,6 +45,8 @@
 #endif
 
 	lastWiFiReconnect = [NSDate date];
+	sumReconnectTime = 0;
+	countReconnect = 0;
 	[self connect];
 
     return YES;
@@ -185,10 +187,14 @@
 - (void)handleClientDidConnectToOriginNotification:(NSNotification *)notification {
 	NSLog(@"handleClientDidConnectToOriginNotification: %@", notification);
 	log.text = [log.text stringByAppendingFormat:@"%@ Connected (%2.2f sec). Start reconnect\n", [NSDate date], -[lastWiFiReconnect timeIntervalSinceNow]];
-//	[self wifiOff];
+
+	if( countReconnect > 0 )
+		sumReconnectTime += -[lastWiFiReconnect timeIntervalSinceNow];
+	log.text = [log.text stringByAppendingFormat:@"Avg reconnect time: %2.2f sec\n",  sumReconnectTime/countReconnect];
+
 	[self wifiOn];
-//	log.text = [log.text stringByAppendingFormat:@"%@ reconnected wifi\n", [NSDate date]];
-	lastWiFiReconnect = [NSDate dateWithTimeIntervalSinceNow: 20];
+	countReconnect ++;
+	lastWiFiReconnect = [NSDate dateWithTimeIntervalSinceNow: 60];
 
 	NSRange range = NSMakeRange(log.text.length - 1, 1);
 	[log scrollRangeToVisible:range];
