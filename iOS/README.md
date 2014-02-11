@@ -1813,6 +1813,7 @@ If you choose the PNLOG_STORE_LOG_TO_FILE option, you will find your log written
 pubnub-console-dump.txt
 ```
 
+You can use a utility such as [iExplorer](http://www.macroplant.com/iexplorer/) to easily pull the pubnub-console-dump.txt file off your device for later review.
 
 ### Tests with OCUnit and OCMock
 
