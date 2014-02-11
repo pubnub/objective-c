@@ -8,7 +8,7 @@
  @version 3.6.0
  @copyright © 2009-13 PubNub Inc.
  */
-@interface PNClientMetadataUpdateResponseParser : PNResponseParser
+@interface PNClientStateUpdateResponseParser : PNResponseParser
 
 
 #pragma mark -

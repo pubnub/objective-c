@@ -124,7 +124,6 @@
     [self.window makeKeyAndVisible];
 
     [self initializePubNubClient];
-
     
     return YES;
 }
@@ -265,27 +264,27 @@
     PNLog(PNLogGeneralLevel, self, @"PubNub client disconnected from PubNub origin at: %@", origin);
 }
 
-- (void)pubnubClient:(PubNub *)client didReceiveClientMetadata:(PNClient *)remoteClient {
+- (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully received metadata for client %@ on channel %@: %@ ",
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully received state for client %@ on channel %@: %@ ",
           remoteClient.identifier, remoteClient.channel, remoteClient.data);
 }
 
-- (void)pubnubClient:(PubNub *)client clientMetadataRetrieveDidFailWithError:(PNError *)error {
+- (void)pubnubClient:(PubNub *)client clientStateRetrieveDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to receive metadata for client %@ on channel %@ because of error: %@",
+    PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to receive state for client %@ on channel %@ because of error: %@",
             ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
 }
 
-- (void)pubnubClient:(PubNub *)client didUpdateClientMetadata:(PNClient *)remoteClient {
+- (void)pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully updated metadata for client %@ at channel %@: %@ ",
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully updated state for client %@ at channel %@: %@ ",
           remoteClient.identifier, remoteClient.channel, remoteClient.data);
 }
 
-- (void)pubnubClient:(PubNub *)client clientMetadataUpdateDidFailWithError:(PNError *)error {
+- (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to update metadata for client %@ at channel %@ because of error: %@",
+    PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to update state for client %@ at channel %@ because of error: %@",
             ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
 }
 

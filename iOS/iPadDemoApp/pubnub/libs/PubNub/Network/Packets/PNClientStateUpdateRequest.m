@@ -1,34 +1,34 @@
 //
-//  PNClientMetadataUpdateRequest.m
+//  PNClientStateUpdateRequest.m
 //  pubnub
 //
 //  Created by Sergey Mamontov on 1/13/14.
 //  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
-#import "PNClientMetadataUpdateRequest+Protected.h"
+#import "PNClientStateUpdateRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNPrivateImports.h"
 
 
 #pragma mark Public interface implementation
 
-@implementation PNClientMetadataUpdateRequest
+@implementation PNClientStateUpdateRequest
 
 
 #pragma mark - Class methods
 
-+ (PNClientMetadataUpdateRequest *)clientMetadataUpdateRequestWithIdentifier:(NSString *)clientIdentifier
-                                                                     channel:(PNChannel *)channel
-                                                                 andMetadata:(NSDictionary *)metadata {
++ (PNClientStateUpdateRequest *)clientStateUpdateRequestWithIdentifier:(NSString *)clientIdentifier
+                                                               channel:(PNChannel *)channel
+                                                        andClientState:(NSDictionary *)clientState {
 
-    return [[self alloc] initWithIdentifier:clientIdentifier channel:channel andMetadata:metadata];
+    return [[self alloc] initWithIdentifier:clientIdentifier channel:channel andClientState:clientState];
 }
 
 
 #pragma mark - Instance methods
 
-- (id)initWithIdentifier:(NSString *)clientIdentifier channel:(PNChannel *)channel andMetadata:(NSDictionary *)metadata {
+- (id)initWithIdentifier:(NSString *)clientIdentifier channel:(PNChannel *)channel andClientState:(NSDictionary *)clientState {
 
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
@@ -36,7 +36,7 @@
         self.sendingByUserRequest = YES;
         self.clientIdentifier = clientIdentifier;
         self.channel = channel;
-        self.metadata = metadata;
+        self.state = clientState;
     }
 
 
@@ -45,7 +45,7 @@
 
 - (NSString *)callbackMethodName {
 
-    return PNServiceResponseCallbacks.metadataUpdateCallback;
+    return PNServiceResponseCallbacks.stateUpdateCallback;
 }
 
 - (NSString *)resourcePath {
@@ -54,7 +54,7 @@
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       [self.channel escapedName], [self.clientIdentifier percentEscapedString],
                                       [self callbackMethodName], self.shortIdentifier,
-                                      [[PNJSONSerialization stringFromJSONObject:self.metadata] percentEscapedString],
+                                      [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString],
                                       ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 

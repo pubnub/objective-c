@@ -6,20 +6,20 @@
 
  */
 
-#import "PNClientMetadataUpdateResponseParser.h"
+#import "PNClientStateUpdateResponseParser.h"
 #import "PNResponse+Protected.h"
 #import "PNPrivateImports.h"
 
 
 #pragma mark Private interface declaration
 
-@interface PNClientMetadataUpdateResponseParser ()
+@interface PNClientStateUpdateResponseParser ()
 
 
 #pragma mark - Properties
 
 /**
- Stores reference on resulting client information (with updated metadata).
+ Stores reference on resulting client information (with updated state).
  */
 @property (nonatomic, strong) PNClient *client;
 
@@ -31,7 +31,7 @@
 
 #pragma mark - Public interface implementation
 
-@implementation PNClientMetadataUpdateResponseParser
+@implementation PNClientStateUpdateResponseParser
 
 
 #pragma mark - Class methods

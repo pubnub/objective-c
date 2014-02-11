@@ -1,12 +1,12 @@
 //
-//  PNClientMetadataRequest.m
+//  PNClientStateRequest.m
 //  pubnub
 //
 //  Created by Sergey Mamontov on 1/12/14.
 //  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
-#import "PNClientMetadataRequest+Protected.h"
+#import "PNClientStateRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
 #import "PubNub+Protected.h"
@@ -14,12 +14,12 @@
 
 #pragma mark Public interface implementation
 
-@implementation PNClientMetadataRequest
+@implementation PNClientStateRequest
 
 
 #pragma mark - Class methods
 
-+ (PNClientMetadataRequest *)clientMetadataRequestForIdentifier:(NSString *)clientIdentifier andChannel:(PNChannel *)channel {
++ (PNClientStateRequest *)clientStateRequestForIdentifier:(NSString *)clientIdentifier andChannel:(PNChannel *)channel {
 
     return [[self alloc] initWithIdentifier:clientIdentifier andChannel:channel];
 }
@@ -42,7 +42,7 @@
 
 - (NSString *)callbackMethodName {
 
-    return PNServiceResponseCallbacks.metadataRetrieveCallback;
+    return PNServiceResponseCallbacks.stateRetrieveCallback;
 }
 
 - (NSString *)resourcePath {

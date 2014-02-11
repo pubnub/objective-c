@@ -6,21 +6,21 @@
 
  */
 
-#import "PNClientMetadataResponseParser.h"
+#import "PNClientStateResponseParser.h"
 #import "PNResponse+Protected.h"
 #import "PNClient+Protected.h"
 
 
 // ARC check
 #if !__has_feature(objc_arc)
-#error PubNub client metadata request response parser must be built with ARC.
+#error PubNub client state request response parser must be built with ARC.
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
 
 
 #pragma mark Private interface declaration
 
-@interface PNClientMetadataResponseParser ()
+@interface PNClientStateResponseParser ()
 
 
 #pragma mark - Properties
@@ -38,7 +38,7 @@
 
 #pragma mark - Public interface implementation
 
-@implementation PNClientMetadataResponseParser
+@implementation PNClientStateResponseParser
 
 
 #pragma mark - Class methods
