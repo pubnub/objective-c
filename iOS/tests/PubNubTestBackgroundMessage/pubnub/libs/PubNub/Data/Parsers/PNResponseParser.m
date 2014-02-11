@@ -9,11 +9,11 @@
 #import "PNResponseParser.h"
 #import "PNAccessRightsResponseParser+Protected.h"
 #import "PNPushNotificationsEnabledChannelsParser.h"
-#import "PNClientMetadataUpdateResponseParser.h"
+#import "PNClientStateUpdateResponseParser.h"
 #import "PNActionResponseParser+Protected.h"
 #import "PNOperationStatusResponseParser.h"
 #import "PNErrorResponseParser+Protected.h"
-#import "PNClientMetadataResponseParser.h"
+#import "PNClientStateResponseParser.h"
 #import "PNChannelEventsResponseParser.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNTimeTokenResponseParser.h"
@@ -122,14 +122,14 @@
             parserClass = [PNActionResponseParser class];
         }
         // Check whether result is result for "Metadata retrieval" request or not.
-        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.metadataRetrieveCallback]) {
+        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateRetrieveCallback]) {
 
-            parserClass = [PNClientMetadataResponseParser class];
+            parserClass = [PNClientStateResponseParser class];
         }
         // Check whether result is result for "Metadata update" request or not.
-        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.metadataUpdateCallback]) {
+        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateUpdateCallback]) {
 
-            parserClass = [PNClientMetadataUpdateResponseParser class];
+            parserClass = [PNClientStateUpdateResponseParser class];
         }
         // Check whether result is result for "Here now" request execution or not.
         else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelParticipantsCallback]) {

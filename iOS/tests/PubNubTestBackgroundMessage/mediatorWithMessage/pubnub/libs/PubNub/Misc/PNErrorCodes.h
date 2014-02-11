@@ -112,7 +112,7 @@ static NSInteger const kPNMessageHasNoContentError = 127;
 static NSInteger const kPNMessageHasNoChannelError = 128;
 
 /**
- Developer tried to push metadata w/ invalid content (used keys with forbidden prefix or unsupported values).
+ Developer tried to push state w/ invalid content (used keys with forbidden prefix or unsupported values).
  */
 static NSInteger const kPNInvalidMetadataPayloadError = 129;
 

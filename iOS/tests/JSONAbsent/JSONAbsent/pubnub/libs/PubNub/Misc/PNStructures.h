@@ -114,8 +114,8 @@ typedef NS_OPTIONS(NSInteger , PNAccessRightsLevel) {
 typedef void (^PNClientConnectionSuccessBlock)(NSString *);
 typedef void (^PNClientConnectionFailureBlock)(PNError *);
 typedef void (^PNClientConnectionStateChangeBlock)(NSString *, BOOL, PNError *);
-typedef void (^PNClientMetadataRetrieveHandlingBlock)(PNClient *, PNError *);
-typedef void (^PNClientMetadataUpdateHandlingBlock)(PNClient *, PNError *);
+typedef void (^PNClientStateRetrieveHandlingBlock)(PNClient *, PNError *);
+typedef void (^PNClientStateUpdateHandlingBlock)(PNClient *, PNError *);
 typedef void (^PNClientChannelSubscriptionHandlerBlock)(PNSubscriptionProcessState state, NSArray *, PNError *);
 typedef void (^PNClientChannelUnsubscriptionHandlerBlock)(NSArray *, PNError *);
 typedef void (^PNClientTimeTokenReceivingCompleteBlock)(NSNumber *, PNError *);

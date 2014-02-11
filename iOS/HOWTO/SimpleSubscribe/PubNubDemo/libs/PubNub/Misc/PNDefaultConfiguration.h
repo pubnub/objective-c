@@ -34,8 +34,27 @@ static NSTimeInterval const kPNSubscriptionRequestTimeout = 10.0f;
 
  Default value is set to \b 0.0 which mean that server will timeout client by default inactivity timeout (depend on
  server configuration and conditions).
+ 
+ @warning Property will be completely removed before feature release.
  */
 static NSTimeInterval const kPNPresenceExpirationTimeout = 0.0f;
+
+/**
+ This value used by server to identify when it should kick subscribed user (UUID during \b PubNub configuration) by
+ timeout.
+ 
+ Default value is set to \b 0 which mean that server will timeout client by default inactivity timeout (depend on
+ server configuration and conditions).
+ */
+static int const kPNPresenceHeartbeatTimeout = 0;
+
+/**
+ This interval is used by client to send heartbeat requests with specified 'heartbeat timeout' value.
+ 
+ @note If this value will be bigger then allowed maximum (\b 300 seconds) or same or larger then specified heartbeat 
+ timeout value, it will be reset to default value.
+ */
+static int const kPNPresenceHeartbeatInterval = 0;
 
 // This flag tells whether client should reduce SSL rules when connecting to remote origin because of connection
 // error (which probably caused by SSL certificate validation error) If set to YES,

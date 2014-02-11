@@ -82,8 +82,8 @@
 - (BOOL)shouldHandleResponse:(PNResponse *)response {
 
     return ([response.callbackMethod hasPrefix:PNServiceResponseCallbacks.latencyMeasureMessageCallback] ||
-            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.metadataRetrieveCallback] ||
-            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.metadataUpdateCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.stateRetrieveCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.stateUpdateCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.timeTokenCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelPushNotificationsEnableCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelPushNotificationsDisableCallback] ||
@@ -123,8 +123,8 @@
             NSString *identifier = ((PNWhereNowRequest *)request).identifier;
             response.additionalData = identifier;
         }
-        else if ([request isKindOfClass:[PNClientMetadataRequest class]] ||
-                [request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+        else if ([request isKindOfClass:[PNClientStateRequest class]] ||
+                [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
             NSString *identifier = [request valueForKey:@"clientIdentifier"];
             PNChannel *channel = [request valueForKey:@"channel"];
@@ -150,8 +150,8 @@
                 [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:parsedData];
             }
         }
-        // Check whether request was sent for metadata retrieval
-        else if ([request isKindOfClass:[PNClientMetadataRequest class]]) {
+        // Check whether request was sent for state retrieval
+        else if ([request isKindOfClass:[PNClientStateRequest class]]) {
 
             // Check whether there is no error while loading participants list
             if (![parsedData isKindOfClass:[PNError class]]) {
@@ -159,7 +159,7 @@
                 PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PARTICIPANT METADATA DOWNLOADED. SERVICE RESPONSE: %@",
                       parsedData);
 
-                [self.serviceDelegate serviceChannel:self didReceiveClientMetadata:parsedData];
+                [self.serviceDelegate serviceChannel:self didReceiveClientState:parsedData];
             }
             else {
 
@@ -167,11 +167,11 @@
                       parsedData);
 
                 ((PNError *)parsedData).associatedObject = response.additionalData;
-                [self.serviceDelegate serviceChannel:self clientMetadataReceiveDidFailWithError:parsedData];
+                [self.serviceDelegate serviceChannel:self clientStateReceiveDidFailWithError:parsedData];
             }
         }
-        // Check whether request was sent for metadata update
-        else if ([request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+        // Check whether request was sent for state update
+        else if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
             // Check whether there is no error while loading participants list
             if (![parsedData isKindOfClass:[PNError class]]) {
@@ -179,7 +179,7 @@
                 PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PARTICIPANT METADATA UPDATED. SERVICE RESPONSE: %@",
                       parsedData);
 
-                [self.serviceDelegate serviceChannel:self didUpdateClientMetadata:parsedData];
+                [self.serviceDelegate serviceChannel:self didUpdateClientState:parsedData];
             }
             else {
 
@@ -187,7 +187,7 @@
                       parsedData);
 
                 ((PNError *)parsedData).associatedObject = response.additionalData;
-                [self.serviceDelegate serviceChannel:self clientMetadataUpdateDidFailWithError:parsedData];
+                [self.serviceDelegate serviceChannel:self clientStateUpdateDidFailWithError:parsedData];
             }
         }
 
@@ -443,18 +443,18 @@
 
         [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
     }
-    // Check whether request was sent for metadata retrieval / update
-    else if ([request isKindOfClass:[PNClientMetadataRequest class]] ||
-            [request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+    // Check whether request was sent for state retrieval / update
+    else if ([request isKindOfClass:[PNClientStateRequest class]] ||
+            [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
         error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
                                                        channel:[request valueForKey:@"channel"]
                                                        andData:nil];
 
-        SEL errorSelector = @selector(serviceChannel:clientMetadataReceiveDidFailWithError:);
-        if ([request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+        SEL errorSelector = @selector(serviceChannel:clientStateReceiveDidFailWithError:);
+        if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
-            errorSelector = @selector(serviceChannel:clientMetadataUpdateDidFailWithError:);
+            errorSelector = @selector(serviceChannel:clientStateUpdateDidFailWithError:);
         }
 
         #pragma clang diagnostic push
@@ -678,17 +678,17 @@
         [self.serviceDelegate serviceChannel:self
             receiveTimeTokenDidFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
-    // Check whether request was sent for metadata retrieval / update
-    else if ([request isKindOfClass:[PNClientMetadataRequest class]] ||
-            [request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+    // Check whether request was sent for state retrieval / update
+    else if ([request isKindOfClass:[PNClientStateRequest class]] ||
+            [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
-        errorMessage = @"Client metadata request failed by timeout";
+        errorMessage = @"Client state request failed by timeout";
 
-        SEL errorSelector = @selector(serviceChannel:clientMetadataReceiveDidFailWithError:);
-        if ([request isKindOfClass:[PNClientMetadataUpdateRequest class]]) {
+        SEL errorSelector = @selector(serviceChannel:clientStateReceiveDidFailWithError:);
+        if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
-            errorMessage = @"Client metadata update failed by timeout";
-            errorSelector = @selector(serviceChannel:clientMetadataUpdateDidFailWithError:);
+            errorMessage = @"Client state update failed by timeout";
+            errorSelector = @selector(serviceChannel:clientStateUpdateDidFailWithError:);
         }
         PNError *error = [PNError errorWithMessage:errorMessage code:errorCode];
         error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]

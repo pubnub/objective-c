@@ -37,10 +37,10 @@
 @property (nonatomic, copy) NSString *clientIdentifier;
 
 /**
- Stores reference on metadata \b NSDictionary instance which should be sent along with acknowledgment that client is
+ Stores reference on state \b NSDictionary instance which should be sent along with acknowledgment that client is
  still active.
  */
-@property (nonatomic, strong) NSDictionary *metadata;
+@property (nonatomic, strong) NSDictionary *state;
 
 #pragma mark -
 
@@ -55,20 +55,20 @@
 
 #pragma mark - Class methods
 
-+ (PNHeartbeatRequest *)heartbeatRequestForChannel:(PNChannel *)channel withMetadata:(NSDictionary *)metadata {
++ (PNHeartbeatRequest *)heartbeatRequestForChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState {
 
-    return [self heartbeatRequestForChannels:@[channel] withMetadata:metadata];
+    return [self heartbeatRequestForChannels:@[channel] withClientState:clientState];
 }
 
-+ (PNHeartbeatRequest *)heartbeatRequestForChannels:(NSArray *)channels withMetadata:(NSDictionary *)metadata {
++ (PNHeartbeatRequest *)heartbeatRequestForChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState {
 
-    return [[self alloc] initWithChannels:channels withMetadata:metadata];
+    return [[self alloc] initWithChannels:channels withClientState:clientState];
 }
 
 
 #pragma mark - Instance methods
 
-- (id)initWithChannels:(NSArray *)channels withMetadata:(NSDictionary *)metadata {
+- (id)initWithChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState {
 
     // Check whether initialization successful or not
     if ((self = [super init])) {
@@ -76,7 +76,7 @@
         self.sendingByUserRequest = NO;
         self.channels = [NSArray arrayWithArray:channels];
         self.clientIdentifier = [PubNub escapedClientIdentifier];
-        self.metadata = metadata;
+        self.state = clientState;
     }
 
 
@@ -86,10 +86,10 @@
 - (NSString *)resourcePath {
 
     NSString *metadata = @"";
-    if (self.metadata) {
+    if (self.state) {
 
         metadata = [NSString stringWithFormat:@"&metadata=%@",
-                    [[PNJSONSerialization stringFromJSONObject:self.metadata] percentEscapedString]];
+                    [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
     }
 
     return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/heartbeat?uuid=%@%@%@",

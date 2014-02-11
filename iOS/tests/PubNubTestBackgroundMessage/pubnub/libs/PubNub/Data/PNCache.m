@@ -17,7 +17,7 @@
 /**
  Unified storage for cached data across all channels which is in use by client and developer.
  */
-@property (nonatomic, strong) NSMutableDictionary *metadataCache;
+@property (nonatomic, strong) NSMutableDictionary *stateCache;
 
 #pragma mark -
 
@@ -37,7 +37,7 @@
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
 
-        self.metadataCache = [NSMutableDictionary dictionary];
+        self.stateCache = [NSMutableDictionary dictionary];
     }
 
     return self;
@@ -45,64 +45,64 @@
 
 #pragma mark - Metadata management method
 
-- (NSDictionary *)metadata {
+- (NSDictionary *)state {
 
-    return ([self.metadataCache count] ? [self.metadataCache copy] : nil);
+    return ([self.stateCache count] ? [self.stateCache copy] : nil);
 }
 
-- (void)storeMetadata:(NSDictionary *)metadata forChannel:(PNChannel *)channel {
+- (void)storeClientState:(NSDictionary *)clientState forChannel:(PNChannel *)channel {
 
-    if (metadata) {
+    if (clientState) {
 
         if (channel) {
 
-            [self.metadataCache setValue:metadata forKey:channel.name];
+            [self.stateCache setValue:clientState forKey:channel.name];
         }
     }
     else {
 
-        [self purgeMetadataForChannel:channel];
+        [self purgeStateForChannel:channel];
     }
 }
 
-- (void)storeMetadata:(NSDictionary *)metadata forChannels:(NSArray * __unused)channels {
+- (void)storeClientState:(NSDictionary *)clientState forChannels:(NSArray *)channels {
 
-    [self.metadataCache addEntriesFromDictionary:metadata];
+    [self.stateCache addEntriesFromDictionary:clientState];
 }
 
-- (NSDictionary *)metadataForChannel:(PNChannel *)channel {
+- (NSDictionary *)stateForChannel:(PNChannel *)channel {
 
-    return (channel ? [self.metadataCache valueForKey:channel.name] : nil);
+    return (channel ? [self.stateCache valueForKey:channel.name] : nil);
 }
 
-- (NSDictionary *)metadataForChannels:(NSArray *)channels {
+- (NSDictionary *)stateForChannels:(NSArray *)channels {
 
     NSMutableSet *channelsSet = [NSMutableSet setWithArray:[channels valueForKey:@"name"]];
-    [channelsSet intersectSet:[NSSet setWithArray:[self.metadataCache allKeys]]];
+    [channelsSet intersectSet:[NSSet setWithArray:[self.stateCache allKeys]]];
 
 
-    return ([channelsSet count] ? [self.metadataCache dictionaryWithValuesForKeys:[channelsSet allObjects]] : nil);
+    return ([channelsSet count] ? [self.stateCache dictionaryWithValuesForKeys:[channelsSet allObjects]] : nil);
 }
 
-- (void)purgeMetadataForChannel:(PNChannel *)channel {
+- (void)purgeStateForChannel:(PNChannel *)channel {
 
     if (channel) {
 
-        [self.metadataCache removeObjectForKey:channel.name];
+        [self.stateCache removeObjectForKey:channel.name];
     }
 }
 
-- (void)purgeMetadataForChannels:(NSArray *)channels {
+- (void)purgeStateForChannels:(NSArray *)channels {
 
     if (channels) {
 
-        [self.metadataCache removeObjectsForKeys:[channels valueForKey:@"name"]];
+        [self.stateCache removeObjectsForKeys:[channels valueForKey:@"name"]];
     }
 }
 
-- (void)purgeAllMetadata {
+- (void)purgeAllState {
 
-    [self.metadataCache removeAllObjects];
+    [self.stateCache removeAllObjects];
 }
 
 #pragma mark -

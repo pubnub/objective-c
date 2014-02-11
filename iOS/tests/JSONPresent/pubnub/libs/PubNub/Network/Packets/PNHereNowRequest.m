@@ -36,9 +36,9 @@
 @property (nonatomic, assign, getter = isClientIdentifiersRequired) BOOL clientIdentifiersRequired;
 
 /**
- Stores whether request should fetch client's metadata or not.
+ Stores whether request should fetch client's state or not.
  */
-@property (nonatomic, assign, getter = shouldFetchClientMetadata) BOOL fetchClientMetadata;
+@property (nonatomic, assign, getter = shouldFetchClientState) BOOL fetchClientState;
 
 
 @end
@@ -50,17 +50,17 @@
 #pragma mark Class methods
 
 + (PNHereNowRequest *)whoNowRequestForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
-                               clientMetadata:(BOOL)shouldFetchClientMetadata {
+                                  clientState:(BOOL)shouldFetchClientState {
 
     return [[[self class] alloc] initWithChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired
-                                  clientMetadata:shouldFetchClientMetadata];
+                                     clientState:shouldFetchClientState];
 }
 
 
 #pragma mark - Instance methods
 
 - (id)initWithChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
-       clientMetadata:(BOOL)shouldFetchClientMetadata {
+          clientState:(BOOL)shouldFetchClientState {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
@@ -68,7 +68,7 @@
         self.sendingByUserRequest = YES;
         self.channel = channel;
         self.clientIdentifiersRequired = isClientIdentifiersRequired;
-        self.fetchClientMetadata = shouldFetchClientMetadata;
+        self.fetchClientState = shouldFetchClientState;
     }
 
 
@@ -87,7 +87,7 @@
                                       (self.channel ? [NSString stringWithFormat:@"/channel/%@", [self.channel escapedName]] : @""),
                                       [self callbackMethodName],
                                       self.shortIdentifier, (self.isClientIdentifiersRequired ? @"0" : @"1"),
-                                      (self.shouldFetchClientMetadata ? @"1" : @"0"),
+                                      (self.shouldFetchClientState ? @"1" : @"0"),
                                       ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 

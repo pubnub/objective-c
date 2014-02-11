@@ -143,7 +143,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
  @code
  @endcode
- This method extends \a -subscribeOnChannels:withPresenceEvent:presence: and allow to specify metadata which should
+ This method extends \a -subscribeOnChannels:withPresenceEvent:presence: and allow to specify state which should
  be sent along with subscription request.
 
  @param channels
@@ -157,11 +157,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
  Bit mask from \b PNMessagingConnectionStateFlag enumerator: PNMessagingChannelEnablingPresence or
  PNMessagingChannelDisablingPresence to identify what kind of changes should be performed.
 
- @param metadata
+ @param clientState
  \b NSDictionary instance with list of parameters which should be bound to the client.
  */
 - (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
-                   presence:(NSUInteger)channelsPresence andMetadata:(NSDictionary *)metadata;
+                   presence:(NSUInteger)channelsPresence andClientState:(NSDictionary *)clientState;
 
 /**
  * Same function as -unsubscribeFromChannelsWithPresenceEvent: but also allow to specify whether leave was
@@ -644,7 +644,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         PNBitOn(&_messagingState, PNMessagingChannelRestoringSubscription);
 
         PNSubscribeRequest *resubscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
-                                                                                   byUserRequest:YES withMetadata:nil];
+                                                                                   byUserRequest:YES
+                                                                                 withClientState:nil];
 
         // Check whether connection channel is waiting for response via long-poll connection or not
         resubscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
@@ -740,7 +741,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
             PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channels
                                                                                      byUserRequest:YES
-                                                                                      withMetadata:request.metadata];
+                                                                                   withClientState:request.state];
             if (shouldModifyPresence) {
                 
                 subscribeRequest.channelsForPresenceEnabling = request.channelsForPresenceEnabling;
@@ -774,12 +775,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent {
 
-    [self subscribeOnChannels:channels withPresenceEvent:withPresenceEvent andMetadata:nil];
+    [self subscribeOnChannels:channels withPresenceEvent:withPresenceEvent andClientState:nil];
 }
 
-- (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent andMetadata:(NSDictionary *)metadata {
+- (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent andClientState:(NSDictionary *)clientState {
 
-    [self subscribeOnChannels:channels withPresenceEvent:withPresenceEvent presence:0 andMetadata:metadata];
+    [self subscribeOnChannels:channels withPresenceEvent:withPresenceEvent presence:0 andClientState:clientState];
 }
 
 - (NSSet *)channelsForPresenceEnablingFromArray:(NSArray *)channels {
@@ -826,11 +827,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 - (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
                    presence:(NSUInteger)channelsPresence {
 
-    [self subscribeOnChannels:channels withPresenceEvent:withPresenceEvent presence:channelsPresence andMetadata:nil];
+    [self subscribeOnChannels:channels withPresenceEvent:withPresenceEvent presence:channelsPresence andClientState:nil];
 }
 
 - (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
-                   presence:(NSUInteger)channelsPresence andMetadata:(NSDictionary *)metadata {
+                   presence:(NSUInteger)channelsPresence andClientState:(NSDictionary *)clientState {
 
     NSMutableSet *channelsSet = nil;
     BOOL indirectionalPresenceModificaton = NO;
@@ -932,7 +933,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         [subscriptionChannelsSet unionSet:channelsSet];
 
         PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[subscriptionChannelsSet allObjects]
-                                                                                 byUserRequest:YES withMetadata:metadata];
+                                                                                 byUserRequest:YES
+                                                                               withClientState:clientState];
 
         if ((!isPresenceModification || indirectionalPresenceModificaton) && [channelsSet count]) {
 
@@ -1046,7 +1048,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                   "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
 
             [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels sequenced:NO
-                                        withMetadata:metadata];
+                                     withClientState:clientState];
         }
     }
 }
@@ -1065,7 +1067,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         PNBitOn(&_messagingState, PNMessagingChannelRestoringSubscription);
 
         PNSubscribeRequest *resubscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channelsList
-                                                                                   byUserRequest:NO withMetadata:nil];
+                                                                                   byUserRequest:NO withClientState:nil];
         resubscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
         if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
 
@@ -1170,7 +1172,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
             PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[currentlySubscribedChannels allObjects]
                                                                                      byUserRequest:isLeavingByUserRequest
-                                                                                      withMetadata:nil];
+                                                                                   withClientState:nil];
             subscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
             if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
 
@@ -2055,11 +2057,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                         
                         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON CHANNELS: %@\n(STATE: %d)",
                               self, channelsForSubscription, self.messagingState);
-                        
+
                         [self.messagingDelegate messagingChannel:self
                                           didSubscribeOnChannels:[channelsForSubscription allObjects]
                                                        sequenced:isInSequence
-                                                    withMetadata:((PNSubscribeRequest *)request).metadata];
+                                                 withClientState:((PNSubscribeRequest *)request).state];
                     }
                 }
                 

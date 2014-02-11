@@ -46,7 +46,7 @@
  * Sent to the delegate when client successfully subscribed on specified set of channels
  */
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didSubscribeOnChannels:(NSArray *)channels
-               sequenced:(BOOL)isSequenced withMetadata:(NSDictionary *)metadata;
+               sequenced:(BOOL)isSequenced withClientState:(NSDictionary *)clientState;
 
 /**
  * Sent to the delegate when client is about to launch subscription restore process

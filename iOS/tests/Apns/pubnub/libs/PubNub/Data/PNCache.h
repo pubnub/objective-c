@@ -16,90 +16,90 @@
 
 #pragma mark - Instance methods
 
-#pragma mark - Metadata management method
+#pragma mark - State management method
 
 /**
- Method allow to fetch all metadata which has been cached while \b PubNub client has been used. Metadata will be
+ Method allow to fetch all state which has been cached while \b PubNub client has been used. State will be
  returned in \b NSDictionary and each key will be the name of \b PNChannel and value which has been set by user in
- subscribe or metadata set methods.
+ subscribe or state set methods.
 
- @return NSDictionary instance or \c nil (if there is no metadata in cache) with cached metadata which is stored
+ @return NSDictionary instance or \c nil (if there is no state in cache) with cached state which is stored
  individually for each channel who's name used as key.
  */
-- (NSDictionary *)metadata;
+- (NSDictionary *)state;
 
 /**
- Method allow to update cached metadata for concrete channel.
+ Method allow to update cached state for concrete channel.
 
- @param metadata
+ @param state
  \b NSDictionary instance with list of parameters which should be bound to the client. If \c nil provided,
- then metadata for specified channel will be removed from cache.
+ then state for specified channel will be removed from cache.
 
  @param channel
- \b PNChannel instance for which provided metadata should bound.
+ \b PNChannel instance for which provided state should bound.
 
- @warning Client metadata shouldn't contain any nesting and values should be one of: int, float or string.
+ @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
 
  @since 3.6.0
  */
-- (void)storeMetadata:(NSDictionary *)metadata forChannel:(PNChannel *)channel;
+- (void)storeClientState:(NSDictionary *)clientState forChannel:(PNChannel *)channel;
 
 /**
- Method allow to update cached metadata for set of channels.
+ Method allow to update cached state for set of channels.
 
- @param metadata
+ @param state
  \b NSDictionary instance with list of parameters which should be bound to the channels. Existing data for cached
  channels will be overridden (but not deleted).
 
  @param channels
- List of \b PNChannel instances for which provided metadata should bound.
+ List of \b PNChannel instances for which provided state should bound.
 
  @since 3.6.0
  */
-- (void)storeMetadata:(NSDictionary *)metadata forChannels:(NSArray *)channels;
+- (void)storeClientState:(NSDictionary *)clientState forChannels:(NSArray *)channels;
 
 /**
- Method allow to fetch metadata for concrete channel.
+ Method allow to fetch state for concrete channel.
 
  @param channel
- \b PNChannel instance for which metadata should be retrieved from cache.
+ \b PNChannel instance for which state should be retrieved from cache.
 
- @return \b NSDictionary instance with metadata for specified channel or \c nil of there is no metadata for specified
+ @return \b NSDictionary instance with state for specified channel or \c nil of there is no state for specified
  channel.
  */
-- (NSDictionary *)metadataForChannel:(PNChannel *)channel;
+- (NSDictionary *)stateForChannel:(PNChannel *)channel;
 
 /**
- Method allow to fetch metadata for set of channels.
+ Method allow to fetch state for set of channels.
 
  @param channels
- List of \b PNChannel instances for which metadata should be retrieved from cache.
+ List of \b PNChannel instances for which state should be retrieved from cache.
 
- @return \b NSDictionary with metadata for all requested channels (for those which doesn't have cached metadata
+ @return \b NSDictionary with state for all requested channels (for those which doesn't have cached state
  there will be no values).
  */
-- (NSDictionary *)metadataForChannels:(NSArray *)channels;
+- (NSDictionary *)stateForChannels:(NSArray *)channels;
 
 /**
- Method allow to remove metadata from cache for concrete channels.
+ Method allow to remove state from cache for concrete channels.
 
  @param channel
- \b PNChannel for which metadata should be removed from cache.
+ \b PNChannel for which state should be removed from cache.
  */
-- (void)purgeMetadataForChannel:(PNChannel *)channel;
+- (void)purgeStateForChannel:(PNChannel *)channel;
 
 /**
- Method allow to remove metadata from cache for set of channel.
+ Method allow to remove state from cache for set of channel.
 
  @param channels
- List of \b PNChannel instances for which metadata should be removed from cache.
+ List of \b PNChannel instances for which state should be removed from cache.
  */
-- (void)purgeMetadataForChannels:(NSArray *)channels;
+- (void)purgeStateForChannels:(NSArray *)channels;
 
 /**
- Method allow to purge all metadata which is stored in cache.
+ Method allow to purge all state which is stored in cache.
  */
-- (void)purgeAllMetadata;
+- (void)purgeAllState;
 
 #pragma mark -
 

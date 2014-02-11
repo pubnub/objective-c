@@ -16,10 +16,10 @@
 
 #import "PNPushNotificationsEnabledChannelsRequest.h"
 #import "PNPushNotificationsStateChangeRequest.h"
-#import "PNClientMetadataRequest+Protected.h"
+#import "PNClientStateRequest+Protected.h"
 #import "PNPushNotificationsRemoveRequest.h"
 #import "PNMessagePostRequest+Protected.h"
-#import "PNClientMetadataUpdateRequest.h"
+#import "PNClientStateUpdateRequest.h"
 #import "PNSubscribeRequest+Protected.h"
 #import "PNChangeAccessRightsRequest.h"
 #import "PNMessagesHistory+Protected.h"

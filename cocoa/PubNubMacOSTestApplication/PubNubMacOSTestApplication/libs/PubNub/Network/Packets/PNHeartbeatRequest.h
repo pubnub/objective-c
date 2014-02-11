@@ -33,12 +33,12 @@
  @param channel
  \b PNChannel instance which identify target for which heartbeat should be sent.
 
- @param metadata
- \b NSDictionary instance which hold metadata information for concrete channel.
+ @param clientState
+ \b NSDictionary instance which hold state information for concrete channel.
 
  @return Configured \b PNHeartbeatRequest request which can be used in lower layers.
  */
-+ (PNHeartbeatRequest *)heartbeatRequestForChannel:(PNChannel *)channel withMetadata:(NSDictionary *)metadata;
++ (PNHeartbeatRequest *)heartbeatRequestForChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState;
 
 /**
  Create and initialize heartbeat request for set of channels.
@@ -46,12 +46,12 @@
  @param channels
  List of \b PNChannel instances which identify target for which heartbeat should be sent.
 
- @param metadata
- \b NSDictionary instance which hold list of metadata for all channels for which heartbeat request is preformed.
+ @param clientState
+ \b NSDictionary instance which hold list of state for all channels for which heartbeat request is preformed.
 
  @return Configured \b PNHeartbeatRequest request which can be used in lower layers.
  */
-+ (PNHeartbeatRequest *)heartbeatRequestForChannels:(NSArray *)channels withMetadata:(NSDictionary *)metadata;
++ (PNHeartbeatRequest *)heartbeatRequestForChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState;
 
 
 #pragma mark - Instance methods
@@ -62,12 +62,12 @@
  @param channels
  List of \b PNChannel instances which identify target for which heartbeat should be sent.
 
- @param metadata
- \b NSDictionary instance which hold list of metadata for all channels for which heartbeat request is preformed.
+ @param clientState
+ \b NSDictionary instance which hold list of state for all channels for which heartbeat request is preformed.
 
  @return Initialized \b PNHeartbeatRequest request which can be used in lower layers.
  */
-- (id)initWithChannels:(NSArray *)channels withMetadata:(NSDictionary *)metadata;
+- (id)initWithChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState;
 
 #pragma mark -
 

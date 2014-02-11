@@ -20,11 +20,11 @@ struct PNServiceResponseCallbacksStruct {
     // Name of the function which is used to retrieve message which is used by network profiler for latency calculation.
     __unsafe_unretained NSString *latencyMeasureMessageCallback;
 
-    // Name of the function which is used for metadata retrieval request.
-    __unsafe_unretained NSString *metadataRetrieveCallback;
+    // Name of the function which is used for state retrieval request.
+    __unsafe_unretained NSString *stateRetrieveCallback;
 
-    // Name of the function which is used for metadata update request.
-    __unsafe_unretained NSString *metadataUpdateCallback;
+    // Name of the function which is used for state update request.
+    __unsafe_unretained NSString *stateUpdateCallback;
 
     // Name of the function which is used for subscription and presence events for set/single channel(s).
     __unsafe_unretained NSString *subscriptionCallback;

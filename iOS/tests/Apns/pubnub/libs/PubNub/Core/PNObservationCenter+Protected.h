@@ -52,21 +52,21 @@
 - (void)removeClientConnectionStateObserver:(id)observer oneTimeEvent:(BOOL)isOneTimeEventObserver;
 
 
-#pragma mark - Client metadata retrieval / update observation
+#pragma mark - Client state retrieval / update observation
 
 /**
- Observing for metadata retrieval process (this action will be performed only once per request).
+ Observing for state retrieval process (this action will be performed only once per request).
  After event will be fired this observation request will be removed from queue.
  */
-- (void)addClientAsMetadataRequestObserverWithBlock:(PNClientMetadataRetrieveHandlingBlock)handleBlock;
-- (void)removeClientAsMetadataRequestObserver;
+- (void)addClientAsStateRequestObserverWithBlock:(PNClientStateRetrieveHandlingBlock)handleBlock;
+- (void)removeClientAsStateRequestObserver;
 
 /**
- Observing for metadata update process (this action will be performed only once per request).
+ Observing for state update process (this action will be performed only once per request).
  After event will be fired this observation request will be removed from queue.
  */
-- (void)addClientAsMetadataUpdateObserverWithBlock:(PNClientMetadataUpdateHandlingBlock)handleBlock;
-- (void)removeClientAsMetadataUpdateObserver;
+- (void)addClientAsStateUpdateObserverWithBlock:(PNClientStateUpdateHandlingBlock)handleBlock;
+- (void)removeClientAsStateUpdateObserver;
 
 
 #pragma mark - Channels subscribe/leave observers

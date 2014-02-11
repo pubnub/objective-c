@@ -29,9 +29,9 @@
 @property (nonatomic, strong) NSArray *channelsForPresenceDisabling;
 
 /**
- Stores user-provided metadata which should be appended to the client subscription.
+ Stores user-provided state which should be appended to the client subscription.
  */
-@property (nonatomic, strong) NSDictionary *metadata;
+@property (nonatomic, strong) NSDictionary *state;
 
 
 #pragma mark - Instance methods

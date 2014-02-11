@@ -102,11 +102,11 @@
  If set to \c YES than it will send \a 'leave' presence event on channels (if subscribed at some) and than generate
  \a 'join' event for old and new one channels.
 
- @param metadata
+ @param clientState
  \b NSDictionary instance with list of parameters which should be bound to the client.
  */
 - (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
-                andMetadata:(NSDictionary *)metadata;
+             andClientState:(NSDictionary *)clientState;
 
 /**
  * Will unsubscribe from all channels with which it communicate now. This method also will trigger 'leave'

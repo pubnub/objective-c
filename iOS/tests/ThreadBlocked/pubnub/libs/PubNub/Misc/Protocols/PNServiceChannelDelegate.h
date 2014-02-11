@@ -23,18 +23,18 @@
 @required
 
 /**
- Sent to the delegate when \b PubNub client successfully retrieved metadata for client.
+ Sent to the delegate when \b PubNub client successfully retrieved state for client.
 
  @param channel
  Communication channel over which request has been sent and processed response from \b PubNub services.
 
  @param client
- \b PNClient instance which hold information on for who this response and metadata for him on concrete channel.
+ \b PNClient instance which hold information on for who this response and state for him on concrete channel.
  */
-- (void)serviceChannel:(PNServiceChannel *)channel didReceiveClientMetadata:(PNClient *)client;
+- (void)serviceChannel:(PNServiceChannel *)channel didReceiveClientState:(PNClient *)client;
 
 /**
- Sent to the delegate when \b PubNub client did fail to retrieve metadata for client.
+ Sent to the delegate when \b PubNub client did fail to retrieve state for client.
 
  @param channel
  Communication channel over which request has been sent and processed response from \b PubNub services.
@@ -46,21 +46,21 @@
  @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)serviceChannel:(PNServiceChannel *)channel clientMetadataReceiveDidFailWithError:(PNError *)error;
+- (void)serviceChannel:(PNServiceChannel *)channel clientStateReceiveDidFailWithError:(PNError *)error;
 
 /**
- Sent to the delegate when \b PubNub client successfully updated metadata for client.
+ Sent to the delegate when \b PubNub client successfully updated state for client.
 
  @param channel
  Communication channel over which request has been sent and processed response from \b PubNub services.
 
  @param client
- \b PNClient instance which hold information on for who this response and updated metadata on concrete channel.
+ \b PNClient instance which hold information on for who this response and updated state on concrete channel.
  */
-- (void)serviceChannel:(PNServiceChannel *)channel didUpdateClientMetadata:(PNClient *)client;
+- (void)serviceChannel:(PNServiceChannel *)channel didUpdateClientState:(PNClient *)client;
 
 /**
- Sent to the delegate when \b PubNub client did fail to update metadata for client.
+ Sent to the delegate when \b PubNub client did fail to update state for client.
 
  @param channel
  Communication channel over which request has been sent and processed response from \b PubNub services.
@@ -72,7 +72,7 @@
  @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)serviceChannel:(PNServiceChannel *)channel clientMetadataUpdateDidFailWithError:(PNError *)error;
+- (void)serviceChannel:(PNServiceChannel *)channel clientStateUpdateDidFailWithError:(PNError *)error;
 
 /**
  Sent to the delegate when \b PubNub client successfully changed access rights.

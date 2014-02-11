@@ -66,7 +66,12 @@ static NSTimeInterval const kPNDefaultHeartbeatTimeout = 5;
 /**
  Maximum heartbeat interval which can be used.
  */
-static NSTimeInterval const kPNMaximumHeartbeatTimeout = 500;
+static int const kPNMaximumHeartbeatTimeout = 300;
+
+/**
+ Minimum heartbeat interval which can be used.
+ */
+static int const kPNMinimumHeartbeatTimeout = 5;
 
 // This interval is used by timer which is triggered in specified time interval to help reachability determine real connection state by sending
 // small request to the target server

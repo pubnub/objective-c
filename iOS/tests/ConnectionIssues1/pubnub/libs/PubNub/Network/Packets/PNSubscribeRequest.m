@@ -50,9 +50,9 @@
 @property (nonatomic, copy) NSString *clientIdentifier;
 
 /**
- Stores user-provided metadata which should be appended to the client subscription.
+ Stores user-provided state which should be appended to the client subscription.
  */
-@property (nonatomic, strong) NSDictionary *metadata;
+@property (nonatomic, strong) NSDictionary *state;
 
 // Stores whether leave request was sent to subscribe on new channels or as result of user request
 @property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;
@@ -71,25 +71,29 @@
 #pragma mark - Class methods
 
 + (PNSubscribeRequest *)subscribeRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest
-                                      withMetadata:(NSDictionary *)metadata {
+                                                                      withClientState:(NSDictionary *)clientState {
     
-    return [self subscribeRequestForChannels:@[channel] byUserRequest:isSubscribingByUserRequest withMetadata:metadata];
+    return [self subscribeRequestForChannels:@[channel]
+                               byUserRequest:isSubscribingByUserRequest
+                             withClientState:clientState];
 }
 
 + (PNSubscribeRequest *)subscribeRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest
-                                      withMetadata:(NSDictionary *)metadata {
+                                                                      withClientState:(NSDictionary *)clientState {
     
-    return [[[self class] alloc] initForChannels:channels byUserRequest:isSubscribingByUserRequest withMetadata:metadata];
+    return [[[self class] alloc] initForChannels:channels
+                                   byUserRequest:isSubscribingByUserRequest
+                                 withClientState:clientState];
 }
 
 #pragma mark - Instance methods
 
-- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest withMetadata:(NSDictionary *)metadata {
+- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest withClientState:(NSDictionary *)clientState {
     
-    return [self initForChannels:@[channel] byUserRequest:isSubscribingByUserRequest withMetadata:metadata];
+    return [self initForChannels:@[channel] byUserRequest:isSubscribingByUserRequest withClientState:clientState];
 }
 
-- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest withMetadata:(NSDictionary *)metadata {
+- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest withClientState:(NSDictionary *)clientState {
     
     // Check whether initialization successful or not
     if((self = [super init])) {
@@ -97,7 +101,7 @@
         self.sendingByUserRequest = isSubscribingByUserRequest;
         self.channels = [NSArray arrayWithArray:channels];
         self.clientIdentifier = [PubNub escapedClientIdentifier];
-        self.metadata = (metadata ? metadata : [[PubNub sharedInstance].cache metadataForChannels:channels]);
+        self.state = (clientState ? clientState : [[PubNub sharedInstance].cache stateForChannels:channels]);
 
         
         // Retrieve largest update time token from set of channels (sorting to make larger token to be at
@@ -181,16 +185,16 @@
 - (NSString *)resourcePath {
 
     NSString *pnexpiresValue = @"";
-    if ([PubNub sharedInstance].configuration.presenceExpirationTimeout > 0.0f) {
+    if ([PubNub sharedInstance].configuration.presenceHeartbeatTimeout > 0.0f) {
 
         pnexpiresValue = [NSString stringWithFormat:@"&pnexpires=%d",
-                          (int)[PubNub sharedInstance].configuration.presenceExpirationTimeout];
+                          (int)[PubNub sharedInstance].configuration.presenceHeartbeatTimeout];
     }
     NSString *metadata = @"";
-    if (self.metadata) {
+    if (self.state) {
 
         metadata = [NSString stringWithFormat:@"&metadata=%@",
-                        [[PNJSONSerialization stringFromJSONObject:self.metadata] percentEscapedString]];
+                        [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
     }
     return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@",
             kPNRequestAPIVersionPrefix, [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],

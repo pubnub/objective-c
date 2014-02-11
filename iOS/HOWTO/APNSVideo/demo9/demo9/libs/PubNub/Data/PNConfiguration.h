@@ -77,8 +77,20 @@
 
 /**
  Stores timeout which is used by server to kick inactive clients (by UUID).
+ 
+ @warning Property will be completely removed before feature release.
  */
-@property (nonatomic, assign) NSTimeInterval presenceExpirationTimeout;
+@property (nonatomic, assign) NSTimeInterval presenceExpirationTimeout DEPRECATED_MSG_ATTRIBUTE(" Use 'presenceHeartbeatTimeout' instead.");
+
+/**
+ Stores timeout which is used by server to kick inactive clients (by UUID).
+ */
+@property (nonatomic, assign) int presenceHeartbeatTimeout;
+
+/**
+ Stores interval at which heartbeat request should be sent by client.
+ */
+@property (nonatomic, assign) int presenceHeartbeatInterval;
 
 
 #pragma mark - Class methods

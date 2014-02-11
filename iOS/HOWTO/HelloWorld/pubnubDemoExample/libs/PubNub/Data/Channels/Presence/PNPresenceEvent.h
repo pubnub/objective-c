@@ -50,7 +50,7 @@
 
  Deprecated. Will be DISCARDED in 3.6.0.
  */
-@property (nonatomic, readonly, copy) NSString *uuid DEPRECATED_MSG_ATTRIBUTE("Use 'client.identifier' instead.");
+@property (nonatomic, readonly, copy) NSString *uuid DEPRECATED_MSG_ATTRIBUTE(" Use 'client.identifier' instead.");
 
 
 #pragma mark - Class methods

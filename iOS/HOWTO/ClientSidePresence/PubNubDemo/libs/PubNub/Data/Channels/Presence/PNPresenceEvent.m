@@ -107,7 +107,7 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
         // Extracting channel occupancy from response
         self.occupancy = [[presenceResponse valueForKey:PNPresenceEventDataKeys.occupancy] unsignedIntegerValue];
         
-        // Extracting client specific metadata
+        // Extracting client specific state
         self.client = [PNClient clientForIdentifier:[presenceResponse valueForKey:PNPresenceEventDataKeys.uuid]
                                             channel:nil
                                             andData:[presenceResponse valueForKey:PNPresenceEventDataKeys.data]];

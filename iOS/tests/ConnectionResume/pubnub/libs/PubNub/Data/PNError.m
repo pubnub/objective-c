@@ -399,7 +399,7 @@
             break;
         case kPNInvalidMetadataPayloadError:
 
-            failureReason = @"Looks like invalid metadata has been used for request.";
+            failureReason = @"Looks like invalid state has been used for request.";
             break;
         case kPNMessageObjectError:
 
@@ -569,8 +569,7 @@
             break;
         case kPNInvalidMetadataPayloadError:
 
-            fixSuggestion = @"Make sure that your metadata values supported (integer, "
-                    "float or string) and your keys doesn't start with \"pn\" or \"_\".";
+            fixSuggestion = @"Make sure that your state values supported (integer, float or string).";
             break;
         case kPNTooLongMessageError:
 

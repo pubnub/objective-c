@@ -33,8 +33,8 @@ struct PNServiceResponseServiceDataKeysStruct PNServiceResponseServiceDataKeys =
 struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
     .latencyMeasureMessageCallback = @"lm",
-    .metadataRetrieveCallback = @"mr",
-    .metadataUpdateCallback = @"mu",
+    .stateRetrieveCallback = @"mr",
+    .stateUpdateCallback = @"mu",
     .subscriptionCallback = @"s",
     .leaveChannelCallback = @"lv",
     .channelPushNotificationsEnableCallback = @"cpe",

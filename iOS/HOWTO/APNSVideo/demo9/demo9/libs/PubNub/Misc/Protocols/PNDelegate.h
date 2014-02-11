@@ -74,8 +74,21 @@
 
  @param remoteClient
  \b PNClient instance which hold information about client identifier, channel at which metadata should be retrieved.
+
+ @warning Delegate callback method will be completely removed before feature release.
  */
-- (void)pubnubClient:(PubNub *)client didReceiveClientMetadata:(PNClient *)remoteClient;
+- (void)pubnubClient:(PubNub *)client didReceiveClientMetadata:(PNClient *)remoteClient DEPRECATED_MSG_ATTRIBUTE("Use '-pubnubClient:didReceiveClientMetadata:' instead.");
+
+/**
+ Called on delegate when \b PubNub client successfully retrieved state for client.
+
+ @param client
+ \b PubNub instance which triggered event.
+
+ @param remoteClient
+ \b PNClient instance which hold information about client identifier, channel at which state should be retrieved.
+ */
+- (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient;
 
 /**
  Called on delegate when \b PubNub client did fail to retrieve metadata for client.
@@ -85,8 +98,21 @@
 
  @param error
  \b PNError instance which describe what exactly went wrong.
+
+ @warning Delegate callback method will be completely removed before feature release.
  */
-- (void)pubnubClient:(PubNub *)client clientMetadataRetrieveDidFailWithError:(PNError *)error;
+- (void)pubnubClient:(PubNub *)client clientMetadataRetrieveDidFailWithError:(PNError *)error DEPRECATED_MSG_ATTRIBUTE("Use '-pubnubClient:clientStateRetrieveDidFailWithError:' instead.");
+
+/**
+ Called on delegate when \b PubNub client did fail to retrieve state for client.
+
+ @param client
+ \b PubNub instance which triggered event.
+
+ @param error
+ \b PNError instance which describe what exactly went wrong.
+ */
+- (void)pubnubClient:(PubNub *)client clientStateRetrieveDidFailWithError:(PNError *)error;
 
 /**
  Called on delegate when \b PubNub client successfully updated metadata for client.
@@ -97,8 +123,22 @@
  @param remoteClient
  \b PNClient instance which hold information about client identifier, channel to which updated metadata should be
  pushed.
+
+ @warning Delegate callback method will be completely removed before feature release.
  */
-- (void)pubnubClient:(PubNub *)client didUpdateClientMetadata:(PNClient *)remoteClient;
+- (void)pubnubClient:(PubNub *)client didUpdateClientMetadata:(PNClient *)remoteClient DEPRECATED_MSG_ATTRIBUTE("Use '-pubnubClient:didUpdateClientState:' instead.");
+
+/**
+ Called on delegate when \b PubNub client successfully updated state for client.
+
+ @param client
+ \b PubNub instance which triggered event.
+
+ @param remoteClient
+ \b PNClient instance which hold information about client identifier, channel to which updated state should be
+ pushed.
+ */
+- (void)pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient;
 
 /**
  Called on delegate when \b PubNub client did fail to update metadata for client.
@@ -108,8 +148,21 @@
 
  @param error
  \b PNError instance which describe what exactly went wrong.
+
+ @warning Delegate callback method will be completely removed before feature release.
  */
-- (void)pubnubClient:(PubNub *)client clientMetadataUpdateDidFailWithError:(PNError *)error;
+- (void)pubnubClient:(PubNub *)client clientMetadataUpdateDidFailWithError:(PNError *)error DEPRECATED_MSG_ATTRIBUTE("Use '-pubnubClient:clientStateUpdateDidFailWithError:' instead.");
+
+/**
+ Called on delegate when \b PubNub client did fail to update state for client.
+
+ @param client
+ \b PubNub instance which triggered event.
+
+ @param error
+ \b PNError instance which describe what exactly went wrong.
+ */
+- (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error;
 
 /**
  * Called on delegate when client successfully subscribed to specified

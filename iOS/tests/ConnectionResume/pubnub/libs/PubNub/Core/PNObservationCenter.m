@@ -208,13 +208,13 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                                    name:kPNClientConnectionDidFailWithErrorNotification object:nil];
 
         [notificationCenter addObserver:self selector:@selector(handleClientMetadataRetrieveProcess:)
-                                   name:kPNClientDidReceiveClientMetadataNotification object:nil];
+                                   name:kPNClientDidReceiveClientStateNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleClientMetadataRetrieveProcess:)
-                                   name:kPNClientMetadataRetrieveDidFailWithErrorNotification object:nil];
+                                   name:kPNClientStateRetrieveDidFailWithErrorNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleClientMetadataUpdateProcess:)
-                                   name:kPNClientDidUpdateClientMetadataNotification object:nil];
+                                   name:kPNClientDidUpdateClientStateNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleClientMetadataUpdateProcess:)
-                                   name:kPNClientMetadataUpdateDidFailWithErrorNotification object:nil];
+                                   name:kPNClientStateUpdateDidFailWithErrorNotification object:nil];
 
 
         // Handle subscription events
@@ -422,45 +422,66 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 }
 
 
-#pragma mark - Client metadata retrieval / update observation
+#pragma mark - Client state retrieval / update observation
 
-- (void)addClientMetadataRequestObserver:(id)observer withBlock:(PNClientMetadataRetrieveHandlingBlock)handleBlock {
+- (void)addClientMetadataRequestObserver:(id)observer withBlock:(PNClientStateRetrieveHandlingBlock)handleBlock {
+
+    [self addClientStateRequestObserver:observer withBlock:handleBlock];
+}
+
+- (void)addClientStateRequestObserver:(id)observer withBlock:(PNClientStateRetrieveHandlingBlock)handleBlock {
 
     [self addObserver:observer forEvent:PNObservationEvents.clientMetadataRetrieval oneTimeEvent:NO withBlock:handleBlock];
 }
 
 - (void)removeClientMetadataRequestObserver:(id)observer {
 
+    [self removeClientStateRequestObserver:observer];
+}
+
+- (void)removeClientStateRequestObserver:(id)observer {
+
     [self removeObserver:observer forEvent:PNObservationEvents.clientMetadataRetrieval oneTimeEvent:NO];
 }
 
-- (void)addClientMetadataUpdateObserver:(id)observer withBlock:(PNClientMetadataUpdateHandlingBlock)handleBlock {
+- (void)addClientMetadataUpdateObserver:(id)observer withBlock:(PNClientStateUpdateHandlingBlock)handleBlock {
+
+    [self addClientStateUpdateObserver:observer withBlock:handleBlock];
+}
+
+- (void)addClientStateUpdateObserver:(id)observer withBlock:(PNClientStateUpdateHandlingBlock)handleBlock {
 
     [self addObserver:observer forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:NO withBlock:handleBlock];
 }
+
 - (void)removeClientMetadataUpdateObserver:(id)observer {
+
+    [self removeClientStateUpdateObserver:observer];
+}
+
+- (void)removeClientStateUpdateObserver:(id)observer {
 
     [self removeObserver:observer forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:NO];
 }
 
-- (void)addClientAsMetadataRequestObserverWithBlock:(PNClientMetadataRetrieveHandlingBlock)handleBlock {
+- (void)addClientAsStateRequestObserverWithBlock:(PNClientStateRetrieveHandlingBlock)handleBlock {
 
     [self addObserver:[PubNub sharedInstance] forEvent:PNObservationEvents.clientMetadataRetrieval oneTimeEvent:YES
             withBlock:handleBlock];
 }
 
-- (void)removeClientAsMetadataRequestObserver {
+- (void)removeClientAsStateRequestObserver {
 
     [self removeObserver:[PubNub sharedInstance] forEvent:PNObservationEvents.clientMetadataRetrieval oneTimeEvent:YES];
 }
 
-- (void)addClientAsMetadataUpdateObserverWithBlock:(PNClientMetadataUpdateHandlingBlock)handleBlock {
+- (void)addClientAsStateUpdateObserverWithBlock:(PNClientStateUpdateHandlingBlock)handleBlock {
 
     [self addObserver:[PubNub sharedInstance] forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:YES
             withBlock:handleBlock];
 }
 
-- (void)removeClientAsMetadataUpdateObserver {
+- (void)removeClientAsStateUpdateObserver {
 
     [self removeObserver:[PubNub sharedInstance] forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:YES];
 }
@@ -1030,7 +1051,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     PNError *error = nil;
     PNClient *client = nil;
-    if ([[notification name] isEqualToString:kPNClientDidReceiveClientMetadataNotification]) {
+    if ([[notification name] isEqualToString:kPNClientDidReceiveClientStateNotification]) {
 
         client = (PNClient *)notification.userInfo;
     }
@@ -1051,7 +1072,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                                             BOOL *observerDataEnumeratorStop) {
 
         // Call handling blocks
-        PNClientMetadataRetrieveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
+        PNClientStateRetrieveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
         if (block) {
 
             block(client, error);
@@ -1063,7 +1084,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     PNError *error = nil;
     PNClient *client = nil;
-    if ([[notification name] isEqualToString:kPNClientDidUpdateClientMetadataNotification]) {
+    if ([[notification name] isEqualToString:kPNClientDidUpdateClientStateNotification]) {
 
         client = (PNClient *)notification.userInfo;
     }
@@ -1084,7 +1105,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                                             BOOL *observerDataEnumeratorStop) {
 
         // Call handling blocks
-        PNClientMetadataUpdateHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
+        PNClientStateUpdateHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
         if (block) {
 
             block(client, error);
@@ -1747,10 +1768,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     [notificationCenter removeObserver:self name:kPNClientDidDisconnectFromOriginNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientConnectionDidFailWithErrorNotification object:nil];
 
-    [notificationCenter removeObserver:self name:kPNClientDidReceiveClientMetadataNotification object:nil];
-    [notificationCenter removeObserver:self name:kPNClientMetadataRetrieveDidFailWithErrorNotification object:nil];
-    [notificationCenter removeObserver:self name:kPNClientDidUpdateClientMetadataNotification object:nil];
-    [notificationCenter removeObserver:self name:kPNClientMetadataUpdateDidFailWithErrorNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientDidReceiveClientStateNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientStateRetrieveDidFailWithErrorNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientDidUpdateClientStateNotification object:nil];
+    [notificationCenter removeObserver:self name:kPNClientStateUpdateDidFailWithErrorNotification object:nil];
 
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification object:nil];

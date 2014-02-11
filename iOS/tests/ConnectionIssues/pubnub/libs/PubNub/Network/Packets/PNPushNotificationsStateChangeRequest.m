@@ -129,7 +129,7 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
             [self callbackMethodName],
             self.shortIdentifier,
             [PubNub escapedClientIdentifier],
-            ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
+            ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
 }
 
 - (NSString *)debugResourcePath {

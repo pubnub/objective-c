@@ -19,7 +19,7 @@
 
  @return \c YES if provided dictionary conforms to the requirements.
  */
-- (BOOL)isValidMetadata;
+- (BOOL)isValidState;
 
 #pragma mark -
 

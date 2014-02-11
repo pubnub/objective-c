@@ -17,14 +17,14 @@
 #pragma mark - Instance methods
 
 /**
- Method allow to check on nested objects whether valid dictionary has been provided for metadata or not.
+ Method allow to check on nested objects whether valid dictionary has been provided for state or not.
 
  @param isFirstLevelNesting
  If set to \c YES, then values will be checked to be simple type in other case dictionary is allowed.
 
  @return \c YES if provided dictionary conforms to the requirements.
 */
-- (BOOL)isValidMetadata:(BOOL)isFirstLevelNesting;
+- (BOOL)isValidState:(BOOL)isFirstLevelNesting;
 
 #pragma mark -
 
@@ -39,37 +39,37 @@
 
 #pragma mark - Instance methods
 
-- (BOOL)isValidMetadata {
+- (BOOL)isValidState {
 
-    return [self isValidMetadata:YES];
+    return [self isValidState:YES];
 }
 
-- (BOOL)isValidMetadata:(BOOL)isFirstLevelNesting {
+- (BOOL)isValidState:(BOOL)isFirstLevelNesting {
 
-    __block BOOL isValidMetadata = YES;
+    __block BOOL isValidState = YES;
 
 
     [self enumerateKeysAndObjectsUsingBlock:^(NSString *key, id value, BOOL *keysEnumeratorStop) {
 
         if ([value isKindOfClass:[NSDictionary class]]) {
 
-            isValidMetadata = NO;
+            isValidState = NO;
             if (isFirstLevelNesting) {
 
-                isValidMetadata = [value isValidMetadata:NO];
+                isValidState = [value isValidState:NO];
             }
         }
         else {
 
-            isValidMetadata = ([value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSString class]] ||
+            isValidState = ([value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSString class]] ||
                                [value isKindOfClass:[NSNull class]]);
         }
 
-        *keysEnumeratorStop = !isValidMetadata;
+        *keysEnumeratorStop = !isValidState;
     }];
 
 
-    return isValidMetadata;
+    return isValidState;
 }
 
 #pragma mark -
