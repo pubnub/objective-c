@@ -55,6 +55,14 @@
     if (clientState) {
 
         if (channel) {
+            
+            if ([self.stateCache valueForKey:channel.name]) {
+                
+                NSMutableDictionary *oldState = [[self.stateCache valueForKey:channel.name] mutableCopy];
+                [oldState addEntriesFromDictionary:clientState];
+                
+                clientState = oldState;
+            }
 
             [self.stateCache setValue:clientState forKey:channel.name];
         }
@@ -66,8 +74,33 @@
 }
 
 - (void)storeClientState:(NSDictionary *)clientState forChannels:(NSArray *)channels {
-
-    [self.stateCache addEntriesFromDictionary:clientState];
+    
+    if (clientState) {
+        
+        [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+            
+            if ([clientState valueForKey:channel.name] != nil || [self.stateCache valueForKey:channel.name]) {
+                
+                NSDictionary *state = [clientState valueForKey:channel.name];
+                
+                if ([self.stateCache valueForKey:channel.name]) {
+                    
+                    NSMutableDictionary *oldState = [[self.stateCache valueForKey:channel.name] mutableCopy];
+                    if (state) {
+                        
+                        [oldState addEntriesFromDictionary:state];
+                    }
+                    
+                    state = oldState;
+                }
+                [self.stateCache setValue:state forKey:channel.name];
+            }
+        }];
+    }
+    else {
+        
+        [self purgeStateForChannels:channels];
+    }
 }
 
 - (NSDictionary *)stateForChannel:(PNChannel *)channel {

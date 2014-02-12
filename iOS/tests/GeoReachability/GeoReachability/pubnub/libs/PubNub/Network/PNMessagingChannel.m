@@ -29,6 +29,7 @@
 #import "PNRequestsImport.h"
 #import "PNRequestsQueue.h"
 #import "PNResponse.h"
+#import "PNCache.h"
 
 
 // ARC check
@@ -181,7 +182,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 /**
  * Same as -updateSubscription but allow to specify on which channels subscription should be updated
  */
-- (void)updateSubscriptionForChannels:(NSArray *)channels withPresence:(NSUInteger)presenceType forRequest:(PNSubscribeRequest *)request;
+- (void)updateSubscriptionForChannels:(NSArray *)channels withPresence:(NSUInteger)presenceType
+                           forRequest:(PNSubscribeRequest *)request forcibly:(BOOL)isUpdateForced;
 
 
 #pragma mark - Presence management
@@ -252,6 +254,29 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
  */
 - (NSArray *)channelsWithOutPresenceFromList:(NSArray *)channelsList;
 - (NSArray *)channelsWithPresenceFromList:(NSArray *)channelsList;
+
+/**
+ Retrieve filtered state dictionary based on list of channels for which it is set.
+ 
+ @param state
+ Source dictionary which should be filtered with list of channels from \c channels
+ 
+ @param channels
+ List of \b PNChannel instances which should be used for state filtering.
+ 
+ @return Filtered client state \b NSDictionary instance.
+ */
+- (NSDictionary *)stateFromClientState:(NSDictionary *)state forChannels:(NSArray *)channels;
+
+/**
+ Retrieve merged state for client based on newly submitted and already processed client state.
+ 
+ @param state
+ Newly submitted client state information.
+ 
+ @return Merged client state information.
+ */
+- (NSDictionary *)mergedClientStateWithState:(NSDictionary *)state;
 
 /**
  * Print out current connection channel state
@@ -667,7 +692,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }
 }
 
-- (void)updateSubscriptionForChannels:(NSArray *)channels withPresence:(NSUInteger)presenceType forRequest:(PNSubscribeRequest *)request {
+- (void)updateSubscriptionForChannels:(NSArray *)channels withPresence:(NSUInteger)presenceType
+                           forRequest:(PNSubscribeRequest *)request forcibly:(BOOL)isUpdateForced {
 
     // Ensure that client connected to at least one channel
     if ([channels count] > 0 || request) {
@@ -678,42 +704,45 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         BOOL shouldSendUpdateSubscriptionRequest = YES;
 
-        // Check whether user want to subscribe on particular channel (w/ or w/o presence event) or unsubscribe from all channels
-        if ([self hasRequestsWithClass:[PNSubscribeRequest class]] || [self hasRequestsWithClass:[PNLeaveRequest class]]) {
+        if (!isUpdateForced) {
 
-            shouldSendUpdateSubscriptionRequest = NO;
-
-            // Check whether user want to unsubscribe from all channels or not
-            __block BOOL isLeavingAllChannles = NO;
-            NSArray *leaveRequests  = [self requestsWithClass:[PNLeaveRequest class]];
-            [leaveRequests enumerateObjectsUsingBlock:^(PNLeaveRequest *leaveRequest, NSUInteger leaveRequestIdx,
-                    BOOL *leaveRequestEnumeratorStop) {
-
-                if (!isLeavingAllChannles) {
-
-                    // Check whether we already found request which will unsubscribe from all channels or not
-                    NSSet *leaveChannelsSet = [NSSet setWithArray:leaveRequest.channels];
-                    if ([leaveChannelsSet isEqualToSet:self.subscribedChannelsSet]) {
-
-                        isLeavingAllChannles = YES;
-                    }
-                }
-                else {
-
-                    [self destroyRequest:leaveRequest];
-                }
-            }];
-
-            // Check whether is leaving only partial channels and there is no subscribe request for rest of the channels
-            if ([leaveRequests count] > 0 && !isLeavingAllChannles && ![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
-
-                [self destroyByRequestClass:[PNLeaveRequest class]];
-                shouldSendUpdateSubscriptionRequest = YES;
-            }
-
-            if ([self hasRequestsWithClass:[PNSubscribeRequest class]]) {
+            // Check whether user want to subscribe on particular channel (w/ or w/o presence event) or unsubscribe from all channels
+            if ([self hasRequestsWithClass:[PNSubscribeRequest class]] || [self hasRequestsWithClass:[PNLeaveRequest class]]) {
 
                 shouldSendUpdateSubscriptionRequest = NO;
+
+                // Check whether user want to unsubscribe from all channels or not
+                __block BOOL isLeavingAllChannles = NO;
+                NSArray *leaveRequests  = [self requestsWithClass:[PNLeaveRequest class]];
+                [leaveRequests enumerateObjectsUsingBlock:^(PNLeaveRequest *leaveRequest, NSUInteger leaveRequestIdx,
+                        BOOL *leaveRequestEnumeratorStop) {
+
+                    if (!isLeavingAllChannles) {
+
+                        // Check whether we already found request which will unsubscribe from all channels or not
+                        NSSet *leaveChannelsSet = [NSSet setWithArray:leaveRequest.channels];
+                        if ([leaveChannelsSet isEqualToSet:self.subscribedChannelsSet]) {
+
+                            isLeavingAllChannles = YES;
+                        }
+                    }
+                    else {
+
+                        [self destroyRequest:leaveRequest];
+                    }
+                }];
+
+                // Check whether is leaving only partial channels and there is no subscribe request for rest of the channels
+                if ([leaveRequests count] > 0 && !isLeavingAllChannles && ![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
+
+                    [self destroyByRequestClass:[PNLeaveRequest class]];
+                    shouldSendUpdateSubscriptionRequest = YES;
+                }
+
+                if ([self hasRequestsWithClass:[PNSubscribeRequest class]]) {
+
+                    shouldSendUpdateSubscriptionRequest = NO;
+                }
             }
         }
 
@@ -779,8 +808,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 }
 
 - (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent andClientState:(NSDictionary *)clientState {
+    
+    clientState = [[self stateFromClientState:clientState
+                                 forChannels:[[self subscribedChannels] arrayByAddingObjectsFromArray:channels]] mutableCopy];
 
-    [self subscribeOnChannels:channels withPresenceEvent:withPresenceEvent presence:0 andClientState:clientState];
+    [self subscribeOnChannels:channels withPresenceEvent:withPresenceEvent presence:0 andClientState:[self mergedClientStateWithState:clientState]];
 }
 
 - (NSSet *)channelsForPresenceEnablingFromArray:(NSArray *)channels {
@@ -1046,6 +1078,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
             PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
                   "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
+            
+            // Checking whether provided client state changed or not.
+            if (clientState != nil && ![clientState isEqualToDictionary:[[PubNub sharedInstance].cache state]]) {
+                
+                // Looks like client try to subscrbed on channels on which it already subscribed, and mean time changed
+                // client state values, so we should force state storage and client resubscription.
+                [[PubNub sharedInstance].cache storeClientState:clientState forChannels:[self.subscribedChannelsSet allObjects]];
+                
+                [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0
+                                         forRequest:nil forcibly:YES];
+            }
 
             [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels sequenced:NO
                                      withClientState:clientState];
@@ -1392,7 +1435,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         targetChannels = targetChannels ? targetChannels : (request != nil ? request.channelsForSubscription : nil);
         if ([targetChannels count] || request) {
 
-            [self updateSubscriptionForChannels:targetChannels withPresence:presenceModificationType forRequest:request];
+            [self updateSubscriptionForChannels:targetChannels withPresence:presenceModificationType forRequest:request
+                                       forcibly:NO];
         }
     }
 }
@@ -1665,6 +1709,57 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     return [channelsList filteredArrayUsingPredicate:filterPredicate];
 }
 
+- (NSDictionary *)stateFromClientState:(NSDictionary *)state forChannels:(NSArray *)channels {
+    
+    // Fetch list of names against which client should filter provided state.
+    NSSet *channelNames = [NSSet setWithArray:[channels valueForKey:@"name"]];
+    
+    // Fetch list of names for which metadata has been provided.
+    NSMutableSet *stateKeys = [NSMutableSet setWithArray:[state allKeys]];
+    
+    // Extract channels on which client wouldn't subscribed and they should be removed from provided state.
+    [stateKeys intersectSet:channelNames];
+    if ([stateKeys count]) {
+        
+        state = [state dictionaryWithValuesForKeys:[stateKeys allObjects]];
+    }
+    // Looks like provided metadata doesn't applicapable to any channels on which client subscribed or will subscribe.
+    else {
+        
+        state = nil;
+    }
+   
+    return state;
+}
+
+- (NSDictionary *)mergedClientStateWithState:(NSDictionary *)state {
+    
+    NSMutableDictionary *mergedState = [[[PubNub sharedInstance].cache state] mutableCopy];
+    if (!mergedState) {
+        
+        mergedState = [NSMutableDictionary dictionary];
+    }
+    
+    [state enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelState,
+                                               BOOL *channelStateEnumeratorStop) {
+        
+        if ([mergedState valueForKey:channelName] != nil) {
+            
+            NSMutableDictionary *oldChannelState = [[mergedState valueForKey:channelName] mutableCopy];
+            [oldChannelState addEntriesFromDictionary:channelState];
+            
+            [mergedState setValue:oldChannelState forKey:channelName];
+        }
+        else {
+            
+            [mergedState setValue:channelState forKey:channelName];
+        }
+    }];
+    
+    
+    return mergedState;
+}
+
 - (NSString *)stateDescription {
 
     NSMutableString *connectionState = [NSMutableString stringWithFormat:@"\n[CHANNEL::%@ STATE DESCRIPTION", self];
@@ -1729,7 +1824,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
                 storedRequestsDestroy();
 
-                [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0 forRequest:nil];
+                [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0
+                                         forRequest:nil forcibly:NO];
             }
             // Check whether subscription request already scheduled or not
             else if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
@@ -1825,7 +1921,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         PNBitOff(&_messagingState, PNMessagingChannelUpdateSubscription);
 
-        [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0 forRequest:nil];
+        [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0 forRequest:nil
+                                   forcibly:NO];
     }
     // Check whether reconnection was because of 'unsubscribe' request or not
     else if ([self hasRequestsWithClass:[PNLeaveRequest class]]) {
@@ -1907,7 +2004,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self destroyByRequestClass:[PNLeaveRequest class]];
             [self destroyByRequestClass:[PNSubscribeRequest class]];
 
-            [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0 forRequest:nil];
+            [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0 forRequest:nil
+                                       forcibly:NO];
         }
 
     }

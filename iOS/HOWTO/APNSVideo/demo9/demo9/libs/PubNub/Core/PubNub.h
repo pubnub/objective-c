@@ -871,8 +871,8 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
  @warning Method will be completely removed before feature release.
  */
 + (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata
-                                                        forChannel:(PNChannel *)channel
-                                       withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" Use '+updateClientState:state:forChannel:withCompletionHandlingBlock:' instead.");
+                  forChannel:(PNChannel *)channel
+ withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" Use '+updateClientState:state:forChannel:withCompletionHandlingBlock:' instead.");
 
 /**
  Update client state information.
@@ -2209,7 +2209,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  */
 + (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
                    metadata:(NSDictionary *)clientMetadata
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE("Use '+subscribeOnChannel:withPresenceEvent:clientState:andCompletionHandlingBlock:' instead.");
 
 /**
  Subscribe client to one more channel.
@@ -2721,7 +2721,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @note You can delete previously configured key from state by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's state at specified channel.
 
- @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
+ @warning Client state should be represented with dictionary with channel names as keys and channel state as values. Channel state shouldn't contain any nesting and values should be one of: int, float or string. As keys should be used \b only channel names on which you are subscribing or already subscribed.
 
  @warning If you already subscribed on channel (for which already specified state) and will subscribe to another
  one, it will override old state (if keys are the same or will add new keys into old one).
@@ -2980,8 +2980,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @warning Only last call of this method will call completion block. If you need to track subscribe process from many places,
  use \b PNObservationCenter methods for this purpose.
-
- @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
+ 
+ @warning Client state should be represented with dictionary with channel names as keys and channel state as values. Channel state shouldn't contain any nesting and values should be one of: int, float or string. As keys should be used \b only channel names on which you are subscribing or already subscribed.
 
  @warning If you already subscribed on channel (for which already specified state) and will subscribe to another
  one, it will override old state (if keys are the same or will add new keys into old one).
@@ -3407,9 +3407,9 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \b NSDictionary instance with list of parameters which should be bound to the client.
 
  @note You can delete previously configured key from state by passing [NSNull null] as value for target key and \b
-  PubNub service will remove specified key from client's state at specified channel.
-
- @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
+ PubNub service will remove specified key from client's state at specified channel.
+ 
+ @warning Client state should be represented with dictionary with channel names as keys and channel state as values. Channel state shouldn't contain any nesting and values should be one of: int, float or string. As keys should be used \b only channel names on which you are subscribing or already subscribed.
 
  @warning If you already subscribed on channel (for which already specified state) and will subscribe to another
  one, it will override old state (if keys are the same or will add new keys into old one).
@@ -3675,8 +3675,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @warning Only last call of this method will call completion block. If you need to track subscribe process from many places,
  use \b PNObservationCenter methods for this purpose.
-
- @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
+ 
+ @warning Client state should be represented with dictionary with channel names as keys and channel state as values. Channel state shouldn't contain any nesting and values should be one of: int, float or string. As keys should be used \b only channel names on which you are subscribing or already subscribed.
 
  @warning If you already subscribed on channel (for which already specified state) and will subscribe to another
  one, it will override old state (if keys are the same or will add new keys into old one).
