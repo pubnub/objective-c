@@ -1567,9 +1567,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
 andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
 
-    [self subscribeOnChannel:channel
-           withPresenceEvent:withPresenceEvent
-                 clientState:nil
+    [self subscribeOnChannel:channel withPresenceEvent:withPresenceEvent clientState:nil
   andCompletionHandlingBlock:handlerBlock];
 }
 
@@ -1599,7 +1597,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
     // Checking whether client state for channel has been provided in correct format or not.
-    if (![[clientState valueForKey:channel.name] isKindOfClass:[NSDictionary class]]) {
+    if (clientState && ![[clientState valueForKey:channel.name] isKindOfClass:[NSDictionary class]]) {
         
         clientState = @{channel.name: clientState};
     }
