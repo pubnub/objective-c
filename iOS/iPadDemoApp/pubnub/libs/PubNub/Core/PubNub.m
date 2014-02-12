@@ -5981,7 +5981,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // In case if there is no error and client identifier is the same as this one,
         // client will store retrieved metadata in cache.
         if ([client.identifier isEqualToString:self.clientIdentifier]) {
-
+            
+            [self.cache purgeStateForChannel:client.channel];
             [self.cache storeClientState:client.data forChannel:client.channel];
         }
 
@@ -6026,7 +6027,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     [self handleLockingOperationBlockCompletion:^{
 
-        PNLog(PNLogGeneralLevel, self, @"CLIENT METADATA RETRIEVED (STATE: %@)", [self humanReadableStateFrom:self.state]);
+        PNLog(PNLogGeneralLevel, self, @"CLIENT METADATA UPDATED (STATE: %@)", [self humanReadableStateFrom:self.state]);
+        
+        [self.cache purgeStateForChannel:client.channel];
+        [self.cache storeClientState:client.data forChannel:client.channel];
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
