@@ -20,6 +20,11 @@
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 #import "TestSemaphor.h"
+#import "PNMessagePostRequest.h"
+
+@interface PNReachability ()
+@property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
+@end
 
 @interface SendBigMessage : SenTestCase <PNDelegate>
 
@@ -94,7 +99,7 @@
 
 		[PubNub setDelegate:self];
 		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5" cipherKey: @"cipherKey"];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"post-devbuild.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5" cipherKey: @"cipherKey"];
 		[PubNub setConfiguration: configuration];
 
 
@@ -122,6 +127,10 @@
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
 	[self t20SubscribeOnChannels];
+	[self t45SendMessageBigCompressed];
+	[self t45SendMessageBig];
+	[self t50RequestHistoryForChannel];
+	[self t900UnsubscribeFromChannels];
 }
 
 
@@ -139,7 +148,58 @@
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                  beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-	[self t45SendMessageBig];
+}
+-(void)t45SendMessageBigCompressed
+{
+	NSMutableString *message = [NSMutableString stringWithString: @""];
+	for( int j=0; j<6; j++ ) {
+		for( int i=0; i<pnChannels.count; i++ )	{
+			pNClientDidSendMessageNotification = NO;
+			pNClientMessageSendingDidFailNotification = NO;
+			startSendMessage = [NSDate date];
+			willSendMessage = nil;
+			__block PNMessageState state = PNMessageSendingError;
+			[message appendFormat: @"message block <big text: asd adskfjasf dkjlasdlfkjasdfk jlasdf kljasdf jlasd fjasdlfkj lasdkj aslkfj salj faslkj fsj asdlkfj aslj fsaldjf asljkf asdkl; as;ldj fasl;jkf aslfjk asljdf  aslkjdfh asdasljdhf fsdgdjagafdakfl> %d_%d", i, j];
+			NSLog(@"send message %d_%d with size %lu", i, j, (unsigned long)message.length);
+			PNLog(PNLogGeneralLevel, self, @"send message %d_%d with size %d", i, j, message.length);
+
+			state = PNMessageSending;
+
+			PNMessage *messageObject = [PNMessage messageWithObject:message forChannel:pnChannels[i] compressed: NO error: nil];
+			PNMessagePostRequest *request = [PNMessagePostRequest postMessageRequestWithMessage: messageObject];
+			NSUInteger normalSize = [[request POSTBody] length];
+
+			messageObject = [PNMessage messageWithObject:message forChannel:pnChannels[i] compressed: YES error: nil];
+			request = [PNMessagePostRequest postMessageRequestWithMessage: messageObject];
+			NSUInteger compressedSize = [[request POSTBody] length];
+			STAssertTrue( compressedSize < normalSize, @"");
+			NSLog(@"compressedSize %lu/ normalSize %lu",(unsigned long)compressedSize, (unsigned long)normalSize);
+
+			[PubNub sendMessage: message toChannel:pnChannels[i] compressed: YES withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+				 state = messageSendingState;
+				 if( state != PNMessageSending ) {
+					 NSTimeInterval interval = -[willSendMessage timeIntervalSinceNow];
+					 NSLog(@"sendMessage interval %f", interval);
+					 PNLog(PNLogGeneralLevel, self, @"sendMessage interval %f", interval);
+					 if( interval >= [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 )
+						 PNLog(PNLogGeneralLevel, self, @"SendMessage timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+
+					 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+				 }
+			 }];
+
+			for( int j=0; j < 12/*j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&*/
+				/*(state == PNMessageSending || (pNClientDidSendMessageNotification == NO && pNClientMessageSendingDidFailNotification == NO))*/; j++ )
+				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+			STAssertTrue( state != PNMessageSending, @"" );
+			STAssertTrue( pNClientDidSendMessageNotification == YES || pNClientMessageSendingDidFailNotification == YES, @"notification not called");
+
+			if( message.length <= 5352 )
+				STAssertTrue( pNClientDidSendMessageNotification == YES && state == PNMessageSent, @"message not sent, size %d", message.length);
+			else
+				STAssertTrue( pNClientMessageSendingDidFailNotification == YES && state == PNMessageSendingError, @"message's methods not called, size %d", message.length);
+		}
+	}
 }
 
 -(void)t45SendMessageBig
@@ -182,7 +242,6 @@
 				STAssertTrue( pNClientMessageSendingDidFailNotification == YES && state == PNMessageSendingError, @"message's methods not called, size %d", message.length);
 		}
 	}
-	[self t50RequestHistoryForChannel];
 }
 
 -(NSArray*)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
@@ -226,7 +285,6 @@
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: endDate limit: 0 reverseHistory: NO];
 		[self requestHistoryForChannel: pnChannels[i] from: startDate to: nil limit: 0 reverseHistory: NO];
 	}
-	[self t900UnsubscribeFromChannels];
 }
 
 -(void)t900UnsubscribeFromChannels

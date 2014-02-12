@@ -18,9 +18,36 @@
 #endif
 
 
-#pragma mark Static
+#pragma mark Structures
 
-static NSUInteger GZIPWindowBits = 47;
+/**
+ This enumerator represents possible GZIP operation
+ */
+typedef NS_OPTIONS(NSInteger , GZIPOperations) {
+    
+    /**
+     Decompress \b NSData instance content using GZIP and \c inflate algorithm.
+     */
+    GZIPDecompressInflateOperation,
+    
+    /**
+     Decompress \b NSData instance content using GZIP and simplified \c inflate algorithm.
+     */
+    DecompressInflateOperation,
+    
+    /**
+     Compress \b NSData instance content using GZIP and \c deflate algorithm.
+     */
+    GZIPCompressDeflateOperation
+};
+
+
+#pragma mark - Static
+
+static BOOL GZIPDeflateCompressionAlgorithmEnabled = NO;
+static NSUInteger GZIPDeflateChunkSize = 1024;
+static NSUInteger GZIPDeflateWindowBits = 31;
+static NSUInteger GZIPInflateWindowBits = 47;
 static NSUInteger DeflateWindowBits = -15;
 static const char encodeCharTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -52,7 +79,7 @@ static unsigned char decodeCharTable[256] =
 
 #pragma mark - Instance methods
 
-- (NSData *)inflateWithWindow:(NSUInteger)windowBits;
+- (NSData *)dataUsingGZIPOperation:(GZIPOperations)operation;
 
 
 #pragma mark -
@@ -178,75 +205,119 @@ static unsigned char decodeCharTable[256] =
     return stringBuffer;
 }
 
-- (NSData *)GZIPInflate {
 
-    return [self inflateWithWindow:GZIPWindowBits];
+#pragma mark - Compression / Decompression methods
+
+- (NSData *)GZIPDeflate {
+    
+    return [self dataUsingGZIPOperation:GZIPCompressDeflateOperation];
+}
+
+- (NSData *)GZIPInflate {
+    
+    return [self dataUsingGZIPOperation:GZIPDecompressInflateOperation];
 }
 
 - (NSData *)inflate {
-
-    return [self inflateWithWindow:DeflateWindowBits];
+    
+    return [self dataUsingGZIPOperation:DecompressInflateOperation];
 }
 
-
-- (NSData *)inflateWithWindow:(NSUInteger)windowBits {
-
-    NSData *inflatedData = nil;
-
+- (NSData *)dataUsingGZIPOperation:(GZIPOperations)operation {
+    
+    NSData *processedData = nil;
+    NSUInteger window = operation == GZIPDecompressInflateOperation ? GZIPInflateWindowBits : (operation == GZIPCompressDeflateOperation ? GZIPDeflateWindowBits : DeflateWindowBits);
     if ([self length] == 0) {
-
-        inflatedData = self;
+        
+        processedData = self;
     }
     else {
-
-        NSUInteger fullLength = [self length];
-        NSUInteger halfLength = [self length] / 2;
-
-        NSMutableData *decompressed = [NSMutableData dataWithLength:fullLength + halfLength];
+        
+        NSMutableData *processedDataStorage = nil;
         BOOL done = NO;
         int status;
         z_stream stream;
-        stream.next_in = (Bytef *)[self bytes];
-        stream.avail_in = (uInt)fullLength;
-        stream.total_out = 0;
+        bzero(&stream, sizeof(stream));
         stream.zalloc = Z_NULL;
         stream.zfree = Z_NULL;
-        if (inflateInit2(&stream, windowBits) == Z_OK) {
-
-            while (!done) {
-
+        stream.opaque = Z_NULL;
+        stream.next_in = (Bytef *)[self bytes];
+        stream.avail_in = (uint)[self length];
+        stream.total_out = 0;
+        
+        NSUInteger fullLength = [self length];
+        NSUInteger halfLength = fullLength * 0.5f;
+        
+        if (operation != GZIPCompressDeflateOperation) {
+            
+            status = inflateInit2(&stream, window);
+        }
+        else {
+            
+            if (GZIPDeflateCompressionAlgorithmEnabled) {
+                
+                status = deflateInit(&stream, Z_DEFAULT_COMPRESSION);
+            }
+            else {
+                
+                status = deflateInit2(&stream, Z_DEFAULT_COMPRESSION, Z_DEFLATED, window, 8, Z_DEFAULT_STRATEGY);
+            }
+        }
+        
+        if (status == Z_OK) {
+            
+            BOOL isOperationCompleted = NO;
+            processedDataStorage = [NSMutableData dataWithLength:(operation != GZIPCompressDeflateOperation ? fullLength : GZIPDeflateChunkSize)];
+            
+            while (!isOperationCompleted) {
+                
                 // Make sure we have enough room and reset the lengths.
-                if (stream.total_out >= [decompressed length]) {
-
-                    [decompressed increaseLengthBy:halfLength];
+                if ((status == Z_BUF_ERROR)  || stream.total_out >= [processedDataStorage length]) {
+                    
+                    [processedDataStorage increaseLengthBy:(operation != GZIPCompressDeflateOperation ? halfLength : GZIPDeflateChunkSize)];
                 }
-                stream.next_out = [decompressed mutableBytes] + stream.total_out;
-                stream.avail_out = (uInt)([decompressed length] - stream.total_out);
-
-                // Inflate another chunk.
-                status = inflate(&stream, Z_SYNC_FLUSH);
-
-                if (status == Z_STREAM_END) {
-                    done = YES;
+                stream.next_out = (Bytef*)[processedDataStorage mutableBytes] + stream.total_out;
+                stream.avail_out = (uInt)([processedDataStorage length] - stream.total_out);
+                
+                if (operation != GZIPCompressDeflateOperation) {
+                    
+                    // Inflate another chunk.
+                    status = inflate(&stream, Z_SYNC_FLUSH);
+                    isOperationCompleted = (stream.avail_in == 0);
                 }
-                else if (status != Z_OK) {
-                    break;
+                else {
+                    
+                    // Deflate another chunk
+                    status = deflate(&stream, Z_FINISH);
+                    isOperationCompleted = ((status != Z_OK) && (status != Z_BUF_ERROR));
                 }
             }
-            if (inflateEnd(&stream) == Z_OK) {
-
+            
+            if (operation != GZIPCompressDeflateOperation) {
+                
+                done = (status == Z_STREAM_END);
+                status = inflateEnd(&stream);
+            }
+            else {
+                
+                status = deflateEnd(&stream);
+                done = (status == Z_OK || status == Z_STREAM_END);
+            }
+            
+            if (status == Z_OK) {
+                
                 // Set real length.
                 if (done) {
-
-                    [decompressed setLength:stream.total_out];
-                    inflatedData = [NSData dataWithData:decompressed];
+                    
+                    [processedDataStorage setLength:stream.total_out];
+                    processedData = [NSData dataWithData:processedDataStorage];
                 }
             }
         }
     }
-
-
-    return inflatedData;
+    
+    
+    return processedData;
 }
 
 

@@ -41,7 +41,13 @@
                   Identifier = "ChannelLimitTest">
                </Test>
                <Test
+                  Identifier = "ClientIdentifier">
+               </Test>
+               <Test
                   Identifier = "Configuration">
+               </Test>
+               <Test
+                  Identifier = "HistoryPamTest">
                </Test>
                <Test
                   Identifier = "HowToTests">
@@ -74,10 +80,37 @@
                   Identifier = "PAMTestError">
                </Test>
                <Test
+                  Identifier = "PNAccessRightOptionsTest">
+               </Test>
+               <Test
+                  Identifier = "PNAccessRightsCollectionTest">
+               </Test>
+               <Test
+                  Identifier = "PNAccessRightsInformationTest">
+               </Test>
+               <Test
+                  Identifier = "PNActionResponseParserTest">
+               </Test>
+               <Test
                   Identifier = "PNBaseRequestTest">
                </Test>
                <Test
                   Identifier = "PNChannelConstructor">
+               </Test>
+               <Test
+                  Identifier = "PNChannelEventsResponseParserTest">
+               </Test>
+               <Test
+                  Identifier = "PNChannelHistoryParserTest">
+               </Test>
+               <Test
+                  Identifier = "PNChannelPresenceTest">
+               </Test>
+               <Test
+                  Identifier = "PNChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNConfigurationTest">
                </Test>
                <Test
                   Identifier = "PNConnectionChannelTest">
@@ -92,7 +125,19 @@
                   Identifier = "PNCryptoTest">
                </Test>
                <Test
+                  Identifier = "PNDateTest">
+               </Test>
+               <Test
+                  Identifier = "PNErrorResponseParserTest">
+               </Test>
+               <Test
+                  Identifier = "PNErrorTest">
+               </Test>
+               <Test
                   Identifier = "PNHereNowRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNHereNowResponseParserTest">
                </Test>
                <Test
                   Identifier = "PNLatencyMeasureRequestTest">
@@ -110,7 +155,22 @@
                   Identifier = "PNMessagingChannelTest">
                </Test>
                <Test
+                  Identifier = "PNOperationStatusResponseParserTest">
+               </Test>
+               <Test
+                  Identifier = "PNPresenceEventTest">
+               </Test>
+               <Test
+                  Identifier = "PNPushNotificationsEnabledChannelsParserTest">
+               </Test>
+               <Test
                   Identifier = "PNReachabilityTest">
+               </Test>
+               <Test
+                  Identifier = "PNResponseDeserializeTest">
+               </Test>
+               <Test
+                  Identifier = "PNResponseParserTest">
                </Test>
                <Test
                   Identifier = "PNServiceChannelTest">
@@ -123,6 +183,12 @@
                </Test>
                <Test
                   Identifier = "PNTimeTokenRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNTimeTokenResponseParserTest">
+               </Test>
+               <Test
+                  Identifier = "PNWriteBufferTest">
                </Test>
                <Test
                   Identifier = "SendBigMessage">

@@ -196,8 +196,8 @@
         metadata = [NSString stringWithFormat:@"&metadata=%@",
                         [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
     }
-    return [NSString stringWithFormat:@"%@/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@",
-            kPNRequestAPIVersionPrefix, [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+    return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@",
+            [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
             [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","], [self callbackMethodName],
             self.shortIdentifier, self.updateTimeToken, self.clientIdentifier, pnexpiresValue, metadata,
 			([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];

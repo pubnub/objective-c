@@ -34,7 +34,7 @@
 
 - (id)init {
 
-    // Check whether initializarion successful or not
+    // Check whether initialization successful or not
     if((self = [super init])) {
 
         self.sendingByUserRequest = YES;
@@ -51,8 +51,7 @@
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"%@/time/%@_%@%@",
-            kPNRequestAPIVersionPrefix,
+    return [NSString stringWithFormat:@"/time/%@_%@%@",
             [self callbackMethodName],
             self.shortIdentifier,
             ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];

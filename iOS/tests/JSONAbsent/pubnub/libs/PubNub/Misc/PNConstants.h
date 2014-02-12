@@ -17,7 +17,7 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNClientVersion = @"3.5.5";
+static NSString * const kPNClientVersion = @"3.5.7";
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 static NSString * const kPNClientName = @"Obj-C-iOS";
@@ -27,10 +27,6 @@ static NSString * const kPNClientName = @"Obj-C-MacOS";
 
 
 #pragma mark - Request constants
-
-// Stores resource path prefix which will allow to change
-// API version on the flight
-static NSString * const kPNRequestAPIVersionPrefix = @"";
 
 // Stores reference on PubNub service domain
 static NSString * const kPNServiceMainDomain = @"pubnub.com";

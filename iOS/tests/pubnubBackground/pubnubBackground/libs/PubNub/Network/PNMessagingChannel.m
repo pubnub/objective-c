@@ -460,6 +460,26 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                     launchProcessing:NO];
            }];
 
+        // Try to check whether there is leave request or not in stack
+        if ([self hasRequestsWithClass:[PNLeaveRequest class]]) {
+
+            PNBaseRequest *request = [[self requestsWithClass:[PNLeaveRequest class]] lastObject];
+            if (request) {
+
+               // Check whether client is waiting for request completion
+               BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+
+               // Clean up query (if request has been stored in it)
+               [self destroyRequest:request];
+
+               // Send request back into queue with higher priority among other requests
+               [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
+                    launchProcessing:NO];
+            }
+
+        }
+
+
         [self scheduleNextRequest];
     }
 }
@@ -763,12 +783,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self destroyByRequestClass:[PNLeaveRequest class]];
             [self destroyByRequestClass:[PNSubscribeRequest class]];
 
+            NSMutableSet *channelsForSubscription = [NSMutableSet setWithArray:channels];
+            if (request) {
+
+                [channelsForSubscription addObjectsFromArray:[request channelsForSubscription]];
+            }
             if ([[channels lastObject] isTimeTokenChangeLocked]) {
 
-                [channels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
+                [channelsForSubscription makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
             }
-
-            PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:channels
+            
+            PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[channelsForSubscription allObjects]
                                                                                      byUserRequest:YES
                                                                                    withClientState:request.state];
             if (shouldModifyPresence) {
@@ -784,6 +809,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
 
                 subscribeRequest.closeConnection = NO;
+            }
+            
+            if (![subscribeRequest isInitialSubscription]) {
+                
+                subscribeRequest.state = [[PubNub sharedInstance].cache stateForChannels:[channelsForSubscription allObjects]];
             }
 
             // In case if we are restoring subscription and user decided to discard old time token client should
@@ -1368,7 +1398,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 
         // Update channels state update time token
-        NSMutableArray *channelsForTokenUpdate = [NSMutableArray arrayWithArray:[self.subscribedChannelsSet allObjects]];
+        NSMutableSet *channelsForTokenUpdate = [self.subscribedChannelsSet mutableCopy];
         [channelsForTokenUpdate addObjectsFromArray:request.channels];
         [channelsForTokenUpdate makeObjectsPerformSelector:@selector(setUpdateTimeToken:) withObject:timeToken];
 

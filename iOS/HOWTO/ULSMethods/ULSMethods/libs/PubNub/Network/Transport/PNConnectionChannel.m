@@ -801,7 +801,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
             if ([self shouldStoreRequest:request]) {
 
-                [self.storedRequestsList addObject:request.shortIdentifier];
+                if (shouldEnqueueRequestOutOfOrder) {
+
+                    [self.storedRequestsList insertObject:request.shortIdentifier atIndex:0];
+                }
+                else {
+
+                    [self.storedRequestsList addObject:request.shortIdentifier];
+                }
                 [self.storedRequests setValue:@{PNStoredRequestKeys.request:request,
                                                 PNStoredRequestKeys.isObserved :@(shouldObserveProcessing)}
                                        forKey:request.shortIdentifier];
@@ -1380,16 +1387,17 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
             PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] RESCHEDULING REQUEST: %@ (STATE: %d)",
                   self.name, request, self.state);
 
-            [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution];
+            [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution outOfOrder:YES
+                 launchProcessing:NO];
         }
         else {
 
             PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @"[CHANNEL::%@] CAN'T RESCHEDULE REQUEST FOR RESPONSE: %@ (STATE: %d)",
                   self.name, response, self.state);
-
-            // Asking to schedule next request
-            [self scheduleNextRequest];
         }
+
+        // Asking to schedule next request
+        [self scheduleNextRequest];
     }
     else {
 
