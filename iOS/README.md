@@ -927,7 +927,7 @@ PNChannel *myChannel = [PNChannel channelWithName:@"zz" shouldObservePresence:YE
               [PubNub updateClientState:[PubNub clientIdentifier]
                                   state:@{@"firstName": @"John", @"lastName": @"Appleseed", @"age": @(240)}
                              forChannel:((PNClient *)[array lastObject]).channel
-             witCompletionHandlingBlock:^(PNClient *updatedClient, PNError *updateError) {
+            withCompletionHandlingBlock:^(PNClient *updatedClient, PNError *updateError) {
 
                   if (error == nil) {
 
