@@ -60,12 +60,12 @@ pod install
 +   Add
 
 ```objc
-// Make this the FIRST import statement
+// Make this the LAST import statement
 #import "PNImports.h"
 ```
 
 To your project's .pch file.  
-**Note:** It must be the first import in your pch, or it will not work correctly.
+**Note:** It must be the last import in your pch, or it will not work correctly.
 
 [Finish up by setting up your delegate](#finishing-up-configuration-common-to-manual-and-cocoapods-setup)
 
