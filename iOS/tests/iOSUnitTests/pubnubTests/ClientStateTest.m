@@ -55,6 +55,9 @@
 
 	int countkPNClientDidReceiveParticipantsListNotification;
 	int countkPNClientParticipantsListDownloadFailedWithErrorNotification;
+
+	int countkPNClientDidReceiveParticipantChannelsListNotification;
+	int countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification;
 }
 
 @property (nonatomic, retain) NSConditionLock *theLock;
@@ -78,7 +81,7 @@
 	semaphoreNotification = dispatch_semaphore_create(0);
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"iosdevState", @"ch1", @"adasfasdf", @"1 12 12133", [NSString stringWithFormat: @"channelDate %@", [NSDate date]]]];
-	pnChannels = [PNChannel channelsWithNames:@[@"iosdevState", @"ch1", @"adasfasdf"]];
+//	pnChannels = [PNChannel channelsWithNames:@[@"iosdevState", @"ch1", @"adasfasdf"]];
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self
@@ -97,6 +100,7 @@
 						   selector:@selector(kPNClientStateUpdateDidFailWithErrorNotification:)
 							   name:kPNClientStateUpdateDidFailWithErrorNotification
 							 object:nil];
+
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientDidReceiveParticipantsListNotification:)
 							   name:kPNClientDidReceiveParticipantsListNotification
@@ -105,6 +109,16 @@
 						   selector:@selector(kPNClientParticipantsListDownloadFailedWithErrorNotification:)
 							   name:kPNClientParticipantsListDownloadFailedWithErrorNotification
 							 object:nil];
+
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientDidReceiveParticipantChannelsListNotification:)
+							   name:kPNClientDidReceiveParticipantChannelsListNotification
+							 object:nil];
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientParticipantChannelsListDownloadFailedWithErrorNotification:)
+							   name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification
+							 object:nil];
+
 	[self connect];
 	[self subscribeOnChannels];
 	[self requestClientState];
@@ -115,6 +129,7 @@
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
 
+	[self requestParticipantChannelsList];
 	[self requestParticipantsListWithClientIdentifiersCheckState: clientState];
 	[self requestParticipantsListForChannel: clientState];
 	[self requestClientState];
@@ -124,6 +139,8 @@
 	[self updateClientState: clientState];
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
+
+	[self requestParticipantChannelsList];
 
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
@@ -338,5 +355,47 @@
 	NSLog(@"kPNClientParticipantsListDownloadFailedWithErrorNotification %@", notification);
 	countkPNClientParticipantsListDownloadFailedWithErrorNotification++;
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////
+-(void)requestParticipantChannelsList {
+	countkPNClientDidReceiveParticipantChannelsListNotification = 0;
+	countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification = 0;
+	__block BOOL isCompletionBlockCalled = NO;
+	[PubNub requestParticipantChannelsList: [PubNub sharedInstance].clientIdentifier withCompletionBlock:^(NSString *identifier, NSArray *channels, PNError *error) {
+		isCompletionBlockCalled = YES;
+		NSLog(@"requestParticipantChannelsList %@\n%@", identifier, channels);
+		STAssertTrue( error == nil, @"");
+		STAssertTrue( pnChannels.count <= channels.count, @"");
+		for( int j=0; j<pnChannels.count; j++ ) {
+			PNChannel *pnChannel = pnChannels[j];
+			BOOL isFound = NO;
+			for( int i=0; i<channels.count; i++ ) {
+				PNChannel *channel = channels[i];
+				isFound = isFound || [channel.name isEqualToString: pnChannel.name];
+			}
+			STAssertTrue( isFound == YES, @"" );
+		}
+	}];
+	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
+	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+	STAssertTrue( countkPNClientDidReceiveParticipantChannelsListNotification == 1, @"");
+	STAssertTrue( countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification == 0, @"");
+
+	[PubNub requestParticipantChannelsList: [PubNub sharedInstance].clientIdentifier];
+	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
+	STAssertTrue( countkPNClientDidReceiveParticipantChannelsListNotification == 2, @"");
+	STAssertTrue( countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification == 0, @"");
+}
+
+-(void)kPNClientDidReceiveParticipantChannelsListNotification:(NSNotification*)notification {
+	NSLog(@"kPNClientDidReceiveParticipantChannelsListNotification %@", notification);
+	countkPNClientDidReceiveParticipantChannelsListNotification++;
+}
+-(void)kPNClientParticipantChannelsListDownloadFailedWithErrorNotification:(NSNotification*)notification {
+	NSLog(@"kPNClientParticipantsListDownloadFailedWithErrorNotification %@", notification);
+	countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification++;
+}
 
 @end
+
+
+
