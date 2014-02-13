@@ -292,7 +292,7 @@
 	[self t08AddPresenceEventObserver];
 	[self t10Connect];
 	[self t20SubscribeOnChannels];
-	[self t25RequestParticipantsListForChannel];
+	[self t25RequestParticipantsListForChannelRevert];
 	[self t30RequestParticipantsListForChannel];
 	[self t35RequestServerTimeTokenWithCompletionBlock];
 	[self t40SendMessage];
@@ -620,7 +620,7 @@
 	STAssertTrue(isCompletionBlockCalled, @"block not called");
 }
 
--(void)t25RequestParticipantsListForChannel {
+-(void)t25RequestParticipantsListForChannelRevert {
 	for( int i=0; i<pnChannels.count; i++ ) {
 		[self revertPresenceObservationForChannel: pnChannels[i]];
 		[self revertPresenceObservationForChannel: pnChannels[i]];
