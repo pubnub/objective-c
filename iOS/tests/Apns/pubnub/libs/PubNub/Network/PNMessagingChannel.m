@@ -803,7 +803,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 [subscribeRequest resetTimeTokenTo:[PNChannel largestTimetokenFromChannels:subscribeRequest.channels]];
             }
 
-            PNBitOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
+            BOOL isWaitingForTimeToken = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
             PNBitOn(&_messagingState, PNMessagingChannelUpdateSubscription);
             subscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
             if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
@@ -811,7 +811,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 subscribeRequest.closeConnection = NO;
             }
             
-            if (![subscribeRequest isInitialSubscription]) {
+            if (![subscribeRequest isInitialSubscription] && !isWaitingForTimeToken) {
                 
                 subscribeRequest.state = [[PubNub sharedInstance].cache stateForChannels:[channelsForSubscription allObjects]];
             }
