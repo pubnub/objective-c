@@ -827,7 +827,7 @@ Example:
   
 `requestParticipantsList` methods "family" can be used to pull out information about how is where globally for your `subscribe` key.  
 Each of presence methods allow to specify whether client identifiers required or not (if not, than response will contain list of PNClient instances with **unknown** identifier set). Also methods allow to specify whether client's state should be fetched as well or not.  
-All client information now represented with [**PNClinet**](iPadDemoApp/pubnub/libs/PubNub/Data/PNClinet.h).    
+All client information now represented with [**PNClient**](iPadDemoApp/pubnub/libs/PubNub/Data/PNClient.h).    
 
 ### Where Now
 
@@ -862,7 +862,7 @@ Usage is very simple:
 }];
 ```
   
-All client information now represented with [**PNClinet**](iPadDemoApp/pubnub/libs/PubNub/Data/PNClinet.h).  
+All client information now represented with [**PNClient**](iPadDemoApp/pubnub/libs/PubNub/Data/PNClient.h).  
 **NOTE: Too frequent usage of this API may force server to disable it for you on some period of time. Don't misuse this API.**
 
 ### Presence State Data - Setting and Changing it
@@ -1773,7 +1773,7 @@ Example usage follows:
 ####- (void)pubnubClient:(PubNub *)client didReceiveClientMetadata:(PNClient *)remoteClient; // DEPRECATED
 ####- (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient;
 
-This delegate method is called when PubNub client successfully retrieved client state information. [PNClinet](iPadDemoApp/pubnub/libs/PubNub/Data/PNClinet.h) represent all information via properties.  
+This delegate method is called when PubNub client successfully retrieved client state information. [PNClient](iPadDemoApp/pubnub/libs/PubNub/Data/PNClient.h) represent all information via properties.  
 Example usage follows:
 ```objc
 - (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient {
@@ -1922,7 +1922,7 @@ Example usage follows:
 ```
 ####- (void)pubnubClient:(PubNub *)client didReceiveParticipantsLits:(NSArray *)participantsList forChannel:(PNChannel *)channel;  
 
-This delegate method is called when the client successfully retrieves the info of other connected users on the channel. "participantsList" will contain list of [PNClinet](iPadDemoApp/pubnub/libs/PubNub/Data/PNClinet.h) instances. “channel” will contain the value of the PubNub channel.  
+This delegate method is called when the client successfully retrieves the info of other connected users on the channel. "participantsList" will contain list of [PNClient](iPadDemoApp/pubnub/libs/PubNub/Data/PNClient.h) instances. “channel” will contain the value of the PubNub channel.  
 Example usage follows:
 ```objc
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantsLits:(NSArray *)participantsList 

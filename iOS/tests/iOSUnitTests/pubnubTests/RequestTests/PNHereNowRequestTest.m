@@ -43,7 +43,7 @@
     
     [[mockRequest expect] setChannel:mockChannel];
     
-    PNHereNowRequest *request = [mockRequest initWithChannel:mockChannel];
+    PNHereNowRequest *request = [mockRequest initWithChannel:mockChannel clientIdentifiersRequired: NO clientState: NO];
     
     STAssertNotNil(request, @"Cannot initialize request");
     
@@ -53,7 +53,7 @@
 #pragma mark - Interaction tests
 
 - (void)testWhoNowRequestForChannel {
-    STAssertNotNil([PNHereNowRequest whoNowRequestForChannel:nil], @"Cannot initialize channel");
+    STAssertNotNil([PNHereNowRequest whoNowRequestForChannel:nil clientIdentifiersRequired: NO clientState: NO], @"Cannot initialize channel");
 }
 
 @end

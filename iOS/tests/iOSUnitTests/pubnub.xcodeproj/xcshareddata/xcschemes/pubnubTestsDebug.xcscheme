@@ -50,9 +50,6 @@
                   Identifier = "HistoryPamTest">
                </Test>
                <Test
-                  Identifier = "HowToTests">
-               </Test>
-               <Test
                   Identifier = "HowToTests/test20SubscribeOnChannels">
                </Test>
                <Test
@@ -69,6 +66,9 @@
                </Test>
                <Test
                   Identifier = "HowToTests/test55RequestHistoryReverse">
+               </Test>
+               <Test
+                  Identifier = "HowToTestsCompressed">
                </Test>
                <Test
                   Identifier = "OversizedJSON">
@@ -140,6 +140,9 @@
                   Identifier = "PNHereNowResponseParserTest">
                </Test>
                <Test
+                  Identifier = "PNJSONSerializationTest">
+               </Test>
+               <Test
                   Identifier = "PNLatencyMeasureRequestTest">
                </Test>
                <Test
@@ -194,6 +197,9 @@
                   Identifier = "SendBigMessage">
                </Test>
                <Test
+                  Identifier = "SendMessage">
+               </Test>
+               <Test
                   Identifier = "TimeCommand">
                </Test>
                <Test
@@ -204,6 +210,12 @@
                </Test>
                <Test
                   Identifier = "W_ChaosTest">
+               </Test>
+               <Test
+                  Identifier = "HeartbeatTest">
+               </Test>
+               <Test
+                  Identifier = "HowToTests">
                </Test>
             </SkippedTests>
          </TestableReference>

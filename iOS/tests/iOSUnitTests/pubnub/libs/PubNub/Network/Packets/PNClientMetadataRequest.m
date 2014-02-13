@@ -42,7 +42,7 @@
 
 - (NSString *)callbackMethodName {
 
-    return PNServiceResponseCallbacks.metadataRetrieveCallback;
+    return PNServiceResponseCallbacks.stateRetrieveCallback;
 }
 
 - (NSString *)resourcePath {
