@@ -95,7 +95,7 @@
     [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] shouldStoreRequest:OCMOCK_ANY];
     
     PNChannel *channel = [PNChannel channelWithName:@"MyTestChannel"];
-    PNSubscribeRequest *mockRequest = [PNSubscribeRequest subscribeRequestForChannel:channel byUserRequest:YES];
+    PNSubscribeRequest *mockRequest = [PNSubscribeRequest subscribeRequestForChannel:channel byUserRequest:YES withClientState: nil];
     
     [mockChannel scheduleRequest:mockRequest shouldObserveProcessing:YES];
     

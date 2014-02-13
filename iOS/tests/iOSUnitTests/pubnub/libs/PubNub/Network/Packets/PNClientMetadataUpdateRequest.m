@@ -45,7 +45,7 @@
 
 - (NSString *)callbackMethodName {
 
-    return PNServiceResponseCallbacks.metadataUpdateCallback;
+    return PNServiceResponseCallbacks.stateUpdateCallback;
 }
 
 - (NSString *)resourcePath {

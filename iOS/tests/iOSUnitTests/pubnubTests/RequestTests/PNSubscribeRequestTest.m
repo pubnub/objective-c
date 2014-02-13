@@ -34,21 +34,21 @@
 
 - (void)testInitForChannel {
    
-    STAssertNotNil([[PNSubscribeRequest alloc] initForChannel:[[PNChannel alloc] init] byUserRequest:NO], @"Cannot initialize PNSubscribeRequest with channel");
+    STAssertNotNil([[PNSubscribeRequest alloc] initForChannel:[[PNChannel alloc] init] byUserRequest:NO withClientState: nil], @"Cannot initialize PNSubscribeRequest with channel");
 }
 
 - (void)testInitForChannels {
-    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:@[] byUserRequest:NO], @"Cannot initialize PNSubscribeRequest with channels");
+    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:@[] byUserRequest:NO withClientState: nil], @"Cannot initialize PNSubscribeRequest with channels");
 }
 
 #pragma mark - Interaction tests
 
 - (void)testSubscribeRequestForChannel {
-    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:nil byUserRequest:NO], @"Cannot subscribe for channel");
+    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:nil byUserRequest:NO withClientState: nil], @"Cannot subscribe for channel");
 }
 
 - (void)testSubscribeRequestForChannels {
-    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:nil byUserRequest:NO], @"Cannot subscribe for channels");
+    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:nil byUserRequest:NO withClientState: nil], @"Cannot subscribe for channels");
 }
 
 @end
