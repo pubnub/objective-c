@@ -343,13 +343,13 @@ PubNub client configuration is then set via:
 
 After this call, your PubNub client will be configured with the default values taken from [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h) and is now ready to connect to the PubNub real-time network!
   
-Other methods which allow you to adjust the client configuration (UUID) are:  
+Other methods which allow you to adjust the client configuration are:  
 ```objc
 + (void)setConfiguration:(PNConfiguration *)configuration;  
 + (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;  
 + (void)setDelegate:(id<PNDelegate>)delegate;
-+ (void)setClientIdentifier:(NSString *)identifier;  
-+ (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;
++ (void)setClientIdentifier:(NSString *)identifier;                                    // Change UUID
++ (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;  // Change UUID with catchup options
 ```
 
 FIrst and the second methods from list above (which update client configuration) may require client reconnection (if client already connected). As soon as all connections will be closed client will reconnect with updated configuration. It is strongly advised change configuration in really rare cases and most of the time provide configuration during PubNub client configuration. Configuration update on connected client will cause additional overhead to reinitialize client with new configuration and connect back to server (time overhead).
