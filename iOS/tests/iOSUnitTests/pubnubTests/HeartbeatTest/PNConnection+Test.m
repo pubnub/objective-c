@@ -26,7 +26,7 @@ static int const kPNStreamBufferSize = 32768;
 
 @implementation PNConnection (Test)
 
-+ (PNConnection *)connectionWithIdentifier1:(NSString *)identifier {
++ (PNConnection *)connectionWithIdentifier:(NSString *)identifier {
 
     // Try to retrieve connection from pool
     PNConnection *connection = [MyPNConnection connectionFromPoolWithIdentifier:identifier];

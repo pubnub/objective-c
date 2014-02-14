@@ -25,7 +25,7 @@
 	if( str != nil && [str rangeOfString: @"\"status\": 200"].location != NSNotFound &&
 	   [str rangeOfString: @"\"message\": \"OK\""].location != NSNotFound &&
 	   [str rangeOfString: @"\"service\": \"Presence\""].location != NSNotFound ) {
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"presenceEvent"  object: str];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"presenceEvent" object: str];
 	}
     return data;
 }

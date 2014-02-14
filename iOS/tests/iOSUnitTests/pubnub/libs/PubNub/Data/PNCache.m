@@ -46,7 +46,7 @@
 #pragma mark - Metadata management method
 
 - (NSDictionary *)state {
-
+	NSLog(@"state \n%@", self.stateCache);
     return ([self.stateCache count] ? [self.stateCache copy] : nil);
 }
 
@@ -117,6 +117,8 @@
 
         [self purgeStateForChannel:channel];
     }
+	NSLog(@"self.stateCache %@", self.stateCache);
+	
 }
 
 - (void)storeClientState:(NSDictionary *)clientState forChannels:(NSArray *)channels {
@@ -150,8 +152,9 @@
     NSMutableSet *channelsSet = [NSMutableSet setWithArray:[channels valueForKey:@"name"]];
     [channelsSet intersectSet:[NSSet setWithArray:[self.stateCache allKeys]]];
 
-
-    return ([channelsSet count] ? [self.stateCache dictionaryWithValuesForKeys:[channelsSet allObjects]] : nil);
+	NSDictionary *stateForChannels = ([channelsSet count] ? [self.stateCache dictionaryWithValuesForKeys:[channelsSet allObjects]] : nil);
+	NSLog( @"stateForChannels %@", stateForChannels);
+	return  stateForChannels;
 }
 
 - (void)purgeStateForChannel:(PNChannel *)channel {

@@ -22,7 +22,9 @@
 #import "Swizzler.h"
 #import "PNConnectionBadJson.h"
 #import "PNMessageHistoryRequest.h"
-
+#import "PNClientStateUpdateRequest.h"
+#import "PNJSONSerialization.h"
+#import "PNHeartbeatRequest.h"
 
 @interface ClientStateTest : SenTestCase
 
@@ -41,7 +43,7 @@
 	int timeout;
 	dispatch_semaphore_t semaphoreNotification;
 	NSArray *pnChannelsForReverse;
-	NSDictionary *clientState;
+	NSMutableDictionary *clientState;
 
 	SwizzleReceipt *receiptReconnect;
 	int _reconnectCount;
@@ -58,6 +60,8 @@
 
 	int countkPNClientDidReceiveParticipantChannelsListNotification;
 	int countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification;
+
+	int countHeartbeat;
 }
 
 @property (nonatomic, retain) NSConditionLock *theLock;
@@ -72,11 +76,15 @@
 	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
 	timeout = 3;
-	clientState = @{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)};
+	clientState = [@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)} mutableCopy];
+//	for( int i=0; i<100; i++ )
+//		[clientState setObject: [NSString stringWithFormat: @"%@", [NSDate date]] forKey: [NSString stringWithFormat: @"%d %@", i, [NSDate date]]];
+//	NSLog(@"clientState %@", clientState);
 	countkPNClientDidReceiveClientStateNotification = 0;
 	countkPNClientStateRetrieveDidFailWithErrorNotification = 0;
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
+	countHeartbeat = 0;
 
 	semaphoreNotification = dispatch_semaphore_create(0);
     [PubNub setDelegate:self];
@@ -119,6 +127,8 @@
 							   name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification
 							 object:nil];
 
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PNServiceChannelWillSendRequest:) name: @"PNServiceChannelWillSendRequest" object:nil];
+
 	[self connect];
 	[self subscribeOnChannels];
 	[self requestClientState];
@@ -128,6 +138,7 @@
 	[self updateClientStateBlock: clientState isExpectError: NO];
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
+	[self requestClientState];
 
 	[self requestParticipantChannelsList];
 	[self requestParticipantsListWithClientIdentifiersCheckState: clientState];
@@ -152,6 +163,7 @@
 	[self requestParticipantsListForChannel: clientState];
 
 	[self removeClientChannelSubscriptionStateObserver];
+	STAssertTrue( countHeartbeat > 0, @"lost heartbeat requests");
 }
 
 - (void)tearDown {
@@ -171,6 +183,8 @@
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 		[PubNub setDelegate:self];
 		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+		configuration.presenceHeartbeatTimeout = 20;
+		configuration.presenceHeartbeatInterval = 10;
 		[PubNub setConfiguration: configuration];
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
 			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
@@ -196,12 +210,15 @@
 		[state setObject: clientState forKey: [pnChannels[i] name]];
 //	state = [@{@"iosdev1":clientState, @"andoirddev1":clientState, @"wpdev1":clientState, @"ubuntudev1":clientState, @"11":clientState}  mutableCopy];
 	NSLog(@"set state:\n%@", state);
+	__block BOOL isCompletionBlockCalled = NO;
 	[PubNub subscribeOnChannels: pnChannels withClientState: state andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+		 isCompletionBlockCalled = YES;
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 	 }];
 	for( int j=0; j<timeout; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 }
 
 - (void)requestClientState {
@@ -394,6 +411,28 @@
 	NSLog(@"kPNClientParticipantsListDownloadFailedWithErrorNotification %@", notification);
 	countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification++;
 }
+////////////////////////////////////////////////////////////////////////
+-(void)PNServiceChannelWillSendRequest:(NSNotification*)notification {
+	NSLog(@"PNServiceChannelWillSendRequest %@", notification.object);
+
+	if( [notification.object isKindOfClass: [PNHeartbeatRequest class]] == YES )
+		countHeartbeat++;
+
+	if( [notification.object isKindOfClass: [PNClientStateUpdateRequest class]] == YES ||
+	    [notification.object isKindOfClass: [PNHeartbeatRequest class]] == YES ) {
+		PNClientStateUpdateRequest *request = notification.object;
+		NSDictionary *stateAllChannel = [request performSelector: @selector(state)];
+		NSLog( @"request.state %@", stateAllChannel);
+		NSString *stateAsString = [[PNJSONSerialization stringFromJSONObject:stateAllChannel] percentEscapedString];
+		NSString *resourcePath = [request resourcePath];
+		STAssertTrue( [resourcePath rangeOfString: stateAsString].location != NSNotFound, @"state not found");
+		for( int i=0; i<pnChannels.count; i++ ) {
+			NSDictionary *stateForChannel = [stateAllChannel objectForKey: [pnChannels[i] name]];
+			STAssertTrue( [stateForChannel isEqualToDictionary: clientState] == YES, @"states not equal");
+		}
+	}
+}
+
 
 @end
 
