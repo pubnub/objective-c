@@ -343,7 +343,7 @@ PubNub client configuration is then set via:
 
 After this call, your PubNub client will be configured with the default values taken from [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h) and is now ready to connect to the PubNub real-time network!
   
-Other methods which allow you to adjust the client configuration are:  
+Other methods which allow you to adjust the client configuration (UUID) are:  
 ```objc
 + (void)setConfiguration:(PNConfiguration *)configuration;  
 + (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;  
