@@ -1764,30 +1764,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (NSDictionary *)mergedClientStateWithState:(NSDictionary *)state {
     
-    NSMutableDictionary *mergedState = [[[PubNub sharedInstance].cache state] mutableCopy];
-    if (!mergedState) {
-        
-        mergedState = [NSMutableDictionary dictionary];
-    }
-    
-    [state enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelState,
-                                               BOOL *channelStateEnumeratorStop) {
-        
-        if ([mergedState valueForKey:channelName] != nil) {
-            
-            NSMutableDictionary *oldChannelState = [[mergedState valueForKey:channelName] mutableCopy];
-            [oldChannelState addEntriesFromDictionary:channelState];
-            
-            [mergedState setValue:oldChannelState forKey:channelName];
-        }
-        else {
-            
-            [mergedState setValue:channelState forKey:channelName];
-        }
-    }];
-    
-    
-    return mergedState;
+    return [[PubNub sharedInstance].cache stateMergedWithState:state];
 }
 
 - (NSString *)stateDescription {

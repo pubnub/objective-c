@@ -1440,7 +1440,6 @@ withCompletionHandlingBlock:handlerBlock];
                   forChannel:(PNChannel *)channel
  withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
 
-
     PNLog(PNLogGeneralLevel, [self sharedInstance], @"TRYING TO UPDATE CLIENT METADATA FOR IDENTIFIER %@ ON CHANNEL %@ TO: %@ (STATE: %@)",
           clientIdentifier, channel,
           clientState, [self humanReadableStateFrom:[self sharedInstance].state]);
@@ -1448,10 +1447,18 @@ withCompletionHandlingBlock:handlerBlock];
     [self performAsyncLockingBlock:^{
 
         [[PNObservationCenter defaultCenter] removeClientAsStateUpdateObserver];
+        
+        NSDictionary *mergedClientState = @{channel.name: clientState};
+        
+        // Only in case if client update's it's own state, we can append cacged data to it.
+        if ([clientIdentifier isEqualToString:self.clientIdentifier]) {
+            
+            mergedClientState = [[self sharedInstance].cache stateMergedWithState:mergedClientState];
+        }
 
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-        if (statusCode == 0 && clientState && ![clientState isValidState]) {
+        if (statusCode == 0 && mergedClientState && (![mergedClientState isValidState] || ![[self subscribedChannels] containsObject:channel])) {
 
             statusCode = kPNInvalidMetadataPayloadError;
         }
@@ -1459,7 +1466,7 @@ withCompletionHandlingBlock:handlerBlock];
 
             PNLog(PNLogGeneralLevel, [self sharedInstance], @"UPDATE CLIENT METADATA FOR IDENTIFIER %@ ON CHANNEL %@ TO: %@ (STATE: %@)",
                   clientIdentifier, channel,
-                  clientState, [self humanReadableStateFrom:[self sharedInstance].state]);
+                  mergedClientState, [self humanReadableStateFrom:[self sharedInstance].state]);
 
             if (handlerBlock != nil) {
 
@@ -1468,7 +1475,7 @@ withCompletionHandlingBlock:handlerBlock];
 
             PNClientStateUpdateRequest *request = [PNClientStateUpdateRequest clientStateUpdateRequestWithIdentifier:clientIdentifier
                                                                                                              channel:channel
-                                                                                                      andClientState:clientState];
+                                                                                                      andClientState:mergedClientState];
             [[self sharedInstance] sendRequest:request shouldObserveProcessing:YES];
         }
         // Looks like client can't send request because of some reasons
@@ -5995,7 +6002,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     [self handleLockingOperationBlockCompletion:^{
 
-        PNLog(PNLogGeneralLevel, self, @"CLIENT METADATA RETRIEVED (STATE: %@)", [self humanReadableStateFrom:self.state]);
+        PNLog(PNLogGeneralLevel, self, @"CLIENT STATE RETRIEVED (STATE: %@)", [self humanReadableStateFrom:self.state]);
 
         // In case if there is no error and client identifier is the same as this one,
         // client will store retrieved metadata in cache.
@@ -6027,7 +6034,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 #pragma clang diagnostic pop
             }
 
-            PNLog(PNLogDelegateLevel, self, @"PubNub client successfully received metadata for client %@ on channel %@: %@ ",
+            PNLog(PNLogDelegateLevel, self, @"PubNub client successfully received state for client %@ on channel %@: %@ ",
                   client.identifier, client.channel, client.data);
 
 
@@ -6046,10 +6053,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     [self handleLockingOperationBlockCompletion:^{
 
-        PNLog(PNLogGeneralLevel, self, @"CLIENT METADATA UPDATED (STATE: %@)", [self humanReadableStateFrom:self.state]);
+        PNLog(PNLogGeneralLevel, self, @"CLIENT STATE UPDATED (STATE: %@)", [self humanReadableStateFrom:self.state]);
         
-        [self.cache purgeStateForChannel:client.channel];
-        [self.cache storeClientState:client.data forChannel:client.channel];
+        // Ensure that we received data for this client or not
+        if ([client.identifier isEqualToString:self.clientIdentifier]) {
+            
+            [self.cache storeClientState:client.data forChannel:nil];
+        }
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
 
@@ -6072,7 +6082,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 #pragma clang diagnostic pop
             }
 
-            PNLog(PNLogGeneralLevel, self, @"PubNub client successfully updated metadata for client %@ at channel %@: %@ ",
+            PNLog(PNLogGeneralLevel, self, @"PubNub client successfully updated state for client %@ at channel %@: %@ ",
                   client.identifier, client.channel, client.data);
 
 
