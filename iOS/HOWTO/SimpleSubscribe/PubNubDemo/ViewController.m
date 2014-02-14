@@ -61,7 +61,7 @@
     PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com"  publishKey:@"demo" subscribeKey:@"demo" secretKey:@"demo"];
 
     // Set the presence heartbeat to 5s
-    myConfig.presenceExpirationTimeout = 5;
+    myConfig.presenceHeartbeatTimeout = 5;
 
     [PubNub setConfiguration:myConfig];
 
@@ -84,12 +84,12 @@
             [currentState setObject:zzState forKey:@"zz"];
 
 
-            [PubNub subscribeOnChannel:myChannel withMetadata:currentState];
+            [PubNub subscribeOnChannel:myChannel withClientState:currentState];
 
             int64_t delayInSeconds = 5.0;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 // grab global occupancy list 5s later
-                [PubNub requestParticipantsListWithClientIdentifiers:NO clientMetadata:YES];
+                [PubNub requestParticipantsListWithClientIdentifiers:NO clientState:YES];
 
             });
 

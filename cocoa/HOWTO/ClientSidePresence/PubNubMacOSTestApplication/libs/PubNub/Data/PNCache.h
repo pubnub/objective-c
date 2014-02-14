@@ -29,6 +29,18 @@
 - (NSDictionary *)state;
 
 /**
+ Method allow to fetch all state which hasb been cached and merge it with provided. It will clean up resulting dictionary from 
+ properties which user want to remove (by setting [NSNull null] as value for them) or state for whole channel in case if user will
+ pass empty dictionary (@{} will remove state for channel from resulting object).
+ 
+ @param state
+ Is \b NSDictionary instance first level values of which represent state for channels which is used as keys for this dictionary.
+ 
+ @return Cleaned up state dictionary.
+ */
+- (NSDictionary *)stateMergedWithState:(NSDictionary *)state;
+
+/**
  Method allow to update cached state for concrete channel.
 
  @param state

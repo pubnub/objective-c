@@ -338,11 +338,16 @@
 - (void)setPresenceHeartbeatTimeout:(int)presenceHeartbeatTimeout {
     
     _presenceHeartbeatTimeout = MIN(kPNMaximumHeartbeatTimeout, presenceHeartbeatTimeout);
+    if ([self presenceHeartbeatTimeout] <= 0 && _presenceExpirationTimeout > 0) {
+        
+        [self setPresenceHeartbeatInterval:_presenceHeartbeatTimeout];
+    }
 }
 
 - (void)setPresenceHeartbeatInterval:(int)presenceHeartbeatInterval {
     
-    if (presenceHeartbeatInterval >= kPNMaximumHeartbeatTimeout || presenceHeartbeatInterval >= self.presenceHeartbeatTimeout) {
+    if (self.presenceHeartbeatTimeout > 0 && (presenceHeartbeatInterval >= kPNMaximumHeartbeatTimeout ||
+                                              presenceHeartbeatInterval >= self.presenceHeartbeatTimeout)) {
         
         presenceHeartbeatInterval = self.presenceHeartbeatTimeout - kPNHeartbeatRequestTimeoutOffset;
     }

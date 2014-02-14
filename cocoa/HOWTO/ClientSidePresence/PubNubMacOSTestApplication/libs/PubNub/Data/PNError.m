@@ -399,7 +399,8 @@
             break;
         case kPNInvalidMetadataPayloadError:
 
-            failureReason = @"Looks like invalid state has been used for request.";
+            failureReason = @"Looks like invalid state has been used for request or you tried update state of the "
+                             "channel on which you not subscribed at this moment.";
             break;
         case kPNMessageObjectError:
 
@@ -569,7 +570,9 @@
             break;
         case kPNInvalidMetadataPayloadError:
 
-            fixSuggestion = @"Make sure that your state values supported (integer, float or string).";
+            fixSuggestion = @"Make sure that your state values supported (integer, float or string) and check whether "
+                             "you subscribed on channel for which you want to update state or not (you can update "
+                             "state only for channels on which you subscribed).";
             break;
         case kPNTooLongMessageError:
 

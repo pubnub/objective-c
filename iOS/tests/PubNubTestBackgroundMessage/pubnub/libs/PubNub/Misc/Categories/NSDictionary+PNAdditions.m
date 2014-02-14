@@ -41,7 +41,7 @@
 
 - (BOOL)isValidState {
 
-    return [self isValidState:YES];
+    return [self count] && [self isValidState:YES];
 }
 
 - (BOOL)isValidState:(BOOL)isFirstLevelNesting {

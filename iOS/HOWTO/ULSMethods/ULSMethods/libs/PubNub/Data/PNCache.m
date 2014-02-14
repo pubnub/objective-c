@@ -50,21 +50,67 @@
     return ([self.stateCache count] ? [self.stateCache copy] : nil);
 }
 
+- (NSDictionary *)stateMergedWithState:(NSDictionary *)state {
+    
+    NSMutableDictionary *cleanedState = (self.stateCache ? [self.stateCache mutableCopy] : [NSMutableDictionary dictionary]);
+    
+    [state enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelState,
+                                               BOOL *channelStateEnumeratorStop) {
+        
+        if ([cleanedState valueForKey:channelName] != nil) {
+            
+            // Ensure that there is not empty dictionary (if dictionary for channel is empty, it mean that
+            // user want to remove state from specific channel).
+            if ([channelState count]) {
+                
+                NSMutableDictionary *oldChannelState = [[cleanedState valueForKey:channelName] mutableCopy];
+                [channelState enumerateKeysAndObjectsUsingBlock:^(NSString *stateName, id stateData,
+                                                                  BOOL *stateDataEnumeratorStop) {
+                    
+                    // In case if provided data is 'nil' it should be removed from previous state dictionary.
+                    if ([stateData isKindOfClass:[NSNull class]]) {
+                        
+                        [oldChannelState removeObjectForKey:stateName];
+                    }
+                    else {
+                        
+                        [oldChannelState setValue:stateData forKey:stateName];
+                    }
+                }];
+                
+                if ([oldChannelState count]) {
+                    
+                    [cleanedState setValue:oldChannelState forKey:channelName];
+                }
+            }
+        }
+        // Ensure that there is not empty dictionary (if dictionary for channel is empty, it mean that
+        // user want to remove state from specific channel).
+        else if ([channelState count]){
+            
+            [cleanedState setValue:channelState forKey:channelName];
+        }
+    }];
+    
+    
+    return cleanedState;
+}
+
 - (void)storeClientState:(NSDictionary *)clientState forChannel:(PNChannel *)channel {
 
     if (clientState) {
 
         if (channel) {
             
-            if ([self.stateCache valueForKey:channel.name]) {
-                
-                NSMutableDictionary *oldState = [[self.stateCache valueForKey:channel.name] mutableCopy];
-                [oldState addEntriesFromDictionary:clientState];
-                
-                clientState = oldState;
-            }
-
             [self.stateCache setValue:clientState forKey:channel.name];
+        }
+        else {
+            
+            [clientState enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelState,
+                                                             BOOL *channelsStateEnumeratorStop) {
+                
+                [self.stateCache setValue:channelState forKey:channelName];
+            }];
         }
     }
     else {
@@ -77,23 +123,14 @@
     
     if (clientState) {
         
-        [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+        NSArray *channelNames = [channels valueForKey:@"name"];
+        NSArray *channelsWithState = [clientState allKeys];
+        
+        [channelsWithState enumerateObjectsUsingBlock:^(NSString *channelName, NSUInteger idx, BOOL *stop) {
             
-            if ([clientState valueForKey:channel.name] != nil || [self.stateCache valueForKey:channel.name]) {
+            if ([channelNames containsObject:channelName] || [self.stateCache valueForKey:channelName] != nil) {
                 
-                NSDictionary *state = [clientState valueForKey:channel.name];
-                
-                if ([self.stateCache valueForKey:channel.name]) {
-                    
-                    NSMutableDictionary *oldState = [[self.stateCache valueForKey:channel.name] mutableCopy];
-                    if (state) {
-                        
-                        [oldState addEntriesFromDictionary:state];
-                    }
-                    
-                    state = oldState;
-                }
-                [self.stateCache setValue:state forKey:channel.name];
+                [self.stateCache setValue:[clientState valueForKey:channelName] forKey:channelName];
             }
         }];
     }
