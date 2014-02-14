@@ -26,12 +26,6 @@
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
-                  Identifier = "ApnsToken">
-               </Test>
-               <Test
-                  Identifier = "BadJsonTest">
-               </Test>
-               <Test
                   Identifier = "CatchupTest">
                </Test>
                <Test
@@ -198,6 +192,18 @@
                </Test>
                <Test
                   Identifier = "W_ChaosTest">
+               </Test>
+               <Test
+                  Identifier = "HowToTestsCompressed">
+               </Test>
+               <Test
+                  Identifier = "OversizedJSON">
+               </Test>
+               <Test
+                  Identifier = "ApnsToken">
+               </Test>
+               <Test
+                  Identifier = "BadJsonTest">
                </Test>
             </SkippedTests>
          </TestableReference>

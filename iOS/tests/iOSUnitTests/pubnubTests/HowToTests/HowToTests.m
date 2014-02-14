@@ -568,17 +568,13 @@
 - (void)t20SubscribeOnChannels {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientSubscriptionProcess = NO;
-	[PubNub subscribeOnChannels: pnChannels
-	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-	 {
+	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 		 dispatch_semaphore_signal(semaphore);
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 	 }];
-    // Run loop
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	STAssertTrue( handleClientSubscriptionProcess, @"notification not caleld");
 }
 
@@ -588,9 +584,7 @@
 	BOOL state = [PubNub isPresenceObservationEnabledForChannel: channel];
 	if( state == NO ) {
 		pNClientPresenceEnablingDidCompleteNotification = NO;
-		[PubNub enablePresenceObservationForChannel: channel
-						withCompletionHandlingBlock:^(NSArray *array, PNError *error)
-		 {
+		[PubNub enablePresenceObservationForChannel: channel withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 			 STAssertNil( error, @"enablePresenceObservationForChannel error %@", error);
@@ -601,12 +595,13 @@
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( pNClientPresenceEnablingDidCompleteNotification==YES, @"notification not called");
 
+//		[PubNub subscribeOnChannel:channel];
+		[self t20SubscribeOnChannels];
 	}
 	else {
 		pNClientPresenceDisablingDidCompleteNotification = NO;
 		[PubNub disablePresenceObservationForChannel: channel
-						 withCompletionHandlingBlock:^(NSArray *array, PNError *error)
-		 {
+						 withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 			 STAssertNil( error, @"disablePresenceObservationForChannel error %@", error);
@@ -963,10 +958,7 @@
 		NSArray *arr = [PNChannel channelsWithNames: @[channelName]];
 		NSDate *start = [NSDate date];
 		NSLog(@"Start subscribe to channel %@", channelName);
-		[PubNub subscribeOnChannels: arr
-		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-		 {
-			 //			 dispatch_semaphore_signal(semaphore);
+		[PubNub subscribeOnChannels: arr withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 			 isCompletionBlockCalled = YES;
 			 //			 [[TestSemaphor sharedInstance] lift:channelName];
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
