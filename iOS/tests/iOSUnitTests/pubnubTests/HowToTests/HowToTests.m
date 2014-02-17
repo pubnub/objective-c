@@ -571,7 +571,7 @@
 	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 		 dispatch_semaphore_signal(semaphore);
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
-		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+//		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 	 }];
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
@@ -595,8 +595,10 @@
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( pNClientPresenceEnablingDidCompleteNotification==YES, @"notification not called");
 
-//		[PubNub subscribeOnChannel:channel];
-		[self t20SubscribeOnChannels];
+		[PubNub subscribeOnChannel:channel];
+//		[PubNub unsubscribeFromChannel: channel withPresenceEvent:YES];
+//		[self t20SubscribeOnChannels];
+
 	}
 	else {
 		pNClientPresenceDisablingDidCompleteNotification = NO;
