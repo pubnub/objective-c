@@ -4156,7 +4156,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [self.messagingChannel resume];
             [self.serviceChannel resume];
         }
-        else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+		else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
             PNLog(PNLogGeneralLevel, self, @"CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SLEEP.");
 
