@@ -1,12 +1,3 @@
-//
-//  PNAccessRightOptions.h
-//  pubnub
-//
-//  Created by Sergey Mamontov on 11/3/13.
-//  Copyright (c) 2013 PubNub Inc. All rights reserved.
-//
-
-
 #pragma mark Public interface declaration
 
 @interface PNAccessRightOptions : NSObject

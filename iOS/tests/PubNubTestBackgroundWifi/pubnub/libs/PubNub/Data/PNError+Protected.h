@@ -1,11 +1,3 @@
-//
-//  PNError+Protected.h
-//  pubnub
-//
-//  Created by Sergey Mamontov on 01/08/13.
-//
-//
-
 #import "PNError.h"
 
 

@@ -57,7 +57,15 @@
 	for( int i=0; i<19; i++)
 		[self performSelector: @selector(subscribeToNewTestChannel) withObject: nil afterDelay: i*5];
 
+	if( countSession % 3 == 0 )
+		[self performSelector: @selector(setClientIdentifier) withObject: nil afterDelay: 10];
+
 	return YES;
+}
+
+-(void)setClientIdentifier {
+	lastClientIdentifier = [NSString stringWithFormat: @"%@", [NSDate date]];
+	[PubNub setClientIdentifier: lastClientIdentifier shouldCatchup: YES];
 }
 
 -(void)subscribeToNewTestChannel {
@@ -89,10 +97,12 @@
 		[self performSelector: @selector(errorSelectorWillRestore)];
 	if( isDidRestoreSubscriptionOnChannelsDelegate == NO )
 		[self performSelector: @selector(errorSelectorDidRestore)];
-	if( countMessageSend < 2 )
+	if( countMessageSend < 1 )
 		[self performSelector: @selector(errorSelectorCountDidSend)];
-	if( countSubscribred < 2 )
+	if( countSubscribred < 1 )
 		[self performSelector: @selector(errorSelectorCountSubscribed)];
+	if( [lastClientIdentifier isEqualToString: [PubNub clientIdentifier]] != YES )
+		[self performSelector: @selector(errorSelectorClientIdentifier)];
 	countNewMessage = 0;
 	countSession++;
 	isWillRestoreSubscriptionOnChannelsDelegate = NO;
@@ -117,98 +127,13 @@
 - (void)initializePubNubClient {
 
     [PubNub setDelegate:self];
-/*
-	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-
-	[notificationCenter addObserver:self
-						   selector:@selector(handleClientConnectionStateChange:)
-							   name:kPNClientDidConnectToOriginNotification
-							 object:nil];
-	[notificationCenter addObserver:self
-						   selector:@selector(handleClientConnectionStateChange:)
-							   name:kPNClientDidDisconnectFromOriginNotification
-							 object:nil];
-	[notificationCenter addObserver:self
-						   selector:@selector(handleClientConnectionStateChange:)
-							   name:kPNClientConnectionDidFailWithErrorNotification
-							 object:nil];
-*/
-    // Subscribe for client connection state change (observe when client will be disconnected)
-/*    [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
-                                                        withCallbackBlock:^(NSString *origin,
-                                                                            BOOL connected,
-                                                                            PNError *error) {
-
-															if (!connected && error) {
-
-																PNLog(PNLogGeneralLevel, self, @"#2 PubNub client was unable to connect because of error: %@",
-																	  [error localizedDescription],
-																	  [error localizedFailureReason]);
-															}
-														}];
-
-
-    // Subscribe application delegate on subscription updates (events when client subscribe on some channel)
-    __pn_desired_weak __typeof__(self) weakSelf = self;
-    [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:weakSelf
-                                                                 withCallbackBlock:^(PNSubscriptionProcessState state,
-                                                                                     NSArray *channels,
-                                                                                     PNError *subscriptionError) {
-
-																	 switch (state) {
-
-																		 case PNSubscriptionProcessNotSubscribedState:
-
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client subscription failed with error: %@",
-																				   subscriptionError);
-																			 break;
-
-																		 case PNSubscriptionProcessSubscribedState:
-
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client subscribed on channels: %@",
-																				   channels);
-																			 break;
-
-																		 case PNSubscriptionProcessWillRestoreState:
-
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
-																				   channels);
-																			 break;
-
-																		 case PNSubscriptionProcessRestoredState:
-
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
-																				   channels);
-																			 break;
-																	 }
-																 }];
-
-    // Subscribe on message arrival events with block
-    [[PNObservationCenter defaultCenter] addMessageReceiveObserver:weakSelf
-                                                         withBlock:^(PNMessage *message) {
-
-															 PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new message: %@",
-																   message);
-														 }];
-
-    // Subscribe on presence event arrival events with block
-    [[PNObservationCenter defaultCenter] addPresenceEventObserver:weakSelf
-                                                        withBlock:^(PNPresenceEvent *presenceEvent) {
-
-                                                            PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new event: %@",
-																  presenceEvent);
-                                                        }];
- */
 }
 
 - (void)connect {
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
 
+		lastClientIdentifier = [PubNub clientIdentifier];
 		pnChannel = [PNChannel channelWithName: [NSString stringWithFormat: @"mediatorWithMessage"]];
 
 		[PubNub grantAllAccessRightsForApplicationAtPeriod: 1440 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
@@ -242,29 +167,7 @@
 		  shouldRestoreSubscriptionFromLastTimeToken?@"YES":@"NO", lastTimeToken);
     return @(shouldRestoreSubscriptionFromLastTimeToken);
 }
-/*
-- (void)handleClientConnectionStateChange:(NSNotification *)notification {
 
-    // Default field values
-    BOOL connected = YES;
-    PNError *connectionError = nil;
-    NSString *origin = @"";
-
-    if([notification.name isEqualToString:kPNClientDidConnectToOriginNotification] ||
-       [notification.name isEqualToString:kPNClientDidDisconnectFromOriginNotification]) {
-
-        origin = (NSString *)notification.userInfo;
-        connected = [notification.name isEqualToString:kPNClientDidConnectToOriginNotification];
-    }
-    else if([notification.name isEqualToString:kPNClientConnectionDidFailWithErrorNotification]) {
-
-        connected = NO;
-        connectionError = (PNError *)notification.userInfo;
-    }
-
-    // Retrieving list of observers (including one time and persistent observers)
-}
-*/
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
     NSLog( @"PubNub client received message: %@", message);
 	NSString *string = [NSString stringWithFormat: @"%@", message.message];

@@ -1,11 +1,3 @@
-//
-//  PNConfiguration+Protected.h
-//  pubnub
-//
-//  Created by Sergey Mamontov on 02/18/13.
-//
-//
-
 #import "PNConfiguration.h"
 
 

@@ -22,6 +22,7 @@
 	int countSubscribred;
 
 	NSMutableArray *subscribedChannelNames;
+	NSString *lastClientIdentifier;
 }
 
 #pragma mark Properties

@@ -1,15 +1,3 @@
-//
-//  PNConfiguration.h
-//  pubnub
-//
-//  This class allow to configure PubNub
-//  base class with required set of parameters.
-//
-//
-//  Created by Sergey Mamontov on 12/4/12.
-//
-//
-
 #import <Foundation/Foundation.h>
 
 
