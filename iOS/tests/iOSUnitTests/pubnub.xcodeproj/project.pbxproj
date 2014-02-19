@@ -20,6 +20,8 @@
 		5A9461C218A16699004190FB /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9461C118A16699004190FB /* PNDateTest.m */; };
 		5A955F801835154C00AB2156 /* SendBigMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A955F7F1835154C00AB2156 /* SendBigMessage.m */; };
 		5A96274018437E8A00258236 /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A96273F18437E8A00258236 /* OversizedJSON.m */; };
+		5AB5B25618B4D01D00584EC4 /* PNObservationCenterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AB5B25518B4D01D00584EC4 /* PNObservationCenterTest.m */; };
+		5AB5B25918B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AB5B25818B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m */; };
 		5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */; };
 		5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */; };
 		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
@@ -177,6 +179,8 @@
 		5A9461C118A16699004190FB /* PNDateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNDateTest.m; path = pubnubTests/PNDateTest.m; sourceTree = SOURCE_ROOT; };
 		5A955F7F1835154C00AB2156 /* SendBigMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendBigMessage.m; sourceTree = "<group>"; };
 		5A96273F18437E8A00258236 /* OversizedJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OversizedJSON.m; sourceTree = "<group>"; };
+		5AB5B25518B4D01D00584EC4 /* PNObservationCenterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNObservationCenterTest.m; path = ../PNObservationCenterTest.m; sourceTree = "<group>"; };
+		5AB5B25818B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSNotificationCenter+AllObservers.m"; path = "pubnubTests/NSNotificationCenter+AllObservers.m"; sourceTree = SOURCE_ROOT; };
 		5ABE6C40182B9F1800204DC6 /* TestSemaphor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSemaphor.h; sourceTree = "<group>"; };
 		5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSemaphor.m; sourceTree = "<group>"; };
 		5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeCommand.m; path = TimeCommand/TimeCommand.m; sourceTree = "<group>"; };
@@ -559,6 +563,8 @@
 			isa = PBXGroup;
 			children = (
 				5AD394BC18280F390057443C /* ApnsToken.m */,
+				5AB5B25518B4D01D00584EC4 /* PNObservationCenterTest.m */,
+				5AB5B25818B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m */,
 				5ACCA97F17F3202400FE90CF /* HowToTests.h */,
 				5ACCA98017F3202400FE90CF /* HowToTests.m */,
 				5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */,
@@ -1273,6 +1279,7 @@
 				5AD5890318A24E8700B72653 /* PNPushNotificationsEnabledChannelsParser.m in Sources */,
 				5AD588FA18A24E8700B72653 /* PNPresenceEvent.m in Sources */,
 				5AD5892E18A24E8700B72653 /* PNConnectionChannel.m in Sources */,
+				5AB5B25918B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m in Sources */,
 				5AD5890D18A24E8700B72653 /* PNError.m in Sources */,
 				5AD5891618A24E8700B72653 /* NSData+PNAdditions.m in Sources */,
 				5AD5891918A24E8700B72653 /* NSMutableArray+PNAdditions.m in Sources */,
@@ -1376,6 +1383,7 @@
 				5ADD308A189AADFD00688B3E /* PNAccessRightsCollectionTest.m in Sources */,
 				5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */,
 				5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */,
+				5AB5B25618B4D01D00584EC4 /* PNObservationCenterTest.m in Sources */,
 				963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */,
 				5A96274018437E8A00258236 /* OversizedJSON.m in Sources */,
 				5A4ED25718A51DB8002C7E8D /* HowToTestsCompressed.m in Sources */,
