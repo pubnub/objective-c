@@ -43,7 +43,11 @@
 	#define PNLOG_LOGGING_ENABLED 0
 	#define PNLOG_STORE_LOG_TO_FILE 0
 #else
-	#define PNLOG_LOGGING_ENABLED 1
+#ifdef DEBUG
+    #define PNLOG_LOGGING_ENABLED 1
+#else
+    #define PNLOG_LOGGING_ENABLED 0
+#endif
 	#define PNLOG_STORE_LOG_TO_FILE 1
 #endif
 
@@ -305,6 +309,9 @@ void PNLogDumpFileTruncate() {
     }
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+static BOOL _isLoggingEnabled = NO;
 
 static void PNLog(PNLogLevels level, id sender, ...);
 void PNLog(PNLogLevels level, id sender, ...) {
@@ -355,16 +362,18 @@ void PNLog(PNLogLevels level, id sender, ...) {
     }
 
 
-    if(formattedLog != nil && additionalData != nil) {
-
-        NSString *consoleString = [NSString stringWithFormat:@"%@%@", [NSString stringWithFormat:formattedLog, additionalData], formattedLogString];
 #if PNLOG_LOGGING_ENABLED == 1
-        NSLog(@"%@", consoleString);
-#endif
-        PNLogDumpOutputToFile(consoleString);
+    if (_isLoggingEnabled) {
+        if(formattedLog != nil && additionalData != nil) {
+            
+            NSString *consoleString = [NSString stringWithFormat:@"%@%@", [NSString stringWithFormat:formattedLog, additionalData], formattedLogString];
+            NSLog(@"%@", consoleString);
+            PNLogDumpOutputToFile(consoleString);
+        }
     }
+#endif
 }
-
+#pragma GCC diagnostic pop
 
 #pragma mark - Misc functions
 
