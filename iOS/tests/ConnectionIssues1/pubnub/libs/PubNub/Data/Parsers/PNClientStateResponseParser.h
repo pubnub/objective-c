@@ -1,7 +1,7 @@
 #import "PNResponseParser.h"
 
 /**
- This class used to initiate parser for 'Metadata get' response. Basically it's resulting output will be \b PNClient
+ This class used to initiate parser for 'State get' response. Basically it's resulting output will be \b PNClient
  instance.
 
  @author Sergey Mamontov

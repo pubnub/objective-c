@@ -190,17 +190,19 @@
         pnexpiresValue = [NSString stringWithFormat:@"&pnexpires=%d",
                           (int)[PubNub sharedInstance].configuration.presenceHeartbeatTimeout];
     }
-    NSString *metadata = @"";
+    NSString *state = @"";
     if (self.state) {
 
-        metadata = [NSString stringWithFormat:@"&metadata=%@",
+        state = [NSString stringWithFormat:@"&state=%@",
                         [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
     }
     return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@",
-            [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-            [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","], [self callbackMethodName],
-            self.shortIdentifier, self.updateTimeToken, self.clientIdentifier, pnexpiresValue, metadata,
-			([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+                                      [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
+                                      [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
+                                      self.clientIdentifier, pnexpiresValue, state,
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                                                                              [self authorizationField]] : @"")];
 }
 
 - (NSString *)debugResourcePath {

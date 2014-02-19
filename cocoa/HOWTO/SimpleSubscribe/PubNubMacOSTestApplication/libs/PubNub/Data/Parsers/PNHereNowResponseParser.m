@@ -102,13 +102,13 @@
 - (PNClient *)clientFromData:(id)clientInformation forChannel:(PNChannel *)channel {
 
     NSString *clientIdentifier = nil;
-    NSDictionary *metadata = nil;
+    NSDictionary *state = nil;
 
     // Looks like we received detailed information about client.
     if ([clientInformation respondsToSelector:@selector(allKeys)]) {
 
         clientIdentifier = [clientInformation valueForKey:kPNResponseClientUUIDKey];
-        metadata = [clientInformation valueForKey:kPNResponseClientMetadataKey];
+        state = [clientInformation valueForKey:kPNResponseClientStateKey];
     }
     // Plain client identifier is received.
     else {
@@ -117,7 +117,7 @@
     }
 
 
-    return [PNClient clientForIdentifier:clientIdentifier channel:channel andData:metadata];
+    return [PNClient clientForIdentifier:clientIdentifier channel:channel andData:state];
 }
 
 - (NSString *)description {
