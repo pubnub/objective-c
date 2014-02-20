@@ -906,13 +906,6 @@
 			name = UnitTests;
 			sourceTree = "<group>";
 		};
-		5AEA31E018475C25002A2E4F /* ClientIdentifier */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = ClientIdentifier;
-			sourceTree = "<group>";
-		};
 		79C3221D166DF846006DB535 = {
 			isa = PBXGroup;
 			children = (
@@ -971,7 +964,6 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
-				5AEA31E018475C25002A2E4F /* ClientIdentifier */,
 				5A96274118437E9200258236 /* OversizedJSON */,
 				5ABE6C3E182B9F1000204DC6 /* TestSemaphor */,
 				5A955F7E18350CB100AB2156 /* Configuration */,

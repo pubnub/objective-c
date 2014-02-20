@@ -211,30 +211,32 @@
 //	__block int countSendMessageNumber0 = 0;
 //	receiptCloseSocket = [self closeSocket];
 	receiptError = [self setNewDataForBuffer];
-	[self performSelector: @selector(unswizzleFromReceipt:) withObject: receiptError afterDelay: 2];
+	[self performSelector: @selector(unswizzleFromReceipt:) withObject: receiptError afterDelay: 5];
 //	[self performSelector: @selector(unswizzleFromReceipt:) withObject: receiptCloseSocket afterDelay: 5];
-	for( int i=0; i<pnChannels1.count; i++ ) {
-		__block NSDate *start = [NSDate date];
-		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-		[PubNub sendMessage:[NSString stringWithFormat: @"Hello PubNub %d", i] toChannel:pnChannels1[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-			NSLog( @"sendMessage state %d", messageSendingState);
-//			if( messageSendingState == PNMessageSending && i == 0 )
-//				countSendMessageNumber0 ++;
+	for( int j=0; j<5; j++ )
+		for( int i=0; i<pnChannels1.count; i++ ) {
+			__block NSDate *start = [NSDate date];
+			dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+			[PubNub sendMessage:[NSString stringWithFormat: @"Hello PubNub %d", i] toChannel:pnChannels1[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+				NSLog( @"sendMessage state %d", messageSendingState);
+				if( messageSendingState == PNMessageSending && i == 0 )
+	//				[self unswizzleFromReceipt: receiptError];
+	//				countSendMessageNumber0 ++;
 
-//			STAssertTrue( messageSendingState != PNMessageSendingError, @"PNMessageSendingError");
-			if( messageSendingState == PNMessageSending )
-				start = [NSDate date];
-			if( messageSendingState != PNMessageSending ) {
-				dispatch_semaphore_signal(semaphore);
-				NSTimeInterval interval = -[start timeIntervalSinceNow];
-				NSLog(@"test18SendMessage %f", interval);
-				STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+2, @"Timeout no correct, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
-		   }
-		}];
+	//			STAssertTrue( messageSendingState != PNMessageSendingError, @"PNMessageSendingError");
+				if( messageSendingState == PNMessageSending )
+					start = [NSDate date];
+				if( messageSendingState != PNMessageSending ) {
+					dispatch_semaphore_signal(semaphore);
+					NSTimeInterval interval = -[start timeIntervalSinceNow];
+					NSLog(@"test18SendMessage %f", interval);
+					STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+2, @"Timeout no correct, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+			   }
+			}];
 
-		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-	}
+			while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
+				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+		}
 }
 
 -(void)unswizzleFromReceipt:(SwizzleReceipt *)receipt {

@@ -79,6 +79,9 @@
                <Test
                   Identifier = "BadJsonTest">
                </Test>
+               <Test
+                  Identifier = "TimeOutTest">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
