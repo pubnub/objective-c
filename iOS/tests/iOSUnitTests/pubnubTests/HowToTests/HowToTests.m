@@ -599,10 +599,9 @@
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( pNClientPresenceEnablingDidCompleteNotification==YES, @"notification not called");
 
+		[self subsctibeToChannels: @[channel]];
 		[PubNub subscribeOnChannel:channel];
 //		[PubNub unsubscribeFromChannel: channel withPresenceEvent:YES];
-//		[self t20SubscribeOnChannels];
-
 	}
 	else {
 		[self subsctibeToChannels: @[channel]];
@@ -619,7 +618,7 @@
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( pNClientPresenceDisablingDidCompleteNotification==YES, @"notification not called");
 //		[self subsctibeToChannels: @[channel]];
-		[PubNub subscribeOnChannel:channel];
+//		[PubNub subscribeOnChannel:channel];
 	}
 	BOOL newState = [PubNub isPresenceObservationEnabledForChannel: channel];
 	STAssertTrue( state != newState, @"state not changed");
