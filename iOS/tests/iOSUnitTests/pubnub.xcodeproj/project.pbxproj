@@ -15,6 +15,8 @@
 		5A20322C18B62012003F98A5 /* PNMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A20322B18B62012003F98A5 /* PNMessageTest.m */; };
 		5A20322E18B63B32003F98A5 /* PNRequestsQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A20322D18B63B32003F98A5 /* PNRequestsQueueTest.m */; };
 		5A20323018B63EE8003F98A5 /* PNResponseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A20322F18B63EE8003F98A5 /* PNResponseTest.m */; };
+		5A20323418B65434003F98A5 /* PNAccessRightsAuditRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A20323318B65434003F98A5 /* PNAccessRightsAuditRequestTest.m */; };
+		5A20323618B6893D003F98A5 /* PNChangeAccessRightsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A20323518B6893D003F98A5 /* PNChangeAccessRightsRequestTest.m */; };
 		5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */; };
 		5A4826D718632BBF008370E2 /* ChannelLimitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4826D618632BBF008370E2 /* ChannelLimitTest.m */; };
 		5A4ED25718A51DB8002C7E8D /* HowToTestsCompressed.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */; };
@@ -177,6 +179,8 @@
 		5A20322B18B62012003F98A5 /* PNMessageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNMessageTest.m; path = pubnubTests/PNMessageTest.m; sourceTree = SOURCE_ROOT; };
 		5A20322D18B63B32003F98A5 /* PNRequestsQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNRequestsQueueTest.m; path = pubnubTests/PNRequestsQueueTest.m; sourceTree = SOURCE_ROOT; };
 		5A20322F18B63EE8003F98A5 /* PNResponseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNResponseTest.m; path = pubnubTests/PNResponseTest.m; sourceTree = SOURCE_ROOT; };
+		5A20323318B65434003F98A5 /* PNAccessRightsAuditRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNAccessRightsAuditRequestTest.m; path = pubnubTests/PNAccessRightsAuditRequestTest.m; sourceTree = SOURCE_ROOT; };
+		5A20323518B6893D003F98A5 /* PNChangeAccessRightsRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNChangeAccessRightsRequestTest.m; path = pubnubTests/PNChangeAccessRightsRequestTest.m; sourceTree = SOURCE_ROOT; };
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
 		5A4826D618632BBF008370E2 /* ChannelLimitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelLimitTest.m; sourceTree = "<group>"; };
 		5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTestsCompressed.m; sourceTree = "<group>"; };
@@ -670,7 +674,6 @@
 				5AD5889418A24E8700B72653 /* PNMessage+Protected.h */,
 				5AD5889518A24E8700B72653 /* PNMessage.h */,
 				5AD5889618A24E8700B72653 /* PNMessage.m */,
-				5A20322B18B62012003F98A5 /* PNMessageTest.m */,
 				5AD5889718A24E8700B72653 /* PNMessagesHistory+Protected.h */,
 				5AD5889818A24E8700B72653 /* PNMessagesHistory.h */,
 				5AD5889918A24E8700B72653 /* PNMessagesHistory.m */,
@@ -679,10 +682,8 @@
 				5AD5889C18A24E8700B72653 /* PNOperationStatus.m */,
 				5AD5889D18A24E8700B72653 /* PNRequestsQueue.h */,
 				5AD5889E18A24E8700B72653 /* PNRequestsQueue.m */,
-				5A20322D18B63B32003F98A5 /* PNRequestsQueueTest.m */,
 				5AD5889F18A24E8700B72653 /* PNResponse.h */,
 				5AD588A018A24E8700B72653 /* PNResponse.m */,
-				5A20322F18B63EE8003F98A5 /* PNResponseTest.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -839,11 +840,13 @@
 			children = (
 				5AD588C618A24E8700B72653 /* PNAccessRightsAuditRequest.h */,
 				5AD588C718A24E8700B72653 /* PNAccessRightsAuditRequest.m */,
+				5A20323318B65434003F98A5 /* PNAccessRightsAuditRequestTest.m */,
 				5AD588C818A24E8700B72653 /* PNBaseRequest+Protected.h */,
 				5AD588C918A24E8700B72653 /* PNBaseRequest.h */,
 				5AD588CA18A24E8700B72653 /* PNBaseRequest.m */,
 				5AD588CB18A24E8700B72653 /* PNChangeAccessRightsRequest.h */,
 				5AD588CC18A24E8700B72653 /* PNChangeAccessRightsRequest.m */,
+				5A20323518B6893D003F98A5 /* PNChangeAccessRightsRequestTest.m */,
 				5AD588CD18A24E8700B72653 /* PNHereNowRequest+Protected.h */,
 				5AD588CE18A24E8700B72653 /* PNHereNowRequest.h */,
 				5AD588CF18A24E8700B72653 /* PNHereNowRequest.m */,
@@ -973,6 +976,9 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5A20322F18B63EE8003F98A5 /* PNResponseTest.m */,
+				5A20322D18B63B32003F98A5 /* PNRequestsQueueTest.m */,
+				5A20322B18B62012003F98A5 /* PNMessageTest.m */,
 				5A96274118437E9200258236 /* OversizedJSON */,
 				5ABE6C3E182B9F1000204DC6 /* TestSemaphor */,
 				5A955F7E18350CB100AB2156 /* Configuration */,
@@ -1376,7 +1382,9 @@
 				9645C122174FDA7D00F82D09 /* PNServiceChannelTest.m in Sources */,
 				9645C123174FDDAE00F82D09 /* PNMessagingChannelTest.m in Sources */,
 				5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */,
+				5A20323618B6893D003F98A5 /* PNChangeAccessRightsRequestTest.m in Sources */,
 				79DC83611773A8680061A76C /* PNCryptoHelperTest.m in Sources */,
+				5A20323418B65434003F98A5 /* PNAccessRightsAuditRequestTest.m in Sources */,
 				5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */,
 				5ADD308F189AADFD00688B3E /* PNChannelTest.m in Sources */,
 				5ACA68F6185B844600C2B214 /* PAMTestError.m in Sources */,

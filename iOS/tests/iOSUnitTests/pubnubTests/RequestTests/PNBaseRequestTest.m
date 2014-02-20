@@ -27,19 +27,18 @@
 
 @implementation PNBaseRequestTest
 
-- (void)setUp
-{
-    [super setUp];
-}
-
-- (void)tearDown
-{
-    // Tear-down code here.
-    
-    [super tearDown];
+-(void)tearDown {
+	[super tearDown];
+	[NSThread sleepForTimeInterval:1.0];
 }
 
 #pragma mark - States tests
+-(void)testInit {
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	NSLog(@"id %@", request.identifier);
+	STAssertTrue( request.identifier.length == 36, @"" );
+	STAssertTrue( request.shortIdentifier.length == 5, @"" );
+}
 
 - (void)testTimeout {
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
@@ -103,15 +102,65 @@
     [mockBaseRequest verify];
 }
 
-- (void)testHTTPPayload {
+//- (void)testHTTPPayload {
+//    PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
+//    
+//    NSData *payload = [baseRequest HTTPPayload];
+//    
+//    STAssertTrue([payload isKindOfClass:[NSData class]], @"Payload should be a string");
+//    STAssertTrue([payload length] > 0, @"Payload should has length more than zero");
+//}
+
+-(void)testAuthorizationField {
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
-    
-    NSData *payload = [baseRequest HTTPPayload];
-    
-    STAssertTrue([payload isKindOfClass:[NSData class]], @"Payload should be a string");
-    STAssertTrue([payload length] > 0, @"Payload should has length more than zero");
+	PNConfiguration *conf = [PNConfiguration configurationWithPublishKey:@"publish" subscribeKey: @"subscr" secretKey: @"secret" authorizationKey: @"auth"];
+	[[PubNub sharedInstance] setConfiguration: conf];
+	STAssertTrue( [[baseRequest authorizationField] isEqualToString: @"auth=auth"]==YES, @"" );
+
+	conf = [PNConfiguration configurationWithPublishKey:@"publish" subscribeKey: @"subscr" secretKey: @"secret"];
+	[[PubNub sharedInstance] setConfiguration: conf];
+	STAssertTrue( [baseRequest authorizationField] == nil, @"" );
 }
 
-#pragma mark - Interaction tests
+-(void)testRequestPath {
+	PNConfiguration *conf = [PNConfiguration configurationForOrigin: @"origin" publishKey:@"publish" subscribeKey: @"subscr" secretKey: @"secret"];
+	[[PubNub sharedInstance] setConfiguration: conf];
+    PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
+	STAssertTrue( [[baseRequest requestPath] isEqualToString: @"http://origin/"], @"");
+}
+
+-(void)testHTTPMethod {
+    PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
+	STAssertTrue( [baseRequest HTTPMethod] == PNRequestGETMethod, @"");
+}
+
+-(void)testShouldCompressPOSTBody {
+    PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
+	STAssertTrue( [baseRequest shouldCompressPOSTBody] == NO, @"");
+}
+
+-(void)testPOSTBody {
+    PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
+	STAssertTrue( [baseRequest POSTBody] == nil, @"");
+}
+
+-(void)testHTTPPayload {
+	PNConfiguration *conf = [PNConfiguration configurationForOrigin: @"origin" publishKey:@"publish" subscribeKey: @"subscr" secretKey: @"secret"];
+	[[PubNub sharedInstance] setConfiguration: conf];
+    PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
+	NSData *http = [baseRequest HTTPPayload];
+	NSString *payload = [NSString stringWithUTF8String:[http bytes]];
+	STAssertTrue( [payload rangeOfString: @"GET / HTTP/1.1\r"
+				   @"Host: origin\r"
+				   @"V: 3.5.7\r"
+				   @"User-Agent: Obj-C-iOS\r"
+				   @"Accept: */*\r"
+				   @"Accept-Encoding: gzip, deflate\r"
+				   @"\r"].location, @"");
+
+}
 
 @end
+
+
+
