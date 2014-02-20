@@ -1,16 +1,3 @@
-//
-//  PNJSONSerialization.h
-//  pubnub
-//
-//  This class encapsulate logic with JSON
-//  serialization fallback (pre-iOS 5) and
-//  handles JSONP by returning prefix falue.
-//
-//
-//  Created by Sergey Mamontov on 12/5/12.
-//
-//
-
 #import <Foundation/Foundation.h>
 
 

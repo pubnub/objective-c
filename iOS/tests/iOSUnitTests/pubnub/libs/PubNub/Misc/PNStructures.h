@@ -1,14 +1,3 @@
-//
-//  PNStructures.h
-//  pubnub
-//
-//  Created by Sergey Mamontov on 12/6/12.
-//
-//
-
-
-#pragma mark Class forward
-
 @class PNPresenceEvent, PNMessage, PNChannel, PNError, PNDate, PNAccessRightsCollection;
 
 
@@ -131,4 +120,4 @@ typedef void (^PNClientPushNotificationsEnableHandlingBlock)(NSArray *, PNError 
 typedef void (^PNClientPushNotificationsDisableHandlingBlock)(NSArray *, PNError *);
 typedef void (^PNClientPushNotificationsEnabledChannelsHandlingBlock)(NSArray *, PNError *);
 
-#endif // PNStructures_h
+#endif

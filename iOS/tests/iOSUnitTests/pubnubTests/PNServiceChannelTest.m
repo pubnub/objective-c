@@ -76,12 +76,16 @@
     
     PNServiceChannel *channel = [PNServiceChannel serviceChannelWithDelegate:nil];
     
-    id mock = [OCMockObject mockForClass:[PNMessage class]];
+    id mock = [OCMockObject mockForClass:[PNServiceChannel class]];
     
-    [[mock expect] message];
-    [[[mock stub] andReturn:nil] message];
-    [[[mock stub] andReturn:nil] channel];
-    
+	//    [[mock expect] message]; - (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
+
+	[[[[mock expect] ignoringNonObjectArgs] andReturn:nil] sendMessage: [OCMArg any] toChannel: [OCMArg any] compressed: [OCMArg any]];
+
+	[[[[mock stub] ignoringNonObjectArgs] andReturn:nil] sendMessage: [OCMArg any] toChannel: [OCMArg any] compressed: [OCMArg any]];
+//    [[[mock stub] andReturn:nil] message];
+//    [[[mock stub] andReturn:nil] channel];
+
     [channel sendMessage:mock];
     
     [mock verify];

@@ -1,19 +1,3 @@
-//
-//  PNMessageChannelDelegate.h
-//  pubnub
-//
-//  Describes interface which is used to organize
-//  communication between service communication
-//  channel and PubNub client
-//
-//
-//  Created by Sergey Mamontov on 12/29/12.
-//
-//
-
-
-#pragma mark Class forward
-
 @class PNServiceChannel, PNMessagesHistory, PNResponse, PNHereNow, PNAccessRightsCollection;
 
 

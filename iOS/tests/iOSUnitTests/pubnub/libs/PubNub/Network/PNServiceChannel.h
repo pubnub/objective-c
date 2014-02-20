@@ -1,25 +1,3 @@
-//
-//  PNServiceChannel.h
-//  pubnub
-//
-//  This channel is required to manage
-//  service message sending to PubNub service.
-//  Will send messages like:
-//      - publish
-//      - time
-//      - history
-//      - here now (list of participants)
-//      - push notification state manipulation
-//      - "ping" (latency measurement if enabled)
-//
-//  Notice: don't try to create more than
-//          one messaging channel on MacOS
-//
-//
-//  Created by Sergey Mamontov on 12/15/12.
-//
-//
-
 #import "PNConnectionChannel.h"
 #import "PNConnectionChannelDelegate.h"
 

@@ -1,15 +1,3 @@
-//
-//  PNError.m
-//  pubnub
-//
-//  Class which will be used to describe internal
-//  PubNub client errors.
-//
-//
-//  Created by Sergey Mamontov on 12/5/12.
-//
-//
-
 #import <Foundation/Foundation.h>
 #import "PNError+Protected.h"
 

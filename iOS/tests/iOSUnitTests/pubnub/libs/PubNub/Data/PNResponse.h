@@ -1,17 +1,3 @@
-//
-//  PNResponse.h
-//  pubnub
-//
-//  This class instance designed to store
-//  binary response from backend with some
-//  additional information which will help
-//  to understand some metrics.
-//
-//
-//  Created by Sergey Mamontov on 12/20/12.
-//
-//
-
 #import <Foundation/Foundation.h>
 
 

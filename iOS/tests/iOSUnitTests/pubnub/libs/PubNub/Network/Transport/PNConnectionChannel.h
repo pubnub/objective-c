@@ -1,14 +1,3 @@
-//
-//  PNConnectionChannel.h
-//  pubnub
-//
-//  Connection channel is intermediate class between transport network layer and other library classes.
-//
-//
-//  Created by Sergey Mamontov on 12/11/12.
-//
-//
-
 #import <Foundation/Foundation.h>
 #import "PNConnectionChannelDelegate.h"
 #import "PNRequestsQueueDelegate.h"

@@ -1,15 +1,3 @@
-//
-//  PNMacro.h
-//  pubnub
-//
-//  This helper header stores useful C functions
-//  and small amount of macro for variaty of tasks.
-//
-//
-//  Created by Sergey Mamontov on 12/5/12.
-//
-//
-
 #import <Foundation/Foundation.h>
 #import "NSDate+PNAdditions.h"
 #include <stdlib.h>

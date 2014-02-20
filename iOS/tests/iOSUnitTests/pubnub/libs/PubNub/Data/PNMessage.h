@@ -1,20 +1,3 @@
-//
-//  PNMessage.h
-//  pubnub
-//
-//  This class is used to represent single message
-//  which is sent to the PubNub service and will be
-//  sent to the PubNub client delegate and observers
-//  to notify about that message will/did/fail to send.
-//  This object also used to represent arrived messages
-//  (received on subscribed channels).
-//
-//
-//  Created by Sergey Mamontov on 1/7/13.
-//
-//
-
-
 #import <Foundation/Foundation.h>
 
 #pragma mark Class forward

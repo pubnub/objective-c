@@ -1,15 +1,3 @@
-//
-//  PNRequestsQueue.h
-//  pubnub
-//
-//  This class was created for iOS PubNub client support to handle request sending via single socket connection.
-//  This is singleton class which will help to organize requests into single FIFO pipe.
-//
-//
-//  Created by Sergey Mamontov on 12/13/12.
-//
-//
-
 #import <Foundation/Foundation.h>
 #import "PNRequestsQueueDelegate.h"
 #import "PNConnectionDelegate.h"

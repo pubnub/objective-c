@@ -1,14 +1,3 @@
-//
-//  PNNetworkHelper.h
-//  pubnub
-//
-//  Created by Sergey Mamontov on 8/29/13.
-//  Copyright (c) 2013 PubNub Inc. All rights reserved.
-//
-
-
-#pragma mark Public interface declaration
-
 @interface PNNetworkHelper : NSObject
 
 

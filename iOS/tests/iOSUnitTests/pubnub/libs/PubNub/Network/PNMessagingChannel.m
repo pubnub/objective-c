@@ -1,20 +1,3 @@
-//
-//  PNMessagingChannel.m
-//  pubnub
-//
-//  This channel instance is required for messages exchange between client and
-//  PubNub service:
-//      - channels messages (subscribe)
-//      - channels presence events
-//      - leave
-//
-//  Notice: don't try to create more than one messaging channel on MacOS
-//
-//
-//  Created by Sergey Mamontov on 12/12/12.
-//
-//
-
 #import "PNMessagingChannel.h"
 #import "PNConnectionChannel+Protected.h"
 #import "PNChannelEventsResponseParser.h"

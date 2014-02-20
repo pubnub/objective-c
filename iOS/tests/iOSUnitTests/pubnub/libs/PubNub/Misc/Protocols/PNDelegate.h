@@ -1,19 +1,3 @@
-//
-//  PNDelegate.h
-//  pubnub
-//
-//  Describes interface which is used to organize
-//  communication between user code and PubNub
-//  client instance.
-//
-//
-//  Created by Sergey Mamontov on 12/5/12.
-//
-//
-
-
-#pragma mark Class forward
-
 @class PNPresenceEvent, PNMessage, PubNub, PNError, PNDate, PNAccessRightsCollection;
 
 

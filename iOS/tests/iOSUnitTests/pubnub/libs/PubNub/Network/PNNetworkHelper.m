@@ -1,12 +1,3 @@
-//
-//  PNNetworkHelper.m
-//  pubnub
-//
-//  Created by Sergey Mamontov on 8/29/13.
-//  Copyright (c) 2013 PubNub Inc. All rights reserved.
-//
-
-
 #import "PNNetworkHelper.h"
 #import <SystemConfiguration/SystemConfiguration.h>
 #import "PNBaseRequest+Protected.h"

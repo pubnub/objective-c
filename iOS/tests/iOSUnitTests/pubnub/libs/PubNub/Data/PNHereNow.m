@@ -1,11 +1,3 @@
-//
-//  PNHereNow.h
-// 
-//
-//  Created by moonlight on 1/15/13.
-//
-//
-
 #import "PNHereNow.h"
 
 
