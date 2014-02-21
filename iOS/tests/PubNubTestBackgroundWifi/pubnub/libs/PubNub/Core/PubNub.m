@@ -1,3 +1,17 @@
+//
+//  PubNub.m
+//  pubnub
+//
+//  This is base and main class which is
+//  responsible for communication with
+//  PubNub services and handle all events
+//  and notifications.
+//
+//
+//  Created by Sergey Mamontov.
+//
+//
+
 #import "PubNub+Protected.h"
 #import "PNConnectionChannel+Protected.h"
 #import "PNPresenceEvent+Protected.h"

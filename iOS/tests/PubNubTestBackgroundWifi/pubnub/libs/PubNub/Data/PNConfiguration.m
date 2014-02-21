@@ -1,3 +1,15 @@
+//
+//  PNConfiguration.m
+//  pubnub
+//
+//  This class allow to configure PubNub
+//  base class with required set of parameters.
+//
+//
+//  Created by Sergey Mamontov on 12/4/12.
+//
+//
+
 #import "PNDefaultConfiguration.h"
 #import "PNPrivateMacro.h"
 #import "PNConstants.h"

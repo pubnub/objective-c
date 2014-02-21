@@ -5059,8 +5059,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     PNLog(PNLogGeneralLevel, self, @"WILL RESTORE SUBSCRIPTION ON: %@", channels);
 
-    if ([self isConnected]) {
-        
+    if ([self.messagingChannel isConnected] ) {
+
         self.asyncLockingOperationInProgress = YES;
     }
 
