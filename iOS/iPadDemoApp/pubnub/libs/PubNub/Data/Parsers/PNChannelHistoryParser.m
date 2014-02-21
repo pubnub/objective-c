@@ -11,6 +11,7 @@
 #import "PNMessagesHistory+Protected.h"
 #import "PNMessage+Protected.h"
 #import "PNResponse.h"
+#import "PNDate.h"
 
 
 // ARC check

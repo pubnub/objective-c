@@ -11,6 +11,7 @@
 #import "PNAccessRightsCollection+Protected.h"
 #import "PNPrivateMacro.h"
 #import "PNAccessRightOptions+Protected.h"
+#import "PNChannel.h"
 
 
 #pragma mark Public interface implementation

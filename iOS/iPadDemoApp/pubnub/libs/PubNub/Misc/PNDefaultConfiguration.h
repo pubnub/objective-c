@@ -9,6 +9,8 @@
 #ifndef PNDefaultConfiguration_h
 #define PNDefaultConfiguration_h
 
+#import <Foundation/Foundation.h>
+
 // Stores reference on host URL which is used to access PubNub services
 static NSString * const kPNOriginHost = @"pubsub.pubnub.com";
 

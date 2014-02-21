@@ -16,6 +16,7 @@
 #import "PNHereNow+Protected.h"
 #import "PNError+Protected.h"
 #import "PubNub+Protected.h"
+#import "PNNotifications.h"
 
 
 // ARC check

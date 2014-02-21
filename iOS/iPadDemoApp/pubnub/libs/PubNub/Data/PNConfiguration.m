@@ -13,6 +13,8 @@
 #import "PNDefaultConfiguration.h"
 #import "PNPrivateMacro.h"
 #import "PNConstants.h"
+#import "PNConfiguration.h"
+#import "PNMacro.h"
 
 
 // ARC check
@@ -351,7 +353,7 @@
                                        "Authorization key: %@",
             self, self.origin, (self.shouldUseSecureConnection ? @"YES" : @"NO"), (([self.publishKey length] > 0) ? self.publishKey : @"-missing-"),
             (([self.subscriptionKey length] > 0) ? self.subscriptionKey : @"-missing-"), (([self.secretKey length] > 0) ? self.secretKey : @"-missing-"),
-            (([self.cipherKey length] > 0) ? self.cipherKey : @"-no encription key-"), (([self.authorizationKey length] > 0) ? self.authorizationKey : @"-missing-")];
+            (([self.cipherKey length] > 0) ? self.cipherKey : @"-no encryption key-"), (([self.authorizationKey length] > 0) ? self.authorizationKey : @"-missing-")];
 }
 
 #pragma mark -

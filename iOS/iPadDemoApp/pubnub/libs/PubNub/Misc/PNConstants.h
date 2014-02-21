@@ -13,6 +13,8 @@
 #ifndef PNConstants_h
 #define PNConstants_h
 
+#import <Availability.h>
+
 
 #pragma mark General information constants
 

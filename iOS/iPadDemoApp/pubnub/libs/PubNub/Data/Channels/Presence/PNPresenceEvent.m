@@ -13,6 +13,7 @@
 
 
 #import "PNPresenceEvent+Protected.h"
+#import "PNDate.h"
 
 
 // ARC check

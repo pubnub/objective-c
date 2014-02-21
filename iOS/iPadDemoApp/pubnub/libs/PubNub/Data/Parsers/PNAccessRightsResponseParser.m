@@ -11,6 +11,7 @@
 #import "PNAccessRightsCollection+Protected.h"
 #import "PNPrivateMacro.h"
 #import "PNResponse.h"
+#import "PNChannel.h"
 
 
 // ARC check

@@ -14,6 +14,9 @@
 #import "PNChannelPresence+Protected.h"
 #import "PNHereNow+Protected.h"
 #import "NSString+PNAddition.h"
+#import "PNDate.h"
+#import "PNMacro.h"
+#import "PNPresenceEvent.h"
 
 
 // ARC check

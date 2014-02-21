@@ -10,6 +10,9 @@
 #import <Foundation/Foundation.h>
 
 
+@class PNError;
+
+
 @interface PNOperationStatus : NSObject
 
 #pragma mark Properties

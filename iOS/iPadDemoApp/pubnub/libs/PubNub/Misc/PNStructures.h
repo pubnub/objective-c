@@ -7,6 +7,9 @@
 //
 
 
+#import <Foundation/Foundation.h>
+
+
 #pragma mark Class forward
 
 @class PNPresenceEvent, PNMessage, PNChannel, PNError, PNDate, PNAccessRightsCollection;

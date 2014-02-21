@@ -15,6 +15,9 @@
 #import <Foundation/Foundation.h>
 
 
+@class PNError;
+
+
 @interface PNResponse : NSObject
 
 

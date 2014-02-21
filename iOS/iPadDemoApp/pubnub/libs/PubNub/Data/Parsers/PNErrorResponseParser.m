@@ -11,6 +11,7 @@
 #import "PNErrorResponseParser+Protected.h"
 #import "PNResponse.h"
 #import "PNError+Protected.h"
+#import "PNChannel.h"
 
 
 // ARC check

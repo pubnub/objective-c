@@ -11,6 +11,7 @@
 //
 //
 
+#import <Availability.h>
 #import "PNConnection.h"
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <Security/SecureTransport.h>

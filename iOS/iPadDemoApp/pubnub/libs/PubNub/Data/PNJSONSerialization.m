@@ -12,6 +12,7 @@
 //
 
 #import "PNJSONSerialization.h"
+#import "PNMacro.h"
 
 
 // ARC check

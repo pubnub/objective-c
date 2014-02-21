@@ -11,6 +11,9 @@
 #import "PNBaseRequest.h"
 
 
+@class PNChannel;
+
+
 @interface PNHereNowRequest : PNBaseRequest
 
 

@@ -26,6 +26,7 @@
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
+#import "PNNotifications.h"
 
 
 // ARC check

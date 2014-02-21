@@ -8,6 +8,7 @@
 
 
 #import "PNBaseRequest.h"
+#import "PNStructures.h"
 
 
 #pragma mark Class forward

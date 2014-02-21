@@ -10,6 +10,7 @@
 #import "PNActionResponseParser.h"
 #import "PNActionResponseParser+Protected.h"
 #import "PNResponse.h"
+#import "PNStructures.h"
 
 
 // ARC check

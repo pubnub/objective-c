@@ -15,6 +15,7 @@
 //
 
 #import "PNConnectionChannel.h"
+#import "PNMacro.h"
 #import "PNMessageChannelDelegate.h"
 
 

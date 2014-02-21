@@ -27,6 +27,7 @@
 #import "PNChannelHistoryParser.h"
 #import "PNErrorResponseParser.h"
 #import "PNResponse.h"
+#import "PNPresenceEvent.h"
 
 
 // ARC check

@@ -11,6 +11,7 @@
 #import "PNChannel+Protected.h"
 #import "PNRequestsImport.h"
 #import "PubNub+Protected.h"
+#import "NSString+PNAddition.h"
 
 
 // ARC check

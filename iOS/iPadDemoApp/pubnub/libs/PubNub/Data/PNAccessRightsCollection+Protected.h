@@ -6,6 +6,11 @@
 //  Copyright (c) 2013 PubNub Inc. All rights reserved.
 //
 
+#import "PNAccessRightsCollection.h"
+
+
+@class PNAccessRightOptions;
+
 
 #pragma mark Private interface declaration
 

@@ -16,6 +16,7 @@
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
 #import "PubNub+Protected.h"
+#import "NSString+PNAddition.h"
 
 
 // ARC check

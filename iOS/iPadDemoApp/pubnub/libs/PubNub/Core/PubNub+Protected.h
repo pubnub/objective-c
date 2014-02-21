@@ -12,6 +12,8 @@
 //
 //
 
+#import <Availability.h>
+
 #import "PNPrivateImports.h"
 #import "PNConfiguration.h"
 #import "PNReachability.h"

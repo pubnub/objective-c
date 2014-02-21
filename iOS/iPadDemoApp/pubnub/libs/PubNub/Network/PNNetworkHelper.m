@@ -7,6 +7,7 @@
 //
 
 
+#import <Availability.h>
 #import "PNNetworkHelper.h"
 #import <SystemConfiguration/SystemConfiguration.h>
 #import "PNBaseRequest+Protected.h"

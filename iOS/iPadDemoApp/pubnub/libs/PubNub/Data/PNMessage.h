@@ -20,6 +20,7 @@
 #pragma mark Class forward
 
 @class PNChannel;
+@class PNDate;
 
 
 @interface PNMessage : NSObject

@@ -7,6 +7,7 @@
 //
 
 
+#import <Availability.h>
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import "NSData+PNAdditions.h"

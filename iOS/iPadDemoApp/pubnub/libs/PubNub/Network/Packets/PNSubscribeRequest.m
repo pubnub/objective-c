@@ -12,6 +12,7 @@
 //
 //
 
+#import "NSString+PNAddition.h"
 #import "PNSubscribeRequest+Protected.h"
 #import "PNChannelPresence+Protected.h"
 #import "PNServiceResponseCallbacks.h"

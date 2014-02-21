@@ -22,6 +22,12 @@
 
 #import "PNConnectionChannel.h"
 #import "PNConnectionChannelDelegate.h"
+#import "PNMacro.h"
+#import "PNStructures.h"
+
+
+@class PNChannel;
+@class PNMessage;
 
 
 @protocol PNServiceChannelDelegate;

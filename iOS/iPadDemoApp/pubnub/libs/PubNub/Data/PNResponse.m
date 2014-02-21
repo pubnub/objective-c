@@ -15,6 +15,8 @@
 #import "PNResponse.h"
 #import "PNJSONSerialization.h"
 #import "PNRequestsImport.h"
+#import "PNError.h"
+#import "PNMacro.h"
 
 
 // ARC check

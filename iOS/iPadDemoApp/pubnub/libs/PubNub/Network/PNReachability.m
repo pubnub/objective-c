@@ -12,12 +12,14 @@
 //
 //
 
+#import <Availability.h>
 #import "PNReachability.h"
 #import <SystemConfiguration/SystemConfiguration.h>
 #import "PNResponseParser.h"
 #import "PubNub+Protected.h"
 #import "PNConstants.h"
 #import "PNResponse.h"
+#import "PNNetworkHelper.h"
 #import <netinet/in.h>
 #import <arpa/inet.h>
 

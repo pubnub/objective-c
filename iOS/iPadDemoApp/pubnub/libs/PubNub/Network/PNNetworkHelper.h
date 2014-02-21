@@ -7,6 +7,9 @@
 //
 
 
+#import <Foundation/Foundation.h>
+
+
 #pragma mark Public interface declaration
 
 @interface PNNetworkHelper : NSObject

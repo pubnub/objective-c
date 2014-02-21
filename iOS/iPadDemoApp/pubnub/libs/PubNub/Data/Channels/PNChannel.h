@@ -13,6 +13,9 @@
 #import <Foundation/Foundation.h>
 
 
+@class PNDate;
+
+
 @interface PNChannel : NSObject
 
 
