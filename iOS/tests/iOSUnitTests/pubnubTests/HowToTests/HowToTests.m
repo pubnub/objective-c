@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Micro-B. All rights reserved.
 //
 
-#import "HowToTests.h"
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
 
@@ -22,8 +21,9 @@
 #import "Swizzler.h"
 #import "PNConnectionBadJson.h"
 #import "PNMessageHistoryRequest.h"
+#import <SenTestingKit/SenTestingKit.h>
 
-@interface HowToTests ()
+@interface HowToTests : SenTestCase
 
 @property (nonatomic, assign) NSUInteger retryCount;
 
