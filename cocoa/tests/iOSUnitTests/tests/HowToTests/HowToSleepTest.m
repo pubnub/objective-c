@@ -1,9 +1,9 @@
 //
-//  PNBaseRequestTest.m
-//  UnitTestSample
+//  HowToSleepTest.m
+//  PubNubMacOSTestApplication
 //
-//  Created by Vadim Osovets on 5/19/13.
-//  Copyright (c) 2013 Micro-B. All rights reserved.
+//  Created by Valentin Tuller on 2/21/14.
+//  Copyright (c) 2014 Sergey Mamontov. All rights reserved.
 //
 
 #import "PNBaseRequest.h"
@@ -25,13 +25,14 @@
 #import <AppKit/NSWorkspace.h>
 #import <SenTestingKit/SenTestingKit.h>
 
-@interface HowToTests : SenTestCase
+
+@interface HowToSleepTest : SenTestCase <NSApplicationDelegate>
 
 @property (nonatomic, assign) NSUInteger retryCount;
 
 @end
 
-@interface HowToTests () <PNDelegate>
+@interface HowToSleepTest () <PNDelegate>
 {
 	NSArray *pnChannels;
 	NSArray *pnChannelsBad;
@@ -66,6 +67,7 @@
 	BOOL pNClientPresenceDisablingDidCompleteNotification;
 
 	NSDate *dateMessage;
+	BOOL isSleep;
 }
 
 @property (nonatomic, retain) NSConditionLock *theLock;
@@ -73,7 +75,7 @@
 @end
 
 
-@implementation HowToTests
+@implementation HowToSleepTest
 
 //- (void)setUp {
 //    [super setUp];
@@ -288,15 +290,28 @@
 							   name:kPNClientPresenceDisablingDidCompleteNotification
 							 object:nil];
 
+	[NSApplication sharedApplication].delegate = self;
+	[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willSleep:)
+															   name:NSWorkspaceWillSleepNotification object:nil];
+	[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(wakeFromSleep:)
+															   name:NSWorkspaceDidWakeNotification object:nil];
 
+	isSleep = NO;
+	[self sleepMyMac];
 	[self t05AddClientConnectionStateObserver];
 	[self t06ClientChannelSubscriptionStateObserver];
+	[self sleepMyMac];
 	[self t08AddPresenceEventObserver];
 	[self t10Connect];
+	[self sleepMyMac];
+	[self t20SubscribeOnChannels];
+	[self t20SubscribeOnChannels];
 	[self t20SubscribeOnChannels];
 	[self unsubscribeFromChannelsSubscribedChannels];
+	[self sleepMyMac];
 	[self t20SubscribeOnChannels];
 	[self t25RequestParticipantsListForChannel];
+	[self sleepMyMac];
 	[self t30RequestParticipantsListForChannel];
 	[self t35RequestServerTimeTokenWithCompletionBlock];
 	[self t40SendMessage];
@@ -306,6 +321,16 @@
 	[self t60SubscribeOnChannelsByTurns];
 	[self t900UnsubscribeFromChannels];
 	[self t910removeClientChannelSubscriptionStateObserver];
+}
+
+-(void)willSleep:(NSNotification*)notification {
+	NSLog(@"willSleep %@", notification);
+	isSleep = YES;
+}
+
+-(void)wakeFromSleep:(NSNotification*)notification {
+	NSLog(@"wakeFromSleep %@", notification);
+	isSleep = NO;
 }
 
 #pragma mark - Handler methods
@@ -532,85 +557,94 @@
 	//	static NSString * const kPNPublishKey = @"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154";
 	//	static NSString * const kPNSubscriptionKey = @"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe";
 	//	static NSString * const kPNSecretKey = @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5";
-
-	handleClientConnectionStateChange = NO;
+//	[self sleepMyMac];
 	int64_t delayInSeconds = 5;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-
-		[PubNub setDelegate:self];
-		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
-		[PubNub setConfiguration: configuration];
-
-		handleClientConnectionStateChange = NO;
-		[PubNub connectWithSuccessBlock:^(NSString *origin) {
-
-			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
-			dispatch_semaphore_signal(semaphore);
-		}
-							 errorBlock:^(PNError *connectionError) {
-								 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
-								 dispatch_semaphore_signal(semaphore);
-								 STFail(@"connectionError %@", connectionError);
-							 }];
+		[self connect];
 	});
+}
+
+-(void)connect {
+	handleClientConnectionStateChange = NO;
+	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+	[PubNub setDelegate:self];
+	//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
+	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+	[PubNub setConfiguration: configuration];
+
+	handleClientConnectionStateChange = NO;
+	[PubNub connectWithSuccessBlock:^(NSString *origin) {
+		PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
+		dispatch_semaphore_signal(semaphore);
+	}
+						 errorBlock:^(PNError *connectionError) {
+							 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+							 dispatch_semaphore_signal(semaphore);
+							 STFail(@"connectionError %@", connectionError);
+						 }];
+
 	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
 	STAssertTrue( handleClientConnectionStateChange, @"notification not called");
-
-	//	[Swizzler swizzleSelector:@selector(reconnect) forClass:[PNConnection class] withSelector:@selector(myReconnect)];
-	//	receiptReconnect = [self setReconnect];
 	_reconnectCount = 0;
 }
 
 - (void)t20SubscribeOnChannels {
+	while( [[PubNub sharedInstance] isConnected] == NO )
+		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientSubscriptionProcess = NO;
 	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
-		 dispatch_semaphore_signal(semaphore);
-		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
-//		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
-	 }];
+		dispatch_semaphore_signal(semaphore);
+		STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
+		//		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+	}];
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	STAssertTrue( handleClientSubscriptionProcess, @"notification not caleld");
 }
 
 -(void)revertPresenceObservationForChannel:(PNChannel*)channel {
+	while( [[PubNub sharedInstance] isConnected] == NO )
+		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
 	__block NSDate *start = [NSDate date];
 	__block BOOL isCompletionBlockCalled = NO;
 	BOOL state = [PubNub isPresenceObservationEnabledForChannel: channel];
 	if( state == NO ) {
 		pNClientPresenceEnablingDidCompleteNotification = NO;
 		[PubNub enablePresenceObservationForChannel: channel withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
-			 NSTimeInterval interval = -[start timeIntervalSinceNow];
-			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
-			 STAssertNil( error, @"enablePresenceObservationForChannel error %@", error);
-			 isCompletionBlockCalled = YES;
-		 }];
+			NSTimeInterval interval = -[start timeIntervalSinceNow];
+			STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+			STAssertNil( error, @"enablePresenceObservationForChannel error %@", error);
+			isCompletionBlockCalled = YES;
+		}];
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 			isCompletionBlockCalled == NO; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 		STAssertTrue( pNClientPresenceEnablingDidCompleteNotification==YES, @"notification not called");
 
+		[self sleepMyMac];
+		while( [[PubNub sharedInstance] isConnected] == NO )
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 		[PubNub subscribeOnChannel:channel];
-//		[PubNub unsubscribeFromChannel: channel withPresenceEvent:YES];
-//		[self t20SubscribeOnChannels];
+		//		[PubNub unsubscribeFromChannel: channel withPresenceEvent:YES];
+		//		[self t20SubscribeOnChannels];
 
 	}
 	else {
 		pNClientPresenceDisablingDidCompleteNotification = NO;
 		[PubNub disablePresenceObservationForChannel: channel
 						 withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
-			 NSTimeInterval interval = -[start timeIntervalSinceNow];
-			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
-			 STAssertNil( error, @"disablePresenceObservationForChannel error %@", error);
-			 isCompletionBlockCalled = YES;
-		 }];
+							 NSTimeInterval interval = -[start timeIntervalSinceNow];
+							 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+							 STAssertNil( error, @"disablePresenceObservationForChannel error %@", error);
+							 isCompletionBlockCalled = YES;
+						 }];
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 			isCompletionBlockCalled == NO; j++ )
 			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
@@ -624,6 +658,7 @@
 -(void)t25RequestParticipantsListForChannel {
 	for( int i=0; i<pnChannels.count; i++ ) {
 		[self revertPresenceObservationForChannel: pnChannels[i]];
+		[self sleepMyMac];
 		[self revertPresenceObservationForChannel: pnChannels[i]];
 	}
 }
@@ -631,16 +666,19 @@
 
 -(void)t30RequestParticipantsListForChannel {
 	for( int i=0; i<pnChannels.count; i++ ) {
+		while( [[PubNub sharedInstance] isConnected] == NO )
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
 		handleClientHereNowProcess = NO;
 		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 		[PubNub requestParticipantsListForChannel:pnChannels[i]
 							  withCompletionBlock:^(NSArray *udids, PNChannel *channel, PNError *error) {
-			 if( error != nil )
-				 PNLog(PNLogGeneralLevel, nil, @"error %@", error);
-			 STAssertNil( error, @"error %@", error);
-			 dispatch_semaphore_signal(semaphore);
-			 NSLog(@"udids %@", udids);
-		 }];
+								  if( error != nil )
+									  PNLog(PNLogGeneralLevel, nil, @"error %@", error);
+								  STAssertNil( error, @"error %@", error);
+								  dispatch_semaphore_signal(semaphore);
+								  NSLog(@"udids %@", udids);
+							  }];
 		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
@@ -649,12 +687,15 @@
 }
 
 -(void)t35RequestServerTimeTokenWithCompletionBlock {
+	while( [[PubNub sharedInstance] isConnected] == NO )
+		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
 	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientCompletedTimeTokenProcessing = NO;
 	[PubNub requestServerTimeTokenWithCompletionBlock:^(NSNumber *timeToken, PNError *error) {
-		 dispatch_semaphore_signal(semaphore);
-		 STAssertNil( error, @"error %@", error);
-	 }];
+		dispatch_semaphore_signal(semaphore);
+		STAssertNil( error, @"error %@", error);
+	}];
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                  beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
@@ -663,19 +704,22 @@
 
 -(void)t40SendMessage {
 	for( int j=0; j<5; j++ ) {
+		[self sleepMyMac];
 		for( int i=0; i<pnChannels.count; i++ )	{
 			pNClientDidSendMessageNotification = NO;
 			dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 			__block PNMessageState state = PNMessageSendingError;
 			NSString *message = [NSString stringWithFormat: @"Hello PubNub %d", j];
 			message = [message stringByAppendingString: @" sdfфвып !№%,,%;%,.(№.(@#$^@$%&%(^)@"];
-			[PubNub sendMessage: message toChannel:pnChannels[i]
-			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-				 if( messageSendingState != PNMessageSending )
-					 dispatch_semaphore_signal(semaphore);
-				 state = messageSendingState;
-				 STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
-			 }];
+
+			if( [[PubNub sharedInstance] isConnected] == NO )
+				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+			[PubNub sendMessage: message toChannel:pnChannels[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+				if( messageSendingState != PNMessageSending )
+					dispatch_semaphore_signal(semaphore);
+				state = messageSendingState;
+				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
+			}];
 
 
 			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
@@ -718,6 +762,9 @@
 	NSMutableString *message = [NSMutableString stringWithString: @""];
 	for( int j=0; j<6; j++ ) {
 		for( int i=0; i<pnChannels.count; i++ )	{
+			while( [[PubNub sharedInstance] isConnected] == NO )
+				[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+
 			pNClientDidSendMessageNotification = NO;
 			pNClientMessageSendingDidFailNotification = NO;
 			__block PNMessageState state = PNMessageSendingError;
@@ -725,8 +772,7 @@
 			NSLog(@"send message %d_%d with size %lu", i, j, (unsigned long)message.length);
 			state = PNMessageSending;
 			__block NSDate *start = [NSDate date];
-			[PubNub sendMessage: message toChannel:pnChannels[i]
-			withCompletionBlock:^(PNMessageState messageSendingState, id data)
+			[PubNub sendMessage: message toChannel:pnChannels[i] withCompletionBlock:^(PNMessageState messageSendingState, id data)
 			 {
 				 state = messageSendingState;
 				 if( state == PNMessageSending )
@@ -784,8 +830,8 @@
 				NSLog(@"requestHistoryForChannel error %@, start %@, end %@", error, startDate, endDate);
 			STAssertNil( error, @"requestHistoryForChannel error %@", error);
 		}
-//		if( ch == nil )
-//			STAssertNotNil( error, @"error cann't be nil");
+		//		if( ch == nil )
+		//			STAssertNotNil( error, @"error cann't be nil");
 	}];
 	//	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) || handleClientMessageHistoryProcess == NO)
 	//		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
@@ -955,22 +1001,22 @@
 		NSDate *start = [NSDate date];
 		NSLog(@"Start subscribe to channel %@", channelName);
 		[PubNub subscribeOnChannels: arr withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
-			 isCompletionBlockCalled = YES;
-			 //			 [[TestSemaphor sharedInstance] lift:channelName];
-			 NSTimeInterval interval = -[start timeIntervalSinceNow];
-			 NSLog(@"subscribed %f, %@", interval, channels);
-			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+			isCompletionBlockCalled = YES;
+			//			 [[TestSemaphor sharedInstance] lift:channelName];
+			NSTimeInterval interval = -[start timeIntervalSinceNow];
+			NSLog(@"subscribed %f, %@", interval, channels);
+			STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
-			 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
-			 BOOL isSubscribed = NO;
-			 for( int j=0; j<channels.count; j++ ) {
-				 if( [[channels[j] name] isEqualToString: channelName] == YES ) {
-					 isSubscribed = YES;
-					 break;
-				 }
-			 }
-			 STAssertTrue( isSubscribed == YES, @"Channel no subecribed");
-		 }];
+			STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
+			BOOL isSubscribed = NO;
+			for( int j=0; j<channels.count; j++ ) {
+				if( [[channels[j] name] isEqualToString: channelName] == YES ) {
+					isSubscribed = YES;
+					break;
+				}
+			}
+			STAssertTrue( isSubscribed == YES, @"Channel no subecribed");
+		}];
 		// Run loop
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 			isCompletionBlockCalled == NO; j++ )
@@ -988,14 +1034,14 @@
 	// Unsubscribe from set of channels and notify everyone that we are left
 	NSDate *start = [NSDate date];
 	[PubNub unsubscribeFromChannels: pnChannels withPresenceEvent:YES andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
-		 NSTimeInterval interval = -[start timeIntervalSinceNow];
-		 NSLog(@"unsubscribeFromChannels %f, %@", interval, channels);
-		 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+		NSTimeInterval interval = -[start timeIntervalSinceNow];
+		NSLog(@"unsubscribeFromChannels %f, %@", interval, channels);
+		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
-		 isCompletionBlockCalled = YES;
-		 STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
-		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
-	 }];
+		isCompletionBlockCalled = YES;
+		STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
+		STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+	}];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 		isCompletionBlockCalled == NO; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
@@ -1073,5 +1119,12 @@
 			}];
 }
 
+-(void)sleepMyMac {
+    NSString *scriptString=[NSString stringWithFormat: @"tell application \"System Events\" to sleep\n"];
+
+    NSDictionary *errorDict= nil;
+    NSAppleScript *appleScriptObject=[[NSAppleScript alloc] initWithSource:scriptString];
+    [appleScriptObject executeAndReturnError: &errorDict];
+}
 
 @end

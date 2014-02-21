@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'PubNubMacOSTestApplication' target in the 'PubNubMacOSTestApplication' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+    #import "PNImports.h"
+#endif

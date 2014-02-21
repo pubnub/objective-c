@@ -8,7 +8,6 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-#import "HowToTests.h"
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
 

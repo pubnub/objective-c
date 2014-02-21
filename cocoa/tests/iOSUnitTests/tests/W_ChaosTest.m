@@ -16,7 +16,6 @@
 #import "PNNotifications.h"
 #import "PNChannel.h"
 #import "Swizzler.h"
-#import "HowToTests.h"
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
 

@@ -9,7 +9,6 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
-
 #import "PubNub.h"
 #import "PubNub+Protected.h"
 #import "PNConfiguration.h"

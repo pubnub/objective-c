@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A0B85F718B787AC00B08249 /* ApnsToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85EE18B787AC00B08249 /* ApnsToken.m */; };
+		5A0B85F818B787AC00B08249 /* HistoryPamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85EF18B787AC00B08249 /* HistoryPamTest.m */; };
+		5A0B85F918B787AC00B08249 /* HowToSleepTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85F018B787AC00B08249 /* HowToSleepTest.m */; };
+		5A0B85FA18B787AC00B08249 /* HowToTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85F118B787AC00B08249 /* HowToTests.m */; };
+		5A0B85FB18B787AC00B08249 /* HowToTestsCompressed.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85F218B787AC00B08249 /* HowToTestsCompressed.m */; };
+		5A0B85FC18B787AC00B08249 /* PAMTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85F318B787AC00B08249 /* PAMTest.m */; };
+		5A0B85FD18B787AC00B08249 /* PAMTestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85F418B787AC00B08249 /* PAMTestError.m */; };
+		5A0B85FE18B787AC00B08249 /* SendBigMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85F518B787AC00B08249 /* SendBigMessage.m */; };
+		5A0B85FF18B787AC00B08249 /* SendMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A0B85F618B787AC00B08249 /* SendMessage.m */; };
+		5A0B861218B788A100B08249 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0B861118B788A100B08249 /* libOCMock.a */; };
 		5A51328618B23BC600F83AD4 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797D096917253898007A9D9A /* AppKit.framework */; };
 		5A7BB9A418B22F0300B8127A /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BB8F918B22F0300B8127A /* PNObservationCenter.m */; };
 		5A7BB9A518B22F0300B8127A /* PubNub.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BB8FC18B22F0300B8127A /* PubNub.m */; };
@@ -74,14 +84,6 @@
 		5A7BB9FB18B2315700B8127A /* ChannelLimitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BB9F518B2315700B8127A /* ChannelLimitTest.m */; };
 		5A7BB9FC18B2315700B8127A /* ClientIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BB9F618B2315700B8127A /* ClientIdentifier.m */; };
 		5A7BB9FD18B2315700B8127A /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BB9F718B2315700B8127A /* Configuration.m */; };
-		5A7BBA3A18B2319300B8127A /* ApnsToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BB9FF18B2319300B8127A /* ApnsToken.m */; };
-		5A7BBA3B18B2319300B8127A /* HistoryPamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0018B2319300B8127A /* HistoryPamTest.m */; };
-		5A7BBA3C18B2319300B8127A /* HowToTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0218B2319300B8127A /* HowToTests.m */; };
-		5A7BBA3D18B2319300B8127A /* HowToTestsCompressed.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0318B2319300B8127A /* HowToTestsCompressed.m */; };
-		5A7BBA3E18B2319300B8127A /* PAMTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0418B2319300B8127A /* PAMTest.m */; };
-		5A7BBA3F18B2319300B8127A /* PAMTestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0518B2319300B8127A /* PAMTestError.m */; };
-		5A7BBA4018B2319300B8127A /* SendBigMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0618B2319300B8127A /* SendBigMessage.m */; };
-		5A7BBA4118B2319300B8127A /* SendMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0718B2319300B8127A /* SendMessage.m */; };
 		5A7BBA4218B2319300B8127A /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0818B2319300B8127A /* OversizedJSON.m */; };
 		5A7BBA4318B2319300B8127A /* PNAccessRightOptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0918B2319300B8127A /* PNAccessRightOptionsTest.m */; };
 		5A7BBA4418B2319300B8127A /* PNAccessRightsCollectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7BBA0A18B2319300B8127A /* PNAccessRightsCollectionTest.m */; };
@@ -144,6 +146,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5A0B85EE18B787AC00B08249 /* ApnsToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApnsToken.m; sourceTree = "<group>"; };
+		5A0B85EF18B787AC00B08249 /* HistoryPamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryPamTest.m; sourceTree = "<group>"; };
+		5A0B85F018B787AC00B08249 /* HowToSleepTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToSleepTest.m; sourceTree = "<group>"; };
+		5A0B85F118B787AC00B08249 /* HowToTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTests.m; sourceTree = "<group>"; };
+		5A0B85F218B787AC00B08249 /* HowToTestsCompressed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTestsCompressed.m; sourceTree = "<group>"; };
+		5A0B85F318B787AC00B08249 /* PAMTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMTest.m; sourceTree = "<group>"; };
+		5A0B85F418B787AC00B08249 /* PAMTestError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMTestError.m; sourceTree = "<group>"; };
+		5A0B85F518B787AC00B08249 /* SendBigMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendBigMessage.m; sourceTree = "<group>"; };
+		5A0B85F618B787AC00B08249 /* SendMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendMessage.m; sourceTree = "<group>"; };
+		5A0B860A18B788A100B08249 /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
+		5A0B860B18B788A100B08249 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
+		5A0B860C18B788A100B08249 /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
+		5A0B860D18B788A100B08249 /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
+		5A0B860E18B788A100B08249 /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
+		5A0B860F18B788A100B08249 /* OCMockRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockRecorder.h; sourceTree = "<group>"; };
+		5A0B861118B788A100B08249 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
 		5A7BB84318B227FA00B8127A /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		5A7BB84518B227FA00B8127A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		5A7BB84718B227FA00B8127A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -318,15 +336,6 @@
 		5A7BB9F518B2315700B8127A /* ChannelLimitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelLimitTest.m; sourceTree = "<group>"; };
 		5A7BB9F618B2315700B8127A /* ClientIdentifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientIdentifier.m; sourceTree = "<group>"; };
 		5A7BB9F718B2315700B8127A /* Configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Configuration.m; sourceTree = "<group>"; };
-		5A7BB9FF18B2319300B8127A /* ApnsToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApnsToken.m; sourceTree = "<group>"; };
-		5A7BBA0018B2319300B8127A /* HistoryPamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryPamTest.m; sourceTree = "<group>"; };
-		5A7BBA0118B2319300B8127A /* HowToTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HowToTests.h; sourceTree = "<group>"; };
-		5A7BBA0218B2319300B8127A /* HowToTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTests.m; sourceTree = "<group>"; };
-		5A7BBA0318B2319300B8127A /* HowToTestsCompressed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTestsCompressed.m; sourceTree = "<group>"; };
-		5A7BBA0418B2319300B8127A /* PAMTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMTest.m; sourceTree = "<group>"; };
-		5A7BBA0518B2319300B8127A /* PAMTestError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMTestError.m; sourceTree = "<group>"; };
-		5A7BBA0618B2319300B8127A /* SendBigMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendBigMessage.m; sourceTree = "<group>"; };
-		5A7BBA0718B2319300B8127A /* SendMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendMessage.m; sourceTree = "<group>"; };
 		5A7BBA0818B2319300B8127A /* OversizedJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OversizedJSON.m; sourceTree = "<group>"; };
 		5A7BBA0918B2319300B8127A /* PNAccessRightOptionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightOptionsTest.m; sourceTree = "<group>"; };
 		5A7BBA0A18B2319300B8127A /* PNAccessRightsCollectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightsCollectionTest.m; sourceTree = "<group>"; };
@@ -403,6 +412,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A0B861218B788A100B08249 /* libOCMock.a in Frameworks */,
 				5A51328618B23BC600F83AD4 /* AppKit.framework in Frameworks */,
 				5A7BB9E318B2306100B8127A /* SenTestingKit.framework in Frameworks */,
 			);
@@ -423,6 +433,61 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5A0B85ED18B787AC00B08249 /* HowToTests */ = {
+			isa = PBXGroup;
+			children = (
+				5A0B85EE18B787AC00B08249 /* ApnsToken.m */,
+				5A0B85EF18B787AC00B08249 /* HistoryPamTest.m */,
+				5A0B85F018B787AC00B08249 /* HowToSleepTest.m */,
+				5A0B85F118B787AC00B08249 /* HowToTests.m */,
+				5A0B85F218B787AC00B08249 /* HowToTestsCompressed.m */,
+				5A0B85F318B787AC00B08249 /* PAMTest.m */,
+				5A0B85F418B787AC00B08249 /* PAMTestError.m */,
+				5A0B85F518B787AC00B08249 /* SendBigMessage.m */,
+				5A0B85F618B787AC00B08249 /* SendMessage.m */,
+			);
+			path = HowToTests;
+			sourceTree = "<group>";
+		};
+		5A0B860718B788A100B08249 /* usr */ = {
+			isa = PBXGroup;
+			children = (
+				5A0B860818B788A100B08249 /* include */,
+				5A0B861018B788A100B08249 /* lib */,
+			);
+			name = usr;
+			path = tests/usr;
+			sourceTree = "<group>";
+		};
+		5A0B860818B788A100B08249 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				5A0B860918B788A100B08249 /* OCMock */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		5A0B860918B788A100B08249 /* OCMock */ = {
+			isa = PBXGroup;
+			children = (
+				5A0B860A18B788A100B08249 /* NSNotificationCenter+OCMAdditions.h */,
+				5A0B860B18B788A100B08249 /* OCMArg.h */,
+				5A0B860C18B788A100B08249 /* OCMConstraint.h */,
+				5A0B860D18B788A100B08249 /* OCMock.h */,
+				5A0B860E18B788A100B08249 /* OCMockObject.h */,
+				5A0B860F18B788A100B08249 /* OCMockRecorder.h */,
+			);
+			path = OCMock;
+			sourceTree = "<group>";
+		};
+		5A0B861018B788A100B08249 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				5A0B861118B788A100B08249 /* libOCMock.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
 		5A7BB8F518B22F0300B8127A /* PubNub */ = {
 			isa = PBXGroup;
 			children = (
@@ -699,7 +764,7 @@
 		5A7BB9E418B2306200B8127A /* tests */ = {
 			isa = PBXGroup;
 			children = (
-				5A7BB9FE18B2319300B8127A /* HowToTests */,
+				5A0B85ED18B787AC00B08249 /* HowToTests */,
 				5A7BBA0818B2319300B8127A /* OversizedJSON.m */,
 				5A7BBA0918B2319300B8127A /* PNAccessRightOptionsTest.m */,
 				5A7BBA0A18B2319300B8127A /* PNAccessRightsCollectionTest.m */,
@@ -757,22 +822,6 @@
 				5A7BB9EC18B2306200B8127A /* tests-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		5A7BB9FE18B2319300B8127A /* HowToTests */ = {
-			isa = PBXGroup;
-			children = (
-				5A7BB9FF18B2319300B8127A /* ApnsToken.m */,
-				5A7BBA0018B2319300B8127A /* HistoryPamTest.m */,
-				5A7BBA0118B2319300B8127A /* HowToTests.h */,
-				5A7BBA0218B2319300B8127A /* HowToTests.m */,
-				5A7BBA0318B2319300B8127A /* HowToTestsCompressed.m */,
-				5A7BBA0418B2319300B8127A /* PAMTest.m */,
-				5A7BBA0518B2319300B8127A /* PAMTestError.m */,
-				5A7BBA0618B2319300B8127A /* SendBigMessage.m */,
-				5A7BBA0718B2319300B8127A /* SendMessage.m */,
-			);
-			path = HowToTests;
 			sourceTree = "<group>";
 		};
 		5A7BBA1318B2319300B8127A /* PNConnectionBadJSONTest */ = {
@@ -860,6 +909,7 @@
 		797D096517253898007A9D9A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5A0B860718B788A100B08249 /* usr */,
 				797D0A5E1725426D007A9D9A /* SystemConfiguration.framework */,
 				7935AE7A17CD82D40040632B /* CoreWLAN.framework */,
 				797D096617253898007A9D9A /* Cocoa.framework */,
@@ -1086,10 +1136,13 @@
 			files = (
 				5A7BBA4418B2319300B8127A /* PNAccessRightsCollectionTest.m in Sources */,
 				5A7BBA6218B2319300B8127A /* PNLeaveRequestTest.m in Sources */,
+				5A0B85F918B787AC00B08249 /* HowToSleepTest.m in Sources */,
 				5A7BBA5918B2319300B8127A /* PNPushNotificationsEnabledChannelsParserTest.m in Sources */,
+				5A0B85F818B787AC00B08249 /* HistoryPamTest.m in Sources */,
 				5A7BBA4218B2319300B8127A /* OversizedJSON.m in Sources */,
 				5A7BBA4718B2319300B8127A /* PNChannelConstructor.m in Sources */,
 				5A7BBA6318B2319300B8127A /* PNSubscribeRequestTest.m in Sources */,
+				5A0B85FC18B787AC00B08249 /* PAMTest.m in Sources */,
 				5A7BBA5818B2319300B8127A /* PNPresenceEventTest.m in Sources */,
 				5A7BBA7318B231A400B8127A /* TimeOutTest.m in Sources */,
 				5A7BBA5718B2319300B8127A /* PNOperationStatusResponseParserTest.m in Sources */,
@@ -1097,25 +1150,24 @@
 				5A7BBA4618B2319300B8127A /* PNActionResponseParserTest.m in Sources */,
 				5A7BB9FB18B2315700B8127A /* ChannelLimitTest.m in Sources */,
 				5A7BB9FC18B2315700B8127A /* ClientIdentifier.m in Sources */,
+				5A0B85FB18B787AC00B08249 /* HowToTestsCompressed.m in Sources */,
 				5A7BBA5F18B2319300B8127A /* pubnubChaosTest.m in Sources */,
 				5A7BBA5218B2319300B8127A /* PNDateTest.m in Sources */,
 				5A7BBA4F18B2319300B8127A /* PNConnectionBadJson.m in Sources */,
+				5A0B85FE18B787AC00B08249 /* SendBigMessage.m in Sources */,
 				5A7BBA5018B2319300B8127A /* PNCryptoHelperTest.m in Sources */,
-				5A7BBA3E18B2319300B8127A /* PAMTest.m in Sources */,
-				5A7BBA3C18B2319300B8127A /* HowToTests.m in Sources */,
-				5A7BBA4118B2319300B8127A /* SendMessage.m in Sources */,
 				5A7BBA5C18B2319300B8127A /* PNSubscribeUnsubscribeTest.m in Sources */,
 				5A7BBA5118B2319300B8127A /* PNCryptoTest.m in Sources */,
+				5A0B85FF18B787AC00B08249 /* SendMessage.m in Sources */,
 				5A7BBA4E18B2319300B8127A /* FakeStub.m in Sources */,
-				5A7BBA3B18B2319300B8127A /* HistoryPamTest.m in Sources */,
 				5A7BBA5B18B2319300B8127A /* PNResponseParserTest.m in Sources */,
 				5A7BBA4818B2319300B8127A /* PNChannelEventsResponseParserTest.m in Sources */,
 				5A7BBA5D18B2319300B8127A /* PNTimeTokenResponseParserTest.m in Sources */,
+				5A0B85F718B787AC00B08249 /* ApnsToken.m in Sources */,
 				5A7BBA6418B2319300B8127A /* PNTimeTokenRequestTest.m in Sources */,
-				5A7BBA3A18B2319300B8127A /* ApnsToken.m in Sources */,
+				5A0B85FA18B787AC00B08249 /* HowToTests.m in Sources */,
 				5A7BBA7118B231A400B8127A /* TimeCommand.m in Sources */,
 				5A7BBA5418B2319300B8127A /* PNErrorTest.m in Sources */,
-				5A7BBA4018B2319300B8127A /* SendBigMessage.m in Sources */,
 				5A7BBA7418B231A400B8127A /* W_ChaosTest.m in Sources */,
 				5A7BBA4A18B2319300B8127A /* PNChannelPresenceTest.m in Sources */,
 				5A7BBA4518B2319300B8127A /* PNAccessRightsInformationTest.m in Sources */,
@@ -1123,6 +1175,7 @@
 				5A7BBA4918B2319300B8127A /* PNChannelHistoryParserTest.m in Sources */,
 				5A7BBA4C18B2319300B8127A /* PNConfigurationTest.m in Sources */,
 				5A7BBA4B18B2319300B8127A /* PNChannelTest.m in Sources */,
+				5A0B85FD18B787AC00B08249 /* PAMTestError.m in Sources */,
 				5A7BB9F818B2315700B8127A /* AbbreviatedPresenceTest.m in Sources */,
 				5A7BBA7218B231A400B8127A /* Swizzler.m in Sources */,
 				5A7BBA5E18B2319300B8127A /* PNWriteBufferTest.m in Sources */,
@@ -1130,8 +1183,6 @@
 				5A7BBA5318B2319300B8127A /* PNErrorResponseParserTest.m in Sources */,
 				5A7BBA5A18B2319300B8127A /* PNResponseDeserializeTest.m in Sources */,
 				5A7BBA4D18B2319300B8127A /* BadJsonTest.m in Sources */,
-				5A7BBA3F18B2319300B8127A /* PAMTestError.m in Sources */,
-				5A7BBA3D18B2319300B8127A /* HowToTestsCompressed.m in Sources */,
 				5A7BB9FA18B2315700B8127A /* ChangingChannels.m in Sources */,
 				5A7BBA5618B2319300B8127A /* PNJSONSerializationTest.m in Sources */,
 				5A7BBA4318B2319300B8127A /* PNAccessRightOptionsTest.m in Sources */,
@@ -1265,6 +1316,10 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "tests/tests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/tuller/work/pubnup\\ develop/cocoa/tests/iOSUnitTests/tests/usr/lib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -1290,6 +1345,10 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "tests/tests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/tuller/work/pubnup\\ develop/cocoa/tests/iOSUnitTests/tests/usr/lib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
