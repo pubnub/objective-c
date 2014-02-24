@@ -1,3 +1,16 @@
+//
+//  PNObservationCenter.h
+//  pubnub
+//
+//  Observation center will allow to subscribe
+//  for particular events with handle block
+//  (block will be provided by subscriber)
+//
+//
+//  Created by Sergey Mamontov.
+//
+//
+
 #import "PNObservationCenter+Protected.h"
 #import "PNMessagesHistory+Protected.h"
 #import "PNHereNow+Protected.h"

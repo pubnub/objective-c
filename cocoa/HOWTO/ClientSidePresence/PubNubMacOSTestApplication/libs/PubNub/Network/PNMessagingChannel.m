@@ -801,11 +801,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     return [channelsSet count] ? channelsSet : nil;
 }
 
-- (void)subscribeOnChannels:(NSArray *)channels
-          withPresenceEvent:(BOOL)withPresenceEvent
+- (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
                    presence:(NSUInteger)channelsPresence {
     
     NSMutableSet *channelsSet = nil;
+    BOOL isChangingPresenceOnSubscribedChannels = NO;
     BOOL indirectionalPresenceModificaton = NO;
     NSSet *channelsForPresenceEnabling = nil;
     NSSet *channelsForPresenceDisabling = nil;
@@ -888,7 +888,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     if (!isPresenceModification || indirectionalPresenceModificaton) {
 
         channelsSet = [NSMutableSet setWithArray:[self channelsWithOutPresenceFromList:channels]];
+        NSUInteger channelsSetCount = [channelsSet count];
         [channelsSet minusSet:self.subscribedChannelsSet];
+        
+        // Set to \c YES in case if user tried to update presence observation with PNChannel constructor on channel for
+        // which client already subscribed.
+        isChangingPresenceOnSubscribedChannels = indirectionalPresenceModificaton && channelsSetCount > 0 && [channelsSet count] == 0;
     }
 
     // Check whether there is at leas one channel at which client didn't subscribed yet
@@ -984,41 +989,41 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self reconnect];
         }
     }
-    else {
+    
+    
+    if (isPresenceModification && !isAbleToSendRequest) {
         
-        if (isPresenceModification) {
+        if (PNBitIsOn(channelsPresence, PNMessagingChannelEnablingPresence)) {
             
-            if (PNBitIsOn(channelsPresence, PNMessagingChannelEnablingPresence)) {
-                
-                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] ENABLED PRESENCE ON SPECIFIC SET "
-                      "OF CHANNELS (ALREADY ENABLED)(STATE: %d)", self, self.messagingState);
-                
-                [self.messagingDelegate messagingChannel:self
-                  didEnablePresenceObservationOnChannels:[[channelsForPresenceEnabling valueForKey:@"observedChannel"] allObjects]
-                                               sequenced:PNBitIsOn(channelsPresence, PNMessagingChannelDisablingPresence)];
-            }
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] ENABLED PRESENCE ON SPECIFIC SET "
+                  "OF CHANNELS (ALREADY ENABLED)(STATE: %d)", self, self.messagingState);
+            
+            [self.messagingDelegate messagingChannel:self
+              didEnablePresenceObservationOnChannels:[[channelsForPresenceEnabling valueForKey:@"observedChannel"] allObjects]
+                                           sequenced:PNBitIsOn(channelsPresence, PNMessagingChannelDisablingPresence)];
+        }
 
-            if (PNBitIsOn(channelsPresence, PNMessagingChannelDisablingPresence)) {
-                
-                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DISABLED PRESENCE ON SPECIFIC "
-                      "SET OF CHANNELS (PRESENCE OBSERVATION NOT ENABLED ON SPECIFIED SET OF CHANNELS)(STATE: %d)", self, self.messagingState);
-                
-                // Remove 'presence enabled' state from list of specified channels
-                [self disablePresenceObservationForChannels:[channelsForPresenceDisabling valueForKey:@"observedChannel"]
-                                                sendRequest:NO];
-                
-                [self.messagingDelegate messagingChannel:self
-                 didDisablePresenceObservationOnChannels:[[channelsForPresenceDisabling valueForKey:@"observedChannel"] allObjects]
-                                               sequenced:NO];
-            }
-        }
-        else {
+        if (PNBitIsOn(channelsPresence, PNMessagingChannelDisablingPresence) && [channelsForPresenceDisabling count] == 0) {
             
-            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
-                  "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
+            PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] DISABLED PRESENCE ON SPECIFIC "
+                  "SET OF CHANNELS (PRESENCE OBSERVATION NOT ENABLED ON SPECIFIED SET OF CHANNELS)(STATE: %d)", self, self.messagingState);
             
-            [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels sequenced:NO];
+            // Remove 'presence enabled' state from list of specified channels
+            [self disablePresenceObservationForChannels:[channelsForPresenceDisabling valueForKey:@"observedChannel"]
+                                            sendRequest:NO];
+            
+            [self.messagingDelegate messagingChannel:self
+             didDisablePresenceObservationOnChannels:[[channelsForPresenceDisabling valueForKey:@"observedChannel"] allObjects]
+                                           sequenced:NO];
         }
+    }
+    
+    if (!isAbleToSendRequest || (isChangingPresenceOnSubscribedChannels && [channelsSet count] == 0)) {
+        
+        PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
+              "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
+        
+        [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels sequenced:NO];
     }
 }
 

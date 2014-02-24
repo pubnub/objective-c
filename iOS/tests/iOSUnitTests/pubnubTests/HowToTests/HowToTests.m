@@ -295,6 +295,7 @@
 	[self unsubscribeFromChannelsSubscribedChannels];
 	[self t20SubscribeOnChannels];
 	[self t25RequestParticipantsListForChannel];
+	[self t28RequestParticipantsListForChannel];
 	[self t30RequestParticipantsListForChannel];
 	[self t35RequestServerTimeTokenWithCompletionBlock];
 	[self t40SendMessage];
@@ -604,7 +605,7 @@
 //		[PubNub unsubscribeFromChannel: channel withPresenceEvent:YES];
 	}
 	else {
-		[self subsctibeToChannels: @[channel]];
+//		[self subsctibeToChannels: @[channel]];
 		pNClientPresenceDisablingDidCompleteNotification = NO;
 		[PubNub disablePresenceObservationForChannel: channel
 						 withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
@@ -632,6 +633,34 @@
 	}
 }
 
+/////////////////////////////////////////////////
+-(void)enableDisablePresenceForChannel:(PNChannel*)channel {
+	__block BOOL isCompletionBlockCalled = NO;
+	[PubNub enablePresenceObservationForChannel: channel withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
+		isCompletionBlockCalled = YES; }];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 && isCompletionBlockCalled == NO; j++ )
+			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
+	[PubNub subscribeOnChannel:channel];
+	[PubNub unsubscribeFromChannel: channel withPresenceEvent:YES];
+	[self t20SubscribeOnChannels];
+
+	isCompletionBlockCalled = NO;
+	[PubNub disablePresenceObservationForChannel: channel withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
+		isCompletionBlockCalled = YES; }];
+	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 && isCompletionBlockCalled == NO; j++ )
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+
+	[self subsctibeToChannels: @[channel]];
+	[PubNub subscribeOnChannel:channel];
+}
+
+-(void)t28RequestParticipantsListForChannel {
+	for( int i=0; i<pnChannels.count; i++ ) {
+		[self enableDisablePresenceForChannel: pnChannels[i]];
+		[self enableDisablePresenceForChannel: pnChannels[i]];
+	}
+}/////////////////////////////////////////////////
 
 -(void)t30RequestParticipantsListForChannel {
 	for( int i=0; i<pnChannels.count; i++ ) {

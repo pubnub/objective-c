@@ -1,3 +1,17 @@
+//
+//  PubNub.m
+//  pubnub
+//
+//  This is base and main class which is
+//  responsible for communication with
+//  PubNub services and handle all events
+//  and notifications.
+//
+//
+//  Created by Sergey Mamontov.
+//
+//
+
 #import "PubNub+Protected.h"
 #import "PNConnectionChannel+Protected.h"
 #import "PNPresenceEvent+Protected.h"
@@ -24,8 +38,8 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.5.7";
-static NSString * const kPNCodebaseBranch = @"master";
-static NSString * const kPNCodeCommitIdentifier = @"6ff8a5c72a17bf9d9c0d453d7fe2d431c67490b8";
+static NSString * const kPNCodebaseBranch = @" fix-pt65153600";
+static NSString * const kPNCodeCommitIdentifier = @"201ded1ff7a48fe6da96c8a9b792b21840753f80";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
