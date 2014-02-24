@@ -1,3 +1,16 @@
+//
+//  PNPrivateImports.h
+//  pubnub
+//
+//  Import this header to be able use all
+//  PubNub client features
+//
+//
+//  Created by Sergey Mamontov on 12/5/12.
+//
+//
+
+
 #ifndef PNPrivateImports_h
 #define PNPrivateImports_h
 
@@ -12,4 +25,4 @@
 #import "PNPrivateMacro.h"
 #import "PNMacro.h"
 
-#endif
+#endif // PNPrivateImports_h

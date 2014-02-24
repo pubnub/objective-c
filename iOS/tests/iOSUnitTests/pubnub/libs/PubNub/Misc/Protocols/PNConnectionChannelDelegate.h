@@ -1,3 +1,17 @@
+//
+//  PNConnectionChannelDelegate.h
+//  pubnub
+//
+//  Describes interface which is used to
+//  organize communication between connection
+//  channel management code and PubNub client
+//  instance.
+//
+//
+//  Created by Sergey Mamontov on 12/16/12.
+//
+//
+
 #import <Foundation/Foundation.h>
 
 

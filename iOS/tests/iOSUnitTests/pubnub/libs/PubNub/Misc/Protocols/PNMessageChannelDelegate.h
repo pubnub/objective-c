@@ -1,3 +1,19 @@
+//
+//  PNMessageChannelDelegate.h
+//  pubnub
+//
+//  Describes interface which is used to organize
+//  communication between message communication
+//  channel and PubNub client
+//
+//
+//  Created by Sergey Mamontov on 12/5/12.
+//
+//
+
+
+#pragma mark Class forward
+
 @class PNMessagingChannel, PNMessage;
 @class PNPresenceEvent;
 

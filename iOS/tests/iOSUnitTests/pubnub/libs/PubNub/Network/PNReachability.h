@@ -1,3 +1,17 @@
+//
+//  PNReachability.h
+//  pubnub
+//
+//  This class helps PubNub client to monitor
+//  PubNub services reachability.
+//  WARNING: It is designed only for internal
+//           PubNub client library usage.
+//
+//
+//  Created by Sergey Mamontov on 12/7/12.
+//
+//
+
 #import <Foundation/Foundation.h>
 
 

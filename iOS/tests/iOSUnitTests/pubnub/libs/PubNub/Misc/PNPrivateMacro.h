@@ -1,3 +1,12 @@
+//
+//  PNPrivateMacro.h
+//  pubnub
+//
+//  Created by Sergey Mamontov on 8/27/13.
+//  Copyright (c) 2013 PubNub Inc. All rights reserved.
+//
+
+
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import "NSData+PNAdditions.h"
@@ -258,4 +267,4 @@ NSInteger PNRandomInteger() {
 
 #pragma clang diagnostic pop
 
-#endif
+#endif // PNPrivateMacro_h

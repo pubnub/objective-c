@@ -1,3 +1,16 @@
+//
+//  PNConnection.m
+//  pubnub
+//
+//  This is core class for communication over
+//  the network with PubNub services.
+//  It allow to establish socket connection and
+//  organize write packet requests into FIFO queue.
+//
+//  Created by Sergey Mamontov on 12/10/12.
+//
+//
+
 #import "PNConnection.h"
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <Security/SecureTransport.h>

@@ -1,3 +1,14 @@
+//
+//  PNCryptoHelper.m
+//  pubnub
+//  Helper which allow to encode user messages and responsible
+//  for CCCryptor instance maintenance.
+//
+//
+//  Created by Sergey Mamontov on 3/15/13.
+//
+//
+
 #import "PNCryptoHelper.h"
 #import "NSString+PNAddition.h"
 #import "PNPrivateImports.h"

@@ -1,3 +1,11 @@
+//
+//  PNDefaultConfiguration.h
+//  pubnub
+//
+//  Created by Sergey Mamontov on 12/4/12.
+//
+//
+
 #ifndef PNDefaultConfiguration_h
 #define PNDefaultConfiguration_h
 
@@ -30,4 +38,4 @@ static BOOL const kPNShouldReduceSecurityLevelOnError = YES;
 static BOOL const kPNCanIgnoreSecureConnectionRequirement = YES;
 
 
-#endif
+#endif // PNDefaultConfiguration_h

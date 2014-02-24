@@ -1,3 +1,12 @@
+//
+//  PNDate.h
+//  pubnub
+//
+//  Created by Sergey Mamontov on 04/01/13.
+//
+//
+
+
 @interface PNDate : NSObject
 
 

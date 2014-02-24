@@ -1,3 +1,19 @@
+//
+//  PNConnectionDelegate.h
+//  pubnub
+//
+//  Describes interface which is used to
+//  organize communication between connection
+//  (transport layer) and connection channel
+//  management code
+//
+//
+//  Created by Sergey Mamontov on 12/10/12.
+//
+//
+
+#pragma mark Class forward
+
 @class PNConnection, PNWriteBuffer, PNResponse, PNError;
 @class PNBaseRequest;
 

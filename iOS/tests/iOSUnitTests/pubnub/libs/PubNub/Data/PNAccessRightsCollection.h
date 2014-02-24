@@ -1,3 +1,14 @@
+//
+//  PNAccessRightsCollection.h
+//  pubnub
+//
+//  Created by Sergey Mamontov on 11/13/13.
+//  Copyright (c) 2013 PubNub Inc. All rights reserved.
+//
+
+
+#pragma mark Class forward
+
 @class PNAccessRightsInformation, PNChannel;
 
 

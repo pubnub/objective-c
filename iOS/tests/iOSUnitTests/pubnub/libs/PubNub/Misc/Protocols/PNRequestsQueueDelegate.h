@@ -1,3 +1,18 @@
+//
+//  PNRequestsQueueDelegate.h
+//  pubnub
+//
+//  Describes interface which is used to organize
+//  communication between requests queue and
+//  communication channels.
+//
+//
+//  Created by Sergey Mamontov on 12/5/12.
+//
+//
+
+#pragma mark Class forward
+
 @class PNRequestsQueue, PNBaseRequest, PNError;
 
 

@@ -1,3 +1,15 @@
+//
+//  PNImports.h
+//  pubnub
+//
+//  Import this header to be able use all
+//  PubNub client features
+//  
+//
+//  Created by Sergey Mamontov on 12/5/12.
+//
+//
+
 #ifndef PNImports_h
 #define PNImports_h
 
@@ -26,4 +38,4 @@
 #import "PubNub.h"
 #import "PNDate.h"
 
-#endif
+#endif // PNImports_h

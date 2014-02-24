@@ -1,3 +1,15 @@
+//
+//  PNConstants.h
+//  pubnub
+//
+//  This header is used to store set of
+//  PubNub constants which will be used
+//  all other the library.
+//
+//  Created by Sergey Mamontov on 12/4/12.
+//
+//
+
 #ifndef PNConstants_h
 #define PNConstants_h
 
@@ -40,4 +52,4 @@ static NSTimeInterval const kPNReachabilityOriginLookupTimeout = 5.0f;
 // This is the channel which is used by latency meter to measure network latency (prefix from unique client session will be added)
 static NSString * const kPNLatencyMeterChannel = @"ltm";
 
-#endif
+#endif // PNConstants_h

@@ -1,3 +1,16 @@
+//
+//  PNServiceResponseCallbacks.h
+//  pubnub
+//
+//  This header file stores keys which are
+//  used to callback function names in service
+//  response
+//  
+//
+//  Created by Sergey Mamontov on 12/12/12.
+//
+//
+
 #ifndef PNServiceResponseCallbacks_h
 #define PNServiceResponseCallbacks_h
 
@@ -65,4 +78,4 @@ struct PNServiceResponseCallbacksStruct {
 
 extern struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks;
 
-#endif
+#endif // PNServiceResponseCallbacks_h

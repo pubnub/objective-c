@@ -1,3 +1,12 @@
+//
+//  PNResponseProtocol.h
+//  pubnub
+//
+//  Created by Sergey Mamontov on 8/7/13.
+//  Copyright (c) 2013 PubNub Inc. All rights reserved.
+//
+
+
 #import <Foundation/Foundation.h>
 
 
