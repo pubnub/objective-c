@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>1B5296EC-A79E-4A1A-8ACB-8D1BC2BA207F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>pubnub</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>63BFFF70-F07B-43FE-AC20-9C4841678D02</key>
+		<string>https://github.com/pubnub/objective-c/</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>iOS/tests/iOSUnitTests/pubnub.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>63BFFF70-F07B-43FE-AC20-9C4841678D02</key>
+		<string>../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/pubnub/objective-c/</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>63BFFF70-F07B-43FE-AC20-9C4841678D02</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>63BFFF70-F07B-43FE-AC20-9C4841678D02</string>
+			<key>IDESourceControlWCCName</key>
+			<string>pubnup fix-pt65153600</string>
+		</dict>
+	</array>
+</dict>
+</plist>
