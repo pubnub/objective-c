@@ -8,6 +8,9 @@
 	NSString *wiFiOffUrl;
 	IBOutlet UITextView *log;
 	NSDate *lastWiFiReconnect;
+
+	int countReconnect;
+	float sumReconnectTime;
 }
 
 
