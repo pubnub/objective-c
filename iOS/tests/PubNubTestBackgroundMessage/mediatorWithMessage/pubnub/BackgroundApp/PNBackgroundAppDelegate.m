@@ -133,14 +133,16 @@
 }
 
 - (void)connect {
+	NSLog(@"!!! connect");
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
-
+		NSLog(@"!!! connected");
 		pnChannel = [PNChannel channelWithName: [NSString stringWithFormat: @"mediatorWithMessage"]];
 
 		[PubNub subscribeOnChannels: @[pnChannel]
 		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 		 {
+			NSLog(@"!!! subscribed");
 			 [self sendMessage];
 		 }];
 
@@ -151,19 +153,26 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
 	NSLog(@"openURL %@, %@, %@", url, sourceApplication, annotation);
-	if( pnChannel == nil )
+	if( pnChannel == nil ) {
+		NSLog(@"!!! connect from application: openURL: ");
 		[self connect];
-	else
+	}
+	else {
+		NSLog(@"!!! perform sendMessage");
 		[self performSelector: @selector(sendMessage) withObject: nil afterDelay: 15];
+	}
 	return YES;
 }
 
 -(void)sendMessage {
+	NSLog(@"!!! sendMessage");
 	[PubNub sendMessage:[NSString stringWithFormat: @"mediatorWithMessage, %@", [NSDate date]] toChannel:pnChannel compressed: NO
-	withCompletionBlock:^(PNMessageState messageSendingState, id data)
-	 {
-		 if( messageSendingState == PNMessageSent )
+	withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+		NSLog(@"!!! sendMessage %d, %@", messageSendingState, data);
+		if( messageSendingState == PNMessageSent ) {
+			NSLog(@"!!! performSelector openUrl");
 			 [self performSelector: @selector(openUrl) withObject: nil afterDelay: 20.0];
+		}
 		 if( messageSendingState == PNMessageSendingError ) {
 			 NSLog(@"PNMessageSendingError %@", data);
 			 [self performSelector: @selector(errorSelectorMessage)];

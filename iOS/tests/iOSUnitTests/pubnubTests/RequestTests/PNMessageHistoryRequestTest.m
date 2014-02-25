@@ -30,6 +30,10 @@
 
 @implementation PNMessageHistoryRequestTest
 
+-(void)setUp {
+	[super setUp];
+	[PubNub resetClient];
+}
 
 - (void)tearDown {
     [super tearDown];
@@ -37,6 +41,8 @@
 }
 
 #pragma mark - States tests
+
+
 
 - (void)testInitForChannelMock {
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
