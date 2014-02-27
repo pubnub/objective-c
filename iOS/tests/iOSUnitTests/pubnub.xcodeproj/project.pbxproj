@@ -34,6 +34,11 @@
 		5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */; };
 		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
 		5AC703EB180D89B000B0FC53 /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99A17F3208200FE90CF /* W_ChaosTest.m */; };
+		5AC9B94B18BF4EAD0025693D /* PNMessagesHistoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC9B94A18BF4EAD0025693D /* PNMessagesHistoryTest.m */; };
+		5AC9B94D18BF4ECB0025693D /* SendMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC9B94C18BF4ECB0025693D /* SendMessage.m */; };
+		5AC9B94F18BF73410025693D /* PNNetworkHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC9B94E18BF73410025693D /* PNNetworkHelperTest.m */; };
+		5AC9B95118BF7F260025693D /* NSString+PNAdditionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC9B95018BF7F260025693D /* NSString+PNAdditionTest.m */; };
+		5AC9B95318BF8E0B0025693D /* NSData+PNAdditionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC9B95218BF8E0B0025693D /* NSData+PNAdditionsTest.m */; };
 		5ACA68F6185B844600C2B214 /* PAMTestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACA68F4185B844600C2B214 /* PAMTestError.m */; };
 		5ACA9445185F1103001BB8DA /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACA9444185F1103001BB8DA /* Configuration.m */; };
 		5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97917F3201D00FE90CF /* Swizzler.m */; };
@@ -201,6 +206,11 @@
 		5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSemaphor.m; sourceTree = "<group>"; };
 		5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeCommand.m; path = TimeCommand/TimeCommand.m; sourceTree = "<group>"; };
 		5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbbreviatedPresenceTest.m; path = AbbreviatedPresenceTest/AbbreviatedPresenceTest.m; sourceTree = "<group>"; };
+		5AC9B94A18BF4EAD0025693D /* PNMessagesHistoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNMessagesHistoryTest.m; path = pubnubTests/PNMessagesHistoryTest.m; sourceTree = SOURCE_ROOT; };
+		5AC9B94C18BF4ECB0025693D /* SendMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendMessage.m; sourceTree = "<group>"; };
+		5AC9B94E18BF73410025693D /* PNNetworkHelperTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNNetworkHelperTest.m; path = pubnubTests/PNNetworkHelperTest.m; sourceTree = SOURCE_ROOT; };
+		5AC9B95018BF7F260025693D /* NSString+PNAdditionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+PNAdditionTest.m"; path = "pubnubTests/NSString+PNAdditionTest.m"; sourceTree = SOURCE_ROOT; };
+		5AC9B95218BF8E0B0025693D /* NSData+PNAdditionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+PNAdditionsTest.m"; path = "pubnubTests/NSData+PNAdditionsTest.m"; sourceTree = SOURCE_ROOT; };
 		5ACA68F4185B844600C2B214 /* PAMTestError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMTestError.m; sourceTree = "<group>"; };
 		5ACA9444185F1103001BB8DA /* Configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Configuration.m; sourceTree = "<group>"; };
 		5ACCA97817F3201D00FE90CF /* Swizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Swizzler.h; sourceTree = "<group>"; };
@@ -578,6 +588,7 @@
 			isa = PBXGroup;
 			children = (
 				5AD394BC18280F390057443C /* ApnsToken.m */,
+				5AC9B94C18BF4ECB0025693D /* SendMessage.m */,
 				5AB5B25518B4D01D00584EC4 /* PNObservationCenterTest.m */,
 				5AB5B25818B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m */,
 				5ACCA98017F3202400FE90CF /* HowToTests.m */,
@@ -794,6 +805,7 @@
 				5AD588A418A24E8700B72653 /* NSArray+PNAdditions.m */,
 				5AD588A518A24E8700B72653 /* NSData+PNAdditions.h */,
 				5AD588A618A24E8700B72653 /* NSData+PNAdditions.m */,
+				5AC9B95218BF8E0B0025693D /* NSData+PNAdditionsTest.m */,
 				5AD588A718A24E8700B72653 /* NSDate+PNAdditions.h */,
 				5AD588A818A24E8700B72653 /* NSDate+PNAdditions.m */,
 				5AD588A918A24E8700B72653 /* NSInvocation+PNAdditions.h */,
@@ -802,6 +814,7 @@
 				5AD588AC18A24E8700B72653 /* NSMutableArray+PNAdditions.m */,
 				5AD588AD18A24E8700B72653 /* NSString+PNAddition.h */,
 				5AD588AE18A24E8700B72653 /* NSString+PNAddition.m */,
+				5AC9B95018BF7F260025693D /* NSString+PNAdditionTest.m */,
 				5AD588AF18A24E8700B72653 /* UIApplication+PNAdditions.h */,
 				5AD588B018A24E8700B72653 /* UIApplication+PNAdditions.m */,
 			);
@@ -830,6 +843,7 @@
 				5AD588E718A24E8700B72653 /* PNMessagingChannel.m */,
 				5AD588E818A24E8700B72653 /* PNNetworkHelper.h */,
 				5AD588E918A24E8700B72653 /* PNNetworkHelper.m */,
+				5AC9B94E18BF73410025693D /* PNNetworkHelperTest.m */,
 				5AD588EA18A24E8700B72653 /* PNReachability.h */,
 				5AD588EB18A24E8700B72653 /* PNReachability.m */,
 				5AD588EC18A24E8700B72653 /* PNServiceChannel.h */,
@@ -985,6 +999,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				5AC9B94A18BF4EAD0025693D /* PNMessagesHistoryTest.m */,
 				5A20322F18B63EE8003F98A5 /* PNResponseTest.m */,
 				5A20322D18B63B32003F98A5 /* PNRequestsQueueTest.m */,
 				5A20322B18B62012003F98A5 /* PNMessageTest.m */,
@@ -1365,6 +1380,7 @@
 				9645C115174FDA7D00F82D09 /* PNReachabilityTest.m in Sources */,
 				5ADD308B189AADFD00688B3E /* PNActionResponseParserTest.m in Sources */,
 				5A9461C018A14D49004190FB /* PNConfigurationTest.m in Sources */,
+				5AC9B94F18BF73410025693D /* PNNetworkHelperTest.m in Sources */,
 				9645C117174FDA7D00F82D09 /* PNBaseRequestTest.m in Sources */,
 				5ADD3090189AADFD00688B3E /* PNErrorResponseParserTest.m in Sources */,
 				5AD5893818A24EAC00B72653 /* PNOperationStatusResponseParserTest.m in Sources */,
@@ -1379,6 +1395,7 @@
 				5A20322C18B62012003F98A5 /* PNMessageTest.m in Sources */,
 				9645C11E174FDA7D00F82D09 /* PNSubscribeRequestTest.m in Sources */,
 				5A4826D718632BBF008370E2 /* ChannelLimitTest.m in Sources */,
+				5AC9B94B18BF4EAD0025693D /* PNMessagesHistoryTest.m in Sources */,
 				9645C11F174FDA7D00F82D09 /* PNTimeTokenRequestTest.m in Sources */,
 				9645C120174FDA7D00F82D09 /* PNConnectionChannelTest.m in Sources */,
 				5ACA9445185F1103001BB8DA /* Configuration.m in Sources */,
@@ -1389,6 +1406,7 @@
 				5A93EC12189817B000751662 /* HistoryPamTest.m in Sources */,
 				5AB6BD1118B7C48400153F2C /* PNPushNotificationsStateChangeRequestTest.m in Sources */,
 				9645C122174FDA7D00F82D09 /* PNServiceChannelTest.m in Sources */,
+				5AC9B94D18BF4ECB0025693D /* SendMessage.m in Sources */,
 				9645C123174FDDAE00F82D09 /* PNMessagingChannelTest.m in Sources */,
 				5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */,
 				5A20323618B6893D003F98A5 /* PNChangeAccessRightsRequestTest.m in Sources */,
@@ -1406,8 +1424,10 @@
 				5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */,
 				5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */,
 				5AB5B25618B4D01D00584EC4 /* PNObservationCenterTest.m in Sources */,
+				5AC9B95318BF8E0B0025693D /* NSData+PNAdditionsTest.m in Sources */,
 				963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */,
 				5A96274018437E8A00258236 /* OversizedJSON.m in Sources */,
+				5AC9B95118BF7F260025693D /* NSString+PNAdditionTest.m in Sources */,
 				5A4ED25718A51DB8002C7E8D /* HowToTestsCompressed.m in Sources */,
 				5ADD3089189AADFD00688B3E /* PNAccessRightOptionsTest.m in Sources */,
 			);

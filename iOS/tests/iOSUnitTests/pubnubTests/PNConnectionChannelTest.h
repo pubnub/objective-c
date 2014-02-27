@@ -7,7 +7,8 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
+#import "PNConnectionChannelDelegate.h"
 
-@interface PNConnectionChannelTest : SenTestCase
+@interface PNConnectionChannelTest : SenTestCase <PNConnectionChannelDelegate>
 
 @end
