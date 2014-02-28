@@ -45,6 +45,7 @@
 		5ACCA98117F3202400FE90CF /* HowToTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA98017F3202400FE90CF /* HowToTests.m */; };
 		5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */; };
 		5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */; };
+		5AD0B5CB18C0CA6B00B0C249 /* PNJSONSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD0B5CA18C0CA6B00B0C249 /* PNJSONSerializationTest.m */; };
 		5AD394BD18280F390057443C /* ApnsToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD394BC18280F390057443C /* ApnsToken.m */; };
 		5AD588F518A24E8700B72653 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5884A18A24E8700B72653 /* PNObservationCenter.m */; };
 		5AD588F618A24E8700B72653 /* PubNub.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5884D18A24E8700B72653 /* PubNub.m */; };
@@ -224,6 +225,7 @@
 		5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNCryptoTest.m; path = PNCryptoTest/PNCryptoTest.m; sourceTree = "<group>"; };
 		5ACF73C917F417F80058E029 /* PNSubscribeUnsubscribeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNSubscribeUnsubscribeTest.h; path = PNSubscribeUnsubscribeTest/PNSubscribeUnsubscribeTest.h; sourceTree = "<group>"; };
 		5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNSubscribeUnsubscribeTest.m; path = PNSubscribeUnsubscribeTest/PNSubscribeUnsubscribeTest.m; sourceTree = "<group>"; };
+		5AD0B5CA18C0CA6B00B0C249 /* PNJSONSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNJSONSerializationTest.m; sourceTree = "<group>"; };
 		5AD394BC18280F390057443C /* ApnsToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApnsToken.m; sourceTree = "<group>"; };
 		5AD5884818A24E8700B72653 /* PNObservationCenter+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNObservationCenter+Protected.h"; sourceTree = "<group>"; };
 		5AD5884918A24E8700B72653 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
@@ -1003,6 +1005,7 @@
 				5A20322F18B63EE8003F98A5 /* PNResponseTest.m */,
 				5A20322D18B63B32003F98A5 /* PNRequestsQueueTest.m */,
 				5A20322B18B62012003F98A5 /* PNMessageTest.m */,
+				5AD0B5CA18C0CA6B00B0C249 /* PNJSONSerializationTest.m */,
 				5A96274118437E9200258236 /* OversizedJSON */,
 				5ABE6C3E182B9F1000204DC6 /* TestSemaphor */,
 				5A955F7E18350CB100AB2156 /* Configuration */,
@@ -1409,6 +1412,7 @@
 				5AC9B94D18BF4ECB0025693D /* SendMessage.m in Sources */,
 				9645C123174FDDAE00F82D09 /* PNMessagingChannelTest.m in Sources */,
 				5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */,
+				5AD0B5CB18C0CA6B00B0C249 /* PNJSONSerializationTest.m in Sources */,
 				5A20323618B6893D003F98A5 /* PNChangeAccessRightsRequestTest.m in Sources */,
 				79DC83611773A8680061A76C /* PNCryptoHelperTest.m in Sources */,
 				5A20323418B65434003F98A5 /* PNAccessRightsAuditRequestTest.m in Sources */,

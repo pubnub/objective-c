@@ -46,18 +46,118 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
     PNConnectionChannelDisconnected = 1 << 7
 };
 
+typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
+
+    // Flag which allow to set whether client is reconnecting at this moment or not
+    PNConnectionReconnect = 1 << 3,
+
+    // Flag which allow to set whether client should connect back as soon as disconnection will be completed or not
+    PNConnectionReconnectOnDisconnect = 1 << 4,
+
+    // Flag which allow to set whether client should disconnect or not
+    PNConnectionDisconnect = 1 << 5,
+
+    // Flag which allow to set whether read stream configuration started or not
+    PNReadStreamConfiguring = 1 << 9,
+
+    // Flag which allow to set whether write stream configuration started or not
+    PNWriteStreamConfiguring = 1 << 10,
+
+    // Flag which allow to set whether connection configuration started or not
+    PNConnectionConfiguring = (PNReadStreamConfiguring | PNWriteStreamConfiguring),
+
+    // Flag which allow to set whether read stream configured or not
+    PNReadStreamConfigured = 1 << 11,
+
+    // Flag which allow to set whether write stream configured or not
+    PNWriteStreamConfigured = 1 << 12,
+
+    // Flag which allow to set whether connection configured or not
+    PNConnectionConfigured = (PNReadStreamConfigured | PNWriteStreamConfigured),
+
+    // Flag which allow to set whether read stream is connecting right now or not
+    PNReadStreamConnecting = 1 << 13,
+
+    // Flag which allow to set whether write stream is connecting right now or not
+    PNWriteStreamConnecting = 1 << 14,
+
+    // Flag which allow to set whether client is connecting at this moment or not
+    PNConnectionConnecting = (PNReadStreamConnecting | PNWriteStreamConnecting),
+
+    // Flag which allow to set whether read stream is connected right now or not
+    PNReadStreamConnected = 1 << 15,
+
+    // Flag which allow to set whether write stream is connected right now or not
+    PNWriteStreamConnected = 1 << 16,
+
+    // Flag which allow to set whether connection channel is preparing to establish connection
+    PNConnectionPrepareToConnect = 1 << 17,
+
+    // Flag which allow to set whether client is connected or not
+    PNConnectionConnected = (PNReadStreamConnected | PNWriteStreamConnected),
+
+    // Flag which allow to set whether connection is suspended or not or not
+    PNConnectionResuming = 1 << 18,
+
+    // Flag which allow to set whether read stream is disconnecting right now or not
+    PNReadStreamDisconnecting = 1 << 19,
+
+    // Flag which allow to set whether write stream is disconnecting right now or not
+    PNWriteStreamDisconnecting = 1 << 20,
+
+    // Flag which allow to set whether client is disconnecting at this moment or not
+    PNConnectionDisconnecting = (PNReadStreamDisconnecting | PNWriteStreamDisconnecting),
+
+    // Flag which allow to set whether connection is suspending or not or not
+    PNConnectionSuspending = 1 << 21,
+
+    // Flag which allow to set whether read stream is disconnected right now or not
+    PNReadStreamDisconnected = 1 << 22,
+
+    // Flag which allow to set whether write stream is disconnected right now or not
+    PNWriteStreamDisconnected = 1 << 23,
+
+    // Flag which allow to set whether client is disconnected at this moment or not
+    PNConnectionDisconnected = (PNReadStreamDisconnected | PNWriteStreamDisconnected),
+
+    // Flag which stores all states which is responsible for connection 'reconnect' state
+    PNConnectionReconnection = (PNConnectionReconnect | PNConnectionReconnectOnDisconnect),
+
+    // Flag which allow to set whether connection is suspended or not or not
+    PNConnectionSuspended = 1 << 24,
+
+    // Flag which allow to set whether connection should schedule next requests or not
+    PNConnectionProcessingRequests = 1 << 25
+};
+
+
+@interface PNConnection ()
+@property (nonatomic, assign) unsigned long state;
+@end
+
 @interface PNConnectionChannel ()
 
 @property (nonatomic, strong) PNConnection *connection;
 @property (nonatomic, strong) PNRequestsQueue *requestsQueue;
 
 - (BOOL)shouldStoreRequest:(PNBaseRequest *)request;
+- (id)requestFromStorage:(NSMutableDictionary *)storage withIdentifier:(NSString *)identifier;
+- (void)removeRequest:(PNBaseRequest *)request fromStorage:(NSMutableDictionary *)storage;
+- (PNBaseRequest *)observedRequestWithIdentifier:(NSString *)identifier;
+- (PNBaseRequest *)storedRequestAtIndex:(NSUInteger)requestIndex;
+
 @property (nonatomic, strong) NSMutableDictionary *observedRequests;
 @property (nonatomic, strong) NSMutableDictionary *storedRequests;
 @property (nonatomic, strong) NSMutableArray *storedRequestsList;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, assign) unsigned long state;
 
+@end
+
+@implementation PNConnectionChannel (Test)
+- (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
+    return YES;
+}
 @end
 
 @interface PNConnectionChannelTest () <PNConnectionChannelDelegate>
@@ -138,7 +238,7 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
 
 // All methods below just redirect to PNConnection private property of PNConnectionChannel
 
-- (void)testScheduleNextRequest {
+- (void)testScheduleNextRequestMock {
     // init connection
     PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
     
@@ -168,7 +268,7 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
     [mockConnect verify];
 }
 
-- (void)testUnscheduleRequest {
+- (void)testUnscheduleRequestMock {
     // init connection
     PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
     
@@ -381,6 +481,215 @@ connectionDidFailToOrigin:(NSString *)host
 	STAssertTrue( channel.observedRequests.count == 0, @"");
 }
 
+-(void)testRequestFromStorage {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	STAssertTrue( [channel requestFromStorage: [@{@"id":request} mutableCopy] withIdentifier: @"id"] == request, @"");
+	STAssertTrue( [channel requestFromStorage: [@{@"id":request} mutableCopy] withIdentifier: @"id1"] == nil, @"");
+}
+
+-(void)testRemoveRequest {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	NSMutableDictionary *storage = [@{request.shortIdentifier:request} mutableCopy];
+	STAssertTrue( [channel requestFromStorage: storage withIdentifier: request.shortIdentifier] == request, @"");
+
+	[channel removeRequest: nil fromStorage: storage];
+	STAssertTrue( storage.count == 1, @"");
+	[channel removeRequest: request fromStorage: storage];
+	STAssertTrue( [channel requestFromStorage: storage withIdentifier: @"id"] == nil, @"");
+}
+
+-(void)testRequestWithIdentifier {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel.observedRequests setObject: request forKey: request.identifier];
+	STAssertTrue( [channel requestWithIdentifier: @"id"] == request, @"");
+
+	[channel.observedRequests removeObjectForKey: request.identifier];
+	[channel.storedRequests setObject: @{@"request":request} forKey: request.identifier];
+	STAssertTrue( [channel requestWithIdentifier: @"id"] == request, @"");
+
+	[channel.storedRequests removeObjectForKey: request.identifier];
+	STAssertTrue( [channel requestWithIdentifier: @"id"] == nil, @"");
+}
+
+-(void)testObservedRequestWithIdentifier {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel.observedRequests setObject: request forKey: request.shortIdentifier];
+	STAssertTrue( [channel observedRequestWithIdentifier: request.shortIdentifier] == request, @"");
+	STAssertTrue( [channel observedRequestWithIdentifier: @"id1"] == nil, @"");
+
+	[channel removeObservationFromRequest: request];
+	STAssertTrue( [channel observedRequestWithIdentifier: request.identifier] == nil, @"");
+}
+
+-(void)testPurgeStoredRequestsPool {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel.storedRequestsList addObject: request];
+	[channel.storedRequests setObject: request forKey: request.identifier];
+	STAssertTrue( channel.storedRequestsList.count == 1, @"");
+	STAssertTrue( channel.storedRequests.count == 1, @"");
+	[channel purgeStoredRequestsPool];
+	STAssertTrue( channel.storedRequestsList.count == 0, @"");
+	STAssertTrue( channel.storedRequests.count == 0, @"");
+}
+
+-(void)testStoredRequestWithIdentifier {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel.storedRequests setObject: @{@"request":request} forKey: request.identifier];
+	STAssertTrue( [channel storedRequestWithIdentifier: request.identifier] == request, @"");
+}
+
+-(void)testNextStoredRequest {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel scheduleRequest: request shouldObserveProcessing: YES];
+	PNBaseRequest *request1 = [[PNBaseRequest alloc] init];
+	request.identifier = @"id1";
+	[channel scheduleRequest: request1 shouldObserveProcessing: YES];
+	STAssertTrue( [channel nextStoredRequest] == request, @"");
+
+	STAssertTrue( [channel nextStoredRequestAfter: request] == request1, @"");
+
+	STAssertTrue( [channel lastStoredRequest] == request1, @"");
+
+	STAssertTrue( [channel storedRequestAtIndex: 0] == request, @"");
+	STAssertTrue( [channel storedRequestAtIndex: 1] == request1, @"");
+	STAssertTrue( [channel storedRequestAtIndex: 2] == nil, @"");
+}
+
+-(void)testIsWaitingStoredRequestCompletion {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel scheduleRequest: request shouldObserveProcessing: NO];
+	PNBaseRequest *request1 = [[PNBaseRequest alloc] init];
+	request.identifier = @"id1";
+	[channel scheduleRequest: request1 shouldObserveProcessing: YES];
+	STAssertTrue( [channel isWaitingStoredRequestCompletion: @"id"] == NO, @"");
+}
+
+-(void)testRemoveStoredRequest {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel scheduleRequest: request shouldObserveProcessing: NO];
+	[channel scheduleRequest: request shouldObserveProcessing: YES];
+	STAssertTrue( [channel.storedRequestsList indexOfObject: request.shortIdentifier] != NSNotFound, @"");
+	STAssertTrue( [[channel.storedRequests objectForKey: request.shortIdentifier] objectForKey:@"request"] == request, @"");
+
+	[channel removeStoredRequest: request];
+	STAssertTrue( [channel.storedRequestsList indexOfObject: request.shortIdentifier] == NSNotFound, @"");
+	STAssertTrue( [[channel.storedRequests objectForKey: request.shortIdentifier] objectForKey:@"request"] == nil, @"");
+}
+
+-(void)testDestroyRequest {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel scheduleRequest: request shouldObserveProcessing: NO];
+	[channel scheduleRequest: request shouldObserveProcessing: YES];
+	STAssertTrue( [channel.storedRequestsList indexOfObject: request.shortIdentifier] != NSNotFound, @"");
+	STAssertTrue( [[channel.storedRequests objectForKey: request.shortIdentifier] objectForKey:@"request"] == request, @"");
+
+	[channel destroyRequest: request];
+	STAssertTrue( [channel.storedRequestsList indexOfObject: request.shortIdentifier] == NSNotFound, @"");
+	STAssertTrue( [[channel.storedRequests objectForKey: request.shortIdentifier] objectForKey:@"request"] == nil, @"");
+}
+
+-(void)testDestroyByRequestClass {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel scheduleRequest: request shouldObserveProcessing: NO];
+	[channel scheduleRequest: request shouldObserveProcessing: YES];
+	STAssertTrue( [channel.storedRequestsList indexOfObject: request.shortIdentifier] != NSNotFound, @"");
+	STAssertTrue( [[channel.storedRequests objectForKey: request.shortIdentifier] objectForKey:@"request"] == request, @"");
+	[channel destroyByRequestClass: [PNBaseRequest class]];
+	STAssertTrue( [channel.storedRequestsList indexOfObject: request.shortIdentifier] == NSNotFound, @"");
+	STAssertTrue( [[channel.storedRequests objectForKey: request.shortIdentifier] objectForKey:@"request"] == nil, @"");
+}
+
+-(void)testHasRequestsWithClass {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel scheduleRequest: request shouldObserveProcessing: NO];
+	[channel scheduleRequest: request shouldObserveProcessing: YES];
+	STAssertTrue( [channel hasRequestsWithClass: [PNBaseRequest class]] == YES, @"");
+	STAssertTrue( [channel hasRequestsWithClass: [PNSubscribeRequest class]] == NO, @"");
+	[channel destroyByRequestClass: [PNBaseRequest class]];
+	STAssertTrue( [channel hasRequestsWithClass: [PNBaseRequest class]] == NO, @"");
+}
+
+-(void)testRequestsWithClass {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	NSArray *requests = [channel requestsWithClass: [PNBaseRequest class]];
+	STAssertTrue( requests.count == 0, @"");
+
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel scheduleRequest: request shouldObserveProcessing: NO];
+	[channel scheduleRequest: request shouldObserveProcessing: YES];
+
+	requests = [channel requestsWithClass: [PNBaseRequest class]];
+	STAssertTrue( [requests isEqualToArray: @[request]] == YES, @"");
+}
+
+-(void)testConnection {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	STAssertTrue( [[channel connection] isKindOfClass: [PNConnection class]], @"");
+}
+
+-(void)testScheduleRequest {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel scheduleRequest: request shouldObserveProcessing: YES];
+	STAssertTrue( channel.storedRequestsList.count == 1, @"");
+}
+
+//-(void)testScheduleNextRequest {
+//	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+//	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+//	request.identifier = @"id";
+//
+//	PNConnection *connection = [channel connection];
+//	unsigned long state = connection.state;
+//	PNBitOn( &state, PNConnectionConnected);
+//	connection.state = state;
+//
+//	[channel scheduleRequest: request shouldObserveProcessing: YES];
+//	[channel scheduleNextRequest];
+//}
+
+-(void)testReconnect {
+	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: nil];
+	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+	request.identifier = @"id";
+	[channel reconnect];
+	unsigned long state = channel.state;
+	STAssertTrue( PNBitIsOn( state, PNConnectionChannelReconnect) == YES, @"");
+}
+
+- (void)testTerminate {
+    PNConnectionChannel *channel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    id mockConnect = [OCMockObject partialMockForObject:channel];
+    [[mockConnect expect] cleanUp];
+    [channel terminate];
+    [mockConnect verify];
+}
 
 @end
 
