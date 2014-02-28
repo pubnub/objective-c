@@ -215,7 +215,7 @@
                   Identifier = "HeartbeatTest">
                </Test>
                <Test
-                  Identifier = "HowToTests">
+                  Identifier = "ClientStateTest">
                </Test>
             </SkippedTests>
          </TestableReference>

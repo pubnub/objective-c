@@ -104,6 +104,8 @@
 		5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97917F3201D00FE90CF /* Swizzler.m */; };
 		5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */; };
 		5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */; };
+		5AD0B5C318C09F0100B0C249 /* PNConnectionChannel+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD0B5C218C09F0100B0C249 /* PNConnectionChannel+Test.m */; };
+		5AD0B5C618C0A04800B0C249 /* MyPNRequestsQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD0B5C518C0A04800B0C249 /* MyPNRequestsQueue.m */; };
 		5AD394BD18280F390057443C /* ApnsToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD394BC18280F390057443C /* ApnsToken.m */; };
 		5AD5893618A24EAC00B72653 /* PNAccessRightsInformationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5892F18A24EAC00B72653 /* PNAccessRightsInformationTest.m */; };
 		5AD5893718A24EAC00B72653 /* PNErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AD5893018A24EAC00B72653 /* PNErrorTest.m */; };
@@ -417,6 +419,10 @@
 		5ACCA99F17F33A9700FE90CF /* PNCryptoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNCryptoTest.m; path = PNCryptoTest/PNCryptoTest.m; sourceTree = "<group>"; };
 		5ACF73C917F417F80058E029 /* PNSubscribeUnsubscribeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNSubscribeUnsubscribeTest.h; path = PNSubscribeUnsubscribeTest/PNSubscribeUnsubscribeTest.h; sourceTree = "<group>"; };
 		5ACF73CA17F417F80058E029 /* PNSubscribeUnsubscribeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNSubscribeUnsubscribeTest.m; path = PNSubscribeUnsubscribeTest/PNSubscribeUnsubscribeTest.m; sourceTree = "<group>"; };
+		5AD0B5C118C09F0100B0C249 /* PNConnectionChannel+Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PNConnectionChannel+Test.h"; path = "PNRequestQueue+Test/PNConnectionChannel+Test.h"; sourceTree = "<group>"; };
+		5AD0B5C218C09F0100B0C249 /* PNConnectionChannel+Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PNConnectionChannel+Test.m"; path = "PNRequestQueue+Test/PNConnectionChannel+Test.m"; sourceTree = "<group>"; };
+		5AD0B5C418C0A04800B0C249 /* MyPNRequestsQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyPNRequestsQueue.h; path = "PNRequestQueue+Test/MyPNRequestsQueue.h"; sourceTree = "<group>"; };
+		5AD0B5C518C0A04800B0C249 /* MyPNRequestsQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyPNRequestsQueue.m; path = "PNRequestQueue+Test/MyPNRequestsQueue.m"; sourceTree = "<group>"; };
 		5AD394BC18280F390057443C /* ApnsToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApnsToken.m; sourceTree = "<group>"; };
 		5AD5892F18A24EAC00B72653 /* PNAccessRightsInformationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightsInformationTest.m; sourceTree = "<group>"; };
 		5AD5893018A24EAC00B72653 /* PNErrorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNErrorTest.m; sourceTree = "<group>"; };
@@ -989,6 +995,17 @@
 			name = PNSubscribeUnsubscribeTest;
 			sourceTree = "<group>";
 		};
+		5AD0B5BD18C09DE800B0C249 /* PNRequestsQueue+Test */ = {
+			isa = PBXGroup;
+			children = (
+				5AD0B5C118C09F0100B0C249 /* PNConnectionChannel+Test.h */,
+				5AD0B5C218C09F0100B0C249 /* PNConnectionChannel+Test.m */,
+				5AD0B5C418C0A04800B0C249 /* MyPNRequestsQueue.h */,
+				5AD0B5C518C0A04800B0C249 /* MyPNRequestsQueue.m */,
+			);
+			name = "PNRequestsQueue+Test";
+			sourceTree = "<group>";
+		};
 		5ADD307C189AADDB00688B3E /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1017,13 +1034,6 @@
 				5A4826D618632BBF008370E2 /* ChannelLimitTest.m */,
 			);
 			name = UnitTests;
-			sourceTree = "<group>";
-		};
-		5AEA31E018475C25002A2E4F /* ClientIdentifier */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = ClientIdentifier;
 			sourceTree = "<group>";
 		};
 		5AFB103418ABA80A002D39A6 /* Heartbeat */ = {
@@ -1099,7 +1109,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
-				5AEA31E018475C25002A2E4F /* ClientIdentifier */,
+				5AD0B5BD18C09DE800B0C249 /* PNRequestsQueue+Test */,
 				5A96274118437E9200258236 /* OversizedJSON */,
 				5ABE6C3E182B9F1000204DC6 /* TestSemaphor */,
 				5A955F7E18350CB100AB2156 /* Configuration */,
@@ -1477,6 +1487,7 @@
 				79C3227E166DFA42006DB535 /* PNAppDelegate.m in Sources */,
 				5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */,
 				5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */,
+				5AD0B5C618C0A04800B0C249 /* MyPNRequestsQueue.m in Sources */,
 				5AD5893C18A24EAC00B72653 /* PNTimeTokenResponseParserTest.m in Sources */,
 				5AE3AEBF1864602500704422 /* PNConnectionBadJson.m in Sources */,
 				5ADD3091189AADFD00688B3E /* PNPresenceEventTest.m in Sources */,
@@ -1530,6 +1541,7 @@
 				5ADD308A189AADFD00688B3E /* PNAccessRightsCollectionTest.m in Sources */,
 				5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */,
 				5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */,
+				5AD0B5C318C09F0100B0C249 /* PNConnectionChannel+Test.m in Sources */,
 				5AEFAD6D18ABC2700077DEE0 /* PNConnection+Test.m in Sources */,
 				963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */,
 				5AE63DB818AE4650009C1244 /* PNServiceChannel+Test.m in Sources */,

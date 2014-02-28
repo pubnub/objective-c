@@ -10,6 +10,10 @@
 #import "PubNub.h"
 #import "PNConfiguration.h"
 #import "PNConstants.h"
+#import "PNBaseRequest.h"
+#import "PNWriteBuffer.h"
+#import "PNConfiguration.h"
+#import "PubNub+Protected.h"
 
 @interface HeartbeatTest : SenTestCase <PNDelegate> {
 	NSDate *dateLastPresence;
@@ -40,6 +44,8 @@
 
 - (void)test10Connect {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presenceEvent:) name: @"presenceEvent" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
+
 	presenceInterval = /*kPNHeartbeatRequestTimeoutOffset + */10;
 	[self check];
 
@@ -59,7 +65,7 @@
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 
 		[PubNub setDelegate:self];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: nil];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a3"];
 		configuration.presenceHeartbeatTimeout = presenceInterval*2;
 		configuration.presenceHeartbeatInterval = presenceInterval;
 		[PubNub setConfiguration: configuration];
@@ -83,6 +89,22 @@
 	for( int j=0; j<60; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( countPresence >= 2, @"countPresence %d (interval %d)", countPresence, presenceInterval);
+}
+
+-(void)didSendRequest:(NSNotification*)notification {
+	NSLog(@"didSendRequest %@", notification.object);
+	PNBaseRequest *request = notification.object;
+	PNWriteBuffer *buffer = [request buffer];
+	NSString *string = [NSString stringWithUTF8String: (char*)buffer.buffer];
+	if( string == nil )
+		string = [buffer description];
+	STAssertTrue( string != nil, @"");
+	NSLog(@"didSendRequest buffer:\n%@", string);
+    NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
+    if ([authorizationKey length] > 0)
+        authorizationKey = [NSString stringWithFormat:@"auth=%@", authorizationKey];
+	if( authorizationKey.length > 0 )
+		STAssertTrue( [string rangeOfString: authorizationKey].location != NSNotFound, @"");
 }
 
 @end

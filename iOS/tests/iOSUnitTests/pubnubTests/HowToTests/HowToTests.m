@@ -87,6 +87,8 @@
 	pnChannelsBad = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"wpdev", @"", @""]];
 	pnChannelsForReverse = [PNChannel channelsWithNames:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleApplicationDidEnterBackgroundState:)
@@ -537,7 +539,7 @@
 
 		[PubNub setDelegate:self];
 		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"authorizationKey"];
 		[PubNub setConfiguration: configuration];
 
 		handleClientConnectionStateChange = NO;
@@ -1026,6 +1028,22 @@
 
 - (void)t910removeClientChannelSubscriptionStateObserver {
     [[PNObservationCenter defaultCenter] removeClientChannelSubscriptionStateObserver: self];
+}
+
+-(void)didSendRequest:(NSNotification*)notification {
+	NSLog(@"didSendRequest %@", notification.object);
+	PNBaseRequest *request = notification.object;
+	PNWriteBuffer *buffer = [request buffer];
+	NSString *string = [NSString stringWithUTF8String: (char*)buffer.buffer];
+	if( string == nil )
+		string = [buffer description];
+	STAssertTrue( string != nil, @"");
+	NSLog(@"buffer:\n%@", string);
+    NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
+    if ([authorizationKey length] > 0)
+        authorizationKey = [NSString stringWithFormat:@"auth=%@", authorizationKey];
+	if( authorizationKey.length > 0 )
+		STAssertTrue( [string rangeOfString: authorizationKey].location != NSNotFound, @"");
 }
 
 //-(void)test910UnsubscribeFromChannelsBad
