@@ -1744,7 +1744,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // Fetch list of names against which client should filter provided state.
     NSSet *channelNames = [NSSet setWithArray:[channels valueForKey:@"name"]];
     
-    // Fetch list of names for which metadata has been provided.
+    // Fetch list of names for which state has been provided.
     NSMutableSet *stateKeys = [NSMutableSet setWithArray:[state allKeys]];
     
     // Extract channels on which client wouldn't subscribed and they should be removed from provided state.
@@ -1753,7 +1753,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         
         state = [state dictionaryWithValuesForKeys:[stateKeys allObjects]];
     }
-    // Looks like provided metadata doesn't applicapable to any channels on which client subscribed or will subscribe.
+    // Looks like provided state doesn't applicable to any channels on which client subscribed or will subscribe.
     else {
         
         state = nil;

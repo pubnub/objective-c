@@ -156,14 +156,14 @@
             // Check whether there is no error while loading participants list
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PARTICIPANT METADATA DOWNLOADED. SERVICE RESPONSE: %@",
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" CLIENT STATE DOWNLOADED. SERVICE RESPONSE: %@",
                       parsedData);
 
                 [self.serviceDelegate serviceChannel:self didReceiveClientState:parsedData];
             }
             else {
 
-                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PARTICIPANT METADATA DOWNLOAD FAILED WITH ERROR: %@",
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" CLIENT STATE DOWNLOAD FAILED WITH ERROR: %@",
                       parsedData);
 
                 ((PNError *)parsedData).associatedObject = response.additionalData;
@@ -176,14 +176,14 @@
             // Check whether there is no error while loading participants list
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" PARTICIPANT METADATA UPDATED. SERVICE RESPONSE: %@",
+                PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @" CLIENT STATE UPDATED. SERVICE RESPONSE: %@",
                       parsedData);
 
                 [self.serviceDelegate serviceChannel:self didUpdateClientState:parsedData];
             }
             else {
 
-                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" PARTICIPANT METADATA UPDATE FAILED WITH ERROR: %@",
+                PNLog(PNLogCommunicationChannelLayerErrorLevel, self, @" CLIENT STATE UPDATE FAILED WITH ERROR: %@",
                       parsedData);
 
                 ((PNError *)parsedData).associatedObject = response.additionalData;

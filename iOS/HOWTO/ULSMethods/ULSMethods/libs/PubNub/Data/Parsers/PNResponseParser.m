@@ -121,12 +121,12 @@
 
             parserClass = [PNActionResponseParser class];
         }
-        // Check whether result is result for "Metadata retrieval" request or not.
+        // Check whether result is result for "State retrieval" request or not.
         else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateRetrieveCallback]) {
 
             parserClass = [PNClientStateResponseParser class];
         }
-        // Check whether result is result for "Metadata update" request or not.
+        // Check whether result is result for "State update" request or not.
         else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateUpdateCallback]) {
 
             parserClass = [PNClientStateUpdateResponseParser class];

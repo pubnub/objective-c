@@ -25,7 +25,7 @@ static NSString * const kPNResponseClientUUIDKey = @"uuid";
  Stores reference on key under which stored client additional information (in case if response returned list of \b
  NSDictionary)
  */
-static NSString * const kPNResponseClientMetadataKey = @"metadata";
+static NSString * const kPNResponseClientStateKey = @"state";
 
 // Stores reference on key under which number of participants
 // in room is stored

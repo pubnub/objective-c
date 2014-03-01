@@ -85,18 +85,19 @@
 
 - (NSString *)resourcePath {
 
-    NSString *metadata = @"";
+    NSString *state = @"";
     if (self.state) {
 
-        metadata = [NSString stringWithFormat:@"&metadata=%@",
-                    [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
+        state = [NSString stringWithFormat:@"&state=%@",
+                        [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
     }
 
     return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/heartbeat?uuid=%@%@%@",
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      self.clientIdentifier, metadata,
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+                                      self.clientIdentifier, state,
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                                                                              [self authorizationField]] : @"")];
 }
 
 - (NSString *)debugResourcePath {

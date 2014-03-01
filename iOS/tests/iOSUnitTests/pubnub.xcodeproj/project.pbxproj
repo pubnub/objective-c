@@ -15,6 +15,7 @@
 		5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */; };
 		5A4826D718632BBF008370E2 /* ChannelLimitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4826D618632BBF008370E2 /* ChannelLimitTest.m */; };
 		5A4ED25718A51DB8002C7E8D /* HowToTestsCompressed.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */; };
+		5A7F921D18BE694F003771ED /* MetadataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7F921C18BE694F003771ED /* MetadataTest.m */; };
 		5A93EC12189817B000751662 /* HistoryPamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A93EC11189817B000751662 /* HistoryPamTest.m */; };
 		5A9461C018A14D49004190FB /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9461BF18A14D49004190FB /* PNConfigurationTest.m */; };
 		5A9461C218A16699004190FB /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9461C118A16699004190FB /* PNDateTest.m */; };
@@ -196,6 +197,7 @@
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
 		5A4826D618632BBF008370E2 /* ChannelLimitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelLimitTest.m; sourceTree = "<group>"; };
 		5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTestsCompressed.m; sourceTree = "<group>"; };
+		5A7F921C18BE694F003771ED /* MetadataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetadataTest.m; path = pubnubTests/MetadataTest.m; sourceTree = SOURCE_ROOT; };
 		5A93EC11189817B000751662 /* HistoryPamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryPamTest.m; sourceTree = "<group>"; };
 		5A9461BF18A14D49004190FB /* PNConfigurationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNConfigurationTest.m; path = pubnubTests/PNConfigurationTest.m; sourceTree = SOURCE_ROOT; };
 		5A9461C118A16699004190FB /* PNDateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNDateTest.m; path = pubnubTests/PNDateTest.m; sourceTree = SOURCE_ROOT; };
@@ -887,6 +889,7 @@
 				5AC7A65D18ACDD8F00BE2891 /* PNClientMetadataUpdateRequest+Protected.h */,
 				5AC7A65E18ACDD8F00BE2891 /* PNClientMetadataUpdateRequest.h */,
 				5AC7A65F18ACDD8F00BE2891 /* PNClientMetadataUpdateRequest.m */,
+				5A7F921C18BE694F003771ED /* MetadataTest.m */,
 				5AC7A66018ACDD8F00BE2891 /* PNClientStateRequest+Protected.h */,
 				5AC7A66118ACDD8F00BE2891 /* PNClientStateRequest.h */,
 				5AC7A66218ACDD8F00BE2891 /* PNClientStateRequest.m */,
@@ -1481,6 +1484,7 @@
 			files = (
 				5AD5893718A24EAC00B72653 /* PNErrorTest.m in Sources */,
 				5AFB103018ABA347002D39A6 /* PNJSONSerializationTest.m in Sources */,
+				5A7F921D18BE694F003771ED /* MetadataTest.m in Sources */,
 				5A955F801835154C00AB2156 /* SendBigMessage.m in Sources */,
 				5AD5893618A24EAC00B72653 /* PNAccessRightsInformationTest.m in Sources */,
 				5AC7A5BC18ACDD0200BE2891 /* ClientStateTest.m in Sources */,

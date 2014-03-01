@@ -43,7 +43,7 @@
     return self;
 }
 
-#pragma mark - Metadata management method
+#pragma mark - State management method
 
 - (NSDictionary *)state {
 

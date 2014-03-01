@@ -82,7 +82,7 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@%@?callback=%@_%@&disable_uuids=%@&metadata=%@%@",
+    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@%@?callback=%@_%@&disable_uuids=%@&state=%@%@",
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       (self.channel ? [NSString stringWithFormat:@"/channel/%@", [self.channel escapedName]] : @""),
                                       [self callbackMethodName],
