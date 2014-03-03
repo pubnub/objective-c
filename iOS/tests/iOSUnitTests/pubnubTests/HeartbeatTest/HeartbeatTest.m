@@ -17,8 +17,10 @@
 
 @interface HeartbeatTest : SenTestCase <PNDelegate> {
 	NSDate *dateLastPresence;
+	NSDate *dateLastHeartbeat;
 	int presenceInterval;
 	int countPresence;
+	int countHeartbeat;
 }
 
 @end
@@ -32,10 +34,14 @@
 }
 
 -(void)presenceEvent:(NSNotification*)notification {
-	NSLog(@"presenceEvent %@", notification);
+	if( [PubNub sharedInstance].isConnected == NO )
+		return;
+
+//	NSLog(@"presenceEvent %@", notification);
 	NSTimeInterval interval = -[dateLastPresence timeIntervalSinceNow];
 	if( interval < 1 )
 		return;
+	NSLog(@"dateLastPresence %@, now %@", dateLastPresence, [NSDate date]);
 	STAssertTrue( interval > presenceInterval-1 && interval < presenceInterval+2, @"interval %f, presenceInterval %d", interval, presenceInterval);
 	NSLog(@"presenceEvent interval %f", interval);
 	countPresence++;
@@ -66,6 +72,7 @@
 
 		[PubNub setDelegate:self];
 		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a3"];
+		configuration.useSecureConnection = NO;
 		configuration.presenceHeartbeatTimeout = presenceInterval*2;
 		configuration.presenceHeartbeatInterval = presenceInterval;
 		[PubNub setConfiguration: configuration];
@@ -75,6 +82,8 @@
 				 dispatch_semaphore_signal(semaphore);
 				dateLastPresence = [NSDate date];
 				countPresence = 0;
+				dateLastHeartbeat = [NSDate date];
+				countHeartbeat = 0;
 			 }];
 		}
 							 errorBlock:^(PNError *connectionError) {
@@ -86,9 +95,10 @@
 	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-	for( int j=0; j<60; j++ )
+	for( int j=0; j<70; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( countPresence >= 2, @"countPresence %d (interval %d)", countPresence, presenceInterval);
+	STAssertTrue( countHeartbeat >= 2, @"countPresence %d (interval %d)", countHeartbeat, presenceInterval);
 }
 
 -(void)didSendRequest:(NSNotification*)notification {
@@ -105,6 +115,17 @@
         authorizationKey = [NSString stringWithFormat:@"auth=%@", authorizationKey];
 	if( authorizationKey.length > 0 )
 		STAssertTrue( [string rangeOfString: authorizationKey].location != NSNotFound, @"");
+
+	if( [string rangeOfString: @"/heartbeat?uuid="].location != NSNotFound ) {
+		NSTimeInterval interval = -[dateLastHeartbeat timeIntervalSinceNow];
+		NSLog(@"dateLastHeartbeat %@, now %@", dateLastHeartbeat, [NSDate date]);
+		STAssertTrue( interval > presenceInterval-1 && interval < presenceInterval+2, @"interval %f, presenceInterval %d", interval, presenceInterval);
+		NSLog(@"presenceEvent interval %f", interval);
+		countHeartbeat++;
+		dateLastHeartbeat = [NSDate date];
+	}
 }
+
+
 
 @end

@@ -16,6 +16,7 @@
 		5A4826D718632BBF008370E2 /* ChannelLimitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4826D618632BBF008370E2 /* ChannelLimitTest.m */; };
 		5A4ED25718A51DB8002C7E8D /* HowToTestsCompressed.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */; };
 		5A7F921D18BE694F003771ED /* MetadataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A7F921C18BE694F003771ED /* MetadataTest.m */; };
+		5A90EA7718C489890094A4B6 /* PNJSONSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A90EA7618C489890094A4B6 /* PNJSONSerializationTest.m */; };
 		5A93EC12189817B000751662 /* HistoryPamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A93EC11189817B000751662 /* HistoryPamTest.m */; };
 		5A9461C018A14D49004190FB /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9461BF18A14D49004190FB /* PNConfigurationTest.m */; };
 		5A9461C218A16699004190FB /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9461C118A16699004190FB /* PNDateTest.m */; };
@@ -132,7 +133,6 @@
 		5AEFAD6B18ABC2700077DEE0 /* HeartbeatTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AEFAD6618ABC2700077DEE0 /* HeartbeatTest.m */; };
 		5AEFAD6C18ABC2700077DEE0 /* MyPNConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AEFAD6818ABC2700077DEE0 /* MyPNConnection.m */; };
 		5AEFAD6D18ABC2700077DEE0 /* PNConnection+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AEFAD6A18ABC2700077DEE0 /* PNConnection+Test.m */; };
-		5AFB103018ABA347002D39A6 /* PNJSONSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AFB102E18ABA347002D39A6 /* PNJSONSerializationTest.m */; };
 		5AFB103118ABA347002D39A6 /* SendMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AFB102F18ABA347002D39A6 /* SendMessage.m */; };
 		79299476167C8D7A00F7F8CE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */; };
 		79299478167C8D8D00F7F8CE /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 792C1F3F16777BD40054E18E /* CFNetwork.framework */; };
@@ -198,6 +198,7 @@
 		5A4826D618632BBF008370E2 /* ChannelLimitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelLimitTest.m; sourceTree = "<group>"; };
 		5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTestsCompressed.m; sourceTree = "<group>"; };
 		5A7F921C18BE694F003771ED /* MetadataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetadataTest.m; path = pubnubTests/MetadataTest.m; sourceTree = SOURCE_ROOT; };
+		5A90EA7618C489890094A4B6 /* PNJSONSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNJSONSerializationTest.m; path = pubnubTests/PNJSONSerializationTest.m; sourceTree = SOURCE_ROOT; };
 		5A93EC11189817B000751662 /* HistoryPamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryPamTest.m; sourceTree = "<group>"; };
 		5A9461BF18A14D49004190FB /* PNConfigurationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNConfigurationTest.m; path = pubnubTests/PNConfigurationTest.m; sourceTree = SOURCE_ROOT; };
 		5A9461C118A16699004190FB /* PNDateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNDateTest.m; path = pubnubTests/PNDateTest.m; sourceTree = SOURCE_ROOT; };
@@ -452,7 +453,6 @@
 		5AEFAD6818ABC2700077DEE0 /* MyPNConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyPNConnection.m; path = pubnubTests/HeartbeatTest/MyPNConnection.m; sourceTree = SOURCE_ROOT; };
 		5AEFAD6918ABC2700077DEE0 /* PNConnection+Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PNConnection+Test.h"; path = "pubnubTests/HeartbeatTest/PNConnection+Test.h"; sourceTree = SOURCE_ROOT; };
 		5AEFAD6A18ABC2700077DEE0 /* PNConnection+Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PNConnection+Test.m"; path = "pubnubTests/HeartbeatTest/PNConnection+Test.m"; sourceTree = SOURCE_ROOT; };
-		5AFB102E18ABA347002D39A6 /* PNJSONSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNJSONSerializationTest.m; path = HowToTests/PNJSONSerializationTest.m; sourceTree = "<group>"; };
 		5AFB102F18ABA347002D39A6 /* SendMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendMessage.m; sourceTree = "<group>"; };
 		792C1F3F16777BD40054E18E /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		79C32228166DF847006DB535 /* pubnub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pubnub.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1012,7 +1012,7 @@
 		5ADD307C189AADDB00688B3E /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
-				5AFB102E18ABA347002D39A6 /* PNJSONSerializationTest.m */,
+				5A90EA7618C489890094A4B6 /* PNJSONSerializationTest.m */,
 				5ADD307D189AADFD00688B3E /* ClientIdentifier.m */,
 				5ADD307E189AADFD00688B3E /* PNAccessRightOptionsTest.m */,
 				5ADD307F189AADFD00688B3E /* PNAccessRightsCollectionTest.m */,
@@ -1483,7 +1483,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5AD5893718A24EAC00B72653 /* PNErrorTest.m in Sources */,
-				5AFB103018ABA347002D39A6 /* PNJSONSerializationTest.m in Sources */,
 				5A7F921D18BE694F003771ED /* MetadataTest.m in Sources */,
 				5A955F801835154C00AB2156 /* SendBigMessage.m in Sources */,
 				5AD5893618A24EAC00B72653 /* PNAccessRightsInformationTest.m in Sources */,
@@ -1497,6 +1496,7 @@
 				5ADD3091189AADFD00688B3E /* PNPresenceEventTest.m in Sources */,
 				5AD394BD18280F390057443C /* ApnsToken.m in Sources */,
 				5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */,
+				5A90EA7718C489890094A4B6 /* PNJSONSerializationTest.m in Sources */,
 				5AEFAD6C18ABC2700077DEE0 /* MyPNConnection.m in Sources */,
 				5A198E891815410400D20005 /* TimeOutTest.m in Sources */,
 				5AC703EB180D89B000B0FC53 /* W_ChaosTest.m in Sources */,

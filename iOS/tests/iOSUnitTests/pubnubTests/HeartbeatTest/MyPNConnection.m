@@ -21,7 +21,10 @@
 - (NSMutableData *)retrievedData {
 	NSMutableData *data = [super retrievedData];
 	NSString *str = [NSString stringWithUTF8String:[data bytes]];
-	NSLog(@"str \n|%@|", str);
+	if( data.length > 0 && str.length == 0 )
+		str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+//	NSLog(@"retrievedData, %d \n|%@|", data.length, str);
+
 	if( str != nil && [str rangeOfString: @"\"status\": 200"].location != NSNotFound &&
 	   [str rangeOfString: @"\"message\": \"OK\""].location != NSNotFound &&
 	   [str rangeOfString: @"\"service\": \"Presence\""].location != NSNotFound ) {
