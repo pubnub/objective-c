@@ -984,6 +984,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[subscriptionChannelsSet allObjects]
                                                                                  byUserRequest:YES
                                                                                withClientState:clientState];
+        [subscribeRequest resetSubscriptionTimeToken];
 
         if ((!isPresenceModification || indirectionalPresenceModification) && [channelsSet count]) {
 
@@ -1026,14 +1027,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
             PNBitsOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve, PNMessagingChannelSubscriptionWaitingForEvents,
                       BITS_LIST_TERMINATOR);
-            if ([subscribeRequest isInitialSubscription]) {
-
-                PNBitOn(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
-            }
-            else {
-
-                PNBitOn(&_messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
-            }
+            PNBitOn(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
 
 
             if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
@@ -1180,7 +1174,13 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             PNSubscribeRequest *subscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[currentlySubscribedChannels allObjects]
                                                                                      byUserRequest:isLeavingByUserRequest
                                                                                    withClientState:nil];
+            [subscribeRequest resetSubscriptionTimeToken];
+
             subscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
+
+            PNBitsOff(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve, PNMessagingChannelSubscriptionWaitingForEvents,
+                      BITS_LIST_TERMINATOR);
+            PNBitOn(&_messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve);
             if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
 
                 subscribeRequest.closeConnection = NO;
@@ -1333,6 +1333,13 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         // Update channels state update time token
         NSMutableSet *channelsForTokenUpdate = [self.subscribedChannelsSet mutableCopy];
         [channelsForTokenUpdate addObjectsFromArray:request.channels];
+
+        NSString *largestTimeToken = [PNChannel largestTimetokenFromChannels:[channelsForTokenUpdate allObjects]];
+        if (PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve) &&
+            ![largestTimeToken isEqualToString:@"0"]) {
+
+            timeToken = largestTimeToken;
+        }
         [channelsForTokenUpdate makeObjectsPerformSelector:@selector(setUpdateTimeToken:) withObject:timeToken];
 
         NSUInteger presenceModificationType = 0;

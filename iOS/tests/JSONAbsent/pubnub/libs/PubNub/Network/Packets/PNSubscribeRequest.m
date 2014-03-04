@@ -113,6 +113,11 @@
     return self;
 }
 
+- (void)resetSubscriptionTimeToken {
+
+    self.updateTimeToken = @"0";
+}
+
 - (void)resetTimeToken {
 
     [self resetTimeTokenTo:@"0"];
