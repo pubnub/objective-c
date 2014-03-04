@@ -92,11 +92,11 @@
     STAssertFalse([messageChannel canResubscribe], @"Cannot subscribe without any channel");
 }
 
-- (void)testUnsubscribeFromChannelsWithPresenceEvent {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-    
-    STAssertTrue([[messageChannel unsubscribeFromChannelsWithPresenceEvent:YES] count] == 0, @"Cannot subscribe without any channel");
-}
+//- (void)testUnsubscribeFromChannelsWithPresenceEvent {
+//    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+//    
+//    STAssertTrue([[messageChannel unsubscribeFromChannelsWithPresenceEvent:YES] count] == 0, @"Cannot subscribe without any channel");
+//}
 
 - (void)testIsPresenceObservationEnabledForChannel {
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
@@ -183,21 +183,21 @@
     [mockChannel verify];
 }
 
-- (void)testUnsubscribeFromChannels {
-    // Clear here:
-    // we have set of subscribed channel only after we receive response from server
-    // it seems now we don't receive anything, cause we are working outside of PubNub client
-    // so checking of unsubscribe should be stubbed completely
-    
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
-    
-    [[mockChannel expect] leaveSubscribedChannelsByUserRequest:YES];
-    
-    [mockChannel unsubscribeFromChannelsWithPresenceEvent:YES];
-    
-    [mockChannel verify];
-}
+//- (void)testUnsubscribeFromChannels {
+//    // Clear here:
+//    // we have set of subscribed channel only after we receive response from server
+//    // it seems now we don't receive anything, cause we are working outside of PubNub client
+//    // so checking of unsubscribe should be stubbed completely
+//    
+//    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+//    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
+//    
+//    [[mockChannel expect] leaveSubscribedChannelsByUserRequest:YES];
+//    
+//    [mockChannel unsubscribeFromChannelsWithPresenceEvent:YES];
+//    
+//    [mockChannel verify];
+//}
 
 - (void)testEnablePresenceObservationForChannels {
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];

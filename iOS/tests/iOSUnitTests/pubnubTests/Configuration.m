@@ -30,6 +30,11 @@
 
 @implementation Configuration
 
+- (void)tearDown {
+	[NSThread sleepForTimeInterval:1.0];
+	[super tearDown];
+}
+
 - (void)setUp
 {
     [super setUp];
@@ -121,13 +126,6 @@
 	NSLog(@"kPNClientErrorNotification %@", notification);
 	_isError = YES;
 }
-
-- (void)tearDown
-{
-    // Put teardown code here; it will be run once, after the last test case.
-    [super tearDown];
-}
-
 
 - (void)test10Connect {
 	[PubNub resetClient];

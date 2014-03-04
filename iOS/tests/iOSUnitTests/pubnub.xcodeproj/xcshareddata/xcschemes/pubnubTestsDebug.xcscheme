@@ -217,6 +217,9 @@
                <Test
                   Identifier = "ClientStateTest">
                </Test>
+               <Test
+                  Identifier = "HowToTests">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
