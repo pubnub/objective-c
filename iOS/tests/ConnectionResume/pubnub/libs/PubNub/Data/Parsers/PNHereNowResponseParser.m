@@ -49,18 +49,17 @@
         NSDictionary *channels = [responseData objectForKey:kPNResponseChannelsKey];
         if (!channels) {
 
-            channels = @{((PNChannel *)response.additionalData).name: @{
-                                        kPNResponseUUIDKey: [responseData objectForKey:kPNResponseUUIDKey],
-                                   kPNResponseOccupancyKey: [responseData objectForKey:kPNResponseOccupancyKey]
+            PNChannel *channel = (PNChannel *)response.additionalData;
+            channels = @{channel.name: @{kPNResponseUUIDKey: [responseData objectForKey:kPNResponseUUIDKey],
+                                    kPNResponseOccupancyKey: [responseData objectForKey:kPNResponseOccupancyKey]
             }};
         }
         NSMutableArray *participants = [NSMutableArray array];
         [channels enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelParticipantsInformation,
                                                       BOOL *channelNamesEnumeratorStop) {
 
-            NSArray *participantsInChannel = [self clientsFromData:[channelParticipantsInformation objectForKey:kPNResponseUUIDKey]
-                                                        forChannel:[PNChannel channelWithName:channelName]];
-            [participants addObjectsFromArray:participantsInChannel];
+            NSMutableArray *participantsInChannel = [[self clientsFromData:[channelParticipantsInformation objectForKey:kPNResponseUUIDKey]
+                                                                forChannel:[PNChannel channelWithName:channelName]] mutableCopy];
 
             NSUInteger participantsCount = [[channelParticipantsInformation objectForKey:kPNResponseOccupancyKey] unsignedIntValue];
             NSUInteger differenceInParticipantsCount = participantsCount - [participantsInChannel count];
@@ -68,9 +67,10 @@
 
                 for (int i = 0; i < differenceInParticipantsCount; i++) {
 
-                    [participants addObject:[PNClient anonymousClientForChannel:[PNChannel channelWithName:channelName]]];
+                    [participantsInChannel addObject:[PNClient anonymousClientForChannel:[PNChannel channelWithName:channelName]]];
                 }
             }
+            [participants addObjectsFromArray:participantsInChannel];
         }];
         self.hereNow.participants = [NSArray arrayWithArray:participants];
         self.hereNow.participantsCount = [participants count];

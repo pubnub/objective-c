@@ -52,12 +52,12 @@ static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
  This value will be used for heartbeat timer to calculate interval (how many seconds will be subtracted from
  specified heartbeat timeout).
  */
-static NSTimeInterval const kPNHeartbeatRequestTimeoutOffset = 3;
+static int const kPNHeartbeatRequestTimeoutOffset = 3;
 
 /**
  Default heartbeat timeout which will be used in case if used specified incorrect value.
  */
-static NSTimeInterval const kPNDefaultHeartbeatTimeout = 5;
+static int const kPNDefaultHeartbeatTimeout = 5;
 
 /**
  Maximum heartbeat interval which can be used.
