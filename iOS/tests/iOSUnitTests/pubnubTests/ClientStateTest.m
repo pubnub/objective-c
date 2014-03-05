@@ -264,7 +264,8 @@
 			if( isExpectError == NO ) {
 				STAssertNil( error, @"updateClientState error %@", error);
 				STAssertTrue( [channel.name isEqualToString: client.channel.name] == YES, @"invalid channel name");
-				STAssertTrue( client.data != nil && [client.data isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
+				STAssertTrue( client.data != nil, @"client.data == nil");
+				STAssertTrue( [client.data isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
 			}
 			else
 				STAssertNotNil( error, @"updateClientState empty error");

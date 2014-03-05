@@ -32,19 +32,11 @@
 
 @implementation PNConnectionChannelTest
 
-- (void)setUp
-{
-    [super setUp];
-    
-    NSLog(@"setUp: %@", self.name);
-    // Set-up code here.
+- (void)tearDown {
+	[NSThread sleepForTimeInterval:1.0];
+	[super tearDown];
 }
 
-- (void)tearDown
-{
-    // Tear-down code here.
-    [super tearDown];
-}
 
 #pragma mark - States tests
 
