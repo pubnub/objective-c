@@ -277,9 +277,6 @@ You can use few class methods to intialise and update instance properties:
     
     3. Client will pass this value during subscription to inform it after which period of inactivity (when client will stop send ping to the server) it should mark client and __timed out__.
         ```objc
-        presenceExpirationTimeout // DEPRECATED
-        ```
-        ```objc
         presenceHeartbeatTimeout
         ```
         __Default:__ 0 seconds (_kPNPresenceHeartbeatTimeout_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h)) which will force server to use it's own timeout value.
@@ -298,7 +295,15 @@ You can use few class methods to intialise and update instance properties:
          
         This can also be controlled via returning __@(YES)__ or __@(NO)__ via the __shouldReconnectPubNubClient:__ delegate.
     
-    6. If autoReconnectClient == YES, after experiencing network connectivity loss and subsequent reconnect, should the client resume (aka  "catchup") to where it left off before the disconnect?
+    6. Used by client when you change list of channels on which client subscribed at this moment (subscribe, unsubscribe). If property is set to **YES** then client will catchup on messages which may arrive to the "old" channels while change took place. If set to **NO**, client will ignore all messages which may arrive during change process.
+        ```objc
+        (getter = shouldKeepTimeTokenOnChannelsListChange) keepTimeTokenOnChannelsListChange  
+        ```
+        __Default:__ YES (kPNShouldKeepTimeTokenOnChannelsListChange key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
+         
+        This can also be controlled via returning __@(YES)__ or __@(NO)__ via the __shouldKeepTimeTokenOnChannelsListChange__ delegate.
+    
+    7. If autoReconnectClient == YES, after experiencing network connectivity loss and subsequent reconnect, should the client resume (aka  "catchup") to where it left off before the disconnect?
         ```objc
         (getter = shouldResubscribeOnConnectionRestore) resubscribeOnConnectionRestore
         ```
@@ -306,7 +311,7 @@ You can use few class methods to intialise and update instance properties:
          
         This can also be controlled via returning __@(YES)__ or __@(NO)__ via the __shouldResubscribeOnConnectionRestore__ delegate.
     
-    7. Upon connection restore, should the PubNub client "catch-up" to where it left off upon reconnecting?
+    8. Upon connection restore, should the PubNub client "catch-up" to where it left off upon reconnecting?
         ```objc
         (getter = shouldRestoreSubscriptionFromLastTimeToken) restoreSubscriptionFromLastTimeToken
         ```
@@ -314,37 +319,37 @@ You can use few class methods to intialise and update instance properties:
          
          This can also be controlled via returning __@(YES)__ or __@(NO)__ via the __shouldRestoreSubscriptionFromLastTimeToken__ delegate.
 
-    8. Should the PubNub client establish the connection to PubNub using SSL?
+    9. Should the PubNub client establish the connection to PubNub using SSL?
         ```objc
         (getter = shouldUseSecureConnection) useSecureConnection  
         ```
         __Default:__ YES (_kPNSecureConnectionRequired__ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    9. When SSL is enabled, should PubNub client ignore all SSL certificate-handshake issues and still continue in SSL mode if it experiences issues handshaking across local proxies, firewalls, etc?
+    10. When SSL is enabled, should PubNub client ignore all SSL certificate-handshake issues and still continue in SSL mode if it experiences issues handshaking across local proxies, firewalls, etc?
         ```objc
         (getter = shouldReduceSecurityLevelOnError) reduceSecurityLevelOnError
         ```
         __Default:__ YES (_kPNShouldReduceSecurityLevelOnError_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    10. When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
+    11. When SSL is enabled, should the client fallback to a non-SSL connection if it experiences issues handshaking across local proxies, firewalls, etc?
         ```objc
         (getter = canIgnoreSecureConnectionRequirement) ignoreSecureConnectionRequirement
         ```
         __Default:__ YES (_kPNCanIgnoreSecureConnectionRequirement_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
     
-    11. To reduce incoming traffic client can be configured to accept compressed responses from server and this property specify on whether it should do so or not?  
+    12. To reduce incoming traffic client can be configured to accept compressed responses from server and this property specify on whether it should do so or not?  
         ```objc
         (getter = shouldAcceptCompressedResponse) acceptCompressedResponse
         ```
         __Default:__ YES (_kPNShouldAcceptCompressedResponse_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
 
-    12. When this value is set client will enable encryption on published and received messages.
+    13. When this value is set client will enable encryption on published and received messages.
         ```objc
         cipherKey
         ```
         __Default:__ nil (_kPNCipherKey_ key in [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h))  
 
-    13. If client should work with PAM it should be configured with appropriate authorization key which will be used by PAM for access management.
+    14. If client should work with PAM it should be configured with appropriate authorization key which will be used by PAM for access management.
         ```objc
         authorizationKey
         ```
@@ -573,52 +578,18 @@ The client provides a set of methods which allow you to subscribe to channel(s):
 + (void)subscribeOnChannel:(PNChannel *)channel;  
 + (void) subscribeOnChannel:(PNChannel *)channel 
 withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;  
-+ (void)subscribeOnChannel:(PNChannel *)channel withMetadata:(NSDictionary *)clientMetadata; // DEPRECATED
 + (void)subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState;
-+ (void) subscribeOnChannel:(PNChannel *)channel withMetadata:(NSDictionary *)clientMetadata
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock; // DEPRECATED
 + (void) subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
-
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent;
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent  
-andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;  
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent 
-                  metadata:(NSDictionary *)clientMetadata; // DEPRECATED
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent 
-                  clientState:(NSDictionary *)clientState;
-+ (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent 
-                   metadata:(NSDictionary *)clientMetadata
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock; // DEPRECATED
- + (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent 
-                   clientState:(NSDictionary *)clientState
  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 + (void)subscribeOnChannels:(NSArray *)channels;  
 + (void)subscribeOnChannels:(NSArray *)channels  
 withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;  
-+ (void)subscribeOnChannels:(NSArray *)channels withMetadata:(NSDictionary *)clientMetadata; // DEPRECATED
 + (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState;
-+ (void)subscribeOnChannels:(NSArray *)channels withMetadata:(NSDictionary *)clientMetadata
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock; // DEPRECATED
 + (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
-
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent;  
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent  
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent 
-                   metadata:(NSDictionary *)clientMetadata; // DEPRECATED
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent 
-                clientState:(NSDictionary *)clientState;
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent 
-                   metadata:(NSDictionary *)clientMetadata
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock; // DEPRECATED
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent 
-                clientState:(NSDictionary *)clientState
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 ```
-Each subscription method has designated methods, to add a presence flag, client state and/or add a handling block.  If `withPresenceEvent` is set to `YES`, the client will will gracefully `leave` channels on which it has been subscribed before and `join` to the new one.
+Each subscription method has designated methods, to add a presence flag, client state and/or add a handling block.  
 
 **NOTE: Values remain bound to the client while it subscribed at specific channel. As soon as you will unsubscribe or subscribe to another set of channels enabling presence event generation or client will timeout, server will destroy stored client's state.**  
 
@@ -637,8 +608,8 @@ Here are some subscribe examples:
 [PubNub subscribeOnChannel:[PNChannel channelWithName:@"iosdev" shouldObservePresence:YES]];  
 
 // Subscribe on set of channels with subscription state handling block
-[PubNub subscribeOnChannels:[PNChannel channelsWithName:@"iosdev" shouldObservePresence:YES] withPresenceEvent:YES
- andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {  
+[PubNub subscribeOnChannels:[PNChannel channelsWithName:@"iosdev" shouldObservePresence:YES]
+withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {  
     
     switch(state) {  
     
@@ -662,14 +633,11 @@ Here are some subscribe examples:
 ```objc
 // Subscribe to channels: "iosdev" and because shouldObservePresence is true,
 // also automatically subscribes to "iosdev-pnpres" (the Presence channel for "iosdev").
-// Because 'withPresenceEvent' for subscribe request is set to 'YES', all other subscribers on "iosdev"
-// channel will receive event that new client joined to the channel and also provide state which has
-// been passed to the subscribe methods to all subscribers.
 [PubNub subscribeOnChannel:[PNChannel channelWithName:@"iosdev" shouldObservePresence:YES]];  
 
 // Subscribe on set of channels with subscription state handling block
-[PubNub subscribeOnChannels:[PNChannel channelsWithName:@"iosdev" shouldObservePresence:YES] withPresenceEvent:YES
-    clientState:@{@"iosdev": {@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}}
+[PubNub subscribeOnChannels:[PNChannel channelsWithName:@"iosdev" shouldObservePresence:YES]
+            withClientState:@{@"iosdev": {@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}}
  andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {  
     
     switch(state) {  
@@ -697,28 +665,18 @@ The client of course also provides a set of methods which allow you to unsubscri
 + (void)unsubscribeFromChannel:(PNChannel *)channel;  
 + (void)unsubscribeFromChannel:(PNChannel *)channel  
    withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;  
-   
-+ (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent;  
-+ (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent  
-    andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;  
     
 + (void)unsubscribeFromChannels:(NSArray *)channels;  
 + (void)unsubscribeFromChannels:(NSArray *)channels  
   withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;  
-  
-+ (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent;  
-+ (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent  
-     andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
 ```
-	     
-As for the unsubscription methods, there are a set of methods which perform unsubscribe requests. The `withPresenceEvent` parameter set to `YES` when unsubscribing will mean that the client will send a `leave` message to channels when unsubscribed.
+As for the unsubscription methods, there are a set of methods which perform unsubscribe requests.  
 
 Lets see how we can use some of this methods to unsubscribe from channel(s):
 ```objc
 // Unsubscribe from set of channels and notify everyone that we are left
-[PubNub unsubscribeFromChannels:[PNChannel channelsWithNames:@[@"iosdev/networking", @"andoirddev", @"wpdev", @"ubuntudev"]]
-              withPresenceEvent:YES   
-     andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {  
+[PubNub unsubscribeFromChannels:[PNChannel channelsWithNames:@[@"iosdev/networking", @"andoirddev", @"wpdev", @"ubuntudev"]] 
+    withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {  
     
       if (error == nil) {
  
@@ -768,13 +726,8 @@ There is a set of methods which provide you access to the presence data:
 + (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired;
 + (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired 
-                                      clientMetadata:(BOOL)shouldFetchClientMetadata; // DEPRECATED
 + (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                          clientState:(BOOL)shouldFetchClientState;
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
-                                      clientMetadata:(BOOL)shouldFetchClientMetadata
-                                  andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock; // DEPRECATED
 + (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                          clientState:(BOOL)shouldFetchClientState
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
@@ -787,15 +740,8 @@ There is a set of methods which provide you access to the presence data:
 + (void)requestParticipantsListForChannel:(PNChannel *)channel 
                 clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
-+ (void)requestParticipantsListForChannel:(PNChannel *)channel
-                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
-                           clientMetadata:(BOOL)shouldFetchClientMetadata; // DEPRECATED
 + (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                               clientState:(BOOL)shouldFetchClientState;
-+ (void)requestParticipantsListForChannel:(PNChannel *)channel
-                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
-                           clientMetadata:(BOOL)shouldFetchClientMetadata   
-                      withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock; // DEPRECATED
 + (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                               clientState:(BOOL)shouldFetchClientState
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
@@ -870,19 +816,12 @@ All client information now represented with [**PNClient**](iPadDemoApp/pubnub/li
 PubNub client provide endpoints for client's state manipulation. They allow you to get or set / update existing values.  
 
 ```objc
-+ (void)requestClientMetadata:(NSString *)clientIdentifier forChannel:(PNChannel *)channel; // DEPRECATED
 + (void)requestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel;
-+ (void)requestClientMetadata:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
-  withCompletionHandlingBlock:(PNClientMetadataRetrieveHandlingBlock)handlerBlock; // DEPRECATED
 + (void) requestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
 withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
-+ (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata
-                  forChannel:(PNChannel *)channel; // DEPRECATED
 + (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                forChannel:(PNChannel *)channel;
 + (void)updateClientMetadata:(NSString *)clientIdentifier metadata:(NSDictionary *)clientMetadata 
-+                 forChannel:(PNChannel *)channel
- withCompletionHandlingBlock:(PNClientMetadataUpdateHandlingBlock)handlerBlock; // DEPRECATED
 + (void)   updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                   forChannel:(PNChannel *)channel
  withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock;
@@ -1770,7 +1709,6 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client failed to audit access rights because of error: %@", error);
 }
 ```
-####- (void)pubnubClient:(PubNub *)client didReceiveClientMetadata:(PNClient *)remoteClient; // DEPRECATED
 ####- (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient;
 
 This delegate method is called when PubNub client successfully retrieved client state information. [PNClient](iPadDemoApp/pubnub/libs/PubNub/Data/PNClient.h) represent all information via properties.  
@@ -1782,7 +1720,6 @@ Example usage follows:
         remoteClient.identifier, remoteClient.channel, remoteClient.data);
 }
 ```
-####- (void)pubnubClient:(PubNub *)client clientMetadataRetrieveDidFailWithError:(PNError *)error; // DEPRECATED
 ####- (void)pubnubClient:(PubNub *)client clientStateRetrieveDidFailWithError:(PNError *)error;
 
 This delegate method is called when PubNub client was unable to receive client state. "error" will contain details of this error.  
@@ -1794,7 +1731,6 @@ Example usage follows:
         "error: %@", ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
 }
 ```
-####- (void)pubnubClient:(PubNub *)client didUpdateClientMetadata:(PNClient *)remoteClient; // DEPRECATED
 ####- (void)pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient;
 
 This delegate method is called when PubNub client successfully updated client's state. "remoteClient" will hold updated information.  
@@ -1806,7 +1742,6 @@ Example usage follows:
         remoteClient.identifier, remoteClient.channel, remoteClient.data);
 }
 ```
-####- (void)pubnubClient:(PubNub *)client clientMetadataUpdateDidFailWithError:(PNError *)error; // DEPRECATED
 ####- (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error;
 
 This delegate method is called when PubNub client was unable to update client's state. "error" will contains details of this error.  
@@ -1984,6 +1919,16 @@ This method allow to override value passed in configuration during client initia
 Example usage follows:
 ```objc
 - (NSNumber *)shouldReconnectPubNubClient:(PubNub *)client {
+  
+  return @(NO);
+}
+```
+####- (NSNumber *)shouldKeepTimeTokenOnChannelsListChange;  
+
+This method allow to override value passed in configuration during client initialization. This method called when client is about to change list of channels (subscribe, unsubscribe). In case if this method return `@(NO)` then all messages which has been sent to the "old" channels while client changed list, will be discarded.  
+Example usage follows:
+```objc
+- (NSNumber *)shouldKeepTimeTokenOnChannelsListChange {
   
   return @(NO);
 }
