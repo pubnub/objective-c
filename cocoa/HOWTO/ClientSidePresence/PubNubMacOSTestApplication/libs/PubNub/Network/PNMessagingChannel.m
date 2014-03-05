@@ -419,8 +419,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                    }
                    
                    PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
-                                               BITS_LIST_TERMINATOR);
-                   PNBitOn(&_messagingState, PNMessagingChannelRestoringSubscription);
+                                               PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR);
+                   PNBitsOn(&_messagingState, PNMessagingChannelRestoringSubscription,
+                                              PNMessagingChannelSubscriptionTimeTokenRetrieve, BITS_LIST_TERMINATOR);
+
+                   [(PNSubscribeRequest *)request resetSubscriptionTimeToken];
                    
                    // Notify delegate that messaging channel is about to restore subscription on previous channels
                    [self.messagingDelegate messagingChannel:self willRestoreSubscriptionOnChannels:((PNSubscribeRequest *)request).channels
@@ -438,9 +441,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                [self destroyRequest:request];
 
                // Send request back into queue with higher priority among other requests
-               [self scheduleRequest:request
-             shouldObserveProcessing:isWaitingForCompletion
-                          outOfOrder:YES
+               [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
                     launchProcessing:NO];
            }];
 
@@ -613,7 +614,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
             
             PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
-                      BITS_LIST_TERMINATOR);
+                                        BITS_LIST_TERMINATOR);
         }
 
         if (isLeavingByUserRequest) {
@@ -668,15 +669,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         }
 
         PNBitsOff(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelUpdateSubscription,
-                                    BITS_LIST_TERMINATOR);
-        PNBitOn(&_messagingState, PNMessagingChannelRestoringSubscription);
+                                    PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR);
+        PNBitsOn(&_messagingState, PNMessagingChannelRestoringSubscription, PNMessagingChannelSubscriptionTimeTokenRetrieve,
+                                   BITS_LIST_TERMINATOR);
 
         PNSubscribeRequest *resubscribeRequest = [PNSubscribeRequest subscribeRequestForChannels:[self.subscribedChannelsSet allObjects]
                                                                                    byUserRequest:YES
                                                                                  withClientState:nil];
+        [resubscribeRequest resetSubscriptionTimeToken];
 
         // Check whether connection channel is waiting for response via long-poll connection or not
-        resubscribeRequest.closeConnection = PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents);
+        resubscribeRequest.closeConnection = YES;
         if (PNBitIsOn(self.messagingState, PNMessagingChannelRestoringConnectionTerminatedByServer)) {
 
             resubscribeRequest.closeConnection = NO;
@@ -689,8 +692,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         [self scheduleRequest:resubscribeRequest
       shouldObserveProcessing:PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve)
-                   outOfOrder:YES
-             launchProcessing:YES];
+                   outOfOrder:YES launchProcessing:YES];
 
     }
 }
@@ -1343,8 +1345,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         [channelsForTokenUpdate makeObjectsPerformSelector:@selector(setUpdateTimeToken:) withObject:timeToken];
 
         NSUInteger presenceModificationType = 0;
-        if ([self.subscribedChannelsSet count] == 0 &&
-            ([request.channelsForPresenceEnabling count] || [request.channelsForPresenceDisabling count])) {
+        if ([request.channelsForPresenceEnabling count] || [request.channelsForPresenceDisabling count]) {
 
             unsigned long modificationType = 0;
             if ([request.channelsForPresenceEnabling count]) {
