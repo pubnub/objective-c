@@ -118,6 +118,7 @@
 
 - (void)tearDown {
 	[NSThread sleepForTimeInterval:1.0];
+	[super tearDown];
 }
 
 -(void)kPNClientSubscriptionDidCompleteNotification:(NSNotification*)notification {

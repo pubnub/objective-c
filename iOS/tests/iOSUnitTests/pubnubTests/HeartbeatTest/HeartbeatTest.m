@@ -41,9 +41,14 @@
 	NSTimeInterval interval = -[dateLastPresence timeIntervalSinceNow];
 	if( interval < 1 )
 		return;
+<<<<<<< HEAD
 	NSLog(@"dateLastPresence %@, now %@", dateLastPresence, [NSDate date]);
 	STAssertTrue( interval > presenceInterval-1 && interval < presenceInterval+2, @"interval %f, presenceInterval %d", interval, presenceInterval);
 	NSLog(@"presenceEvent interval %f", interval);
+=======
+	NSLog(@"presenceEvent interval %f, presenceInterval %d", interval, presenceInterval);
+//	STAssertTrue( interval > presenceInterval-1 && interval < presenceInterval+2, @"interval %f, presenceInterval %d", interval, presenceInterval);
+>>>>>>> feature-pt66739978
 	countPresence++;
 	dateLastPresence = [NSDate date];
 }

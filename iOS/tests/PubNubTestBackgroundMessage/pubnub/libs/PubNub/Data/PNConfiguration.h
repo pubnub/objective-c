@@ -45,6 +45,12 @@
 @property (nonatomic, assign, getter = shouldAutoReconnectClient) BOOL autoReconnectClient;
 
 /**
+ Stores whether \b PubNub client should during subscription on additional channel use last time token or require new
+ onw from server.
+ */
+@property (nonatomic, assign, getter = shouldKeepTimeTokenOnChannelsListChange) BOOL keepTimeTokenOnChannelsListChange;
+
+/**
  Stores whether client should restore subscription on channels after connection has been restored or not.
  */
 @property (nonatomic, assign, getter = shouldResubscribeOnConnectionRestore) BOOL resubscribeOnConnectionRestore;

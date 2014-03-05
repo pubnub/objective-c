@@ -456,6 +456,12 @@
 - (NSNumber *)shouldReconnectPubNubClient:(PubNub *)client;
 
 /**
+ This method allow to override value passed in configuration during client initialization.
+ This method called when client is changing list of channels (subscribe, unsubscribe, presence changes).
+ */
+- (NSNumber *)shouldKeepTimeTokenOnChannelsListChange;
+
+/**
  * This method allow to override value passed in configuration during client initialization.
  * This method called when service reachabilty reported that service are available and previous session is failed
  * because of network error or even not launched. It allow to specify whether client should restore subscription

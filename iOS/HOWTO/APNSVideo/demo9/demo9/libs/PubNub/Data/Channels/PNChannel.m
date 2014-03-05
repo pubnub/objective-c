@@ -300,11 +300,14 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     self.participantsList = [NSMutableDictionary dictionary];
     [hereNow.participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx,
                                                        BOOL *clientEnumeratorStop) {
+
+        NSString *clientStoreIdentifier = client.identifier;
         if ([client isAnonymous]) {
 
             client.channel = self;
-            [self.participantsList setValue:client forKey:PNUniqueIdentifier()];
+            clientStoreIdentifier = PNUniqueIdentifier();
         }
+        [self.participantsList setValue:client forKey:clientStoreIdentifier];
     }];
 }
 

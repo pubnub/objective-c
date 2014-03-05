@@ -176,6 +176,7 @@
         self.authorizationKey = authorizationKey?authorizationKey:@"";
         self.useSecureConnection = kPNSecureConnectionRequired;
         self.autoReconnectClient = kPNShouldAutoReconnectClient;
+        self.keepTimeTokenOnChannelsListChange = kPNShouldKeepTimeTokenOnChannelsListChange;
         self.reduceSecurityLevelOnError = kPNShouldReduceSecurityLevelOnError;
         self.ignoreSecureConnectionRequirement = kPNCanIgnoreSecureConnectionRequirement;
         self.resubscribeOnConnectionRestore = kPNShouldResubscribeOnConnectionRestore;
@@ -204,6 +205,7 @@
                                                                              secretKey:self.secretKey cipherKey:self.cipherKey authorizationKey:self.authorizationKey];
     configuration.useSecureConnection = self.shouldUseSecureConnection;
     configuration.autoReconnectClient = self.shouldAutoReconnectClient;
+    configuration.keepTimeTokenOnChannelsListChange = self.shouldKeepTimeTokenOnChannelsListChange;
     configuration.reduceSecurityLevelOnError = self.shouldReduceSecurityLevelOnError;
     configuration.ignoreSecureConnectionRequirement = self.canIgnoreSecureConnectionRequirement;
     configuration.resubscribeOnConnectionRestore = self.shouldResubscribeOnConnectionRestore;
@@ -289,6 +291,11 @@
     if (isEqual) {
 
         isEqual = (self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout);
+    }
+
+    if (isEqual) {
+
+        isEqual = (self.shouldKeepTimeTokenOnChannelsListChange == configuration.shouldKeepTimeTokenOnChannelsListChange);
     }
 
     if (isEqual) {

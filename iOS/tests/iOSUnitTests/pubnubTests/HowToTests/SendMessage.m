@@ -150,7 +150,7 @@
 	//	for( int i=4000; i<5000; i++ )
 	//		str = [str stringByAppendingFormat: @"\\u%d ", i];
 	//	NSLog(@"str\n\n @\"%@\"\n\n", str);
-
+//mess	__NSCFString *	@"["1   1"]"	0x08e593a0
 	//	messages = [NSMutableArray array];
 	[messages addObject:@"[[]]"];
 	[messages addObject:@"[{}]"];
@@ -237,10 +237,12 @@
 }
 
 -(void)sendNextMessage {
-	NSLog(@"sendNextMessage |%@|", messages[0]);
-	[PubNub sendMessage:messages[0] toChannel:pnChannels[0] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-		STAssertTrue( messageSendingState != 2, @"error %@\nmessage: %@", data, messages[0]);
+	NSObject *message = messages[0];
+	NSLog(@"sendNextMessage |%@|", message);
+	[PubNub sendMessage:message toChannel:pnChannels[0] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
 		NSLog(@"sendMessage %d", messageSendingState);
+		NSObject *mess = message;
+		STAssertTrue( messageSendingState != 2, @"error %@\nmessage: %@", data, messages[0]);
 
 		if( messageSendingState != PNMessageSending ) {
 			[messages removeObjectAtIndex: 0];

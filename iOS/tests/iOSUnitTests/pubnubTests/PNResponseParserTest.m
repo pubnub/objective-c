@@ -38,8 +38,8 @@
 @implementation PNResponseParserTest
 
 -(void)tearDown {
-    [super tearDown];
 	[NSThread sleepForTimeInterval:1.0];
+    [super tearDown];
 }
 
 -(void)testParserForResponse {
@@ -59,12 +59,14 @@
 
 	response = [[PNResponse alloc] init];
 	response.response = @[ @[], @(1), @(2)];
+	response.callbackMethod = @"h";
 	parser = [PNResponseParser parserForResponse: response];
 	STAssertTrue( parser != nil, @"");
 	STAssertTrue( [parser isKindOfClass: [PNChannelHistoryParser class]] == YES, @"");
 
 	response = [[PNResponse alloc] init];
 	response.response = @[ @[], @"", @(2)];
+	response.callbackMethod = @"s";
 	Class class = [PNResponseParser classForResponse: response];
 	STAssertTrue( class != nil, @"");
 	STAssertTrue( class == [PNChannelEventsResponseParser class], @"");
@@ -83,12 +85,14 @@
 
 	response = [[PNResponse alloc] init];
 	response.response = @{@"uuids":@"uuid", @"occupancy":@"occupancy"};
+	response.callbackMethod = @"p";
 	class = [PNResponseParser classForResponse: response];
 	STAssertTrue( class != nil, @"");
 	STAssertTrue( class == [PNHereNowResponseParser class], @"");
 
 	response = [[PNResponse alloc] init];
 	response.response = @{@"payload":@"payload", @"service":@"Access Manager"};
+	response.callbackMethod = @"arc";
 	class = [PNResponseParser classForResponse: response];
 	STAssertTrue( class != nil, @"");
 	STAssertTrue( class == [PNAccessRightsResponseParser class], @"");

@@ -1737,7 +1737,7 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
  
  @see +subscribeOnChannel:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent;
++ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to one more channel.
@@ -1856,8 +1856,8 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
  
  @see +subscribeOnChannel:withPresenceEvent:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
-andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent
+andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to one more channel.
@@ -1966,8 +1966,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannel:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
-                  metadata:(NSDictionary *)clientMetadata DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannel:withPresenceEvent:clientState:' instead.");
++ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent
+                  metadata:(NSDictionary *)clientMetadata DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to one more channel.
@@ -2074,8 +2074,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannel:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
-               clientState:(NSDictionary *)clientState;
++ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent
+               clientState:(NSDictionary *)clientState DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to one more channel.
@@ -2207,9 +2207,9 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannel:withPresenceEvent:
  */
-+ (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
++ (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent
                    metadata:(NSDictionary *)clientMetadata
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE("Use '+subscribeOnChannel:withPresenceEvent:clientState:andCompletionHandlingBlock:' instead.");
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to one more channel.
@@ -2341,9 +2341,9 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannel:withPresenceEvent:
  */
-+ (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
++ (void) subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent
                 clientState:(NSDictionary *)clientState
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence to channels on which
@@ -3088,7 +3088,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +subscribeOnChannels:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent;
++ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to the set of new channels.
@@ -3207,8 +3207,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +subscribeOnChannels:withPresenceEvent:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to the set of new channels.
@@ -3317,7 +3317,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannels:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent metadata:(NSDictionary *)clientMetadata DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannels:withPresenceEvent:clientState:' instead.");
++ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent metadata:(NSDictionary *)clientMetadata DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to the set of new channels.
@@ -3424,7 +3424,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannels:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent clientState:(NSDictionary *)clientState;
++ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent clientState:(NSDictionary *)clientState DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to the set of new channels.
@@ -3558,8 +3558,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannels:withPresenceEvent:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent metadata:(NSDictionary *)clientMetadata
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannels:withPresenceEvent:clientState:andCompletionHandlingBlock:' instead.");
++ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent metadata:(NSDictionary *)clientMetadata
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Subscribe client to the set of new channels.
@@ -3691,8 +3691,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @see +subscribeOnChannels:withPresenceEvent:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent clientState:(NSDictionary *)clientState
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent clientState:(NSDictionary *)clientState
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Unsubscribe client from one channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -3941,7 +3941,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +unsubscribeFromChannel:withPresenceEvent:withCompletionHandlingBlock:
  */
-+ (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent;
++ (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Unsubscribe client from one channel.
@@ -4042,8 +4042,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +unsubscribeFromChannel:withPresenceEvent:
  */
-+ (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL)withPresenceEvent
-    andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
++ (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent
+    andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -4272,7 +4272,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +unsubscribeFromChannels:withPresenceEvent:withCompletionHandlingBlock:
  */
-+ (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent;
++ (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 /**
  Unsubscribe client from set of channels.
@@ -4358,8 +4358,8 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +unsubscribeFromChannels:withPresenceEvent:
  */
-+ (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent
-     andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
++ (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent
+     andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
 
 
 #pragma mark - APNS management

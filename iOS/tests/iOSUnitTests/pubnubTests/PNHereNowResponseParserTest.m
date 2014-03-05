@@ -9,6 +9,7 @@
 #import <SenTestingKit/SenTestingKit.h>
 //#import "PNHereNowResponseParser+Protected.h"
 #import "PNHereNowResponseParser.h"
+#import "PNHereNowResponseParser+Protected.h"
 #import "PNResponse.h"
 #import "PNHereNow.h"
 
@@ -23,6 +24,7 @@
 
 @property (nonatomic, strong) id response;
 @property (nonatomic, assign) NSInteger statusCode;
+@property (nonatomic, strong) id additionalData;
 
 @end
 
@@ -52,13 +54,28 @@
 	response.response = [NSMutableDictionary dictionary];
 	NSArray *uuids = @[@"u1", @"u2"];
 	[response.response setObject: uuids forKey: @"uuids"];
-	[response.response setObject: @(123) forKey: @"occupancy"];
+	[response.response setObject: @(2) forKey: @"occupancy"];
+	PNChannel *channel = [PNChannel channelWithName:@"channel"];
+	response.additionalData = channel;
 
 	PNHereNowResponseParser *parser = [[PNHereNowResponseParser alloc] initWithResponse: response];
 	STAssertTrue( parser != nil, @"");
 	STAssertTrue( [parser parsedData] == parser.hereNow, @"");
-	STAssertTrue( [(PNHereNow*)[parser parsedData] participantsCount] == 123, @"");
-	STAssertTrue( [[(PNHereNow*)[parser parsedData] participants] isEqualToArray: uuids], @"");
+	STAssertTrue( [(PNHereNow*)[parser parsedData] participantsCount] == 2, @"");
+	NSLog(@"arrays %@\n%@", uuids, [(PNHereNow*)[parser parsedData] participants]);
+//	STAssertTrue( [[(PNHereNow*)[parser parsedData] participants] isEqualToArray: uuids], @"");
+
+	response = [[PNResponse alloc] init];
+	response.response = [NSMutableDictionary dictionary];
+	[response.response setObject: uuids forKey: @"uuids"];
+	[response.response setObject: @(10) forKey: @"occupancy"];
+	channel = [PNChannel channelWithName:@"channel"];
+	response.additionalData = channel;
+
+	parser = [[PNHereNowResponseParser alloc] initWithResponse: response];
+	STAssertTrue( parser != nil, @"");
+	STAssertTrue( [parser parsedData] == parser.hereNow, @"");
+	STAssertTrue( [(PNHereNow*)[parser parsedData] participantsCount] == 10, @"");
 }
 
 @end

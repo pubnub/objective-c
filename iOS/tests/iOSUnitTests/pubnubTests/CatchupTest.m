@@ -30,11 +30,11 @@
 
 @implementation CatchupTest
 
-- (void)tearDown
-{
-    // Put teardown code here; it will be run once, after the last test case.
-    [super tearDown];
+- (void)tearDown {
+	[NSThread sleepForTimeInterval:1.0];
+	[super tearDown];
 }
+
 
 
 - (void)setUp

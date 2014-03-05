@@ -31,6 +31,7 @@
 @implementation PNTimeTokenResponseParserTest
 
 -(void)tearDown {
+	[NSThread sleepForTimeInterval:1.0];
     [super tearDown];
 	[NSThread sleepForTimeInterval:1.0];
 }
