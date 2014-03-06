@@ -22,11 +22,7 @@
 
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
 	self.window.rootViewController = navController;
-<<<<<<< HEAD
 	navController.topViewController.navigationItem.title = @"Mediator";
-=======
-	navController.topViewController.title = @"Mediator";
->>>>>>> develop
 
 
     [self initializePubNubClient];

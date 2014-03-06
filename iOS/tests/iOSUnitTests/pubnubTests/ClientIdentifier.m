@@ -75,8 +75,8 @@
 }
 
 - (void)tearDown {
-	[super tearDown];
 	[NSThread sleepForTimeInterval:1.0];
+	[super tearDown];
 }
 
 -(void)test10SendMessage {

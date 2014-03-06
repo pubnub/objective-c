@@ -14,6 +14,7 @@
 #import "PNWriteBuffer.h"
 #import "PNConfiguration.h"
 #import "PubNub+Protected.h"
+#import "PNHeartbeatRequest.h"
 
 @interface HeartbeatTest : SenTestCase <PNDelegate> {
 	NSDate *dateLastPresence;
@@ -54,13 +55,13 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presenceEvent:) name: @"presenceEvent" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
 
-	presenceInterval = /*kPNHeartbeatRequestTimeoutOffset + */10;
+	presenceInterval = /*kPNHeartbeatRequestTimeoutOffset + */11;
 	[self check];
 
-	presenceInterval = 20;
+	presenceInterval = 21;
 	[self check];
 
-	presenceInterval = 30;
+	presenceInterval = 31;
 	[self check];
 }
 
@@ -118,10 +119,22 @@
 	if( authorizationKey.length > 0 )
 		STAssertTrue( [string rangeOfString: authorizationKey].location != NSNotFound, @"");
 
-	if( [string rangeOfString: @"/heartbeat?uuid="].location != NSNotFound ) {
+	if( [request isKindOfClass: [PNHeartbeatRequest class]] == YES ) {
+//	if( [string rangeOfString: @"/heartbeat?uuid="].location != NSNotFound ) {
+//		NSString *state = @"";
+//		if( [request performSelector:@selector(state)] )
+//			state = [NSString stringWithFormat:@"&state=%@", [[PNJSONSerialization stringFromJSONObject: [request performSelector:@selector(state)]] percentEscapedString]];
+		NSString *expect = [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/heartbeat?uuid=%@&pnexpires=%d&auth=%@",
+				[[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+				@"channel",
+				[request performSelector: @selector(clientIdentifier)], presenceInterval*2,
+//				([request authorizationField] ? [NSString stringWithFormat:@"&%@", [request authorizationField]] : @"")
+				[PubNub sharedInstance].configuration.authorizationKey	];
+		STAssertTrue( [string rangeOfString: expect].location != NSNotFound, @"string\n%@\nexpect\n%@", string, expect);
+
 		NSTimeInterval interval = -[dateLastHeartbeat timeIntervalSinceNow];
 		NSLog(@"dateLastHeartbeat %@, now %@", dateLastHeartbeat, [NSDate date]);
-		STAssertTrue( interval > presenceInterval-1 && interval < presenceInterval+2, @"interval %f, presenceInterval %d", interval, presenceInterval);
+		STAssertTrue( interval > presenceInterval-2 && interval < presenceInterval+2, @"interval %f, presenceInterval %d", interval, presenceInterval);
 		NSLog(@"presenceEvent interval %f", interval);
 		countHeartbeat++;
 		dateLastHeartbeat = [NSDate date];

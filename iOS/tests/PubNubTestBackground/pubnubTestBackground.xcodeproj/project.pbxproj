@@ -79,16 +79,6 @@
 		5ACFA84518687044007E2DA6 /* PNConnectionChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACFA80B18687044007E2DA6 /* PNConnectionChannel.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		5ACCA9DA17F342F200FE90CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5ACCA9AA17F342F000FE90CF;
-			remoteInfo = pubNubBackgroundMediator;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		5AC38A3717F1B28500956E69 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		5AC38AA017F1C0E000956E69 /* pubnubTestBackground Background.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pubnubTestBackground Background.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,7 +86,6 @@
 		5AC38AA317F1C18E00956E69 /* PNBackgroundAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNBackgroundAppDelegate.h; path = BackgroundApp/PNBackgroundAppDelegate.h; sourceTree = "<group>"; };
 		5AC38AA417F1C18E00956E69 /* PNBackgroundAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNBackgroundAppDelegate.m; path = BackgroundApp/PNBackgroundAppDelegate.m; sourceTree = "<group>"; };
 		5AC38AA817F1C20100956E69 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BackgroundApp/main.m; sourceTree = "<group>"; };
-		5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = pubNubBackgroundMediator.xcodeproj; path = pubNubBackgroundMediator/pubNubBackgroundMediator.xcodeproj; sourceTree = "<group>"; };
 		5ACFA75F18687044007E2DA6 /* PNObservationCenter+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNObservationCenter+Protected.h"; sourceTree = "<group>"; };
 		5ACFA76018687044007E2DA6 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
 		5ACFA76118687044007E2DA6 /* PNObservationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNObservationCenter.m; sourceTree = "<group>"; };
@@ -298,14 +287,6 @@
 				5AC38AA817F1C20100956E69 /* main.m */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		5ACCA9D717F342F000FE90CF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5ACCA9DB17F342F200FE90CF /* pubNubBackgroundMediator.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		5ACFA75D18687044007E2DA6 /* PubNub */ = {
@@ -583,7 +564,6 @@
 		79C3221D166DF846006DB535 = {
 			isa = PBXGroup;
 			children = (
-				5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */,
 				79C32232166DF847006DB535 /* PubNubBackground */,
 				79C3222B166DF847006DB535 /* Frameworks */,
 				79C32229166DF847006DB535 /* Products */,
@@ -701,28 +681,12 @@
 			mainGroup = 79C3221D166DF846006DB535;
 			productRefGroup = 79C32229166DF847006DB535 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 5ACCA9D717F342F000FE90CF /* Products */;
-					ProjectRef = 5ACCA9D617F342F000FE90CF /* pubNubBackgroundMediator.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				5AC38A3A17F1C0E000956E69 /* pubnubTestBackgroundBackground */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		5ACCA9DB17F342F200FE90CF /* pubNubBackgroundMediator.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = pubNubBackgroundMediator.app;
-			remoteRef = 5ACCA9DA17F342F200FE90CF /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5AC38A8717F1C0E000956E69 /* Resources */ = {

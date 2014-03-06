@@ -21,11 +21,7 @@
 
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
 	self.window.rootViewController = navController;
-<<<<<<< HEAD
 	navController.topViewController.navigationItem.title = @"PubNub";
-=======
-	navController.topViewController.title = @"Pubnub";
->>>>>>> develop
 
 
 	isWillRestoreSubscriptionOnChannelsDelegate = YES;
