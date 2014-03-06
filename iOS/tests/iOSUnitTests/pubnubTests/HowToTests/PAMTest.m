@@ -60,7 +60,7 @@
 	timeoutNewMessage = 12;
 	indexMessage = 0;
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self
@@ -903,21 +903,21 @@
 	}
 }
 
--(void)didSendRequest:(NSNotification*)notification {
-	NSLog(@"didSendRequest %@", notification.object);
-	PNBaseRequest *request = notification.object;
-	PNWriteBuffer *buffer = [request buffer];
-	NSString *string = [NSString stringWithUTF8String: (char*)buffer.buffer];
-	if( string == nil )
-		string = [buffer description];
-	STAssertTrue( string != nil, @"");
-	NSLog(@"buffer:\n%@", string);
-    NSString *auth = [PubNub sharedInstance].configuration.authorizationKey;
-    if ([auth length] > 0)
-        auth = [NSString stringWithFormat:@"auth=%@", authorizationKey];
-	if( auth.length > 0 )
-		STAssertTrue( [string rangeOfString: auth].location != NSNotFound, @"request %@ - %@", request, buffer);
-}
+//-(void)didSendRequest:(NSNotification*)notification {
+//	NSLog(@"didSendRequest %@", notification.object);
+//	PNBaseRequest *request = notification.object;
+//	PNWriteBuffer *buffer = [request buffer];
+//	NSString *string = [NSString stringWithUTF8String: (char*)buffer.buffer];
+//	if( string == nil )
+//		string = [buffer description];
+//	STAssertTrue( string != nil, @"");
+//	NSLog(@"buffer:\n%@", string);
+//    NSString *auth = [PubNub sharedInstance].configuration.authorizationKey;
+//    if ([auth length] > 0)
+//        auth = [NSString stringWithFormat:@"auth=%@", authorizationKey];
+//	if( auth.length > 0 )
+//		STAssertTrue( [string rangeOfString: auth].location != NSNotFound, @"request %@ - %@", request, buffer);
+//}
 
 
 @end

@@ -60,7 +60,7 @@
 	NSDictionary *state = @{@"key1":@"value1", @"key2":@(2)};
 	PNClientStateUpdateRequest *request = [PNClientStateUpdateRequest clientStateUpdateRequestWithIdentifier: @"id" channel: channel andClientState: state];
 	NSString *resourcePath = [request resourcePath];
-	NSLog(@"resourcePath %@", resourcePath);
+	NSLog(@"resourcePath %@", resourcePath);///v2/presence/sub-key/demo/channel/channel/uuid/id/data?callback=mu_9e32f&state=%7B%22key2%22%3A2%2C%22key1%22%3A%22value1%22%7D&auth=authorizationKey
 	STAssertTrue( [resourcePath rangeOfString: @"/v2/presence/sub-key/subscr/channel/channel/uuid/id/data?callback=mu_"].location == 0, @"");
 	STAssertTrue( [resourcePath rangeOfString: @"&state=%7B%22key2%22%3A2%2C%22key1%22%3A%22value1%22%7D&auth=auth"].location != NSNotFound, @"");
 	STAssertTrue( resourcePath.length == 139, @"");

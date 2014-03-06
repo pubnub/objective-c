@@ -21,14 +21,9 @@
 - (NSMutableData *)retrievedData {
 	NSMutableData *data = [super retrievedData];
 	NSString *str = [NSString stringWithUTF8String:[data bytes]];
-<<<<<<< HEAD
 	if( data.length > 0 && str.length == 0 )
 		str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-//	NSLog(@"retrievedData, %d \n|%@|", data.length, str);
-
-=======
 	NSLog(@"MyPNConnection retrievedData\n|%@|", str);
->>>>>>> feature-pt66739978
 	if( str != nil && [str rangeOfString: @"\"status\": 200"].location != NSNotFound &&
 	   [str rangeOfString: @"\"message\": \"OK\""].location != NSNotFound &&
 	   [str rangeOfString: @"\"service\": \"Presence\""].location != NSNotFound ) {
