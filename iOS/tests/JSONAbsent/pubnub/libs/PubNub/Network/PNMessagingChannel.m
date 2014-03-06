@@ -2067,6 +2067,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 NSMutableSet *existingChannelsSet = [NSMutableSet setWithArray:[self channelsWithOutPresenceFromList:[self.oldSubscribedChannelsSet allObjects]]];
                 [existingChannelsSet minusSet:[NSSet setWithArray:[self channelsWithOutPresenceFromList:subscribeRequest.channelsForSubscription]]];
                 [self.subscribedChannelsSet unionSet:[NSSet setWithArray:subscribeRequest.channels]];
+                [self.subscribedChannelsSet minusSet:[NSSet setWithArray:subscribeRequest.channelsForPresenceDisabling]];
                 if ([existingChannelsSet count]) {
                     
                     [self.subscribedChannelsSet minusSet:existingChannelsSet];
