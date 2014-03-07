@@ -472,7 +472,7 @@
     [super tearDown];
 
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver: self];
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 #pragma mark - PubNub client delegate methods

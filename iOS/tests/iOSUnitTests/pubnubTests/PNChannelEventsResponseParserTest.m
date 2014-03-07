@@ -13,6 +13,7 @@
 #import "PNPresenceEvent.h"
 #import "PNResponse.h"
 #import "PNChannel.h"
+#import "PNClient.h"
 
 @interface PNChannel (test)
 
@@ -46,7 +47,7 @@
 
 -(void)tearDown {
     [super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 -(void)testInit {
@@ -65,7 +66,7 @@
 	PNPresenceEvent *event = parser.events.events[0];
 	STAssertTrue( event.type == PNPresenceEventLeave, @"");
 	STAssertTrue( [event.date.timeToken intValue] == 123, @"");
-	STAssertTrue( [event.uuid isEqualToString: @"uuid"], @"");
+	STAssertTrue( [event.client.identifier isEqualToString: @"uuid"], @"");
 	STAssertTrue( event.occupancy == 100, @"");
 	STAssertTrue( [event.channel.name isEqualToString: @"ch1"] == TRUE, @"");
 

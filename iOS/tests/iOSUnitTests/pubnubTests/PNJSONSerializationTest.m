@@ -26,7 +26,7 @@
 
 -(void)tearDown {
     [super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 -(void)testJSONObjectWithString {

@@ -32,17 +32,9 @@
 
 @implementation PNMessagingChannelTest
 
-- (void)setUp
-{
-    [super setUp];
-    
-    NSLog(@"setUp: %@", self.name);
-    // Set-up code here.
-}
-
 - (void)tearDown
 {
-    // Tear-down code here.
+	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
 }
 
@@ -159,14 +151,14 @@
 - (void)testSubscribeOnChannelsWithPresenceEventReject {
     PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
-    [mockChannel subscribeOnChannels:@[[self mockChannel]] withPresenceEvent:YES];
+    [mockChannel subscribeOnChannels:@[[self mockChannel]] withCatchUp:YES andClientState: nil];
 
     mockChannel = [OCMockObject partialMockForObject:messageChannel];
     [[mockChannel reject] scheduleRequest:OCMOCK_ANY
                   shouldObserveProcessing:YES];
     
-    [mockChannel subscribeOnChannels:@[[self mockChannel]] withPresenceEvent:YES];
-    
+    [mockChannel subscribeOnChannels:@[[self mockChannel]] withCatchUp:YES andClientState: nil];
+
     [mockChannel verify];
 }
 
@@ -178,7 +170,7 @@
     [[mockChannel expect] scheduleRequest:OCMOCK_ANY
                   shouldObserveProcessing:YES];
 
-    [mockChannel subscribeOnChannels:@[ch] withPresenceEvent:YES];
+    [mockChannel subscribeOnChannels:@[ch] withCatchUp:YES andClientState: nil];
 
     [mockChannel verify];
 }

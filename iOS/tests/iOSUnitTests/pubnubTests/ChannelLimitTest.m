@@ -171,7 +171,7 @@
 		__block int blockCount = 0;
 		NSLog(@"start unsubscribeFromChannels %@", channel);
 		clientUnsubscriptionDidCompleteNotificationCount = 0;
-		[PubNub unsubscribeFromChannels: @[channel] withPresenceEvent:YES andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
+		[PubNub unsubscribeFromChannels: @[channel] withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
 			NSLog(@"unsubscribeFromChannels %@", channel);
 			NSLog(@"block isSubscribedOnChannel %d", [PubNub isSubscribedOnChannel: channel]);
 			STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);

@@ -464,7 +464,7 @@
     [super tearDown];
 
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver: self];
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 #pragma mark - PubNub client delegate methods
@@ -999,17 +999,11 @@
 }
 
 
--(void)t900UnsubscribeFromChannels
-{
+-(void)t900UnsubscribeFromChannels {
 	handleClientUnsubscriptionProcess = YES;
-	//	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	__block BOOL isCompletionBlockCalled = NO;
-	// Unsubscribe from set of channels and notify everyone that we are left
 	NSDate *start = [NSDate date];
-	[PubNub unsubscribeFromChannels: pnChannels
-				  withPresenceEvent:YES
-		 andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError)
-	 {
+	[PubNub unsubscribeFromChannels: pnChannels withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
 		 NSLog(@"unsubscribeFromChannels %f, %@", interval, channels);
 		 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
@@ -1018,17 +1012,11 @@
 		 STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 	 }];
-    // Run loop
-	//    while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-	//        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-	//                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 		isCompletionBlockCalled == NO; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue(handleClientUnsubscriptionProcess, @"notification not called");
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
-
-	//	[self t950ReconnectCount];
 }
 
 - (void)t910removeClientChannelSubscriptionStateObserver {

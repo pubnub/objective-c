@@ -18,6 +18,8 @@
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 #import "TestSemaphor.h"
+#import "PNClient.h"
+#import "PNPresenceEvent.h"
 
 @interface AbbreviatedPresenceTest : SenTestCase <PNDelegate> {
 	int clientDidReceivePresenceEvent;
@@ -128,7 +130,7 @@
     // Retrieve reference on presence event which was received
 	NSLog(@"clientDidReceivePresenceEvent %@", notification);
     PNPresenceEvent *event = (PNPresenceEvent *)notification.userInfo;
-	if( event.uuid == nil )
+	if( event.client.identifier == nil )
 		clientDidReceivePresenceEvent ++;
 }
 

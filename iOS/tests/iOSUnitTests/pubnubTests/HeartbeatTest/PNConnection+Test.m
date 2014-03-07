@@ -14,7 +14,7 @@
 
 static int const kPNStreamBufferSize = 32768;
 
-@interface PNConnection (Test)
+@interface PNConnection (Test1)
 
 @property NSMutableData *retrievedData;
 - (id)initWithConfiguration:(PNConfiguration *)configuration;
@@ -24,7 +24,7 @@ static int const kPNStreamBufferSize = 32768;
 
 @end
 
-@implementation PNConnection (Test)
+@implementation PNConnection (Test1)
 
 + (PNConnection *)connectionWithIdentifier:(NSString *)identifier {
 

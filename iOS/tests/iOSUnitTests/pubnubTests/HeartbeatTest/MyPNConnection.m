@@ -23,7 +23,7 @@
 	NSString *str = [NSString stringWithUTF8String:[data bytes]];
 	if( data.length > 0 && str.length == 0 )
 		str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-	NSLog(@"MyPNConnection retrievedData\n|%@|", str);
+//	NSLog(@"MyPNConnection retrievedData\n|%@|", str);
 	if( str != nil && [str rangeOfString: @"\"status\": 200"].location != NSNotFound &&
 	   [str rangeOfString: @"\"message\": \"OK\""].location != NSNotFound &&
 	   [str rangeOfString: @"\"service\": \"Presence\""].location != NSNotFound ) {

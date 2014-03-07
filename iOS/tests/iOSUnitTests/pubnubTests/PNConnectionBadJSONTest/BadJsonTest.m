@@ -51,7 +51,7 @@
 @implementation BadJsonTest
 
 - (void)tearDown {
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 	[super tearDown];
 }
 

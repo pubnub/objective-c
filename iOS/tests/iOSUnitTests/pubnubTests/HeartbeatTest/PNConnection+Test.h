@@ -8,7 +8,7 @@
 
 #import "PNConnection.h"
 
-@interface PNConnection (Test)
+@interface PNConnection (Test1)
 
 //@property (nonatomic, strong) NSMutableData *retrievedData;
 @property NSMutableData *retrievedData;

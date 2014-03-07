@@ -213,7 +213,7 @@
 
 - (void)tearDown {
 	[super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
@@ -241,7 +241,7 @@
 	NSLog(@"sendNextMessage |%@|", message);
 	[PubNub sendMessage:message toChannel:pnChannels[0] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
 		NSLog(@"sendMessage %d", messageSendingState);
-		NSObject *mess = message;
+//		NSObject *mess = message;
 		STAssertTrue( messageSendingState != 2, @"error %@\nmessage: %@", data, messages[0]);
 
 		if( messageSendingState != PNMessageSending ) {

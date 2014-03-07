@@ -670,12 +670,7 @@
 {
 	handleClientUnsubscriptionProcess = YES;
 	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-	// Unsubscribe from set of channels and notify everyone that we are left
-	[PubNub unsubscribeFromChannels: pnChannels
-				  withPresenceEvent:YES
-		 andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError)
-	 {
-		 // Check whether "unsubscribeError" is nil or not (if not, than handle error)
+	[PubNub unsubscribeFromChannels: pnChannels withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
 		 dispatch_semaphore_signal(semaphore);
 		 STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);

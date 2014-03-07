@@ -171,7 +171,7 @@
     [super tearDown];
 
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver: self];
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 
@@ -443,7 +443,7 @@
 	if( string == nil )
 		string = [buffer description];
 	STAssertTrue( string != nil, @"");
-	NSLog(@"didSendRequest buffer:\n%@", string);
+//	NSLog(@"didSendRequest buffer:\n%@", string);
     NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
     if ([authorizationKey length] > 0)
         authorizationKey = [NSString stringWithFormat:@"auth=%@", authorizationKey];

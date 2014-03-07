@@ -67,9 +67,8 @@
 }
 
 -(void)tearDown {
-    // Put teardown code here; it will be run once, after the last test case.
+	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
 }
 
 -(void)testChannelsWithNames {
@@ -153,7 +152,7 @@
 }
 
 -(void)testParticipants {
-	STAssertEquals( [channel participants], [channel participantsList], @"");
+	STAssertTrue( [[channel participants] isEqualToArray: [[channel participantsList] allValues]], @"");
 }
 
 -(void)testUpdateWithEvent {
@@ -185,7 +184,8 @@
 -(void)testUpdateWithParticipantsList {
 	PNHereNow *hereNow = [[PNHereNow alloc] init];
 	hereNow.participantsCount = 10;
-	hereNow.participants = @[@"participant"];
+	PNClient *client = [[PNClient alloc] initWithIdentifier: @"id" channel: nil andData: nil];
+	hereNow.participants = @[client];
 	[channel updateWithParticipantsList: hereNow];
 
 	STAssertEqualsWithAccuracy( [[channel.presenceUpdateDate date] timeIntervalSinceNow], 0.0, 1, @"");

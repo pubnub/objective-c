@@ -55,7 +55,7 @@
     [super setUp];
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"ch"]];
-	authorizationKey = [NSString stringWithFormat:@"a2", [NSDate date]];
+	authorizationKey = [NSString stringWithFormat:@"a2"/*, [NSDate date]*/];
 	timeout = 12;
 	timeoutHistory = 24;
 	timeoutNewMessage = 10;
@@ -117,7 +117,7 @@
 }
 
 - (void)tearDown {
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 	[super tearDown];
 }
 
