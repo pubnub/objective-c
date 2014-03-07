@@ -175,11 +175,11 @@
 		NSLog(@"configurations\n%@\n|\n%@", configurations[i], [PubNub sharedInstance].configuration );
 		if( [PubNub sharedInstance].configuration == nil )
 			continue;
-		if( [configurations[i] isEqual: [PubNub sharedInstance].configuration] == NO ) {
-			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
-			BOOL isEqual = [configurations[i] isEqual: [PubNub sharedInstance].configuration];
-			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
-		}
+//		if( [configurations[i] isEqual: [PubNub sharedInstance].configuration] == NO ) {
+//			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
+//			BOOL isEqual = [configurations[i] isEqual: [PubNub sharedInstance].configuration];
+//			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
+//		}
 		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration], @"configurations are not equals, %@\n%@", configurations[i], [PubNub sharedInstance].configuration );
 
 		__block BOOL isCompletionBlockCalled = NO;
