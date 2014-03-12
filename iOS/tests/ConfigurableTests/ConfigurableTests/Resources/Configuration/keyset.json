@@ -1,0 +1,14 @@
+{
+  "keyset1": {
+    "pubKey": "pub-c-fb5fa283-0d93-424f-bf86-d9aca2366c86",
+    "subKey": "sub-c-d247d250-9dbd-11e3-8008-02ee2ddab7fe",
+    "secKey": "sec-c-MmI2YjRjODAtNWU5My00ZmZjLTg0MzUtZGM1NGExNjJkNjg1",
+    "description": "Compatibility Mode ON"
+  },
+  "keyset2": {
+    "pubKey": "pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef",
+    "subKey": "sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe",
+    "secKey": "sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk",
+    "description": "Compatibility Mode OFF"
+  }
+}
