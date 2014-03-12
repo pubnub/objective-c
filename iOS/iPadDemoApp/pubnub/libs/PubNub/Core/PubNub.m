@@ -4577,7 +4577,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                 self.state = PNPubNubClientStateDisconnected;
             }
-            else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError){
+            else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError){
 
                 PNLog(PNLogGeneralLevel, self, @"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR "
                       "(STATE: %@)", [self humanReadableStateFrom:self.state]);
@@ -4615,7 +4615,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [self.messagingChannel resume];
             [self.serviceChannel resume];
         }
-        else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+        else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
             PNLog(PNLogGeneralLevel, self, @"CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SUSPENSION.");
 
@@ -4674,7 +4674,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             self.state = PNPubNubClientStateDisconnected;
         }
-        else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError){
+        else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError){
 
             PNLog(PNLogGeneralLevel, self, @"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR "
                   "(STATE: %@)", [self humanReadableStateFrom:self.state]);
@@ -4711,7 +4711,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [self.messagingChannel resume];
             [self.serviceChannel resume];
         }
-        else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+        else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
             PNLog(PNLogGeneralLevel, self, @"CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SLEEP.");
 
