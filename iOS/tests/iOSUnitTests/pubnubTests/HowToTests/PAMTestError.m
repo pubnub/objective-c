@@ -54,7 +54,7 @@
     [super setUp];
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"ch1", @"ch2"]];
-	authorizationKey = [NSString stringWithFormat:@"a2", [NSDate date]];
+	authorizationKey = [NSString stringWithFormat:@"a2" /*, [NSDate date]*/];
 	timeout = 10;
 	timeoutHistory = 10;
 	timeoutNewMessage = 10;
@@ -224,7 +224,7 @@
 }
 
 - (void)tearDown {
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 -(void)kPNClientSubscriptionDidCompleteNotification:(NSNotification*)notification {

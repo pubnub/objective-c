@@ -28,6 +28,11 @@
 @property (nonatomic, strong) NSArray *channelsForPresenceEnabling;
 @property (nonatomic, strong) NSArray *channelsForPresenceDisabling;
 
+/**
+ Stores user-provided state which should be appended to the client subscription.
+ */
+@property (nonatomic, strong) NSDictionary *state;
+
 
 #pragma mark - Instance methods
 
@@ -38,10 +43,12 @@
  */
 - (NSArray *)channelsForSubscription;
 
+- (void)resetSubscriptionTimeToken;
+
 /**
  * Allow to reset time token on each of channel which should be used for subscription
  */
- - (void)resetTimeToken;
+- (void)resetTimeToken;
  - (void)resetTimeTokenTo:(NSString *)timeToken;
 
 #pragma mark -

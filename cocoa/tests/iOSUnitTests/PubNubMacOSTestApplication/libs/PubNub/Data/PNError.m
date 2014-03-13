@@ -204,6 +204,7 @@
             case kPNRequestExecutionFailedOnInternetFailureError:
             case kPNRequestExecutionFailedClientNotReadyError:
             case kPNRequestExecutionFailedClientSuspendedError:
+            case kPNInvalidMetadataPayloadError:
 
                 errorDescription = @"PubNub client can't perform request";
                 break;
@@ -396,6 +397,11 @@
 
             failureReason = @"Looks like the target channel for the message has not been specified";
             break;
+        case kPNInvalidMetadataPayloadError:
+
+            failureReason = @"Looks like invalid state has been used for request or you tried update state of the "
+                             "channel on which you not subscribed at this moment.";
+            break;
         case kPNMessageObjectError:
 
             failureReason = @"Looks like no message object was passed";
@@ -561,6 +567,12 @@
         case kPNMessageHasNoChannelError:
 
             fixSuggestion = @"Ensure that you specified a valid channel for this message.";
+            break;
+        case kPNInvalidMetadataPayloadError:
+
+            fixSuggestion = @"Make sure that your state values supported (integer, float or string) and check whether "
+                             "you subscribed on channel for which you want to update state or not (you can update "
+                             "state only for channels on which you subscribed).";
             break;
         case kPNTooLongMessageError:
 

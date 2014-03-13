@@ -36,6 +36,5 @@
 @property (assign, nonatomic) NSString *sCustomUuid;
 
 - (void)DisplayInLog: (NSString *)message;
-- (void)ShowChannelInLabel: (NSString *)message :(bool *)bRemove;
 
 @end

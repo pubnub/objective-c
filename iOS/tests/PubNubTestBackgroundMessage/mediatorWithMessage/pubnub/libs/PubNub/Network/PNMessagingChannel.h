@@ -59,40 +59,42 @@
 - (BOOL)isSubscribedForChannel:(PNChannel *)channel;
 
 /**
- * Will subscribe client for set of channels. This request will add provided channels set to the list of channels
-  * on which client already subscribed.
- *
- * Warning: if client connected to the PubNub service the this method will force client to send "leave" command
- *          to all channels on which client subscribed and then re-subscribe with new channels list (this is required
- *          so presence event will trigger on specified channels)
+ Method will initiate subscription on specified set of channels. This request will add provided channels set to the
+ list of channels on which client already subscribed.
+
+ @param channels
+ List of \b PNChannel instances on which it should subscribe.
+
+ @note By default this method will generate presence event on channels on which client already subscribed.
  */
 - (void)subscribeOnChannels:(NSArray *)channels;
 
 /**
- * Same function as -subscribeOnChannels: but also allow to specify whether 'leave' presence event should be
- * generated or not
- */
-- (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent;
+ Method will initiate subscription on specified set of channels. This request will add provided channels set to the
+ list of channels on which client already subscribed.
 
-/**
- * Will unsubscribe from all channels with which it communicate now. This method also will trigger 'leave'
- * presence event if withPresenceEvent flag is set to 'YES'
- *
- * @return Returns list of channels from which client will unsubscribe
+ @code
+ @endcode
+ This method extends \a -subscribeOnChannels: and allow to specify whether presence event should be generated or not.
+
+ @param channels
+ List of \b PNChannel instances on which it should subscribe.
+
+ @param shouldCatchUp
+ Specify whether client should forcibly use last time token or use configuration value.
+
+ @param clientState
+ \b NSDictionary instance with list of parameters which should be bound to the client.
  */
-- (NSArray *)unsubscribeFromChannelsWithPresenceEvent:(BOOL)withPresenceEvent;
+- (void)subscribeOnChannels:(NSArray *)channels
+                withCatchUp:(BOOL)shouldCatchUp
+             andClientState:(NSDictionary *)clientState;
 
 /**
  * Will unsubscribe client from set of channels. Specified set of channels will be removed from the list of
  * subscribed channels. Leave event will be sent on provided list of channels.
  */
 - (void)unsubscribeFromChannels:(NSArray *)channels;
-
-/**
- * Same function as -unsubscribeFromChannels: but also allow to specify whether 'leave' presence event should be
- * generated or not.
- */
-- (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL)withPresenceEvent;
 
 
 #pragma mark - Presence observation management

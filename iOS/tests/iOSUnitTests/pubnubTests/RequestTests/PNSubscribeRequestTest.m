@@ -54,6 +54,7 @@
 	STAssertTrue( [request.updateTimeToken isEqualToString: @"123"] == YES, @"");
 }
 
+<<<<<<< HEAD
 -(void)testInitForChannel {
 	[PubNub setClientIdentifier: @"id"];
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];
@@ -74,6 +75,15 @@
 	STAssertTrue( [request.channels isEqualToArray: @[channel]] == YES, @"");
 	STAssertTrue( [request.clientIdentifier isEqualToString: @"id"] == YES, @"");
 	STAssertTrue( [request.updateTimeToken isEqualToString: @"123"] == YES, @"");
+=======
+- (void)testInitForChannel {
+   
+    STAssertNotNil([[PNSubscribeRequest alloc] initForChannel:[[PNChannel alloc] init] byUserRequest:NO withClientState: nil], @"Cannot initialize PNSubscribeRequest with channel");
+}
+
+- (void)testInitForChannels {
+    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:@[] byUserRequest:NO withClientState: nil], @"Cannot initialize PNSubscribeRequest with channels");
+>>>>>>> presence-v3
 }
 
 -(void)testResetTimeToken {
@@ -86,6 +96,7 @@
 	STAssertTrue( [channel.updateTimeToken isEqualToString: @"0"] == YES, @"");
 }
 
+<<<<<<< HEAD
 -(void)testResetTimeTokenTo {
 	[PubNub setClientIdentifier: @"id"];
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];
@@ -101,6 +112,14 @@
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];
 	PNSubscribeRequest *request = [[PNSubscribeRequest alloc] initForChannels: @[channel] byUserRequest: YES];
 	STAssertTrue( [[request channelsForSubscription] isEqualToArray: @[channel]] == YES, @"");
+=======
+- (void)testSubscribeRequestForChannel {
+    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:nil byUserRequest:NO withClientState: nil], @"Cannot subscribe for channel");
+}
+
+- (void)testSubscribeRequestForChannels {
+    STAssertNotNil([[PNSubscribeRequest alloc] initForChannels:nil byUserRequest:NO withClientState: nil], @"Cannot subscribe for channels");
+>>>>>>> presence-v3
 }
 
 -(void)testIsInitialSubscription {

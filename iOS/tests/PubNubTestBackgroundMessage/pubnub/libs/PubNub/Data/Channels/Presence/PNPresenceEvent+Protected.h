@@ -21,14 +21,29 @@
 // presence response dictionary from JSON
 struct PNPresenceEventDataKeysStruct {
 
-    // Stores presence event type
+    /**
+     Stores presence event type.
+     */
     __unsafe_unretained NSString *action;
-    // Stores presence occurrence time
+
+    /**
+     Stores presence occurrence time.
+     */
     __unsafe_unretained NSString *timestamp;
-    // Stores reference on person who triggered presence event
+
+    /**
+     Stores reference on person who triggered presence event.
+     */
     __unsafe_unretained NSString *uuid;
-    // Stores reference on current number of persons on channel
-    // in which this event was triggered
+
+    /**
+     Stores reference on data which has been appended to the client with specified identifier.
+     */
+    __unsafe_unretained NSString *data;
+
+    /**
+     Stores reference on current number of persons on channel in which this event was triggered.
+     */
     __unsafe_unretained NSString *occupancy;
 };
 

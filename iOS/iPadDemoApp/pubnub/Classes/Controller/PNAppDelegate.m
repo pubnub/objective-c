@@ -122,9 +122,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [PNIdentificationViewController new];
     [self.window makeKeyAndVisible];
-    
-    [self initializePubNubClient];
 
+    [self initializePubNubClient];
     
     return YES;
 }
@@ -265,6 +264,30 @@
     PNLog(PNLogGeneralLevel, self, @"PubNub client disconnected from PubNub origin at: %@", origin);
 }
 
+- (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully received state for client %@ on channel %@: %@ ",
+          remoteClient.identifier, remoteClient.channel, remoteClient.data);
+}
+
+- (void)pubnubClient:(PubNub *)client clientStateRetrieveDidFailWithError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to receive state for client %@ on channel %@ because of error: %@",
+            ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
+}
+
+- (void)pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully updated state for client %@ at channel %@: %@ ",
+          remoteClient.identifier, remoteClient.channel, remoteClient.data);
+}
+
+- (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to update state for client %@ at channel %@ because of error: %@",
+            ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
+}
+
 - (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels {
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client successfully subscribed on channels: %@", channels);
@@ -380,6 +403,20 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download participants list for channel %@ because of error: %@",
           channel, error);
+}
+
+- (void)pubnubClient:(PubNub *)client didReceiveParticipantChannelsList:(NSArray *)participantChannelsList
+       forIdentifier:(NSString *)clientIdentifier {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client received participant channels list for identifier %@: %@",
+          participantChannelsList, clientIdentifier);
+}
+
+- (void)pubnubClient:(PubNub *)client didFailParticipantChannelsListDownloadForIdentifier:(NSString *)clientIdentifier
+           withError:(PNError *)error {
+
+    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download participant channels list for identifier %@ "
+            "because of error: %@", clientIdentifier, error);
 }
 
 - (NSNumber *)shouldResubscribeOnConnectionRestore {

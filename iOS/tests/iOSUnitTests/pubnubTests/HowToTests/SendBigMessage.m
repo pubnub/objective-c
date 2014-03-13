@@ -290,8 +290,7 @@
 {
 	__block BOOL isCompletionBlockCalled = NO;
 	[PubNub unsubscribeFromChannels: pnChannels
-				  withPresenceEvent:YES
-		 andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError)
+		 withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError)
 	 {
 		 isCompletionBlockCalled = YES;
 		 STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);

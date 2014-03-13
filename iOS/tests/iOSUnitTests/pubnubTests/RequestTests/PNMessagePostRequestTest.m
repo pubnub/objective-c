@@ -38,12 +38,18 @@ typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
 @property (nonatomic, strong) id message;
 @property (nonatomic, strong) PNChannel *channel;
 
+<<<<<<< HEAD
 @end
 
 
 @implementation PNMessagePostRequestTest
 
 - (void)tearDown {
+=======
+- (void)tearDown
+{
+	[NSThread sleepForTimeInterval:0.1];
+>>>>>>> presence-v3
     [super tearDown];
 	[NSThread sleepForTimeInterval:1.0];
 }

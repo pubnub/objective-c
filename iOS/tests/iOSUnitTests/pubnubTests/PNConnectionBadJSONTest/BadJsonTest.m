@@ -50,6 +50,11 @@
 
 @implementation BadJsonTest
 
+- (void)tearDown {
+	[NSThread sleepForTimeInterval:0.1];
+	[super tearDown];
+}
+
 - (void)setUp
 {
     [super setUp];

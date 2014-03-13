@@ -176,6 +176,7 @@
         self.authorizationKey = authorizationKey?authorizationKey:@"";
         self.useSecureConnection = kPNSecureConnectionRequired;
         self.autoReconnectClient = kPNShouldAutoReconnectClient;
+        self.keepTimeTokenOnChannelsListChange = kPNShouldKeepTimeTokenOnChannelsListChange;
         self.reduceSecurityLevelOnError = kPNShouldReduceSecurityLevelOnError;
         self.ignoreSecureConnectionRequirement = kPNCanIgnoreSecureConnectionRequirement;
         self.resubscribeOnConnectionRestore = kPNShouldResubscribeOnConnectionRestore;
@@ -183,6 +184,9 @@
         self.acceptCompressedResponse = kPNShouldAcceptCompressedResponse;
         self.nonSubscriptionRequestTimeout = kPNNonSubscriptionRequestTimeout;
         self.subscriptionRequestTimeout = kPNSubscriptionRequestTimeout;
+        self.presenceHeartbeatTimeout = kPNPresenceHeartbeatTimeout;
+        self.presenceHeartbeatInterval = MAX(self.presenceHeartbeatTimeout - kPNHeartbeatRequestTimeoutOffset,
+                                             kPNPresenceHeartbeatInterval);
 
         // Checking whether user changed origin host from default
         // or not
@@ -201,6 +205,7 @@
                                                                              secretKey:self.secretKey cipherKey:self.cipherKey authorizationKey:self.authorizationKey];
     configuration.useSecureConnection = self.shouldUseSecureConnection;
     configuration.autoReconnectClient = self.shouldAutoReconnectClient;
+    configuration.keepTimeTokenOnChannelsListChange = self.shouldKeepTimeTokenOnChannelsListChange;
     configuration.reduceSecurityLevelOnError = self.shouldReduceSecurityLevelOnError;
     configuration.ignoreSecureConnectionRequirement = self.canIgnoreSecureConnectionRequirement;
     configuration.resubscribeOnConnectionRestore = self.shouldResubscribeOnConnectionRestore;
@@ -208,6 +213,8 @@
     configuration.acceptCompressedResponse = self.shouldAcceptCompressedResponse;
     configuration.nonSubscriptionRequestTimeout = self.nonSubscriptionRequestTimeout;
     configuration.subscriptionRequestTimeout = self.subscriptionRequestTimeout;
+    configuration.presenceHeartbeatTimeout = self.presenceHeartbeatTimeout;
+    configuration.presenceHeartbeatInterval = self.presenceHeartbeatInterval;
     
     
     return configuration;
@@ -222,7 +229,8 @@
 
         // Checking whether critical configuration information has been changed or not
         if ((self.shouldUseSecureConnection != configuration.shouldUseSecureConnection) ||
-            ![self.origin isEqualToString:configuration.origin] || ![self.authorizationKey isEqualToString:configuration.authorizationKey]) {
+            ![self.origin isEqualToString:configuration.origin] || ![self.authorizationKey isEqualToString:configuration.authorizationKey] ||
+            self.presenceHeartbeatTimeout != configuration.presenceHeartbeatTimeout) {
 
             shouldReset = YES;
         }
@@ -264,15 +272,30 @@
 
         isEqual = [self.authorizationKey isEqualToString:configuration.authorizationKey];
     }
-
+    
     if (isEqual) {
-
+        
+        isEqual = (self.presenceHeartbeatTimeout == configuration.presenceHeartbeatTimeout);
+    }
+    
+    if (isEqual) {
+        
+        isEqual = (self.presenceHeartbeatInterval == configuration.presenceHeartbeatInterval);
+    }
+    
+    if (isEqual) {
+        
         isEqual = (self.nonSubscriptionRequestTimeout == configuration.nonSubscriptionRequestTimeout);
     }
 
     if (isEqual) {
 
         isEqual = (self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout);
+    }
+
+    if (isEqual) {
+
+        isEqual = (self.shouldKeepTimeTokenOnChannelsListChange == configuration.shouldKeepTimeTokenOnChannelsListChange);
     }
 
     if (isEqual) {
@@ -312,6 +335,36 @@
 
 
     return isEqual;
+}
+
+- (void)setPresenceExpirationTimeout:(NSTimeInterval)presenceExpirationTimeout {
+    
+    _presenceExpirationTimeout = MAX(kPNMinimumHeartbeatTimeout, MIN(kPNMaximumHeartbeatTimeout, presenceExpirationTimeout));
+}
+
+- (void)setPresenceHeartbeatTimeout:(int)presenceHeartbeatTimeout {
+    
+    _presenceHeartbeatTimeout = MIN(kPNMaximumHeartbeatTimeout, presenceHeartbeatTimeout);
+    if ([self presenceHeartbeatTimeout] <= 0 && _presenceExpirationTimeout > 0) {
+        
+        [self setPresenceHeartbeatInterval:_presenceHeartbeatTimeout];
+    }
+}
+
+- (void)setPresenceHeartbeatInterval:(int)presenceHeartbeatInterval {
+    
+    if (self.presenceHeartbeatTimeout > 0 && (presenceHeartbeatInterval >= kPNMaximumHeartbeatTimeout ||
+                                              presenceHeartbeatInterval >= self.presenceHeartbeatTimeout)) {
+        
+        presenceHeartbeatInterval = self.presenceHeartbeatTimeout - kPNHeartbeatRequestTimeoutOffset;
+    }
+    else if (presenceHeartbeatInterval <= (kPNMinimumHeartbeatTimeout - kPNHeartbeatRequestTimeoutOffset)) {
+        
+        presenceHeartbeatInterval = kPNMinimumHeartbeatTimeout - kPNHeartbeatRequestTimeoutOffset;
+    }
+    
+    
+    _presenceHeartbeatInterval = presenceHeartbeatInterval;
 }
 
 - (BOOL)shouldKillDNSCache {

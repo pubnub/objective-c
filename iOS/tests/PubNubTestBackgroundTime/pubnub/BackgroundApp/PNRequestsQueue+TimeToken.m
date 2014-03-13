@@ -30,7 +30,8 @@
 			delegate.lastTimeToken = nil;
 		else {
 			NSLog(@"tokens \n%@\n%@", newTimeToken, delegate.lastTimeToken);
-			if( [delegate.lastTimeToken isEqualToString: newTimeToken] == YES ) {
+			if( [delegate.lastTimeToken isEqualToString: newTimeToken] == YES ||
+			   [newTimeToken isEqualToString: @"0"] == YES ) {
 				[PubNub sendMessage:@"Hello PubNub" toChannel: [[PubNub subscribedChannels] lastObject]
 				withCompletionBlock:^(PNMessageState messageSendingState, id data)
 				 {

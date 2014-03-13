@@ -54,11 +54,13 @@
     [super setUp];
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"ch1", @"ch2"]];
-	authorizationKey = [NSString stringWithFormat:@"a2", [NSDate date]];
+	authorizationKey = [NSString stringWithFormat:@"a2" /*, [NSDate date]*/];
 	timeout = 10;
 	timeoutHistory = 18;
 	timeoutNewMessage = 12;
 	indexMessage = 0;
+
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self
@@ -224,7 +226,7 @@
 }
 
 - (void)tearDown {
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 -(void)kPNClientSubscriptionDidCompleteNotification:(NSNotification*)notification {
@@ -900,6 +902,22 @@
 		STAssertTrue( [info hasWriteRight] == canWrite, @"wrong rights" );
 	}
 }
+
+//-(void)didSendRequest:(NSNotification*)notification {
+//	NSLog(@"didSendRequest %@", notification.object);
+//	PNBaseRequest *request = notification.object;
+//	PNWriteBuffer *buffer = [request buffer];
+//	NSString *string = [NSString stringWithUTF8String: (char*)buffer.buffer];
+//	if( string == nil )
+//		string = [buffer description];
+//	STAssertTrue( string != nil, @"");
+//	NSLog(@"buffer:\n%@", string);
+//    NSString *auth = [PubNub sharedInstance].configuration.authorizationKey;
+//    if ([auth length] > 0)
+//        auth = [NSString stringWithFormat:@"auth=%@", authorizationKey];
+//	if( auth.length > 0 )
+//		STAssertTrue( [string rangeOfString: auth].location != NSNotFound, @"request %@ - %@", request, buffer);
+//}
 
 
 @end

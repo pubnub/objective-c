@@ -17,7 +17,7 @@
 @property NSTimer *pingPongTimer;
 
 @property PNChannel *myChannel;
-@property NSString *presenceChannel;
+@property id presenceChannel;
 @property NSMutableDictionary *occupants;
 
 @end

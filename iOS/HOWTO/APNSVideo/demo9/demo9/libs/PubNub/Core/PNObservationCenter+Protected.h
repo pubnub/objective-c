@@ -52,13 +52,28 @@
 - (void)removeClientConnectionStateObserver:(id)observer oneTimeEvent:(BOOL)isOneTimeEventObserver;
 
 
+#pragma mark - Client state retrieval / update observation
+
+/**
+ Observing for state retrieval process (this action will be performed only once per request).
+ After event will be fired this observation request will be removed from queue.
+ */
+- (void)addClientAsStateRequestObserverWithBlock:(PNClientStateRetrieveHandlingBlock)handleBlock;
+- (void)removeClientAsStateRequestObserver;
+
+/**
+ Observing for state update process (this action will be performed only once per request).
+ After event will be fired this observation request will be removed from queue.
+ */
+- (void)addClientAsStateUpdateObserverWithBlock:(PNClientStateUpdateHandlingBlock)handleBlock;
+- (void)removeClientAsStateUpdateObserver;
+
+
 #pragma mark - Channels subscribe/leave observers
 
 /**
- * Observing for subscription on list of channels
- * (this action will be performed only once per subscription).
- * After event will be fired this observation request will be
- * removed from queue.
+ * Observing for subscription on list of channels (this action will be performed only once per subscription).
+ * After event will be fired this observation request will be removed from queue.
  */
 - (void)addClientAsSubscriptionObserverWithBlock:(PNClientChannelSubscriptionHandlerBlock)handleBlock;
 - (void)removeClientAsSubscriptionObserver;
@@ -188,12 +203,18 @@
 #pragma mark - Participants observer
 
 /**
- * Add/remove observer for participants list download
- * After event will be fired this observation request will be
- * removed from queue.
+ Add/remove observer for participants list download.
+ After event will be fired this observation request will be removed from queue.
  */
 - (void)addClientAsParticipantsListDownloadObserverWithBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 - (void)removeClientAsParticipantsListDownloadObserver;
+
+/**
+ Add/remove observer for participant channels list download.
+ After event will be fired this observation request will be removed from queue.
+ */
+- (void)addClientAsParticipantChannelsListDownloadObserverWithBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
+- (void)removeClientAsParticipantChannelsListDownloadObserver;
 
 #pragma mark -
 

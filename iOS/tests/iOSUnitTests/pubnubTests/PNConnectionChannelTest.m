@@ -166,19 +166,11 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
 
 @implementation PNConnectionChannelTest
 
-- (void)setUp
-{
-    [super setUp];
-    
-    NSLog(@"setUp: %@", self.name);
-    // Set-up code here.
+- (void)tearDown {
+	[NSThread sleepForTimeInterval:0.1];
+	[super tearDown];
 }
 
-- (void)tearDown
-{
-    // Tear-down code here.
-    [super tearDown];
-}
 
 #pragma mark - States tests
 
@@ -229,7 +221,7 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
     [[[mockChannel stub] andReturnValue:OCMOCK_VALUE((BOOL){YES})] shouldStoreRequest:OCMOCK_ANY];
     
     PNChannel *channel = [PNChannel channelWithName:@"MyTestChannel"];
-    PNSubscribeRequest *mockRequest = [PNSubscribeRequest subscribeRequestForChannel:channel byUserRequest:YES];
+    PNSubscribeRequest *mockRequest = [PNSubscribeRequest subscribeRequestForChannel:channel byUserRequest:YES withClientState: nil];
     
     [mockChannel scheduleRequest:mockRequest shouldObserveProcessing:YES];
     

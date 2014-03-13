@@ -9,7 +9,7 @@
 
 #pragma mark Class forward
 
-@class PNPresenceEvent, PNMessage, PNChannel, PNError, PNDate, PNAccessRightsCollection;
+@class PNPresenceEvent, PNMessage, PNChannel, PNClient, PNError, PNDate, PNAccessRightsCollection;
 
 
 #ifndef PNStructures_h
@@ -114,6 +114,8 @@ typedef NS_OPTIONS(NSInteger , PNAccessRightsLevel) {
 typedef void (^PNClientConnectionSuccessBlock)(NSString *);
 typedef void (^PNClientConnectionFailureBlock)(PNError *);
 typedef void (^PNClientConnectionStateChangeBlock)(NSString *, BOOL, PNError *);
+typedef void (^PNClientStateRetrieveHandlingBlock)(PNClient *, PNError *);
+typedef void (^PNClientStateUpdateHandlingBlock)(PNClient *, PNError *);
 typedef void (^PNClientChannelSubscriptionHandlerBlock)(PNSubscriptionProcessState state, NSArray *, PNError *);
 typedef void (^PNClientChannelUnsubscriptionHandlerBlock)(NSArray *, PNError *);
 typedef void (^PNClientTimeTokenReceivingCompleteBlock)(NSNumber *, PNError *);
@@ -121,6 +123,7 @@ typedef void (^PNClientMessageProcessingBlock)(PNMessageState, id);
 typedef void (^PNClientMessageHandlingBlock)(PNMessage *);
 typedef void (^PNClientHistoryLoadHandlingBlock)(NSArray *, PNChannel *, PNDate *, PNDate *, PNError *);
 typedef void (^PNClientParticipantsHandlingBlock)(NSArray *, PNChannel *, PNError *);
+typedef void (^PNClientParticipantChannelsHandlingBlock)(NSString *, NSArray *, PNError *);
 typedef void (^PNClientChannelAccessRightsChangeBlock)(PNAccessRightsCollection *, PNError *);
 typedef void (^PNClientChannelAccessRightsAuditBlock)(PNAccessRightsCollection *, PNError *);
 typedef void (^PNClientPresenceEventHandlingBlock)(PNPresenceEvent *);
