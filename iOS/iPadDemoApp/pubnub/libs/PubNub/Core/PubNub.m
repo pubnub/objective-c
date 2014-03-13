@@ -47,10 +47,6 @@ static dispatch_once_t onceToken;
 // (connect/disconnect/subscribe/unsubscribe)
 static NSMutableArray *pendingInvocations = nil;
 
-// Stores how much times client will try to resubscribe on channels with new identifier before report that subscription
-// failed
-static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
-
 
 #pragma mark - Private interface methods
 

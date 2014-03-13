@@ -878,7 +878,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     NSMutableSet *channelsSet = nil;
     BOOL isChangingPresenceOnSubscribedChannels = NO;
-    BOOL indirectionalPresenceModificaton = NO;
+    BOOL indirectionalPresenceModification = NO;
     NSSet *channelsForPresenceEnabling = nil;
     NSSet *channelsForPresenceDisabling = nil;
     BOOL isPresenceModification = PNBitsIsOn(channelsPresence, NO, PNMessagingChannelEnablingPresence, PNMessagingChannelDisablingPresence,
@@ -965,7 +965,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         
         // Set to \c YES in case if user tried to update presence observation with PNChannel constructor on channel for
         // which client already subscribed.
-        isChangingPresenceOnSubscribedChannels = indirectionalPresenceModificaton && channelsSetCount > 0 && [channelsSet count] == 0;
+        isChangingPresenceOnSubscribedChannels = indirectionalPresenceModification && channelsSetCount > 0 && [channelsSet count] == 0;
     }
 
     // Check whether there is at leas one channel at which client didn't subscribed yet
