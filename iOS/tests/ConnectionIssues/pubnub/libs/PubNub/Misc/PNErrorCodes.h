@@ -114,7 +114,7 @@ static NSInteger const kPNMessageHasNoChannelError = 128;
 /**
  Developer tried to push state w/ invalid content (used keys with forbidden prefix or unsupported values).
  */
-static NSInteger const kPNInvalidMetadataPayloadError = 129;
+static NSInteger const kPNInvalidStatePayloadError = 129;
 
 // Developer tried to use APNS API w/o enabling push notifications support on admin.punub.com
 static NSInteger const kPNPushNotificationsNotEnabledError = 130;
