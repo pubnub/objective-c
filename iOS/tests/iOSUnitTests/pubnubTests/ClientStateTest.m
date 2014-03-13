@@ -89,7 +89,7 @@
 	semaphoreNotification = dispatch_semaphore_create(0);
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"iosdevState", @"ch1", @"adasfasdf", @"1 12 12133", [NSString stringWithFormat: @"channelDate %@", [NSDate date]]]];
-//	pnChannels = [PNChannel channelsWithNames:@[@"iosdevState", @"ch1", @"adasfasdf"]];
+	pnChannels = [PNChannel channelsWithNames:@[@"iosdevState"]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
@@ -183,7 +183,7 @@
 	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 		[PubNub setDelegate:self];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a4"];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a4"];
 		configuration.presenceHeartbeatTimeout = 20;
 		configuration.presenceHeartbeatInterval = 10;
 		[PubNub setConfiguration: configuration];
@@ -239,6 +239,11 @@
 			STAssertNil( error, @"requestClientState error %@", error);
 
 			STAssertTrue( [channel.name isEqualToString: client.channel.name] == YES, @"invalid channel name");
+			NSLog(@"client.data %@", client.data);
+			NSLog(@"client.data channel %@\nexpect state %@, \n%d", [client.data objectForKey: channel.name], clientState, i);
+//			[client.data writeToFile: @"/Users/tuller/state client.data.plist" atomically: YES];
+//			[clientState writeToFile: @"/Users/tuller/state clientState.plist" atomically: YES];
+			STAssertTrue( [[client.data objectForKey: channel.name] isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
 			STAssertTrue( client.data != nil && [client.data isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
 		}];
 		for( int j=0; j<timeout; j++ )
@@ -265,7 +270,7 @@
 				STAssertNil( error, @"updateClientState error %@", error);
 				STAssertTrue( [channel.name isEqualToString: client.channel.name] == YES, @"invalid channel name");
 				STAssertTrue( client.data != nil, @"client.data == nil");
-				STAssertTrue( [client.data isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
+				STAssertTrue( [[client.data objectForKey: channel.name] isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
 			}
 			else
 				STAssertNotNil( error, @"updateClientState empty error");

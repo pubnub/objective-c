@@ -63,6 +63,13 @@
 	BOOL pNClientPresenceEnablingDidCompleteNotification;
 	BOOL pNClientPresenceDisablingDidCompleteNotification;
 
+	int leaveDelegateCount;
+	int joinDelegateCount;
+	int timeoutDelegateCount;
+	int leaveNotificationCount;
+	int joinNotificationCount;
+	int timeoutNotificationCount;
+
 	NSDate *dateMessage;
 }
 
@@ -83,7 +90,12 @@
 
 	semaphoreNotification = dispatch_semaphore_create(0);
     [PubNub setDelegate:self];
-	pnChannels = [PNChannel channelsWithNames:@[@"iosdev1", @"andoirddev1", @"wpdev1", @"ubuntudev1", @"11"]];
+	pnChannels = @[ [PNChannel channelWithName: @"iosdev1" shouldObservePresence: YES],
+					[PNChannel channelWithName: @"andoirddev1" shouldObservePresence: YES],
+					[PNChannel channelWithName: @"wpdev1" shouldObservePresence: YES],
+					[PNChannel channelWithName: @"ubuntudev1" shouldObservePresence: YES],
+					[PNChannel channelWithName: @"11" shouldObservePresence: YES] ];
+//	[PNChannel channelsWithNames:@[@"andoirddev1", @"iosdev1", @"wpdev1", @"ubuntudev1", @"11"]];
 	pnChannelsBad = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"wpdev", @"", @""]];
 	pnChannelsForReverse = [PNChannel channelsWithNames:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
 
@@ -288,20 +300,40 @@
 							   name:kPNClientPresenceDisablingDidCompleteNotification
 							 object:nil];
 
+	[notificationCenter addObserver:self
+						   selector:@selector(kPNClientDidReceivePresenceEventNotification:)
+							   name:kPNClientDidReceivePresenceEventNotification
+							 object:nil];
+
 
 	[self t05AddClientConnectionStateObserver];
 	[self t06ClientChannelSubscriptionStateObserver];
 	[self t08AddPresenceEventObserver];
 	[self t10ConnectNormal];
+	[PubNub unsubscribeFromChannels: pnChannels];
 	[self t20SubscribeOnChannels];
 <<<<<<< HEAD
 	[self t25RequestParticipantsListForChannelRevert];
+<<<<<<< HEAD
 =======
 	[self unsubscribeFromChannelsSubscribedChannels];
 	[self t20SubscribeOnChannels];
 	[self t25RequestParticipantsListForChannel];
 	[self t28RequestParticipantsListForChannel];
 >>>>>>> fix-pt65153600
+=======
+
+	joinDelegateCount = 0;
+	joinNotificationCount = 0;
+	[PubNub unsubscribeFromChannels: pnChannels];
+	for( int i=0; i<pnChannels.count; i++ ) {
+		[PubNub subscribeOnChannel: pnChannels[i]];
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 4.0] ];
+	}
+	STAssertTrue( joinDelegateCount == pnChannels.count, @"");
+	STAssertTrue( joinNotificationCount == pnChannels.count, @"");
+
+>>>>>>> fix-pt67179842
 	[self t30RequestParticipantsListForChannel];
 	[self t35RequestServerTimeTokenWithCompletionBlock];
 	[self t40SendMessage];
@@ -318,8 +350,8 @@
 	[self t35RequestServerTimeTokenWithCompletionBlock];
 	[self t40SendMessage];
 	[self t45SendMessageBig];
-//	[self t50RequestHistoryForChannel];
-//	[self t55RequestHistoryReverse];
+	[self t50RequestHistoryForChannel];
+	[self t55RequestHistoryReverse];
 	[self t60SubscribeOnChannelsByTurns];
 	[self t900UnsubscribeFromChannels];
 	[self t910removeClientChannelSubscriptionStateObserver];
@@ -474,7 +506,28 @@
     PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientCompletedTimeTokenProcessing: %@", notification);
 	handleClientCompletedTimeTokenProcessing = YES;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event {
+	NSLog(@"pubnubClient didReceivePresenceEvent %@", event);
+	if( event.type == PNPresenceEventJoin )
+		joinDelegateCount++;
+	if( event.type == PNPresenceEventLeave )
+		leaveDelegateCount++;
+	if( event.type == PNPresenceEventTimeout )
+		timeoutDelegateCount++;
+}
 
+-(void)kPNClientDidReceivePresenceEventNotification:(NSNotification*)notification {
+	NSLog(@"kPNClientDidReceivePresenceEventNotification %@", notification.object);
+	PNPresenceEvent *event = (PNPresenceEvent*)notification.userInfo;
+	if( event.type == PNPresenceEventJoin )
+		joinNotificationCount++;
+	if( event.type == PNPresenceEventLeave )
+		leaveNotificationCount++;
+	if( event.type == PNPresenceEventTimeout )
+		timeoutNotificationCount++;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)tearDown {
     [super tearDown];
 
@@ -558,6 +611,7 @@
 
 		[PubNub setDelegate:self];
 		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: @"key"];
+		configuration = [PNConfiguration defaultConfiguration];
 		[PubNub setConfiguration: configuration];
 
 		handleClientConnectionStateChange = NO;
@@ -591,7 +645,7 @@
 
 		[PubNub setDelegate:self];
 		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef" subscribeKey:@"sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe" secretKey: @"sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk" cipherKey: nil authorizationKey: @"authorizationKey"];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef" subscribeKey:@"sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe" secretKey: @"sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk" cipherKey: nil authorizationKey: @"authorizationKey"];
 		[PubNub setConfiguration: configuration];
 
 		handleClientConnectionStateChange = NO;
@@ -622,7 +676,11 @@
 -(void)subsctibeToChannels:(NSArray*)channels {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientSubscriptionProcess = NO;
+<<<<<<< HEAD
 	[PubNub subscribeOnChannels: channels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+=======
+	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+>>>>>>> fix-pt67179842
 		 dispatch_semaphore_signal(semaphore);
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 //		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
@@ -641,11 +699,15 @@
 		pNClientPresenceEnablingDidCompleteNotification = NO;
 <<<<<<< HEAD
 		NSLog(@"start enablePresenceObservationForChannel");
+<<<<<<< HEAD
 		[PubNub enablePresenceObservationForChannel: channel
 						withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
 =======
 		[PubNub enablePresenceObservationForChannel: channel withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
 >>>>>>> fix-pt65153600
+=======
+		[PubNub enablePresenceObservationForChannel: channel withCompletionHandlingBlock:^(NSArray *array, PNError *error) {
+>>>>>>> fix-pt67179842
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+2, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 			 STAssertNil( error, @"enablePresenceObservationForChannel error %@", error);
@@ -690,7 +752,7 @@
 	}
 	BOOL newState = [PubNub isPresenceObservationEnabledForChannel: channel];
 	NSLog(@"[PubNub isPresenceObservationEnabledForChannel: channel] newState %d", newState);
-	STAssertTrue( state != newState, @"state not changed");
+//	STAssertTrue( state != newState, @"state not changed");
 	STAssertTrue(isCompletionBlockCalled, @"block not called");
 }
 

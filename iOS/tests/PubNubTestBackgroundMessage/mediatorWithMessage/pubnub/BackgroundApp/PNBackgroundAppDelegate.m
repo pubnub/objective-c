@@ -151,6 +151,8 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
 	NSLog(@"openURL %@, %@, %@", url, sourceApplication, annotation);
+	countNewMessage = 0;
+	countSendMessage = 0;
 	if( pnChannel == nil )
 		[self connect];
 	else
@@ -162,8 +164,10 @@
 	[PubNub sendMessage:[NSString stringWithFormat: @"mediatorWithMessage, %@", [NSDate date]] toChannel:pnChannel compressed: NO
 	withCompletionBlock:^(PNMessageState messageSendingState, id data)
 	 {
-		 if( messageSendingState == PNMessageSent )
+		 if( messageSendingState == PNMessageSent ) {
+			 countSendMessage++;
 			 [self performSelector: @selector(openUrl) withObject: nil afterDelay: 20.0];
+		 }
 		 if( messageSendingState == PNMessageSendingError ) {
 			 NSLog(@"PNMessageSendingError %@", data);
 			 [self performSelector: @selector(errorSelectorMessage)];
@@ -172,7 +176,8 @@
 }
 
 -(void)openUrl {
-		[[UIApplication sharedApplication] openURL: [NSURL URLWithString: [NSString stringWithFormat: @"%@://", @"pubNubTestBackgroundMessage"]]];
+	NSLog(@"\ncountSendMessage %d\ncountNewMessage %d", countSendMessage, countNewMessage);
+	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: [NSString stringWithFormat: @"%@://", @"pubNubTestBackgroundMessage"]]];
 }
 
 - (BOOL)shouldRunClientInBackground {
@@ -203,6 +208,13 @@
     }
 
     // Retrieving list of observers (including one time and persistent observers)
+}
+
+- (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
+    NSLog( @"PubNub client received message: %@", message);
+	NSString *string = [NSString stringWithFormat: @"%@", message.message];
+	if( [string rangeOfString: @"mediatorWithMessage"].location != NSNotFound )
+		countNewMessage++;
 }
 
 

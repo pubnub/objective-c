@@ -41,7 +41,7 @@
 	for( int i=0; i<1; i++ )
 		[channelNames addObject: [NSString stringWithFormat: @"ch%d", i]];
 
-//	[PubNub resetClient];
+	[PubNub resetClient];
 	//[PubNub disconnect];
 	[PubNub setDelegate: self];
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
@@ -60,8 +60,8 @@
 
 
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef" subscribeKey:@"sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe" secretKey: @"sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk" cipherKey: @"key"];
-	configuration = [PNConfiguration defaultConfiguration];
+	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef" subscribeKey:@"sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe" secretKey: @"sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk" cipherKey: @"key"];
+//	configuration = [PNConfiguration defaultConfiguration];
 	[PubNub setConfiguration: configuration];
 
     [PubNub connectWithSuccessBlock:^(NSString *origin) {

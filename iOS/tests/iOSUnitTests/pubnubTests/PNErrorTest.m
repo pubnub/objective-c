@@ -23,8 +23,8 @@
 @implementation PNErrorTest
 
 -(void)tearDown {
-    [super tearDown];
 	[NSThread sleepForTimeInterval:0.1];
+    [super tearDown];
 }
 
 -(void)testErrorWithCode {

@@ -231,6 +231,7 @@
                <Test
                   Identifier = "ClientStateTest">
                </Test>
+<<<<<<< HEAD
                <Test
                   Identifier = "HowToTests">
 =======
@@ -246,6 +247,8 @@
                   Identifier = "BadJsonTest">
 >>>>>>> fix-pt65153600
                </Test>
+=======
+>>>>>>> fix-pt67179842
             </SkippedTests>
          </TestableReference>
       </Testables>
