@@ -20,12 +20,7 @@
 #pragma mark Class methods
 
 /**
-<<<<<<< HEAD
  * Parse provided binary data object. Method will automatically detect JSON and JSONP
-=======
- * Parse provided binary data object.
- * Method will automatically detect JSON and JSONP
->>>>>>> fix-pt65153600
  * format and provide callback method name in addition
  * to parsed data.
  */

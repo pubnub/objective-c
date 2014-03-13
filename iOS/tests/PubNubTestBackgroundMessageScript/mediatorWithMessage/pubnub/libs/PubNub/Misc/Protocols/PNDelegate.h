@@ -15,10 +15,7 @@
 #pragma mark Class forward
 
 @class PNPresenceEvent, PNMessage, PubNub, PNError, PNDate, PNAccessRightsCollection;
-<<<<<<< HEAD
 @class PNClient;
-=======
->>>>>>> fix-pt65153600
 
 
 @protocol PNDelegate <NSObject>
@@ -26,12 +23,7 @@
 @optional
 
 /**
-<<<<<<< HEAD
  * Called on delegate when some client runtime error occurred (mostly because of configuration/connection when connected)
-=======
- * Called on delegate when some client runtime error occurred
- * (mostly because of configuration/connection when connected)
->>>>>>> fix-pt65153600
  */
 - (void)pubnubClient:(PubNub *)client error:(PNError *)error;
 
@@ -75,7 +67,6 @@
 - (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error;
 
 /**
-<<<<<<< HEAD
  Called on delegate when \b PubNub client successfully retrieved metadata for client.
 
  @param client
@@ -174,8 +165,6 @@
 - (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error;
 
 /**
-=======
->>>>>>> fix-pt65153600
  * Called on delegate when client successfully subscribed to specified
  * set of channels
  */
@@ -258,7 +247,6 @@
 - (void)pubnubClient:(PubNub *)client pushNotificationEnableDidFailWithError:(PNError *)error;
 
 /**
-<<<<<<< HEAD
  * Called on delegate when client successfully disabled push notifications on
  * specified list of channels
  */
@@ -297,8 +285,6 @@
 - (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFailWithError:(PNError *)error;
 
 /**
-=======
->>>>>>> fix-pt65153600
  Called on delegate when \b PubNub client did complete access rights change operation.
 
  @param client
@@ -351,47 +337,6 @@
 - (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error;
 
 /**
-<<<<<<< HEAD
-=======
- * Called on delegate when client successfully disabled push notifications on
- * specified list of channels
- */
-- (void)pubnubClient:(PubNub *)client didDisablePushNotificationsOnChannels:(NSArray *)channels;
-
-/**
- * Called on delegate when some kind of error occurred during
- * push notification disabling process
- * error - returned error will contain information about channel(s)
- *         on which this error occurred and possible reason of error
- */
-- (void)pubnubClient:(PubNub *)client pushNotificationDisableDidFailWithError:(PNError *)error;
-
-/**
- * Called on delegate when PubNub client was able to remove
- * push notification from all channels
- */
-- (void)pubnubClientDidRemovePushNotifications:(PubNub *)client;
-
-/**
- * Called on delegate when some kind of error occurred during
- * push notifications removal process
- */
-- (void)pubnubClient:(PubNub *)client pushNotificationsRemoveFromChannelsDidFailWithError:(PNError *)error;
-
-/**
- * Called on delegate when PubNub client was able to retrieve all
- * channels on which push notifications has been enabled
- */
-- (void)pubnubClient:(PubNub *)client didReceivePushNotificationEnabledChannels:(NSArray *)channels;
-
-/**
- * Called on delegate when some kind of error occurred during
- * push notifications enabled channels list retrieval process
- */
-- (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFailWithError:(PNError *)error;
-
-/**
->>>>>>> fix-pt65153600
  * Called on delegate when PubNub client retrieved time
  * token from PubNub service
  */
@@ -446,28 +391,17 @@
 - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error;
 
 /**
-<<<<<<< HEAD
  * Called on delegate when client retrieved participants list for specific channel
-=======
- * Called on delegate when client retrieved participants list
- * for specific channel
->>>>>>> fix-pt65153600
  */
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList
           forChannel:(PNChannel *)channel;
 
 /**
-<<<<<<< HEAD
  * Called on delegate when client failed to download participants list
-=======
- * Called on delegate when client failed to download participants
- * list
->>>>>>> fix-pt65153600
  */
 - (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel
            withError:(PNError *)error;
 
-<<<<<<< HEAD
 /**
  Called on delegate when client retrieved participant channels list for specific client identifier.
 
@@ -498,8 +432,6 @@
 - (void)pubnubClient:(PubNub *)client didFailParticipantChannelsListDownloadForIdentifier:(NSString *)clientIdentifier
            withError:(PNError *)error;
 
-=======
->>>>>>> fix-pt65153600
 
 #pragma mark - Misc methods
 
@@ -519,16 +451,11 @@
  * This method allow to override value passed in configuration during client initialization.
  * This method called when service reachabilty reported that service are available and previous session is failed
  * because of network error or even not launched. We can change client configuration, but it will trigger
-<<<<<<< HEAD
  * client hard reset (if connected).
-=======
- * client hard reset (if connected)
->>>>>>> fix-pt65153600
  */
 - (NSNumber *)shouldReconnectPubNubClient:(PubNub *)client;
 
 /**
-<<<<<<< HEAD
  This method allow to override value passed in configuration during client initialization.
  This method called when client is changing list of channels (subscribe, unsubscribe, presence changes).
  */
@@ -539,12 +466,6 @@
  * This method called when service reachabilty reported that service are available and previous session is failed
  * because of network error or even not launched. It allow to specify whether client should restore subscription
  * or previously subscribed channels or not.
-=======
- * This method allow to override value passed in configuration during client initialization.
- * This method called when service reachabilty reported that service are available and previous session is failed
- * because of network error or even not launched. It allow to specify whether client should restore subscription
- * or previously subscribed channels or not
->>>>>>> fix-pt65153600
  */
 - (NSNumber *)shouldResubscribeOnConnectionRestore;
 

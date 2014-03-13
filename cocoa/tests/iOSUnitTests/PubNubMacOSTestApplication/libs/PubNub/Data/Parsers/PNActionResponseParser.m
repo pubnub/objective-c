@@ -10,10 +10,7 @@
 #import "PNActionResponseParser.h"
 #import "PNActionResponseParser+Protected.h"
 #import "PNResponse.h"
-<<<<<<< HEAD
 #import "PNServiceResponseCallbacks.h"
-=======
->>>>>>> fix-pt65153600
 
 
 // ARC check
@@ -60,16 +57,11 @@
     // Check whether initialization successful or not
     if ((self = [super init])) {
 
-<<<<<<< HEAD
         self.actionType = PNOperationResultUnknown;
 
         NSString *action = [response.response objectForKey:kPNResponseActionKey];
         if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.leaveChannelCallback] ||
             [action isEqualToString:@"leave"]) {
-=======
-        NSString *action = [response.response objectForKey:kPNResponseActionKey];
-        if ([action isEqualToString:@"leave"]) {
->>>>>>> fix-pt65153600
 
             self.actionType = PNOperationResultLeave;
         }

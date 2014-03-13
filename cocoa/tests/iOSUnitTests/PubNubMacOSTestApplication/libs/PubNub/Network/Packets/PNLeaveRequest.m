@@ -89,7 +89,6 @@
 
 - (NSString *)resourcePath {
 
-<<<<<<< HEAD
     // Compose filtering predicate to retrieve list of channels which are not presence observing channels
     NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"isPresenceObserver = NO"];
     NSArray *channelsToLeave = [self.channels filteredArrayUsingPredicate:filterPredicate];
@@ -98,11 +97,6 @@
     return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@",
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       [[channelsToLeave valueForKey:@"escapedName"] componentsJoinedByString:@","],
-=======
-    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@",
-                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                                      [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
->>>>>>> fix-pt65153600
                                       self.clientIdentifier,
                                       [self callbackMethodName],
                                       self.shortIdentifier,

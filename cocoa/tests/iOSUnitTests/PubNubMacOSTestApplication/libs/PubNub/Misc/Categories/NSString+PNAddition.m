@@ -84,7 +84,6 @@
     return asciiString;
 }
 
-<<<<<<< HEAD
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(UILineBreakMode)lineBreakMode
 #else
@@ -105,26 +104,11 @@
                     NSUInteger index = (self.length - length);
                     if (index + 1 < self.length) {
 
-=======
-- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode {
-    
-    NSString *truncatedString = self;
-    if (length < self.length) {
-        
-        switch (lineBreakMode) {
-                
-            case NSLineBreakByTruncatingHead:
-                {
-                    NSUInteger index = (self.length - length);
-                    if (index + 1 < self.length) {
-                        
->>>>>>> fix-pt65153600
                         index++;
                     }
                     truncatedString = [NSString stringWithFormat:@"…%@", [self substringFromIndex:index]];
                 }
                 break;
-<<<<<<< HEAD
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000 || __MAC_OS_X_VERSION_MIN_REQUIRED
             case NSLineBreakByTruncatingMiddle:
 #else
@@ -137,21 +121,10 @@
                         maximumHalfLength = MAX(maximumHalfLength - 2, MAX(maximumHalfLength - 1, 0));
                     }
 
-=======
-            case NSLineBreakByTruncatingMiddle:
-                {
-                    NSUInteger maximumHalfLength = ceilf(length * 0.5f);
-                    if (maximumHalfLength == (self.length * 0.5f)) {
-                        
-                        maximumHalfLength = MAX(maximumHalfLength - 2, MAX(maximumHalfLength - 1, 0));
-                    }
-                    
->>>>>>> fix-pt65153600
                     truncatedString = [NSString stringWithFormat:@"%@…%@", [self substringToIndex:maximumHalfLength],
                                        [self substringFromIndex:(self.length - maximumHalfLength)]];
                 }
                 break;
-<<<<<<< HEAD
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000 || __MAC_OS_X_VERSION_MIN_REQUIRED
             case NSLineBreakByTruncatingTail:
 #else
@@ -161,19 +134,11 @@
                     NSUInteger index = length;
                     if (index - 1 > 0) {
 
-=======
-            case NSLineBreakByTruncatingTail:
-                {
-                    NSUInteger index = length;
-                    if (index - 1 > 0) {
-                        
->>>>>>> fix-pt65153600
                         index--;
                     }
                     truncatedString = [NSString stringWithFormat:@"%@…", [self substringToIndex:index]];
                 }
                 break;
-<<<<<<< HEAD
 
             default:
 
@@ -182,12 +147,6 @@
 #else
                 if (lineBreakMode != UILineBreakModeCharacterWrap && lineBreakMode != UILineBreakModeWordWrap) {
 #endif
-=======
-                
-            default:
-                
-                if (lineBreakMode != NSLineBreakByCharWrapping && lineBreakMode != NSLineBreakByWordWrapping) {
->>>>>>> fix-pt65153600
                     
                     truncatedString = [self substringToIndex:length];
                 }

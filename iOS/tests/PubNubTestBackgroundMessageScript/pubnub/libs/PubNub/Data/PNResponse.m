@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
 
  @author Sergey Mamontov
@@ -8,23 +7,6 @@
  */
 
 #import "PNResponse+Protected.h"
-=======
-//
-//  PNResponse.m
-//  pubnub
-//
-//  This class instance designed to store
-//  binary response from backend with some
-//  additional information which will help
-//  to understand some metrics.
-//
-//
-//  Created by Sergey Mamontov on 12/20/12.
-//
-//
-
-#import "PNResponse.h"
->>>>>>> fix-pt65153600
 #import "PNJSONSerialization.h"
 #import "PNRequestsImport.h"
 
@@ -36,7 +18,6 @@
 #endif
 
 
-<<<<<<< HEAD
 #pragma mark Structures
 
 struct PNServiceResponseServiceDataKeysStruct PNServiceResponseServiceDataKeys = {
@@ -54,22 +35,6 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     .latencyMeasureMessageCallback = @"lm",
     .stateRetrieveCallback = @"mr",
     .stateUpdateCallback = @"mu",
-=======
-#pragma mark Static
-
-// Stores index of callback method name in array which was created by splitting callback method from JSONP by '_' sign
-static NSUInteger const kPNResponseCallbackMethodNameIndex = 0;
-
-// Stores index of request identifier in array which was created by splitting callback method from JSONP by '_' sign
-static NSUInteger const kPNResponseRequestIdentifierIndex = 1;
-
-
-#pragma mark Structures
-
-struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
-    
-    .latencyMeasureMessageCallback = @"lm",
->>>>>>> fix-pt65153600
     .subscriptionCallback = @"s",
     .leaveChannelCallback = @"lv",
     .channelPushNotificationsEnableCallback = @"cpe",
@@ -80,10 +45,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     .timeTokenCallback = @"t",
     .messageHistoryCallback = @"h",
     .channelParticipantsCallback = @"p",
-<<<<<<< HEAD
     .participantChannelsCallback = @"pc",
-=======
->>>>>>> fix-pt65153600
     .channelAccessRightsChangeCallback = @"arc",
     .channelAccessRightsAuditCallback = @"arr"
 };
@@ -91,23 +53,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 #pragma mark - Private interface methods
 
-<<<<<<< HEAD
 @interface PNResponse (Private)
-=======
-@interface PNResponse ()
-
-
-#pragma mark - Properties
-
-@property (nonatomic, strong) NSData *content;
-@property (nonatomic, assign) NSInteger statusCode;
-@property (nonatomic, assign) NSUInteger size;
-@property (nonatomic, strong) PNError *error;
-@property (nonatomic, copy) NSString *requestIdentifier;
-@property (nonatomic, copy) NSString *callbackMethod;
-@property (nonatomic, assign, getter = isLastResponseOnConnection) BOOL lastResponseOnConnection;
-@property (nonatomic, strong) id response;
->>>>>>> fix-pt65153600
 
 
 #pragma mark - Instance methods
@@ -115,14 +61,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 #pragma mark - Handler methods
 
 /**
-<<<<<<< HEAD
  Handle JSON encoding error and try perform additional tasks to silently fallback this error.
 
  @param errorCode
  JSON Parsing error.
-=======
- * Handle JSON encoding error and try perform additional tasks to silently fallback this error
->>>>>>> fix-pt65153600
  */
 - (void)handleJSONDecodeErrorWithCode:(NSUInteger)errorCode;
 
@@ -130,18 +72,13 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 #pragma mark - Misc methods
 
 /**
-<<<<<<< HEAD
  If user is using cypher key to send request than it will be used to decode server response.
 
  @return Current implementation just provide cleaned data.
-=======
- * If user is using cypher key to send request than it will be used to decode server response
->>>>>>> fix-pt65153600
  */
 - (NSString *)decodedResponse;
 
 /**
-<<<<<<< HEAD
  Extract service parameters from response (server send additional data which help to identify service which privded
  response and state of request processing.
  */
@@ -163,14 +100,6 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 - (void)getCallbackFunction:(NSString **)callback requestIdentifier:(NSString **)identifier fromData:(NSData *)responseData;
 
 #pragma mark -
-=======
- * In case of JSON parsing error, this method will allow to pull out information about request and callback
- * function from partial response
- */
-- (void)getCallbackFunction:(NSString **)callback
-          requestIdentifier:(NSString **)identifier
-                   fromData:(NSData *)responseData;
->>>>>>> fix-pt65153600
 
 
 @end
@@ -183,43 +112,18 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 #pragma mark Class methods
 
-<<<<<<< HEAD
 + (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode
            lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
     
     return [[[self class] alloc] initWithContent:content size:responseSize code:statusCode
-=======
-/**
- * Retrieve instance which will hold information about HTTP response body and size of whole response
- * (including HTTP headers)
- */
-+ (PNResponse *)responseWithContent:(NSData *)content
-                               size:(NSUInteger)responseSize
-                               code:(NSInteger)statusCode
-           lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
-    
-    return [[[self class] alloc] initWithContent:content
-                                            size:responseSize
-                                            code:statusCode
->>>>>>> fix-pt65153600
                         lastResponseOnConnection:isLastResponseOnConnection];
 }
 
 
 #pragma mark - Instance methods
 
-<<<<<<< HEAD
 - (id)    initWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode
  lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
-=======
-/**
- * Initialize response instance with response body content data, response size and status code (HTTP status code)
- */
-- (id)initWithContent:(NSData *)content
-                 size:(NSUInteger)responseSize
-                 code:(NSInteger)statusCode
-        lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
->>>>>>> fix-pt65153600
     
     // Check whether initialization was successful or not
     if((self = [super init])) {
@@ -227,10 +131,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         self.content = content;
         self.size = responseSize;
         self.statusCode = statusCode;
-<<<<<<< HEAD
         self.privateData = [NSMutableDictionary dictionary];
-=======
->>>>>>> fix-pt65153600
         self.lastResponseOnConnection = isLastResponseOnConnection;
 
         
@@ -261,11 +162,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
                                               self.response = result;
                                           }
-<<<<<<< HEAD
 
                                           [weakSelf extractServiceData];
-=======
->>>>>>> fix-pt65153600
                                       }
                                            errorBlock:^(NSError *error) {
 
@@ -273,14 +171,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                                [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
         }
-<<<<<<< HEAD
         // Looks like message can't be decoded event from RAW response looks like malformed data arrived with
         // characters which can't be encoded.
-=======
-        // Looks like message can't be decoded event from RAW response
-        // looks like malformed data arrived with characters which can't
-        // be encoded
->>>>>>> fix-pt65153600
         else {
 
             PNLog(PNLogGeneralLevel, self, @"FAILED TO DECODE DATA");
@@ -317,7 +209,6 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     return [encodedString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
-<<<<<<< HEAD
 - (void)extractServiceData {
 
     // Checking on whether we got dictionary or not
@@ -404,11 +295,6 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 }
 
 - (void)getCallbackFunction:(NSString **)callback requestIdentifier:(NSString **)identifier fromData:(NSData *)responseData {
-=======
-- (void)getCallbackFunction:(NSString **)callback
-          requestIdentifier:(NSString **)identifier
-                   fromData:(NSData *)responseData {
->>>>>>> fix-pt65153600
 
 
     // Trying to extract callback method and request identifier
@@ -454,7 +340,6 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 - (NSString *)description {
     
-<<<<<<< HEAD
     return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %ld\nSTATUS MESSAGE: %@\nIS ERROR RESPONSE? %@"
                                        "\nCONNECTION WILL BE CLOSE? %@\nRESPONSE SIZE: %ld\nRESPONSE CONTENT SIZE: %ld"
                                        "\nIS JSONP: %@\nCALLBACK METHOD: %@\nSERVICE NAME: %@\nREQUEST IDENTIFIER: %@"
@@ -463,17 +348,6 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                       self.isLastResponseOnConnection ? @"YES" : @"NO", (unsigned long)[self.content length],
                                       (unsigned long)self.size, self.callbackMethod ? @"YES" : @"NO", self.callbackMethod,
                                       self.serviceName, self.requestIdentifier, self.response, self.additionalData];
-=======
-    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %ld\nCONNECTION WILL BE CLOSE? %@\nRESPONSE SIZE: %ld\nRESPONSE CONTENT SIZE: %ld\nIS JSONP: %@\nCALLBACK METHOD: %@\nREQUEST IDENTIFIER: %@\nRESPONSE: %@\n",
-                                      (long)self.statusCode,
-                                      self.isLastResponseOnConnection ? @"YES" : @"NO",
-                                      (unsigned long)[self.content length],
-                                      (unsigned long)self.size,
-                                      self.callbackMethod ? @"YES" : @"NO",
-                                      self.callbackMethod,
-                                      self.requestIdentifier,
-                                      self.response];
->>>>>>> fix-pt65153600
 }
 
 #pragma mark -

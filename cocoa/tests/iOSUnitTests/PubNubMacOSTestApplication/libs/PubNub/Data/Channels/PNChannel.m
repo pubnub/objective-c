@@ -13,13 +13,9 @@
 #import "PNChannel+Protected.h"
 #import "PNChannelPresence+Protected.h"
 #import "PNHereNow+Protected.h"
-<<<<<<< HEAD
 #import "PNClient+Protected.h"
 #import "PNPrivateImports.h"
 #import "PNConstants.h"
-=======
-#import "NSString+PNAddition.h"
->>>>>>> fix-pt65153600
 
 
 // ARC check
@@ -31,10 +27,6 @@
 
 #pragma mark Static
 
-<<<<<<< HEAD
-=======
-static NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
->>>>>>> fix-pt65153600
 static NSMutableDictionary *_channelsCache = nil;
 
 
@@ -50,11 +42,7 @@ static NSMutableDictionary *_channelsCache = nil;
 @property (nonatomic, copy) NSString *updateTimeToken;
 @property (nonatomic, strong) PNDate *presenceUpdateDate;
 @property (nonatomic, assign) NSUInteger participantsCount;
-<<<<<<< HEAD
 @property (nonatomic, strong) NSMutableDictionary *participantsList;
-=======
-@property (nonatomic, strong) NSMutableArray *participantsList;
->>>>>>> fix-pt65153600
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
 @property (nonatomic, assign, getter = isAbleToResetTimeToken) BOOL ableToResetTimeToken;
 @property (nonatomic, assign, getter = isLinkedWithPresenceObservationChannel)BOOL linkedWithPresenceObservationChannel;
@@ -199,11 +187,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
         self.ableToResetTimeToken = YES;
 		self.updateTimeToken = @"0";
         self.name = channelName;
-<<<<<<< HEAD
         self.participantsList = [NSMutableDictionary dictionary];
-=======
-        self.participantsList = [NSMutableArray array];
->>>>>>> fix-pt65153600
     }
     
     
@@ -260,11 +244,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
 - (NSArray *)participants {
     
-<<<<<<< HEAD
     return [self.participantsList allValues];
-=======
-    return self.participantsList;
->>>>>>> fix-pt65153600
 }
 
 - (void)updateWithEvent:(PNPresenceEvent *)event {
@@ -275,12 +255,8 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     // Checking whether someone is joined to channel or not
     if (event.type == PNPresenceEventJoin) {
 
-<<<<<<< HEAD
         event.client.channel = self;
         [self.participantsList setValue:event.client forKey:event.client.identifier];
-=======
-        [self.participantsList addObject:event.uuid];
->>>>>>> fix-pt65153600
     }
     // Check whether number of persons changed in channel or not
     else if (event.type == PNPresenceEventChanged) {
@@ -289,18 +265,13 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
         // (calculated basing on previous number of participants)
         if ([self.participantsList count] < event.occupancy) {
 
-<<<<<<< HEAD
 
             [self.participantsList setValue:[PNClient anonymousClientForChannel:self] forKey:PNUniqueIdentifier()];
-=======
-            [self.participantsList addObject:kPNAnonymousParticipantIdentifier];
->>>>>>> fix-pt65153600
         }
         // Check whether 'anonymous' (or 'unknown') person leaved channel
         // (calculated basing on previous number of participants)
         else if ([self.participantsList count] > event.occupancy) {
 
-<<<<<<< HEAD
             NSSet *keysForUnknownClients = [self.participantsList keysOfEntriesPassingTest:^BOOL(NSString *clientStoreKey, PNClient *client,
                                                                                  BOOL *clientKeysEnumeratorStop) {
 
@@ -310,23 +281,13 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
             if ([keysForUnknownClients count]) {
 
                 [self.participantsList removeObjectForKey:[keysForUnknownClients anyObject]];
-=======
-            NSUInteger anonymousParticipantIndex = [self.participantsList indexOfObject:kPNAnonymousParticipantIdentifier];
-            if (anonymousParticipantIndex != NSNotFound) {
-
-                [self.participantsList removeObjectAtIndex:anonymousParticipantIndex];
->>>>>>> fix-pt65153600
             }
         }
     }
     // Looks like someone leaved or was kicked by timeout
     else {
 
-<<<<<<< HEAD
         [self.participantsList removeObjectForKey:event.client.identifier];
-=======
-        [self.participantsList removeObject:event.uuid];
->>>>>>> fix-pt65153600
     }
 
     self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
@@ -336,7 +297,6 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
     self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
     self.participantsCount = hereNow.participantsCount;
-<<<<<<< HEAD
     self.participantsList = [NSMutableDictionary dictionary];
     [hereNow.participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx,
                                                        BOOL *clientEnumeratorStop) {
@@ -349,9 +309,6 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
         }
         [self.participantsList setValue:client forKey:clientStoreIdentifier];
     }];
-=======
-    self.participantsList = [hereNow.participants mutableCopy];
->>>>>>> fix-pt65153600
 }
 
 - (NSString *)escapedName {

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
 
  @author Sergey Mamontov
@@ -6,27 +5,13 @@
  @copyright © 2009-13 PubNub Inc.
 
  */
-=======
-//
-//  PNChannelEventsResponseParser.h
-// 
-//
-//  Created by moonlight on 1/15/13.
-//
-//
-
->>>>>>> fix-pt65153600
 
 #import "PNPrivateImports.h"
 #import "PNChannelEventsResponseParser.h"
 #import "PNChannelPresence+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #import "PNChannelEvents+Protected.h"
-<<<<<<< HEAD
 #import "PNResponse+Protected.h"
-=======
-#import "PNResponse.h"
->>>>>>> fix-pt65153600
 
 
 // ARC check
@@ -38,7 +23,6 @@
 
 #pragma mark Static
 
-<<<<<<< HEAD
 /**
  Stores reference on index under which events list is stored.
  */
@@ -52,15 +36,6 @@ static NSUInteger const kPNResponseChannelsListElementIndex = 2;
 /**
  Stores reference on time token element index in response for events.
  */
-=======
-// Stores reference on index under which events list is stored
-static NSUInteger const kPNResponseEventsListElementIndex = 0;
-
-// Stores reference on index under which channels list is stored
-static NSUInteger const kPNResponseChannelsListElementIndex = 2;
-
-// Stores reference on time token element index in response for events
->>>>>>> fix-pt65153600
 static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 
@@ -71,7 +46,6 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 #pragma mark - Properties
 
-<<<<<<< HEAD
 /**
  Stores reference on even data object which holds all information about events.
  */
@@ -81,12 +55,6 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 #pragma mark -
 
 
-=======
-// Stores reference on even data object which holds all information about events
-@property (nonatomic, strong) PNChannelEvents *events;
-
-
->>>>>>> fix-pt65153600
 @end
 
 
@@ -139,13 +107,7 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
         if ([events count] > 0) {
 
             NSMutableArray *eventObjects = [NSMutableArray arrayWithCapacity:[events count]];
-<<<<<<< HEAD
             [events enumerateObjectsUsingBlock:^(id event, NSUInteger eventIdx, BOOL *eventEnumeratorStop) {
-=======
-            [events enumerateObjectsUsingBlock:^(id event,
-                                                 NSUInteger eventIdx,
-                                                 BOOL *eventEnumeratorStop) {
->>>>>>> fix-pt65153600
 
                 PNChannel *channel = nil;
                 if ([channels count] > 0) {
@@ -192,15 +154,8 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 - (NSString *)description {
 
-<<<<<<< HEAD
     return [NSString stringWithFormat:@"%@ (%p) <time token: %@, events: %@>", NSStringFromClass([self class]), self,
                                       self.events.timeToken, self.events.events];
-=======
-    return [NSString stringWithFormat:@"%@ (%p) <time token: %@, events: %@>",
-                                      NSStringFromClass([self class]), self,
-                                      self.events.timeToken,
-                                      self.events.events];
->>>>>>> fix-pt65153600
 }
 
 #pragma mark -

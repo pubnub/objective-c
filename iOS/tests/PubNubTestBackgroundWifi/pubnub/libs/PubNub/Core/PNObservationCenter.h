@@ -42,7 +42,6 @@
 - (void)removeClientConnectionStateObserver:(id)observer;
 
 
-<<<<<<< HEAD
 #pragma mark - Client state retrieval / update observation
 
 /**
@@ -76,8 +75,6 @@
 - (void)removeClientStateUpdateObserver:(id)observer;
 
 
-=======
->>>>>>> fix-pt65153600
 #pragma mark - Client channels action/event observation
 
 /**
@@ -215,13 +212,10 @@
                                            withBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 - (void)removeChannelParticipantsListProcessingObserver:(id)observer;
 
-<<<<<<< HEAD
 - (void)addClientParticipantChannelsListDownloadObserver:(id)observer
                                                  withBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
 - (void)removeClientParticipantChannelsListDownloadObserver:(id)observer;
 
-=======
->>>>>>> fix-pt65153600
 #pragma mark -
 
 

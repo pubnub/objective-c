@@ -498,12 +498,12 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 }
 
 - (NSUInteger)nextResponseStartIndexForData:(NSData *)data inRange:(NSRange)responseRange {
-
+    
     NSRange range = [data rangeOfData:self.httpHeaderStartData
                               options:(NSDataSearchOptions)0
                                 range:[self nextResponseStartSearchRangeInRange:responseRange]];
-
-//    NSLog(@"Data \n%@\n responseRange.loc %lu\nresponseRange.lenght %lu\n, location %lu\nNSUInteger %lu", data, (unsigned long)responseRange.location, (unsigned long)responseRange.length, (unsigned long)range.location, NSNotFound);
+    
+    
     return range.location;
 }
 

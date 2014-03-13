@@ -40,8 +40,8 @@
 #define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
 
 #if COCOAPODS == 1
-	#define PNLOG_LOGGING_ENABLED 1
-	#define PNLOG_STORE_LOG_TO_FILE 1
+	#define PNLOG_LOGGING_ENABLED 0
+	#define PNLOG_STORE_LOG_TO_FILE 0
 #else
 	#define PNLOG_LOGGING_ENABLED 1
 	#define PNLOG_STORE_LOG_TO_FILE 1

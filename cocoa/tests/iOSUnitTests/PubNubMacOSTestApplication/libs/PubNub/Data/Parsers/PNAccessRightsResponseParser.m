@@ -113,7 +113,6 @@ struct PNAccessLevelsStruct PNAccessLevels = {
         NSDictionary *accessInformation = response.response;
 
         // Fetch access level to which changes has been applied / received
-<<<<<<< HEAD
         PNAccessRightsLevel accessLevel = [self accessRightsLevelFromString:[accessInformation valueForKeyPath:kPNAccessLevelKey]];
 
         // Fetch access rights period (time during which they will be valid)
@@ -124,18 +123,6 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 
         // Fetch application identifier (\a 'subscribe' key).
         NSString *application = [accessInformation valueForKeyPath:kPNApplicationIdentifierKey];
-=======
-        PNAccessRightsLevel accessLevel = [self accessRightsLevelFromString:[accessInformation valueForKeyPath:kPNAccessLevelKeyPath]];
-
-        // Fetch access rights period (time during which they will be valid)
-        NSUInteger accessPeriod = [[accessInformation valueForKeyPath:kPNAccessRightsPeriodKeyPath] unsignedIntegerValue];
-
-        // Fetch granted access rights.
-        __block PNAccessRights accessRights = [self accessRightsFromDictionary:[accessInformation valueForKey:kPNResponsePayloadKey]];
-
-        // Fetch application identifier (\a 'subscribe' key).
-        NSString *application = [accessInformation valueForKeyPath:kPNApplicationIdentifierKeyPath];
->>>>>>> fix-pt65153600
 
         self.information = [PNAccessRightsCollection accessRightsCollectionForApplication:application
                                                                      andAccessRightsLevel:accessLevel];
@@ -150,13 +137,8 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 
 
             // Checking whether \a 'channel' level access rights has been changes as well or not.
-<<<<<<< HEAD
             if ([accessInformation valueForKeyPath:kPNAccessChannelsKey] != nil &&
                 [(NSArray *)[accessInformation valueForKeyPath:kPNAccessChannelsKey] count]) {
-=======
-            if ([accessInformation valueForKeyPath:kPNAccessChannelsKeyPath] != nil &&
-                [(NSArray *)[accessInformation valueForKeyPath:kPNAccessChannelsKeyPath] count]) {
->>>>>>> fix-pt65153600
 
                 [self parseChannelAccessInformationFromDictionary:accessInformation];
             }
@@ -178,20 +160,12 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 - (void)parseChannelAccessInformationFromDictionary:(NSDictionary *)channelInformationDictionary {
 
     // Fetch access rights period (time during which they will be valid)
-<<<<<<< HEAD
     __block NSUInteger accessPeriod = [[channelInformationDictionary valueForKeyPath:kPNAccessRightsPeriodKey] unsignedIntegerValue];
-=======
-    __block NSUInteger accessPeriod = [[channelInformationDictionary valueForKeyPath:kPNAccessRightsPeriodKeyPath] unsignedIntegerValue];
->>>>>>> fix-pt65153600
 
     // Fetch granted access rights.
     __block PNAccessRights accessRights = PNUnknownAccessRights;
 
-<<<<<<< HEAD
     NSDictionary *channelsInformation = [channelInformationDictionary valueForKeyPath:kPNAccessChannelsKey];
-=======
-    NSDictionary *channelsInformation = [channelInformationDictionary valueForKeyPath:kPNAccessChannelsKeyPath];
->>>>>>> fix-pt65153600
     [channelsInformation enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelInformation,
                                                              BOOL *channelInformationEnumeratorStop) {
 
@@ -239,26 +213,15 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 - (void)parseClientAccessInformationFromDictionary:(NSDictionary *)clientsInformationDictionary {
 
     // Fetch access rights period (time during which they will be valid)
-<<<<<<< HEAD
     __block NSUInteger accessPeriod = [[clientsInformationDictionary valueForKeyPath:kPNAccessRightsPeriodKey] unsignedIntegerValue];
-=======
-    __block NSUInteger accessPeriod = [[clientsInformationDictionary valueForKeyPath:kPNAccessRightsPeriodKeyPath] unsignedIntegerValue];
->>>>>>> fix-pt65153600
 
     // Fetch granted access rights.
     __block PNAccessRights accessRights = PNUnknownAccessRights;
 
-<<<<<<< HEAD
     NSString *channelName = [clientsInformationDictionary valueForKeyPath:kPNAccessChannelKey];
     PNChannel *channel = [PNChannel channelWithName:[channelName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 
     NSDictionary *clients = [clientsInformationDictionary valueForKeyPath:kPNAccessClientAuthorizationKey];
-=======
-    NSString *channelName = [clientsInformationDictionary valueForKeyPath:kPNAccessChannelKeyPath];
-    PNChannel *channel = [PNChannel channelWithName:[channelName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-
-    NSDictionary *clients = [clientsInformationDictionary valueForKeyPath:kPNAccessClientAuthorizationKeyPath];
->>>>>>> fix-pt65153600
     
     [clients enumerateKeysAndObjectsUsingBlock:^(NSString *clientAuthorizationKey, NSDictionary *clientInformation, BOOL *clientInformationEnumeratorStop) {
         
@@ -306,11 +269,7 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 
 - (PNAccessRights)accessRightsFromDictionary:(NSDictionary *)accessRightsInformation {
 
-<<<<<<< HEAD
     unsigned long accessRights = PNNoAccessRights;
-=======
-    PNAccessRights accessRights = PNNoAccessRights;
->>>>>>> fix-pt65153600
 
     NSNumber *readRightState = [accessRightsInformation objectForKey:kPNReadAccessRightStateKey];
     NSNumber *writeRightState = [accessRightsInformation objectForKey:kPNWriteAccessRightStateKey];
@@ -331,11 +290,7 @@ struct PNAccessLevelsStruct PNAccessLevels = {
     }
 
 
-<<<<<<< HEAD
     return (PNAccessRights)accessRights;
-=======
-    return accessRights;
->>>>>>> fix-pt65153600
 }
 
 #pragma mark -

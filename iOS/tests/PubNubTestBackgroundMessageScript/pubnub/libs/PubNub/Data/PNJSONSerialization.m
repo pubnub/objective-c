@@ -191,12 +191,9 @@
         JSONString = object;
     }
 
-<<<<<<< HEAD
     // Replace null value has been passed or not (serialized [NSNull null] value)
     JSONString = [JSONString stringByReplacingOccurrencesOfString:@":null" withString:@":\"null\""];
 
-=======
->>>>>>> fix-pt65153600
 
     return JSONString;
 }

@@ -59,7 +59,6 @@ static NSString * const kPNClientDidDisconnectFromOriginNotification = @"PNClien
 static NSString * const kPNClientConnectionDidFailWithErrorNotification = @"PNClientConnectionDidFailWithErrorNotification";
 
 /**
-<<<<<<< HEAD
  Sent when \b PubNub client successfully retrieved client state information.
 
  \b userInfo contains reference on \b PNClient instead of \b NSDictionary which hold information about client
@@ -98,8 +97,6 @@ static NSString * const kPNClientDidUpdateClientStateNotification = @"PNClientDi
 static NSString * const kPNClientStateUpdateDidFailWithErrorNotification = @"PNClientStateUpdateDidFailWithErrorNotification";
 
 /**
-=======
->>>>>>> fix-pt65153600
  Sent when \b PubNub client was able to complete subscription on specified set of channels.
 
  \b userInfo contains reference on \a NSArray of \b PNChannel instances on which \b PubNub client was able to subscribe.
@@ -413,7 +410,6 @@ static NSString * const kPNClientDidReceiveParticipantsListNotification = @"PNCl
  */
 static NSString * const kPNClientParticipantsListDownloadFailedWithErrorNotification=@"PNClientParticipantsListDownloadFailedWithErrorNotification";
 
-<<<<<<< HEAD
 /**
  Sent when \b PubNub client did complete participant channels list retrieval process.
 
@@ -433,6 +429,4 @@ static NSString * const kPNClientDidReceiveParticipantChannelsListNotification =
  */
 static NSString * const kPNClientParticipantChannelsListDownloadFailedWithErrorNotification = @"PNClientParticipantChannelsListDownloadFailedWithErrorNotification";
 
-=======
->>>>>>> fix-pt65153600
 #endif

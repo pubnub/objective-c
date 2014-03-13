@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  Extending \b PubNub class with properties and methods which can be used internally by \b PubNub client.
 
@@ -6,21 +5,6 @@
  @version 3.4.0
  @copyright © 2009-13 PubNub Inc.
  */
-=======
-//
-//  PubNub+Protected.h
-//  pubnub
-//
-//  This header file used by library internal
-//  components which require to access to some
-//  methods and properties which shouldn't be
-//  visible to other application components
-//
-//
-//  Created by Sergey Mamontov.
-//
-//
->>>>>>> fix-pt65153600
 
 #import "PNPrivateImports.h"
 #import "PNConfiguration.h"
@@ -29,12 +13,9 @@
 #import "PubNub.h"
 
 
-<<<<<<< HEAD
 @class PNCache;
 
 
-=======
->>>>>>> fix-pt65153600
 #pragma mark Static
 
 typedef enum _PNPubNubClientState {
@@ -75,7 +56,6 @@ typedef enum _PNPubNubClientState {
 
 #pragma mark - Properties
 
-<<<<<<< HEAD
 /**
  Stores reference on configuration which was used to perform initial PubNub client initialization.
  */
@@ -101,25 +81,6 @@ typedef enum _PNPubNubClientState {
 @property (nonatomic, readonly, getter = canRunInBackground) BOOL runInBackground;
 #endif
 
-=======
-// Stores reference on configuration which was used to perform initial PubNub client initialization
-@property (nonatomic, strong) PNConfiguration *configuration;
-
-// Stores reference on current client identifier
-@property (nonatomic, strong) NSString *clientIdentifier;
-
-// Stores unique client initialization session identifier (created each time when PubNub stack is configured
-// after application launch)
-@property (nonatomic, strong) NSString *launchSessionIdentifier;
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-// Stores whether application is able to work in background or not
-@property (nonatomic, readonly, getter = canRunInBackground) BOOL runInBackground;
-#endif
-
-// Stores whether application is trying to awake after suspension or not
-
->>>>>>> fix-pt65153600
 
 #pragma mark - Class methods
 

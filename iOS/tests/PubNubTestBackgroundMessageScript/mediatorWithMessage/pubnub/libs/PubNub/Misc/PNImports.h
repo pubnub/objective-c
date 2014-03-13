@@ -21,11 +21,8 @@
 #import "PNConfiguration.h"
 #import "PNNotifications.h"
 #import "PNPresenceEvent.h"
-<<<<<<< HEAD
 #import "PNWhereNow.h"
 #import "PNHereNow.h"
-=======
->>>>>>> fix-pt65153600
 
 #import "NSString+PNAddition.h"
 #import "NSData+PNAdditions.h"
@@ -38,10 +35,7 @@
 
 #import "PNMessage.h"
 #import "PNChannel.h"
-<<<<<<< HEAD
 #import "PNClient.h"
-=======
->>>>>>> fix-pt65153600
 #import "PNMacro.h"
 #import "PNError.h"
 #import "PubNub.h"

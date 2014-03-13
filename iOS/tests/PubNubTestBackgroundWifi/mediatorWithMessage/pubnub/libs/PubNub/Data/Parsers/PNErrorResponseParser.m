@@ -55,11 +55,7 @@
     // Check whether initialization successful or not
     if ((self = [super init])) {
 
-<<<<<<< HEAD
         id responseData = response.response;
-=======
-        NSDictionary *responseData = response.response;
->>>>>>> fix-pt65153600
 
         PNError *error;
         

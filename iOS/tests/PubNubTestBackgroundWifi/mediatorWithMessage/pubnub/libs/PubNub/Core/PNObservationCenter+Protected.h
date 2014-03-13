@@ -52,7 +52,6 @@
 - (void)removeClientConnectionStateObserver:(id)observer oneTimeEvent:(BOOL)isOneTimeEventObserver;
 
 
-<<<<<<< HEAD
 #pragma mark - Client state retrieval / update observation
 
 /**
@@ -75,15 +74,6 @@
 /**
  * Observing for subscription on list of channels (this action will be performed only once per subscription).
  * After event will be fired this observation request will be removed from queue.
-=======
-#pragma mark - Channels subscribe/leave observers
-
-/**
- * Observing for subscription on list of channels
- * (this action will be performed only once per subscription).
- * After event will be fired this observation request will be
- * removed from queue.
->>>>>>> fix-pt65153600
  */
 - (void)addClientAsSubscriptionObserverWithBlock:(PNClientChannelSubscriptionHandlerBlock)handleBlock;
 - (void)removeClientAsSubscriptionObserver;
@@ -213,19 +203,12 @@
 #pragma mark - Participants observer
 
 /**
-<<<<<<< HEAD
  Add/remove observer for participants list download.
  After event will be fired this observation request will be removed from queue.
-=======
- * Add/remove observer for participants list download
- * After event will be fired this observation request will be
- * removed from queue.
->>>>>>> fix-pt65153600
  */
 - (void)addClientAsParticipantsListDownloadObserverWithBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 - (void)removeClientAsParticipantsListDownloadObserver;
 
-<<<<<<< HEAD
 /**
  Add/remove observer for participant channels list download.
  After event will be fired this observation request will be removed from queue.
@@ -233,8 +216,6 @@
 - (void)addClientAsParticipantChannelsListDownloadObserverWithBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
 - (void)removeClientAsParticipantChannelsListDownloadObserver;
 
-=======
->>>>>>> fix-pt65153600
 #pragma mark -
 
 

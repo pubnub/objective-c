@@ -16,10 +16,7 @@
 #import "PNHereNow+Protected.h"
 #import "PNError+Protected.h"
 #import "PubNub+Protected.h"
-<<<<<<< HEAD
 #import "PNClient.h"
-=======
->>>>>>> fix-pt65153600
 
 
 // ARC check
@@ -39,11 +36,8 @@ static dispatch_once_t onceToken;
 struct PNObservationEventsStruct {
 
     __unsafe_unretained NSString *clientConnectionStateChange;
-<<<<<<< HEAD
     __unsafe_unretained NSString *clientMetadataRetrieval;
     __unsafe_unretained NSString *clientMetadataUpdate;
-=======
->>>>>>> fix-pt65153600
     __unsafe_unretained NSString *clientSubscriptionOnChannels;
     __unsafe_unretained NSString *clientUnsubscribeFromChannels;
     __unsafe_unretained NSString *clientPresenceEnableOnChannels;
@@ -60,10 +54,7 @@ struct PNObservationEventsStruct {
     __unsafe_unretained NSString *clientReceivedPresenceEvent;
     __unsafe_unretained NSString *clientReceivedHistory;
     __unsafe_unretained NSString *clientReceivedParticipantsList;
-<<<<<<< HEAD
     __unsafe_unretained NSString *clientParticipantChannelsList;
-=======
->>>>>>> fix-pt65153600
 };
 
 struct PNObservationObserverDataStruct {
@@ -73,14 +64,10 @@ struct PNObservationObserverDataStruct {
 };
 
 static struct PNObservationEventsStruct PNObservationEvents = {
-<<<<<<< HEAD
 
     .clientConnectionStateChange = @"clientConnectionStateChangeEvent",
     .clientMetadataRetrieval = @"clientMetadataRetrieveEvent",
     .clientMetadataUpdate = @"clientMedataUpdateEvent",
-=======
-    .clientConnectionStateChange = @"clientConnectionStateChangeEvent",
->>>>>>> fix-pt65153600
     .clientTimeTokenReceivingComplete = @"clientReceivingTimeTokenEvent",
     .clientSubscriptionOnChannels = @"clientSubscribtionOnChannelsEvent",
     .clientUnsubscribeFromChannels = @"clientUnsubscribeFromChannelsEvent",
@@ -96,12 +83,8 @@ static struct PNObservationEventsStruct PNObservationEvents = {
     .clientReceivedMessage = @"clientReceivedMessageEvent",
     .clientReceivedPresenceEvent = @"clientReceivedPresenceEvent",
     .clientReceivedHistory = @"clientReceivedHistoryEvent",
-<<<<<<< HEAD
     .clientReceivedParticipantsList = @"clientReceivedParticipantsListEvent",
     .clientParticipantChannelsList = @"clientParticipantChannelsProcessingEvent"
-=======
-    .clientReceivedParticipantsList = @"clientReceivedParticipantsListEvent"
->>>>>>> fix-pt65153600
 };
 
 static struct PNObservationObserverDataStruct PNObservationObserverData = {
@@ -150,11 +133,8 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 #pragma mark - Handler methods
 
 - (void)handleClientConnectionStateChange:(NSNotification *)notification;
-<<<<<<< HEAD
 - (void)handleClientMetadataRetrieveProcess:(NSNotification *)notification;
 - (void)handleClientMetadataUpdateProcess:(NSNotification *)notification;
-=======
->>>>>>> fix-pt65153600
 - (void)handleClientSubscriptionProcess:(NSNotification *)notification;
 - (void)handleClientUnsubscriptionProcess:(NSNotification *)notification;
 - (void)handleClientPresenceObservationEnablingProcess:(NSNotification *)notification;
@@ -169,10 +149,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 - (void)handleClientChannelAccessRightsChange:(NSNotification *)notification;
 - (void)handleClientChannelAccessRightsRequest:(NSNotification *)notification;
 - (void)handleClientHereNowProcess:(NSNotification *)notification;
-<<<<<<< HEAD
 - (void)handleClientWhereNowProcess:(NSNotification *)notification;
-=======
->>>>>>> fix-pt65153600
 - (void)handleClientCompletedTimeTokenProcessing:(NSNotification *)notification;
 
 
@@ -230,7 +207,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         [notificationCenter addObserver:self selector:@selector(handleClientConnectionStateChange:)
                                    name:kPNClientConnectionDidFailWithErrorNotification object:nil];
 
-<<<<<<< HEAD
         [notificationCenter addObserver:self selector:@selector(handleClientMetadataRetrieveProcess:)
                                    name:kPNClientDidReceiveClientStateNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleClientMetadataRetrieveProcess:)
@@ -240,8 +216,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         [notificationCenter addObserver:self selector:@selector(handleClientMetadataUpdateProcess:)
                                    name:kPNClientStateUpdateDidFailWithErrorNotification object:nil];
 
-=======
->>>>>>> fix-pt65153600
 
         // Handle subscription events
         [notificationCenter addObserver:self selector:@selector(handleClientSubscriptionProcess:)
@@ -347,13 +321,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                                    name:kPNClientDidReceiveParticipantsListNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleClientHereNowProcess:)
                                    name:kPNClientParticipantsListDownloadFailedWithErrorNotification object:nil];
-<<<<<<< HEAD
         [notificationCenter addObserver:self selector:@selector(handleClientWhereNowProcess:)
                                    name:kPNClientDidReceiveParticipantChannelsListNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleClientWhereNowProcess:)
                                    name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification object:nil];
-=======
->>>>>>> fix-pt65153600
     }
     
     
@@ -451,7 +422,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 }
 
 
-<<<<<<< HEAD
 #pragma mark - Client state retrieval / update observation
 
 - (void)addClientMetadataRequestObserver:(id)observer withBlock:(PNClientStateRetrieveHandlingBlock)handleBlock {
@@ -517,8 +487,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 }
 
 
-=======
->>>>>>> fix-pt65153600
 #pragma mark - Client channels action/event observation
 
 - (void)addClientChannelSubscriptionStateObserver:(id)observer
@@ -977,7 +945,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 #pragma mark - Participants observer
 
-<<<<<<< HEAD
 - (void)addChannelParticipantsListProcessingObserver:(id)observer
                                            withBlock:(PNClientParticipantsHandlingBlock)handleBlock {
 
@@ -994,8 +961,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             oneTimeEvent:NO];
 }
 
-=======
->>>>>>> fix-pt65153600
 - (void)addClientAsParticipantsListDownloadObserverWithBlock:(PNClientParticipantsHandlingBlock)handleBlock {
 
     [self addObserver:[PubNub sharedInstance]
@@ -1012,27 +977,15 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             oneTimeEvent:YES];
 }
 
-<<<<<<< HEAD
 - (void)addClientParticipantChannelsListDownloadObserver:(id)observer
                                                withBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
 
     [self addObserver:observer
              forEvent:PNObservationEvents.clientParticipantChannelsList
-=======
-
-#pragma mark - Participants observing
-
-- (void)addChannelParticipantsListProcessingObserver:(id)observer
-                                           withBlock:(PNClientParticipantsHandlingBlock)handleBlock {
-
-    [self addObserver:observer
-             forEvent:PNObservationEvents.clientReceivedParticipantsList
->>>>>>> fix-pt65153600
          oneTimeEvent:NO
             withBlock:handleBlock];
 }
 
-<<<<<<< HEAD
 - (void)removeClientParticipantChannelsListDownloadObserver:(id)observer {
 
     [self removeObserver:observer
@@ -1054,15 +1007,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             oneTimeEvent:YES];
 }
 
-=======
-- (void)removeChannelParticipantsListProcessingObserver:(id)observer {
-
-    [self removeObserver:observer
-                forEvent:PNObservationEvents.clientReceivedParticipantsList
-            oneTimeEvent:NO];
-}
-
->>>>>>> fix-pt65153600
 
 #pragma mark - Handler methods
 
@@ -1103,7 +1047,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }];
 }
 
-<<<<<<< HEAD
 - (void)handleClientMetadataRetrieveProcess:(NSNotification *)notification {
 
     PNError *error = nil;
@@ -1170,8 +1113,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }];
 }
 
-=======
->>>>>>> fix-pt65153600
 - (void)handleClientSubscriptionProcess:(NSNotification *)notification {
 
     NSArray *channels = nil;
@@ -1700,7 +1641,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }];
 }
 
-<<<<<<< HEAD
 - (void)handleClientWhereNowProcess:(NSNotification *)notification {
 
     // Retrieve reference on participants object
@@ -1737,8 +1677,6 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }];
 }
 
-=======
->>>>>>> fix-pt65153600
 - (void)handleClientCompletedTimeTokenProcessing:(NSNotification *)notification {
 
     PNError *error = nil;
@@ -1830,14 +1768,11 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     [notificationCenter removeObserver:self name:kPNClientDidDisconnectFromOriginNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientConnectionDidFailWithErrorNotification object:nil];
 
-<<<<<<< HEAD
     [notificationCenter removeObserver:self name:kPNClientDidReceiveClientStateNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientStateRetrieveDidFailWithErrorNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientDidUpdateClientStateNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientStateUpdateDidFailWithErrorNotification object:nil];
 
-=======
->>>>>>> fix-pt65153600
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientSubscriptionWillRestoreNotification object:nil];
@@ -1884,11 +1819,8 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     [notificationCenter removeObserver:self name:kPNClientDidReceiveParticipantsListNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientParticipantsListDownloadFailedWithErrorNotification object:nil];
-<<<<<<< HEAD
     [notificationCenter removeObserver:self name:kPNClientDidReceiveParticipantChannelsListNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification object:nil];
-=======
->>>>>>> fix-pt65153600
 
     PNLog(PNLogGeneralLevel, self, @"Destroyed");
 }

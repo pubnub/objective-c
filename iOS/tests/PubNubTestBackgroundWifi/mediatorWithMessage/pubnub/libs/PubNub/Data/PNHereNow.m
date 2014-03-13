@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
 
  @author Sergey Mamontov
@@ -8,17 +7,6 @@
  */
 
 #import "PNHereNow+Protected.h"
-=======
-//
-//  PNHereNow.h
-// 
-//
-//  Created by moonlight on 1/15/13.
-//
-//
-
-#import "PNHereNow.h"
->>>>>>> fix-pt65153600
 
 
 // ARC check
@@ -28,7 +16,6 @@
 #endif
 
 
-<<<<<<< HEAD
 #pragma mark Externs
 
 /**
@@ -43,26 +30,6 @@ NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
 
 
 #pragma mark -
-=======
-#pragma mark Private interface methods
-
-@interface PNHereNow ()
-
-
-#pragma mark - Properties
-
-@property (nonatomic, strong) NSArray *participants;
-@property (nonatomic, assign) unsigned int participantsCount;
-@property (nonatomic, strong) PNChannel *channel;
-
-
-@end
-
-
-#pragma mark - Public interface methods
-
-@implementation PNHereNow
->>>>>>> fix-pt65153600
 
 
 @end

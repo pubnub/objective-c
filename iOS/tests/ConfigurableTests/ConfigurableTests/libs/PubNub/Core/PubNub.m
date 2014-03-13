@@ -4615,7 +4615,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [self.messagingChannel resume];
             [self.serviceChannel resume];
         }
-        else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+        else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
             PNLog(PNLogGeneralLevel, self, @"CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SUSPENSION.");
 
@@ -4711,7 +4711,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [self.messagingChannel resume];
             [self.serviceChannel resume];
         }
-        else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+        else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
             PNLog(PNLogGeneralLevel, self, @"CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SLEEP.");
 
@@ -5733,8 +5733,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     PNLog(PNLogGeneralLevel, self, @"WILL RESTORE SUBSCRIPTION ON: %@", channels);
 
-    if ([self isConnected]) {
-        
+    if ([self.messagingChannel isConnected] ) {
+
         self.asyncLockingOperationInProgress = YES;
     }
 
