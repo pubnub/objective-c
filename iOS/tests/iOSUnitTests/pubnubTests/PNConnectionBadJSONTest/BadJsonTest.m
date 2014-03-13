@@ -74,6 +74,12 @@
 							 object:nil];
 }
 
+- (void)tearDown {
+    [super tearDown];
+	[NSThread sleepForTimeInterval:1.0];
+}
+
+
 - (void)handleClientDidSendMessage:(NSNotification *)notification {
 	PNLog(PNLogGeneralLevel, nil, @"kPNClientDidSendMessageNotification handleClientDidSendMessage %@", notification);
 	messageDidSendCount++;
@@ -160,11 +166,11 @@
 	//	//	configuration.autoReconnectClient = NO;
 	configuration.subscriptionRequestTimeout = 10;
 	configuration.nonSubscriptionRequestTimeout = 10;
+	configuration.reduceSecurityLevelOnError = YES;
 	[PubNub setConfiguration: configuration];
 
 	handleClientConnectionStateChange = NO;
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
-
         PNLog(PNLogGeneralLevel, nil, @"{BLOCK} PubNub client connected to: %@", origin);
         dispatch_semaphore_signal(semaphore);
     }
@@ -191,9 +197,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	handleClientSubscriptionProcess = NO;
 	__block NSDate *start = [NSDate date];
-	[PubNub subscribeOnChannels: pnChannels1
-	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-	 {
+	[PubNub subscribeOnChannels: pnChannels1 withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 		 dispatch_semaphore_signal(semaphore);
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
 		 NSLog( @"test15SubscribeOnChannels %f", interval);
@@ -207,44 +211,41 @@
 
 -(void)t18SendMessage {
 	messageDidSendCount = 0;
-	SwizzleReceipt *receipt = nil;
-	SwizzleReceipt *receiptError = nil;
-	for( int i=0; i<pnChannels1.count; i++ )
-	{
-		if( i==0 ) {
-			receipt = [self closeSocket];
-			receiptError = [self createError];
-		}
-
+//	__block SwizzleReceipt *receiptCloseSocket = nil;
+	__block SwizzleReceipt *receiptError = nil;
+//	__block int countSendMessageNumber0 = 0;
+//	receiptCloseSocket = [self closeSocket];
+	receiptError = [self setNewDataForBuffer];
+	[self performSelector: @selector(unswizzleFromReceipt:) withObject: receiptError afterDelay: 2];
+//	[self performSelector: @selector(unswizzleFromReceipt:) withObject: receiptCloseSocket afterDelay: 5];
+	for( int i=0; i<pnChannels1.count; i++ ) {
 		__block NSDate *start = [NSDate date];
 		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-		/*PNMessage *helloMessage = */[PubNub sendMessage:@"Hello PubNub"
-												toChannel:pnChannels1[i]
-									  withCompletionBlock:^(PNMessageState messageSendingState, id data)
-									   {
-//										   state = messageSendingState;
-										   NSLog( @"sendMessage state %d", messageSendingState);
-//										   STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState can't be equal PNMessageSent, %@", data);
-										   if( messageSendingState == PNMessageSending )
-											   start = [NSDate date];
-										   if( messageSendingState != PNMessageSending ) {
-											   dispatch_semaphore_signal(semaphore);
-											   NSTimeInterval interval = -[start timeIntervalSinceNow];
-											   NSLog(@"test18SendMessage %f", interval);
-											   STAssertEqualsWithAccuracy( interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout, 2, @"Timeout no correct, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
-										   }
-									   }];
+		[PubNub sendMessage:[NSString stringWithFormat: @"Hello PubNub %d", i] toChannel:pnChannels1[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+			NSLog( @"sendMessage state %d", messageSendingState);
+//			if( messageSendingState == PNMessageSending && i == 0 )
+//				countSendMessageNumber0 ++;
+
+//			STAssertTrue( messageSendingState != PNMessageSendingError, @"PNMessageSendingError");
+			if( messageSendingState == PNMessageSending )
+				start = [NSDate date];
+			if( messageSendingState != PNMessageSending ) {
+				dispatch_semaphore_signal(semaphore);
+				NSTimeInterval interval = -[start timeIntervalSinceNow];
+				NSLog(@"test18SendMessage %f", interval);
+				STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+2, @"Timeout no correct, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+		   }
+		}];
 
 		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-		if( i==0 ) {
-			[Swizzler unswizzleFromReceipt:receiptError];
-			[Swizzler unswizzleFromReceipt:receipt];
-		}
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	}
 }
 
+-(void)unswizzleFromReceipt:(SwizzleReceipt *)receipt {
+	[Swizzler unswizzleFromReceipt:receipt];
+	NSLog(@"unswizzleFromReceipt");
+}
 
 - (void)t20SubscribeOnChannels {
 	[self resetConnection];

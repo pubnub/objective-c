@@ -35,9 +35,15 @@
 
 #pragma mark Static
 
+<<<<<<< HEAD
 static NSString * const kPNLibraryVersion = @"3.6.0";
 static NSString * const kPNCodebaseBranch = @"presence-v3";
 static NSString * const kPNCodeCommitIdentifier = @"dadc0f0630cafa190f05e319be7e4e5e9922df22";
+=======
+static NSString * const kPNLibraryVersion = @"3.5.7";
+static NSString * const kPNCodebaseBranch = @" fix-pt65153600";
+static NSString * const kPNCodeCommitIdentifier = @"201ded1ff7a48fe6da96c8a9b792b21840753f80";
+>>>>>>> fix-pt65153600
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -4711,7 +4717,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [self.messagingChannel resume];
             [self.serviceChannel resume];
         }
-        else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+		else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
             PNLog(PNLogGeneralLevel, self, @"CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SLEEP.");
 
@@ -5733,8 +5739,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     PNLog(PNLogGeneralLevel, self, @"WILL RESTORE SUBSCRIPTION ON: %@", channels);
 
-    if ([self isConnected]) {
-        
+    if ([self.messagingChannel isConnected] ) {
+
         self.asyncLockingOperationInProgress = YES;
     }
 

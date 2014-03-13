@@ -176,7 +176,10 @@
         self.authorizationKey = authorizationKey?authorizationKey:@"";
         self.useSecureConnection = kPNSecureConnectionRequired;
         self.autoReconnectClient = kPNShouldAutoReconnectClient;
+<<<<<<< HEAD
         self.keepTimeTokenOnChannelsListChange = kPNShouldKeepTimeTokenOnChannelsListChange;
+=======
+>>>>>>> fix-pt65153600
         self.reduceSecurityLevelOnError = kPNShouldReduceSecurityLevelOnError;
         self.ignoreSecureConnectionRequirement = kPNCanIgnoreSecureConnectionRequirement;
         self.resubscribeOnConnectionRestore = kPNShouldResubscribeOnConnectionRestore;
@@ -184,9 +187,12 @@
         self.acceptCompressedResponse = kPNShouldAcceptCompressedResponse;
         self.nonSubscriptionRequestTimeout = kPNNonSubscriptionRequestTimeout;
         self.subscriptionRequestTimeout = kPNSubscriptionRequestTimeout;
+<<<<<<< HEAD
         self.presenceHeartbeatTimeout = kPNPresenceHeartbeatTimeout;
         self.presenceHeartbeatInterval = MAX(self.presenceHeartbeatTimeout - kPNHeartbeatRequestTimeoutOffset,
                                              kPNPresenceHeartbeatInterval);
+=======
+>>>>>>> fix-pt65153600
 
         // Checking whether user changed origin host from default
         // or not
@@ -205,7 +211,10 @@
                                                                              secretKey:self.secretKey cipherKey:self.cipherKey authorizationKey:self.authorizationKey];
     configuration.useSecureConnection = self.shouldUseSecureConnection;
     configuration.autoReconnectClient = self.shouldAutoReconnectClient;
+<<<<<<< HEAD
     configuration.keepTimeTokenOnChannelsListChange = self.shouldKeepTimeTokenOnChannelsListChange;
+=======
+>>>>>>> fix-pt65153600
     configuration.reduceSecurityLevelOnError = self.shouldReduceSecurityLevelOnError;
     configuration.ignoreSecureConnectionRequirement = self.canIgnoreSecureConnectionRequirement;
     configuration.resubscribeOnConnectionRestore = self.shouldResubscribeOnConnectionRestore;
@@ -213,8 +222,11 @@
     configuration.acceptCompressedResponse = self.shouldAcceptCompressedResponse;
     configuration.nonSubscriptionRequestTimeout = self.nonSubscriptionRequestTimeout;
     configuration.subscriptionRequestTimeout = self.subscriptionRequestTimeout;
+<<<<<<< HEAD
     configuration.presenceHeartbeatTimeout = self.presenceHeartbeatTimeout;
     configuration.presenceHeartbeatInterval = self.presenceHeartbeatInterval;
+=======
+>>>>>>> fix-pt65153600
     
     
     return configuration;
@@ -229,8 +241,12 @@
 
         // Checking whether critical configuration information has been changed or not
         if ((self.shouldUseSecureConnection != configuration.shouldUseSecureConnection) ||
+<<<<<<< HEAD
             ![self.origin isEqualToString:configuration.origin] || ![self.authorizationKey isEqualToString:configuration.authorizationKey] ||
             self.presenceHeartbeatTimeout != configuration.presenceHeartbeatTimeout) {
+=======
+            ![self.origin isEqualToString:configuration.origin] || ![self.authorizationKey isEqualToString:configuration.authorizationKey]) {
+>>>>>>> fix-pt65153600
 
             shouldReset = YES;
         }
@@ -272,6 +288,7 @@
 
         isEqual = [self.authorizationKey isEqualToString:configuration.authorizationKey];
     }
+<<<<<<< HEAD
     
     if (isEqual) {
         
@@ -291,11 +308,21 @@
     if (isEqual) {
 
         isEqual = (self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout);
+=======
+
+    if (isEqual) {
+
+        isEqual = (self.nonSubscriptionRequestTimeout == configuration.nonSubscriptionRequestTimeout);
+>>>>>>> fix-pt65153600
     }
 
     if (isEqual) {
 
+<<<<<<< HEAD
         isEqual = (self.shouldKeepTimeTokenOnChannelsListChange == configuration.shouldKeepTimeTokenOnChannelsListChange);
+=======
+        isEqual = (self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout);
+>>>>>>> fix-pt65153600
     }
 
     if (isEqual) {
@@ -337,6 +364,7 @@
     return isEqual;
 }
 
+<<<<<<< HEAD
 - (void)setPresenceExpirationTimeout:(NSTimeInterval)presenceExpirationTimeout {
     
     _presenceExpirationTimeout = MAX(kPNMinimumHeartbeatTimeout, MIN(kPNMaximumHeartbeatTimeout, presenceExpirationTimeout));
@@ -367,6 +395,8 @@
     _presenceHeartbeatInterval = presenceHeartbeatInterval;
 }
 
+=======
+>>>>>>> fix-pt65153600
 - (BOOL)shouldKillDNSCache {
     
     return ![self.origin isEqualToString:self.realOrigin];

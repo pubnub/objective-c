@@ -47,6 +47,10 @@ static dispatch_once_t onceToken;
 // (connect/disconnect/subscribe/unsubscribe)
 static NSMutableArray *pendingInvocations = nil;
 
+// Stores how much times client will try to resubscribe on channels with new identifier before report that subscription
+// failed
+static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
+
 
 #pragma mark - Private interface methods
 
@@ -4577,7 +4581,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                 self.state = PNPubNubClientStateDisconnected;
             }
-            else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError){
+            else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError){
 
                 PNLog(PNLogGeneralLevel, self, @"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR "
                       "(STATE: %@)", [self humanReadableStateFrom:self.state]);
@@ -4674,7 +4678,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             self.state = PNPubNubClientStateDisconnected;
         }
-        else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError){
+        else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError){
 
             PNLog(PNLogGeneralLevel, self, @"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR "
                   "(STATE: %@)", [self humanReadableStateFrom:self.state]);
@@ -5733,8 +5737,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     PNLog(PNLogGeneralLevel, self, @"WILL RESTORE SUBSCRIPTION ON: %@", channels);
 
-    if ([self isConnected]) {
-        
+    if ([self.messagingChannel isConnected] ) {
+
         self.asyncLockingOperationInProgress = YES;
     }
 

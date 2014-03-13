@@ -23,6 +23,7 @@
 #import "PNServiceChannel.h"
 #import "PNAccessRightsCollection+Protected.h"
 #import "PNMessageHistoryRequest+Protected.h"
+<<<<<<< HEAD
 #import "PNClient.h"
 #import "PNConnectionChannel+Protected.h"
 #import "PNOperationStatus+Protected.h"
@@ -30,6 +31,14 @@
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
 #import "PNResponse+Protected.h"
+=======
+#import "PNConnectionChannel+Protected.h"
+#import "PNOperationStatus+Protected.h"
+#import "PNHereNowRequest+Protected.h"
+#import "NSInvocation+PNAdditions.h"
+#import "PNServiceChannelDelegate.h"
+#import "PNConnection+Protected.h"
+>>>>>>> fix-pt65153600
 #import "PNMessage+Protected.h"
 #import "PNHereNow+Protected.h"
 #import "PNChannel+Protected.h"
@@ -37,8 +46,12 @@
 #import "PNRequestsImport.h"
 #import "PNResponseParser.h"
 #import "PNRequestsQueue.h"
+<<<<<<< HEAD
 #import "PNClient.h"
 #import "PNClient+Protected.h"
+=======
+#import "PNResponse.h"
+>>>>>>> fix-pt65153600
 
 
 // ARC check
@@ -82,8 +95,11 @@
 - (BOOL)shouldHandleResponse:(PNResponse *)response {
 
     return ([response.callbackMethod hasPrefix:PNServiceResponseCallbacks.latencyMeasureMessageCallback] ||
+<<<<<<< HEAD
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.stateRetrieveCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.stateUpdateCallback] ||
+=======
+>>>>>>> fix-pt65153600
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.timeTokenCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelPushNotificationsEnableCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelPushNotificationsDisableCallback] ||
@@ -91,11 +107,17 @@
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.pushNotificationRemoveCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.sendMessageCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelParticipantsCallback] ||
+<<<<<<< HEAD
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.participantChannelsCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.messageHistoryCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsChangeCallback] ||
             [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsAuditCallback] ||
             [response.callbackMethod hasPrefix:@"0"]);
+=======
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.messageHistoryCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsChangeCallback] ||
+            [response.callbackMethod hasPrefix:PNServiceResponseCallbacks.channelAccessRightsAuditCallback]);
+>>>>>>> fix-pt65153600
 }
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request {
@@ -113,6 +135,7 @@
     }
     else {
 
+<<<<<<< HEAD
         if ([request isKindOfClass:[PNHereNowRequest class]]) {
 
             PNChannel *channel = ((PNHereNowRequest *)request).channel;
@@ -131,6 +154,8 @@
             response.additionalData = [PNClient clientForIdentifier:identifier channel:channel andData:nil];
         }
 
+=======
+>>>>>>> fix-pt65153600
         PNResponseParser *parser = [PNResponseParser parserForResponse:response];
         id parsedData = [parser parsedData];
 
@@ -150,6 +175,7 @@
                 [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:parsedData];
             }
         }
+<<<<<<< HEAD
         // Check whether request was sent for state retrieval
         else if ([request isKindOfClass:[PNClientStateRequest class]]) {
 
@@ -191,6 +217,8 @@
             }
         }
 
+=======
+>>>>>>> fix-pt65153600
         // Check whether request was sent for message posting
         else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
@@ -252,7 +280,11 @@
 
             PNChannel *channel = ((PNHereNowRequest *)request).channel;
 
+<<<<<<< HEAD
             // Check whether there is no error while loading participants list
+=======
+            // Check whether there is no error while loading messages history
+>>>>>>> fix-pt65153600
             if (![parsedData isKindOfClass:[PNError class]]) {
 
                 ((PNHereNow *)parsedData).channel = channel;
@@ -271,6 +303,7 @@
                 [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannel:channel withError:parsedData];
             }
         }
+<<<<<<< HEAD
         // Check whether request was sent for participant channels list or not
         else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
 
@@ -293,6 +326,8 @@
                         withError:parsedData];
             }
         }
+=======
+>>>>>>> fix-pt65153600
         else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
 
             SEL selector;
@@ -443,6 +478,7 @@
 
         [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
     }
+<<<<<<< HEAD
     // Check whether request was sent for state retrieval / update
     else if ([request isKindOfClass:[PNClientStateRequest class]] ||
             [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
@@ -462,6 +498,8 @@
         [self.delegate performSelector:errorSelector withObject:self withObject:error];
         #pragma clang diagnostic pop
     }
+=======
+>>>>>>> fix-pt65153600
     // Check whether this is 'Post message' request or not
     else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
@@ -483,6 +521,7 @@
         [self.serviceDelegate serviceChannel:self
        didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel withError:error];
     }
+<<<<<<< HEAD
     // Check whether this is 'Where now' request or not
     else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
 
@@ -490,6 +529,8 @@
         [self.serviceDelegate serviceChannel:self
                 didFailParticipantChannelsListLoadForIdentifier:((PNWhereNowRequest *)request).identifier withError:error];
     }
+=======
+>>>>>>> fix-pt65153600
     // Check whether this is 'Push notification state change' request or not
     else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
 
@@ -678,6 +719,7 @@
         [self.serviceDelegate serviceChannel:self
             receiveTimeTokenDidFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
+<<<<<<< HEAD
     // Check whether request was sent for state retrieval / update
     else if ([request isKindOfClass:[PNClientStateRequest class]] ||
             [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
@@ -700,6 +742,8 @@
         [self.delegate performSelector:errorSelector withObject:self withObject:error];
         #pragma clang diagnostic pop
     }
+=======
+>>>>>>> fix-pt65153600
     // Check whether this is 'Post message' request or not
     else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
@@ -716,6 +760,7 @@
        didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel
                                    withError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
+<<<<<<< HEAD
     else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
 
         errorMessage = @"\"Where now\" request failed by timeout";
@@ -724,6 +769,8 @@
                 didFailParticipantChannelsListLoadForIdentifier:((PNWhereNowRequest *)request).identifier
                 withError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
+=======
+>>>>>>> fix-pt65153600
     else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
 
         NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
@@ -853,12 +900,15 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
             // Notify delegate about that message post request will be sent now
             [self.serviceDelegate serviceChannel:self didSendMessage:((PNMessagePostRequest *)request).message];
         }
+<<<<<<< HEAD
         // In case if this is any other request for whichwe don't expect completion, we should clean it up from stored
         // requests list.
         else {
             
             [self removeStoredRequest:request];
         }
+=======
+>>>>>>> fix-pt65153600
     }
 
 

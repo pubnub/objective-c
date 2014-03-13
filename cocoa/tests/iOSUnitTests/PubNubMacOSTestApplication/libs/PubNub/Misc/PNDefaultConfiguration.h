@@ -20,7 +20,10 @@ static NSString * const kPNCipherKey = nil;
 static NSString * const kPNAuthorizationKey = nil;
 static BOOL const kPNSecureConnectionRequired = YES;
 static BOOL const kPNShouldAutoReconnectClient = YES;
+<<<<<<< HEAD
 static BOOL const kPNShouldKeepTimeTokenOnChannelsListChange = YES;
+=======
+>>>>>>> fix-pt65153600
 static BOOL const kPNShouldResubscribeOnConnectionRestore = YES;
 static BOOL const kPNShouldRestoreSubscriptionFromLastTimeToken = YES;
 static BOOL const kPNShouldAcceptCompressedResponse = YES;
@@ -29,6 +32,7 @@ static NSTimeInterval const kPNConnectionIdleTimeout = 310.0f;
 static NSTimeInterval const kPNNonSubscriptionRequestTimeout = 10.0f;
 static NSTimeInterval const kPNSubscriptionRequestTimeout = 10.0f;
 
+<<<<<<< HEAD
 /**
  This value used by server to identify when it should kick subscribed user (UUID during \b PubNub configuration) by
  timeout.
@@ -57,6 +61,8 @@ static int const kPNPresenceHeartbeatTimeout = 0;
  */
 static int const kPNPresenceHeartbeatInterval = 0;
 
+=======
+>>>>>>> fix-pt65153600
 // This flag tells whether client should reduce SSL rules when connecting to remote origin because of connection
 // error (which probably caused by SSL certificate validation error) If set to YES,
 // client will try to preserve SSL security but will use not so strict rules as for remote origin SSL certificate

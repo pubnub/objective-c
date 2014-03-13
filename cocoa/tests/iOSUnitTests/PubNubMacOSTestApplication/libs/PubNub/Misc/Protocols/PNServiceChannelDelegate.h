@@ -14,7 +14,11 @@
 
 #pragma mark Class forward
 
+<<<<<<< HEAD
 @class PNServiceChannel, PNMessagesHistory, PNResponse, PNHereNow, PNAccessRightsCollection, PNClient;
+=======
+@class PNServiceChannel, PNMessagesHistory, PNResponse, PNHereNow, PNAccessRightsCollection;
+>>>>>>> fix-pt65153600
 
 
 @protocol PNServiceChannelDelegate<NSObject>
@@ -23,6 +27,7 @@
 @required
 
 /**
+<<<<<<< HEAD
  Sent to the delegate when \b PubNub client successfully retrieved state for client.
 
  @param channel
@@ -75,6 +80,8 @@
 - (void)serviceChannel:(PNServiceChannel *)channel clientStateUpdateDidFailWithError:(PNError *)error;
 
 /**
+=======
+>>>>>>> fix-pt65153600
  Sent to the delegate when \b PubNub client successfully changed access rights.
 
  @param channel
@@ -93,7 +100,11 @@
  \b PubNub client which failed request processing (this is singleton).
 
  @param error
+<<<<<<< HEAD
  \b PNError instance which holds information about what went wrong and why request failed. \a 'error.associatedObject'
+=======
+ \b PNError instance which holds information about when wrong and why request failed. \a 'error.associatedObject'
+>>>>>>> fix-pt65153600
  contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b PubNub client tried to apply.
 
  @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
@@ -120,7 +131,11 @@
  \b PubNub client which failed request processing (this is singleton).
 
  @param error
+<<<<<<< HEAD
  \b PNError instance which holds information about what went wrong and why request failed. \a 'error.associatedObject'
+=======
+ \b PNError instance which holds information about when wrong and why request failed. \a 'error.associatedObject'
+>>>>>>> fix-pt65153600
  contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b
  PubNub client used for audition.
 
@@ -214,6 +229,7 @@ didReceiveNetworkLatency:(double)latency
 - (void)serviceChannel:(PNServiceChannel *)channel didSendMessage:(PNMessage *)message;
 
 /**
+<<<<<<< HEAD
  * Sent to the delegate if PubNub reported with processing error or message was unable to send because of some other
  * issues.
  */
@@ -221,10 +237,24 @@ didReceiveNetworkLatency:(double)latency
 
 /**
  * Sent to the delegate when PubNub service responded on history download request.
+=======
+ * Sent to the delegate if PubNub reported with
+ * processing error or message was unable to send
+ * because of some other issues
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel
+    didFailMessageSend:(PNMessage *)message
+             withError:(PNError *)error;
+
+/**
+ * Sent to the delegate when PubNub service responded
+ * on history download request
+>>>>>>> fix-pt65153600
  */
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveMessagesHistory:(PNMessagesHistory *)history;
 
 /**
+<<<<<<< HEAD
  * Sent to the delegate when PubNub service refused to return history for specified channel.
  */
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailHisoryDownloadForChannel:(PNChannel *)channel
@@ -232,10 +262,23 @@ didReceiveNetworkLatency:(double)latency
 
 /**
  * Sent to the delegate when PubNub service responded on participants list request.
+=======
+ * Sent to the delegate when PubNub service refused to
+ * return history for specified channel
+ */
+- (void)         serviceChannel:(PNServiceChannel *)serviceChannel
+didFailHisoryDownloadForChannel:(PNChannel *)channel
+                      withError:(PNError *)error;
+
+/**
+ * Sent to the delegate when PubNub service responded on
+ * participants list request
+>>>>>>> fix-pt65153600
  */
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantsList:(PNHereNow *)participants;
 
 /**
+<<<<<<< HEAD
  * Sent to the delegate when PubNub service failed to retrieve participants list for specified channel
  */
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantsListLoadForChannel:(PNChannel *)channel
@@ -270,5 +313,13 @@ didReceiveNetworkLatency:(double)latency
  */
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantChannelsListLoadForIdentifier:(NSString *)clientIdentifier
              withError:(PNError *)error;
+=======
+ * Sent to the delegate when PubNub service failed to retrieve
+ * participants list for specified channel
+ */
+- (void)               serviceChannel:(PNServiceChannel *)serviceChannel
+didFailParticipantsListLoadForChannel:(PNChannel *)channel
+                            withError:(PNError *)error;
+>>>>>>> fix-pt65153600
 
 @end

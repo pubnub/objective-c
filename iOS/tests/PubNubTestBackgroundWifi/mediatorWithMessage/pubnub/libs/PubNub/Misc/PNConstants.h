@@ -44,6 +44,7 @@ static BOOL const kPNCanIgnoreSecureConnectionRequirementByDefault = NO;
 // Stores how many times request can be rescheduled because of stream errors
 static NSUInteger const kPNRequestMaximumRetryCount = 3;
 
+<<<<<<< HEAD
 // Stores how much times client will try to resubscribe on channels with new identifier before report that subscription
 // failed
 static NSUInteger const kPNClientIdentifierUpdateRetryCount = 3;
@@ -69,6 +70,8 @@ static int const kPNMaximumHeartbeatTimeout = 300;
  */
 static int const kPNMinimumHeartbeatTimeout = 5;
 
+=======
+>>>>>>> fix-pt65153600
 // This interval is used by timer which is triggered in specified time interval to help reachability determine real connection state by sending
 // small request to the target server
 static NSTimeInterval const kPNReachabilityOriginLookupInterval = 10.0f;
@@ -77,6 +80,7 @@ static NSTimeInterval const kPNReachabilityOriginLookupTimeout = 5.0f;
 // This is the channel which is used by latency meter to measure network latency (prefix from unique client session will be added)
 static NSString * const kPNLatencyMeterChannel = @"ltm";
 
+<<<<<<< HEAD
 
 #pragma mark Static
 
@@ -85,4 +89,6 @@ static NSString * const kPNLatencyMeterChannel = @"ltm";
  */
 extern NSString * const kPNAnonymousParticipantIdentifier;
 
+=======
+>>>>>>> fix-pt65153600
 #endif // PNConstants_h

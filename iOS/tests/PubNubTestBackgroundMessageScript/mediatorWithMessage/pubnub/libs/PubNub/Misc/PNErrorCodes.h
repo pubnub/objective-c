@@ -111,6 +111,7 @@ static NSInteger const kPNMessageHasNoContentError = 127;
 // Developer tried to submit message w/o target channel to PubNub service
 static NSInteger const kPNMessageHasNoChannelError = 128;
 
+<<<<<<< HEAD
 /**
  Developer tried to push state w/ invalid content (used keys with forbidden prefix or unsupported values).
  */
@@ -118,27 +119,50 @@ static NSInteger const kPNInvalidMetadataPayloadError = 129;
 
 // Developer tried to use APNS API w/o enabling push notifications support on admin.punub.com
 static NSInteger const kPNPushNotificationsNotEnabledError = 130;
+=======
+// Developer tried to use APNS API w/o enabling push notifications support on admin.punub.com
+static NSInteger const kPNPushNotificationsNotEnabledError = 129;
+>>>>>>> fix-pt65153600
 
 /**
  Developer tried to use PAM API w/o specifying \a 'secret' key.
  */
+<<<<<<< HEAD
 static NSInteger const kPNSecretKeyNotSpecifiedError = 131;
 
 // Developer tried to use empty device push notification to enable push notification on specified channel
 static NSInteger const kPNDevicePushTokenIsEmptyError = 132;
+=======
+static NSInteger const kPNSecretKeyNotSpecifiedError = 130;
+
+// Developer tried to use empty device push notification to enable push notification on specified channel
+static NSInteger const kPNDevicePushTokenIsEmptyError = 131;
+>>>>>>> fix-pt65153600
 
 
 #pragma mark - Service error (caused by remote server)
 
 // Server provided response which can't be decoded with UTF8
+<<<<<<< HEAD
 static NSInteger const kPNResponseEncodingError = 133;
 
 // Server provided response with malformed JSON in it (in such cases library will try to resend request to
 // remote origin)
 static NSInteger const kPNResponseMalformedJSONError = 135;
+=======
+static NSInteger const kPNResponseEncodingError = 132;
+
+// Server provided response with malformed JSON in it (in such cases library will try to resend request to
+// remote origin)
+static NSInteger const kPNResponseMalformedJSONError = 133;
+>>>>>>> fix-pt65153600
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some errors
+<<<<<<< HEAD
 static NSInteger const kPNConnectionErrorOnSetup = 136;
+=======
+static NSInteger const kPNConnectionErrorOnSetup = 134;
+>>>>>>> fix-pt65153600

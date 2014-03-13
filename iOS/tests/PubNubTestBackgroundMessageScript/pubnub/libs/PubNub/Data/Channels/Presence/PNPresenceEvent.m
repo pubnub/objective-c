@@ -13,8 +13,11 @@
 
 
 #import "PNPresenceEvent+Protected.h"
+<<<<<<< HEAD
 #import "PNClient+Protected.h"
 #import "PNClient.h"
+=======
+>>>>>>> fix-pt65153600
 
 
 // ARC check
@@ -24,18 +27,24 @@
 #endif
 
 
+<<<<<<< HEAD
 #pragma mark Class forward
 
 @class PNClient;
 
 
+=======
+>>>>>>> fix-pt65153600
 #pragma mark Structures
 
 struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     .action = @"action",
     .timestamp = @"timestamp",
     .uuid = @"uuid",
+<<<<<<< HEAD
     .data = @"data",
+=======
+>>>>>>> fix-pt65153600
     .occupancy = @"occupancy"
 };
 
@@ -47,11 +56,31 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
 #pragma mark Properties
 
+<<<<<<< HEAD
 @property (nonatomic, assign) PNPresenceEventType type;
 @property (nonatomic, strong) PNClient *client;
 @property (nonatomic, strong) PNDate *date;
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, assign) NSUInteger occupancy;
+=======
+// Stores reference on presence event type
+@property (nonatomic, assign) PNPresenceEventType type;
+
+// Stores reference on presence occurrence
+// date
+@property (nonatomic, strong) PNDate *date;
+
+// Stores reference on user identifier which
+// is triggered presence event
+@property (nonatomic, copy) NSString *uuid;
+
+// Stores reference on number of persons in channel
+// on which this event is occurred
+@property (nonatomic, assign) NSUInteger occupancy;
+
+// Stores reference on channel on which this event
+// is fired
+>>>>>>> fix-pt65153600
 @property (nonatomic, assign) PNChannel *channel;
 
 
@@ -104,6 +133,7 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
         NSNumber *timestamp = [presenceResponse valueForKey:PNPresenceEventDataKeys.timestamp];
         self.date = [PNDate dateWithToken:timestamp];
 
+<<<<<<< HEAD
         // Extracting channel occupancy from response
         self.occupancy = [[presenceResponse valueForKey:PNPresenceEventDataKeys.occupancy] unsignedIntegerValue];
         
@@ -117,12 +147,20 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
          */
         // Extracting user identifier from response
         _uuid = [presenceResponse valueForKey:PNPresenceEventDataKeys.uuid];
+=======
+        // Extracting user identifier from response
+        self.uuid = [presenceResponse valueForKey:PNPresenceEventDataKeys.uuid];
+
+        // Extracting channel occupancy from response
+        self.occupancy = [[presenceResponse valueForKey:PNPresenceEventDataKeys.occupancy] unsignedIntegerValue];
+>>>>>>> fix-pt65153600
     }
     
     
     return self;
 }
 
+<<<<<<< HEAD
 
 #pragma mark - Misc methods
 
@@ -132,6 +170,8 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     self.client.channel = channel;
 }
 
+=======
+>>>>>>> fix-pt65153600
 - (NSString *)description {
 
     NSString *action = @"join";
@@ -149,9 +189,19 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     }
 
 
+<<<<<<< HEAD
     return [NSString stringWithFormat:@"%@\nEVENT: %@%@\nDATE: %@\nOCCUPANCY: %ld\nCHANNEL: %@",
                     NSStringFromClass([self class]), action, [NSString stringWithFormat:@"\nCLIENT: %@", self.client],
                     self.date, (unsigned long)self.occupancy, self.channel];
+=======
+    return [NSString stringWithFormat:@"%@ \nEVENT: %@%@\nDATE: %@\nOCCUPANCY: %ld\nCHANNEL: %@",
+                    NSStringFromClass([self class]),
+                    action,
+                    self.uuid ? [NSString stringWithFormat:@"\nUSER IDENTIFIER: %@", self.uuid] : @"",
+                    self.date,
+                    (unsigned long)self.occupancy,
+                    self.channel];
+>>>>>>> fix-pt65153600
 }
 
 #pragma mark -

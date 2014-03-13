@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
 
  @author Sergey Mamontov
@@ -5,11 +6,24 @@
  @copyright © 2009-13 PubNub Inc.
 
  */
+=======
+//
+//  PNHereNowResponseParser.h
+// 
+//
+//  Created by moonlight on 1/15/13.
+//
+//
+
+>>>>>>> fix-pt65153600
 
 #import "PNHereNowResponseParser.h"
 #import "PNHereNowResponseParser+Protected.h"
 #import "PNHereNow+Protected.h"
+<<<<<<< HEAD
 #import "PNClient+Protected.h"
+=======
+>>>>>>> fix-pt65153600
 #import "PNResponse.h"
 
 
@@ -20,7 +34,26 @@
 #endif
 
 
+<<<<<<< HEAD
 #pragma mark Public interface methods
+=======
+#pragma mark Private interface methods
+
+@interface PNHereNowResponseParser ()
+
+
+#pragma mark - Properties
+
+// Stores reference on object which stores information
+// about who is in the channel and how many of them
+@property (nonatomic, strong) PNHereNow *hereNow;
+
+
+@end
+
+
+#pragma mark - Public interface methods
+>>>>>>> fix-pt65153600
 
 @implementation PNHereNowResponseParser
 
@@ -46,6 +79,7 @@
         NSDictionary *responseData = response.response;
 
         self.hereNow = [PNHereNow new];
+<<<<<<< HEAD
         NSDictionary *channels = [responseData objectForKey:kPNResponseChannelsKey];
         if (!channels) {
 
@@ -74,6 +108,10 @@
         }];
         self.hereNow.participants = [NSArray arrayWithArray:participants];
         self.hereNow.participantsCount = [participants count];
+=======
+        self.hereNow.participants = [responseData objectForKey:kPNResponseUUIDKey];
+        self.hereNow.participantsCount = [[responseData objectForKey:kPNResponseOccupancyKey] unsignedIntValue];
+>>>>>>> fix-pt65153600
     }
 
 
@@ -85,6 +123,7 @@
     return self.hereNow;
 }
 
+<<<<<<< HEAD
 #pragma mark - Misc methods
 
 - (NSArray *)clientsFromData:(NSArray *)clientsInformation forChannel:(PNChannel *)channel {
@@ -120,6 +159,8 @@
     return [PNClient clientForIdentifier:clientIdentifier channel:channel andData:state];
 }
 
+=======
+>>>>>>> fix-pt65153600
 - (NSString *)description {
 
     return [NSString stringWithFormat:@"%@ (%p): <participants: %@, participants count: %i, channel: %@>",

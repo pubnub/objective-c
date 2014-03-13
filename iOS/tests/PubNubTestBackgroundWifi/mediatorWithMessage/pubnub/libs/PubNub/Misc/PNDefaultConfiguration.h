@@ -10,17 +10,29 @@
 #define PNDefaultConfiguration_h
 
 // Stores reference on host URL which is used to access PubNub services
+<<<<<<< HEAD
 static NSString * const kPNOriginHost = @"presence-beta.pubnub.com";
 
 // Stores reference on keys which is required to establish connection and send packets to it
 static NSString * const kPNPublishKey = @"pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef";
 static NSString * const kPNSubscriptionKey = @"sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe";
 static NSString * const kPNSecretKey = @"sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk";
+=======
+static NSString * const kPNOriginHost = @"pubsub.pubnub.com";
+
+// Stores reference on keys which is required to establish connection and send packets to it
+static NSString * const kPNPublishKey = @"demo";
+static NSString * const kPNSubscriptionKey = @"demo";
+static NSString * const kPNSecretKey = nil;
+>>>>>>> fix-pt65153600
 static NSString * const kPNCipherKey = nil;
 static NSString * const kPNAuthorizationKey = nil;
 static BOOL const kPNSecureConnectionRequired = YES;
 static BOOL const kPNShouldAutoReconnectClient = YES;
+<<<<<<< HEAD
 static BOOL const kPNShouldKeepTimeTokenOnChannelsListChange = YES;
+=======
+>>>>>>> fix-pt65153600
 static BOOL const kPNShouldResubscribeOnConnectionRestore = YES;
 static BOOL const kPNShouldRestoreSubscriptionFromLastTimeToken = YES;
 static BOOL const kPNShouldAcceptCompressedResponse = YES;
@@ -29,6 +41,7 @@ static NSTimeInterval const kPNConnectionIdleTimeout = 310.0f;
 static NSTimeInterval const kPNNonSubscriptionRequestTimeout = 10.0f;
 static NSTimeInterval const kPNSubscriptionRequestTimeout = 10.0f;
 
+<<<<<<< HEAD
 /**
  This value used by server to identify when it should kick subscribed user (UUID during \b PubNub configuration) by
  timeout.
@@ -57,6 +70,8 @@ static int const kPNPresenceHeartbeatTimeout = 200;
  */
 static int const kPNPresenceHeartbeatInterval = 200;
 
+=======
+>>>>>>> fix-pt65153600
 // This flag tells whether client should reduce SSL rules when connecting to remote origin because of connection
 // error (which probably caused by SSL certificate validation error) If set to YES,
 // client will try to preserve SSL security but will use not so strict rules as for remote origin SSL certificate

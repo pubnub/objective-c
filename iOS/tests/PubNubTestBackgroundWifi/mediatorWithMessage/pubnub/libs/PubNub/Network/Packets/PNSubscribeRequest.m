@@ -19,7 +19,10 @@
 #import "PNChannel+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNConstants.h"
+<<<<<<< HEAD
 #import "PNCache.h"
+=======
+>>>>>>> fix-pt65153600
 
 
 // ARC check
@@ -49,11 +52,14 @@
 // Stores reference on client identifier on the moment of request creation
 @property (nonatomic, copy) NSString *clientIdentifier;
 
+<<<<<<< HEAD
 /**
  Stores user-provided state which should be appended to the client subscription.
  */
 @property (nonatomic, strong) NSDictionary *state;
 
+=======
+>>>>>>> fix-pt65153600
 // Stores whether leave request was sent to subscribe on new channels or as result of user request
 @property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;
 
@@ -70,6 +76,7 @@
 
 #pragma mark - Class methods
 
+<<<<<<< HEAD
 + (PNSubscribeRequest *)subscribeRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest
                                                                       withClientState:(NSDictionary *)clientState {
     
@@ -84,16 +91,35 @@
     return [[[self class] alloc] initForChannels:channels
                                    byUserRequest:isSubscribingByUserRequest
                                  withClientState:clientState];
+=======
++ (PNSubscribeRequest *)subscribeRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest {
+    
+    return [self subscribeRequestForChannels:@[channel] byUserRequest:isSubscribingByUserRequest];
+}
+
++ (PNSubscribeRequest *)subscribeRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest {
+    
+    return [[[self class] alloc] initForChannels:channels byUserRequest:isSubscribingByUserRequest];
+>>>>>>> fix-pt65153600
 }
 
 #pragma mark - Instance methods
 
+<<<<<<< HEAD
 - (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest withClientState:(NSDictionary *)clientState {
     
     return [self initForChannels:@[channel] byUserRequest:isSubscribingByUserRequest withClientState:clientState];
 }
 
 - (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest withClientState:(NSDictionary *)clientState {
+=======
+- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest {
+    
+    return [self initForChannels:@[channel] byUserRequest:isSubscribingByUserRequest];
+}
+
+- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest {
+>>>>>>> fix-pt65153600
     
     // Check whether initialization successful or not
     if((self = [super init])) {
@@ -101,7 +127,10 @@
         self.sendingByUserRequest = isSubscribingByUserRequest;
         self.channels = [NSArray arrayWithArray:channels];
         self.clientIdentifier = [PubNub escapedClientIdentifier];
+<<<<<<< HEAD
         self.state = (clientState ? clientState : [[PubNub sharedInstance].cache stateForChannels:channels]);
+=======
+>>>>>>> fix-pt65153600
 
         
         // Retrieve largest update time token from set of channels (sorting to make larger token to be at
@@ -113,11 +142,14 @@
     return self;
 }
 
+<<<<<<< HEAD
 - (void)resetSubscriptionTimeToken {
 
     self.updateTimeToken = @"0";
 }
 
+=======
+>>>>>>> fix-pt65153600
 - (void)resetTimeToken {
 
     [self resetTimeTokenTo:@"0"];
@@ -188,6 +220,7 @@
 }
 
 - (NSString *)resourcePath {
+<<<<<<< HEAD
 
     NSString *pnexpiresValue = @"";
     if ([PubNub sharedInstance].configuration.presenceHeartbeatTimeout > 0.0f) {
@@ -208,6 +241,17 @@
                                       self.clientIdentifier, pnexpiresValue, state,
                                       ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
                                                                                               [self authorizationField]] : @"")];
+=======
+    
+    return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@",
+            [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+            [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
+            [self callbackMethodName],
+            self.shortIdentifier,
+            self.updateTimeToken,
+            self.clientIdentifier,
+			([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+>>>>>>> fix-pt65153600
 }
 
 - (NSString *)debugResourcePath {

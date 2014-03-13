@@ -42,12 +42,6 @@
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
-                  Identifier = "ApnsToken">
-               </Test>
-               <Test
-                  Identifier = "BadJsonTest">
-               </Test>
-               <Test
                   Identifier = "CatchupTest">
                </Test>
                <Test
@@ -84,12 +78,15 @@
                   Identifier = "HowToTests/test55RequestHistoryReverse">
                </Test>
                <Test
+<<<<<<< HEAD
                   Identifier = "HowToTestsCompressed">
                </Test>
                <Test
                   Identifier = "OversizedJSON">
                </Test>
                <Test
+=======
+>>>>>>> fix-pt65153600
                   Identifier = "PAMTest">
                </Test>
                <Test
@@ -228,6 +225,7 @@
                   Identifier = "W_ChaosTest">
                </Test>
                <Test
+<<<<<<< HEAD
                   Identifier = "HeartbeatTest">
                </Test>
                <Test
@@ -235,6 +233,18 @@
                </Test>
                <Test
                   Identifier = "HowToTests">
+=======
+                  Identifier = "HowToTestsCompressed">
+               </Test>
+               <Test
+                  Identifier = "OversizedJSON">
+               </Test>
+               <Test
+                  Identifier = "ApnsToken">
+               </Test>
+               <Test
+                  Identifier = "BadJsonTest">
+>>>>>>> fix-pt65153600
                </Test>
             </SkippedTests>
          </TestableReference>

@@ -40,11 +40,15 @@
  @param lineBreakMode
  Specify what kind of truncation logic should be used: UILineBreakModeClip, UILineBreakModeHeadTruncation, UILineBreakModeTailTruncation or UILineBreakModeMiddleTruncation.
  */
+<<<<<<< HEAD
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(UILineBreakMode)lineBreakMode;
 #else
 - (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode;
 #endif
+=======
+- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode;
+>>>>>>> fix-pt65153600
 
 
 #pragma mark - Cryptography methods

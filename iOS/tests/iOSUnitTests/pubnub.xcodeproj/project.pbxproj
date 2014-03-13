@@ -92,7 +92,12 @@
 		5A9461C218A16699004190FB /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9461C118A16699004190FB /* PNDateTest.m */; };
 		5A955F801835154C00AB2156 /* SendBigMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A955F7F1835154C00AB2156 /* SendBigMessage.m */; };
 		5A96274018437E8A00258236 /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A96273F18437E8A00258236 /* OversizedJSON.m */; };
+<<<<<<< HEAD
 		5AB0A0DE18C881900049E9B7 /* PNJSONSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AB0A0DD18C881900049E9B7 /* PNJSONSerializationTest.m */; };
+=======
+		5AB5B25618B4D01D00584EC4 /* PNObservationCenterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AB5B25518B4D01D00584EC4 /* PNObservationCenterTest.m */; };
+		5AB5B25918B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AB5B25818B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m */; };
+>>>>>>> fix-pt65153600
 		5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */; };
 		5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */; };
 		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
@@ -382,7 +387,12 @@
 		5A9461C118A16699004190FB /* PNDateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNDateTest.m; path = pubnubTests/PNDateTest.m; sourceTree = SOURCE_ROOT; };
 		5A955F7F1835154C00AB2156 /* SendBigMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendBigMessage.m; sourceTree = "<group>"; };
 		5A96273F18437E8A00258236 /* OversizedJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OversizedJSON.m; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		5AB0A0DD18C881900049E9B7 /* PNJSONSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNJSONSerializationTest.m; sourceTree = "<group>"; };
+=======
+		5AB5B25518B4D01D00584EC4 /* PNObservationCenterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNObservationCenterTest.m; path = ../PNObservationCenterTest.m; sourceTree = "<group>"; };
+		5AB5B25818B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSNotificationCenter+AllObservers.m"; path = "pubnubTests/NSNotificationCenter+AllObservers.m"; sourceTree = SOURCE_ROOT; };
+>>>>>>> fix-pt65153600
 		5ABE6C40182B9F1800204DC6 /* TestSemaphor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSemaphor.h; sourceTree = "<group>"; };
 		5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSemaphor.m; sourceTree = "<group>"; };
 		5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeCommand.m; path = TimeCommand/TimeCommand.m; sourceTree = "<group>"; };
@@ -666,10 +676,23 @@
 		5A84DB4A18C907D900630BB5 /* Channels */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
 				5A84DB4B18C907D900630BB5 /* PNChannel+Protected.h */,
 				5A84DB4C18C907D900630BB5 /* PNChannel.h */,
 				5A84DB4D18C907D900630BB5 /* PNChannel.m */,
 				5A84DB4E18C907D900630BB5 /* Presence */,
+=======
+				5AD394BC18280F390057443C /* ApnsToken.m */,
+				5AB5B25518B4D01D00584EC4 /* PNObservationCenterTest.m */,
+				5AB5B25818B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m */,
+				5ACCA97F17F3202400FE90CF /* HowToTests.h */,
+				5ACCA98017F3202400FE90CF /* HowToTests.m */,
+				5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */,
+				5A955F7F1835154C00AB2156 /* SendBigMessage.m */,
+				5A058044187D59B400EA8D47 /* PAMTest.m */,
+				5ACA68F4185B844600C2B214 /* PAMTestError.m */,
+				5A93EC11189817B000751662 /* HistoryPamTest.m */,
+>>>>>>> fix-pt65153600
 			);
 			path = Channels;
 			sourceTree = "<group>";
@@ -1259,6 +1282,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+<<<<<<< HEAD
 				5A84DC2D18C907DA00630BB5 /* PNResponse.m in Sources */,
 				5A84DC4318C907DA00630BB5 /* PNPushNotificationsRemoveRequest.m in Sources */,
 				5A84DC3918C907DA00630BB5 /* PNChangeAccessRightsRequest.m in Sources */,
@@ -1330,6 +1354,69 @@
 				5A84DC1718C907DA00630BB5 /* PNHereNowResponseParser.m in Sources */,
 				5A84DC3B18C907DA00630BB5 /* PNClientStateUpdateRequest.m in Sources */,
 				5A84DC3118C907DA00630BB5 /* NSDate+PNAdditions.m in Sources */,
+=======
+				5AD5890A18A24E8700B72653 /* PNChannelEvents.m in Sources */,
+				5AD5892018A24E8700B72653 /* PNLatencyMeasureRequest.m in Sources */,
+				5AD5891218A24E8700B72653 /* PNOperationStatus.m in Sources */,
+				5AD5890C18A24E8700B72653 /* PNDate.m in Sources */,
+				5AD5892A18A24E8700B72653 /* PNNetworkHelper.m in Sources */,
+				5AD5892C18A24E8700B72653 /* PNServiceChannel.m in Sources */,
+				5AD5890618A24E8700B72653 /* PNTimeTokenResponseParser.m in Sources */,
+				5AD588F718A24E8700B72653 /* PNWriteBuffer.m in Sources */,
+				5AD5890918A24E8700B72653 /* PNAccessRightsInformation.m in Sources */,
+				5AD5890818A24E8700B72653 /* PNAccessRightsCollection.m in Sources */,
+				5AD5892918A24E8700B72653 /* PNMessagingChannel.m in Sources */,
+				5AD5891D18A24E8700B72653 /* PNBaseRequest.m in Sources */,
+				5AD5890F18A24E8700B72653 /* PNJSONSerialization.m in Sources */,
+				5AD5890218A24E8700B72653 /* PNOperationStatusResponseParser.m in Sources */,
+				5AD5890418A24E8700B72653 /* PNResponseDeserialize.m in Sources */,
+				5AD5892318A24E8700B72653 /* PNMessagePostRequest.m in Sources */,
+				5AD5890E18A24E8700B72653 /* PNHereNow.m in Sources */,
+				5AD5890318A24E8700B72653 /* PNPushNotificationsEnabledChannelsParser.m in Sources */,
+				5AD588FA18A24E8700B72653 /* PNPresenceEvent.m in Sources */,
+				5AD5892E18A24E8700B72653 /* PNConnectionChannel.m in Sources */,
+				5AB5B25918B4DE2D00584EC4 /* NSNotificationCenter+AllObservers.m in Sources */,
+				5AD5890D18A24E8700B72653 /* PNError.m in Sources */,
+				5AD5891618A24E8700B72653 /* NSData+PNAdditions.m in Sources */,
+				5AD5891918A24E8700B72653 /* NSMutableArray+PNAdditions.m in Sources */,
+				5AD5891518A24E8700B72653 /* NSArray+PNAdditions.m in Sources */,
+				5AD5891318A24E8700B72653 /* PNRequestsQueue.m in Sources */,
+				5AD5890518A24E8700B72653 /* PNResponseParser.m in Sources */,
+				5AD5892818A24E8700B72653 /* PNTimeTokenRequest.m in Sources */,
+				5AD5892618A24E8700B72653 /* PNPushNotificationsStateChangeRequest.m in Sources */,
+				5AD5892D18A24E8700B72653 /* PNConnection.m in Sources */,
+				5AD5891E18A24E8700B72653 /* PNChangeAccessRightsRequest.m in Sources */,
+				5AD588FE18A24E8700B72653 /* PNChannelEventsResponseParser.m in Sources */,
+				5AD588F918A24E8700B72653 /* PNChannelPresence.m in Sources */,
+				5AD5891A18A24E8700B72653 /* NSString+PNAddition.m in Sources */,
+				5AD5892518A24E8700B72653 /* PNPushNotificationsRemoveRequest.m in Sources */,
+				5AD5891C18A24E8700B72653 /* PNAccessRightsAuditRequest.m in Sources */,
+				5AD5891818A24E8700B72653 /* NSInvocation+PNAdditions.m in Sources */,
+				5AD5890118A24E8700B72653 /* PNHereNowResponseParser.m in Sources */,
+				5AD5892718A24E8700B72653 /* PNSubscribeRequest.m in Sources */,
+				5AD5891718A24E8700B72653 /* NSDate+PNAdditions.m in Sources */,
+				5AD5891118A24E8700B72653 /* PNMessagesHistory.m in Sources */,
+				5AD588FF18A24E8700B72653 /* PNChannelHistoryParser.m in Sources */,
+				5AD5890718A24E8700B72653 /* PNAccessRightOptions.m in Sources */,
+				79C32239166DF847006DB535 /* main.m in Sources */,
+				5AD588FD18A24E8700B72653 /* PNActionResponseParser.m in Sources */,
+				5AD5892218A24E8700B72653 /* PNMessageHistoryRequest.m in Sources */,
+				5AD588FC18A24E8700B72653 /* PNAccessRightsResponseParser.m in Sources */,
+				5AD5890018A24E8700B72653 /* PNErrorResponseParser.m in Sources */,
+				5AD588F518A24E8700B72653 /* PNObservationCenter.m in Sources */,
+				5AD588F818A24E8700B72653 /* PNChannel.m in Sources */,
+				5AD5891B18A24E8700B72653 /* UIApplication+PNAdditions.m in Sources */,
+				5AD5891F18A24E8700B72653 /* PNHereNowRequest.m in Sources */,
+				5AD5891418A24E8700B72653 /* PNResponse.m in Sources */,
+				79C3227D166DFA42006DB535 /* PNAppDelegate.m in Sources */,
+				5AD5892418A24E8700B72653 /* PNPushNotificationsEnabledChannelsRequest.m in Sources */,
+				5AD588F618A24E8700B72653 /* PubNub.m in Sources */,
+				5AD5892118A24E8700B72653 /* PNLeaveRequest.m in Sources */,
+				5AD5891018A24E8700B72653 /* PNMessage.m in Sources */,
+				5AD588FB18A24E8700B72653 /* PNCryptoHelper.m in Sources */,
+				5AD5892B18A24E8700B72653 /* PNReachability.m in Sources */,
+				5AD5890B18A24E8700B72653 /* PNConfiguration.m in Sources */,
+>>>>>>> fix-pt65153600
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1398,8 +1485,12 @@
 				5ADD308A189AADFD00688B3E /* PNAccessRightsCollectionTest.m in Sources */,
 				5ACCA9A017F33A9700FE90CF /* PNCryptoTest.m in Sources */,
 				5ACF73CC17F41FD20058E029 /* PNSubscribeUnsubscribeTest.m in Sources */,
+<<<<<<< HEAD
 				5AD0B5C318C09F0100B0C249 /* PNConnectionChannel+Test.m in Sources */,
 				5AEFAD6D18ABC2700077DEE0 /* PNConnection+Test.m in Sources */,
+=======
+				5AB5B25618B4D01D00584EC4 /* PNObservationCenterTest.m in Sources */,
+>>>>>>> fix-pt65153600
 				963A849217FCA9B100D8DD4E /* FakeStub.m in Sources */,
 				5AE63DB818AE4650009C1244 /* PNServiceChannel+Test.m in Sources */,
 				5A96274018437E8A00258236 /* OversizedJSON.m in Sources */,
@@ -1569,6 +1660,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/include\"";
 				INFOPLIST_FILE = "pubnubTests/pubnubTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/lib\"";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-force_load",

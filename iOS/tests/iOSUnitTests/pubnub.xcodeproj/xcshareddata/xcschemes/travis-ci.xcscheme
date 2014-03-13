@@ -5,6 +5,7 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+<<<<<<< HEAD
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -21,6 +22,8 @@
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
+=======
+>>>>>>> fix-pt65153600
    </BuildAction>
    <TestAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -45,9 +48,12 @@
                   Identifier = "ApnsToken">
                </Test>
                <Test
+<<<<<<< HEAD
                   Identifier = "BadJsonTest">
                </Test>
                <Test
+=======
+>>>>>>> fix-pt65153600
                   Identifier = "CatchupTest">
                </Test>
                <Test
@@ -84,18 +90,22 @@
                   Identifier = "HowToTests/test55RequestHistoryReverse">
                </Test>
                <Test
+<<<<<<< HEAD
                   Identifier = "HowToTestsCompressed">
                </Test>
                <Test
                   Identifier = "OversizedJSON">
                </Test>
                <Test
+=======
+>>>>>>> fix-pt65153600
                   Identifier = "PAMTest">
                </Test>
                <Test
                   Identifier = "PAMTestError">
                </Test>
                <Test
+<<<<<<< HEAD
                   Identifier = "PNAccessRightOptionsTest">
                </Test>
                <Test
@@ -235,6 +245,15 @@
                </Test>
                <Test
                   Identifier = "SubscribeLeaveTest">
+=======
+                  Identifier = "TimeCommand/testHandleOriginLookup20">
+               </Test>
+               <Test
+                  Identifier = "TimeCommand">
+               </Test>
+               <Test
+                  Identifier = "BadJsonTest">
+>>>>>>> fix-pt65153600
                </Test>
             </SkippedTests>
          </TestableReference>

@@ -21,6 +21,7 @@
 #import "PNJSONSerialization.h"
 #import "PNChannel+Protected.h"
 #import "PNHereNow+Protected.h"
+<<<<<<< HEAD
 #import "PNClient+Protected.h"
 #import "PNError+Protected.h"
 #import "PubNub+Protected.h"
@@ -30,4 +31,10 @@
 #import "PNBaseRequest+Protected.h"
 #import "PNWhereNow+Protected.h"
 
+=======
+#import "PNError+Protected.h"
+#import "PNPrivateMacro.h"
+#import "PNMacro.h"
+
+>>>>>>> fix-pt65153600
 #endif // PNPrivateImports_h

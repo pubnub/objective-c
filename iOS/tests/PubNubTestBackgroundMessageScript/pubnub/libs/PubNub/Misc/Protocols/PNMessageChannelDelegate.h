@@ -21,12 +21,15 @@
 @protocol PNMessageChannelDelegate <NSObject>
 
 /**
+<<<<<<< HEAD
  Sent to the delegate when messaging channel would like to change channels set and it need to know whether it should
  proceed with last time token or request new one from server.
  */
 - (BOOL)shouldKeepTimeTokenOnChannelsListChange:(PNMessagingChannel *)messagingChannel;
 
 /**
+=======
+>>>>>>> fix-pt65153600
  * Sent to the delegate when messaging channel would like to know on whether it should restore subscription or not
  */
 - (BOOL)shouldMessagingChannelRestoreSubscription:(PNMessagingChannel *)messagingChannel;
@@ -43,7 +46,11 @@
 - (void)messagingChannelDidReset:(PNMessagingChannel *)messagingChannel;
 
 /**
+<<<<<<< HEAD
  Sent to the delegate when client is about to subscribe on specified set of channels
+=======
+ * Sent to the delegate when client is about to subscribe on specified set of channels
+>>>>>>> fix-pt65153600
  */
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel willSubscribeOnChannels:(NSArray *)channels
                sequenced:(BOOL)isSequenced;
@@ -52,7 +59,11 @@
  * Sent to the delegate when client successfully subscribed on specified set of channels
  */
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didSubscribeOnChannels:(NSArray *)channels
+<<<<<<< HEAD
                sequenced:(BOOL)isSequenced withClientState:(NSDictionary *)clientState;
+=======
+               sequenced:(BOOL)isSequenced;
+>>>>>>> fix-pt65153600
 
 /**
  * Sent to the delegate when client is about to launch subscription restore process

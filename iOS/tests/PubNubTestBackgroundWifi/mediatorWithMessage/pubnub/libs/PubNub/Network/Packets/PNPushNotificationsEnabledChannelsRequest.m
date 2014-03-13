@@ -86,7 +86,11 @@
                                       [self callbackMethodName],
                                       self.shortIdentifier,
                                       [PubNub escapedClientIdentifier],
+<<<<<<< HEAD
                                       ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+=======
+                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@",[self authorizationField]]:@"")];
+>>>>>>> fix-pt65153600
 }
 
 - (NSString *)debugResourcePath {
