@@ -13,6 +13,8 @@
 @interface PNBackgroundAppDelegate : UIResponder <UIApplicationDelegate, PNDelegate, CLLocationManagerDelegate> {
 	CLLocationManager *locationManager;
 	PNChannel *pnChannel;
+	int countNewMessage;
+	int countSendMessage;
 }
 
 

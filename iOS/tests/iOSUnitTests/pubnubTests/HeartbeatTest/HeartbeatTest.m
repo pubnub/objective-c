@@ -74,7 +74,7 @@
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 
 		[PubNub setDelegate:self];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a3"];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a3"];
 		configuration.useSecureConnection = NO;
 		configuration.presenceHeartbeatTimeout = presenceInterval*2;
 		configuration.presenceHeartbeatInterval = presenceInterval;

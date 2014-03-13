@@ -55,6 +55,8 @@
 
 
 -(void)openUrl {
+	if( countNewMessage == 2 && countSession%2 == 0 )
+		[self performSelector: @selector(errorSelectorExtraMessage)];
 	if( countNewMessage != 1 && countSession%2 == 0 )
 		[self performSelector: @selector(errorSelectorCountNewMessage)];
 	if( isWillRestoreSubscriptionOnChannelsDelegate == NO )
