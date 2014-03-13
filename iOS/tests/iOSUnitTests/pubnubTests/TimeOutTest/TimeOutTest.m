@@ -133,7 +133,7 @@
 	//	if( isCompletionBlockCalled == YES )
 	//		STAssertEqualsWithAccuracy( interval, kPNConnectionIdleTimeout, 10, @"Timeout connectWithSuccessBlock no correct, %f instead of %f", interval, kPNConnectionIdleTimeout);
 	[self t20SubscriptionRequestTimeout];
-	[self t30ParticipantsListForChannelTimeout];
+//	[self t30ParticipantsListForChannelTimeout];
 	[self t30ParticipantsListForChannelTimeout1];
 	[self t40RequestHistoryForChannelTimeout];
 	[self t50SendMessageTimeout];
@@ -172,6 +172,13 @@
           channel, error);
 	notificationParticipantsListCalled = YES;
 }
+
+- (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList forChannel:(PNChannel *)channel {
+    PNLog(PNLogGeneralLevel, self, @"pubnubClient didReceiveParticipantsList",
+          channel);
+	notificationParticipantsListCalled = YES;
+}
+
 - (void)t30ParticipantsListForChannelTimeout
 {
 	[self resetConnection];
