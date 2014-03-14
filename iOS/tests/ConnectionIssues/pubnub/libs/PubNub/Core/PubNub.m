@@ -1432,7 +1432,7 @@ withCompletionHandlingBlock:nil];
         
         NSDictionary *mergedClientState = @{channel.name: clientState};
         
-        // Only in case if client update's it's own state, we can append cacged data to it.
+        // Only in case if client update's it's own state, we can append cached data to it.
         if ([clientIdentifier isEqualToString:self.clientIdentifier]) {
             
             mergedClientState = [[self sharedInstance].cache stateMergedWithState:mergedClientState];
@@ -1443,6 +1443,10 @@ withCompletionHandlingBlock:nil];
         if (statusCode == 0 && mergedClientState && (![mergedClientState isValidState] || ![[self subscribedChannels] containsObject:channel])) {
 
             statusCode = kPNInvalidStatePayloadError;
+            if (![[self subscribedChannels] containsObject:channel]) {
+                
+                statusCode = kPNCantUpdateStateForNotSubscribedChannelsError;
+            }
         }
         if (statusCode == 0) {
 
@@ -1455,6 +1459,7 @@ withCompletionHandlingBlock:nil];
                 [[PNObservationCenter defaultCenter] addClientAsStateUpdateObserverWithBlock:[handlerBlock copy]];
             }
 
+            mergedClientState = [mergedClientState valueForKeyPath:channel.name];
             PNClientStateUpdateRequest *request = [PNClientStateUpdateRequest clientStateUpdateRequestWithIdentifier:clientIdentifier
                                                                                                              channel:channel
                                                                                                       andClientState:mergedClientState];

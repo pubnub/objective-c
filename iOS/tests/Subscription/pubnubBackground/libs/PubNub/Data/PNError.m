@@ -128,6 +128,11 @@
             errorCode = kPNPushNotificationsNotEnabledError;
         }
     }
+    // Check whether error by issue with push notifications feature on server
+    else if ([errorMessage rangeOfString:@"Forbidden"].location != NSNotFound){
+        
+        errorCode = kPNAPIAccessForbiddenError;
+    }
 
     PNError *error = nil;
     if (errorCode == kPNUnknownError) {
@@ -204,6 +209,7 @@
             case kPNRequestExecutionFailedOnInternetFailureError:
             case kPNRequestExecutionFailedClientNotReadyError:
             case kPNRequestExecutionFailedClientSuspendedError:
+            case kPNCantUpdateStateForNotSubscribedChannelsError:
             case kPNInvalidStatePayloadError:
 
                 errorDescription = @"PubNub client can't perform request";
@@ -397,6 +403,10 @@
 
             failureReason = @"Looks like the target channel for the message has not been specified";
             break;
+        case kPNCantUpdateStateForNotSubscribedChannelsError:
+            
+            failureReason = @"Looks like client tried to update state for channel, on which it not subscribed.";
+            break;
         case kPNInvalidStatePayloadError:
 
             failureReason = @"Looks like invalid state has been used for request or you tried update state of the "
@@ -567,6 +577,10 @@
         case kPNMessageHasNoChannelError:
 
             fixSuggestion = @"Ensure that you specified a valid channel for this message.";
+            break;
+        case kPNCantUpdateStateForNotSubscribedChannelsError:
+            
+            fixSuggestion = @"Make sure that you subscribed on channel, for which you update state.";
             break;
         case kPNInvalidStatePayloadError:
 

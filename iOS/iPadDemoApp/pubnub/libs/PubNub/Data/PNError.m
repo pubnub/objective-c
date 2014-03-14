@@ -128,6 +128,11 @@
             errorCode = kPNPushNotificationsNotEnabledError;
         }
     }
+    // Check whether error by issue with push notifications feature on server
+    else if ([errorMessage rangeOfString:@"Forbidden"].location != NSNotFound){
+        
+        errorCode = kPNAPIAccessForbiddenError;
+    }
 
     PNError *error = nil;
     if (errorCode == kPNUnknownError) {

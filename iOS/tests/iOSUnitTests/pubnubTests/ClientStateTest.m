@@ -244,7 +244,7 @@
 			NSLog(@"client.data channel %@\nexpect state %@, \n%d", [client.data objectForKey: channel.name], clientState, i);
 //			[client.data writeToFile: @"/Users/tuller/state client.data.plist" atomically: YES];
 //			[clientState writeToFile: @"/Users/tuller/state clientState.plist" atomically: YES];
-			STAssertTrue( [[client.data objectForKey:channel.name] isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
+			STAssertTrue( [client.data isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
 			STAssertTrue( client.data != nil && [client.data isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
 		}];
 		for( int j=0; j<timeout; j++ )
