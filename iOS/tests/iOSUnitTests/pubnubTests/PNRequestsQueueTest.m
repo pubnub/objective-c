@@ -110,7 +110,7 @@
 	NSString *buffer = [[NSString alloc] initWithBytes: writeBuffer.buffer length:(NSUInteger)writeBuffer.length encoding:NSUTF8StringEncoding];
 	NSLog(@"buffer %@", buffer);
 	STAssertTrue( [buffer rangeOfString: @"GET /time/t_"].location == 0, @"" );
-	STAssertTrue( [buffer rangeOfString: @"HTTP/1.1\r\nHost: (null)\r\nV: 3."].location != NSNotFound, @"" );
+	STAssertTrue( [buffer rangeOfString: @"HTTP/1.1\r\nHost: pubsub.pubnub.com\r\nV: 3."].location != NSNotFound, @"" );
 	STAssertTrue( [buffer rangeOfString: @"User-Agent: Obj-C-iOS\r\nAccept: */*"].location != NSNotFound, @"" );
 }
 

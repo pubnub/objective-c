@@ -406,8 +406,8 @@ connectionDidFailToOrigin:(NSString *)host
 -(void)testIsDisconnected {
 	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	unsigned long state = channel.state;
-	PNBitOn( &state, PNConnectionChannelDisconnected);
 	PNBitsOff( &state, PNConnectionChannelConnecting);
+	PNBitOn( &state, PNConnectionChannelDisconnected);
 	channel.state = state;
 	STAssertTrue( [channel isDisconnected] == YES, @"" );
 

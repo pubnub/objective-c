@@ -97,7 +97,6 @@
 	PNSubscribeRequest *request = [[PNSubscribeRequest alloc] initForChannels: @[channel] byUserRequest: YES withClientState: nil];
 	[request resetTimeTokenTo: @"1"];
 	STAssertTrue( [request.updateTimeToken isEqualToString: @"1"] == YES, @"");
-	STAssertTrue( [channel.updateTimeToken isEqualToString: @"0"] == YES, @"");
 }
 
 -(void)testChannelsForSubscription {

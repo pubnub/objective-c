@@ -37,8 +37,8 @@
 -(void)testOriginLookupResourcePath {
 	NSString *originLookupResourcePath = [PNNetworkHelper originLookupResourcePath];
 	NSLog( @"originLookupResourcePath %@", originLookupResourcePath);
-	STAssertTrue( [originLookupResourcePath hasPrefix: @"http://(null)/time/t_"] == YES, @"");
-	STAssertTrue( originLookupResourcePath.length == 26, @"");
+	STAssertTrue( [originLookupResourcePath hasPrefix: @"http://ios.pubnub.com/time/t_"] == YES, @"");
+	STAssertTrue( originLookupResourcePath.length == 44, @"");
 }
 
 
