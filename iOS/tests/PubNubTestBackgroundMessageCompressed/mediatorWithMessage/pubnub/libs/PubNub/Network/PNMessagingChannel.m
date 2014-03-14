@@ -1051,7 +1051,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         if (hasValidSetOfChannels) {
 
             if (([channelsSet count] && PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents)) ||
-                (isPresenceModification && !indirectionalPresenceModification)) {
+                ((isPresenceModification && !indirectionalPresenceModification) || indirectionalPresenceModification)) {
                 
                 subscribeRequest.closeConnection = YES;
             }
@@ -1083,7 +1083,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         }
     }
     
-    if (!isAbleToSendRequest && !indirectionalPresenceModification && isChangingPresenceOnSubscribedChannels &&
+    if (!isAbleToSendRequest && (!indirectionalPresenceModification || isChangingPresenceOnSubscribedChannels) &&
         [channelsSet count] == 0) {
         
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
