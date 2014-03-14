@@ -239,7 +239,7 @@
 	NSObject *message = messages[0];
 	NSLog(@"sendNextMessage |%@|", message);
 	[PubNub sendMessage:message toChannel:pnChannels[0] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-		NSLog(@"sendMessage %d", messageSendingState);
+		NSLog(@"sendMessage %lu", messageSendingState);
 //		NSObject *mess = message;
 		STAssertTrue( messageSendingState != 2, @"error %@\nmessage: %@", data, messages[0]);
 

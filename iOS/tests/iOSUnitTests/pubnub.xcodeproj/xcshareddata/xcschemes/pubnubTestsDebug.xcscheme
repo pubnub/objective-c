@@ -5,22 +5,6 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
-      <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "79C3224E166DF848006DB535"
-               BuildableName = "pubnubTests.octest"
-               BlueprintName = "pubnubTests"
-               ReferencedContainer = "container:pubnub.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-      </BuildActionEntries>
    </BuildAction>
    <TestAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -42,6 +26,12 @@
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
+                  Identifier = "ApnsToken">
+               </Test>
+               <Test
+                  Identifier = "BadJsonTest">
+               </Test>
+               <Test
                   Identifier = "CatchupTest">
                </Test>
                <Test
@@ -58,6 +48,9 @@
                </Test>
                <Test
                   Identifier = "HistoryPamTest">
+               </Test>
+               <Test
+                  Identifier = "HowToTests">
                </Test>
                <Test
                   Identifier = "HowToTests/test20SubscribeOnChannels">
@@ -78,15 +71,9 @@
                   Identifier = "HowToTests/test55RequestHistoryReverse">
                </Test>
                <Test
-<<<<<<< HEAD
-                  Identifier = "HowToTestsCompressed">
-               </Test>
-               <Test
                   Identifier = "OversizedJSON">
                </Test>
                <Test
-=======
->>>>>>> fix-pt65153600
                   Identifier = "PAMTest">
                </Test>
                <Test
@@ -153,9 +140,6 @@
                   Identifier = "PNHereNowResponseParserTest">
                </Test>
                <Test
-                  Identifier = "PNJSONSerializationTest">
-               </Test>
-               <Test
                   Identifier = "PNLatencyMeasureRequestTest">
                </Test>
                <Test
@@ -210,9 +194,6 @@
                   Identifier = "SendBigMessage">
                </Test>
                <Test
-                  Identifier = "SendMessage">
-               </Test>
-               <Test
                   Identifier = "TimeCommand">
                </Test>
                <Test
@@ -224,31 +205,6 @@
                <Test
                   Identifier = "W_ChaosTest">
                </Test>
-               <Test
-<<<<<<< HEAD
-                  Identifier = "HeartbeatTest">
-               </Test>
-               <Test
-                  Identifier = "ClientStateTest">
-               </Test>
-<<<<<<< HEAD
-               <Test
-                  Identifier = "HowToTests">
-=======
-                  Identifier = "HowToTestsCompressed">
-               </Test>
-               <Test
-                  Identifier = "OversizedJSON">
-               </Test>
-               <Test
-                  Identifier = "ApnsToken">
-               </Test>
-               <Test
-                  Identifier = "BadJsonTest">
->>>>>>> fix-pt65153600
-               </Test>
-=======
->>>>>>> fix-pt67179842
             </SkippedTests>
          </TestableReference>
       </Testables>

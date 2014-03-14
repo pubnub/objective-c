@@ -184,6 +184,7 @@
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 		[PubNub setDelegate:self];
 		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a4"];
+		configuration = [PNConfiguration defaultConfiguration];
 		configuration.presenceHeartbeatTimeout = 20;
 		configuration.presenceHeartbeatInterval = 10;
 		[PubNub setConfiguration: configuration];
@@ -243,7 +244,7 @@
 			NSLog(@"client.data channel %@\nexpect state %@, \n%d", [client.data objectForKey: channel.name], clientState, i);
 //			[client.data writeToFile: @"/Users/tuller/state client.data.plist" atomically: YES];
 //			[clientState writeToFile: @"/Users/tuller/state clientState.plist" atomically: YES];
-			STAssertTrue( [[client.data objectForKey: channel.name] isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
+			STAssertTrue( [[client.data objectForKey:channel.name] isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
 			STAssertTrue( client.data != nil && [client.data isEqualToDictionary: clientState], @"invalid client.data %@", client.data);
 		}];
 		for( int j=0; j<timeout; j++ )

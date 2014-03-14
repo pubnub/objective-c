@@ -31,15 +31,9 @@
 @implementation PNMessageHistoryRequestTest
 
 
-<<<<<<< HEAD
 - (void)tearDown {
-=======
-- (void)tearDown
-{
 	[NSThread sleepForTimeInterval:0.1];
->>>>>>> presence-v3
     [super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
 }
 
 #pragma mark - States tests

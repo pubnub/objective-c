@@ -74,12 +74,6 @@
 							 object:nil];
 }
 
-- (void)tearDown {
-    [super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
-}
-
-
 - (void)handleClientDidSendMessage:(NSNotification *)notification {
 	PNLog(PNLogGeneralLevel, nil, @"kPNClientDidSendMessageNotification handleClientDidSendMessage %@", notification);
 	messageDidSendCount++;
@@ -223,7 +217,7 @@
 			__block NSDate *start = [NSDate date];
 			dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 			[PubNub sendMessage:[NSString stringWithFormat: @"Hello PubNub %d", i] toChannel:pnChannels1[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-				NSLog( @"sendMessage state %d", messageSendingState);
+				NSLog( @"sendMessage state %lu", messageSendingState);
 				if( messageSendingState == PNMessageSending && i == 0 )
 	//				[self unswizzleFromReceipt: receiptError];
 	//				countSendMessageNumber0 ++;
