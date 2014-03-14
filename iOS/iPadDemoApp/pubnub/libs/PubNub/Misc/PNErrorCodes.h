@@ -116,22 +116,27 @@ static NSInteger const kPNMessageHasNoChannelError = 128;
  */
 static NSInteger const kPNInvalidStatePayloadError = 129;
 
+/**
+ Developer tried to push state for channel on which client not subscribed at this moment.
+ */
+static NSInteger const kPNCantUpdateStateForNotSubscribedChannelsError = 130;
+
 // Developer tried to use APNS API w/o enabling push notifications support on admin.punub.com
-static NSInteger const kPNPushNotificationsNotEnabledError = 130;
+static NSInteger const kPNPushNotificationsNotEnabledError = 131;
 
 /**
  Developer tried to use PAM API w/o specifying \a 'secret' key.
  */
-static NSInteger const kPNSecretKeyNotSpecifiedError = 131;
+static NSInteger const kPNSecretKeyNotSpecifiedError = 132;
 
 // Developer tried to use empty device push notification to enable push notification on specified channel
-static NSInteger const kPNDevicePushTokenIsEmptyError = 132;
+static NSInteger const kPNDevicePushTokenIsEmptyError = 133;
 
 
 #pragma mark - Service error (caused by remote server)
 
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 133;
+static NSInteger const kPNResponseEncodingError = 134;
 
 // Server provided response with malformed JSON in it (in such cases library will try to resend request to
 // remote origin)
