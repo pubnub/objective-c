@@ -125,7 +125,7 @@
 
 - (void)resetTimeTokenTo:(NSString *)timeToken {
 
-    [[self channels] makeObjectsPerformSelector:@selector(resetUpdateTimeToken)];
+    [[self channels] makeObjectsPerformSelector:@selector(setUpdateTimeToken:) withObject:timeToken];
     self.updateTimeToken = timeToken;
 }
 
