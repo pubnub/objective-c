@@ -55,7 +55,7 @@
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"ch1", @"ch2"]];
 	authorizationKey = [NSString stringWithFormat:@"a2" /*, [NSDate date]*/];
-	timeout = 10;
+	timeout = 12;
 	timeoutHistory = 18;
 	timeoutNewMessage = 12;
 	indexMessage = 0;
@@ -308,7 +308,7 @@
 	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: NO canWriteExpect: NO];
 
 
-	[self grantAllAccessRightsForApplicationAtPeriod: 1];
+	[self grantAllAccessRightsForApplicationAtPeriod: 2];
 	[self isApplicationCanReadExpect: YES canWriteExpect: YES];
 	[self auditAccessRightsForApplication];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
@@ -588,6 +588,7 @@
 	}];
 	for( int j=0; j<timeout; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	NSLog(@"revokeAccessRightsForApplication end");
 	STAssertTrue( isBlockCalled, @"completion block not called");
 	STAssertTrue( isPNClientAccessRightsChangeDidCompleteNotification, @"notification not called");
 }

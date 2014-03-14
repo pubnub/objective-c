@@ -81,6 +81,7 @@ typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
 }
 
 -(void)testInitWithMessage {
+	[PubNub resetClient];
 	[PubNub setClientIdentifier: @"id"];
 	PNMessage *message = [[PNMessage alloc] init];
 	PNMessagePostRequest *request = [[PNMessagePostRequest alloc] initWithMessage: message];

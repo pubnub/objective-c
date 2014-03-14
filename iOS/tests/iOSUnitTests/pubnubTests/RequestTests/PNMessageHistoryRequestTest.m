@@ -79,7 +79,7 @@
 }
 
 -(void)testResourcePath {
-	PNConfiguration *conf = [PNConfiguration configurationWithPublishKey: @"publish" subscribeKey: @"subscr" secretKey: @"secret" authorizationKey: @"auth"];
+	PNConfiguration *conf = [PNConfiguration configurationWithPublishKey: @"publish" subscribeKey: @"demo" secretKey: @"secret" authorizationKey: @"auth"];
 	[PubNub setConfiguration: conf];
 
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];
@@ -88,8 +88,8 @@
 	PNMessageHistoryRequest *requst = [[PNMessageHistoryRequest alloc] initForChannel: channel from: from to: to limit: 111 reverseHistory: YES includingTimeToken: YES];
 	NSString *resourcePath = [requst resourcePath];
 	NSLog(@"res %@", resourcePath);
-	STAssertTrue( [resourcePath rangeOfString: @"/v2/history/sub-key/subscr/channel/channel?callback=h_"].location == 0, @"");
-	STAssertTrue( [resourcePath rangeOfString: @"&start=123&end=124&count=111&reverse=true&include_token=true&auth=auth"].location != NSNotFound, @"");
+	STAssertTrue( [resourcePath rangeOfString: @"/v2/history/sub-key/demo/channel/channel?callback=h_"].location == 0, @"");
+	STAssertTrue( [resourcePath rangeOfString: @"&start=123&end=124&count=111&reverse=true&include_token=true"].location != NSNotFound, @"");
 }
 
 -(void)testMessageHistoryRequestForChannel {
