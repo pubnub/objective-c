@@ -32,6 +32,7 @@
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
 
+BOOL _isLoggingEnabled = NO;
 
 #pragma mark Static
 

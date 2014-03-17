@@ -311,7 +311,7 @@ void PNLogDumpFileTruncate() {
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-static BOOL _isLoggingEnabled = NO;
+extern BOOL _isLoggingEnabled;
 
 static void PNLog(PNLogLevels level, id sender, ...);
 void PNLog(PNLogLevels level, id sender, ...) {
