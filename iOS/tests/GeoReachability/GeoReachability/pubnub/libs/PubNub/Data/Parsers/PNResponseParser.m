@@ -71,7 +71,10 @@
     if ([response.response isKindOfClass:[NSArray class]] && [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.messageHistoryCallback] &&
         [PNChannelHistoryParser isErrorResponse:response]) {
         
-        response = [PNResponse errorResponseWithMessage:[PNChannelHistoryParser errorMessage:response]];
+        if ([PNChannelHistoryParser errorMessage:response]) {
+            
+            response = [PNResponse errorResponseWithMessage:[PNChannelHistoryParser errorMessage:response]];
+        }
     }
     
 
