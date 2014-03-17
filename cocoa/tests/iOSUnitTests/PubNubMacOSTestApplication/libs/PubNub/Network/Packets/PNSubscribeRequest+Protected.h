@@ -37,6 +37,12 @@
 #pragma mark - Instance methods
 
 /**
+ This method will allow to complete all required manipulations to keep track on correct list of channels (will be calculated
+ along with presence disabling)
+ */
+- (void)prepareToSend;
+
+/**
  Retrieve list of channels on which subscribe should subscribe or update timetoken (w/o presence channels).
  
  @return \b PNChannels list
@@ -49,7 +55,7 @@
  * Allow to reset time token on each of channel which should be used for subscription
  */
 - (void)resetTimeToken;
- - (void)resetTimeTokenTo:(NSString *)timeToken;
+- (void)resetTimeTokenTo:(NSString *)timeToken;
 
 #pragma mark -
 
