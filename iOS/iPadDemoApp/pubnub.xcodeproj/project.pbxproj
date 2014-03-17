@@ -211,6 +211,7 @@
 		798C19C51689EEFF0074ACC4 /* PNChannelPresence+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNChannelPresence+Protected.h"; sourceTree = "<group>"; };
 		799A5ADD16DD55F8007025AF /* NSString+PNAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+PNAddition.h"; sourceTree = "<group>"; };
 		799A5ADE16DD55F8007025AF /* NSString+PNAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PNAddition.m"; sourceTree = "<group>"; };
+		79A5EB3F18D77DC800A21F91 /* PNChannelHistoryParser+Protected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNChannelHistoryParser+Protected.h"; sourceTree = "<group>"; };
 		79A8B5C8166FB55F00C64BCF /* PNDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PNDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		79A8B5C9166FB69800C64BCF /* PNError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNError.h; sourceTree = "<group>"; };
 		79A8B5CA166FB69800C64BCF /* PNError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNError.m; sourceTree = "<group>"; };
@@ -881,6 +882,7 @@
 				DD71B5CE9C70109D9CEC9D88 /* PNHereNowResponseParser.h */,
 				DD71B91C791941E31535DF8C /* PNHereNowResponseParser.m */,
 				DD71BD986D6064D6F91451AA /* PNErrorResponseParser+Protected.h */,
+				79A5EB3F18D77DC800A21F91 /* PNChannelHistoryParser+Protected.h */,
 				DD71B8A1963C0330683C58C1 /* PNChannelHistoryParser.h */,
 				DD71B576F8AED5052F97524F /* PNChannelHistoryParser.m */,
 				DD71BF559EEB842EE81D1966 /* PNActionResponseParser+Protected.h */,

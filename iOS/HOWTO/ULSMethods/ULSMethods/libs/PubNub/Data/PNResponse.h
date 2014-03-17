@@ -77,6 +77,16 @@
 #pragma mark - Class methods
 
 /**
+ Construct response which will contain message body.
+ 
+ @param errorMessage
+ Message which should be placed into \b PNResponse instance.
+ 
+ @return Created instance.
+ */
++ (PNResponse *)errorResponseWithMessage:(NSString *)errorMessage;
+
+/**
  Create and configure response instance with raw data which will be translated into correct form.
 
  @param content
