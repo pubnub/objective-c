@@ -906,6 +906,7 @@
 
 		NSTimeInterval interval = -[start timeIntervalSinceNow];
 		NSLog(@"requestHistoryForChannel interval %f", interval);
+		STAssertTrue( error==nil, @"");
 		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
 		if( startDate == nil || endDate == nil || endDate.timeToken.intValue > startDate.timeToken.intValue ) {
@@ -949,6 +950,7 @@
 
 		NSTimeInterval interval = -[start timeIntervalSinceNow];
 		NSLog(@"requestHistoryForChannel interval %f", interval);
+		STAssertTrue( error == nil, @"");
 		STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 	}];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&

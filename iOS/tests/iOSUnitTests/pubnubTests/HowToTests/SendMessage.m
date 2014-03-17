@@ -241,10 +241,6 @@
 		NSLog(@"sendMessage %lu", messageSendingState);
 //		NSObject *mess = message;
 		STAssertTrue( messageSendingState != 2, @"error %@\nmessage: %@", data, messages[0]);
-<<<<<<< HEAD
-		NSLog(@"sendMessage %lu", messageSendingState);
-=======
->>>>>>> develop
 
 		if( messageSendingState != PNMessageSending ) {
 			[messages removeObjectAtIndex: 0];

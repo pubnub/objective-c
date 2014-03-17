@@ -55,6 +55,8 @@
 
 	PNErrorResponseParser *parser = [[PNErrorResponseParser alloc] initWithResponse: response];
 	STAssertTrue( parser != nil, @"");
+	NSLog( @"[parser parsedData] %@", [parser parsedData]);
+	NSLog( @"[[parser parsedData] associatedObject] %@", [[parser parsedData] associatedObject]);
 	STAssertTrue( [[[parser parsedData] associatedObject] count] == 1, @"");
 	STAssertTrue( [[parser parsedData] code] == kPNAPINotAvailableOrNotEnabledError, @"");
 
