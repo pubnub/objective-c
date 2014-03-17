@@ -71,7 +71,7 @@
 #pragma mark - Class methods
 
 + (PNSubscribeRequest *)subscribeRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest
-                                                                      withClientState:(NSDictionary *)clientState {
+                                   withClientState:(NSDictionary *)clientState {
     
     return [self subscribeRequestForChannels:@[channel]
                                byUserRequest:isSubscribingByUserRequest
@@ -79,7 +79,7 @@
 }
 
 + (PNSubscribeRequest *)subscribeRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest
-                                                                      withClientState:(NSDictionary *)clientState {
+                                    withClientState:(NSDictionary *)clientState {
     
     return [[[self class] alloc] initForChannels:channels
                                    byUserRequest:isSubscribingByUserRequest
@@ -97,12 +97,12 @@
     
     // Check whether initialization successful or not
     if((self = [super init])) {
-
+        
         self.sendingByUserRequest = isSubscribingByUserRequest;
         self.channels = [NSArray arrayWithArray:channels];
         self.clientIdentifier = [PubNub escapedClientIdentifier];
         self.state = (clientState ? clientState : [[PubNub sharedInstance].cache stateForChannels:channels]);
-
+        
         
         // Retrieve largest update time token from set of channels (sorting to make larger token to be at
         // the end of the list
@@ -114,17 +114,17 @@
 }
 
 - (void)resetSubscriptionTimeToken {
-
+    
     self.updateTimeToken = @"0";
 }
 
 - (void)resetTimeToken {
-
+    
     [self resetTimeTokenTo:@"0"];
 }
 
 - (void)resetTimeTokenTo:(NSString *)timeToken {
-
+    
     [[self channels] makeObjectsPerformSelector:@selector(setUpdateTimeToken:) withObject:timeToken];
     self.updateTimeToken = timeToken;
 }
@@ -133,17 +133,17 @@
  * Reloaded to return full list of channels for which client is subscribing
  */
 - (NSArray *)channels {
-
+    
     NSArray *channels = _channels;
-
+    
     // Check whether presence enabling / disabling channels specified or not
     if ([self.channelsForPresenceEnabling count] > 0 || [self.channelsForPresenceDisabling count] > 0) {
-
+        
         NSMutableSet *updatedSet = [NSMutableSet setWithArray:channels];
-
+        
         // In case if user specified set of channels for which presence is enabled, add them to the channels list
         if ([self.channelsForPresenceEnabling count] > 0) {
-
+            
             [updatedSet addObjectsFromArray:self.channelsForPresenceEnabling];
         }
         NSArray *presenceEnabledChannels = [PNChannelPresence presenceChannelsFromArray:_channels];
@@ -159,11 +159,11 @@
                 }
             }];
         }];
-
+        
         channels = [updatedSet allObjects];
     }
-
-
+    
+    
     return channels;
 }
 
@@ -173,55 +173,70 @@
 }
 
 - (BOOL)isInitialSubscription {
-
+    
     return [self.updateTimeToken isEqualToString:@"0"];
 }
 
-- (NSTimeInterval)timeout {
+- (void)prepareToSend {
+    
+    NSMutableSet *channels = [NSMutableSet setWithArray:_channels];
+    NSSet *forPresenceDisabling = [NSSet setWithArray:self.channelsForPresenceDisabling];
+    if ([channels intersectsSet:forPresenceDisabling]) {
+        
+        [forPresenceDisabling enumerateObjectsUsingBlock:^(PNChannel *channel, BOOL *channelEnumeratorStop) {
+            
+            [channels removeObject:channel];
+        }];
+    }
+    
+    self.channels = [channels allObjects];
+}
 
+- (NSTimeInterval)timeout {
+    
     return [PubNub sharedInstance].configuration.subscriptionRequestTimeout;
 }
 
 - (NSString *)callbackMethodName {
-
+    
     return PNServiceResponseCallbacks.subscriptionCallback;
 }
 
 - (NSString *)resourcePath {
-
+    
     NSString *pnexpiresValue = @"";
     if ([PubNub sharedInstance].configuration.presenceHeartbeatTimeout > 0.0f) {
-
+        
         pnexpiresValue = [NSString stringWithFormat:@"&pnexpires=%d",
                           (int)[PubNub sharedInstance].configuration.presenceHeartbeatTimeout];
     }
     NSString *state = @"";
     if (self.state) {
-
+        
         state = [NSString stringWithFormat:@"&state=%@",
-                        [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
+                 [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
     }
     return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@",
-                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                                      [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
-                                      self.clientIdentifier, pnexpiresValue, state,
-                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
-                                                                                              [self authorizationField]] : @"")];
+            [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+            [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
+            [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
+            self.clientIdentifier, pnexpiresValue, state,
+            ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                          [self authorizationField]] : @"")];
 }
 
 - (NSString *)debugResourcePath {
-
+    
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
     [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
-
+    
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
 - (NSString *)description {
-
+    
     return [NSString stringWithFormat:@"<%@> %p [PATH: %@]", NSStringFromClass([self class]),
-                                                             self, [self debugResourcePath]];
+            self, [self debugResourcePath]];
 }
 
 #pragma mark -
