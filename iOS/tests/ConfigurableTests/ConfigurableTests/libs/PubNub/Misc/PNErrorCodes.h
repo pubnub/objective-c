@@ -132,18 +132,21 @@ static NSInteger const kPNSecretKeyNotSpecifiedError = 132;
 // Developer tried to use empty device push notification to enable push notification on specified channel
 static NSInteger const kPNDevicePushTokenIsEmptyError = 133;
 
+// Developer tried to to obtain history in the same time when it is disabled on portal.
+static NSInteger const kPNStorageNotEnabledError = 134;
+
 
 #pragma mark - Service error (caused by remote server)
 
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 134;
+static NSInteger const kPNResponseEncodingError = 135;
 
 // Server provided response with malformed JSON in it (in such cases library will try to resend request to
 // remote origin)
-static NSInteger const kPNResponseMalformedJSONError = 135;
+static NSInteger const kPNResponseMalformedJSONError = 136;
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some errors
-static NSInteger const kPNConnectionErrorOnSetup = 136;
+static NSInteger const kPNConnectionErrorOnSetup = 137;

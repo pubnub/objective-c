@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>2ABFE0D4-EB56-44BE-AD83-7510FDB21035</string>
+	<string>3BFC7054-3283-41B4-B366-2C0BDD75E37E</string>
 	<key>IDESourceControlProjectName</key>
 	<string>ConfigurableTests</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>05B51DCA-C040-494B-94E0-D490909C382E</key>
-		<string>https://github.com/pubnub/objective-c/</string>
+		<key>F8B0C15E-7964-4795-AE27-744BDC90615A</key>
+		<string>ssh://github.com/pubnub/objective-c.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>iOS/tests/ConfigurableTests/ConfigurableTests.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>05B51DCA-C040-494B-94E0-D490909C382E</key>
+		<key>F8B0C15E-7964-4795-AE27-744BDC90615A</key>
 		<string>../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/pubnub/objective-c/</string>
+	<string>ssh://github.com/pubnub/objective-c.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>05B51DCA-C040-494B-94E0-D490909C382E</string>
+	<string>F8B0C15E-7964-4795-AE27-744BDC90615A</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>05B51DCA-C040-494B-94E0-D490909C382E</string>
+			<string>F8B0C15E-7964-4795-AE27-744BDC90615A</string>
 			<key>IDESourceControlWCCName</key>
-			<string>pubnup master</string>
+			<string>objective-c-rv</string>
 		</dict>
 	</array>
 </dict>

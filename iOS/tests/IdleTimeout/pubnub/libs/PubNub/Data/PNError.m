@@ -133,6 +133,14 @@
         
         errorCode = kPNAPIAccessForbiddenError;
     }
+    else if ([errorMessage rangeOfString:@"Storage"].location != NSNotFound){
+        
+        // Check whether storage & hostory is not enabled
+        if ([errorMessage rangeOfString:@"not enabled"].location != NSNotFound) {
+            
+            errorCode = kPNStorageNotEnabledError;
+        }
+    }
 
     PNError *error = nil;
     if (errorCode == kPNUnknownError) {
@@ -211,6 +219,7 @@
             case kPNRequestExecutionFailedClientSuspendedError:
             case kPNCantUpdateStateForNotSubscribedChannelsError:
             case kPNInvalidStatePayloadError:
+            case kPNStorageNotEnabledError:
 
                 errorDescription = @"PubNub client can't perform request";
                 break;
@@ -361,6 +370,11 @@
         case kPNRequestExecutionFailedClientSuspendedError:
 
             failureReason = @"Looks like the client suspended";
+            break;
+        case kPNStorageNotEnabledError:
+            
+            failureReason = @"Looks like History & Storage feature is not enabled. Be sure to enable it for your keys at "
+                             "http://admin.pubnub.com, and try again";
             break;
         case kPNPresenceAPINotAvailableError:
 
@@ -587,6 +601,10 @@
             fixSuggestion = @"Make sure that your state values supported (integer, float or string) and check whether "
                              "you subscribed on channel for which you want to update state or not (you can update "
                              "state only for channels on which you subscribed).";
+            break;
+        case kPNStorageNotEnabledError:
+            
+            fixSuggestion = @"Please visit https://admin.pubnub.com to enable History & Storage feature.";
             break;
         case kPNTooLongMessageError:
 
