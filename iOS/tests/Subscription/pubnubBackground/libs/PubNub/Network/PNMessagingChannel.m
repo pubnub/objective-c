@@ -1085,9 +1085,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self reconnect];
         }
     }
-    
-    if (!isAbleToSendRequest && (!indirectionalPresenceModification || isChangingPresenceOnSubscribedChannels) &&
-        [channelsSet count] == 0) {
+    if ([channelsSet count] == 0 && (!(isPresenceModification && indirectionalPresenceModification) || isChangingPresenceOnSubscribedChannels)) {
         
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
               "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);
