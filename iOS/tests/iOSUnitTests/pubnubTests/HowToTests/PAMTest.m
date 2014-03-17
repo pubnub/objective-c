@@ -54,11 +54,13 @@
     [super setUp];
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[@"ch1", @"ch2"]];
-	authorizationKey = [NSString stringWithFormat:@"a2", [NSDate date]];
-	timeout = 10;
+	authorizationKey = [NSString stringWithFormat:@"a2" /*, [NSDate date]*/];
+	timeout = 12;
 	timeoutHistory = 18;
 	timeoutNewMessage = 12;
 	indexMessage = 0;
+
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self
@@ -224,7 +226,7 @@
 }
 
 - (void)tearDown {
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 -(void)kPNClientSubscriptionDidCompleteNotification:(NSNotification*)notification {
@@ -306,7 +308,7 @@
 	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: NO canWriteExpect: NO];
 
 
-	[self grantAllAccessRightsForApplicationAtPeriod: 1];
+	[self grantAllAccessRightsForApplicationAtPeriod: 2];
 	[self isApplicationCanReadExpect: YES canWriteExpect: YES];
 	[self auditAccessRightsForApplication];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
@@ -586,6 +588,7 @@
 	}];
 	for( int j=0; j<timeout; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	NSLog(@"revokeAccessRightsForApplication end");
 	STAssertTrue( isBlockCalled, @"completion block not called");
 	STAssertTrue( isPNClientAccessRightsChangeDidCompleteNotification, @"notification not called");
 }
@@ -900,6 +903,22 @@
 		STAssertTrue( [info hasWriteRight] == canWrite, @"wrong rights" );
 	}
 }
+
+//-(void)didSendRequest:(NSNotification*)notification {
+//	NSLog(@"didSendRequest %@", notification.object);
+//	PNBaseRequest *request = notification.object;
+//	PNWriteBuffer *buffer = [request buffer];
+//	NSString *string = [NSString stringWithUTF8String: (char*)buffer.buffer];
+//	if( string == nil )
+//		string = [buffer description];
+//	STAssertTrue( string != nil, @"");
+//	NSLog(@"buffer:\n%@", string);
+//    NSString *auth = [PubNub sharedInstance].configuration.authorizationKey;
+//    if ([auth length] > 0)
+//        auth = [NSString stringWithFormat:@"auth=%@", authorizationKey];
+//	if( auth.length > 0 )
+//		STAssertTrue( [string rangeOfString: auth].location != NSNotFound, @"request %@ - %@", request, buffer);
+//}
 
 
 @end

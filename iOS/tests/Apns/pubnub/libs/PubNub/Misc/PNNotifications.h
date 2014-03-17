@@ -59,6 +59,44 @@ static NSString * const kPNClientDidDisconnectFromOriginNotification = @"PNClien
 static NSString * const kPNClientConnectionDidFailWithErrorNotification = @"PNClientConnectionDidFailWithErrorNotification";
 
 /**
+ Sent when \b PubNub client successfully retrieved client state information.
+
+ \b userInfo contains reference on \b PNClient instead of \b NSDictionary which hold information about client
+ identifier, channel and state itself.
+ */
+static NSString * const kPNClientDidReceiveClientStateNotification = @"PNClientDidReceiveClientStateNotification";
+
+/**
+ Sent when \b PubNub client did fail to retrieve client state information.
+
+ \b userInfo contains \b PNError instead of \a NSDictionary. Client identifier and channel for which \b PubNub client
+ did fail to receive state stored inside \a 'error.associatedObject' in \b PNClient instance.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientStateRetrieveDidFailWithErrorNotification = @"PNClientStateRetrieveDidFailWithErrorNotification";
+
+/**
+ Sent when \b PubNub client successfully updated client state information.
+
+ \b userInfo contains reference on \b PNClient instead of \b NSDictionary which hold information about client
+ identifier, channel and resulting state itself (server will return final state state).
+ */
+static NSString * const kPNClientDidUpdateClientStateNotification = @"PNClientDidUpdateClientStateNotification";
+
+/**
+ Sent when \b PubNub client did fail to update client state information.
+
+ \b userInfo contains \b PNError instead of \a NSDictionary. Client identifier and channel for which \b PubNub client
+ did fail to update state stored inside \a 'error.associatedObject' in \b PNClient instance.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientStateUpdateDidFailWithErrorNotification = @"PNClientStateUpdateDidFailWithErrorNotification";
+
+/**
  Sent when \b PubNub client was able to complete subscription on specified set of channels.
 
  \b userInfo contains reference on \a NSArray of \b PNChannel instances on which \b PubNub client was able to subscribe.
@@ -371,5 +409,24 @@ static NSString * const kPNClientDidReceiveParticipantsListNotification = @"PNCl
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
 static NSString * const kPNClientParticipantsListDownloadFailedWithErrorNotification=@"PNClientParticipantsListDownloadFailedWithErrorNotification";
+
+/**
+ Sent when \b PubNub client did complete participant channels list retrieval process.
+
+ \b userInfo contains \b PNWhereNow instead of \a NSDictionary. \b PNWhereNow instance contain set of \b PNChannel
+ instances and client identifier (for which this request has been made).
+ */
+static NSString * const kPNClientDidReceiveParticipantChannelsListNotification = @"PNClientDidReceiveParticipantChannelsListNotification";
+
+/**
+ Sent when \b PubNub client did fail to retrieve participant channels list for specific identifier.
+
+ \b userInfo contains \b PNError instead of \a NSDictionary. Client identifier for which \b PubNub client did fail to
+ receive participant channels list stored inside \a 'error.associatedObject'.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientParticipantChannelsListDownloadFailedWithErrorNotification = @"PNClientParticipantChannelsListDownloadFailedWithErrorNotification";
 
 #endif

@@ -36,7 +36,7 @@
 
 - (void)tearDown
 {
-    // Tear-down code here.
+	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
 }
 

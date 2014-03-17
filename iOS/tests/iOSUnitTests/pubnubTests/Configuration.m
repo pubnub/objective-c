@@ -30,6 +30,11 @@
 
 @implementation Configuration
 
+- (void)tearDown {
+	[NSThread sleepForTimeInterval:0.1];
+	[super tearDown];
+}
+
 - (void)setUp
 {
     [super setUp];
@@ -101,6 +106,13 @@
 	configuration.useSecureConnection = YES;
 	[configurations addObject: configuration];
 
+	configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef" subscribeKey:@"sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe" secretKey: @"sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk" cipherKey: nil];
+	[configurations addObject: configuration];
+
+
+	configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+	[configurations addObject: configuration];
+	
 	[configurations addObject: [PNConfiguration defaultConfiguration]];
 	//	////
 	//	configuration = [PNConfiguration configurationForOrigin:@"adgads a dfa fasdfasdfaasfadsf"
@@ -122,13 +134,6 @@
 	_isError = YES;
 }
 
-- (void)tearDown
-{
-    // Put teardown code here; it will be run once, after the last test case.
-    [super tearDown];
-}
-
-
 - (void)test10Connect {
 	[PubNub resetClient];
 	NSLog(@"end reset");
@@ -142,11 +147,10 @@
 
 		[PubNub setDelegate:self];
 		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef" subscribeKey:@"sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe" secretKey: @"sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk" cipherKey: nil];
 		[PubNub setConfiguration: configuration];
 
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
-
 			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
 			dispatch_semaphore_signal(semaphore);
 		}
@@ -177,11 +181,11 @@
 		NSLog(@"configurations\n%@\n|\n%@", configurations[i], [PubNub sharedInstance].configuration );
 		if( [PubNub sharedInstance].configuration == nil )
 			continue;
-		if( [configurations[i] isEqual: [PubNub sharedInstance].configuration] == NO ) {
-			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
-			BOOL isEqual = [configurations[i] isEqual: [PubNub sharedInstance].configuration];
-			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
-		}
+//		if( [configurations[i] isEqual: [PubNub sharedInstance].configuration] == NO ) {
+//			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
+//			BOOL isEqual = [configurations[i] isEqual: [PubNub sharedInstance].configuration];
+//			NSLog(@"shouldUseSecureConnection %d, %d", [configurations[i] shouldUseSecureConnection], [[PubNub sharedInstance].configuration shouldUseSecureConnection]);
+//		}
 		STAssertTrue( [configurations[i] isEqual: [PubNub sharedInstance].configuration], @"configurations are not equals, %@\n%@", configurations[i], [PubNub sharedInstance].configuration );
 
 		__block BOOL isCompletionBlockCalled = NO;
@@ -191,9 +195,10 @@
 			 isCompletionBlockCalled = YES;
 			NSTimeInterval interval = -[start timeIntervalSinceNow];
 			PNLog(PNLogGeneralLevel, self, @"subscribeOnChannels %f", interval);
+//			NSLog(@"[PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout %f", [PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout);
 			STAssertTrue( interval < [PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout+1, @"timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout);
 			 if( error != nil )
-				 STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError, @"invalid error %@", error);
+				 STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError || error.code == kPNPresenceAPINotAvailableError, @"invalid error %@", error);
 		 }];
 		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+30 &&
 			isCompletionBlockCalled == NO; j++ )
@@ -212,7 +217,7 @@
 //			 dispatch_semaphore_signal(semaphore);
 			 PNError *error = data;
 			if( error != nil )
-				STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError, @"invalid error %@", error);
+				STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError || error.code == kPNPresenceAPINotAvailableError, @"invalid error %@", error);
 		 }];
 		for( int i=0; i<10; i++ )
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];

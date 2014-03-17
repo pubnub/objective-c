@@ -34,9 +34,8 @@
 }
 
 -(void)tearDown {
-    // Put teardown code here; it will be run once, after the last test case.
+	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
 }
 
 -(void)testPresenceForChannel {

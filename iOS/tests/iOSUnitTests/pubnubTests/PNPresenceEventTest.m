@@ -9,6 +9,8 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "PNPresenceEvent+Protected.h"
 #import "PNPresenceEvent.h"
+#import "PNClient.h"
+#import "PNDate.h"
 
 @interface PNPresenceEventTest : SenTestCase
 
@@ -38,7 +40,7 @@
 	PNPresenceEvent *event = [PNPresenceEvent presenceEventForResponse: presenceResponse];
 	STAssertTrue( event.type == PNPresenceEventLeave, @"");
 	STAssertTrue( [event.date.timeToken intValue] == 123, @"");
-	STAssertTrue( [event.uuid isEqualToString: @"uuid"], @"");
+	STAssertTrue( [event.client.identifier isEqualToString: @"uuid"], @"");
 	STAssertTrue( event.occupancy == 100, @"");
 }
 
@@ -53,7 +55,7 @@
 	PNPresenceEvent *event = [[PNPresenceEvent alloc] initWithResponse: presenceResponse];
 	STAssertTrue( event.type == PNPresenceEventLeave, @"");
 	STAssertTrue( [event.date.timeToken intValue] == 123, @"");
-	STAssertTrue( [event.uuid isEqualToString: @"uuid"], @"");
+	STAssertTrue( [event.client.identifier isEqualToString: @"uuid"], @"");
 	STAssertTrue( event.occupancy == 100, @"");
 }
 

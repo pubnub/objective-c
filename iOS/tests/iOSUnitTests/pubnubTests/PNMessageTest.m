@@ -66,7 +66,7 @@
 
 	message = [PNMessage messageFromServiceResponse: @{@"message": @"message"} onChannel: channel atDate: postDate];
 	STAssertTrue( [[message.receiveDate timeToken] intValue] == 200, @"");
-	STAssertTrue( [message.message isEqualToString: @"message"] == YES, @"");
+	STAssertTrue( [message.message isEqualToDictionary:@{@"message": @"message"}] == YES, @"");
 	STAssertTrue( message.channel == channel, @"");
 }
 

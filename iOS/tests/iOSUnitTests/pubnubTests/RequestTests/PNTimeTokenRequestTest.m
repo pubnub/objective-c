@@ -11,25 +11,27 @@
 #import "PNTimeTokenRequestTest.h"
 #import "PNTimeTokenRequest.h"
 
-#import <OCMock/OCMock.h>
-
 @implementation PNTimeTokenRequestTest
 
-- (void)setUp
-{
-    [super setUp];
-    
-    NSLog(@"setUp: %@", self.name);
+-(void)tearDown {
+	[super tearDown];
+	[NSThread sleepForTimeInterval:1.0];
 }
 
-- (void)tearDown
-{
-    // Tear-down code here.
-    
-    [super tearDown];
+-(void)testInit {
+	PNTimeTokenRequest *request = [[PNTimeTokenRequest alloc] init];
+	STAssertTrue( request != nil, @"");
+	STAssertTrue( request.sendingByUserRequest == YES, @"");
+
+	STAssertTrue( [[request callbackMethodName] isEqualToString: @"t"] == YES, @"");
 }
 
-#pragma mark - States tests
-#pragma mark - Interaction tests
+-(void)testResourcePath {
+	PNTimeTokenRequest *request = [[PNTimeTokenRequest alloc] init];
+	NSString *resourcePath = [request resourcePath];
+	NSLog(@"res %@", resourcePath);
+	STAssertTrue( [resourcePath hasPrefix: @"/time/t_"] == YES, @"");
+	STAssertTrue( resourcePath.length == 13, @"");
+}
 
 @end

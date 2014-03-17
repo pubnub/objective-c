@@ -1,11 +1,10 @@
-//
-//  PNChannelEvents.h
-// 
-//
-//  Created by moonlight on 1/15/13.
-//
-//
+/**
+ This class allow to describe set of events which occurred on one of the channels and passed to the user.
 
+ @author Sergey Mamontov
+ @version 3.4.0
+ @copyright © 2009-13 PubNub Inc.
+ */
 
 #import "PNChannelEvents+Protected.h"
 
@@ -17,25 +16,12 @@
 #endif
 
 
-#pragma mark Private interface methods
-
-@interface PNChannelEvents ()
-
-
-#pragma mark - Properties
-
-@property (nonatomic, strong) NSArray *events;
-@property (nonatomic, strong) NSNumber *timeToken;
-
-#pragma mark -
-
-
-@end
-
-
-#pragma mark - Public interface methods
+#pragma mark Public interface methods
 
 @implementation PNChannelEvents
+
+
+#pragma mark -
 
 
 @end

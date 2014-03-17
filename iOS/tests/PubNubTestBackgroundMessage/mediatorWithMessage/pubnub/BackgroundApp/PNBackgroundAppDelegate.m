@@ -22,7 +22,7 @@
 
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
 	self.window.rootViewController = navController;
-	navController.topViewController.title = @"Mediator";
+	navController.topViewController.navigationItem.title = @"Mediator";
 
 
     [self initializePubNubClient];
@@ -153,8 +153,14 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
 	NSLog(@"openURL %@, %@, %@", url, sourceApplication, annotation);
+<<<<<<< HEAD
 	if( pnChannel == nil ) {
 		NSLog(@"!!! connect from application: openURL: ");
+=======
+	countNewMessage = 0;
+	countSendMessage = 0;
+	if( pnChannel == nil )
+>>>>>>> develop
 		[self connect];
 	}
 	else {
@@ -167,12 +173,21 @@
 -(void)sendMessage {
 	NSLog(@"!!! sendMessage");
 	[PubNub sendMessage:[NSString stringWithFormat: @"mediatorWithMessage, %@", [NSDate date]] toChannel:pnChannel compressed: NO
+<<<<<<< HEAD
 	withCompletionBlock:^(PNMessageState messageSendingState, id data) {
 		NSLog(@"!!! sendMessage %d, %@", messageSendingState, data);
 		if( messageSendingState == PNMessageSent ) {
 			NSLog(@"!!! performSelector openUrl");
 			 [self performSelector: @selector(openUrl) withObject: nil afterDelay: 20.0];
 		}
+=======
+	withCompletionBlock:^(PNMessageState messageSendingState, id data)
+	 {
+		 if( messageSendingState == PNMessageSent ) {
+			 countSendMessage++;
+			 [self performSelector: @selector(openUrl) withObject: nil afterDelay: 20.0];
+		 }
+>>>>>>> develop
 		 if( messageSendingState == PNMessageSendingError ) {
 			 NSLog(@"PNMessageSendingError %@", data);
 			 [self performSelector: @selector(errorSelectorMessage)];
@@ -181,7 +196,8 @@
 }
 
 -(void)openUrl {
-		[[UIApplication sharedApplication] openURL: [NSURL URLWithString: [NSString stringWithFormat: @"%@://", @"pubNubTestBackgroundMessage"]]];
+	NSLog(@"\ncountSendMessage %d\ncountNewMessage %d", countSendMessage, countNewMessage);
+	[[UIApplication sharedApplication] openURL: [NSURL URLWithString: [NSString stringWithFormat: @"%@://", @"pubNubTestBackgroundMessage"]]];
 }
 
 - (BOOL)shouldRunClientInBackground {
@@ -212,6 +228,13 @@
     }
 
     // Retrieving list of observers (including one time and persistent observers)
+}
+
+- (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
+    NSLog( @"PubNub client received message: %@", message);
+	NSString *string = [NSString stringWithFormat: @"%@", message.message];
+	if( [string rangeOfString: @"mediatorWithMessage"].location != NSNotFound )
+		countNewMessage++;
 }
 
 

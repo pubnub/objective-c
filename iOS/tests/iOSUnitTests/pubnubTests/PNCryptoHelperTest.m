@@ -153,9 +153,8 @@
 }
 
 - (void)tearDown {
-
     NSLog(@"%@ test completed", self.name);
-
+	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
 }
 

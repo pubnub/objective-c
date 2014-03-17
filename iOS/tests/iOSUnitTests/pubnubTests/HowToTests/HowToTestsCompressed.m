@@ -464,7 +464,7 @@
     [super tearDown];
 
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver: self];
-	[NSThread sleepForTimeInterval:1.0];
+	[NSThread sleepForTimeInterval:0.1];
 }
 
 #pragma mark - PubNub client delegate methods
@@ -545,6 +545,7 @@
 		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
 		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"post-devbuild.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
 //		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"post-devbuild.pubnub.com" publishKey:@"pub-c-bb4a4d9b-21b1-40e8-a30b-04a22f5ef154" subscribeKey:@"sub-c-6b43405c-3694-11e3-a5ee-02ee2ddab7fe" secretKey: @"sec-c-ZmNlNzczNTEtOGUwNS00MmRjLWFkMjQtMjJiOTA2MjY2YjI5" cipherKey: @"cipherKey"];
+		configuration = [PNConfiguration defaultConfiguration];
 		[PubNub setConfiguration: configuration];
 
 		handleClientConnectionStateChange = NO;
@@ -693,31 +694,31 @@
 									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
 
-			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
-			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-				state = messageSendingState;
-				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
-			}];
-
-			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
-
-			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
-			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-				state = messageSendingState;
-				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
-			}];
-
-			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
+//			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
+//			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+//				state = messageSendingState;
+//				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
+//			}];
+//
+//			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+//				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
+//				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+//			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+//									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+//			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
+//
+//			[PubNub sendMessage: [NSNumber numberWithInt: i] toChannel:pnChannels[i]
+//			withCompletionBlock:^(PNMessageState messageSendingState, id data) {
+//				state = messageSendingState;
+//				STAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
+//			}];
+//
+//			for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
+//				(state != PNMessageSent || pNClientDidSendMessageNotification == NO); j++ )
+//				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+//			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+//									 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+//			STAssertTrue(pNClientDidSendMessageNotification || state != PNMessageSent, @"notificaition not called");
 		}
 	}
 }
@@ -998,17 +999,11 @@
 }
 
 
--(void)t900UnsubscribeFromChannels
-{
+-(void)t900UnsubscribeFromChannels {
 	handleClientUnsubscriptionProcess = YES;
-	//	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	__block BOOL isCompletionBlockCalled = NO;
-	// Unsubscribe from set of channels and notify everyone that we are left
 	NSDate *start = [NSDate date];
-	[PubNub unsubscribeFromChannels: pnChannels
-				  withPresenceEvent:YES
-		 andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError)
-	 {
+	[PubNub unsubscribeFromChannels: pnChannels withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
 		 NSLog(@"unsubscribeFromChannels %f, %@", interval, channels);
 		 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
@@ -1017,17 +1012,11 @@
 		 STAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 	 }];
-    // Run loop
-	//    while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-	//        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-	//                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
 		isCompletionBlockCalled == NO; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue(handleClientUnsubscriptionProcess, @"notification not called");
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
-
-	//	[self t950ReconnectCount];
 }
 
 - (void)t910removeClientChannelSubscriptionStateObserver {

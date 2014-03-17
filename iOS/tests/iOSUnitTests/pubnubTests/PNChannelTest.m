@@ -17,10 +17,12 @@
 #import "PNPresenceEvent.h"
 #import "PNHereNow.h"
 #import "PNHereNow+Protected.h"
+#import "PNClient+Protected.h"
+#import "PNClient.h"
 
 @interface PNChannel (test)
 
-@property (nonatomic, strong) NSMutableArray *participantsList;
+@property (nonatomic, strong) NSMutableDictionary *participantsList;
 @property (nonatomic, assign, getter = isAbleToResetTimeToken) BOOL ableToResetTimeToken;
 
 + (NSDictionary *)channelsCache;
@@ -37,6 +39,7 @@
 @property (nonatomic, assign) NSUInteger occupancy;
 @property (nonatomic, assign) PNPresenceEventType type;
 @property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, strong) PNClient *client;
 
 @end
 
@@ -64,9 +67,8 @@
 }
 
 -(void)tearDown {
-    // Put teardown code here; it will be run once, after the last test case.
+	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
 }
 
 -(void)testChannelsWithNames {
@@ -111,7 +113,7 @@
 	PNChannel *ch = [[PNChannel alloc] initWithName: name];
 	STAssertEqualObjects( ch.updateTimeToken, @"0", @"");
 	STAssertEqualObjects( ch.name, name, @"");
-	STAssertTrue( [[ch participantsList] isKindOfClass: [NSMutableArray class]] == TRUE, @"");
+	STAssertTrue( [[ch participantsList] isKindOfClass: [NSMutableDictionary class]] == TRUE, @"");
 }
 
 -(void)testObservedChannel {
@@ -150,31 +152,31 @@
 }
 
 -(void)testParticipants {
-	STAssertEquals( [channel participants], [channel participantsList], @"");
+	STAssertTrue( [[channel participants] isEqualToArray: [[channel participantsList] allValues]], @"");
 }
 
 -(void)testUpdateWithEvent {
 	PNPresenceEvent *event = [[PNPresenceEvent alloc] init];
 	event.occupancy = 3;
-	event.uuid = @"udid";
-
+	PNClient *client = [[PNClient alloc] initWithIdentifier: @"id" channel: nil andData: nil];
+	event.client = client;
 	event.type = PNPresenceEventJoin;
 	[channel updateWithEvent: event];
-	STAssertTrue( [channel.participantsList indexOfObject: event.uuid] != NSNotFound, @"");
+	STAssertTrue( [channel.participantsList objectForKey: event.client.identifier] == client, @"");
 
 	event.type = PNPresenceEventChanged;
 	event.occupancy = 300;
 	[channel updateWithEvent: event];
-	STAssertTrue( [channel.participantsList indexOfObject: @"unknown"] != NSNotFound, @"");
+	STAssertTrue( [channel.participantsList count] == 2, @"");
 
 	event.type = PNPresenceEventChanged;
 	event.occupancy = 1;
 	[channel updateWithEvent: event];
-	STAssertTrue( [channel.participantsList indexOfObject: @"unknown"] == NSNotFound, @"");
+	STAssertTrue( [channel.participantsList count] == 1, @"");
 
 	event.type = PNPresenceEventLeave;
 	[channel updateWithEvent: event];
-	STAssertTrue( [channel.participantsList indexOfObject: event.uuid] == NSNotFound, @"");
+	STAssertTrue( [channel.participantsList objectForKey: event.client.identifier] == nil, @"");
 
 	STAssertEqualsWithAccuracy( [[channel.presenceUpdateDate date] timeIntervalSinceNow], 0.0, 1, @"");
 }
@@ -182,12 +184,13 @@
 -(void)testUpdateWithParticipantsList {
 	PNHereNow *hereNow = [[PNHereNow alloc] init];
 	hereNow.participantsCount = 10;
-	hereNow.participants = @[@"participant"];
+	PNClient *client = [[PNClient alloc] initWithIdentifier: @"id" channel: nil andData: nil];
+	hereNow.participants = @[client];
 	[channel updateWithParticipantsList: hereNow];
 
 	STAssertEqualsWithAccuracy( [[channel.presenceUpdateDate date] timeIntervalSinceNow], 0.0, 1, @"");
 	STAssertTrue( channel.participantsCount == hereNow.participantsCount, @"");
-	STAssertTrue( [channel.participantsList indexOfObject: @"participant"] != NSNotFound, @"");
+//	STAssertTrue( [channel.participantsList indexOfObject: @"participant"] != NSNotFound, @"");
 	STAssertTrue( channel.participantsList.count == 1, @"");
 }
 

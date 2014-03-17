@@ -191,6 +191,9 @@
         JSONString = object;
     }
 
+    // Replace null value has been passed or not (serialized [NSNull null] value)
+    JSONString = [JSONString stringByReplacingOccurrencesOfString:@":null" withString:@":\"null\""];
+
 
     return JSONString;
 }

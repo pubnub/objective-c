@@ -21,7 +21,7 @@
 
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[UITableViewController alloc] init]];
 	self.window.rootViewController = navController;
-	navController.topViewController.title = @"Pubnub";
+	navController.topViewController.navigationItem.title = @"PubNub";
 
 
 	isWillRestoreSubscriptionOnChannelsDelegate = YES;
@@ -29,6 +29,7 @@
     [self initializePubNubClient];
 
 	currentInterval = 10;
+	self.lastResetCall = [NSDate date];
 
 	[PubNub clientIdentifier];
 	countNewMessage = 1;
@@ -54,6 +55,8 @@
 
 
 -(void)openUrl {
+	if( countNewMessage == 2 && countSession%2 == 0 )
+		[self performSelector: @selector(errorSelectorExtraMessage)];
 	if( countNewMessage != 1 && countSession%2 == 0 )
 		[self performSelector: @selector(errorSelectorCountNewMessage)];
 	if( isWillRestoreSubscriptionOnChannelsDelegate == NO )
@@ -171,7 +174,9 @@
 }
 
 - (void)connect {
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
+	PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+	configuration.presenceExpirationTimeout = 5;
+    [PubNub setConfiguration: configuration];
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
 
 		PNChannel *pnChannel = [PNChannel channelWithName: [NSString stringWithFormat: @"mediatorWithMessage"]];

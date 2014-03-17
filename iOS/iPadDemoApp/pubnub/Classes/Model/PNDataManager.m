@@ -11,6 +11,7 @@
 #import "PNPresenceEvent+Protected.h"
 #import "PNMessage+Protected.h"
 #import "PNChannel+Protected.h"
+#import "PNClient.h"
 
 
 #pragma mark Static
@@ -142,7 +143,7 @@ static PNDataManager *_sharedInstance = nil;
                 }
                 eventMessage = [eventMessage stringByAppendingFormat:@"<%@> %@ '%@'\n",
                                                                      [dateFormatter stringFromDate:event.date.date],
-                                                                     event.uuid ? event.uuid : @"unknown",
+                                                                     event.client.identifier,
                                                                      eventType];
                 [weakSelf.messages setValue:eventMessage forKey:channel.name];
 
@@ -185,7 +186,7 @@ static PNDataManager *_sharedInstance = nil;
 
 - (NSUInteger)numberOfEventsForChannel:(PNChannel *)channel {
 
-    return [[self.events valueForKey:channel.name] intValue];
+    return [[self.events valueForKey:channel.name] unsignedIntValue];
 }
 
 - (void)clearChatHistory {

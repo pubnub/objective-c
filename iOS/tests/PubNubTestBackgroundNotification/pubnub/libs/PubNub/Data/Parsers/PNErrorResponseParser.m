@@ -55,28 +55,33 @@
     // Check whether initialization successful or not
     if ((self = [super init])) {
 
-        NSDictionary *responseData = response.response;
+        id responseData = response.response;
 
         PNError *error;
         
         if ([response.response isKindOfClass:[NSDictionary class]]) {
             
             NSString *errorMessage = [responseData valueForKey:kPNResponseErrorMessageKey];
-            NSString *relatedChannelsKeyPath = [NSString stringWithFormat:@"%@.%@", kPNResponseErrorPayloadKey, kPNResponseErrorChannelsKey];
+            if (!errorMessage) {
+                
+                errorMessage = response.message;
+            }
             NSArray *associatedChannels = nil;
             if (![[responseData valueForKey:kPNResponseErrorMessageKey] isKindOfClass:[NSString class]]) {
                 
-                errorMessage = [responseData valueForKey:kPNResponseErrorAdditionalMessageKey];
+                if ([responseData valueForKey:kPNResponseErrorAdditionalMessageKey]) {
+                    
+                    errorMessage = [responseData valueForKey:kPNResponseErrorAdditionalMessageKey];
+                }
             }
             
-            if ([responseData valueForKeyPath:relatedChannelsKeyPath]) {
+            if ([responseData valueForKeyPath:kPNResponseErrorChannelsKey]) {
                 
-                associatedChannels = [PNChannel channelsWithNames:[responseData valueForKeyPath:relatedChannelsKeyPath]];
+                associatedChannels = [PNChannel channelsWithNames:[responseData valueForKeyPath:kPNResponseErrorChannelsKey]];
             }
             
             
-            if (([responseData objectForKey:kPNResponseErrorPayloadKey] != nil || [responseData objectForKey:kPNResponseErrorServiceKey] != nil) &&
-                (response.statusCode == 401 || response.statusCode == 402 || response.statusCode == 403)) {
+            if (response.statusCode != 200 && errorMessage == nil) {
                 
                 error = [PNError errorWithHTTPStatusCode:response.statusCode];
             }

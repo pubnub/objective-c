@@ -22,8 +22,7 @@
 
 @implementation PNSubscribeUnsubscribeTest
 
-- (void)setUp
-{
+- (void)setUp {
     [super setUp];
     [PubNub setDelegate:self];
 	pnChannels1 = [PNChannel channelsWithNames:@[@"iosdev1", @"andoirddev1", @"wpdev1", @"ubuntudev1", [NSString stringWithFormat:@"%@", [NSDate date]]]];
@@ -48,19 +47,14 @@
 							 STFail(@"connectionError %@", connectionError);
                          }];
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
 }
 
-- (void)subscribeOnChannels:(NSArray*)pnChannels withPresenceEvent:(BOOL)presenceEvent
-{
-//    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+- (void)subscribeOnChannels:(NSArray*)pnChannels withPresenceEvent:(BOOL)presenceEvent {
 	NSLog(@"subscribeOnChannels");
 	__block BOOL isCompletionBlockCalled = NO;
-	[PubNub subscribeOnChannels: pnChannels withPresenceEvent: presenceEvent andCompletionHandlingBlock: ^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-	 {
+	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock: ^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 		 NSLog(@"subscribeOnChannels end");
-//		 dispatch_semaphore_signal(semaphore);
 		 isCompletionBlockCalled = YES;
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 		 if( pnChannels.count != channels.count ) {
@@ -68,10 +62,7 @@
 		 }
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
 	 }];
-    // Run loop
-	NSLog(@"subscribeOnChannels runloop");
-	for( int i=0; i<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-		isCompletionBlockCalled == NO; i++ )
+	for( int i=0; i<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 && isCompletionBlockCalled == NO; i++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 }
@@ -81,10 +72,7 @@
 	NSLog(@"unsubscribeOnChannels");
 //	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 	__block BOOL isCompletionBlockCalled = NO;
-	[PubNub unsubscribeFromChannels: pnChannels
-				  withPresenceEvent: presenceEvent
-		 andCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError)
-	 {
+	[PubNub unsubscribeFromChannels: pnChannels withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
 		 NSLog(@"unsubscribeOnChannels end");
 		 // Check whether "unsubscribeError" is nil or not (if not, than handle error)
 //		 dispatch_semaphore_signal(semaphore);

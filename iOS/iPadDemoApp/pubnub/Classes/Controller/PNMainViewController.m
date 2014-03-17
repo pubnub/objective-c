@@ -1221,8 +1221,8 @@ shouldChangeCharactersInRange:(NSRange)range
     }
     else {
 
-        NSString *clientIdentifier = [[PNDataManager sharedInstance].currentChannel.participants objectAtIndex:indexPath.row];
-        ((UITableViewCell *)cell).textLabel.text = clientIdentifier;
+        PNClient *client = [[PNDataManager sharedInstance].currentChannel.participants objectAtIndex:indexPath.row];
+        ((UITableViewCell *)cell).textLabel.text = client.identifier;
     }
 
 

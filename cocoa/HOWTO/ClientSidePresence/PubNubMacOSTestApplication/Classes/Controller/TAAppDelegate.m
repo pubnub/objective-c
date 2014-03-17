@@ -167,7 +167,7 @@ static NSString * const kTAChannelName = @"hello_world";
         NSString *alreadyExists = [[NSString alloc]init];
         NSString *uuid = [[NSString alloc]init];
 
-        uuid = event.uuid;
+        uuid = event.client.identifier;
 
         // ignore yourself
         if ([uuid isEqualToString:[PubNub clientIdentifier]]) {
