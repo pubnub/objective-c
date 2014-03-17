@@ -348,6 +348,7 @@
 		795AEBB818CF9D9400A95442 /* CTTestEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTTestEntryCell.m; sourceTree = "<group>"; };
 		795AEBBC18CFA5D700A95442 /* CTTestEntryCell~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "CTTestEntryCell~ipad.xib"; sourceTree = "<group>"; };
 		795AEBC018CFB83200A95442 /* CTTestEntryDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTTestEntryDelegate.h; sourceTree = "<group>"; };
+		79A5EB4018D788AF00A21F91 /* PNChannelHistoryParser+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNChannelHistoryParser+Protected.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -626,6 +627,7 @@
 				795AEA7E18CE7CA800A95442 /* PNActionResponseParser.m */,
 				795AEA7F18CE7CA800A95442 /* PNChannelEventsResponseParser.h */,
 				795AEA8018CE7CA800A95442 /* PNChannelEventsResponseParser.m */,
+				79A5EB4018D788AF00A21F91 /* PNChannelHistoryParser+Protected.h */,
 				795AEA8118CE7CA800A95442 /* PNChannelHistoryParser.h */,
 				795AEA8218CE7CA800A95442 /* PNChannelHistoryParser.m */,
 				795AEA8318CE7CA800A95442 /* PNClientStateResponseParser.h */,
