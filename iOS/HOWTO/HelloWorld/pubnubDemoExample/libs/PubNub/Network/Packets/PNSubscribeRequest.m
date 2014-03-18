@@ -178,19 +178,23 @@
 }
 
 - (void)prepareToSend {
-    
+
     NSMutableSet *channels = [NSMutableSet setWithArray:_channels];
     NSSet *forPresenceDisabling = [NSSet setWithArray:self.channelsForPresenceDisabling];
     if ([channels intersectsSet:forPresenceDisabling]) {
-        
+
         [forPresenceDisabling enumerateObjectsUsingBlock:^(PNChannel *channel, BOOL *channelEnumeratorStop) {
-            
-            [channels removeObject:channel];
+
+            if ([channel isPresenceObserver]) {
+
+                [channels removeObject:channel];
+            }
         }];
     }
-    
+
     self.channels = [channels allObjects];
 }
+
 
 - (NSTimeInterval)timeout {
     
