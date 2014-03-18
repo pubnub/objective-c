@@ -162,7 +162,7 @@ This is the most basic example of how to wire it all up, and as such, should tak
 ### Hello World HOWTO
 
 The [Hello World](HOWTO/HelloWorld) app references how to create a simple application using PubNub and iOS. 
-[A getting started walk-through document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf).
+[A getting started walk-through document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorld-howto-readme.pdf).
 
 ### CallsWithoutBlocks
 
