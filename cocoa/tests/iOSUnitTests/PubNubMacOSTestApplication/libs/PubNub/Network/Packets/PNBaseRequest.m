@@ -152,7 +152,7 @@
     NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
     if ([authorizationKey length] > 0) {
 
-        authorizationKey = [NSString stringWithFormat:@"auth=%@", authorizationKey];
+		authorizationKey = [NSString stringWithFormat:@"auth=%@", [authorizationKey percentEscapedString]];
     }
     else {
 
