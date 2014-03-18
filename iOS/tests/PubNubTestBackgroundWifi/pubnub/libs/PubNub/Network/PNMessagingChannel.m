@@ -441,7 +441,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                                            if (isSubscribeRequest) {
                                                
                                                isWaitingForCompletion = [(PNSubscribeRequest *)request isInitialSubscription];
-                                               [(PNSubscribeRequest *)request prepareToSend];
                                            }
                                            
                                            // Clean up query (if request has been stored in it)
@@ -694,7 +693,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                                                                                    byUserRequest:YES
                                                                                  withClientState:nil];
         [resubscribeRequest resetSubscriptionTimeToken];
-        [resubscribeRequest prepareToSend];
         
         // Check whether connection channel is waiting for response via long-poll connection or not
         resubscribeRequest.closeConnection = YES;
@@ -881,7 +879,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         // and in same time still has observation instance.
         if ([channels containsObject:channel] && ![observedChannelsSet containsObject:channel]) {
             
-            [channelsSet addObject:([channel presenceObserver] ? [channel presenceObserver] : channel)];
+            [channelsSet addObject:([channel presenceObserver] ? [channel presenceObserver] : [PNChannelPresence presenceForChannel:channel] )];
         }
     }];
     
@@ -1075,7 +1073,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 
                 [subscribeRequest resetTimeToken];
             }
-            [subscribeRequest prepareToSend];
             
             [self scheduleRequest:subscribeRequest shouldObserveProcessing:PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionTimeTokenRetrieve)];
         }
@@ -1161,7 +1158,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             
             resubscribeRequest.closeConnection = NO;
         }
-        [resubscribeRequest prepareToSend];
         
         [self scheduleRequest:resubscribeRequest
       shouldObserveProcessing:!PNBitIsOn(self.messagingState, PNMessagingChannelSubscriptionWaitingForEvents)
@@ -1229,7 +1225,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             }
             
             [self destroyByRequestClass:[PNSubscribeRequest class]];
-            [subscribeRequest prepareToSend];
             
             // Resubscribe on rest of channels which is left after unsubscribe
             [self scheduleRequest:subscribeRequest

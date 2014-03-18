@@ -176,7 +176,6 @@
     
     return [self.updateTimeToken isEqualToString:@"0"];
 }
-
 - (void)prepareToSend {
 
     NSMutableSet *channels = [NSMutableSet setWithArray:_channels];
@@ -191,7 +190,45 @@
             }
         }];
     }
-
+}
+- (void)setChannelsForPresenceDisabling:(NSArray *)channelsForPresenceDisabling {
+    
+    _channelsForPresenceDisabling = channelsForPresenceDisabling;
+    
+    NSMutableSet *channels = [NSMutableSet setWithArray:_channels];
+    NSMutableSet *channelsForRemoval = [NSMutableSet set];
+    
+    [_channelsForPresenceDisabling enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
+                                                                BOOL *channelEnumeratorStop) {
+        
+        if ([channel isPresenceObserver]) {
+            
+            [channelsForRemoval addObject:channel];
+        }
+        else {
+            
+            PNChannelPresence *observer = [channel presenceObserver];
+            if (observer) {
+                
+                [channelsForRemoval addObject:[channel presenceObserver]];
+            }
+        }
+    }];
+    [_channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
+                                            BOOL *channelEnumeratorStop) {
+        
+        if ([channel isPresenceObserver]) {
+            
+            PNChannel *observedChannel = [(PNChannelPresence *)channel observedChannel];
+            if (observedChannel && [_channelsForPresenceDisabling containsObject:observedChannel]) {
+                
+                [channelsForRemoval addObject:channel];
+            }
+        }
+    }];
+    
+    [channels minusSet:channelsForRemoval];
+    
     self.channels = [channels allObjects];
 }
 
