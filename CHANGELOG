@@ -1,3 +1,9 @@
+3-19-2014 - 3.6.1
+. new presence features
+. fixed issue where rapid repeated sub/unsub could hang client
+. deprecated and added deprecation warnings for methods that exposed custom presence event behavior
+
+
 02-07-2014 - 3.5.6
 . added ability to send messages compressed
 . fix for timetoken race condition on failed leave
