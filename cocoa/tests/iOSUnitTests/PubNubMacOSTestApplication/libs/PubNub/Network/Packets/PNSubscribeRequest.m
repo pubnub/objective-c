@@ -245,10 +245,10 @@
 
 - (NSString *)resourcePath {
     
-    NSString *pnexpiresValue = @"";
+    NSString *heartbeatValue = @"";
     if ([PubNub sharedInstance].configuration.presenceHeartbeatTimeout > 0.0f) {
         
-        pnexpiresValue = [NSString stringWithFormat:@"&pnexpires=%d",
+        heartbeatValue = [NSString stringWithFormat:@"&heartbeat=%d",
                           (int)[PubNub sharedInstance].configuration.presenceHeartbeatTimeout];
     }
     NSString *state = @"";
@@ -261,7 +261,7 @@
             [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
             [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
             [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
-            self.clientIdentifier, pnexpiresValue, state,
+            self.clientIdentifier, heartbeatValue, state,
             ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
                                           [self authorizationField]] : @"")];
 }
