@@ -22,6 +22,11 @@
 
 @implementation PNPushNotificationsStateChangeRequestTest
 
+-(void)setUp {
+	[super setUp];
+	[PubNub resetClient];
+}
+
 -(void)tearDown {
     [super tearDown];
 	[NSThread sleepForTimeInterval:1.0];

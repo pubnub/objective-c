@@ -1,4 +1,4 @@
-# PubNub 3.6.0 for iOS 5.1+ (iPhone, iPad, iPod)
+# PubNub 3.6.1 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -47,7 +47,7 @@ By far the easiest, quickest way to add PubNub.  **Current PubNub for CocoaPods 
 +   Add the following to your project's Podfile:
 
 ```
-pod 'PubNub', '3.5.6'
+pod 'PubNub', '3.5.7'
 ```
 
 +   Run
@@ -60,12 +60,12 @@ pod install
 +   Add
 
 ```objc
-// Make this the FIRST import statement
+// Make this the LAST import statement
 #import "PNImports.h"
 ```
 
 To your project's .pch file.  
-**Note:** It must be the first import in your pch, or it will not work correctly.
+**Note:** It must be the last import in your pch, or it will not work correctly.
 
 [Finish up by setting up your delegate](#finishing-up-configuration-common-to-manual-and-cocoapods-setup)
 
@@ -162,7 +162,7 @@ This is the most basic example of how to wire it all up, and as such, should tak
 ### Hello World HOWTO
 
 The [Hello World](HOWTO/HelloWorld) app references how to create a simple application using PubNub and iOS. 
-[A getting started walk-through document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorldHOWTO_34.pdf).
+[A getting started walk-through document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/HelloWorld/HelloWorld-howto-readme.pdf).
 
 ### CallsWithoutBlocks
 
@@ -369,8 +369,8 @@ Other methods which allow you to adjust the client configuration are:
 + (void)setConfiguration:(PNConfiguration *)configuration;  
 + (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;  
 + (void)setDelegate:(id<PNDelegate>)delegate;
-+ (void)setClientIdentifier:(NSString *)identifier;  
-+ (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;
++ (void)setClientIdentifier:(NSString *)identifier;                                    // Change UUID
++ (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;  // Change UUID with catchup options
 ```
 
 FIrst and the second methods from list above (which update client configuration) may require client reconnection (if client already connected). As soon as all connections will be closed client will reconnect with updated configuration. It is strongly advised change configuration in really rare cases and most of the time provide configuration during PubNub client configuration. Configuration update on connected client will cause additional overhead to reinitialize client with new configuration and connect back to server (time overhead).
@@ -2091,6 +2091,7 @@ If you choose the PNLOG_STORE_LOG_TO_FILE option, you will find your log written
 pubnub-console-dump.txt
 ```
 
+You can use a utility such as [iExplorer](http://www.macroplant.com/iexplorer/) to easily pull the pubnub-console-dump.txt file off your device for later review.
 
 ### Tests with OCUnit and OCMock
 

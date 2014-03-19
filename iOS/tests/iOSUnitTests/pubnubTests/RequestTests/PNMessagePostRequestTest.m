@@ -43,6 +43,11 @@ typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
 
 @implementation PNMessagePostRequestTest
 
+-(void)setUp {
+	[super setUp];
+	[PubNub resetClient];
+}
+
 - (void)tearDown {
 	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];

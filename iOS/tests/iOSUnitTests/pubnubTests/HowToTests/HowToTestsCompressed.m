@@ -89,8 +89,8 @@
 
 	semaphoreNotification = dispatch_semaphore_create(0);
     [PubNub setDelegate:self];
-	pnChannels = [PNChannel channelsWithNames:@[@"iosdev1", @"andoirddev1", @"wpdev1", @"ubuntudev1", @"11"]];
-	pnChannelsBad = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"wpdev", @"", @""]];
+	pnChannels = [PNChannel channelsWithNames:@[@"iosdev1", @"andoirddev1"]];
+	pnChannelsBad = [PNChannel channelsWithNames:@[@"iosdev", @"", @""]];
 	pnChannelsForReverse = [PNChannel channelsWithNames:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -642,8 +642,7 @@
 		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 		//		PNLog(PNLogGeneralLevel, nil, @"pnChannels[i] %@", pnChannels[i]);
 		[PubNub requestParticipantsListForChannel:pnChannels[i]
-							  withCompletionBlock:^(NSArray *udids, PNChannel *channel, PNError *error)
-		 {
+							  withCompletionBlock:^(NSArray *udids, PNChannel *channel, PNError *error) {
 			 if( error != nil )
 				 PNLog(PNLogGeneralLevel, nil, @"error %@", error);
 			 STAssertNil( error, @"error %@", error);

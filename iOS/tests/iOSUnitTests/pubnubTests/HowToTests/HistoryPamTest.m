@@ -313,6 +313,7 @@
 	__block BOOL isBlockCalled = NO;
 	__block NSDate *start = [NSDate date];
 	isPNClientAccessRightsChangeDidCompleteNotification = NO;
+	NSLog(@"revokeAccessRightsForApplicationWithCompletionHandlingBlock start");
 	[PubNub revokeAccessRightsForApplicationWithCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
 		isBlockCalled = YES;
 		STAssertNil( error, @"revokeAccessRightsForApplication %@", error);
@@ -322,6 +323,7 @@
 	}];
 	for( int j=0; j<timeout; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+	NSLog(@"revokeAccessRightsForApplicationWithCompletionHandlingBlock end");
 	STAssertTrue( isBlockCalled, @"completion block not called");
 	STAssertTrue( isPNClientAccessRightsChangeDidCompleteNotification, @"notification not called");
 }

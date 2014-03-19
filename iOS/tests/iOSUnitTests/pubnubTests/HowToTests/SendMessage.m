@@ -143,7 +143,7 @@
 	////	[messages addObject: @"0 \7"];
 	//	[messages addObject: @"\\"];
 	[messages addObject: @" sl asdfas fdas"];
-	for( unsigned char i=0; i<255; i++ )
+	for( unsigned char i=34; i<255; i++ )
 		[messages addObject: [NSString stringWithFormat: @"[\"%d %c %c%c%c %d\"]", (int)i, i, i, i, i, (int)i]];
 	//	NSString *str = @"";
 	//	for( int i=4000; i<5000; i++ )
@@ -198,8 +198,7 @@
 
     semaphore = dispatch_semaphore_create(0);
 	[PubNub subscribeOnChannels: pnChannels
-	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
-	 {
+	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 		 dispatch_semaphore_signal(semaphore);
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);

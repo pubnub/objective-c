@@ -27,9 +27,14 @@
 
 @implementation PNSubscribeRequestTest
 
+-(void)setUp {
+	[super setUp];
+	[PubNub resetClient];
+}
+
 -(void)tearDown {
-    [super tearDown];
 	[NSThread sleepForTimeInterval:1.0];
+    [super tearDown];
 }
 
 -(void)testSubscribeRequestForChannel {

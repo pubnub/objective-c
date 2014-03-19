@@ -7,6 +7,7 @@
  */
 
 #import "PNResponse+Protected.h"
+#import "PNErrorResponseParser+Protected.h"
 #import "PNJSONSerialization.h"
 #import "PNRequestsImport.h"
 
@@ -117,6 +118,15 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
     
     return [[[self class] alloc] initWithContent:content size:responseSize code:statusCode
                         lastResponseOnConnection:isLastResponseOnConnection];
+}
+
++ (PNResponse *)errorResponseWithMessage:(NSString *)errorMessage {
+    
+    NSData *message = [NSJSONSerialization dataWithJSONObject:@{kPNResponseErrorMessageKey:errorMessage}
+                                                      options:(NSJSONWritingOptions)0 error:nil];
+    
+    
+    return [[[self class] alloc] initWithContent:message size:[message length] code:200 lastResponseOnConnection:NO];
 }
 
 

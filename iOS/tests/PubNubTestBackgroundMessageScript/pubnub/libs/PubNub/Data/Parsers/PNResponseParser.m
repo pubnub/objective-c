@@ -11,16 +11,16 @@
 #import "PNPushNotificationsEnabledChannelsParser.h"
 #import "PNClientStateUpdateResponseParser.h"
 #import "PNActionResponseParser+Protected.h"
+#import "PNChannelHistoryParser+Protected.h"
 #import "PNOperationStatusResponseParser.h"
 #import "PNErrorResponseParser+Protected.h"
-#import "PNClientStateResponseParser.h"
 #import "PNChannelEventsResponseParser.h"
+#import "PNClientStateResponseParser.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNTimeTokenResponseParser.h"
 #import "PNWhereNowResponseParser.h"
 #import "PNHereNowResponseParser.h"
 #import "PNActionResponseParser.h"
-#import "PNChannelHistoryParser.h"
 #import "PNErrorResponseParser.h"
 #import "PNResponse+Protected.h"
 
@@ -67,6 +67,16 @@
 #pragma mark - Class methods
 
 + (PNResponseParser *)parserForResponse:(PNResponse *)response {
+    
+    if ([response.response isKindOfClass:[NSArray class]] && [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.messageHistoryCallback] &&
+        [PNChannelHistoryParser isErrorResponse:response]) {
+        
+        if ([PNChannelHistoryParser errorMessage:response]) {
+            
+            response = [PNResponse errorResponseWithMessage:[PNChannelHistoryParser errorMessage:response]];
+        }
+    }
+    
 
     return [[[self classForResponse:response] alloc] initWithResponse:response];
 }
@@ -96,7 +106,7 @@
                 // Check whether there is 3 elements in response array or not (depending on whether two last elements
                 // is number or not, this will mean whether response is for history or not).
                 if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.messageHistoryCallback]) {
-
+                    
                     parserClass = [PNChannelHistoryParser class];
                 }
                 else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.subscriptionCallback]) {

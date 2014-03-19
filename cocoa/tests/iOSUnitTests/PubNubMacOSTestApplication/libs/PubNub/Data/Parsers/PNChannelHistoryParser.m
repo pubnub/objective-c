@@ -7,7 +7,7 @@
 //
 
 
-#import "PNChannelHistoryParser.h"
+#import "PNChannelHistoryParser+Protected.h"
 #import "PNMessagesHistory+Protected.h"
 #import "PNMessage+Protected.h"
 #import "PNResponse.h"
@@ -18,33 +18,6 @@
 #error PubNub channel history response parser must be built with ARC.
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
-
-
-#pragma mark Static
-
-// Stores reference on index under which messages
-// list is stored
-static NSUInteger const kPNResponseMessagesListElementIndex = 0;
-
-// Stores reference on index under which start date is stored
-static NSUInteger const kPNResponseStartDateElementIndex = 1;
-
-// Stores reference on index under element end date is stores
-static NSUInteger const kPNResponseEndDateElementIndexForEvent = 2;
-
-
-#pragma mark - Private interface methods
-
-@interface PNChannelHistoryParser ()
-
-
-#pragma mark - Properties
-
-// Stores reference on history data object
-@property (nonatomic, strong) PNMessagesHistory *history;
-
-
-@end
 
 
 #pragma mark - Public interface methods
@@ -62,6 +35,28 @@ static NSUInteger const kPNResponseEndDateElementIndexForEvent = 2;
     return nil;
 }
 
++ (BOOL)isErrorResponse:(PNResponse *)response {
+    
+    NSArray *data = (NSArray *)response.response;
+    
+    return (([data count] - 1) == PNChannelHistoryResponseEndDate &&
+            [[data objectAtIndex:PNChannelHistoryResponseStartDate] intValue] == 0 &&
+            [[data objectAtIndex:PNChannelHistoryResponseEndDate] intValue] == 0);
+}
+
++ (NSString *)errorMessage:(PNResponse *)response {
+    
+    NSString *errorMessage = nil;
+    if ([self isErrorResponse:response]) {
+        
+        NSArray *data = (NSArray *)response.response;
+        errorMessage = [(NSArray *)[data objectAtIndex:PNChannelHistoryResponseMessagesList] lastObject];
+    }
+    
+    
+    return errorMessage;
+}
+
 
 #pragma mark - Instance methods
 
@@ -71,12 +66,12 @@ static NSUInteger const kPNResponseEndDateElementIndexForEvent = 2;
     if ((self = [super init])) {
 
         NSArray *responseData = response.response;
-        NSNumber *startTimeToken = [responseData objectAtIndex:kPNResponseStartDateElementIndex];
-        NSNumber *endTimeToken = [responseData objectAtIndex:kPNResponseEndDateElementIndexForEvent];
+        NSNumber *startTimeToken = [responseData objectAtIndex:PNChannelHistoryResponseStartDate];
+        NSNumber *endTimeToken = [responseData objectAtIndex:PNChannelHistoryResponseEndDate];
         self.history = [PNMessagesHistory historyBetween:[PNDate dateWithToken:startTimeToken]
                                               andEndDate:[PNDate dateWithToken:endTimeToken]];
 
-        NSArray *messages = [responseData objectAtIndex:kPNResponseMessagesListElementIndex];
+        NSArray *messages = [responseData objectAtIndex:PNChannelHistoryResponseMessagesList];
         NSMutableArray *historyMessages = [NSMutableArray arrayWithCapacity:[messages count]];
         [messages enumerateObjectsUsingBlock:^(id message, NSUInteger messageIdx, BOOL *messageEnumerator) {
 
