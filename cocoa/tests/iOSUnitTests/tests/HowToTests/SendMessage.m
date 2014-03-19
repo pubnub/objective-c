@@ -141,7 +141,7 @@
 	////	[messages addObject: @"0 \7"];
 	//	[messages addObject: @"\\"];
 	[messages addObject: @" sl asdfas fdas"];
-	for( unsigned char i=0; i<255; i++ )
+	for( unsigned char i=34; i<255; i++ )
 		[messages addObject: [NSString stringWithFormat: @"[\"%d %c %c%c%c %d\"]", (int)i, i, i, i, i, (int)i]];
 	//	NSString *str = @"";
 	//	for( int i=4000; i<5000; i++ )

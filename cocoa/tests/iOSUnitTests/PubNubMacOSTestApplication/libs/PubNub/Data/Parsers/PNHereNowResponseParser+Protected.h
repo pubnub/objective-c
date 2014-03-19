@@ -6,6 +6,7 @@
  @copyright © 2009-13 PubNub Inc.
  */
 
+#import "PNHereNowResponseParser.h"
 
 #pragma mark Static
 
