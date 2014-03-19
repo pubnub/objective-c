@@ -118,20 +118,18 @@
         authorizationKey = [NSString stringWithFormat:@"auth=%@", authorizationKey];
 	if( authorizationKey.length > 0 )
 		STAssertTrue( [string rangeOfString: authorizationKey].location != NSNotFound, @"");
+// GET /v2/presence/sub-key/demo/channel/channel/heartbeat?uuid=1b72581b-c2ab-4705-94e4-1c96c74bcf99&heartbeat=22&auth=a3 HTTP/1.1\r\nHost: pubsub.pubnub.com\r\nV: 3.6.1\r\nUser-Agent: Obj-C-iOS\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate\r\n
+    //@/v2/presence/sub-key/demo/channel/channel/heartbeat?uuid=1b72581b-c2ab-4705-94e4-1c96c74bcf99&pnexpires=22&auth=a3"	0x08ed24d0
 
 	if( [request isKindOfClass: [PNHeartbeatRequest class]] == YES ) {
-//	if( [string rangeOfString: @"/heartbeat?uuid="].location != NSNotFound ) {
-//		NSString *state = @"";
-//		if( [request performSelector:@selector(state)] )
-//			state = [NSString stringWithFormat:@"&state=%@", [[PNJSONSerialization stringFromJSONObject: [request performSelector:@selector(state)]] percentEscapedString]];
-		NSString *expect = [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/heartbeat?uuid=%@&pnexpires=%d&auth=%@",
+
+		NSString *expect = [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/heartbeat?uuid=%@&heartbeat=%d&auth=%@",
 				[[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
 				@"channel",
 				[request performSelector: @selector(clientIdentifier)], presenceInterval*2,
 //				([request authorizationField] ? [NSString stringWithFormat:@"&%@", [request authorizationField]] : @"")
 				[PubNub sharedInstance].configuration.authorizationKey	];
 		STAssertTrue( [string rangeOfString: expect].location != NSNotFound, @"string\n%@\nexpect\n%@", string, expect);
-
 		NSTimeInterval interval = -[dateLastHeartbeat timeIntervalSinceNow];
 		NSLog(@"dateLastHeartbeat %@, now %@", dateLastHeartbeat, [NSDate date]);
 		STAssertTrue( interval > presenceInterval-2 && interval < presenceInterval+2, @"interval %f, presenceInterval %d", interval, presenceInterval);

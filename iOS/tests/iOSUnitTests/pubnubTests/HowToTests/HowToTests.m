@@ -341,8 +341,8 @@
 	[self t35RequestServerTimeTokenWithCompletionBlock];
 	[self t40SendMessage];
 	[self t45SendMessageBig];
-	[self t50RequestHistoryForChannel];
-	[self t55RequestHistoryReverse];
+//	[self t50RequestHistoryForChannel];
+//	[self t55RequestHistoryReverse];
 	[self t60SubscribeOnChannelsByTurns];
 	[self t900UnsubscribeFromChannels];
 	[self t910removeClientChannelSubscriptionStateObserver];
