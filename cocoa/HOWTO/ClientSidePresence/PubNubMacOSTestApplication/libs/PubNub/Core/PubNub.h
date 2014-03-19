@@ -1398,7 +1398,7 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
  
  @see +subscribeOnChannel:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
++ (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannel:' instead.");
 
 /**
  Subscribe client to one more channel.
@@ -1518,7 +1518,7 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
  @see +subscribeOnChannel:withPresenceEvent:
  */
 + (void)subscribeOnChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent
-andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
+andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannel:withCompletionHandlingBlock:' instead.");
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence to channels on which
@@ -2032,7 +2032,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +subscribeOnChannels:withPresenceEvent:andCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
++ (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannels:' instead.");
 
 /**
  Subscribe client to the set of new channels.
@@ -2152,7 +2152,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @see +subscribeOnChannels:withPresenceEvent:
  */
 + (void)subscribeOnChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannels:withCompletionHandlingBlock:' instead.");
 
 /**
  Unsubscribe client from one channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -2401,7 +2401,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +unsubscribeFromChannel:withPresenceEvent:withCompletionHandlingBlock:
  */
-+ (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
++ (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" Use '+unsubscribeFromChannel:' instead.");
 
 /**
  Unsubscribe client from one channel.
@@ -2503,7 +2503,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @see +unsubscribeFromChannel:withPresenceEvent:
  */
 + (void)unsubscribeFromChannel:(PNChannel *)channel withPresenceEvent:(BOOL __unused)withPresenceEvent
-    andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
+    andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" Use '+unsubscribeFromChannel:withCompletionHandlingBlock:' instead.");
 
 /**
  Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -2732,7 +2732,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @see +unsubscribeFromChannels:withPresenceEvent:withCompletionHandlingBlock:
  */
-+ (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
++ (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent DEPRECATED_MSG_ATTRIBUTE(" Use '+unsubscribeFromChannels:' instead.");
 
 /**
  Unsubscribe client from set of channels.
@@ -2819,7 +2819,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @see +unsubscribeFromChannels:withPresenceEvent:
  */
 + (void)unsubscribeFromChannels:(NSArray *)channels withPresenceEvent:(BOOL __unused)withPresenceEvent
-     andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" This feature not supported anymore and this method will be removed in future releases.");
+     andCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock DEPRECATED_MSG_ATTRIBUTE(" Use '+unsubscribeFromChannels:withCompletionHandlingBlock:' instead.");
 
 
 #pragma mark - APNS management
