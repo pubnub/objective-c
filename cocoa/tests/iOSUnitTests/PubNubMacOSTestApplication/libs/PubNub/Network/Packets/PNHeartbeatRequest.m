@@ -85,10 +85,10 @@
 
 - (NSString *)resourcePath {
 
-    NSString *pnexpiresValue = @"";
+    NSString *heartbeatValue = @"";
     if ([PubNub sharedInstance].configuration.presenceHeartbeatTimeout > 0.0f) {
-
-        pnexpiresValue = [NSString stringWithFormat:@"&pnexpires=%d", [PubNub sharedInstance].configuration.presenceHeartbeatTimeout];
+        
+        heartbeatValue = [NSString stringWithFormat:@"&heartbeat=%d", [PubNub sharedInstance].configuration.presenceHeartbeatTimeout];
     }
 
     NSString *state = @"";
@@ -101,7 +101,7 @@
     return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/heartbeat?uuid=%@%@%@%@",
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      self.clientIdentifier, state, pnexpiresValue,
+                                      self.clientIdentifier, state, heartbeatValue,
                                       ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @"")];
 }
 
