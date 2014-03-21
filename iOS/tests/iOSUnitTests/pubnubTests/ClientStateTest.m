@@ -162,6 +162,11 @@
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
 	[self requestClientStateExpectState: clientStateMerged];
 
+	[self updateClientStateBlock: clientState1 isExpectError: NO expectState: clientState1Nil];
+	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
+	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
+	[self requestClientStateExpectState: clientState2];
+
 	[self requestParticipantChannelsList];
 	[self requestParticipantsListWithClientIdentifiersCheckState: clientStateMerged];
 	[self requestParticipantsListForChannelExpectState: clientState1];
@@ -172,6 +177,7 @@
 	[self updateClientState: clientState1];
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
+	[self requestClientStateExpectState: clientStateMerged];
 
 	[self requestParticipantChannelsList];
 

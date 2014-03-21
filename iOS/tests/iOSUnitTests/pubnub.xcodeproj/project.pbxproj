@@ -113,6 +113,7 @@
 		5A9461C218A16699004190FB /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9461C118A16699004190FB /* PNDateTest.m */; };
 		5A955F801835154C00AB2156 /* SendBigMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A955F7F1835154C00AB2156 /* SendBigMessage.m */; };
 		5A96274018437E8A00258236 /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A96273F18437E8A00258236 /* OversizedJSON.m */; };
+		5ABA90A718DC777D00414EF1 /* PNMessagingChannel+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABA90A618DC777D00414EF1 /* PNMessagingChannel+Test.m */; };
 		5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */; };
 		5ABFBCC5182A8CA8008A0DDF /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */; };
 		5AC5FBCC1817D336001EE9D8 /* AbbreviatedPresenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AC5FBCB1817D336001EE9D8 /* AbbreviatedPresenceTest.m */; };
@@ -430,6 +431,8 @@
 		5A9461C118A16699004190FB /* PNDateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNDateTest.m; path = pubnubTests/PNDateTest.m; sourceTree = SOURCE_ROOT; };
 		5A955F7F1835154C00AB2156 /* SendBigMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendBigMessage.m; sourceTree = "<group>"; };
 		5A96273F18437E8A00258236 /* OversizedJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OversizedJSON.m; sourceTree = "<group>"; };
+		5ABA90A518DC777D00414EF1 /* PNMessagingChannel+Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNMessagingChannel+Test.h"; sourceTree = "<group>"; };
+		5ABA90A618DC777D00414EF1 /* PNMessagingChannel+Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PNMessagingChannel+Test.m"; sourceTree = "<group>"; };
 		5ABE6C40182B9F1800204DC6 /* TestSemaphor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSemaphor.h; sourceTree = "<group>"; };
 		5ABE6C41182B9F1800204DC6 /* TestSemaphor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSemaphor.m; sourceTree = "<group>"; };
 		5ABFBCC4182A8CA8008A0DDF /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeCommand.m; path = TimeCommand/TimeCommand.m; sourceTree = "<group>"; };
@@ -980,6 +983,8 @@
 				5AD394BC18280F390057443C /* ApnsToken.m */,
 				5A8A4A5218D3100000A08A28 /* PNServiceChannel+Test.h */,
 				5A8A4A5318D3100000A08A28 /* PNServiceChannel+Test.m */,
+				5ABA90A518DC777D00414EF1 /* PNMessagingChannel+Test.h */,
+				5ABA90A618DC777D00414EF1 /* PNMessagingChannel+Test.m */,
 				5A8A4A5418D3100000A08A28 /* SendMessage.m */,
 				5A8A4A5518D3100000A08A28 /* SubscribeLeaveTest.m */,
 				5A8A4A3218D30FF500A08A28 /* ClientStateTest.m */,
@@ -1520,6 +1525,7 @@
 				5A8A4A5118D30FF500A08A28 /* PNResponseTest.m in Sources */,
 				5A8A4A4D18D30FF500A08A28 /* PNPushNotificationsEnabledChannelsRequestTest.m in Sources */,
 				5A8A4A6718D3101E00A08A28 /* MyPNRequestsQueue.m in Sources */,
+				5ABA90A718DC777D00414EF1 /* PNMessagingChannel+Test.m in Sources */,
 				5A8A4A4B18D30FF500A08A28 /* PNNetworkHelperTest.m in Sources */,
 				5ADD3088189AADFD00688B3E /* ClientIdentifier.m in Sources */,
 				5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */,

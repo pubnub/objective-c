@@ -64,7 +64,8 @@
 }
 
 -(void)setClientIdentifier {
-	lastClientIdentifier = [NSString stringWithFormat: @"%@", [NSDate date]];
+	lastClientIdentifier = [NSString stringWithFormat: @"ID_%@", [NSDate date]];
+	NSLog(@"set lastClientIdentifier %@", lastClientIdentifier);
 	[PubNub setClientIdentifier: lastClientIdentifier shouldCatchup: YES];
 }
 
@@ -101,8 +102,11 @@
 		[self performSelector: @selector(errorSelectorCountDidSend)];
 	if( countSubscribred < 1 )
 		[self performSelector: @selector(errorSelectorCountSubscribed)];
-	if( [lastClientIdentifier isEqualToString: [PubNub clientIdentifier]] != YES )
+	if( [lastClientIdentifier isEqualToString: [PubNub clientIdentifier]] != YES ) {
+		NSLog(@"lastClientIdentifier %@", lastClientIdentifier);
+		NSLog(@"[PubNub clientIdentifier] %@", [PubNub clientIdentifier]);
 		[self performSelector: @selector(errorSelectorClientIdentifier)];
+	}
 	countNewMessage = 0;
 	countSession++;
 	isWillRestoreSubscriptionOnChannelsDelegate = NO;
