@@ -63,6 +63,15 @@
 
 	presenceInterval = 31;
 	[self check];
+
+	presenceInterval = 51;
+	[self check];
+
+	presenceInterval = 91;
+	[self check];
+
+	presenceInterval = 123;
+	[self check];
 }
 
 -(void)check {
@@ -98,7 +107,7 @@
 	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-	for( int j=0; j<70; j++ )
+	for( int j=0; j<presenceInterval*2+10; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 	STAssertTrue( countPresence >= 2, @"countPresence %d (interval %d)", countPresence, presenceInterval);
 	STAssertTrue( countHeartbeat >= 2, @"countPresence %d (interval %d)", countHeartbeat, presenceInterval);

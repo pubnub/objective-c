@@ -44,7 +44,13 @@
                   Identifier = "ClientIdentifier">
                </Test>
                <Test
+                  Identifier = "ClientStateTest">
+               </Test>
+               <Test
                   Identifier = "Configuration">
+               </Test>
+               <Test
+                  Identifier = "HeartbeatTest">
                </Test>
                <Test
                   Identifier = "HistoryPamTest">
@@ -71,6 +77,15 @@
                   Identifier = "HowToTests/test55RequestHistoryReverse">
                </Test>
                <Test
+                  Identifier = "HowToTestsCompressed">
+               </Test>
+               <Test
+                  Identifier = "NSData_PNAdditionsTest">
+               </Test>
+               <Test
+                  Identifier = "NSString_PNAdditionTest">
+               </Test>
+               <Test
                   Identifier = "OversizedJSON">
                </Test>
                <Test
@@ -83,6 +98,9 @@
                   Identifier = "PNAccessRightOptionsTest">
                </Test>
                <Test
+                  Identifier = "PNAccessRightsAuditRequestTest">
+               </Test>
+               <Test
                   Identifier = "PNAccessRightsCollectionTest">
                </Test>
                <Test
@@ -93,6 +111,9 @@
                </Test>
                <Test
                   Identifier = "PNBaseRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNChangeAccessRightsRequestTest">
                </Test>
                <Test
                   Identifier = "PNChannelConstructor">
@@ -140,6 +161,9 @@
                   Identifier = "PNHereNowResponseParserTest">
                </Test>
                <Test
+                  Identifier = "PNJSONSerializationTest">
+               </Test>
+               <Test
                   Identifier = "PNLatencyMeasureRequestTest">
                </Test>
                <Test
@@ -152,7 +176,19 @@
                   Identifier = "PNMessagePostRequestTest">
                </Test>
                <Test
+                  Identifier = "PNMessageTest">
+               </Test>
+               <Test
+                  Identifier = "PNMessagesHistoryTest">
+               </Test>
+               <Test
                   Identifier = "PNMessagingChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNNetworkHelperTest">
+               </Test>
+               <Test
+                  Identifier = "PNObservationCenterTest">
                </Test>
                <Test
                   Identifier = "PNOperationStatusResponseParserTest">
@@ -164,13 +200,28 @@
                   Identifier = "PNPushNotificationsEnabledChannelsParserTest">
                </Test>
                <Test
+                  Identifier = "PNPushNotificationsEnabledChannelsRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNPushNotificationsRemoveRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNPushNotificationsStateChangeRequestTest">
+               </Test>
+               <Test
                   Identifier = "PNReachabilityTest">
+               </Test>
+               <Test
+                  Identifier = "PNRequestsQueueTest">
                </Test>
                <Test
                   Identifier = "PNResponseDeserializeTest">
                </Test>
                <Test
                   Identifier = "PNResponseParserTest">
+               </Test>
+               <Test
+                  Identifier = "PNResponseTest">
                </Test>
                <Test
                   Identifier = "PNServiceChannelTest">
@@ -192,6 +243,12 @@
                </Test>
                <Test
                   Identifier = "SendBigMessage">
+               </Test>
+               <Test
+                  Identifier = "SendMessage">
+               </Test>
+               <Test
+                  Identifier = "SubscribeLeaveTest">
                </Test>
                <Test
                   Identifier = "TimeCommand">
