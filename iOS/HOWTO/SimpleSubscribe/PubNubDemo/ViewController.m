@@ -58,7 +58,7 @@
     }];
 
 
-    PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com"  publishKey:@"demo" subscribeKey:@"demo" secretKey:@"demo"];
+    PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"  publishKey:@"demo" subscribeKey:@"demo" secretKey:@"demo"];
 
     // Set the presence heartbeat to 5s
     myConfig.presenceHeartbeatTimeout = 5;
@@ -77,11 +77,11 @@
             NSMutableDictionary *zzState = [[NSMutableDictionary alloc] init];
 
             // then subscribe on channel zz
-            PNChannel *myChannel = [PNChannel channelWithName:@"zz" shouldObservePresence:YES];
+            PNChannel *myChannel = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
 
 
             [zzState setObject:@"demo app started" forKey:@"appEvent"];
-            [currentState setObject:zzState forKey:@"zz"];
+            [currentState setObject:zzState forKey:@"a"];
 
 
             [PubNub subscribeOnChannel:myChannel withClientState:currentState];
