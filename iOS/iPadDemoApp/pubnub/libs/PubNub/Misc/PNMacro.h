@@ -317,16 +317,18 @@ static void PNLog(PNLogLevels level, id sender, ...);
 void PNLog(PNLogLevels level, id sender, ...) {
 
     __block __unsafe_unretained id weakSender = sender;
-    NSString *formattedLog = nil;
 
     va_list args;
     va_start(args, sender);
+#if PNLOG_LOGGING_ENABLED == 1
     NSString *logFormatString = va_arg(args, NSString*);
     NSString *formattedLogString = [[NSString alloc] initWithFormat:logFormatString arguments:args];
+#endif
     va_end(args);
-
-    formattedLog = [NSString stringWithFormat:@"%@ (%p) %%@", NSStringFromClass([weakSender class]), weakSender];
+#if PNLOG_LOGGING_ENABLED == 1
+    NSString *formattedLog = [NSString stringWithFormat:@"%@ (%p) %%@", NSStringFromClass([weakSender class]), weakSender];
     NSString *additionalData = nil;
+#endif
 
 
     if (PNLoggingEnabledForLevel(level)) {
@@ -334,29 +336,34 @@ void PNLog(PNLogLevels level, id sender, ...) {
         switch (level) {
 
             case PNLogDelegateLevel:
-
+#if PNLOG_LOGGING_ENABLED == 1
                 additionalData = @"{DELEGATE}";
+#endif
                 break;
             case PNLogDeserializerInfoLevel:
             case PNLogConnectionLayerInfoLevel:
 			case PNLogConnectionLayerHTTPLoggingLevel:
             case PNLogCommunicationChannelLayerInfoLevel:
-
+#if PNLOG_LOGGING_ENABLED == 1
                 additionalData = @"{INFO}";
+#endif
                 break;
             case PNLogDeserializerErrorLevel:
             case PNLogConnectionLayerErrorLevel:
             case PNLogCommunicationChannelLayerErrorLevel:
-
+#if PNLOG_LOGGING_ENABLED == 1
                 additionalData = @"{ERROR}";
+#endif
                 break;
             case PNLogCommunicationChannelLayerWarnLevel:
-
+#if PNLOG_LOGGING_ENABLED == 1
                 additionalData = @"{WARN}";
+#endif
                 break;
             default:
-
+#if PNLOG_LOGGING_ENABLED == 1
                 additionalData = @"";
+#endif
                 break;
         }
     }
