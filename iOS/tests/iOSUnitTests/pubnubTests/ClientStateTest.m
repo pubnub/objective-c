@@ -162,18 +162,20 @@
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
 	[self requestClientStateExpectState: clientStateMerged];
 
-	[self updateClientStateBlock: clientState1 isExpectError: NO expectState: clientState1Nil];
+	clientStateExpect = clientState2;
+	[self updateClientStateBlock: clientState1Nil isExpectError: NO expectState: clientState2];
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
 	[self requestClientStateExpectState: clientState2];
 
 	[self requestParticipantChannelsList];
-	[self requestParticipantsListWithClientIdentifiersCheckState: clientStateMerged];
-	[self requestParticipantsListForChannelExpectState: clientState1];
-	[self requestClientStateExpectState: clientState1];
+	[self requestParticipantsListWithClientIdentifiersCheckState: clientState2];
+	[self requestParticipantsListForChannelExpectState: clientState2];
+	[self requestClientStateExpectState: clientState2];
 
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
+	clientStateExpect = clientStateMerged;
 	[self updateClientState: clientState1];
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
@@ -187,6 +189,7 @@
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == 0, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == pnChannels.count, @"");
 
+	[self updateClientStateBlock: clientState2Nil isExpectError: NO expectState: clientState1];
 	[self requestClientStateExpectState: clientState1];
 	[self requestParticipantsListForChannelExpectState: clientState1];
 
@@ -213,7 +216,7 @@
 		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a4"];
 		configuration = [PNConfiguration defaultConfiguration];
 		configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo-36" subscribeKey:@"demo-36" secretKey: nil cipherKey: nil authorizationKey: nil];
-		configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: nil];
+//		configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: nil];
 
 		configuration.presenceHeartbeatTimeout = 200;
 		configuration.presenceHeartbeatInterval = 200;
@@ -435,6 +438,7 @@
 				PNClient *client = clients[i];
 				if( [client.identifier isEqual: [PubNub sharedInstance].clientIdentifier] == YES ) {
 					isFindId = YES;
+					NSLog(@"received client.data %@", client.data);
 					STAssertTrue( [client.data isEqual: state] == YES, @"");
 				}
 				STAssertTrue( [client.channel.name isEqual: pnChannel.name] == YES, @"");
