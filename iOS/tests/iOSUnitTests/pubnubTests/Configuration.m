@@ -216,7 +216,7 @@
 				 return;
 //			 dispatch_semaphore_signal(semaphore);
 			 PNError *error = data;
-			if( error != nil )
+			if( messageSendingState == PNMessageSendingError && error != nil )
 				STAssertTrue( error.code == kPNInvalidSubscribeOrPublishKeyError || error.code == kPNAPIAccessForbiddenError || error.code == kPNPresenceAPINotAvailableError, @"invalid error %@", error);
 		 }];
 		for( int i=0; i<10; i++ )

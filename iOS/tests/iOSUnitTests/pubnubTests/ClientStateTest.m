@@ -189,6 +189,7 @@
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == 0, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == pnChannels.count, @"");
 
+	clientStateExpect = clientState1;
 	[self updateClientStateBlock: clientState2Nil isExpectError: NO expectState: clientState1];
 	[self requestClientStateExpectState: clientState1];
 	[self requestParticipantsListForChannelExpectState: clientState1];
@@ -218,8 +219,8 @@
 		configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo-36" subscribeKey:@"demo-36" secretKey: nil cipherKey: nil authorizationKey: nil];
 //		configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: nil];
 
-		configuration.presenceHeartbeatTimeout = 200;
-		configuration.presenceHeartbeatInterval = 200;
+		configuration.presenceHeartbeatTimeout = 20;
+		configuration.presenceHeartbeatInterval = 20;
 		[PubNub setConfiguration: configuration];
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
 			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);

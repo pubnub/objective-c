@@ -55,6 +55,9 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presenceEvent:) name: @"presenceEvent" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
 
+	presenceInterval = 5;
+	[self check];
+
 	presenceInterval = /*kPNHeartbeatRequestTimeoutOffset + */11;
 	[self check];
 
