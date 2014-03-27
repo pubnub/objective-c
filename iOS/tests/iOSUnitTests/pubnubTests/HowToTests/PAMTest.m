@@ -345,7 +345,7 @@
 		[self grantWriteRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
 	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: NO canWriteExpect: YES];
 	for( int i=0; i<pnChannels.count; i++ )
-		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 1 client: authorizationKey];
+		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 2 client: authorizationKey];
 	[self isChannelsClientAuthorizationKey: authorizationKey canReadExpect: YES canWriteExpect: YES];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
 	[self sendMessageIsExpectError: NO];
@@ -361,7 +361,7 @@
 	[self sendMessageIsExpectError: YES];
 	[self checkNewMessageIsExpect0: YES];
 	for( int i=0; i<pnChannels.count; i++ )
-		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 2];
+		[self grantAllAccessRightsForChannel: pnChannels[i] forPeriod: 3];
 	[self subscribeOnChannels: pnChannels isExpectError: NO];
 	[self checkNewMessageIsExpect0: YES];
 	[self sendMessageIsExpectError: NO];
