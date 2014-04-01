@@ -4,7 +4,10 @@ Pod::Spec.new do |s|
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'Sergey Mamontov' => 'support@pubnub.com',
-    'Vadim Osovets' => 'support@pubnub.com'
+    'Vadim Osovets' => 'support@pubnub.com',
+    'Valentin Tuller' => 'support@pubnub.com',
+    'PubNub, Inc.' => 'support@pubnub.com'
+
   }
   s.source = {
     :git => 'https://github.com/pubnub/objective-c.git',
