@@ -10,8 +10,6 @@
 #import "PNMessagePostRequest.h"
 #import "PNMessagePostRequest+Protected.h"
 
-#import <OCMock/OCMock.h>
-
 #import "PNMessage.h"
 
 typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
@@ -55,7 +53,7 @@ typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
 
 
 #pragma mark - States tests
-
+/*
 - (void)testInitWithMessageMock {
     id mockMessage = [OCMockObject mockForClass:[PNMessage class]];
     
@@ -69,7 +67,7 @@ typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
     
     [mockRequest verify];
 }
-
+*/
 #pragma mark - Interaction tests
 
 //- (void)testPostMessageRequestWithMessage {

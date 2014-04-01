@@ -9,7 +9,6 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "PNChannel.h"
 #import "PNChannel+Protected.h"
-#import <OCMock/OCMock.h>
 #import "PNChannelPresence.h"
 #import "PNChannelPresence+Protected.h"
 #import "PNChannelPresence.h"

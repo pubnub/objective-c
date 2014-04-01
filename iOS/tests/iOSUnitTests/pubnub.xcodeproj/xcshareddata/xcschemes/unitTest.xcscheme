@@ -50,6 +50,9 @@
                   Identifier = "Configuration">
                </Test>
                <Test
+                  Identifier = "HeartbeatTest">
+               </Test>
+               <Test
                   Identifier = "HistoryPamTest">
                </Test>
                <Test

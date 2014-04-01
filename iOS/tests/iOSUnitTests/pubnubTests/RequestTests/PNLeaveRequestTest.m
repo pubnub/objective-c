@@ -10,7 +10,6 @@
 #import "PNLeaveRequest.h"
 #import "PNLeaveRequest+Protected.h"
 
-#import <OCMock/OCMock.h>
 
 @implementation PNLeaveRequestTest
 

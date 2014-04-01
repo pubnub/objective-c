@@ -11,8 +11,6 @@
 
 #import "PNChannel.h"
 
-#import <OCMock/OCMock.h>
-
 @interface PNHereNowRequest ()
 
 @property (nonatomic, strong) PNChannel *channel;
@@ -34,7 +32,7 @@
 }
 
 #pragma mark - States tests
-
+/*
 - (void)testInitWithChannel {
     
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
@@ -49,7 +47,7 @@
     
     [mockRequest verify];
 }
-
+*/
 #pragma mark - Interaction tests
 
 - (void)testWhoNowRequestForChannel {

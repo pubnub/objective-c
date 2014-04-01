@@ -10,8 +10,6 @@
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
 
-#import <OCMock/OCMock.h>
-
 #import "PubNub.h"
 #import "PubNub+Protected.h"
 #import "PNConfiguration.h"
@@ -65,7 +63,7 @@
 }
 
 // Protected methods
-
+/*
 - (void)testReset {
     id mockBaseRequest = [OCMockObject partialMockForObject:[[PNBaseRequest alloc] init]];
     [[mockBaseRequest expect] setRetryCount:0];
@@ -76,7 +74,7 @@
     
     [mockBaseRequest verify];
 }
-
+*/
 - (void)testAllowedRetryCount {
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
     
@@ -92,6 +90,7 @@
     STAssertTrue([baseRequest retryCount] == 1, @"By default retryCount should be 0");
 }
 
+/*
 - (void)testCanRetry {
     id mockBaseRequest = [OCMockObject partialMockForObject:[[PNBaseRequest alloc] init]];
     [[mockBaseRequest expect] retryCount];
@@ -101,7 +100,7 @@
     
     [mockBaseRequest verify];
 }
-
+*/
 //- (void)testHTTPPayload {
 //    PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
 //    

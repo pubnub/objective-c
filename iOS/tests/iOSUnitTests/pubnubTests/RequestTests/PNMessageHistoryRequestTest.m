@@ -10,8 +10,6 @@
 #import "PNMessageHistoryRequest.h"
 #import "PNMessageHistoryRequest+Protected.h"
 
-#import <OCMock/OCMock.h>
-
 #import "PNDate.h"
 #import "PNChannel.h"
 
@@ -43,7 +41,7 @@
 #pragma mark - States tests
 
 
-
+/*
 - (void)testInitForChannelMock {
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
     
@@ -63,6 +61,7 @@
     
     [mockRequest verify];
 }
+ */
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 -(void)testInitForChannel {
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];

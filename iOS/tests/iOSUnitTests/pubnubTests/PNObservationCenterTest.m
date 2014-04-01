@@ -7,7 +7,7 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import <OCMock/OCMock.h>
+//#import <OCMock/OCMock.h>
 #import "PNObservationCenter.h"
 #import "PNObservationCenter+Protected.h"
 

@@ -9,7 +9,6 @@
 #import "PNSubscribeRequestTest.h"
 #import "PNSubscribeRequest.h"
 #import "PNSubscribeRequest+Protected.h"
-#import <OCMock/OCMock.h>
 #import "PNChannel.h"
 #import "PubNub.h"
 #import "PubNub+Protected.h"
