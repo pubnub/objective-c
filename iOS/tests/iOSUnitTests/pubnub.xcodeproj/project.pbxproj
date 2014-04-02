@@ -12,6 +12,12 @@
 		5A198E891815410400D20005 /* TimeOutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */; };
 		5A198E931815884500D20005 /* CatchupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E921815884500D20005 /* CatchupTest.m */; };
 		5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E97181593EC00D20005 /* ChangingChannels.m */; };
+		5A1D4B5318EC0D4E005AB11C /* OCMock.framework in Resources */ = {isa = PBXBuildFile; fileRef = 5A65FDD418EB524200FFEC42 /* OCMock.framework */; };
+		5A1D4B5418EC1430005AB11C /* PNReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */; };
+		5A1D4B5518EC1579005AB11C /* PNConnectionChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C10D174FDA7D00F82D09 /* PNConnectionChannelTest.m */; };
+		5A1D4B5618EC1590005AB11C /* PNConnectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C10E174FDA7D00F82D09 /* PNConnectionTest.m */; };
+		5A1D4B5718EC15A8005AB11C /* PNMessagingChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0F9174FDA7D00F82D09 /* PNMessagingChannelTest.m */; };
+		5A1D4B5818EC1793005AB11C /* PNServiceChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C112174FDA7D00F82D09 /* PNServiceChannelTest.m */; };
 		5A3A05801823EE18009CF68B /* PNChannelConstructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */; };
 		5A4826D718632BBF008370E2 /* ChannelLimitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4826D618632BBF008370E2 /* ChannelLimitTest.m */; };
 		5A4ED25718A51DB8002C7E8D /* HowToTestsCompressed.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */; };
@@ -48,6 +54,8 @@
 		5A65FDC818EB364400FFEC42 /* PNLatencyMeasureRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C100174FDA7D00F82D09 /* PNLatencyMeasureRequestTest.m */; };
 		5A65FDC918EB365000FFEC42 /* PNHereNowRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FE174FDA7D00F82D09 /* PNHereNowRequestTest.m */; };
 		5A65FDCA18EB36EC00FFEC42 /* PNCryptoHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DC83601773A8680061A76C /* PNCryptoHelperTest.m */; };
+		5A65FDCC18EB522700FFEC42 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A65FDCB18EB522700FFEC42 /* libOCMock.a */; };
+		5A65FDD518EB524200FFEC42 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A65FDD418EB524200FFEC42 /* OCMock.framework */; };
 		5A8A4A4218D30FF500A08A28 /* ClientStateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A8A4A3218D30FF500A08A28 /* ClientStateTest.m */; };
 		5A8A4A4318D30FF500A08A28 /* NSData+PNAdditionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A8A4A3318D30FF500A08A28 /* NSData+PNAdditionsTest.m */; };
 		5A8A4A4418D30FF500A08A28 /* NSNotificationCenter+AllObservers.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A8A4A3418D30FF500A08A28 /* NSNotificationCenter+AllObservers.m */; };
@@ -376,6 +384,14 @@
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
 		5A4826D618632BBF008370E2 /* ChannelLimitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelLimitTest.m; sourceTree = "<group>"; };
 		5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTestsCompressed.m; sourceTree = "<group>"; };
+		5A65FDCB18EB522700FFEC42 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCMock.a; path = pubnubTests/usr/iOS/libOCMock.a; sourceTree = "<group>"; };
+		5A65FDCE18EB523500FFEC42 /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
+		5A65FDCF18EB523500FFEC42 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
+		5A65FDD018EB523500FFEC42 /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
+		5A65FDD118EB523500FFEC42 /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
+		5A65FDD218EB523500FFEC42 /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
+		5A65FDD318EB523500FFEC42 /* OCMockRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockRecorder.h; sourceTree = "<group>"; };
+		5A65FDD418EB524200FFEC42 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = pubnubTests/usr/OSX/OCMock.framework; sourceTree = "<group>"; };
 		5A8A4A3218D30FF500A08A28 /* ClientStateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClientStateTest.m; path = pubnubTests/ClientStateTest.m; sourceTree = SOURCE_ROOT; };
 		5A8A4A3318D30FF500A08A28 /* NSData+PNAdditionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+PNAdditionsTest.m"; path = "pubnubTests/NSData+PNAdditionsTest.m"; sourceTree = SOURCE_ROOT; };
 		5A8A4A3418D30FF500A08A28 /* NSNotificationCenter+AllObservers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSNotificationCenter+AllObservers.m"; path = "pubnubTests/NSNotificationCenter+AllObservers.m"; sourceTree = SOURCE_ROOT; };
@@ -735,6 +751,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A65FDD518EB524200FFEC42 /* OCMock.framework in Frameworks */,
 				5AFDFD5418EACC2B004FDD28 /* SenTestingKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -767,6 +784,7 @@
 				96831B6A17500139002F150F /* QuartzCore.framework in Frameworks */,
 				96831B6B1750013B002F150F /* libz.1.2.5.dylib in Frameworks */,
 				96831B6C17500171002F150F /* CoreGraphics.framework in Frameworks */,
+				5A65FDCC18EB522700FFEC42 /* libOCMock.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -799,6 +817,20 @@
 			name = PNChannelConstructor;
 			path = ../../../pubnubTests;
 			sourceTree = "<group>";
+		};
+		5A65FDCD18EB523500FFEC42 /* OCMock */ = {
+			isa = PBXGroup;
+			children = (
+				5A65FDCE18EB523500FFEC42 /* NSNotificationCenter+OCMAdditions.h */,
+				5A65FDCF18EB523500FFEC42 /* OCMArg.h */,
+				5A65FDD018EB523500FFEC42 /* OCMConstraint.h */,
+				5A65FDD118EB523500FFEC42 /* OCMock.h */,
+				5A65FDD218EB523500FFEC42 /* OCMockObject.h */,
+				5A65FDD318EB523500FFEC42 /* OCMockRecorder.h */,
+			);
+			name = OCMock;
+			path = pubnubTests/usr/iOS/OCMock;
+			sourceTree = SOURCE_ROOT;
 		};
 		5A8A4A5918D3100E00A08A28 /* HeartbeatTest */ = {
 			isa = PBXGroup;
@@ -1201,6 +1233,7 @@
 		5ACC5F9218EAC98400DD6A86 /* PublicTests */ = {
 			isa = PBXGroup;
 			children = (
+				5A65FDCD18EB523500FFEC42 /* OCMock */,
 				5ABE6C3E182B9F1000204DC6 /* TestSemaphor */,
 				5A955F7E18350CB100AB2156 /* Configuration */,
 				5ABFBCC3182A8C88008A0DDF /* TimeCommand */,
@@ -1382,6 +1415,8 @@
 		79C3222B166DF847006DB535 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5A65FDD418EB524200FFEC42 /* OCMock.framework */,
+				5A65FDCB18EB522700FFEC42 /* libOCMock.a */,
 				5ACC5E3A18EAC68000DD6A86 /* CoreWLAN.framework */,
 				5ACC5E3818EAC65F00DD6A86 /* SystemConfiguration.framework */,
 				5ACC5E3618EAC63C00DD6A86 /* libz.1.2.5.dylib */,
@@ -1695,6 +1730,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A1D4B5318EC0D4E005AB11C /* OCMock.framework in Resources */,
 				5AFDFD5A18EACC2B004FDD28 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1838,6 +1874,7 @@
 				5AFDFD6F18EACE33004FDD28 /* PNSubscribeUnsubscribeTest.m in Sources */,
 				5AFDFD7318EACE53004FDD28 /* PNConnection+Test.m in Sources */,
 				5AFDFD8318EACEF8004FDD28 /* PNMessageTest.m in Sources */,
+				5A1D4B5618EC1590005AB11C /* PNConnectionTest.m in Sources */,
 				5AFDFD7218EACE50004FDD28 /* MyPNConnection.m in Sources */,
 				5A65FDAA18EB340600FFEC42 /* W_ChaosTest.m in Sources */,
 				5AFDFD8218EACEF5004FDD28 /* PNMessagesHistoryTest.m in Sources */,
@@ -1846,10 +1883,12 @@
 				5A65FDC318EB35FA00FFEC42 /* PNTimeTokenRequestTest.m in Sources */,
 				5AFDFD7818EACECF004FDD28 /* PNMessagingChannel+Test.m in Sources */,
 				5A65FDC018EB34EB00FFEC42 /* PNDateTest.m in Sources */,
+				5A1D4B5718EC15A8005AB11C /* PNMessagingChannelTest.m in Sources */,
 				5AFDFD8118EACEF2004FDD28 /* PNJSONSerializationTest.m in Sources */,
 				5A65FDBC18EB34DF00FFEC42 /* PNResponseParserTest.m in Sources */,
 				5A65FDBE18EB34E500FFEC42 /* PNHereNowResponseParserTest.m in Sources */,
 				5A65FDBD18EB34E200FFEC42 /* PNTimeTokenResponseParserTest.m in Sources */,
+				5A1D4B5418EC1430005AB11C /* PNReachabilityTest.m in Sources */,
 				5AFDFD7B18EACEE1004FDD28 /* ClientStateTest.m in Sources */,
 				5A65FDAE18EB34AC00FFEC42 /* PNAccessRightOptionsTest.m in Sources */,
 				5AFDFD6418EACCB5004FDD28 /* OversizedJSON.m in Sources */,
@@ -1897,6 +1936,8 @@
 				5A65FDB818EB34D000FFEC42 /* PNErrorTest.m in Sources */,
 				5A65FDB918EB34D300FFEC42 /* PNOperationStatusResponseParserTest.m in Sources */,
 				5A65FDC618EB362A00FFEC42 /* PNMessageHistoryRequestTest.m in Sources */,
+				5A1D4B5818EC1793005AB11C /* PNServiceChannelTest.m in Sources */,
+				5A1D4B5518EC1579005AB11C /* PNConnectionChannelTest.m in Sources */,
 				5A65FDC918EB365000FFEC42 /* PNHereNowRequestTest.m in Sources */,
 				5AFDFD6518EACCB9004FDD28 /* Swizzler.m in Sources */,
 				5AFDFD7918EACED3004FDD28 /* SendMessage.m in Sources */,
@@ -2220,6 +2261,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(PROJECT_DIR)/pubnubTests/usr/OSX",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2234,6 +2276,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "MacTest/MacTest-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(SRCROOT)/pubnubTests/usr/OSX/";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2259,6 +2302,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(PROJECT_DIR)/pubnubTests/usr/OSX",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2269,6 +2313,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "MacTest/MacTest-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(SRCROOT)/pubnubTests/usr/OSX/";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -2392,14 +2437,17 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/include\"";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/iOS\"/**";
 				INFOPLIST_FILE = "pubnubTests/pubnubTests-Info.plist";
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/lib\"";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)/pubnubTests/usr/lib\"",
+					"$(PROJECT_DIR)/pubnubTests/usr/iOS",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-force_load",
-					"\"$(SRCROOT)/pubnubTests/usr/lib/libOCMock.a\"",
+					"\"$(SRCROOT)/pubnubTests/usr/iOS/libOCMock.a\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -2419,13 +2467,16 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pubnub/pubnub-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/include\"";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/iOS\"/**";
 				INFOPLIST_FILE = "pubnubTests/pubnubTests-Info.plist";
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/pubnubTests/usr/lib\"";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)/pubnubTests/usr/lib\"",
+					"$(PROJECT_DIR)/pubnubTests/usr/iOS",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-force_load",
-					"\"$(SRCROOT)/pubnubTests/usr/lib/libOCMock.a\"",
+					"\"$(SRCROOT)/pubnubTests/usr/iOS/libOCMock.a\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
