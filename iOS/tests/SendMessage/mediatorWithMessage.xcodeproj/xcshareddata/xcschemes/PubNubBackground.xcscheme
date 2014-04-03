@@ -28,6 +28,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5A898E4E18ED8B2D004A0065"
+               BuildableName = "SendMessageMacTests.xctest"
+               BlueprintName = "SendMessageMacTests"
+               ReferencedContainer = "container:mediatorWithMessage.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
