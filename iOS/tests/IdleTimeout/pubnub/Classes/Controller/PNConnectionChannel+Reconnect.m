@@ -7,7 +7,6 @@
 //
 
 #import "PNConnectionChannel+Reconnect.h"
-#import "PNAppDelegate.h"
 
 @implementation PNConnectionChannel (Reconnect)
 
@@ -67,8 +66,16 @@ void PNBitOn(unsigned long *flag, unsigned long mask) {
 	[self setState: st];
 
     [[self performSelector:@selector(connection)] reconnect];
-	PNAppDelegate *delegate = (PNAppDelegate*)[[UIApplication sharedApplication] delegate];
-	[delegate didConnectionReconnect];
+	if( NSClassFromString(@"UIApplication") != nil )
+	{
+		id delegate = [[NSClassFromString(@"UIApplication") sharedApplication] delegate];
+		[delegate performSelector: @selector(didConnectionReconnect)];
+	}
+	if( NSClassFromString(@"NSApplication") != nil )
+	{
+		id delegate = [[NSClassFromString(@"NSApplication") sharedApplication] delegate];
+		[delegate performSelector: @selector(didConnectionReconnect)];
+	}
 }
 
 @end

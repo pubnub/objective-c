@@ -1,38 +1,22 @@
 //
 //  PNAppDelegate.m
-//  pubnub
+//  Macos
 //
-//  Created by Sergey Mamontov on 12/4/12.
+//  Created by Valentin Tuller on 4/3/14.
+//  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
-//
 
-#import "PNAppDelegate.h"
+#import "PNMacDelegate.h"
 
-#pragma mark Private interface methods
+@interface PNMacDelegate()
 
-@interface PNAppDelegate ()
-
-#pragma mark - Properties
-
-// Stores whether client disconnected on network error
-// or not
 @property (nonatomic, assign, getter = isDisconnectedOnNetworkError) BOOL disconnectedOnNetworkError;
-
-
-#pragma mark - Instance methods
-
 - (void)initializePubNubClient;
-
 
 @end
 
+@implementation PNMacDelegate
 
-#pragma mark - Public interface methods
-
-@implementation PNAppDelegate
-
-
-#pragma mark - Instance methods
 
 - (void)initializePubNubClient {
 
@@ -45,13 +29,13 @@
                                                                             BOOL connected,
                                                                             PNError *error) {
 
-                if (!connected && error) {
+															if (!connected && error) {
 
-                    PNLog(PNLogGeneralLevel, self, @"#2 PubNub client was unable to connect because of error: %@",
-                          [error localizedDescription],
-                          [error localizedFailureReason]);
-                }
-            }];
+																PNLog(PNLogGeneralLevel, self, @"#2 PubNub client was unable to connect because of error: %@",
+																	  [error localizedDescription],
+																	  [error localizedFailureReason]);
+															}
+														}];
 
 
     // Subscribe application delegate on subscription updates (events when client subscribe on some channel)
@@ -61,74 +45,63 @@
                                                                                      NSArray *channels,
                                                                                      PNError *subscriptionError) {
 
-                                            switch (state) {
+																	 switch (state) {
 
-                                                case PNSubscriptionProcessNotSubscribedState:
+																		 case PNSubscriptionProcessNotSubscribedState:
 
-                                                    PNLog(PNLogGeneralLevel, weakSelf,
-                                                          @"{BLOCK-P} PubNub client subscription failed with error: %@",
-                                                          subscriptionError);
-                                                    break;
+																			 PNLog(PNLogGeneralLevel, weakSelf,
+																				   @"{BLOCK-P} PubNub client subscription failed with error: %@",
+																				   subscriptionError);
+																			 break;
 
-                                                case PNSubscriptionProcessSubscribedState:
+																		 case PNSubscriptionProcessSubscribedState:
 
-                                                     PNLog(PNLogGeneralLevel, weakSelf,
-                                                           @"{BLOCK-P} PubNub client subscribed on channels: %@",
-                                                           channels);
-                                                    break;
+																			 PNLog(PNLogGeneralLevel, weakSelf,
+																				   @"{BLOCK-P} PubNub client subscribed on channels: %@",
+																				   channels);
+																			 break;
 
-                                                case PNSubscriptionProcessWillRestoreState:
+																		 case PNSubscriptionProcessWillRestoreState:
 
-                                                    PNLog(PNLogGeneralLevel, weakSelf,
-                                                          @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
-                                                          channels);
-                                                    break;
+																			 PNLog(PNLogGeneralLevel, weakSelf,
+																				   @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
+																				   channels);
+																			 break;
 
-                                                case PNSubscriptionProcessRestoredState:
+																		 case PNSubscriptionProcessRestoredState:
 
-                                                    PNLog(PNLogGeneralLevel, weakSelf,
-                                                          @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
-                                                          channels);
-                                                    break;
-                                            }
-                                        }];
+																			 PNLog(PNLogGeneralLevel, weakSelf,
+																				   @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
+																				   channels);
+																			 break;
+																	 }
+																 }];
 
     // Subscribe on message arrival events with block
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:weakSelf
                                                          withBlock:^(PNMessage *message) {
 
-                                     PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new message: %@",
-                                           message);
-                            }];
+															 PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new message: %@",
+																   message);
+														 }];
 
     // Subscribe on presence event arrival events with block
     [[PNObservationCenter defaultCenter] addPresenceEventObserver:weakSelf
                                                         withBlock:^(PNPresenceEvent *presenceEvent) {
 
                                                             PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new event: %@",
-                                                                    presenceEvent);
-                                                     }];
+																  presenceEvent);
+														}];
 }
 
 
-#pragma mark - UIApplication delegate methods
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
-    // Configure application window and its content
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [UINavigationController alloc];
-    [self.window makeKeyAndVisible];
-    
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
     [self initializePubNubClient];
 	[self connect];
-
-    
-    return YES;
 }
 
-
-#pragma mark - PubNub client delegate methods
 
 - (void)pubnubClient:(PubNub *)client didEnablePushNotificationsOnChannels:(NSArray *)channels {
 
@@ -365,7 +338,7 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
     }
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
-            [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
+		  [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
 
 
     return shouldRestoreSubscriptionFromLastTimeToken;
@@ -377,7 +350,7 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 -(void)checkTimeoutTimer {
-	PNAppDelegate *delegate = (PNAppDelegate*)[[UIApplication sharedApplication] delegate];
+	PNMacDelegate *delegate = (PNMacDelegate*)[[NSApplication sharedApplication] delegate];
 	NSTimeInterval interval = -[delegate.lastReconnect timeIntervalSinceNow];
 	NSLog( @"checkTimeoutTimer %f", interval );
 	if( interval > 325 )
@@ -403,9 +376,10 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 		});
 	}
-	errorBlock:^(PNError *connectionError) {
-	}];
+						 errorBlock:^(PNError *connectionError) {
+						 }];
 }
 
-
 @end
+
+
