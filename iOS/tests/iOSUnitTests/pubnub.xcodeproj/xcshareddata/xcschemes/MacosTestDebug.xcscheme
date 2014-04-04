@@ -86,6 +86,9 @@
                   Identifier = "HistoryPamTest">
                </Test>
                <Test
+                  Identifier = "HowToTests">
+               </Test>
+               <Test
                   Identifier = "HowToTestsCompressed">
                </Test>
                <Test
@@ -143,6 +146,12 @@
                   Identifier = "PNConfigurationTest">
                </Test>
                <Test
+                  Identifier = "PNConnectionChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PNConnectionTest">
+               </Test>
+               <Test
                   Identifier = "PNCryptoHelperTest">
                </Test>
                <Test
@@ -185,6 +194,9 @@
                   Identifier = "PNMessagesHistoryTest">
                </Test>
                <Test
+                  Identifier = "PNMessagingChannelTest">
+               </Test>
+               <Test
                   Identifier = "PNNetworkHelperTest">
                </Test>
                <Test
@@ -209,6 +221,9 @@
                   Identifier = "PNPushNotificationsStateChangeRequestTest">
                </Test>
                <Test
+                  Identifier = "PNReachabilityTest">
+               </Test>
+               <Test
                   Identifier = "PNRequestsQueueTest">
                </Test>
                <Test
@@ -219,6 +234,9 @@
                </Test>
                <Test
                   Identifier = "PNResponseTest">
+               </Test>
+               <Test
+                  Identifier = "PNServiceChannelTest">
                </Test>
                <Test
                   Identifier = "PNSubscribeRequestTest">

@@ -12,6 +12,7 @@
 		5A198E891815410400D20005 /* TimeOutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97B17F3201D00FE90CF /* TimeOutTest.m */; };
 		5A198E931815884500D20005 /* CatchupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E921815884500D20005 /* CatchupTest.m */; };
 		5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A198E97181593EC00D20005 /* ChangingChannels.m */; };
+		5A1ACB7318EEB6EE00D0BF24 /* HowToSleepMacTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A1ACB7218EEB6EE00D0BF24 /* HowToSleepMacTest.m */; };
 		5A1D4B5318EC0D4E005AB11C /* OCMock.framework in Resources */ = {isa = PBXBuildFile; fileRef = 5A65FDD418EB524200FFEC42 /* OCMock.framework */; };
 		5A1D4B5418EC1430005AB11C /* PNReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */; };
 		5A1D4B5518EC1579005AB11C /* PNConnectionChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C10D174FDA7D00F82D09 /* PNConnectionChannelTest.m */; };
@@ -267,7 +268,6 @@
 		5AE3AEBF1864602500704422 /* PNConnectionBadJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 963A849017FCA9B100D8DD4E /* PNConnectionBadJson.m */; };
 		5AFDFD5418EACC2B004FDD28 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32250166DF848006DB535 /* SenTestingKit.framework */; };
 		5AFDFD5A18EACC2B004FDD28 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5AFDFD5818EACC2B004FDD28 /* InfoPlist.strings */; };
-		5AFDFD5C18EACC2B004FDD28 /* MacTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AFDFD5B18EACC2B004FDD28 /* MacTest.m */; };
 		5AFDFD6318EACC63004FDD28 /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACA9444185F1103001BB8DA /* Configuration.m */; };
 		5AFDFD6418EACCB5004FDD28 /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A96273F18437E8A00258236 /* OversizedJSON.m */; };
 		5AFDFD6518EACCB9004FDD28 /* Swizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCA97917F3201D00FE90CF /* Swizzler.m */; };
@@ -381,6 +381,7 @@
 		5A058044187D59B400EA8D47 /* PAMTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMTest.m; sourceTree = "<group>"; };
 		5A198E921815884500D20005 /* CatchupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CatchupTest.m; sourceTree = "<group>"; };
 		5A198E97181593EC00D20005 /* ChangingChannels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangingChannels.m; sourceTree = "<group>"; };
+		5A1ACB7218EEB6EE00D0BF24 /* HowToSleepMacTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HowToSleepMacTest.m; path = pubnubTests/HowToTests/HowToSleepMacTest.m; sourceTree = SOURCE_ROOT; };
 		5A3A057F1823EE18009CF68B /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
 		5A4826D618632BBF008370E2 /* ChannelLimitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelLimitTest.m; sourceTree = "<group>"; };
 		5A4ED25618A51DB8002C7E8D /* HowToTestsCompressed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HowToTestsCompressed.m; sourceTree = "<group>"; };
@@ -675,7 +676,6 @@
 		5AFDFD5318EACC2B004FDD28 /* MacTest.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacTest.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AFDFD5718EACC2B004FDD28 /* MacTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MacTest-Info.plist"; sourceTree = "<group>"; };
 		5AFDFD5918EACC2B004FDD28 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		5AFDFD5B18EACC2B004FDD28 /* MacTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacTest.m; sourceTree = "<group>"; };
 		5AFDFD5D18EACC2B004FDD28 /* MacTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacTest-Prefix.pch"; sourceTree = "<group>"; };
 		792C1F3F16777BD40054E18E /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		79C32228166DF847006DB535 /* pubnub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pubnub.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1370,7 +1370,7 @@
 		5AFDFD5518EACC2B004FDD28 /* MacTest */ = {
 			isa = PBXGroup;
 			children = (
-				5AFDFD5B18EACC2B004FDD28 /* MacTest.m */,
+				5A1ACB7218EEB6EE00D0BF24 /* HowToSleepMacTest.m */,
 				5AFDFD5618EACC2B004FDD28 /* Supporting Files */,
 			);
 			path = MacTest;
@@ -1922,7 +1922,6 @@
 				5A65FDB518EB34C500FFEC42 /* PNErrorResponseParserTest.m in Sources */,
 				5AFDFD7718EACECC004FDD28 /* PNServiceChannel+Test.m in Sources */,
 				5A65FDAD18EB34A700FFEC42 /* ClientIdentifier.m in Sources */,
-				5AFDFD5C18EACC2B004FDD28 /* MacTest.m in Sources */,
 				5A65FDB118EB34B700FFEC42 /* PNChannelEventsResponseParserTest.m in Sources */,
 				5A65FDC518EB361A00FFEC42 /* PNMessagePostRequestTest.m in Sources */,
 				5A65FDB318EB34BF00FFEC42 /* PNChannelPresenceTest.m in Sources */,
@@ -1935,6 +1934,7 @@
 				5A65FDC418EB35FE00FFEC42 /* PNSubscribeRequestTest.m in Sources */,
 				5A65FDB818EB34D000FFEC42 /* PNErrorTest.m in Sources */,
 				5A65FDB918EB34D300FFEC42 /* PNOperationStatusResponseParserTest.m in Sources */,
+				5A1ACB7318EEB6EE00D0BF24 /* HowToSleepMacTest.m in Sources */,
 				5A65FDC618EB362A00FFEC42 /* PNMessageHistoryRequestTest.m in Sources */,
 				5A1D4B5818EC1793005AB11C /* PNServiceChannelTest.m in Sources */,
 				5A1D4B5518EC1579005AB11C /* PNConnectionChannelTest.m in Sources */,
