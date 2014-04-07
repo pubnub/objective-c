@@ -8,9 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface PNAppDelegate : NSObject <NSApplicationDelegate>
+@interface PNAppDelegate : NSObject <NSApplicationDelegate, PNDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
 @property IBOutlet NSTextView *tbxLog;
+@property IBOutlet NSButton *btnAutoscroll;
+
+-(IBAction)clearClick:(id)sender;
 
 @end

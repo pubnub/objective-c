@@ -13,6 +13,8 @@
         <customObject id="-3" userLabel="Application"/>
         <customObject id="Voe-Tx-rLC" customClass="PNAppDelegate">
             <connections>
+                <outlet property="btnAutoscroll" destination="dam-hy-Aji" id="Dfu-rj-VqH"/>
+                <outlet property="btnReload" destination="099-3S-ycT" id="XAl-1c-Tcw"/>
                 <outlet property="tbxLog" destination="dnn-db-3hh" id="JTl-hH-STR"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
@@ -677,21 +679,21 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="Qv4-lv-Ylw">
-                        <rect key="frame" x="9" y="20" width="1175" height="566"/>
+                        <rect key="frame" x="9" y="20" width="1175" height="540"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="eck-rc-Yhy">
-                            <rect key="frame" x="1" y="1" width="1173" height="564"/>
+                            <rect key="frame" x="1" y="1" width="1173" height="538"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView importsGraphics="NO" richText="NO" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" id="dnn-db-3hh">
-                                    <rect key="frame" x="0.0" y="0.0" width="1173" height="564"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="1173" height="538"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="1173" height="564"/>
-                                    <size key="maxSize" width="1173" height="10000000"/>
+                                    <size key="minSize" width="1173" height="538"/>
+                                    <size key="maxSize" width="1175" height="10000000"/>
                                     <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="1173" height="564"/>
-                                    <size key="maxSize" width="1173" height="10000000"/>
+                                    <size key="minSize" width="1173" height="538"/>
+                                    <size key="maxSize" width="1175" height="10000000"/>
                                 </textView>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -701,10 +703,29 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Vw0-Wy-MLF">
-                            <rect key="frame" x="1158" y="1" width="16" height="564"/>
+                            <rect key="frame" x="1158" y="1" width="16" height="538"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
+                    <button id="dam-hy-Aji">
+                        <rect key="frame" x="7" y="566" width="84" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="autoscroll" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="ZCs-e1-xMz">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button verticalHuggingPriority="750" id="099-3S-ycT">
+                        <rect key="frame" x="91" y="558" width="83" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Reload" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VLP-Sa-oif">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="reloadClick:" target="Voe-Tx-rLC" id="3du-Bp-dSQ"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
         </window>

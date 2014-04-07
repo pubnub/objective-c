@@ -13,6 +13,7 @@
         <customObject id="-3" userLabel="Application"/>
         <customObject id="Voe-Tx-rLC" customClass="PNAppDelegate">
             <connections>
+                <outlet property="btnAutoscroll" destination="nqh-lM-ksY" id="BbR-l4-cEj"/>
                 <outlet property="tbxLog" destination="gvZ-If-UfI" id="bIO-jZ-rZq"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
@@ -670,28 +671,28 @@
         <window title="Mediator" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="480" height="360"/>
+            <rect key="contentRect" x="335" y="390" width="891" height="518"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
+                <rect key="frame" x="0.0" y="0.0" width="891" height="518"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="jds-gA-dUz">
-                        <rect key="frame" x="8" y="8" width="463" height="344"/>
+                        <rect key="frame" x="8" y="8" width="872" height="476"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="YUH-qS-Wn3">
-                            <rect key="frame" x="1" y="1" width="461" height="342"/>
+                            <rect key="frame" x="1" y="1" width="870" height="474"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView importsGraphics="NO" richText="NO" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" id="gvZ-If-UfI">
-                                    <rect key="frame" x="0.0" y="0.0" width="461" height="342"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="870" height="474"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="461" height="342"/>
-                                    <size key="maxSize" width="463" height="10000000"/>
+                                    <size key="minSize" width="870" height="474"/>
+                                    <size key="maxSize" width="882" height="10000000"/>
                                     <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="461" height="342"/>
-                                    <size key="maxSize" width="463" height="10000000"/>
+                                    <size key="minSize" width="870" height="474"/>
+                                    <size key="maxSize" width="882" height="10000000"/>
                                 </textView>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -701,10 +702,29 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="wf4-C5-Fyh">
-                            <rect key="frame" x="446" y="1" width="16" height="342"/>
+                            <rect key="frame" x="855" y="1" width="16" height="474"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
+                    <button id="nqh-lM-ksY">
+                        <rect key="frame" x="6" y="493" width="84" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="autoscroll" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="HSg-Np-F2O">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button verticalHuggingPriority="750" id="yq5-5D-CH3">
+                        <rect key="frame" x="95" y="485" width="73" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Clear" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="W5V-re-8zX">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="clearClick:" target="Voe-Tx-rLC" id="EYF-nf-pJk"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
         </window>
