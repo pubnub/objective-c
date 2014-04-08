@@ -12,17 +12,28 @@
 //
 
 #import "PNIdentificationViewController.h"
-#import "PNDataManager.h"
-#import "PNMacro.h"
 #import "PNMainViewController.h"
+#import "PNConfigurationDelegate.h"
+#import "PNMainViewController.h"
+#import "PNConfigurationView.h"
+#import "UIScreen+PNAddition.h"
+#import "UIView+PNAddition.h"
+#import "PNDataManager.h"
+#import "PNAlertView.h"
+#import "PNMacro.h"
 
 
 #pragma mark Private interface methods
 
-@interface PNIdentificationViewController () <UITextFieldDelegate>
+@interface PNIdentificationViewController () <UITextFieldDelegate, PNConfigurationDelegate>
 
 
 #pragma mark - Properties
+
+/**
+ Stores reference on view which hold all elements related to connection and client identification.
+ */
+@property (nonatomic, pn_desired_weak) IBOutlet UIView *actionHolderView;
 
 @property (nonatomic, pn_desired_weak) IBOutlet UIButton *connectButton;
 
@@ -35,6 +46,16 @@
 // input his identifier
 @property (nonatomic, pn_desired_weak) IBOutlet UITextField *clientIdentifier;
 
+/**
+ Stores reference on label which is used to present origin server name to which client will connect.
+ */
+@property (nonatomic, pn_desired_weak) IBOutlet UILabel *originLabel;
+
+/**
+ Stores reference on label which is used to present subscribe key which client will use.
+ */
+@property (nonatomic, pn_desired_weak) IBOutlet UILabel *subscribeKeyLabel;
+
 // Stores reference on switch which will allow to choose
 // whether connection should be established over SSL
 // or plain HTTP
@@ -43,13 +64,15 @@
 
 #pragma mark - Instance methods
 
-#pragma mark - Interface customization 
+#pragma mark - Interface customization
 
 - (void)prepareInterface;
+- (void)updateInterface;
 
 
 #pragma mark - Handler methods
 
+- (IBAction)settingsButtonTapped:(id)sender;
 - (IBAction)connectButtonTapped:(id)sender;
 - (IBAction)sslModeSwitchChanged:(id)sender;
 
@@ -82,12 +105,20 @@
                                                                             BOOL connected,
                                                                             PNError *connectionError) {
 
-                weakSelf.clientIdentifier.text = [PubNub clientIdentifier];
+                [weakSelf updateInterface];
 
                 weakSelf.clientIdentifier.userInteractionEnabled = !connected;
                 weakSelf.sslEnablingSwitch.enabled = !connected;
                 weakSelf.connectButton.enabled = !connected;
             }];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    // Forward method call to the super class
+    [super viewWillAppear:animated];
+    
+    [self updateInterface];
 }
 
 - (BOOL)disablesAutomaticKeyboardDismissal {
@@ -100,17 +131,29 @@
 - (void)prepareInterface {
     
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
-    
-    UIImage *stretchableButtonBackground = [[UIImage imageNamed:@"red-button.png"] stretchableImageWithLeftCapWidth:5.0f
-                                                                                               topCapHeight:5.0f];
-    [self.connectButton setBackgroundImage:stretchableButtonBackground forState:UIControlStateNormal];
+}
 
+- (void)updateInterface {
+    
+    self.connectButton.enabled = YES;
     self.clientIdentifier.text = [PubNub clientIdentifier];
     self.sslEnablingSwitch.on = [PNDataManager sharedInstance].configuration.shouldUseSecureConnection;
+    self.originLabel.text = [PNDataManager sharedInstance].configuration.origin;
+    self.subscribeKeyLabel.text = [NSString stringWithFormat:@"Using \"%@\"", [PNDataManager sharedInstance].configuration.subscriptionKey];
 }
 
 
 #pragma mark - Handler methods
+
+- (IBAction)settingsButtonTapped:(id)sender {
+    
+    if (self.connectButton.isEnabled) {
+        
+        PNConfigurationView *configuration = [PNConfigurationView configurationViewWithDelegate:self
+                                                                               andConfiguration:[PNDataManager sharedInstance].configuration];
+        [configuration showWithOptions:PNViewAnimationOptionTransitionFromTop animated:YES ];
+    }
+}
 
 - (IBAction)connectButtonTapped:(id)sender {
 
@@ -123,7 +166,7 @@
     [PubNub setConfiguration:[PNDataManager sharedInstance].configuration];
 
 
-    PNIdentificationViewController *weakSelf = self;
+    __block __pn_desired_weak __typeof(self) weakSelf = self;
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
 
         PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK} PubNub client connected to: %@", origin);
@@ -140,13 +183,12 @@
             PNMainViewController *mainViewController = [PNMainViewController new];
             mainViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
             [weakSelf presentModalViewController:mainViewController animated:YES];
+            
         });
     }
 
-                         // In case of error you always can pull out error code and
-                         // identify what is happened and what you can do
-                         // (additional information is stored inside error's
-                         // localizedDescription, localizedFailureReason and
+                         // In case of error you always can pull out error code and identify what is happened and what you can do
+                         // (additional information is stored inside error's localizedDescription, localizedFailureReason and
                          // localizedRecoverySuggestion)
                          errorBlock:^(PNError *connectionError) {
 
@@ -170,17 +212,16 @@
                                      [weakSelf updateConnectionProgressMessage:@"Connection will be established as soon as internet connection will be restored"];
                                  });
                              }
-
-                             UIAlertView *connectionErrorAlert = [UIAlertView new];
-                             connectionErrorAlert.title = [NSString stringWithFormat:@"%@(%@)",
-                                                                                     [connectionError localizedDescription],
-                                                                                     NSStringFromClass([self class])];
-                             connectionErrorAlert.message = [NSString stringWithFormat:@"Reason:\n%@\n\nSuggestion:\n%@",
-                                             [connectionError localizedFailureReason],
-                                             [connectionError localizedRecoverySuggestion]];
-                             [connectionErrorAlert addButtonWithTitle:@"OK"];
-
-                             [connectionErrorAlert show];
+                             
+                             NSString *shortDescription = [NSString stringWithFormat:@"%@ (%@)", [connectionError localizedDescription],
+                                                           NSStringFromClass([self class])];
+                             NSString *detailedDescription = [NSString stringWithFormat:@"Reason:\n%@\n\nSuggestion:\n%@",
+                                                              [connectionError localizedFailureReason], [connectionError localizedRecoverySuggestion]];
+                             PNAlertView *alertView = [PNAlertView viewWithTitle:@"Connection error" type:PNAlertWarning
+                                                                    shortMessage:shortDescription detailedMessage:detailedDescription
+                                                               cancelButtonTitle:@"confirmButtonTitle" otherButtonTitles:nil
+                                                           andEventHandlingBlock:NULL];
+                             [alertView show];
                          }];
 
     [self updateConnectionProgressMessage:[NSString stringWithFormat:@"Connecting to '%@' as '%@'\nSSL enabled? %@...",
@@ -214,7 +255,11 @@
         clientIdentifier = nil;
     }
     
-    [PubNub setClientIdentifier:clientIdentifier];
+    
+    if (![[PubNub clientIdentifier] isEqualToString:clientIdentifier]) {
+        
+        [PubNub setClientIdentifier:clientIdentifier];
+    }
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -223,6 +268,14 @@
 
 
     return YES;
+}
+
+#pragma mark - PNConfiguration delegate methods
+
+- (void)configurationChangeDidComplete:(PNConfiguration *)updatedConfiguration {
+    
+    [PNDataManager sharedInstance].configuration = updatedConfiguration;
+    [self updateInterface];
 }
 
 

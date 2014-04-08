@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1296</int>
-		<string key="IBDocument.SystemVersion">13A603</string>
-		<string key="IBDocument.InterfaceBuilderVersion">4514</string>
-		<string key="IBDocument.AppKitVersion">1265</string>
-		<string key="IBDocument.HIToolboxVersion">695.00</string>
+		<string key="IBDocument.SystemVersion">13C64</string>
+		<string key="IBDocument.InterfaceBuilderVersion">5053</string>
+		<string key="IBDocument.AppKitVersion">1265.19</string>
+		<string key="IBDocument.HIToolboxVersion">697.40</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">3747</string>
+			<string key="NS.object.0">3733</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>IBProxyObject</string>
@@ -31,9 +31,11 @@
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
 			<object class="IBUIView" id="191373211">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<string key="NSFrame">{{0, 20}, {320, 548}}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">3</int>
 					<bytes key="NSWhite">MQA</bytes>
@@ -112,7 +114,307 @@
 			<nil key="sourceID"/>
 			<int key="maxID">3</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">PNButton</string>
+					<string key="superclassName">UIButton</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PNButton.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PNChannelInformationHelper</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">handlePresenceObservationStateChange:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">handlePresenceObservationStateChange:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">handlePresenceObservationStateChange:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">delegate</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">delegate</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">delegate</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PNChannelInformationHelper.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PNChannelInformationView</string>
+					<string key="superclassName">PNInputFormView</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="handleCloseButtonTap:">id</string>
+						<string key="handleFetchClientStateButtonTap:">id</string>
+						<string key="handleFetchParticipantsButtonTap:">id</string>
+						<string key="handleSaveButtonTap:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="handleCloseButtonTap:">
+							<string key="name">handleCloseButtonTap:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="handleFetchClientStateButtonTap:">
+							<string key="name">handleFetchClientStateButtonTap:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="handleFetchParticipantsButtonTap:">
+							<string key="name">handleFetchParticipantsButtonTap:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="handleSaveButtonTap:">
+							<string key="name">handleSaveButtonTap:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="channelHelper">PNChannelInformationHelper</string>
+						<string key="channelName">UITextField</string>
+						<string key="channelParticipantsCount">UILabel</string>
+						<string key="channelStateView">UITextView</string>
+						<string key="fetchClientStateButton">PNButton</string>
+						<string key="fetchParticipantsListButton">PNButton</string>
+						<string key="presenceObservationSwitch">UISwitch</string>
+						<string key="saveButton">PNButton</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="channelHelper">
+							<string key="name">channelHelper</string>
+							<string key="candidateClassName">PNChannelInformationHelper</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelName">
+							<string key="name">channelName</string>
+							<string key="candidateClassName">UITextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelParticipantsCount">
+							<string key="name">channelParticipantsCount</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelStateView">
+							<string key="name">channelStateView</string>
+							<string key="candidateClassName">UITextView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="fetchClientStateButton">
+							<string key="name">fetchClientStateButton</string>
+							<string key="candidateClassName">PNButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="fetchParticipantsListButton">
+							<string key="name">fetchParticipantsListButton</string>
+							<string key="candidateClassName">PNButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="presenceObservationSwitch">
+							<string key="name">presenceObservationSwitch</string>
+							<string key="candidateClassName">UISwitch</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="saveButton">
+							<string key="name">saveButton</string>
+							<string key="candidateClassName">PNButton</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PNChannelInformationView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PNInputFormView</string>
+					<string key="superclassName">PNPopoverView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PNInputFormView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PNMainViewController</string>
+					<string key="superclassName">UIViewController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="addChannelButtonTapped:">id</string>
+						<string key="auditAccessRightsButtonTapped:">id</string>
+						<string key="changeAuthorizationButtonKeyTapped:">id</string>
+						<string key="clearButtonTapped:">id</string>
+						<string key="disconnectButtonTapped:">id</string>
+						<string key="getServerTimeButtonTapped:">id</string>
+						<string key="grantAccessRightsButtonTapped:">id</string>
+						<string key="refreshButtonTapped:">id</string>
+						<string key="revokeAccessRightsButtonTapped:">id</string>
+						<string key="sendMessageButtonTapped:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="addChannelButtonTapped:">
+							<string key="name">addChannelButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="auditAccessRightsButtonTapped:">
+							<string key="name">auditAccessRightsButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="changeAuthorizationButtonKeyTapped:">
+							<string key="name">changeAuthorizationButtonKeyTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="clearButtonTapped:">
+							<string key="name">clearButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="disconnectButtonTapped:">
+							<string key="name">disconnectButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="getServerTimeButtonTapped:">
+							<string key="name">getServerTimeButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="grantAccessRightsButtonTapped:">
+							<string key="name">grantAccessRightsButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="refreshButtonTapped:">
+							<string key="name">refreshButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="revokeAccessRightsButtonTapped:">
+							<string key="name">revokeAccessRightsButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="sendMessageButtonTapped:">
+							<string key="name">sendMessageButtonTapped:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="addChannelButton">UIButton</string>
+						<string key="channelInformationView">PNChannelInformationView</string>
+						<string key="channelParticipantsTableView">UITableView</string>
+						<string key="channelsBackgroundImageView">UIImageView</string>
+						<string key="channelsTableView">UITableView</string>
+						<string key="clientAuthorizationKeyLabel">UILabel</string>
+						<string key="clientIdentifierLabel">UILabel</string>
+						<string key="clientNetworkAddressLabel">UILabel</string>
+						<string key="disconnectButton">UIButton</string>
+						<string key="informationBackgroundImageView">UIImageView</string>
+						<string key="messageTextField">UITextField</string>
+						<string key="messageTextView">UITextView</string>
+						<string key="pamManagementBackgroundImageView">UIImageView</string>
+						<string key="participantsBackgroundImageView">UIImageView</string>
+						<string key="recentServerTimeLabel">UILabel</string>
+						<string key="sendMessageButton">UIButton</string>
+						<string key="serverTimeButton">UIButton</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="addChannelButton">
+							<string key="name">addChannelButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelInformationView">
+							<string key="name">channelInformationView</string>
+							<string key="candidateClassName">PNChannelInformationView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelParticipantsTableView">
+							<string key="name">channelParticipantsTableView</string>
+							<string key="candidateClassName">UITableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelsBackgroundImageView">
+							<string key="name">channelsBackgroundImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelsTableView">
+							<string key="name">channelsTableView</string>
+							<string key="candidateClassName">UITableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="clientAuthorizationKeyLabel">
+							<string key="name">clientAuthorizationKeyLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="clientIdentifierLabel">
+							<string key="name">clientIdentifierLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="clientNetworkAddressLabel">
+							<string key="name">clientNetworkAddressLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="disconnectButton">
+							<string key="name">disconnectButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="informationBackgroundImageView">
+							<string key="name">informationBackgroundImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="messageTextField">
+							<string key="name">messageTextField</string>
+							<string key="candidateClassName">UITextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="messageTextView">
+							<string key="name">messageTextView</string>
+							<string key="candidateClassName">UITextView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pamManagementBackgroundImageView">
+							<string key="name">pamManagementBackgroundImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="participantsBackgroundImageView">
+							<string key="name">participantsBackgroundImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="recentServerTimeLabel">
+							<string key="name">recentServerTimeLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="sendMessageButton">
+							<string key="name">sendMessageButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="serverTimeButton">
+							<string key="name">serverTimeButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+					</dictionary>
+					<object class="NSMutableDictionary" key="toManyOutletInfosByName">
+						<string key="NS.key.0">whiteButtons</string>
+						<object class="IBToManyOutletInfo" key="NS.object.0">
+							<string key="name">whiteButtons</string>
+							<string key="candidateClassName">UIButton</string>
+							<string key="collectionClassName">NSArray</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PNMainViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PNPopoverView</string>
+					<string key="superclassName">PNShadowEnableView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PNPopoverView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PNShadowEnableView</string>
+					<string key="superclassName">UIView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PNShadowEnableView.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.previouslyAttemptedUpgradeToXcode5">YES</bool>
@@ -127,6 +429,6 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<bool key="IBDocument.UseAutolayout">YES</bool>
-		<string key="IBCocoaTouchPluginVersion">3747</string>
+		<string key="IBCocoaTouchPluginVersion">3733</string>
 	</data>
 </archive>

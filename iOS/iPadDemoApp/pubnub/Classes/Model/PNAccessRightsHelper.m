@@ -1,27 +1,17 @@
 //
-//  PNAuditAccessRightsHelper.m
+//  PNAccessRightsHelper.m
 //  pubnub
 //
-//  Created by Sergey Mamontov on 11/27/13.
-//  Copyright (c) 2013 PubNub Inc. All rights reserved.
+//  Created by Sergey Mamontov on 4/6/14.
+//  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
-
 #import "PNAccessRightsHelper.h"
-#import "PNAccessRightsInformationCell.h"
 
 
 #pragma mark Structures
 
-struct PNAccessRightsDataKeysStruct {
-    
-    __unsafe_unretained NSString *sectionName;
-    __unsafe_unretained NSString *sectionData;
-    __unsafe_unretained NSString *entrieData;
-    __unsafe_unretained NSString *entrieShouldIndent;
-};
-
-static struct PNAccessRightsDataKeysStruct PNAccessRightsDataKeys = {
+struct PNAccessRightsDataKeysStruct PNAccessRightsDataKeys = {
     
     .sectionName = @"title",
     .sectionData = @"entries",
@@ -45,26 +35,47 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
 
 #pragma mark - Private interface declaration
 
-@interface PNAccessRightsHelper () <UITableViewDelegate, UITableViewDataSource>
+@interface PNAccessRightsHelper ()
 
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) PNAccessRightsCollection *collection;
-@property (nonatomic, assign) PNAccessRightsLevel currentAccessRights;
+@property (nonatomic, assign) PNAccessRightsHelperMode operationMode;
+@property (nonatomic, assign, getter = isRevokingAccessRights) BOOL revokingAccessRights;
+@property (nonatomic, assign, getter = isAuditingAccessRights) BOOL auditingAccessRights;
 
-@property (nonatomic, pn_desired_weak) IBOutlet UITableView *objectsTable;
-@property (nonatomic, pn_desired_weak) IBOutlet UITableView *accessRightsInformationTable;
-@property (nonatomic, strong) NSArray *data;
-@property (nonatomic, strong) NSMutableArray *objects;
+/**
+ Property used during data addition by user for \c channel mode
+ */
+@property (nonatomic, strong) NSMutableArray *userProvidedChannels;
+
+/**
+ Stores reference on list of channels on which client subscribed at this moment.
+ */
+@property (nonatomic, strong) NSArray *activeChannels;
+
+@property (nonatomic, strong) NSMutableArray *existingData;
+@property (nonatomic, strong) NSMutableArray *dataManipulation;
+
+/**
+ Stores reference on access rights tree which has been built from server response.
+ */
+@property (nonatomic, strong) NSArray *accessRightsTree;
+
+/**
+ Stores reference on array which store data which has been provided by user (it can be list of channels or list of identifiers).
+ */
+@property (nonatomic, strong) NSMutableArray *userProvidedData;
+
+
+#pragma mark - Instance methods
+
+- (void)prepareData;
 
 
 #pragma mark - Misc methods
 
-/**
- Analyze collection of access rights and build data tree based on them.
- */
-- (void)buildDataTree;
+- (void)buildDataTreeForCollection:(PNAccessRightsCollection *)collection;
 
 #pragma mark -
 
@@ -79,235 +90,322 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
 
 #pragma mark - Instance methods
 
-- (void)updateWithAccessRightsCollectionInformation:(PNAccessRightsCollection *)collection {
+- (void)awakeFromNib {
     
-    self.collection = collection;
+    // Forward method call to the super class
+    [super awakeFromNib];
     
-    if (self.collection != nil) {
+    [self prepareData];
+}
+
+- (void)prepareData {
+    
+    if (self.operationMode == PNAccessRightsHelperChannelMode) {
         
-        [self buildDataTree];
+        self.existingData = [NSMutableArray arrayWithArray:[PubNub subscribedChannels]];
     }
     else {
         
-        self.data = nil;
-        self.objects = nil;
+        self.existingData = [NSMutableArray array];
     }
-    
-    [self.accessRightsInformationTable reloadData];
+    self.activeChannels = [PubNub subscribedChannels];
+    self.userProvidedChannels = [NSMutableArray array];
+    self.dataManipulation = [NSMutableArray array];
 }
 
-- (void)updateAccessRightsLevel:(PNAccessRightsLevel)accessRightsLevel {
+- (void)addObject:(id)object {
     
-    BOOL isAccessRightsLevelChanged = self.currentAccessRights != accessRightsLevel;
-    self.currentAccessRights = accessRightsLevel;
-    
-    if (isAccessRightsLevelChanged) {
+    if (![self willManipulateWith:object]) {
         
-        if (accessRightsLevel == PNChannelAccessRightsLevel || accessRightsLevel == PNUserAccessRightsLevel) {
+        [self.dataManipulation addObject:object];
+    }
+    
+    if (![self.existingData containsObject:object]) {
+        
+        if (![self.userProvidedChannels containsObject:object] && self.operationMode == PNAccessRightsHelperChannelMode) {
             
-            self.objects = nil;
-            self.data = nil;
-            [self.objectsTable reloadData];
-            [self.accessRightsInformationTable reloadData];
+            [self.userProvidedChannels addObject:object];
+        }
+        
+        [self.existingData addObject:object];
+    }
+}
+
+- (void)removeObject:(id)object {
+    
+    if ([self.userProvidedChannels containsObject:object]) {
+        
+        [self.userProvidedChannels removeObject:object];
+        [self.existingData removeObject:object];
+    }
+    if (self.operationMode != PNAccessRightsHelperChannelMode) {
+        
+        [self.existingData removeObject:object];
+    }
+    [self.dataManipulation removeObject:object];
+}
+
+- (void)configureForMode:(PNAccessRightsHelperMode)mode forAccessRightsAudition:(BOOL)shouldAuditAccessRights
+    orAccessRightsRevoke:(BOOL)shouldRevokeAccessRights {
+    
+    self.operationMode = mode;
+    self.auditingAccessRights = shouldAuditAccessRights;
+    self.revokingAccessRights = shouldRevokeAccessRights;
+}
+
+- (BOOL)isAbleToChangeAccessRights {
+    
+    BOOL isAbleToChangeAccessRights = self.operationMode == PNAccessRightsHelperApplicationMode;
+    if (!isAbleToChangeAccessRights) {
+        
+        if (self.operationMode == PNAccessRightsHelperChannelMode) {
+            
+            isAbleToChangeAccessRights  = ([self.dataManipulation count] > 0);
         }
         else {
             
-            self.data = nil;
-            [self.accessRightsInformationTable reloadData];
+            isAbleToChangeAccessRights  = (self.channelName && ![self.channelName isEmpty] && [self.dataManipulation count] > 0);
+        }
+    }
+    
+    
+    return isAbleToChangeAccessRights;
+}
+
+- (void)performRequestWithBlock:(void(^)(NSError *))handlerBlock {
+    
+    __block __pn_desired_weak __typeof(self) weakSelf = self;
+    if (self.isAuditingAccessRights) {
+        
+        PNClientChannelAccessRightsAuditBlock requestHandlerBlock = ^(PNAccessRightsCollection *collection, PNError *requestError) {
+            
+            [weakSelf buildDataTreeForCollection:collection];
+            if (handlerBlock) {
+                
+                handlerBlock(requestError);
+            }
+        };
+        
+        switch (self.operationMode) {
+            case PNAccessRightsHelperApplicationMode:
+                
+                [PubNub auditAccessRightsForApplicationWithCompletionHandlingBlock:requestHandlerBlock];
+                break;
+            case PNAccessRightsHelperChannelMode:
+                
+                [PubNub auditAccessRightsForChannels:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
+                break;
+            case PNAccessRightsHelperUserMode:
+                
+                [PubNub auditAccessRightsForChannel:[PNChannel channelWithName:self.channelName]
+                                            clients:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
+                break;
+                
+            default:
+                break;
+        }
+    }
+    else {
+        
+        PNClientChannelAccessRightsChangeBlock requestHandlerBlock = ^(PNAccessRightsCollection *collection, PNError *requestError) {
+            
+            [weakSelf buildDataTreeForCollection:collection];
+            if (handlerBlock) {
+                
+                handlerBlock(requestError);
+            }
+        };
+        
+        BOOL isAllAccessRights = self.shouldAllowRead && self.shouldAllowWrite;
+        switch (self.operationMode) {
+            case PNAccessRightsHelperApplicationMode:
+                
+                if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
+                    
+                    if (isAllAccessRights) {
+                        
+                        [PubNub grantAllAccessRightsForApplicationAtPeriod:self.accessRightsApplicationDuration
+                                                andCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                    else if (self.shouldAllowRead) {
+                        
+                        [PubNub grantReadAccessRightForApplicationAtPeriod:self.accessRightsApplicationDuration
+                                                andCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                    else {
+                        
+                        [PubNub grantWriteAccessRightForApplicationAtPeriod:self.accessRightsApplicationDuration
+                                                 andCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                }
+                else {
+                    
+                    [PubNub revokeAccessRightsForApplicationWithCompletionHandlingBlock:requestHandlerBlock];
+                }
+                break;
+            case PNAccessRightsHelperChannelMode:
+                
+                if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
+                    
+                    if (isAllAccessRights) {
+                        
+                        [PubNub grantAllAccessRightsForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
+                                    withCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                    else if (self.shouldAllowRead) {
+                        
+                        [PubNub grantReadAccessRightForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
+                                    withCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                    else {
+                        
+                        [PubNub grantWriteAccessRightForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
+                                     withCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                }
+                else {
+                    
+                    [PubNub revokeAccessRightsForChannels:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
+                }
+                break;
+            case PNAccessRightsHelperUserMode:
+                
+                if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
+                    
+                    if (isAllAccessRights) {
+                        
+                        [PubNub grantAllAccessRightsForChannel:[PNChannel channelWithName:self.channelName]
+                                                     forPeriod:self.accessRightsApplicationDuration
+                                                       clients:self.dataManipulation
+                                   withCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                    else if (self.shouldAllowRead) {
+                        
+                        [PubNub grantReadAccessRightForChannel:[PNChannel channelWithName:self.channelName]
+                                                     forPeriod:self.accessRightsApplicationDuration
+                                                       clients:self.dataManipulation
+                                   withCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                    else {
+                        
+                        [PubNub grantWriteAccessRightForChannel:[PNChannel channelWithName:self.channelName]
+                                                      forPeriod:self.accessRightsApplicationDuration
+                                                        clients:self.dataManipulation
+                                    withCompletionHandlingBlock:requestHandlerBlock];
+                    }
+                }
+                else {
+                    
+                    [PubNub revokeAccessRightsForChannel:[PNChannel channelWithName:self.channelName] clients:self.dataManipulation
+                             withCompletionHandlingBlock:requestHandlerBlock];
+                }
+                break;
+                
+            default:
+                break;
         }
     }
 }
 
-- (void)addTargetObject:(NSString *)targetObject {
+- (BOOL)willManipulateWith:(id)object {
     
-    if (!self.objects) {
-        
-        self.objects = [NSMutableArray array];
-    }
-    
-    [self.objects addObject:targetObject];
-    [self.objectsTable reloadData];
+    return [self.dataManipulation containsObject:object];
 }
 
-- (NSArray *)targetObjects {
+- (NSArray *)accessRights {
     
-    return self.objects ? self.objects : @[];
+    return self.accessRightsTree;
 }
 
-- (void)removeTargetObject:(NSString *)targetObject {
+- (NSArray *)userData {
     
-    [self.objects removeObject:targetObject];
-    [self.objectsTable reloadData];
+    return self.existingData;
 }
 
-- (BOOL)canSendRequest {
+- (NSArray *)channels {
     
-    BOOL canSendRequest = NO;
-    switch (self.currentAccessRights) {
-        case PNChannelAccessRightsLevel:
-            
-            canSendRequest = [self.objects count] > 0;
-            break;
-        case PNUserAccessRightsLevel:
-            
-            canSendRequest = [self.objects count] > 0 && [self.targetChannel length];
-            break;
-            
-        default:
-            
-            canSendRequest = YES;
-            break;
-    }
-    
-    
-    return canSendRequest;
+    return self.activeChannels;
 }
 
 
 #pragma mark - Misc methods
 
-- (void)buildDataTree {
+- (void)buildDataTreeForCollection:(PNAccessRightsCollection *)collection {
     
-    NSMutableArray *dataTree = [NSMutableArray array];
-    
-    NSArray *channelAccessRightsInformationList = [self.collection accessRightsInformationForAllChannels];
-    NSArray *usersAccessRightsInformation = [self.collection accessRightsInformationForAllClientAuthorizationKeys];
-    if (self.collection.level == PNApplicationAccessRightsLevel) {
+    if (collection) {
         
-        [dataTree addObject:@{
-                              PNAccessRightsDataKeys.sectionName: PNAccessRightsSectionNames.application,
-                              PNAccessRightsDataKeys.sectionData: @[
-                                      @{
-                                        PNAccessRightsDataKeys.entrieData: [self.collection accessRightsInformationForApplication],
-                                        PNAccessRightsDataKeys.entrieShouldIndent: @(NO)
-                                       }
-                                      ]
-                              }];
-    }
-    if (self.collection.level != PNUserAccessRightsLevel) {
         
-        if ([channelAccessRightsInformationList count]) {
+        NSMutableArray *dataTree = [NSMutableArray array];
+        
+        NSArray *channelAccessRightsInformationList = [collection accessRightsInformationForAllChannels];
+        NSArray *usersAccessRightsInformation = [collection accessRightsInformationForAllClientAuthorizationKeys];
+        if (collection.level == PNApplicationAccessRightsLevel) {
+            
+            [dataTree addObject:@{
+                                  PNAccessRightsDataKeys.sectionName: PNAccessRightsSectionNames.application,
+                                  PNAccessRightsDataKeys.sectionData: @[
+                                          @{
+                                              PNAccessRightsDataKeys.entrieData: [collection accessRightsInformationForApplication],
+                                              PNAccessRightsDataKeys.entrieShouldIndent: @(NO)
+                                              }
+                                          ]
+                                  }];
+        }
+        
+        if (collection.level != PNUserAccessRightsLevel) {
+            
+            if ([channelAccessRightsInformationList count]) {
+                
+                NSMutableArray *sectionData = [NSMutableArray array];
+                [channelAccessRightsInformationList enumerateObjectsUsingBlock:^(PNAccessRightsInformation *channelAccessRightsInformation,
+                                                                                 NSUInteger channelAccessRightsInformationIdx,
+                                                                                 BOOL *channelAccessRightsInformationEnumeratorStop) {
+                    [sectionData addObject:@{
+                                             PNAccessRightsDataKeys.entrieData: channelAccessRightsInformation,
+                                             PNAccessRightsDataKeys.entrieShouldIndent: @(NO)
+                                             }];
+                    
+                    NSArray *clientsForChannel = [collection accessRightsForClientsOnChannel:channelAccessRightsInformation.channel];
+                    [clientsForChannel enumerateObjectsUsingBlock:^(PNAccessRightsInformation *clientAccessRightsInformation,
+                                                                    NSUInteger clientAccessRightsInformationIdx,
+                                                                    BOOL *clientAccessRightsInformationEnumeratorStop) {
+                        [sectionData addObject:@{
+                                                 PNAccessRightsDataKeys.entrieData: clientAccessRightsInformation,
+                                                 PNAccessRightsDataKeys.entrieShouldIndent: @(YES)
+                                                 }];
+                    }];
+                    
+                }];
+                [dataTree addObject:@{
+                                      PNAccessRightsDataKeys.sectionName: PNAccessRightsSectionNames.channel,
+                                      PNAccessRightsDataKeys.sectionData: sectionData
+                                      }];
+            }
+        }
+        else {
             
             NSMutableArray *sectionData = [NSMutableArray array];
-            [channelAccessRightsInformationList enumerateObjectsUsingBlock:^(PNAccessRightsInformation *channelAccessRightsInformation,
-                                                                         NSUInteger channelAccessRightsInformationIdx,
-                                                                         BOOL *channelAccessRightsInformationEnumeratorStop) {
+            [usersAccessRightsInformation enumerateObjectsUsingBlock:^(PNAccessRightsInformation *clientAccessRightsInformation,
+                                                                       NSUInteger clientAccessRightsInformationIdx,
+                                                                       BOOL *clientAccessRightsInformationEnumeratorStop) {
+                
                 [sectionData addObject:@{
-                                         PNAccessRightsDataKeys.entrieData: channelAccessRightsInformation,
+                                         PNAccessRightsDataKeys.entrieData: clientAccessRightsInformation,
                                          PNAccessRightsDataKeys.entrieShouldIndent: @(NO)
                                          }];
                 
-                NSArray *clientsForChannel = [self.collection accessRightsForClientsOnChannel:channelAccessRightsInformation.channel];
-                [clientsForChannel enumerateObjectsUsingBlock:^(PNAccessRightsInformation *clientAccessRightsInformation,
-                                                                NSUInteger clientAccessRightsInformationIdx,
-                                                                BOOL *clientAccessRightsInformationEnumeratorStop) {
-                    [sectionData addObject:@{
-                                             PNAccessRightsDataKeys.entrieData: clientAccessRightsInformation,
-                                             PNAccessRightsDataKeys.entrieShouldIndent: @(YES)
-                                             }];
-                }];
-                
             }];
             [dataTree addObject:@{
-                                  PNAccessRightsDataKeys.sectionName: PNAccessRightsSectionNames.channel,
+                                  PNAccessRightsDataKeys.sectionName: PNAccessRightsSectionNames.user,
                                   PNAccessRightsDataKeys.sectionData: sectionData
-                                 }];
+                                  }];
         }
+        
+        self.accessRightsTree = dataTree;
     }
     else {
         
-        NSMutableArray *sectionData = [NSMutableArray array];
-        [usersAccessRightsInformation enumerateObjectsUsingBlock:^(PNAccessRightsInformation *clientAccessRightsInformation,
-                                                                   NSUInteger clientAccessRightsInformationIdx,
-                                                                   BOOL *clientAccessRightsInformationEnumeratorStop) {
-            
-            [sectionData addObject:@{
-                                     PNAccessRightsDataKeys.entrieData: clientAccessRightsInformation,
-                                     PNAccessRightsDataKeys.entrieShouldIndent: @(NO)
-                                    }];
-            
-        }];
-        [dataTree addObject:@{
-                              PNAccessRightsDataKeys.sectionName: PNAccessRightsSectionNames.user,
-                              PNAccessRightsDataKeys.sectionData: sectionData
-                              }];
-    }
-    
-    self.data = dataTree;
-}
-
-
-#pragma mark - UITableView delegate methods
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    return [tableView isEqual:self.objectsTable] ? 1 : [self.data count];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    NSUInteger numberOfRows = [self.objects count];
-    if ([tableView isEqual:self.accessRightsInformationTable]) {
-        
-        numberOfRows = [[[self.data objectAtIndex:section] valueForKey:PNAccessRightsDataKeys.sectionData] count];
-    }
-    
-    
-    return numberOfRows;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSInteger indentationLevel = 0;
-    if ([tableView isEqual:self.accessRightsInformationTable]) {
-        
-        NSDictionary *sectionData = [[[self.data objectAtIndex:indexPath.section] valueForKey:PNAccessRightsDataKeys.sectionData] objectAtIndex:indexPath.row];
-        indentationLevel = [[sectionData valueForKey:PNAccessRightsDataKeys.entrieShouldIndent] boolValue] ? 3 : 0;
-    }
-    
-    
-    return indentationLevel;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    
-    return [tableView isEqual:self.objectsTable] ? nil : [[self.data objectAtIndex:section] valueForKey:PNAccessRightsDataKeys.sectionName];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
-    id cell = [self.delegate tableView:tableView cellForRowAtIndexPath:indexPath];
-    if ([tableView isEqual:self.accessRightsInformationTable]) {
-        
-        NSDictionary *data = [[[self.data objectAtIndex:indexPath.section] valueForKey:PNAccessRightsDataKeys.sectionData] objectAtIndex:indexPath.row];
-        [(PNAccessRightsInformationCell *)cell updateWithAccessRightsInformation:data];
-    }
-    else {
-        
-        ((UITableViewCell *)cell).textLabel.text = [self.objects objectAtIndex:indexPath.row];
-    }
-    
-    
-    return cell;
-}
-
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return  ([tableView isEqual:self.accessRightsInformationTable]) ? UITableViewCellEditingStyleNone : UITableViewCellEditingStyleDelete;
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if ([tableView isEqual:self.objectsTable]) {
-        
-        if (editingStyle == UITableViewCellEditingStyleDelete) {
-            
-            [self.objects removeObjectAtIndex:indexPath.row];
-            [self.objectsTable deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-        
-        [self.delegate tableView:tableView commitEditingStyle:editingStyle forRowAtIndexPath:indexPath];
+        self.accessRightsTree = nil;
     }
 }
 

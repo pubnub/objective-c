@@ -11,7 +11,7 @@
 
 #pragma mark Class forward
 
-@class PNChangeAccessRightsView, PNChannel;
+@class PNChangeAccessRightsOldView, PNChannel;
 
 
 #pragma mark - Protocol delcaration
@@ -36,7 +36,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)grantApplicationReadRight:(PNChangeAccessRightsView *)accessRightsChangeView forPeriod:(NSUInteger)period
+- (void)grantApplicationReadRight:(PNChangeAccessRightsOldView *)accessRightsChangeView forPeriod:(NSUInteger)period
                  withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
@@ -52,7 +52,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)grantApplicationWriteRight:(PNChangeAccessRightsView *)accessRightsChangeView forPeriod:(NSUInteger)period
+- (void)grantApplicationWriteRight:(PNChangeAccessRightsOldView *)accessRightsChangeView forPeriod:(NSUInteger)period
                   withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
@@ -68,7 +68,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)grantApplicationAllRights:(PNChangeAccessRightsView *)accessRightsChangeView forPeriod:(NSUInteger)period
+- (void)grantApplicationAllRights:(PNChangeAccessRightsOldView *)accessRightsChangeView forPeriod:(NSUInteger)period
                  withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
@@ -87,7 +87,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)grantReadRightToChannels:(NSArray *)channels forPeriod:(NSUInteger)period fromView:(PNChangeAccessRightsView *)accessRightsChangeView
+- (void)grantReadRightToChannels:(NSArray *)channels forPeriod:(NSUInteger)period fromView:(PNChangeAccessRightsOldView *)accessRightsChangeView
                 withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
@@ -106,7 +106,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)grantWriteRightToChannels:(NSArray *)channels forPeriod:(NSUInteger)period fromView:(PNChangeAccessRightsView *)accessRightsChangeView
+- (void)grantWriteRightToChannels:(NSArray *)channels forPeriod:(NSUInteger)period fromView:(PNChangeAccessRightsOldView *)accessRightsChangeView
                  withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
@@ -125,7 +125,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)grantAllRightsToChannels:(NSArray *)channels forPeriod:(NSUInteger)period fromView:(PNChangeAccessRightsView *)accessRightsChangeView
+- (void)grantAllRightsToChannels:(NSArray *)channels forPeriod:(NSUInteger)period fromView:(PNChangeAccessRightsOldView *)accessRightsChangeView
                 withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
@@ -148,7 +148,7 @@
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
 - (void)grantReadRightToChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)period
-                       fromView:(PNChangeAccessRightsView *)accessRightsChangeView withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
+                       fromView:(PNChangeAccessRightsOldView *)accessRightsChangeView withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
  Grant \a 'write' access right on \a 'user' access level for specific channel.
@@ -170,7 +170,7 @@
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
 - (void)grantWriteRightToChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)period
-                        fromView:(PNChangeAccessRightsView *)accessRightsChangeView withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
+                        fromView:(PNChangeAccessRightsOldView *)accessRightsChangeView withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
  Grant \a 'all' access right on \a 'application' access level.
@@ -192,7 +192,7 @@
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
 - (void)grantAllRightsToChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys forPeriod:(NSUInteger)period
-                       fromView:(PNChangeAccessRightsView *)accessRightsChangeView withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
+                       fromView:(PNChangeAccessRightsOldView *)accessRightsChangeView withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 
 #pragma mark - Revoke delegate methods
@@ -206,7 +206,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)revokeApplicationAccessRights:(PNChangeAccessRightsView *)accessRightsChangeView withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
+- (void)revokeApplicationAccessRights:(PNChangeAccessRightsOldView *)accessRightsChangeView withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
  Revoke \a 'all' access right on \a 'channel' access level.
@@ -221,7 +221,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)revokeAccessRightsFromChannels:(NSArray *)channels fromView:(PNChangeAccessRightsView *)accessRightsChangeView
+- (void)revokeAccessRightsFromChannels:(NSArray *)channels fromView:(PNChangeAccessRightsOldView *)accessRightsChangeView
                       withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 /**
@@ -240,7 +240,7 @@
  \b PubNub client will pull this block as soon as access rights audition will be completed. The block accept two parameters:
  \c collection is \b PNAccessRightsCollection instance which contains list of \b PNAccessRightsInformation instances describing particular object access rights; \c error is \b PNError instance which describe what exactly went wrong during request. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)revokeAccessRightsFromChannel:(PNChannel *)channel forClients:(NSArray *)clientsAuthorizationKeys fromView:(PNChangeAccessRightsView *)accessRightsChangeView
+- (void)revokeAccessRightsFromChannel:(PNChannel *)channel forClients:(NSArray *)clientsAuthorizationKeys fromView:(PNChangeAccessRightsOldView *)accessRightsChangeView
                      withHandlerBlock:(PNClientChannelAccessRightsChangeBlock)handleBlock;
 
 #pragma mark -

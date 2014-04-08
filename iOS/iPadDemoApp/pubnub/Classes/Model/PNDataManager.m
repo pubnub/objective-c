@@ -14,7 +14,17 @@
 #import "PNClient.h"
 
 
-#pragma mark Static
+#pragma mark Structures
+
+typedef NS_OPTIONS(NSUInteger , PNPortalDataComponentIndices) {
+    
+    PNPortalSubscribeKeyIndex,
+    PNPortalPublishKeyIndex,
+    PNPortalSecretKeyIndex
+};
+
+
+#pragma mark - Static
 
 // Stores reference on shared data manager instance
 static PNDataManager *_sharedInstance = nil;
@@ -26,8 +36,6 @@ static PNDataManager *_sharedInstance = nil;
 
 
 #pragma mark - Properties
-
-@property (nonatomic, strong) PNConfiguration *configuration;
 
 // Stores reference on list of channels on which client is subscribed
 @property (nonatomic, strong) NSArray *subscribedChannelsList;
@@ -97,7 +105,7 @@ static PNDataManager *_sharedInstance = nil;
                                                              withBlock:^(PNMessage *message) {
 
                  NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                 dateFormatter.dateFormat = @"HH:mm:ss MM/dd/yy";
+                 dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
 
                  PNChannel *channel = message.channel;
                  NSString *messages = [weakSelf.messages valueForKey:channel.name];
@@ -125,7 +133,7 @@ static PNDataManager *_sharedInstance = nil;
                                                             withBlock:^(PNPresenceEvent *event) {
 
                 NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                dateFormatter.dateFormat = @"HH:mm:ss MM/dd/yy";
+                dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
                 NSString *eventType = @"joined";
                 if (event.type == PNPresenceEventLeave) {
 
@@ -141,7 +149,7 @@ static PNDataManager *_sharedInstance = nil;
 
                     eventMessage = @"";
                 }
-                eventMessage = [eventMessage stringByAppendingFormat:@"<%@> %@ '%@'\n",
+                eventMessage = [eventMessage stringByAppendingFormat:@"<%@> \"%@\" %@\n",
                                                                      [dateFormatter stringFromDate:event.date.date],
                                                                      event.client.identifier,
                                                                      eventType];
@@ -179,6 +187,34 @@ static PNDataManager *_sharedInstance = nil;
     return self;
 }
 
+- (BOOL)handleOpenWithURL:(NSURL *)url {
+    
+    NSArray *supportedSchemes = [[[[NSBundle mainBundle] infoDictionary] valueForKeyPath:@"CFBundleURLTypes.CFBundleURLSchemes"] lastObject];
+    BOOL isSupported = [supportedSchemes containsObject:[url scheme]];
+    if (isSupported) {
+        
+        NSArray *portalData = [[[[url absoluteString] componentsSeparatedByString:@"//"] lastObject] componentsSeparatedByString:@"/"];
+        NSString *subscribeKey = [portalData objectAtIndex:PNPortalSubscribeKeyIndex];
+        NSString *publishKey = [portalData objectAtIndex:PNPortalPublishKeyIndex];
+        NSString *secretKey = [portalData objectAtIndex:PNPortalSecretKeyIndex];
+        
+        isSupported = ([[subscribeKey stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]] length] &&
+                       [[publishKey stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]] length] &&
+                       [[secretKey stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]] length]);
+        
+        if (isSupported) {
+            
+            self.configuration = [self.configuration updatedConfigurationWithOrigin:self.configuration.origin
+                                                                         publishKey:publishKey subscribeKey:subscribeKey
+                                                                          secretKey:secretKey cipherKey:self.configuration.cipherKey
+                                                                   authorizationKey:self.configuration.authorizationKey];
+        }
+    }
+    
+    
+    return isSupported;
+}
+
 - (void)updateSSLOption:(BOOL)shouldEnableSSL {
 
     self.configuration.useSecureConnection = shouldEnableSSL;
@@ -186,7 +222,10 @@ static PNDataManager *_sharedInstance = nil;
 
 - (NSUInteger)numberOfEventsForChannel:(PNChannel *)channel {
 
-    return [[self.events valueForKey:channel.name] unsignedIntValue];
+    NSNumber *numberOfEvents = [self.events valueForKey:channel.name];
+    
+    
+    return numberOfEvents ? [numberOfEvents unsignedIntValue] : 0;
 }
 
 - (void)clearChatHistory {
@@ -223,29 +262,6 @@ static PNDataManager *_sharedInstance = nil;
     else {
 
         self.currentChannelChat = [self.messages valueForKey:self.currentChannel.name];
-    }
-
-
-    // Checking whether participants list not updated
-    // for a while and send request to get participants list
-    // (updated date older than 30 seconds will mean that
-    // list should be updated)
-    BOOL shouldUpdate = NO;
-    if(_currentChannel.presenceUpdateDate != nil) {
-
-        if ([[NSDate date] timeIntervalSinceDate:_currentChannel.presenceUpdateDate.date] > 5.0f) {
-
-            shouldUpdate = YES;
-        }
-    } else if ([_currentChannel presenceObserver] != nil) {
-
-        shouldUpdate = YES;
-    }
-
-
-    if (shouldUpdate) {
-
-        [PubNub requestParticipantsListForChannel:_currentChannel];
     }
 }
 

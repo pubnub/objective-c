@@ -167,13 +167,13 @@
     // Checking whether initialization was successful or not
     if((self = [super init])) {
         
-        self.origin = ([originHostName length] > 0)?originHostName:kPNDefaultOriginHost;
+        self.origin = ([originHostName length] > 0 ? originHostName : kPNDefaultOriginHost);
         self.realOrigin = self.origin;
-        self.publishKey = publishKey?publishKey:@"";
-        self.subscriptionKey = subscribeKey?subscribeKey:@"";
-        self.secretKey = secretKey?secretKey:@"0";
-        self.cipherKey = cipherKey?cipherKey:@"";
-        self.authorizationKey = authorizationKey?authorizationKey:@"";
+        self.publishKey = (publishKey ? publishKey : @"");
+        self.subscriptionKey = (subscribeKey ? subscribeKey:@"");
+        self.secretKey = (secretKey ? secretKey : @"0");
+        self.cipherKey = (cipherKey ? cipherKey : @"");
+        self.authorizationKey = (authorizationKey ? authorizationKey : @"");
         self.useSecureConnection = kPNSecureConnectionRequired;
         self.autoReconnectClient = kPNShouldAutoReconnectClient;
         self.keepTimeTokenOnChannelsListChange = kPNShouldKeepTimeTokenOnChannelsListChange;
@@ -197,6 +197,23 @@
     
     
     return self;
+}
+
+- (PNConfiguration *)updatedConfigurationWithOrigin:(NSString *)originHostName publishKey:(NSString *)publishKey
+                                       subscribeKey:(NSString *)subscribeKey secretKey:(NSString *)secretKey
+                                          cipherKey:(NSString *)cipherKey authorizationKey:(NSString *)authorizationKey {
+    
+    PNConfiguration *updatedConfiguration = [self copy];
+    updatedConfiguration.origin = ([originHostName length] > 0 ? originHostName : kPNDefaultOriginHost);
+    updatedConfiguration.realOrigin = self.origin;
+    updatedConfiguration.publishKey = (publishKey ? publishKey : @"");
+    updatedConfiguration.subscriptionKey = (subscribeKey ? subscribeKey:@"");
+    updatedConfiguration.secretKey = (secretKey ? secretKey : @"0");
+    updatedConfiguration.cipherKey = (cipherKey ? cipherKey : @"");
+    updatedConfiguration.authorizationKey = (authorizationKey ? authorizationKey : @"");
+    
+    
+    return updatedConfiguration;
 }
 
 - (id)copyWithZone:(NSZone *)zone {

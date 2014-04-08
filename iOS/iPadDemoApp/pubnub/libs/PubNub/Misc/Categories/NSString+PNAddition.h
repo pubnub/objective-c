@@ -14,6 +14,13 @@
 
 #pragma mark Instance methods
 
+/**
+ Check receiver instance on whether it is empty or not (check is there any non-space or non-newline chars).
+ 
+ @return \c YES if string doesn't contain any characters except newlines and spaces.
+ */
+- (BOOL)isEmpty;
+
 - (NSString *)percentEscapedString;
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
 - (NSString *)nonStringPercentEscapedString;
