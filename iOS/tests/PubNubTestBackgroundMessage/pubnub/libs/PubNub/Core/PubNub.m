@@ -36,7 +36,7 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.6.1";
-static NSString * const kPNCodebaseBranch = @"master";
+static NSString * const kPNCodebaseBranch = @"fix-pt68792608";
 static NSString * const kPNCodeCommitIdentifier = @"a32b128649b28ebd45819fc190cca21e8a026f95";
 
 // Stores reference on singleton PubNub instance
@@ -1452,7 +1452,7 @@ withCompletionHandlingBlock:nil];
 
             PNLog(PNLogGeneralLevel, [self sharedInstance], @"UPDATE CLIENT STATE FOR IDENTIFIER %@ ON CHANNEL %@ TO: %@ (STATE: %@)",
                   clientIdentifier, channel,
-                  mergedClientState, [self humanReadableStateFrom:[self sharedInstance].state]);
+                  [mergedClientState valueForKeyPath:channel.name], [self humanReadableStateFrom:[self sharedInstance].state]);
 
             if (handlerBlock != nil) {
 
@@ -5934,7 +5934,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         // Ensure that we received data for this client or not
         if ([client.identifier isEqualToString:self.clientIdentifier]) {
             
-            [self.cache storeClientState:client.data forChannel:nil];
+            [self.cache storeClientState:client.data forChannel:client.channel];
         }
 
         if ([self shouldChannelNotifyAboutEvent:channel]) {
