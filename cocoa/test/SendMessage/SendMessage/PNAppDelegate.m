@@ -35,7 +35,7 @@
 	expectedMessageObjectsNotification = [NSMutableArray array];
 	expectedMessageObjectsDelegate = [NSMutableArray array];
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-	[self connect];
+	[self startSendCommand];
 }
 
 - (void)handleURLEvent:(NSAppleEventDescriptor*)event withReplyEvent:(NSAppleEventDescriptor*)replyEvent
@@ -47,13 +47,31 @@
 - (void)connect
 {
 	PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+//	configuration = [PNConfiguration configurationForOrigin: @"37.58.79.177" publishKey: @"demo-36" subscribeKey: @"demo-36" secretKey: @"demo-36" authorizationKey: nil];
 	[PubNub setConfiguration: configuration];
 	[PubNub setDelegate: self];
 	[PubNub connectWithSuccessBlock:^(NSString *origin) {
-		[self startSendCommand];
 	}
 	errorBlock:^(PNError *connectionError) {}];
 }
+
+//[self sendCommand: @"connect"];
+
+- (void)connectAfter:(int)after toOrigin:(NSString*)origin publishKey:(NSString*)publishKey subscribeKey:(NSString*)subscribeKey secretKey: (NSString*)secretKey authorizationKey:(NSString*)authorizationKey {
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, after * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		[PubNub resetClient];
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			[PubNub setDelegate: self];
+			PNConfiguration *configuration = [PNConfiguration configurationForOrigin: origin publishKey: publishKey subscribeKey: subscribeKey secretKey: secretKey authorizationKey: authorizationKey];
+			[PubNub setConfiguration: configuration];
+			[PubNub connectWithSuccessBlock:^(NSString *origin) {
+				[self sendCommand: [NSString stringWithFormat: @"connect %@ %@ %@ %@ %@", origin, publishKey, subscribeKey, secretKey, authorizationKey]];
+			}
+			 errorBlock:^(PNError *connectionError) {}];
+		});
+	});
+}
+
 
 -(void)sendCommand:(NSString*)command
 {
@@ -95,10 +113,19 @@
 	[self sendCommand: @"start"];
 	delay += 3;
 
-	[self connectAfter: delay];
+	[self connectAfter: delay toOrigin: @"37.58.79.177" publishKey: @"demo-36" subscribeKey: @"demo-36" secretKey: @"demo-36" authorizationKey: @""];
+	delay += 5;
+
+	[self subscribeToChannelsWithNames: @[@"ch1", @"ch2", @"ch3"] after: delay];
 	delay += 5;
 
 	[self subscribeToChannelWithName: @"chWithMessageMac" after: delay];
+	delay += 5;
+
+	[self checkPresenceAfter: delay];
+	delay += 1;
+
+	[self subscribeToChannelWithName: @"myTestChannel010" after: delay];
 	delay += 5;
 
 	[self checkPresenceAfter: delay];
@@ -113,21 +140,32 @@
 	[self sendMessages: 10 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 10];
 	delay += 11;
 
+	[self sendMessages: 10 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 10];
+	delay += 11;
+
+	[self sendMessages: 10 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 10];
+	delay += 11;
+
+	[self sendMessages: 10 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 10];
+	delay += 11;
+
+	[self sendMessages: 10 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 10];
+	delay += 11;
+
 	[self subscribeToChannelWithName: @"ch1" after: delay];
 	delay += 5;
 	[self checkPresenceAfter: delay];
 	delay += 1;
 
-//	[self sendMessages: 100 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 30];
+	[self sendMessages: 100 after: delay toChannelWithName: @"myTestChannel010" andCheckAfter: 30];
+	delay += 31;
 
-//	delay += 31;
-//	[self sendMessages: 100 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 30];
-//
-//	delay += 31;
-//	[self sendMessages: 100 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 30];
-//	delay += 21;
+	[self sendMessages: 100 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 30];
+	delay += 31;
 
-//	delay += 5;
+	[self sendMessages: 100 after: delay toChannelWithName: @"chWithMessageMac" andCheckAfter: 30];
+	delay += 21;
+
 	[self unsubscribeFromAllChannelsAfter: delay];
 	delay += 5;
 
@@ -154,7 +192,7 @@
 		pNClientDidReceiveMessageDelegate = 0;
 	});
  	for( int i=0; i<countMessage; i++ )	{
-		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, after * NSEC_PER_SEC + 1000 + 1000*i), dispatch_get_main_queue(), ^{
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, after * NSEC_PER_SEC + 1000 + i*1000), dispatch_get_main_queue(), ^{
 			NSString *message = [NSString stringWithFormat: @"message_%d", i+1];
 			[self sendCommand: [NSString stringWithFormat: @"sendMessage %@ %@", name, message]];
 			[expectedMessageObjectsNotification addObject: message];
@@ -220,11 +258,29 @@
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, after * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 		pNClientDidReceivePresenceEventNotification = 0;
 		PNChannel *pnChannel = [PNChannel channelWithName: name shouldObservePresence: YES];
-		[PubNub subscribeOnChannels: @[pnChannel] withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
-			 [self addMessageToLog: [NSString stringWithFormat: @"subscribeOnChannels %@ %lu", name, state]];
+		[PubNub subscribeOnChannel: pnChannel withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+			[self addMessageToLog: [NSString stringWithFormat: @"subscribeOnChannel %@ %lu", name, state]];
+			[self sendCommand: [NSString stringWithFormat: @"subscribe %@", name]];
 		 }];
 
-		[self sendCommand: [NSString stringWithFormat: @"subscribe %@", name]];
+	});
+}
+
+-(void)subscribeToChannelsWithNames:(NSArray*)names after:(int)after
+{
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, after * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		pNClientDidReceivePresenceEventNotification = 0;
+		NSMutableArray *channels = [NSMutableArray array];
+		for( int i=0; i<names.count; i++ )
+			[channels addObject: [PNChannel channelWithName: names[i] shouldObservePresence: YES]];
+		[PubNub subscribeOnChannels: channels withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+			[self addMessageToLog: [NSString stringWithFormat: @"subscribeOnChannels %@ %lu", names, state]];
+
+			NSMutableString *command = [@"subscribeToChannels " mutableCopy];
+			for( int i=0; i<names.count; i++ )
+				[command appendFormat: @"%@%@", names[i], (i<names.count-1) ? @" " : @""];
+			[self sendCommand: command];
+		}];
 	});
 }
 
