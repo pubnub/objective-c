@@ -34,6 +34,19 @@
 
 #pragma mark - Instance methods
 
+- (BOOL)isEmpty {
+    
+    static NSCharacterSet *nonNewlineCharSet;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        nonNewlineCharSet = [NSCharacterSet newlineCharacterSet];
+    });
+    
+    
+    return [[[self stringByReplacingOccurrencesOfString:@" " withString:@""] stringByTrimmingCharactersInSet:nonNewlineCharSet] length] == 0;
+}
+
 - (NSString *)percentEscapedString {
 
     return [self percentEscapedStringWithEscapeString:@":/?#[]@!$&’()*+,;="];

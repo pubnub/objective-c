@@ -1260,6 +1260,17 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     return presenceObserver != nil && [self.subscribedChannelsSet containsObject:presenceObserver];
 }
 
+- (NSArray *)presenceEnabledChannels {
+    
+    NSPredicate *filterPredicate = [NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
+        
+        return [object isKindOfClass:[PNChannelPresence class]];
+    }];
+    
+    
+    return [[[self.subscribedChannelsSet allObjects] filteredArrayUsingPredicate:filterPredicate] valueForKeyPath:@"observedChannel"];
+}
+
 - (void)enablePresenceObservationForChannels:(NSArray *)channels {
     
     NSMutableArray *presenceObservers = [[channels valueForKey:@"presenceObserver"] mutableCopy];

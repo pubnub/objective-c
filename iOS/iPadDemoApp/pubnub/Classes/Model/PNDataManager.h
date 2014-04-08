@@ -21,7 +21,7 @@
 #pragma mark - Properties
 
 // Stores reference on PubNub client configuration
-@property (nonatomic, readonly, strong) PNConfiguration *configuration;
+@property (nonatomic, copy) PNConfiguration *configuration;
 
 // Stores reference on list of channels on which client is subscribed
 @property (nonatomic, readonly, strong) NSArray *subscribedChannelsList;
@@ -36,6 +36,11 @@
 // Stores reference on current chat history
 @property (nonatomic, strong) NSString *currentChannelChat;
 
+/**
+ Stores reference on device push notification token which has been received during registration with APNS.
+ */
+@property (nonatomic, strong) NSData *devicePushToken;
+
 
 #pragma mark - Class methods
 
@@ -43,6 +48,12 @@
 
 
 #pragma mark - Instance methods
+
+/**
+ Allow to parse launch options / URL in case when application has been used with \b supported URL scheme, which allow
+ to pass application options.
+ */
+- (BOOL)handleOpenWithURL:(NSURL *)url;
 
 /**
  * Allow to update client security option

@@ -38,7 +38,7 @@
 - (void)setUp {
     [super setUp];
 	channelNames = [NSMutableArray array];
-	for( int i=0; i<1; i++ )
+	for( int i=0; i<10; i++ )
 		[channelNames addObject: [NSString stringWithFormat: @"ch%d", i]];
 
 	[PubNub resetClient];
