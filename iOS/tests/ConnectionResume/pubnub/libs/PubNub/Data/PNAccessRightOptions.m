@@ -8,6 +8,7 @@
 
 #import "PNAccessRightOptions+Protected.h"
 #import "PNPrivateImports.h"
+#import "PNHelper.h"
 
 
 #pragma mark Static
@@ -68,17 +69,17 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
 
 - (BOOL)isEnablingReadAccessRight {
 
-    return PNBitIsOn(self.rights, PNReadAccessRight);
+    return [PNBitwiseHelper is:self.rights containsBit:PNReadAccessRight];
 }
 
 - (BOOL)isEnablingWriteAccessRight {
-
-    return PNBitIsOn(self.rights, PNWriteAccessRight);
+    
+    return [PNBitwiseHelper is:self.rights containsBit:PNWriteAccessRight];
 }
 
 - (BOOL)isEnablingAllAccessRights {
 
-    return PNBitsIsOn(self.rights, YES, PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR);
+    return [PNBitwiseHelper is:self.rights strictly:YES containsBits:PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR];
 }
 
 - (BOOL)isRevokingAccessRights {

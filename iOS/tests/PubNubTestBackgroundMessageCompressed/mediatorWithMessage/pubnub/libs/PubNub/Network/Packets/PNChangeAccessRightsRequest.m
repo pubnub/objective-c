@@ -13,6 +13,7 @@
 #import "NSString+PNAddition.h"
 #import "PNChannel+Protected.h"
 #import "PubNub+Protected.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -20,12 +21,6 @@
 #error PubNub channel access right change request must be built with ARC.
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
-
-
-#pragma mark Static
-
-// Stores default access rights grant period
-static NSInteger const kPNDefaultGrantPeriod = 5;
 
 
 #pragma mark - Private interface declaration
@@ -127,15 +122,16 @@ static NSInteger const kPNDefaultGrantPeriod = 5;
         [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel percentEscapedString]]];
     }
 
+    
     [parameters addObject:[NSString stringWithFormat:@"r=%@",
-                           PNBitIsOn(self.accessRightOptions.rights, PNReadAccessRight) ? @"1" : @"0"]];
+                           [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNReadAccessRight] ? @"1" : @"0"]];
     [parameters addObject:[NSString stringWithFormat:@"timestamp=%lu", (unsigned long)[self requestTimestamp]]];
     [parameters addObject:[NSString stringWithFormat:@"ttl=%lu", (unsigned long)self.accessRightOptions.accessPeriodDuration]];
     [parameters addObject:[NSString stringWithFormat:@"w=%@",
-                           PNBitIsOn(self.accessRightOptions.rights, PNWriteAccessRight) ? @"1" : @"0"]];
+                           [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNWriteAccessRight] ? @"1" : @"0"]];
 
     [signature appendString:[parameters componentsJoinedByString:@"&"]];
-    [signature setString:PNHMACSHA256String([PubNub sharedInstance].configuration.secretKey, signature)];
+    [signature setString:[PNEncryptionHelper HMACSHA256FromString:signature withKey:[PubNub sharedInstance].configuration.secretKey]];
     [signature replaceOccurrencesOfString:@"+" withString:@"-" options:(NSStringCompareOptions)0
                                     range:NSMakeRange(0, [signature length])];
     [signature replaceOccurrencesOfString:@"/" withString:@"_" options:(NSStringCompareOptions)0
@@ -181,9 +177,9 @@ static NSInteger const kPNDefaultGrantPeriod = 5;
                     (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey percentEscapedString]] : @""),
                     [self callbackMethodName], self.shortIdentifier,
                     (channel ? [NSString stringWithFormat:@"&channel=%@", [channel percentEscapedString]] : @""),
-                    [NSString stringWithFormat:@"r=%@", PNBitIsOn(self.accessRightOptions.rights, PNReadAccessRight) ? @"1" : @"0"],
+                    [NSString stringWithFormat:@"r=%@", [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNReadAccessRight] ? @"1" : @"0"],
                     (unsigned long)[self requestTimestamp], (unsigned long)self.accessRightOptions.accessPeriodDuration, [self PAMSignature],
-                    [NSString stringWithFormat:@"w=%@", PNBitIsOn(self.accessRightOptions.rights, PNWriteAccessRight) ? @"1" : @"0"]];
+                    [NSString stringWithFormat:@"w=%@", [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNWriteAccessRight] ? @"1" : @"0"]];
 }
 
 - (NSString *)debugResourcePath {

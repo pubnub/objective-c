@@ -20,6 +20,7 @@
 #import "PNResponse.h"
 #import <netinet/in.h>
 #import <arpa/inet.h>
+#import "PNHelper.h"
 
 
 // ARC check
@@ -185,11 +186,11 @@ static PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFl
 PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     
     PNReachabilityStatus status = PNReachabilityStatusNotReachable;
-    BOOL isServiceReachable = PNBitIsOn(flags, kSCNetworkReachabilityFlagsReachable);
+    BOOL isServiceReachable = [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsReachable];
     if (isServiceReachable) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-        status = PNBitIsOn(flags, kSCNetworkReachabilityFlagsIsWWAN) ? PNReachabilityStatusReachableViaCellular : status;
-        if (status == PNReachabilityStatusReachableViaCellular && PNBitIsOn(flags, kSCNetworkReachabilityFlagsConnectionRequired)) {
+        status = [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsIsWWAN] ? PNReachabilityStatusReachableViaCellular : status;
+        if (status == PNReachabilityStatusReachableViaCellular && [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsConnectionRequired]) {
             
             status = PNReachabilityStatusNotReachable;
         }
@@ -201,8 +202,9 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
                 status = PNReachabilityStatusReachableViaWiFi;
 
                 unsigned long flagsForCleanUp = (unsigned long)flags;
-                PNBitsOff(&flagsForCleanUp, kSCNetworkReachabilityFlagsReachable, kSCNetworkReachabilityFlagsIsDirect,
-                                            kSCNetworkReachabilityFlagsIsLocalAddress, BITS_LIST_TERMINATOR);
+                
+                [PNBitwiseHelper removeFrom:&flagsForCleanUp bits:kSCNetworkReachabilityFlagsReachable,
+                 kSCNetworkReachabilityFlagsIsDirect, kSCNetworkReachabilityFlagsIsLocalAddress, BITS_LIST_TERMINATOR];
                 flags = (SCNetworkReachabilityFlags)flagsForCleanUp;
 
                 if (flags != 0) {
@@ -210,11 +212,12 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
                     status = PNReachabilityStatusNotReachable;
 
                     // Check whether connection is down (required connection)
-                    if (!PNBitStrictIsOn(flags, (kSCNetworkReachabilityFlagsConnectionRequired |
-                                                 kSCNetworkReachabilityFlagsTransientConnection))) {
-
-                        if (PNBitIsOn(flags, kSCNetworkReachabilityFlagsConnectionRequired) ||
-                            PNBitIsOn(flags, kSCNetworkReachabilityFlagsTransientConnection)) {
+                    
+                    if (![PNBitwiseHelper is:flags strictly:YES containsBits:kSCNetworkReachabilityFlagsConnectionRequired,
+                          kSCNetworkReachabilityFlagsTransientConnection, BITS_LIST_TERMINATOR]) {
+                        
+                        if ([PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsConnectionRequired] ||
+                            [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsTransientConnection]) {
 
                             status = PNReachabilityStatusReachableViaWiFi;
                         }

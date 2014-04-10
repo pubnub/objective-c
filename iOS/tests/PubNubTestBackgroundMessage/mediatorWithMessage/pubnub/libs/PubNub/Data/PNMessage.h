@@ -35,7 +35,6 @@
 @property (nonatomic, readonly, strong) id message;
 
 // Stores reference on date when this message was received
-// (doesn't work for history, only for presence events)
 @property (nonatomic, readonly, strong) PNDate *receiveDate;
 
 // Stores reference on date when this message has been sent to the target channel.
