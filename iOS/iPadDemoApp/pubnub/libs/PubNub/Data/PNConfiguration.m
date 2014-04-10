@@ -11,8 +11,8 @@
 //
 
 #import "PNDefaultConfiguration.h"
-#import "PNPrivateMacro.h"
 #import "PNConstants.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -397,7 +397,7 @@
                                                                                      kPNServiceMainDomain]
                                                                          withString:@""];
 
-        self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)PNRandomInteger(),
+        self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
                         kPNServiceMainDomain];
     }
     else {

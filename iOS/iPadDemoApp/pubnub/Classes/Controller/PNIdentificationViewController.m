@@ -182,8 +182,7 @@
             [weakSelf updateConnectionProgressMessage:@""];
             PNMainViewController *mainViewController = [PNMainViewController new];
             mainViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-            [weakSelf presentModalViewController:mainViewController animated:YES];
-            
+            [weakSelf presentViewController:mainViewController animated:YES completion:NULL];
         });
     }
 

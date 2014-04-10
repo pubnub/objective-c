@@ -576,7 +576,7 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     [[PNDataManager sharedInstance] removeObserver:self forKeyPath:@"currentChannelChat"];
     [[PNDataManager sharedInstance] removeObserver:self forKeyPath:@"subscribedChannelsList"];
     
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change

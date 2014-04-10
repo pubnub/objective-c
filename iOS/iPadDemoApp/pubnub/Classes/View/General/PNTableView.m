@@ -80,8 +80,9 @@ static CGFloat const kPNMessageLabelVerticalMargin = 10.0f;
         UIFont *messageFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0f];
         CGSize allowedSize = (CGSize){.width = (self.frame.size.width - 2.0f * kPNMessageViewHorizontalMargin),
                                       .height = self.frame.size.height};
+        
         CGSize messageSize = [self.emptyTableMessage sizeWithFont:messageFont constrainedToSize:allowedSize
-                                                    lineBreakMode:UILineBreakModeWordWrap];
+                                                    lineBreakMode:NSLineBreakByWordWrapping];
         messageSize = (CGSize){.width = ceilf(messageSize.width), .height = ceilf(messageSize.height)};
         CGRect messagePosition = (CGRect){.origin = (CGPoint){.x = kPNMessageLabelHorizontalMargin,
                                                               .y = kPNMessageLabelVerticalMargin},
@@ -102,8 +103,8 @@ static CGFloat const kPNMessageLabelVerticalMargin = 10.0f;
         messageLabel.font = messageFont;
         messageLabel.textColor = [UIColor whiteColor];
         messageLabel.backgroundColor = holderView.fillColor;
-        messageLabel.lineBreakMode = UILineBreakModeWordWrap;
-        messageLabel.textAlignment = UITextAlignmentCenter;
+        messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        messageLabel.textAlignment = NSTextAlignmentCenter;
         messageLabel.numberOfLines = 10;
         messageLabel.text = self.emptyTableMessage;
         [holderView addSubview:messageLabel];

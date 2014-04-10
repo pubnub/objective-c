@@ -119,7 +119,7 @@ static CGFloat const kPNAlertViewDisappearAnimationDuration = 0.3f;
  @return Fully configured and ready to use \b UILabel instance.
  */
 - (UILabel *)labelWithFont:(UIFont *)font text:(NSString *)text constrainedToWidth:(CGFloat)targetWidth
-             lineBreakMode:(UILineBreakMode)lineBreakMode numberOfLines:(NSUInteger)numberOfLines;
+             lineBreakMode:(NSLineBreakMode)lineBreakMode numberOfLines:(NSUInteger)numberOfLines;
 
 /**
  Construct ready to use header view which can be added to the alert view.
@@ -214,7 +214,7 @@ static CGFloat const kPNAlertViewDisappearAnimationDuration = 0.3f;
 }
 
 - (UILabel *)labelWithFont:(UIFont *)font text:(NSString *)text constrainedToWidth:(CGFloat)targetWidth
-             lineBreakMode:(UILineBreakMode)lineBreakMode numberOfLines:(NSUInteger)numberOfLines {
+             lineBreakMode:(NSLineBreakMode)lineBreakMode numberOfLines:(NSUInteger)numberOfLines {
     
     CGRect targetLabelFrame = (CGRect){.size = (CGSize){.width = targetWidth, .height = MAXFLOAT}};
     UILabel *label = [[UILabel alloc] initWithFrame:targetLabelFrame];
@@ -236,10 +236,10 @@ static CGFloat const kPNAlertViewDisappearAnimationDuration = 0.3f;
     
     UILabel *headerLabel = [self labelWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f] text:self.title
                             constrainedToWidth:ceilf(kPNAlertViewWidth - kPNAlertViewHeaderLabelHorizontalMargin * 2.0f)
-                                 lineBreakMode:UILineBreakModeTailTruncation numberOfLines:2];
+                                 lineBreakMode:NSLineBreakByTruncatingTail numberOfLines:2];
     headerLabel.textColor = [UIColor colorWithRed:(195.0f/255.0f) green:(33.0f/255.0f) blue:(47.0f/255.0f) alpha:1.0f];
     headerLabel.backgroundColor = [UIColor colorWithRed:(245.0f/255.0f) green:(244.0f/255.0f) blue:(244.0f/255.0f) alpha:1.0f];
-    headerLabel.textAlignment = UITextAlignmentCenter;
+    headerLabel.textAlignment = NSTextAlignmentCenter;
     
     CGRect headerLabelFrame = (CGRect){
         .origin = (CGPoint){.x = kPNAlertViewHeaderLabelHorizontalMargin, .y = kPNAlertViewHeaderLabelVerticalMargin},
@@ -276,10 +276,11 @@ static CGFloat const kPNAlertViewDisappearAnimationDuration = 0.3f;
     
     UILabel *descriptionLabel = [self labelWithFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0f] text:self.shortMessage
                                  constrainedToWidth:ceilf(kPNAlertViewWidth - kPNAlertViewMessageHorizontalMargin * 2.0f)
-                                      lineBreakMode:UILineBreakModeTailTruncation numberOfLines:2];
+                                      lineBreakMode:NSLineBreakByTruncatingTail numberOfLines:2];
     descriptionLabel.textColor = [UIColor colorWithRed:(249.0f/255.0f) green:(249.0f/255.0f) blue:(248.0f/255.0f) alpha:1.0f];
     descriptionLabel.backgroundColor = backgroundColor;
-    descriptionLabel.textAlignment = UITextAlignmentCenter;
+    descriptionLabel.textAlignment = NSTextAlignmentCenter;
+    
     CGRect descriptionLabelFrame = (CGRect){
         .origin = (CGPoint){.x = kPNAlertViewMessageHorizontalMargin, .y = kPNAlertViewMessageVerticalMargin},
         .size = (CGSize){.width = descriptionLabel.frame.size.width,
@@ -305,10 +306,10 @@ static CGFloat const kPNAlertViewDisappearAnimationDuration = 0.3f;
     
     UILabel *descriptionLabel = [self labelWithFont:[UIFont fontWithName:@"HelveticaNeue" size:16.0f] text:self.detailedMessage
                             constrainedToWidth:ceilf(kPNAlertViewWidth - kPNAlertViewMessageHorizontalMargin * 2.0f)
-                                      lineBreakMode:UILineBreakModeTailTruncation numberOfLines:200];
+                                      lineBreakMode:NSLineBreakByTruncatingTail numberOfLines:200];
     descriptionLabel.textColor = [UIColor blackColor];
     descriptionLabel.backgroundColor = [UIColor colorWithRed:(249.0f/255.0f) green:(249.0f/255.0f) blue:(248.0f/255.0f) alpha:1.0f];
-    descriptionLabel.textAlignment = UITextAlignmentCenter;
+    descriptionLabel.textAlignment = NSTextAlignmentCenter;
     CGRect frame = descriptionLabel.frame;
     
     
@@ -343,7 +344,7 @@ static CGFloat const kPNAlertViewDisappearAnimationDuration = 0.3f;
         PNButton *button = [PNButton buttonWithType:UIButtonTypeCustom];
         button.frame = (CGRect){.size = (CGSize){.width = buttonWidth, .height = kPNAlertViewButtonHeight},
                                .origin = (CGPoint){.x = currentHorizontalPosition, .y = currentVerticalPosition}};
-        button.titleLabel.lineBreakMode = UILineBreakModeMiddleTruncation;
+        button.titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
         [button setTitle:buttonTitle forState:UIControlStateNormal];
         button.cornerRadius = @(5);
         [button addTarget:self action:@selector(handleActionButtonTapped:) forControlEvents:UIControlEventTouchUpInside];

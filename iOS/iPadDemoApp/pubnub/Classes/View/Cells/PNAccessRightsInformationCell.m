@@ -79,7 +79,7 @@ static struct PNAccessRightsDataKeysStruct PNAccessRightsDataKeys = {
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
         
         self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16.0f];
-        self.textLabel.lineBreakMode = UILineBreakModeMiddleTruncation;
+        self.textLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
         self.selectedBackgroundView = [UIView new];
         self.selectedBackgroundView.backgroundColor = [UIColor colorWithWhite:0.94f alpha:1.0f];
         
