@@ -13,9 +13,9 @@
         <customObject id="-3" userLabel="Application"/>
         <customObject id="Voe-Tx-rLC" customClass="PNAppDelegate">
             <connections>
-                <outlet property="btnAutoscroll" destination="dam-hy-Aji" id="Dfu-rj-VqH"/>
-                <outlet property="btnReload" destination="099-3S-ycT" id="XAl-1c-Tcw"/>
-                <outlet property="tbxLog" destination="dnn-db-3hh" id="JTl-hH-STR"/>
+                <outlet property="autoscrollButton" destination="dam-hy-Aji" id="dEc-gA-Ovn"/>
+                <outlet property="logTextView" destination="dnn-db-3hh" id="GHs-E7-Qsc"/>
+                <outlet property="reloadButton" destination="099-3S-ycT" id="cxF-g6-JzL"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>

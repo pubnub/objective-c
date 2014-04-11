@@ -12,10 +12,10 @@
 @interface PNAppDelegate : NSObject <NSApplicationDelegate, PNDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
-@property IBOutlet NSTextView *tbxLog;
-@property IBOutlet NSButton *btnAutoscroll;
+@property IBOutlet NSTextView *logTextView;
+@property IBOutlet NSButton *autoscrollButton;
 
-@property IBOutlet NSButton *btnReload;
+@property IBOutlet NSButton *reloadButton;
 -(IBAction)reloadClick:(id)sender;
 
 
