@@ -20,12 +20,12 @@
 
 + (void)retain:(dispatch_object_t)dispatchObject {
     
-    pn_dispatch_object_retain(object);
+    pn_dispatch_object_retain(dispatchObject);
 }
 
 + (void)release:(dispatch_object_t)dispatchObject {
     
-    pn_dispatch_object_release(object);
+    pn_dispatch_object_release(dispatchObject);
 }
 
 #pragma mark -
