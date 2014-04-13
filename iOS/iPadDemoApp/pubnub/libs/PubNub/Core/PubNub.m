@@ -4724,6 +4724,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                   helperInitializationError);
         }
     }
+    else {
+
+        [PNCryptoHelper resetHelper];
+    }
 }
 
 
