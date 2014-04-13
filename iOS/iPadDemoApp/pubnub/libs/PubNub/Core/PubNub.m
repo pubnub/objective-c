@@ -5861,6 +5861,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         [channel updateWithEvent:event];
     }
 
+    // In case if there is no error and client identifier is the same as this one, client will store retrieved state
+    // in cache (useful if someone from outside changed state for this client).
+    if (event.type == PNPresenceEventStateChanged && [event.client.identifier isEqualToString:self.clientIdentifier]) {
+
+        [self.cache purgeStateForChannel:event.client.channel];
+        [self.cache storeClientState:event.client.data forChannel:event.client.channel];
+    }
+
+
     PNLog(PNLogGeneralLevel, self, @"RECEIVED EVENT (STATE: %@)", [self humanReadableStateFrom:self.state]);
     [self launchHeartbeatTimer];
     
