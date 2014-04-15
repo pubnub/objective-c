@@ -13,6 +13,7 @@
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
 
+#define DATE_FORMATTER_PUBNUB @"PGDateFormatter3"
 
 #pragma mark Private category interface declaration
 
@@ -47,17 +48,14 @@
 #pragma mark - Misc methods
 
 - (NSDateFormatter *)consoleOutputDateFormatter {
-
-    static dispatch_once_t dispatchOnceToken;
-    static NSDateFormatter *dateFormatter;
-    dispatch_once(&dispatchOnceToken, ^{
-
-        dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"YYYY-MM-dd HH:mm:ss.SSS";
-    });
-
-
-    return dateFormatter;
+    NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary] ;
+    NSDateFormatter *dateTimeFormatter = [threadDictionary objectForKey:DATE_FORMATTER_PUBNUB] ;
+    if (dateTimeFormatter == nil) {
+        dateTimeFormatter = [[NSDateFormatter alloc] init];
+        [dateTimeFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss.SSS"];
+        [threadDictionary setObject:dateTimeFormatter forKey:DATE_FORMATTER_PUBNUB];
+    }
+    return dateTimeFormatter;
 }
 
 #pragma mark -
