@@ -357,6 +357,8 @@
 		96831B6A17500139002F150F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
 		96831B6B1750013B002F150F /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */; };
 		96831B6C17500171002F150F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32230166DF847006DB535 /* CoreGraphics.framework */; };
+		96CBB7F418FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CBB7F318FD333C00BA43E3 /* SenTestCase+GCD.m */; };
+		96CBB7F518FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CBB7F318FD333C00BA43E3 /* SenTestCase+GCD.m */; };
 		DD71B29E58A35A3AFEE4034D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71BF43E328EDCD6FF8F254 /* Security.framework */; };
 		DD71B50871A8083F6E609816 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */; };
 		DD71B861D60C2DB2E44D1B6C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
@@ -734,6 +736,8 @@
 		9666BCBA18F850C700ACD727 /* PNConnectionChannel+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConnectionChannel+Protected.h"; sourceTree = "<group>"; };
 		9666BCBB18F850C700ACD727 /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		9666BCBC18F850C700ACD727 /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
+		96CBB7F218FD333C00BA43E3 /* SenTestCase+GCD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SenTestCase+GCD.h"; path = "pubnubTests/SenTestCase+GCD.h"; sourceTree = SOURCE_ROOT; };
+		96CBB7F318FD333C00BA43E3 /* SenTestCase+GCD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SenTestCase+GCD.m"; path = "pubnubTests/SenTestCase+GCD.m"; sourceTree = SOURCE_ROOT; };
 		DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DD71BF43E328EDCD6FF8F254 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -955,6 +959,8 @@
 				5ADD307C189AADDB00688B3E /* UnitTests */,
 				5ACCA97717F3201D00FE90CF /* TimeOutTest */,
 				5ACCA99817F3208200FE90CF /* ChaosTest */,
+				96CBB7F218FD333C00BA43E3 /* SenTestCase+GCD.h */,
+				96CBB7F318FD333C00BA43E3 /* SenTestCase+GCD.m */,
 			);
 			name = PublicTests;
 			path = pubnub/libs/PubNub;
@@ -1893,6 +1899,7 @@
 				5A1D4B5718EC15A8005AB11C /* PNMessagingChannelTest.m in Sources */,
 				5AFDFD8118EACEF2004FDD28 /* PNJSONSerializationTest.m in Sources */,
 				5A65FDBC18EB34DF00FFEC42 /* PNResponseParserTest.m in Sources */,
+				96CBB7F518FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */,
 				5A65FDBE18EB34E500FFEC42 /* PNHereNowResponseParserTest.m in Sources */,
 				5A65FDBD18EB34E200FFEC42 /* PNTimeTokenResponseParserTest.m in Sources */,
 				5A1D4B5418EC1430005AB11C /* PNReachabilityTest.m in Sources */,
@@ -2064,6 +2071,7 @@
 				5ABA90A718DC777D00414EF1 /* PNMessagingChannel+Test.m in Sources */,
 				5A8A4A4B18D30FF500A08A28 /* PNNetworkHelperTest.m in Sources */,
 				5ADD3088189AADFD00688B3E /* ClientIdentifier.m in Sources */,
+				96CBB7F418FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */,
 				5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */,
 				5A8A4A5F18D3100E00A08A28 /* HeartbeatTest.m in Sources */,
 				5A198E931815884500D20005 /* CatchupTest.m in Sources */,
