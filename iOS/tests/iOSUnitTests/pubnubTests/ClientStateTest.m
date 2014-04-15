@@ -134,21 +134,15 @@
 	clientStateExpect = clientState1;
 	[self subscribeOnChannelsWithClientState:clientState1];
 	[self requestClientStateExpectState:clientState1];
-
-    NSLog(@"\t\t STAGE 1");
     
 	clientStateExpect = clientState2;
 	[PubNub unsubscribeFromChannels: pnChannels];
 	[self subscribeOnChannelsWithClientState: clientState2];
 	[self requestClientStateExpectState: clientState2];
-    
-    NSLog(@"\t\t STAGE 2");
 
 	[PubNub unsubscribeFromChannels: pnChannels];
 	[self subscribeOnChannelsWithClientState: clientState2];
 	[self requestClientStateExpectState: clientState2];
-    
-    NSLog(@"\t\t STAGE 3");
 
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
@@ -157,24 +151,15 @@
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
 	[self requestClientStateExpectState: clientStateMerged];
-    
-    NSLog(@"\t\t STAGE 4");
 
 	clientStateExpect = clientState2;
 	[self updateClientStateBlock: clientState1Nil isExpectError: NO expectState: clientState2];
-	//STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
-	//STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
 	[self requestClientStateExpectState: clientState2];
-    
-    NSLog(@"\t\t STAGE 5");
 
 	[self requestParticipantChannelsList];
 	[self requestParticipantsListWithClientIdentifiersCheckState: clientState2];
 	[self requestParticipantsListForChannelExpectState: clientState2];
 	[self requestClientStateExpectState: clientState2];
-    
-    NSLog(@"\t\t STAGE 6");
-    return;
     
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
@@ -186,24 +171,16 @@
 
 	[self requestParticipantChannelsList];
     
-    NSLog(@"\t\t STAGE 7");
-    
-    return;
-    
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
 	[self updateClientStateBlock: @{@"arrForError":@[@(123), @(124)]} isExpectError: YES expectState: nil];
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == 0, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == pnChannels.count, @"");
-    
-    NSLog(@"\t\t STAGE 8");
 
 	clientStateExpect = clientState1;
 	[self updateClientStateBlock: clientState2Nil isExpectError: NO expectState: clientState1];
 	[self requestClientStateExpectState: clientState1];
 	[self requestParticipantsListForChannelExpectState: clientState1];
-    
-    NSLog(@"\t\t STAGE 9");
 
 	[self removeClientChannelSubscriptionStateObserver];
 	STAssertTrue( countHeartbeat > 0, @"lost heartbeat requests");
@@ -581,9 +558,6 @@
 		for( int i=0; i<pnChannels.count; i++ ) {
 			NSDictionary *stateForChannel = [stateAllChannel objectForKey: [pnChannels[i] name]];
 			STAssertTrue( [stateForChannel isEqualToDictionary: clientStateExpect] == YES, @"states not equal");
-            if ([stateForChannel isEqualToDictionary: clientStateExpect] == NO) {
-                NSLog(@"1");
-            }
 		}
 	}
 }
