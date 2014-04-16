@@ -213,6 +213,7 @@
 		9645C121174FDA7D00F82D09 /* PNConnectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C10E174FDA7D00F82D09 /* PNConnectionTest.m */; };
 		9645C122174FDA7D00F82D09 /* PNServiceChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C112174FDA7D00F82D09 /* PNServiceChannelTest.m */; };
 		9645C123174FDDAE00F82D09 /* PNMessagingChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0F9174FDA7D00F82D09 /* PNMessagingChannelTest.m */; };
+		966619C818FDB82B006149EA /* HugeCompressedMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 966619C718FDB82B006149EA /* HugeCompressedMessageTest.m */; };
 		9666BCBD18F850C700ACD727 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666BBF318F850C600ACD727 /* PNObservationCenter.m */; };
 		9666BCBE18F850C700ACD727 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666BBF318F850C600ACD727 /* PNObservationCenter.m */; };
 		9666BCBF18F850C700ACD727 /* PubNub.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666BBF618F850C600ACD727 /* PubNub.m */; };
@@ -544,6 +545,7 @@
 		9645C112174FDA7D00F82D09 /* PNServiceChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNServiceChannelTest.m; sourceTree = "<group>"; };
 		9645C113174FDA7D00F82D09 /* PNServiceChannelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannelTest.h; sourceTree = "<group>"; };
 		9645C114174FDA7D00F82D09 /* PNReachabilityTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNReachabilityTest.h; sourceTree = "<group>"; };
+		966619C718FDB82B006149EA /* HugeCompressedMessageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HugeCompressedMessageTest.m; sourceTree = "<group>"; };
 		9666BBF118F850C600ACD727 /* PNObservationCenter+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNObservationCenter+Protected.h"; sourceTree = "<group>"; };
 		9666BBF218F850C600ACD727 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
 		9666BBF318F850C600ACD727 /* PNObservationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNObservationCenter.m; sourceTree = "<group>"; };
@@ -1010,6 +1012,7 @@
 				5A058044187D59B400EA8D47 /* PAMTest.m */,
 				5ACA68F4185B844600C2B214 /* PAMTestError.m */,
 				5A93EC11189817B000751662 /* HistoryPamTest.m */,
+				966619C718FDB82B006149EA /* HugeCompressedMessageTest.m */,
 			);
 			name = HowToTests;
 			path = ../../../pubnubTests/HowToTests;
@@ -2072,6 +2075,7 @@
 				5A8A4A4B18D30FF500A08A28 /* PNNetworkHelperTest.m in Sources */,
 				5ADD3088189AADFD00688B3E /* ClientIdentifier.m in Sources */,
 				96CBB7F418FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */,
+				966619C818FDB82B006149EA /* HugeCompressedMessageTest.m in Sources */,
 				5A198E98181593EC00D20005 /* ChangingChannels.m in Sources */,
 				5A8A4A5F18D3100E00A08A28 /* HeartbeatTest.m in Sources */,
 				5A198E931815884500D20005 /* CatchupTest.m in Sources */,

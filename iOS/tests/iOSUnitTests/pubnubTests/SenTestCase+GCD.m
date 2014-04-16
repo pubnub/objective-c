@@ -11,34 +11,28 @@
 @implementation SenTestCase (GCD)
 
 - (void)waitGroup:(dispatch_group_t)dispatchGroup
-       withTimout:(NSInteger)timeout
- withTimeInterval:(NSInteger)timeInterval {
+       withTimout:(NSInteger)timeout {
     
-    NSInteger i = timeout;
-    while(i-- > 0) {
-        
+    NSDate *dateLimit = [NSDate dateWithTimeIntervalSinceNow:timeout];
+    
+     while(YES) {
         if (!dispatch_group_wait(dispatchGroup, DISPATCH_TIME_NOW)) {
             break;
         }
+         
+         if ([[NSDate date] compare:dateLimit] == NSOrderedDescending) {
+             STFail(@"Timout during last operation. Time limit: %d", timeout);
+             break;
+         }
         
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:timeInterval]];
+                                 beforeDate:[NSDate distantFuture]];
     }
-    
-    STAssertFalse(i < 0, @"Timout during connection");
-}
-
-- (void)waitGroup:(dispatch_group_t)dispatchGroup
-       withTimout:(NSInteger)timeout {
-    [self waitGroup:dispatchGroup
-         withTimout:timeout
-   withTimeInterval:1];
 }
 
 - (void)waitGroup:(dispatch_group_t)dispatchGroup {
     [self waitGroup:dispatchGroup
-         withTimout:30
-   withTimeInterval:1];
+         withTimout:30];
 }
 
 @end
