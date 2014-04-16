@@ -158,11 +158,11 @@ static struct PNAccessRightsDataKeysStruct PNAccessRightsDataKeys = {
         NSUInteger minutes = (NSUInteger)(data.accessPeriodDuration - hours * 60);
         if (hours > 0) {
             
-            [duration appendFormat:@"%d h%@", hours, (minutes > 0 ? @" " : @"")];
+            [duration appendFormat:@"%d h%@", (unsigned int)hours, (minutes > 0 ? @" " : @"")];
         }
         if (minutes > 0) {
             
-            [duration appendFormat:@"%d m", minutes];
+            [duration appendFormat:@"%d m", (unsigned int)minutes];
         }
         
         [self.durationBadge updateBadgeValueTo:duration];

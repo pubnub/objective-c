@@ -104,7 +104,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         [self.participantStateSwitch setOn:NO animated:YES];
     }
     
-    self.participantsCountLabel.text = [NSString stringWithFormat:@"%d", self.presenceHelper.numberOfParticipants];
+    self.participantsCountLabel.text = [NSString stringWithFormat:@"%d", (unsigned int)self.presenceHelper.numberOfParticipants];
 }
 
 - (NSTimeInterval)appearAnimationDuration {

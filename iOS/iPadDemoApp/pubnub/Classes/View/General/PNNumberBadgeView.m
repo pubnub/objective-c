@@ -18,7 +18,7 @@
 
 - (void)updateIntegerBadgeValueTo:(NSInteger)badgeValue {
     
-    [super updateBadgeValueTo:[NSString stringWithFormat:@"%d", badgeValue]];
+    [super updateBadgeValueTo:[NSString stringWithFormat:@"%d", (unsigned int)badgeValue]];
 }
 
 #pragma mark -
