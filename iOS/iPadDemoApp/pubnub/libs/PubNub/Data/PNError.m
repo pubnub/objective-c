@@ -135,10 +135,18 @@
     }
     else if ([errorMessage rangeOfString:@"Storage"].location != NSNotFound){
         
-        // Check whether storage & hostory is not enabled
+        // Check whether storage & history is not enabled
         if ([errorMessage rangeOfString:@"not enabled"].location != NSNotFound) {
             
             errorCode = kPNStorageNotEnabledError;
+        }
+    }
+    else if ([errorMessage rangeOfString:@"Signature"].location != NSNotFound){
+
+        // Check whether PAM API reported about issue because of signature has been created using wrong secret key.
+        if ([errorMessage rangeOfString:@"Not Match"].location != NSNotFound) {
+
+            errorCode = kPNSecretKeyNotSpecifiedError;
         }
     }
 
@@ -441,7 +449,8 @@
             break;
         case kPNSecretKeyNotSpecifiedError:
 
-            failureReason = @"Looks like PubNub client 'secret' key not specified during configuration.";
+            failureReason = @"Looks like PubNub client 'secret' key not specified during configuration or doesn't "
+                             "correspond to the key which is provided for you at http://admin.pubnub.com.";
             break;
         case kPNDevicePushTokenIsEmptyError:
             

@@ -2364,7 +2364,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         [[PNObservationCenter defaultCenter] removeClientAsAccessRightsChangeObserver];
         
-        
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
         if (statusCode == 0 && [[self sharedInstance].configuration.secretKey length]) {

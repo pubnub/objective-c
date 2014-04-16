@@ -578,11 +578,21 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                 
                 detailedDescription = (requestError ? @"accessRightsAuditApplicationFailureAlertViewShortDescription" :
                                                       @"accessRightsAuditApplicationSuccessAlertViewShortDescription");
+                if (requestError) {
+
+                    detailedDescription = [NSString stringWithFormat:[detailedDescription localized],
+                                           requestError.localizedFailureReason];
+                }
             }
             else {
                 
                 detailedDescription = (requestError ? @"accessRightsChangeApplicationFailureAlertViewShortDescription" :
                                                       @"accessRightsChangeApplicationSuccessAlertViewShortDescription");
+                if (requestError) {
+
+                    detailedDescription = [NSString stringWithFormat:[detailedDescription localized],
+                                           requestError.localizedFailureReason];
+                }
             }
         }
         else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {

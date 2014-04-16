@@ -171,7 +171,7 @@
         self.realOrigin = self.origin;
         self.publishKey = (publishKey ? publishKey : @"");
         self.subscriptionKey = (subscribeKey ? subscribeKey:@"");
-        self.secretKey = (secretKey ? secretKey : @"0");
+        self.secretKey = (secretKey ? secretKey : nil);
         self.cipherKey = (cipherKey ? cipherKey : @"");
         self.authorizationKey = (authorizationKey ? authorizationKey : @"");
         self.useSecureConnection = kPNSecureConnectionRequired;
@@ -208,7 +208,7 @@
     updatedConfiguration.realOrigin = self.origin;
     updatedConfiguration.publishKey = (publishKey ? publishKey : @"");
     updatedConfiguration.subscriptionKey = (subscribeKey ? subscribeKey:@"");
-    updatedConfiguration.secretKey = (secretKey ? secretKey : @"0");
+    updatedConfiguration.secretKey = (secretKey ? secretKey : nil);
     updatedConfiguration.cipherKey = (cipherKey ? cipherKey : @"");
     updatedConfiguration.authorizationKey = (authorizationKey ? authorizationKey : @"");
     
