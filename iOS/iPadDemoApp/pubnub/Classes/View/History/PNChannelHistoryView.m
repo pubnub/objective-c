@@ -200,6 +200,7 @@ typedef enum _PNHistoryMode {
     [self swizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForChannelHistory)];
     
     PNChannelHistoryView *view = [self viewFromNib];
+    view.mode = PNPeriodChannelHistoryMode;
     
     // Swap method implementation back to restore original.
     [self swizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForChannelHistory)];
@@ -243,7 +244,6 @@ typedef enum _PNHistoryMode {
 - (void)prepareHistoryView {
     
     self.emptyHistoryPage = NO;
-    self.mode = PNPeriodChannelHistoryMode;
     self.historyHelper.maximumNumberOfMessages = 100;
 }
 
@@ -362,12 +362,13 @@ typedef enum _PNHistoryMode {
 }
 
 - (void)setMode:(PNHistoryMode)mode {
-    
+
     BOOL isModeChanged = _mode != mode;
     _mode = mode;
-    
+
     if (isModeChanged) {
-        
+
+        [self prepareHistoryView];
         [self updateLayout];
     }
 }
@@ -375,7 +376,9 @@ typedef enum _PNHistoryMode {
 #pragma mark - Handler methods
 
 - (IBAction)handleRequestHistoryButtonTap:(id)sender {
-    
+
+    [self completeUserInput];
+
     self.historyHelper.fetchTimeTokens = self.fetchTimeTokensSwitch.isOn;
     self.historyHelper.fetchHistoryByPages = self.pagingModeSwitch.isOn;
     self.historyHelper.traverseHistory = self.traverseSwitch.isOn;
@@ -581,6 +584,7 @@ typedef enum _PNHistoryMode {
     PNChannel *channel = [[self.historyHelper channels] objectAtIndex:indexPath.row];
     self.historyHelper.channelName = channel.name;
     self.channelNameTextField.text = channel.name;
+    [self updateLayout];
 }
 
 #pragma mark -
