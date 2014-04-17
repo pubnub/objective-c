@@ -10,6 +10,8 @@
 //
 
 #import "PNCryptoHelper.h"
+#import <CommonCrypto/CommonCryptor.h>
+#import <CommonCrypto/CommonHMAC.h>
 #import "NSString+PNAddition.h"
 #import "PNPrivateImports.h"
 

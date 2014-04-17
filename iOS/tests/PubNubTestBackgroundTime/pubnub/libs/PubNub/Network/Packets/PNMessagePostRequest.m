@@ -21,6 +21,7 @@
 #import "PubNub+Protected.h"
 #import "PNCryptoHelper.h"
 #import "PNConstants.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -196,8 +197,8 @@
                         [self.message.channel escapedName],
                         self.message.message,
                         ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
-
-        signature = PNHMACSHA256String(secretKey, signedRequestPath);
+        
+        signature = [PNEncryptionHelper HMACSHA256FromString:signedRequestPath withKey:secretKey];
     }
 #endif
 

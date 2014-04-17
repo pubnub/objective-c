@@ -22,7 +22,7 @@
 
 // Stores reference on how many participants in
 // the channel
-@property (nonatomic, assign) unsigned int participantsCount;
+@property (nonatomic, assign) unsigned long participantsCount;
 
 // Stores reference on channel which this 'Here now'
 // information was generated on PubNub service by client

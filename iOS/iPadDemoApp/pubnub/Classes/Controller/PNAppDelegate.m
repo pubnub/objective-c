@@ -8,6 +8,8 @@
 
 #import "PNAppDelegate.h"
 #import "PNIdentificationViewController.h"
+#import "PNMainViewController.h"
+#import "PNDataManager.h"
 
 
 #pragma mark Private interface methods
@@ -117,26 +119,37 @@
 #pragma mark - UIApplication delegate methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
+    
+    if ([launchOptions objectForKey:UIApplicationLaunchOptionsURLKey]) {
+        
+        [[PNDataManager sharedInstance] handleOpenWithURL:[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey]];
+    }
+    
+    UIRemoteNotificationType type = (UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound);
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:type];
+    
     // Configure application window and its content
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [PNIdentificationViewController new];
     [self.window makeKeyAndVisible];
-
-    [self initializePubNubClient];
+    
     
     return YES;
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
+    return [[PNDataManager sharedInstance] handleOpenWithURL:url];
+}
+
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
-    // You are free to register channel for push notifications right from this callback or store device push token in property and use it later.
+    [PNDataManager sharedInstance].devicePushToken = deviceToken;
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     
-    // Application was unable to register for remote push notifications and reason stored inside 'error' instance. If application were registered
-    // for remote notifications before there is a chance that it won't be able to receive remote push notifications anymore.
+    [PNDataManager sharedInstance].devicePushToken = nil;
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {

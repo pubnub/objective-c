@@ -162,6 +162,35 @@
            cipherKey:(NSString *)cipherKey
     authorizationKey:(NSString *)authorizationKey;
 
+/**
+ Construct new configuration based on provided instance with new values. This method is useful if only magor settings should be changed
+ (excpet state flags and time outs).
+ 
+ @param originHostName
+ Updated origin address which should be assigned to the configuration. If \c 'nil' is passed, previous value will be used.
+ 
+ @param publishKey
+ Updated publish key which will be used with message posting API.
+ 
+ @param subscribeKey
+ Updated subscribe key which will be used with subscription API to receive messages from \b PubNub service.
+ 
+ @param secretKey
+ Updated secret key which will be used along with PAM API to sign access rights manipulation requests.
+ 
+ @param cipherKey
+ Updated cipher key which will be automatically used by \b PubNub client to encrypt messages which is sent with publish API.
+ 
+ @param authorizationKey
+ Updated authorization key which is important for PAM enabled keys, so \b PubNub service will recognize client which connects
+ and what he can do.
+ 
+ @return New instance which is based on original instance with changed options as specified in parameters.
+ */
+- (PNConfiguration *)updatedConfigurationWithOrigin:(NSString *)originHostName publishKey:(NSString *)publishKey
+                                       subscribeKey:(NSString *)subscribeKey secretKey:(NSString *)secretKey
+                                          cipherKey:(NSString *)cipherKey authorizationKey:(NSString *)authorizationKey;
+
 #pragma mark -
 
 

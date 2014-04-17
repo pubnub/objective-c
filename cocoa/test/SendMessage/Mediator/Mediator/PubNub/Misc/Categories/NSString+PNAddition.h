@@ -14,6 +14,13 @@
 
 #pragma mark Instance methods
 
+/**
+ Check receiver instance on whether it is empty or not (check is there any non-space or non-newline chars).
+ 
+ @return \c YES if string doesn't contain any characters except newlines and spaces.
+ */
+- (BOOL)isEmpty;
+
 - (NSString *)percentEscapedString;
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
 - (NSString *)nonStringPercentEscapedString;
@@ -38,13 +45,9 @@
  Length to which string should be truncated.
  
  @param lineBreakMode
- Specify what kind of truncation logic should be used: UILineBreakModeClip, UILineBreakModeHeadTruncation, UILineBreakModeTailTruncation or UILineBreakModeMiddleTruncation.
+ Specify what kind of truncation logic should be used: NSLineBreakModeClip, NSLineBreakModeHeadTruncation, NSLineBreakModeTailTruncation or NSLineBreakModeMiddleTruncation.
  */
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(UILineBreakMode)lineBreakMode;
-#else
 - (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode;
-#endif
 
 
 #pragma mark - Cryptography methods

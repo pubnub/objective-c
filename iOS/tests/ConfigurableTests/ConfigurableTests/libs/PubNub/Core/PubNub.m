@@ -23,6 +23,7 @@
 #import "PNHereNowRequest.h"
 #import "PNCryptoHelper.h"
 #import "PNConstants.h"
+#import "PNHelper.h"
 #import "PNCache.h"
 
 
@@ -36,8 +37,13 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.6.1";
+<<<<<<< HEAD
 static NSString * const kPNCodebaseBranch = @"fix-pt68792608";
 static NSString * const kPNCodeCommitIdentifier = @"47bb086d59f944d236899d3b4b01e9bd817b6588";
+=======
+static NSString * const kPNCodebaseBranch = @"master";
+static NSString * const kPNCodeCommitIdentifier = @"09f495dd33bdb4ef78d3e29847339a17f7887983";
+>>>>>>> develop
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -666,7 +672,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 if ([self sharedInstance].clientIdentifier == nil) {
 
                     // Change user identifier before connect to the PubNub services
-                    [self sharedInstance].clientIdentifier = PNUniqueIdentifier();
+                    [self sharedInstance].clientIdentifier = [PNHelper UUID];
                 }
 
                 // Check whether services are available or not
@@ -808,10 +814,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 + (void)postponeConnectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
                              errorBlock:(PNClientConnectionFailureBlock)failure {
-    
+
     [[self sharedInstance] postponeSelector:@selector(connectWithSuccessBlock:errorBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(success), PNNillIfNotSet(failure)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:success], [PNHelper nilifyIfNotSet:failure]]
                                  outOfOrder:[self sharedInstance].isRestoringConnection];
 }
 
@@ -1260,7 +1266,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                    if (identifier == nil) {
 
                                        // Change user identifier before connect to the PubNub services
-                                       weakSharedInstance.clientIdentifier = PNUniqueIdentifier();
+                                       weakSharedInstance.clientIdentifier = [PNHelper UUID];
                                    }
                                    else {
 
@@ -1317,7 +1323,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     [[self sharedInstance] postponeSelector:@selector(setClientIdentifier:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(identifier)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:identifier]]
                                  outOfOrder:NO];
 }
 
@@ -1406,8 +1412,8 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 
     [[self sharedInstance] postponeSelector:@selector(requestClientState:forChannel:withCompletionHandlingBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(clientIdentifier), PNNillIfNotSet(channel),
-                                              PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:channel],
+                                              [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -1501,8 +1507,8 @@ withCompletionHandlingBlock:nil];
 
     [[self sharedInstance] postponeSelector:@selector(updateClientState:state:forChannel:withCompletionHandlingBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(clientIdentifier), PNNillIfNotSet(clientState),
-                                              PNNillIfNotSet(channel), PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:clientState],
+                                              [PNHelper nilifyIfNotSet:channel], [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -1646,8 +1652,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     [[self sharedInstance] postponeSelector:@selector(subscribeOnChannels:withCatchUp:clientState:andCompletionHandlingBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(channels), @(shouldCatchUp), PNNillIfNotSet(clientState),
-                                              PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:channels], @(shouldCatchUp), [PNHelper nilifyIfNotSet:clientState],
+                                              [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -1754,7 +1760,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     [[self sharedInstance] postponeSelector:@selector(unsubscribeFromChannels:withCompletionHandlingBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(channels), PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:channels], [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -1852,7 +1858,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     SEL selector = @selector(enablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
                                   forObject:self
-                             withParameters:@[channels, PNNillIfNotSet(pushToken), PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[channels, [PNHelper nilifyIfNotSet:pushToken], [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -1942,7 +1948,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     SEL selector = @selector(disablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
                                   forObject:self
-                             withParameters:@[channels, pushToken, PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[channels, pushToken, [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -2008,7 +2014,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     SEL selector = @selector(removeAllPushNotificationsForDevicePushToken:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
                                   forObject:self
-                             withParameters:@[pushToken, PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[pushToken, [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -2076,7 +2082,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     SEL selector = @selector(requestPushNotificationEnabledChannelsForDevicePushToken:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
                                   forObject:self
-                             withParameters:@[pushToken, PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[pushToken, [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -2431,7 +2437,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                                   forObject:self
                              withParameters:@[channels, [NSNumber numberWithUnsignedLong:accessRights],
                                               clientsAuthorizationKeys, [NSNumber numberWithInteger:accessPeriodDuration],
-                                              PNNillIfNotSet(handlerBlock)]
+                                              [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -2566,7 +2572,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     SEL selector = @selector(auditAccessRightsForChannels:clients:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
                                   forObject:self
-                             withParameters:@[channels, clientsAuthorizationKeys, PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[channels, clientsAuthorizationKeys, [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -2670,7 +2676,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     [[self sharedInstance] postponeSelector:@selector(enablePresenceObservationForChannels:withCompletionHandlingBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(channels), PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:channels], [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -2748,7 +2754,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     [[self sharedInstance] postponeSelector:@selector(disablePresenceObservationForChannels:withCompletionHandlingBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(channels), PNNillIfNotSet(handlerBlock)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:channels], [PNHelper nilifyIfNotSet:handlerBlock]]
                                  outOfOrder:NO];
 }
 
@@ -2812,7 +2818,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     [[self sharedInstance] postponeSelector:@selector(requestServerTimeTokenWithCompletionBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(success)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:success]]
                                  outOfOrder:NO];
 }
 
@@ -2896,7 +2902,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     [[self sharedInstance] postponeSelector:@selector(sendMessage:toChannel:compressed:withCompletionBlock:)
                                   forObject:self
-                             withParameters:@[PNNillIfNotSet(message), PNNillIfNotSet(channel), @(shouldCompressMessage), PNNillIfNotSet((id)success)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:message], [PNHelper nilifyIfNotSet:channel], @(shouldCompressMessage), [PNHelper nilifyIfNotSet:(id)success]]
                                  outOfOrder:NO];
 }
 
@@ -3164,9 +3170,9 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     SEL selector = @selector(requestHistoryForChannel:from:to:limit:reverseHistory:includingTimeToken:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:selector forObject:self
-                             withParameters:@[PNNillIfNotSet(channel), PNNillIfNotSet(startDate), PNNillIfNotSet(endDate),
+                             withParameters:@[[PNHelper nilifyIfNotSet:channel], [PNHelper nilifyIfNotSet:startDate], [PNHelper nilifyIfNotSet:endDate],
                                               @(limit), @(shouldReverseMessageHistory), @(shouldIncludeTimeToken),
-                                              PNNillIfNotSet(handleBlock)]
+                                              [PNHelper nilifyIfNotSet:handleBlock]]
                                  outOfOrder:NO];
 }
 
@@ -3306,8 +3312,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     SEL targetSelector = @selector(requestParticipantsListForChannel:clientIdentifiersRequired:clientState:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:targetSelector forObject:self
-                             withParameters:@[PNNillIfNotSet(channel), @(isClientIdentifiersRequired),
-                                              @(shouldFetchClientState), PNNillIfNotSet(handleBlock)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:channel], @(isClientIdentifiersRequired),
+                                              @(shouldFetchClientState), [PNHelper nilifyIfNotSet:handleBlock]]
                                  outOfOrder:NO];
 }
 
@@ -3370,7 +3376,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
     SEL targetSelector = @selector(requestParticipantChannelsList:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:targetSelector forObject:self
-                             withParameters:@[PNNillIfNotSet(clientIdentifier), PNNillIfNotSet(handleBlock)]
+                             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:handleBlock]]
                                  outOfOrder:NO];
 }
 
@@ -3644,7 +3650,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
         self.state = PNPubNubClientStateCreated;
         self.cache = [PNCache new];
-        self.launchSessionIdentifier = PNUniqueIdentifier();
+        self.launchSessionIdentifier = [PNHelper UUID];
         self.reachability = [PNReachability serviceReachability];
         pendingInvocations = [NSMutableArray array];
         
@@ -4723,6 +4729,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             PNLog(PNLogGeneralLevel, self, @"[INFO] Crypto helper initialization failed because of error: %@",
                   helperInitializationError);
         }
+    }
+    else {
+
+        [PNCryptoHelper resetHelper];
     }
 }
 

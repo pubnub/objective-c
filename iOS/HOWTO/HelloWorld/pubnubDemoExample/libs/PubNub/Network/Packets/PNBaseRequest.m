@@ -16,6 +16,7 @@
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -70,8 +71,8 @@
     // Check whether initialization is successful or not
     if((self = [super init])) {
         
-        self.identifier = PNUniqueIdentifier();
-        self.shortIdentifier = PNShortenedIdentifierFromUUID(self.identifier);
+        self.identifier = [PNHelper UUID];
+        self.shortIdentifier = [PNHelper shortenedUUIDFromUUID:self.identifier];
     }
     
     
