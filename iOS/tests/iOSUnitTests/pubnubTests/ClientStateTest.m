@@ -87,7 +87,7 @@
 - (void)tearDown {
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+
     [PubNub setDelegate:nil];
     
     [super tearDown];
@@ -184,6 +184,8 @@
 
 	[self removeClientChannelSubscriptionStateObserver];
 	STAssertTrue( countHeartbeat > 0, @"lost heartbeat requests");
+    
+    [PubNub disconnect];
 }
 
 #pragma mark - PubNub functions
