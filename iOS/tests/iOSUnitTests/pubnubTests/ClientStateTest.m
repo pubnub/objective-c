@@ -95,20 +95,29 @@
 
 #pragma mark - Tests
 
-- (void)test01Init {
+- (void)testDifferentPresenceStates {
     
 	timeout = 6;
-	clientState1 = [@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)} mutableCopy];
+	clientState1 = [@{@"firstName":@"John",
+                      @"lastName":@"Appleseed",
+                      @"age":@(240)} mutableCopy];
     
-	clientState1Nil = [@{@"firstName":[NSNull null], @"lastName":[NSNull null], @"age":[NSNull null]} mutableCopy];
+	clientState1Nil = [@{@"firstName":[NSNull null],
+                         @"lastName":[NSNull null],
+                         @"age":[NSNull null]} mutableCopy];
     
-	clientState2 = [@{@"firstName1":@"John1", @"lastName1":@"Appleseed1", @"age1":@(240)} mutableCopy];
-	clientState2Nil = [@{@"firstName1":[NSNull null], @"lastName1":[NSNull null], @"age1":[NSNull null]} mutableCopy];
+	clientState2 = [@{@"firstName1":@"John1",
+                      @"lastName1":@"Appleseed1",
+                      @"age1":@(240)} mutableCopy];
+    
+	clientState2Nil = [@{@"firstName1":[NSNull null],
+                         @"lastName1":[NSNull null],
+                         @"age1":[NSNull null]} mutableCopy];
     
 	clientStateMerged = [NSMutableDictionary dictionary];
     
-	[clientStateMerged addEntriesFromDictionary: clientState1];
-	[clientStateMerged addEntriesFromDictionary: clientState2];
+	[clientStateMerged addEntriesFromDictionary:clientState1];
+	[clientStateMerged addEntriesFromDictionary:clientState2];
     
 	countkPNClientDidReceiveClientStateNotification = 0;
 	countkPNClientStateRetrieveDidFailWithErrorNotification = 0;
@@ -200,7 +209,7 @@
     configuration.presenceHeartbeatTimeout = 20;
     configuration.presenceHeartbeatInterval = 20;
     
-    [PubNub setConfiguration: configuration];
+    [PubNub setConfiguration:configuration];
 
     dispatch_group_enter(connectResultGroup);
 
