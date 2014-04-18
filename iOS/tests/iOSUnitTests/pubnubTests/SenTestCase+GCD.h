@@ -13,6 +13,23 @@
 /**
  * Hold current thread and keep it for
  * timeout value,
+ * check state of group each time after default timeInterval
+ */
+- (void)waitGroup:(dispatch_group_t)dispatchGroup
+       withTimout:(NSInteger)timeout;
+
+/**
+ * Hold current thread and keep it for
+ * timeout value,
+ * check state of group each time after timeInterval
+ */
+- (void)waitGroup:(dispatch_group_t)dispatchGroup
+       withTimout:(NSInteger)timeout
+     withInterval:(NSInteger)timeinterval;
+
+/**
+ * Hold current thread and keep it for
+ * timeout value,
  * check state of group each time after timeInterval
  */
 - (void)waitGroup:(dispatch_group_t)dispatchGroup

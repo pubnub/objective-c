@@ -30,6 +30,26 @@
     }
 }
 
+- (void)waitGroup:(dispatch_group_t)dispatchGroup
+       withTimout:(NSInteger)timeout
+     withInterval:(NSInteger)timeInterval {
+    NSDate *dateLimit = [NSDate dateWithTimeIntervalSinceNow:timeout];
+    
+    while(YES) {
+        if (!dispatch_group_wait(dispatchGroup, DISPATCH_TIME_NOW)) {
+            break;
+        }
+        
+        if ([[NSDate date] compare:dateLimit] == NSOrderedDescending) {
+            STFail(@"Timout during last operation. Time limit: %d", timeout);
+            break;
+        }
+        
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:timeInterval]];
+    }
+}
+
 - (void)waitGroup:(dispatch_group_t)dispatchGroup {
     [self waitGroup:dispatchGroup
          withTimout:30];
