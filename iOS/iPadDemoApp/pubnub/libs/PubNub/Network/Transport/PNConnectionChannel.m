@@ -119,6 +119,20 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 - (void)rescheduleStoredRequests:(NSArray *)requestsList;
 
 /**
+ Allow schedule stored requests back into requests queue. Which requests should be scheduled back controlled by
+ subclass instances
+
+ @param requestsList
+ List of requests which should be rescheduled for further processing.
+
+ @param shouldResetRequestsRetryCount
+ Whether requests' error counter should be reset or not.
+
+ @note template method
+ */
+- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount;
+
+/**
  * Retrieve reference on stored request at specific index
  */
 - (PNBaseRequest *)storedRequestAtIndex:(NSUInteger)requestIndex;
@@ -875,6 +889,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)rescheduleStoredRequests:(NSArray *)requestsList {
 
+    [self rescheduleStoredRequests:requestsList resetRetryCount:YES];
+}
+
+- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
+
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
 
@@ -1249,7 +1268,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     if ([self.storedRequestsList count]) {
 
         // Ask to reschedule required requests
-        [self rescheduleStoredRequests:self.storedRequestsList];
+        [self rescheduleStoredRequests:self.storedRequestsList resetRetryCount:NO];
 
         // Launch communication process on sockets by triggering requests queue processing
         [self scheduleNextRequest];

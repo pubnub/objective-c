@@ -567,7 +567,7 @@
     }];
 }
 
-- (void)rescheduleStoredRequests:(NSArray *)requestsList {
+- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
 
     if ([requestsList count] > 0) {
 
@@ -577,7 +577,7 @@
 
                PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
 
-               [request reset];
+               [request resetWithRetryCount:shouldResetRequestsRetryCount];
                request.closeConnection = NO;
 
                // Check whether client is waiting for request completion
