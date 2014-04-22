@@ -83,12 +83,12 @@
     *field = 0;
 }
 
-+ (BOOL)is:(unsigned)field containsBit:(unsigned long)bitMask {
++ (BOOL)is:(unsigned long)field containsBit:(unsigned long)bitMask {
     
     return [self is:field strictly:NO containsBit:bitMask];
 }
 
-+ (BOOL)is:(unsigned)field containsBits:(unsigned long)bitMask, ... {
++ (BOOL)is:(unsigned long)field containsBits:(unsigned long)bitMask, ... {
     
     va_list bits;
     va_start(bits, bitMask);
@@ -99,12 +99,12 @@
     return [self is:field strictly:NO containsBit:compoundMask];
 }
 
-+ (BOOL)is:(unsigned)field strictly:(BOOL)strictly containsBit:(unsigned long)bitMask {
++ (BOOL)is:(unsigned long)field strictly:(BOOL)strictly containsBit:(unsigned long)bitMask {
     
     return (strictly ? ((field & bitMask) == bitMask) : ((field & bitMask) != 0));
 }
 
-+ (BOOL)is:(unsigned)field strictly:(BOOL)strictly containsBits:(unsigned long)bitMask, ... {
++ (BOOL)is:(unsigned long)field strictly:(BOOL)strictly containsBits:(unsigned long)bitMask, ... {
     
     va_list bits;
     va_start(bits, bitMask);

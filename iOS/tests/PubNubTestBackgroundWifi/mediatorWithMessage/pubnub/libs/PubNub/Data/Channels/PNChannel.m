@@ -130,7 +130,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     }
     else if ([channelName length] == 0) {
 
-        PNLog(PNLogGeneralLevel, self, @"CAN'T CREATE CHANNEL WITH EMPTY NAME");
+        [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"CAN'T CREATE CHANNEL WITH EMPTY NAME"; }];
     }
 
     if (shouldUpdatePresenceObservingFlag) {
