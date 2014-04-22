@@ -183,6 +183,7 @@
 		DD71B79B41453399643BEB0D /* white-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71B76AAA1DD2BD6FBF5A92 /* white-button.png */; };
 		DD71B861D60C2DB2E44D1B6C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
 		DD71B8E5D5B91E4B8C3DB5DB /* PNDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71BD8F3333E37E45EE02FB /* PNDataManager.m */; };
+		DD71B97CA431D3920A4E09A0 /* PNLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71B69965406630E1169DA3 /* PNLogger.m */; };
 		DD71B993313A90FEE751189F /* right-single-entry-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71BCBCB80DE682EE0D5602 /* right-single-entry-background.png */; };
 		DD71BB431648E3B85C7E11F6 /* left-single-entry-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71B51E11D1E063A1AC9714 /* left-single-entry-background.png */; };
 		DD71BBB0E1B261CE7F7EF674 /* left-section-header-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71BDDDEF09AD121CF5E771 /* left-section-header-background.png */; };
@@ -547,8 +548,10 @@
 		DD71B1720D2FC6C2462806A1 /* NSString+PNDemoAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PNDemoAddition.m"; sourceTree = "<group>"; };
 		DD71B1A253ABE258B2CCF9F2 /* right-section-header-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right-section-header-background.png"; sourceTree = "<group>"; };
 		DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
+		DD71B2D069477553F7F8224D /* PNLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLogger.h; sourceTree = "<group>"; };
 		DD71B51E11D1E063A1AC9714 /* left-single-entry-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "left-single-entry-background.png"; sourceTree = "<group>"; };
 		DD71B64F7EC81A7C74192010 /* PNDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDataManager.h; sourceTree = "<group>"; };
+		DD71B69965406630E1169DA3 /* PNLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLogger.m; sourceTree = "<group>"; };
 		DD71B75FC2A1E90064167370 /* pubnub-large.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pubnub-large.png"; sourceTree = "<group>"; };
 		DD71B76AAA1DD2BD6FBF5A92 /* white-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-button.png"; sourceTree = "<group>"; };
 		DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -908,6 +911,8 @@
 				799C3BBC18F468EA002BC638 /* PNStructures.h */,
 				799C3C4518F5DBD1002BC638 /* PNHelper.h */,
 				799C3C4618F5DBD1002BC638 /* PNHelper.m */,
+				DD71B2D069477553F7F8224D /* PNLogger.h */,
+				DD71B69965406630E1169DA3 /* PNLogger.m */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -1551,6 +1556,7 @@
 				797B6FE318E2F0E100D88AAF /* PNChannelInformationView.m in Sources */,
 				799C3C0818F468EA002BC638 /* PNActionResponseParser.m in Sources */,
 				79052A4518F0962200A5C63B /* PNPushNotificationsAuditView.m in Sources */,
+				DD71B97CA431D3920A4E09A0 /* PNLogger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
