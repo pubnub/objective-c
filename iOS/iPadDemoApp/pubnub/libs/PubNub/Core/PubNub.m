@@ -3862,6 +3862,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     return self;
 }
 
+- (NSArray *)presenceEnabledChannels {
+    
+    return [self.messagingChannel presenceEnabledChannels];
+}
+
 
 #pragma mark - Client connection management methods
 
