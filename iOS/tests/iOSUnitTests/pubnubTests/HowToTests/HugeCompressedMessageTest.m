@@ -55,8 +55,6 @@
     
     [self waitGroup:resGroup];
     
-    NSLog(@"1. Connection - established");
-    
     // create channel
     PNChannel *channel = [PNChannel channelWithName:@"huge_message_channel"];
     
@@ -71,8 +69,6 @@
    }];
     
     [self waitGroup:resGroup];
-    
-    NSLog(@"2. Subcribe to channel.");
     
     dispatch_group_enter(resGroup);
     
@@ -89,12 +85,15 @@
             case PNMessageSendingError:
                 
                 // PubNub client failed to send message and reason is in 'data' object.
-                NSLog(@"PNMessageSendingError");
+                
+                STFail(@"Error during PNMessageSending occured: PNMessageSendingError");
+                
+                dispatch_group_leave(resGroup);
+                
                 break;
             case PNMessageSent:
             {
                 // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
-                NSLog(@"PNMessageSent");
                 
                 dispatch_group_leave(resGroup);
                 
@@ -103,11 +102,7 @@
         }
     }];
     
-    NSLog(@"3.1 Try to send huge compressed message");
-    
-    [self waitGroup:resGroup withTimout:20];
-    
-    NSLog(@"3.2 Successfull sent.");
+    [self waitGroup:resGroup withTimout:30];
 }
 
 #pragma mark - PubNub Delegates

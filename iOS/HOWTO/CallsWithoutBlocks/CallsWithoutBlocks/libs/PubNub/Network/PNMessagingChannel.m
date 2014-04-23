@@ -402,77 +402,77 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }];
 }
 
-- (void)rescheduleStoredRequests:(NSArray *)requestsList {
-    
+- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
+
     requestsList = [requestsList copy];
     if ([requestsList count] > 0) {
-        
+
         BOOL useLastTimeToken = [self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self];
         [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
                                        usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
                                                     BOOL *requestIdentifierEnumeratorStop) {
-                                           
+
                                            PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
-                                           
-                                           [request reset];
+
+                                           [request resetWithRetryCount:shouldResetRequestsRetryCount];
                                            request.closeConnection = NO;
-                                           
+
                                            BOOL isSubscribeRequest = [request isKindOfClass:[PNSubscribeRequest class]];
                                            if (isSubscribeRequest && self.isRestoringSubscriptionOnResume) {
-                                               
+
                                                if (!useLastTimeToken) {
-                                                   
+
                                                    [(PNSubscribeRequest *)request resetTimeToken];
                                                }
-                                               
+
                                                [PNBitwiseHelper removeFrom:&_messagingState bits:PNMessagingChannelUpdateSubscription, PNMessagingChannelResubscribeOnTimeOut,
                                                 PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR];
-                                               
+
                                                [PNBitwiseHelper addTo:&_messagingState bits:PNMessagingChannelRestoringSubscription,
                                                 PNMessagingChannelSubscriptionTimeTokenRetrieve, BITS_LIST_TERMINATOR];
-                                               
+
                                                [(PNSubscribeRequest *)request resetSubscriptionTimeToken];
-                                               
+
                                                // Notify delegate that messaging channel is about to restore subscription on previous channels
                                                [self.messagingDelegate messagingChannel:self willRestoreSubscriptionOnChannels:((PNSubscribeRequest *)request).channels
                                                                               sequenced:NO];
                                            }
-                                           
+
                                            // Check whether client is waiting for request completion
                                            BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
                                            if (isSubscribeRequest) {
-                                               
+
                                                isWaitingForCompletion = [(PNSubscribeRequest *)request isInitialSubscription];
                                            }
-                                           
+
                                            // Clean up query (if request has been stored in it)
                                            [self destroyRequest:request];
-                                           
+
                                            // Send request back into queue with higher priority among other requests
                                            [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
                                                 launchProcessing:NO];
                                        }];
-        
+
         // Try to check whether there is leave request or not in stack
         if ([self hasRequestsWithClass:[PNLeaveRequest class]]) {
-            
+
             PNBaseRequest *request = [[self requestsWithClass:[PNLeaveRequest class]] lastObject];
             if (request) {
-                
+
                 // Check whether client is waiting for request completion
                 BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
-                
+
                 // Clean up query (if request has been stored in it)
                 [self destroyRequest:request];
-                
+
                 // Send request back into queue with higher priority among other requests
                 [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
                      launchProcessing:NO];
             }
-            
+
         }
-        
-        
+
+
         [self scheduleNextRequest];
     }
 }
