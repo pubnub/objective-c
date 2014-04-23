@@ -169,7 +169,10 @@
     __block __pn_desired_weak __typeof(self) weakSelf = self;
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
 
-        PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK} PubNub client connected to: %@", origin);
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+            return [NSString stringWithFormat:@"{BLOCK} PubNub client connected to: %@", origin];
+        }];
 
         [weakSelf updateConnectionProgressMessage:[NSString stringWithFormat:@"Connected to '%@'",
                                                    [PNDataManager sharedInstance].configuration.origin]];
