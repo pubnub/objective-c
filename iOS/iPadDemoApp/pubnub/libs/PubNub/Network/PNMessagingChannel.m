@@ -898,6 +898,10 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
              andClientState:(NSDictionary *)clientState {
     
     NSMutableSet *channelsSet = nil;
+    
+    // Stores whether method is used to enable presence on channels (there is no regular channels, only presence observation).
+    BOOL isOnlyEnablingPresence = NO;
+    BOOL isDisablingPresenceOnAllChannels = NO;
     BOOL isChangingPresenceOnSubscribedChannels = NO;
     BOOL indirectionalPresenceModification = NO;
     NSSet *channelsForPresenceEnabling = nil;
@@ -1026,6 +1030,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         
         if ([channelsForPresenceEnabling count]) {
             
+            if ([subscribeRequest.channels count] == 0 && [channelsForPresenceDisabling count] == 0) {
+            
+                isOnlyEnablingPresence = YES;
+            }
+            
             subscribeRequest.channelsForPresenceEnabling = [channelsForPresenceEnabling allObjects];
             [self.messagingDelegate messagingChannel:self
              willEnablePresenceObservationOnChannels:[[channelsForPresenceEnabling valueForKey:@"observedChannel"] allObjects]
@@ -1038,6 +1047,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 [[NSSet setWithArray:subscribeRequest.channels] isEqualToSet:channelsForPresenceDisabling]) {
                 
                 hasValidSetOfChannels = NO;
+                isDisablingPresenceOnAllChannels = YES;
+                [self.subscribedChannelsSet removeAllObjects];
+                [self.oldSubscribedChannelsSet removeAllObjects];
                 
                 [self.messagingDelegate messagingChannel:self
                  didDisablePresenceObservationOnChannels:[[channelsForPresenceDisabling valueForKey:@"observedChannel"] allObjects]
@@ -1054,8 +1066,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         
         if (hasValidSetOfChannels) {
             
-            if (([channelsSet count] && [PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelSubscriptionWaitingForEvents]) ||
-                ((isPresenceModification && !indirectionalPresenceModification) || indirectionalPresenceModification)) {
+            if ((([channelsSet count] && [PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelSubscriptionWaitingForEvents]) ||
+                ((isPresenceModification && !indirectionalPresenceModification) || indirectionalPresenceModification)) &&
+                !isOnlyEnablingPresence && !isDisablingPresenceOnAllChannels) {
                 
                 subscribeRequest.closeConnection = YES;
             }
@@ -1086,7 +1099,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self reconnect];
         }
     }
-    if ([channelsSet count] == 0 && (!(isPresenceModification && indirectionalPresenceModification) || isChangingPresenceOnSubscribedChannels)) {
+    if ([channelsSet count] == 0 && (!(isPresenceModification && indirectionalPresenceModification) || isChangingPresenceOnSubscribedChannels) &&
+        !isOnlyEnablingPresence && !isDisablingPresenceOnAllChannels) {
         
         PNLog(PNLogCommunicationChannelLayerInfoLevel, self, @"[CHANNEL::%@] SUBSCRIBED ON SPECIFIC SET OF "
               "CHANNELS (ALREADY SUBSCRIBED)(STATE: %d)", self, self.messagingState);

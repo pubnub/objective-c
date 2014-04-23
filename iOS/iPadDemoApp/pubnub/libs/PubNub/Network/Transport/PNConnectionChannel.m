@@ -657,7 +657,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             [requests addObject:request];
         }
     }];
-
+    
     [requests enumerateObjectsUsingBlock:^(id request, NSUInteger requestIdx, BOOL *requestEnumeratorStop) {
 
         [self destroyRequest:request];
