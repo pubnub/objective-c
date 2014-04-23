@@ -121,7 +121,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  
  @return \c YES in case specified bit mask can be found in specified bit field.
  */
-+ (BOOL)is:(unsigned)field containsBit:(unsigned long)bitMask;
++ (BOOL)is:(unsigned long)field containsBit:(unsigned long)bitMask;
 
 /**
  Verify whether specified set of masks is in or not specified bit field.
@@ -134,7 +134,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  
  @return \c YES in case specified set of bit masks can be found in specified bit field.
  */
-+ (BOOL)is:(unsigned)field containsBits:(unsigned long)bitMask, ...;
++ (BOOL)is:(unsigned long)field containsBits:(unsigned long)bitMask, ...;
 
 /**
  Verify whether specified mask is in or not specified bit field.
@@ -152,7 +152,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  
  @return \c YES in case specified bit mask can be found in specified bit field.
  */
-+ (BOOL)is:(unsigned)field strictly:(BOOL)strictly containsBit:(unsigned long)bitMask;
++ (BOOL)is:(unsigned long)field strictly:(BOOL)strictly containsBit:(unsigned long)bitMask;
 
 /**
  Verify whether specified set of masks is in or not specified bit field.
@@ -170,7 +170,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  
  @return \c YES in case specified set of bit masks can be found in specified bit field.
  */
-+ (BOOL)is:(unsigned)field strictly:(BOOL)strictly containsBits:(unsigned long)bitMask, ...;
++ (BOOL)is:(unsigned long)field strictly:(BOOL)strictly containsBits:(unsigned long)bitMask, ...;
 
 /**
  Add specified bit mask into bit field.
