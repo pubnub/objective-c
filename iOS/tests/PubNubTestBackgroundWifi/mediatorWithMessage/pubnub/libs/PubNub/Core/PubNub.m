@@ -37,13 +37,8 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.6.1";
-<<<<<<< HEAD
 static NSString * const kPNCodebaseBranch = @"fix-pt68792608";
 static NSString * const kPNCodeCommitIdentifier = @"47bb086d59f944d236899d3b4b01e9bd817b6588";
-=======
-static NSString * const kPNCodebaseBranch = @"feature-pt65159444";
-static NSString * const kPNCodeCommitIdentifier = @"47f2f5dc60e06cfe183b5f1fa530de1ab4f3ac29";
->>>>>>> develop
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -1575,17 +1570,11 @@ withCompletionHandlingBlock:nil];
         }
         if (statusCode == 0) {
 
-<<<<<<< HEAD
-            PNLog(PNLogGeneralLevel, [self sharedInstance], @"UPDATE CLIENT STATE FOR IDENTIFIER %@ ON CHANNEL %@ TO: %@ (STATE: %@)",
-                  clientIdentifier, channel,
-                  [mergedClientState valueForKeyPath:channel.name], [self humanReadableStateFrom:[self sharedInstance].state]);
-=======
             [PNLogger logGeneralMessageFrom:[self sharedInstance] message:^NSString * {
 
                 return [NSString stringWithFormat:@"UPDATE CLIENT STATE FOR IDENTIFIER %@ ON CHANNEL %@ TO: %@ (STATE: %@)",
                         clientIdentifier, channel, mergedClientState, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
->>>>>>> develop
 
             if (handlerBlock != nil) {
 
