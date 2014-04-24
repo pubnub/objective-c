@@ -31,14 +31,6 @@
  * Hold current thread and keep it for
  * timeout value,
  * check state of group each time after timeInterval
- */
-- (void)waitGroup:(dispatch_group_t)dispatchGroup
-       withTimout:(NSInteger)timeout;
-
-/**
- * Hold current thread and keep it for
- * timeout value,
- * check state of group each time after timeInterval
  * timeout 30 second
  */
 - (void)waitGroup:(dispatch_group_t)dispatchGroup;
