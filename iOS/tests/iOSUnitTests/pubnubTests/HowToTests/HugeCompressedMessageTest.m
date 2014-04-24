@@ -15,7 +15,9 @@
 
 @end
 
-@implementation HugeCompressedMessageTest
+@implementation HugeCompressedMessageTest {
+    dispatch_group_t _resGroup;
+}
 
 - (void)setUp
 {
@@ -43,39 +45,36 @@
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
     [PubNub setClientIdentifier:@"iOS Functinal Test"];
     
-    dispatch_group_t resGroup =  dispatch_group_create();
+    _resGroup =  dispatch_group_create();
     
-    dispatch_group_enter(resGroup);
+    dispatch_group_enter(_resGroup);
     
     [PubNub connectWithSuccessBlock:^(NSString *res) {
-        dispatch_group_leave(resGroup);
+        dispatch_group_leave(_resGroup);
     } errorBlock:^(PNError *error) {
         STFail(@"Error occurs during connection: %@", error);
-        dispatch_group_leave(resGroup);
+        dispatch_group_leave(_resGroup);
     }];
     
-    [self waitGroup:resGroup];
-    
-    NSLog(@"1. Connection - established");
+    [self waitGroup:_resGroup];
     
     // create channel
     PNChannel *channel = [PNChannel channelWithName:@"huge_message_channel"];
     
-    dispatch_group_enter(resGroup);
+    dispatch_group_enter(_resGroup);
     
     [PubNub subscribeOnChannel:channel
    withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
        
-       dispatch_group_leave(resGroup);
+       dispatch_group_leave(_resGroup);
        
        STAssertFalse(state == PNSubscriptionProcessNotSubscribedState, @"%@", subscriptionError.localizedDescription);
    }];
     
-    [self waitGroup:resGroup];
+    [self waitGroup:_resGroup];
     
-    NSLog(@"2. Subcribe to channel.");
-    
-    dispatch_group_enter(resGroup);
+    dispatch_group_enter(_resGroup);
+    dispatch_group_enter(_resGroup);
     
     [PubNub sendMessage:hugeString
               toChannel:channel
@@ -90,25 +89,24 @@
             case PNMessageSendingError:
                 
                 // PubNub client failed to send message and reason is in 'data' object.
-                NSLog(@"PNMessageSendingError");
+                
+                STFail(@"Error during PNMessageSending occured: PNMessageSendingError");
+                
+                dispatch_group_leave(_resGroup);
+                
                 break;
             case PNMessageSent:
             {
                 // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
-                NSLog(@"PNMessageSent");
                 
-                dispatch_group_leave(resGroup);
+                dispatch_group_leave(_resGroup);
                 
                 break;
             }
         }
     }];
     
-    NSLog(@"3.1 Try to send huge compressed message");
-    
-    [self waitGroup:resGroup withTimout:20];
-    
-    NSLog(@"3.2 Successfull sent.");
+    [self waitGroup:_resGroup withTimout:30];
 }
 
 #pragma mark - PubNub Delegates
@@ -116,10 +114,13 @@
 - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message
            withError:(PNError *)error {
     NSLog(@"Fail message send: %@", error);
+    
+    dispatch_group_leave(_resGroup);
 }
 
 - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
     NSLog(@"Did send message");
+    dispatch_group_leave(_resGroup);
 }
 
 

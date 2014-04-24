@@ -19,7 +19,6 @@
 #import "PNConnection.h"
 #import "TestSemaphor.h"
 #import "Swizzler.h"
-#import "PNConnectionBadJson.h"
 #import "PNMessageHistoryRequest.h"
 #import "PNClientStateUpdateRequest.h"
 #import "PNJSONSerialization.h"
