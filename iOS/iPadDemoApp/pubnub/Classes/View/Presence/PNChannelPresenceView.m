@@ -160,7 +160,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             [weakSelf updateLayout];
             
             detailedDescription = [NSString stringWithFormat:[@"channelPresenceSuccessDetailedDescription" localized],
-                                   ((PNChannel *)requestError.associatedObject).name];
+                                   channel.name];
         }
         else {
             

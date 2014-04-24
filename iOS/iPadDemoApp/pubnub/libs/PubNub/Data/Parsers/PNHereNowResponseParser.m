@@ -50,7 +50,8 @@
         if (!channels) {
 
             PNChannel *channel = (PNChannel *)response.additionalData;
-            channels = @{channel.name: @{kPNResponseUUIDKey: [responseData objectForKey:kPNResponseUUIDKey],
+            NSArray *participants = [responseData objectForKey:kPNResponseUUIDKey];
+            channels = @{channel.name: @{kPNResponseUUIDKey: (participants ? participants : @[]),
                                     kPNResponseOccupancyKey: [responseData objectForKey:kPNResponseOccupancyKey]
             }};
         }
