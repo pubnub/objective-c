@@ -4344,7 +4344,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'application' access level.
@@ -4461,7 +4461,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'application' access level.
@@ -4566,7 +4566,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'application' access level.
@@ -4683,7 +4683,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'application' access level.
@@ -4787,7 +4787,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @warning \a 'application' access level is top-layer of access tree. If any of child access levels (\a 'channel' or
  \a 'user') grant only one of \a 'read' or \a 'write' access rights, \b PubNub client will ignore them and provide
@@ -4899,7 +4899,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @warning \a 'application' access level is top-layer of access tree. If any of child access levels (\a 'channel' or
  \a 'user') grant only one of \a 'read' or \a 'write' access rights, \b PubNub client will ignore them and provide
@@ -5183,7 +5183,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'channel' access level.
@@ -5302,7 +5302,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'channel' access level.
@@ -5409,7 +5409,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'user' access level.
@@ -5534,7 +5534,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'user' access level.
@@ -5647,7 +5647,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'channel' access level.
@@ -5766,7 +5766,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'channel' access level.
@@ -5873,7 +5873,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'user' access level.
@@ -5998,7 +5998,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'read' access right and revoke \a 'write' access right for
  \a 'user' access level.
@@ -6111,7 +6111,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'channel' access level.
@@ -6230,7 +6230,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'channel' access level.
@@ -6342,7 +6342,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'channel' access level.
@@ -6461,7 +6461,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'channel' access level.
@@ -6566,7 +6566,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'user' access level.
@@ -6698,7 +6698,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
 
- @note You can pass \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is \b 1440 minutes).
 
  @note When this API is used, it will grant \a 'write' access right and revoke \a 'read' access right for
  \a 'user' access level.
