@@ -140,7 +140,6 @@ static const NSInteger kTimeout = 30;
     
 	clientStateExpect = clientState1;
 	[self subscribeOnChannelsWithClientState:clientState1];
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:5]];
 	[self requestClientStateExpectState:clientState1];
     
 	clientStateExpect = clientState2;
@@ -333,6 +332,10 @@ static const NSInteger kTimeout = 30;
 
 			STAssertTrue( [channel.name isEqualToString: client.channel.name] == YES, @"invalid channel name");
 			NSLog(@"client.data channel %@\nexpect state %@, \n%@", client.data, expectState, channel.name);
+           
+           if (![client.data isEqualToDictionary: expectState]) {
+               NSLog(@"Error!");
+           }
            
 			STAssertTrue( [client.data isEqualToDictionary: expectState], @"invalid client.data %@", client.data);
             dispatch_group_leave(resGroup);
