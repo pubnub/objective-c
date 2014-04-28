@@ -2052,11 +2052,9 @@ A full list of notifications are stored in [__PNNotifications.h__](iPadDemoApp/p
 
 ### Logging
 
-Logging can be controlled via the following booleans:
-
+You can use logging system provided by PubNub for you using [__PNLogger__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNLogger.h) singleton instance. You can use logger for your own need and also logger output is used by PubNub support team to help you resolve any possible issues which may occur.  
+[__PNMacro.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNMacro.h#L44) contains defines for initial [__PNLogger__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNLogger.h) configuration:  
 ```c
-#define kPNLogMaximumLogFileSize (10 * 1024 * 1024)
-
 #define PNLOG_LOGGING_ENABLED 1
 #define PNLOG_STORE_LOG_TO_FILE 1
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
@@ -2072,26 +2070,78 @@ Logging can be controlled via the following booleans:
 #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED 0
 #define PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED 0
 ```
-in [pubnub/libs/PubNub/Misc/PNMacro.h](pubnub/libs/PubNub/Misc/PNMacro.h#L37)
+**By default for client which has been used via CocoaPods logging will be completely disabled and you will have to use `+loggerEnabled:` and `+dumpToFile:` if you want to change this behavior.**  
 
-To disable logging, set **PNLOG_LOGGING_ENABLED** to 0.
+You can alter any of available levels during run-time using provided methods of [__PNLogger__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNLogger.h#L273) singleton:  
+```objc
++ (void)enableFor:(PNLogLevel)level;
++ (void)disableFor:(PNLogLevel)level;
+```
 
-By default, all non-http response logging is enabled to file with a 10MB, single archived file log rotation.
+[__PNLogger__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNLogger.h#L15) is bit mask which is described in logger's header file:  
 ```c
-kPNLogMaximumLogFileSize (10 * 1024 * 1024)
+// This level can be used for any information output. PubNub client itself use this level a lot for own needs.
+PNLogGeneralLevel = 1 << 0,
+
+// This method allow to log out when certain delegate method is about to be called.
+PNLogDelegateLevel = 1 << 1,
+
+// Level which allow to observe for events related to network reachability.
+PNLogReachabilityLevel = 1 << 2,
+
+// Response deserializer level which allow to analyze possible issues with received data.
+PNLogDeserializerInfoLevel = 1 << 3,
+PNLogDeserializerErrorLevel = 1 << 4,
+
+// Underlaying layer which is responsible for connection with PubNub servers.
+PNLogConnectionLayerErrorLevel = 1 << 5,
+PNLogConnectionLayerInfoLevel = 1 << 6,
+
+// Additional level for connection which allow to print out raw HTTP packet content.
+PNLogConnectionLayerHTTPLoggingLevel = 1 << 7,
+
+// Underlaying layer which is responsible requests-response processing.
+PNLogCommunicationChannelLayerErrorLevel = 1 << 8,
+PNLogCommunicationChannelLayerWarnLevel = 1 << 9,
+PNLogCommunicationChannelLayerInfoLevel = 1 << 10
 ```
-    
-In the above, 10 represents the size in MB. Set it to the size you desire.  
 
-**Keep in mind, this file size is only checked/rotated at application start. If it rises above the max size during application run-time, it will not rotate until after the application has been restarted.**
-
-If you choose the PNLOG_STORE_LOG_TO_FILE option, you will find your log written to you app's Document directory as 
-
+To log out message for any of provided levels you can use corresponding methods:  
+```objc
++ (void)logGeneralMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logDelegateMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logReachabilityMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logDeserializerInfoMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logDeserializerErrorMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logConnectionErrorMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logConnectionInfoMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logCommunicationChannelErrorMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logCommunicationChannelWarnMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
++ (void)logCommunicationChannelInfoMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
 ```
-pubnub-console-dump.txt
+
+Or use method which allow you manually specify logging levels (not shorthand):  
+```objc
++ (void)logFrom:(id)sender forLevel:(PNLogLevel)level message:(NSString *(^)(void))messageBlock;
 ```
 
-You can use a utility such as [iExplorer](http://www.macroplant.com/iexplorer/) to easily pull the pubnub-console-dump.txt file off your device for later review.
+Here is how we can log out simple hello world message:  
+```objc
+[PNLogger logGeneralMessageFrom:self message:^{ return @"Hello world!!!"}];
+```
+
+If you want to enable or disable all logging levels, you can use `+loggerEnabled:` and pass whether logger should print out messages or not.  
+
+All messages which appear in Xcode / device console can be stored into dump file. You can specify whether dump file should be created or not using `+dumpToFile:` method of [__PNLogger__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNLogger.h#L213) singleton.  
+
+`+dumpFilePath` will tell you where dump file is stored on device / simulator. By default dump is stored in file named _pubnub-console-dump.txt_ inside application's Document folder.  
+Also there is limit on single dump file set to __10Mb__ (maximum there is two files which provide log rotation). Default dump file size can be changes using `+setMaximumDumpFileSize:` method and specify size in bytes.  
+
+Sometimes there is situations when dump of HTTP packets maybe required to resolve possible issues and logger allow to enable their gathering. By default library won't store packets to preserve space consumed by application. You can enable or disable HTTP packets logging using `+dumpHTTPResponseToFile:` method.  
+
+**Keep in mind, this file size is only checked/rotated at application start. If it rises above the max size during application run-time, it will not rotate until after the application has been restarted.**  
+
+You can use a utility such as [iExplorer](http://www.macroplant.com/iexplorer/) to easily pull the _pubnub-console-dump.txt_ file off your device for later review.  
 
 ### Tests with OCUnit and OCMock
 
