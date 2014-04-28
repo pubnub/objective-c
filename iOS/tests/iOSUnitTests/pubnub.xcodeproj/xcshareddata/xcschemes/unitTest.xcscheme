@@ -62,6 +62,9 @@
                   Identifier = "HowToTestsCompressed">
                </Test>
                <Test
+                  Identifier = "HugeCompressedMessageTest">
+               </Test>
+               <Test
                   Identifier = "OversizedJSON">
                </Test>
                <Test
