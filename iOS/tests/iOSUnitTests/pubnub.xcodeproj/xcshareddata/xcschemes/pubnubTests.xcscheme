@@ -44,9 +44,6 @@
                   Identifier = "ClientIdentifier">
                </Test>
                <Test
-                  Identifier = "ClientStateTest">
-               </Test>
-               <Test
                   Identifier = "Configuration">
                </Test>
                <Test
@@ -60,6 +57,9 @@
                </Test>
                <Test
                   Identifier = "HowToTestsCompressed">
+               </Test>
+               <Test
+                  Identifier = "HugeCompressedMessageTest">
                </Test>
                <Test
                   Identifier = "NSData_PNAdditionsTest">
@@ -242,6 +242,26 @@
                   Identifier = "W_ChaosTest">
                </Test>
             </SkippedTests>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "96CE1B65190A557500F163F8"
+               BuildableName = "PubNubSubUnsubTestTests.xctest"
+               BlueprintName = "PubNubSubUnsubTestTests"
+               ReferencedContainer = "container:pubnub.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "96CE1BC2190A570F00F163F8"
+               BuildableName = "pnSubUnsubTestTests.xctest"
+               BlueprintName = "pnSubUnsubTestTests"
+               ReferencedContainer = "container:pubnub.xcodeproj">
+            </BuildableReference>
          </TestableReference>
       </Testables>
    </TestAction>
