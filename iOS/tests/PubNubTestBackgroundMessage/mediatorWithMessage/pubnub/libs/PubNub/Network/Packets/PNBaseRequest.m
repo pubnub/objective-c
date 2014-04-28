@@ -16,6 +16,7 @@
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -70,8 +71,8 @@
     // Check whether initialization is successful or not
     if((self = [super init])) {
         
-        self.identifier = PNUniqueIdentifier();
-        self.shortIdentifier = PNShortenedIdentifierFromUUID(self.identifier);
+        self.identifier = [PNHelper UUID];
+        self.shortIdentifier = [PNHelper shortenedUUIDFromUUID:self.identifier];
     }
     
     
@@ -89,8 +90,11 @@
 }
 
 - (NSString *)resourcePath {
-    
-    PNLog(PNLogCommunicationChannelLayerWarnLevel, self, @" THIS METHOD SHOULD BE RELOADED IN SUBCLASS");
+
+    [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+
+        return @"THIS METHOD SHOULD BE RELOADED IN SUBCLASS";
+    }];
     
     return [self resourcePath:NO];
 }
@@ -102,7 +106,11 @@
 
 - (NSString *)resourcePath:(BOOL)forConsole {
 
-    PNLog(PNLogCommunicationChannelLayerWarnLevel, self, @" THIS METHOD SHOULD BE RELOADED IN SUBCLASS");
+    [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+
+        return @"THIS METHOD SHOULD BE RELOADED IN SUBCLASS";
+    }];
+
 
     return @"/";
 }

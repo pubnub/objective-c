@@ -295,8 +295,8 @@ static NSTimeInterval const kPNConfigurationDisappearAnimationDuration = 0.4f;
     BOOL canUseInsecureConnection = self.insecureConnectionSwitch.isOn;
     NSTimeInterval subscribeRequestTimeout = [[self.subscribeRequestTimeoutInputField.text stringByTrimmingCharactersInSet:extraChars] doubleValue];
     NSTimeInterval nonSubscribeRequestTimeout = [[self.nonSubscriptionRequestTimeoutInputField.text stringByTrimmingCharactersInSet:extraChars] doubleValue];
-    NSInteger heartbeat = [[self.presenceHeartbeatInputField.text stringByTrimmingCharactersInSet:extraChars] doubleValue];
-    NSInteger heartbeatInterval = [[self.presenceHeartbeatIntervalInputField.text stringByTrimmingCharactersInSet:extraChars] doubleValue];
+    int heartbeat = [[self.presenceHeartbeatInputField.text stringByTrimmingCharactersInSet:extraChars] intValue];
+    int heartbeatInterval = [[self.presenceHeartbeatIntervalInputField.text stringByTrimmingCharactersInSet:extraChars] intValue];
     
     PNConfiguration *configuration = nil;
     if ([subscribeKey length] || [publishKey length]) {

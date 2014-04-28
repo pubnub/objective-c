@@ -24,7 +24,6 @@
 #import "PNClient+Protected.h"
 #import "PNError+Protected.h"
 #import "PubNub+Protected.h"
-#import "PNPrivateMacro.h"
 #import "PNMacro.h"
 
 #import "PNBaseRequest+Protected.h"

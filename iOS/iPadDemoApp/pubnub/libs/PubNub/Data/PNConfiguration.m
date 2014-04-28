@@ -11,8 +11,8 @@
 //
 
 #import "PNDefaultConfiguration.h"
-#import "PNPrivateMacro.h"
 #import "PNConstants.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -191,7 +191,13 @@
         // Checking whether user changed origin host from default
         // or not
         if ([self.origin isEqualToString:kPNDefaultOriginHost]) {
-            PNLog(PNLogGeneralLevel, self, @"\n{WARN} Before running in production, please contact support@pubnub.com for your custom origin.\nPlease set the origin from %@ to IUNDERSTAND.pubnub.com to remove this warning.", self.origin);
+
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+                return [NSString stringWithFormat:@"\n{WARN} Before running in production, please contact "
+                        "support@pubnub.com for your custom origin.\nPlease set the origin from %@ to "
+                        "IUNDERSTAND.pubnub.com to remove this warning.", self.origin];
+            }];
         }
     }
     
@@ -397,7 +403,7 @@
                                                                                      kPNServiceMainDomain]
                                                                          withString:@""];
 
-        self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)PNRandomInteger(),
+        self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
                         kPNServiceMainDomain];
     }
     else {

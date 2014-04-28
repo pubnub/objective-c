@@ -9,8 +9,8 @@
 #import "PNAccessRightsResponseParser+Protected.h"
 #import "PNAccessRightsInformation+Protected.h"
 #import "PNAccessRightsCollection+Protected.h"
-#import "PNPrivateMacro.h"
 #import "PNResponse.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -369,18 +369,18 @@ struct PNAccessLevelsStruct PNAccessLevels = {
     NSNumber *writeRightState = [accessRightsInformation objectForKey:kPNWriteAccessRightStateKey];
 
     if (readRightState != nil && [readRightState intValue] != 0) {
-
-        PNBitOn(&accessRights, PNReadAccessRight);
+        
+        [PNBitwiseHelper addTo:&accessRights bit:PNReadAccessRight];
     }
 
     if (writeRightState != nil && [writeRightState intValue] != 0) {
-
-        PNBitOn(&accessRights, PNWriteAccessRight);
+        
+        [PNBitwiseHelper addTo:&accessRights bit:PNWriteAccessRight];
     }
 
-    if (PNBitsIsOn(accessRights, NO, PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR)) {
+    if ([PNBitwiseHelper is:accessRights containsBits:PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR]) {
 
-        PNBitOff(&accessRights, PNNoAccessRights);
+        [PNBitwiseHelper removeFrom:&accessRights bit:PNNoAccessRights];
     }
 
 

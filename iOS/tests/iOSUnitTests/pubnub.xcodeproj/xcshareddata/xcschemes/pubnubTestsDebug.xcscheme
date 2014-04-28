@@ -264,6 +264,26 @@
                </Test>
             </SkippedTests>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "96CE1B65190A557500F163F8"
+               BuildableName = "PubNubSubUnsubTestTests.xctest"
+               BlueprintName = "PubNubSubUnsubTestTests"
+               ReferencedContainer = "container:pubnub.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "96CE1BC2190A570F00F163F8"
+               BuildableName = "pnSubUnsubTestTests.xctest"
+               BlueprintName = "pnSubUnsubTestTests"
+               ReferencedContainer = "container:pubnub.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

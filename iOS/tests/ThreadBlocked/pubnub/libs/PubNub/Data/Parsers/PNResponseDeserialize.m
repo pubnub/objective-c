@@ -131,7 +131,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
     void(^malformedResponseParseErrorHandler)(NSData *, NSRange) = ^(NSData *responseData, NSRange subrange) {
 
-        if (PNLoggingEnabledForLevel(PNLogDeserializerErrorLevel)) {
+        [PNLogger logDeserializerErrorMessageFrom:self message:^NSString * {
 
             NSData *failedResponseData = [responseData subdataWithRange:subrange];
             NSString *encodedContent = [[NSString alloc] initWithData:failedResponseData encoding:NSUTF8StringEncoding];
@@ -144,10 +144,10 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     encodedContent = @"Binary data (can't be stringified)";
                 }
             }
-            PNLog(PNLogDeserializerErrorLevel, self, @" Failed to parse response (%llu bytes long)\nContent: %@\n",
-                  [failedResponseData length],
-                  encodedContent);
-        }
+
+            return [NSString stringWithFormat:@"Failed to parse response (%llu bytes long)\nContent: %@\n",
+                    (unsigned long long)[failedResponseData length], encodedContent];
+        }];
     };
 
     @autoreleasepool {
@@ -352,11 +352,12 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     NSData *httpPayload = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(message));
                     NSString *encodedContent = [[NSString alloc] initWithData:httpPayload
                                                                      encoding:NSASCIIStringEncoding];
-                    PNLog(PNLogDeserializerInfoLevel,
-                          self,
-                          @"Received strange response with '%d' status code\nContent: %@\n",
-                          statusCode,
-                          encodedContent);
+                    [PNLogger logDeserializerInfoMessageFrom:self
+                                                     message:^NSString * {
+
+                        return [NSString stringWithFormat:@"Received strange response with '%ld' status code\nContent: %@\n",
+                                (long)statusCode, encodedContent];
+                    }];
                 }
 
                 // Check whether there provided content is larger than declared by 'Content-Length' or not
@@ -407,9 +408,12 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     }
 
                     *isIncompleteResponse = responseBody == nil;
+                    [PNLogger logDeserializerInfoMessageFrom:self
+                                                     message:^NSString * {
 
-                    PNLog(PNLogDeserializerInfoLevel, self, @" RAW DATA: %@",
-                          [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding]);
+                        return [NSString stringWithFormat:@"RAW DATA: %@",
+                                [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding]];
+                    }];
                     response = [PNResponse responseWithContent:responseBody
                                                           size:responseSubdata.length
                                                           code:statusCode

@@ -112,7 +112,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         [self.participantStateSwitch setOn:NO animated:YES];
     }
     self.requestButton.enabled = [self.channelName length] > 0;
-    self.participantsCountLabel.text = [NSString stringWithFormat:@"%d", [[self.presenceHelper data] count]];
+    self.participantsCountLabel.text = [NSString stringWithFormat:@"%d", (unsigned int)[[self.presenceHelper data] count]];
 }
 
 - (NSTimeInterval)appearAnimationDuration {
@@ -155,7 +155,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         
         if (!requestError) {
             
-            weakSelf.participantsCountLabel.text = [NSString stringWithFormat:@"%d", [[weakSelf.presenceHelper data] count]];
+            weakSelf.participantsCountLabel.text = [NSString stringWithFormat:@"%d", (unsigned int)[[weakSelf.presenceHelper data] count]];
             [weakSelf.participantsList reloadData];
             [weakSelf updateLayout];
             

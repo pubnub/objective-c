@@ -177,8 +177,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                           [weakSelf extractServiceData];
                                       }
                                            errorBlock:^(NSError *error) {
+                                               [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
 
-                                               PNLog(PNLogGeneralLevel, weakSelf, @"JSON DECODE ERROR: %@", error);
+                                                   return [NSString stringWithFormat:@"JSON DECODE ERROR: %@", error];
+                                               }];
                                                [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
         }
@@ -186,7 +188,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         // characters which can't be encoded.
         else {
 
-            PNLog(PNLogGeneralLevel, self, @"FAILED TO DECODE DATA");
+            [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"FAILED TO DECODE DATA"; }];
             [self handleJSONDecodeErrorWithCode:kPNResponseEncodingError];
         }
     }

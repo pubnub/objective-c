@@ -21,6 +21,7 @@
 #import "PubNub+Protected.h"
 #import "PNCryptoHelper.h"
 #import "PNConstants.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -126,11 +127,12 @@
             message = [PubNub AESEncrypt:message error:&encryptionError];
             
             if (encryptionError != nil) {
-                
-                PNLog(PNLogCommunicationChannelLayerErrorLevel,
-                      self,
-                      @"Message encryption failed with error: %@\nUnencrypted message will be sent.",
-                      encryptionError);
+
+                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+
+                    return [NSString stringWithFormat:@"Message encryption failed with error: %@\nUnencrypted message"
+                            " will be sent.", encryptionError];
+                }];
             }
         }
         
@@ -196,8 +198,8 @@
                         [self.message.channel escapedName],
                         self.message.message,
                         ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
-
-        signature = PNHMACSHA256String(secretKey, signedRequestPath);
+        
+        signature = [PNEncryptionHelper HMACSHA256FromString:signedRequestPath withKey:secretKey];
     }
 #endif
 

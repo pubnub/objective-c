@@ -185,7 +185,7 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <participants: %@, participants count: %i, channel: %@>",
+    return [NSString stringWithFormat:@"%@ (%p): <participants: %@, participants count: %lu, channel: %@>",
                     NSStringFromClass([self class]),
                     self,
                     self.hereNow.participants,

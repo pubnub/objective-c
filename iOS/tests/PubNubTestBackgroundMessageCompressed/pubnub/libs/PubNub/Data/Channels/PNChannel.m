@@ -16,6 +16,7 @@
 #import "PNClient+Protected.h"
 #import "PNPrivateImports.h"
 #import "PNConstants.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -129,7 +130,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     }
     else if ([channelName length] == 0) {
 
-        PNLog(PNLogGeneralLevel, self, @"CAN'T CREATE CHANNEL WITH EMPTY NAME");
+        [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"CAN'T CREATE CHANNEL WITH EMPTY NAME"; }];
     }
 
     if (shouldUpdatePresenceObservingFlag) {
@@ -266,7 +267,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
         if ([self.participantsList count] < event.occupancy) {
 
 
-            [self.participantsList setValue:[PNClient anonymousClientForChannel:self] forKey:PNUniqueIdentifier()];
+            [self.participantsList setValue:[PNClient anonymousClientForChannel:self] forKey:[PNHelper UUID]];
         }
         // Check whether 'anonymous' (or 'unknown') person leaved channel
         // (calculated basing on previous number of participants)
@@ -305,7 +306,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
         if ([client isAnonymous]) {
 
             client.channel = self;
-            clientStoreIdentifier = PNUniqueIdentifier();
+            clientStoreIdentifier = [PNHelper UUID];
         }
         [self.participantsList setValue:client forKey:clientStoreIdentifier];
     }];
