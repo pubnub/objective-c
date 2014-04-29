@@ -71,8 +71,13 @@ static const NSInteger kTimeout = 6;
 //    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe" subscribeKey:@"pub-c-12b1444d-4535-4c42-a003-d509cc071e09" secretKey:nil
 //                                                                   cipherKey:nil authorizationKey:nil];
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo-36" subscribeKey:@"demo-36" secretKey:nil
+//    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo-36" subscribeKey:@"demo-36" secretKey:nil
+//                                                                   cipherKey:nil authorizationKey:nil];
+
+    
+    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo-36" subscribeKey:@"demo-36" secretKey:nil
                                                                    cipherKey:nil authorizationKey:nil];
+
     
 //    configuration.presenceHeartbeatTimeout = 20;
 //    configuration.presenceHeartbeatInterval = 20;
@@ -92,7 +97,7 @@ static const NSInteger kTimeout = 6;
                          }];
     
     [GCDWrapper waitGroup:resGroup];
-    NSLog(@"1.1 Subscribed successfully");
+    NSLog(@"1.1 Connected successfully");
     
     // create channel
     PNChannel *channel = [PNChannel channelWithName:@"iosdev_sub_unsub_test"];
@@ -129,8 +134,10 @@ static const NSInteger kTimeout = 6;
            NSLog(@"1.4:%ld client.data channel %@\nexpect state %@, \n%@", i, client.data, clientState, channel.name);
            
            if (![client.data isEqualToDictionary:clientState]) {
-               NSLog(@"1.4.1:%ld Error!", i);
+               NSLog(@"1.4.1 Error!: %ld", i);
            }
+           
+           NSLog(@"SubPub: %@ <-> %@", client.data, clientState);
            
            dispatch_group_leave(resGroup);
        }];
@@ -147,6 +154,8 @@ static const NSInteger kTimeout = 6;
                 
                 // PubNub client successfully unsubscribed from specified channels.
                 NSLog(@"1.5:%ld Successfully unsubscribed from channel: %@ with state: %@", i, [channel name], clientState);
+                
+                dispatch_group_leave(resGroup);
             }
             else {
                 
@@ -158,15 +167,15 @@ static const NSInteger kTimeout = 6;
                 // unsubscribe.
             }
             
-            dispatch_group_leave(resGroup);
-            
             [GCDWrapper waitGroup:resGroup
                        withTimout:kTimeout];
             
             NSLog(@"BEFORE sleep: %ld", i);
-            [GCDWrapper sleepForSeconds:10];
+            [GCDWrapper sleepForSeconds:1];
             NSLog(@"AFTER sleep: %ld", i);
         }];
+        
+        NSLog(@"iteration: %ld", i);
     }
     
     [PubNub disconnect];
