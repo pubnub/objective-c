@@ -119,9 +119,6 @@
                   Identifier = "PNConfigurationTest">
                </Test>
                <Test
-                  Identifier = "PNConnectionChannelTest">
-               </Test>
-               <Test
                   Identifier = "PNConnectionTest">
                </Test>
                <Test
@@ -207,6 +204,9 @@
                </Test>
                <Test
                   Identifier = "PNResponseTest">
+               </Test>
+               <Test
+                  Identifier = "PNServiceChannelTest">
                </Test>
                <Test
                   Identifier = "PNSubscribeRequestTest">
