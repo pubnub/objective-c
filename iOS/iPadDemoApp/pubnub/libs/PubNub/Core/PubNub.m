@@ -37,8 +37,8 @@
 #pragma mark Static
 
 static NSString * const kPNLibraryVersion = @"3.6.1";
-static NSString * const kPNCodebaseBranch = @"fix-pt68792608";
-static NSString * const kPNCodeCommitIdentifier = @"47bb086d59f944d236899d3b4b01e9bd817b6588";
+static NSString * const kPNCodebaseBranch = @"develop";
+static NSString * const kPNCodeCommitIdentifier = @"fa8b146775ac51dc90e611741101e9199fc6316e";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -4240,6 +4240,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     
     return self;
+}
+
+- (NSArray *)presenceEnabledChannels {
+    
+    return [self.messagingChannel presenceEnabledChannels];
 }
 
 

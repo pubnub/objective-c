@@ -12,16 +12,29 @@
 /**
  Enum represent available logger levels which can be used.
  */
-typedef NS_OPTIONS(NSUInteger, PNLogLevel) {
+typedef NS_OPTIONS(unsigned long, PNLogLevel) {
 
+    // This level can be used for any information output. PubNub client itself use this level a lot for own needs.
     PNLogGeneralLevel = 1 << 0,
+    
+    // This method allow to log out when certain delegate method is about to be called.
     PNLogDelegateLevel = 1 << 1,
+    
+    // Level which allow to observe for events related to network reachability.
     PNLogReachabilityLevel = 1 << 2,
+    
+    // Response deserializer level which allow to analyze possible issues with received data.
     PNLogDeserializerInfoLevel = 1 << 3,
+    
+    // Underlaying layer which is responsible for connection with PubNub servers.
     PNLogDeserializerErrorLevel = 1 << 4,
     PNLogConnectionLayerErrorLevel = 1 << 5,
     PNLogConnectionLayerInfoLevel = 1 << 6,
+    
+    // Additional level for connection which allow to print out raw HTTP packet content.
     PNLogConnectionLayerHTTPLoggingLevel = 1 << 7,
+    
+    // Underlaying layer which is responsible requests-response processing.
     PNLogCommunicationChannelLayerErrorLevel = 1 << 8,
     PNLogCommunicationChannelLayerWarnLevel = 1 << 9,
     PNLogCommunicationChannelLayerInfoLevel = 1 << 10

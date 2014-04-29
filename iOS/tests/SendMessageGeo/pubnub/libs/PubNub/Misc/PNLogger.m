@@ -370,49 +370,52 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (24 * 1024);
     [[self class] dumpToFile:(PNLOG_STORE_LOG_TO_FILE == 1)];
     [[self class] dumpHTTPResponseToFile:(PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_STORING_ENABLED == 1)];
 
+    PNLogLevel level = 0;
     #if PNLOG_GENERAL_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogGeneralLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogGeneralLevel];
     #endif
 
     #if PNLOG_DELEGATE_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogDelegateLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogDelegateLevel];
     #endif
 
     #if PNLOG_REACHABILITY_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogReachabilityLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogReachabilityLevel];
     #endif
 
     #if PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogDeserializerInfoLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogDeserializerInfoLevel];
     #endif
 
     #if PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogDeserializerErrorLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogDeserializerErrorLevel];
     #endif
 
     #if PNLOG_COMMUNICATION_CHANNEL_LAYER_ERROR_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogCommunicationChannelLayerErrorLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogCommunicationChannelLayerErrorLevel];
     #endif
 
     #if PNLOG_COMMUNICATION_CHANNEL_LAYER_INFO_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogCommunicationChannelLayerInfoLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogCommunicationChannelLayerInfoLevel];
     #endif
 
     #if PNLOG_COMMUNICATION_CHANNEL_LAYER_WARN_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogCommunicationChannelLayerWarnLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogCommunicationChannelLayerWarnLevel];
     #endif
 
     #if PNLOG_CONNECTION_LAYER_ERROR_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogConnectionLayerErrorLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogConnectionLayerErrorLevel];
     #endif
 
     #if PNLOG_CONNECTION_LAYER_INFO_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogConnectionLayerInfoLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogConnectionLayerInfoLevel];
     #endif
 
     #if PNLOG_CONNECTION_LAYER_RAW_HTTP_RESPONSE_LOGGING_ENABLED == 1
-        [[self class] enableFor:PNLogConnectionLayerHTTPLoggingLevel];
+        [PNBitwiseHelper addTo:&level bit:PNLogConnectionLayerHTTPLoggingLevel];
     #endif
+    
+    [[self class] enableFor:level];
 }
 
 - (void)prepareForAsynchronousFileProcessing {
