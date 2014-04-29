@@ -146,6 +146,9 @@
                   Identifier = "PNHereNowResponseParserTest">
                </Test>
                <Test
+                  Identifier = "PNJSONSerializationTest">
+               </Test>
+               <Test
                   Identifier = "PNLatencyMeasureRequestTest">
                </Test>
                <Test
@@ -204,9 +207,6 @@
                </Test>
                <Test
                   Identifier = "PNResponseTest">
-               </Test>
-               <Test
-                  Identifier = "PNServiceChannelTest">
                </Test>
                <Test
                   Identifier = "PNSubscribeRequestTest">
