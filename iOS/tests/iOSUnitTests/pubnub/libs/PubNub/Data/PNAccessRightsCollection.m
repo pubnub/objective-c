@@ -9,8 +9,8 @@
 
 #import "PNAccessRightsInformation+Protected.h"
 #import "PNAccessRightsCollection+Protected.h"
-#import "PNPrivateMacro.h"
 #import "PNAccessRightOptions+Protected.h"
+#import "PNHelper.h"
 
 
 #pragma mark Public interface implementation
@@ -195,14 +195,15 @@
             rights = (PNReadAccessRight | PNWriteAccessRight);
         }
 
-        if ([sourceAccessRightsInformation hasReadRight] && !PNBitIsOn(rights, PNReadAccessRight)) {
+        
+        if ([sourceAccessRightsInformation hasReadRight] && ![PNBitwiseHelper is:rights containsBit:PNReadAccessRight]) {
 
-            PNBitOn(&rights, PNReadAccessRight);
+            [PNBitwiseHelper addTo:&rights bit:PNReadAccessRight];
         }
 
-        if ([sourceAccessRightsInformation hasWriteRight] && !PNBitIsOn(rights, PNWriteAccessRight)) {
-
-            PNBitOn(&rights, PNWriteAccessRight);
+        if ([sourceAccessRightsInformation hasWriteRight] && ![PNBitwiseHelper is:rights containsBit:PNWriteAccessRight]) {
+            
+            [PNBitwiseHelper addTo:&rights bit:PNWriteAccessRight];
         }
 
         targetAccessRightsInformation.rights = (PNAccessRights)rights;

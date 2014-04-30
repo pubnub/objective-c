@@ -85,6 +85,17 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [self prepareLayout];
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    
+    // Forward method call to the super class
+    [super willMoveToSuperview:newSuperview];
+    
+    if (!newSuperview) {
+        
+        [self disableDataObservation];
+    }
+}
+
 - (void)prepareLayout {
     
     self.clientsUUID = [PubNub clientIdentifier];
@@ -188,11 +199,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     
     [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self];
     [[PNObservationCenter defaultCenter] removeClientChannelSubscriptionStateObserver:self];
-}
-
-- (void)dealloc {
-    
-    [self disableDataObservation];
 }
 
 

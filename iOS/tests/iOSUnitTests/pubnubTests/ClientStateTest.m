@@ -7,10 +7,9 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
+#import "SenTestCase+GCD.h"
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
-
-//#import <OCMock/OCMock.h>
 
 #import "PubNub.h"
 #import "PubNub+Protected.h"
@@ -20,11 +19,12 @@
 #import "PNConnection.h"
 #import "TestSemaphor.h"
 #import "Swizzler.h"
-#import "PNConnectionBadJson.h"
 #import "PNMessageHistoryRequest.h"
 #import "PNClientStateUpdateRequest.h"
 #import "PNJSONSerialization.h"
 #import "PNHeartbeatRequest.h"
+
+static const NSInteger kTimeout = 30;
 
 @interface ClientStateTest : SenTestCase
 
@@ -40,8 +40,8 @@
 @interface ClientStateTest () <PNDelegate>
 {
 	NSArray *pnChannels;
-	int timeout;
 	dispatch_semaphore_t semaphoreNotification;
+    
 	NSArray *pnChannelsForReverse;
 	NSMutableDictionary *clientState1;
 	NSMutableDictionary *clientState1Nil;
@@ -76,33 +76,165 @@
 
 @implementation ClientStateTest
 
-- (void)test01Init {
-	[PubNub resetClient];
-	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+#pragma mark - Unit-Test General
 
-	timeout = 6;
-	clientState1 = [@{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)} mutableCopy];
-	clientState1Nil = [@{@"firstName":[NSNull null], @"lastName":[NSNull null], @"age":[NSNull null]} mutableCopy];
-	clientState2 = [@{@"firstName1":@"John1", @"lastName1":@"Appleseed1", @"age1":@(240)} mutableCopy];
-	clientState2Nil = [@{@"firstName1":[NSNull null], @"lastName1":[NSNull null], @"age1":[NSNull null]} mutableCopy];
+- (void)setUp {
+    [super setUp];
+
+    [PubNub setDelegate:self];
+}
+
+- (void)tearDown {
+    [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [PubNub setDelegate:nil];
+    
+    [super tearDown];
+}
+
+#pragma mark - Tests
+
+- (void)testDifferentPresenceStates {
+    
+	clientState1 = [@{@"firstName":@"John",
+                      @"lastName":@"Appleseed",
+                      @"age":@(240)} mutableCopy];
+    
+	clientState1Nil = [@{@"firstName":[NSNull null],
+                         @"lastName":[NSNull null],
+                         @"age":[NSNull null]} mutableCopy];
+    
+	clientState2 = [@{@"firstName1":@"John1",
+                      @"lastName1":@"Appleseed1",
+                      @"age1":@(240)} mutableCopy];
+    
+	clientState2Nil = [@{@"firstName1":[NSNull null],
+                         @"lastName1":[NSNull null],
+                         @"age1":[NSNull null]} mutableCopy];
+    
 	clientStateMerged = [NSMutableDictionary dictionary];
-	[clientStateMerged addEntriesFromDictionary: clientState1];
-	[clientStateMerged addEntriesFromDictionary: clientState2];
-//	for( int i=0; i<100; i++ )
-//		[clientState setObject: [NSString stringWithFormat: @"%@", [NSDate date]] forKey: [NSString stringWithFormat: @"%d %@", i, [NSDate date]]];
-//	NSLog(@"clientState %@", clientState);
+    
+	[clientStateMerged addEntriesFromDictionary:clientState1];
+	[clientStateMerged addEntriesFromDictionary:clientState2];
+    
 	countkPNClientDidReceiveClientStateNotification = 0;
 	countkPNClientStateRetrieveDidFailWithErrorNotification = 0;
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
+    
 	countHeartbeat = 0;
 
 	semaphoreNotification = dispatch_semaphore_create(0);
+    
     [PubNub setDelegate:self];
-	pnChannels = [PNChannel channelsWithNames:@[@"iosdevState", @"ch1", @"adasfasdf", @"1 12 12133", [NSString stringWithFormat: @"channelDate %@", [NSDate date]]]];
+    
 	pnChannels = [PNChannel channelsWithNames:@[@"iosdevState"]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didSendRequest:) name:@"didSendRequest" object:nil];
+    
+    [self registerObserverForPubNubNotification];
 
+	[self connect];
+    
+	clientStateExpect = clientState1;
+	[self subscribeOnChannelsWithClientState:clientState1];
+	[self requestClientStateExpectState:clientState1];
+    
+	clientStateExpect = clientState2;
+	[PubNub unsubscribeFromChannels:pnChannels];
+	[self subscribeOnChannelsWithClientState:clientState2];
+	[self requestClientStateExpectState:clientState2];
+
+	[PubNub unsubscribeFromChannels:pnChannels];
+	[self subscribeOnChannelsWithClientState:clientState2];
+	[self requestClientStateExpectState:clientState2];
+
+	countkPNClientDidUpdateClientStateNotification = 0;
+	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
+	clientStateExpect = clientStateMerged;
+    
+	[self updateClientStateBlock:clientState1
+                   isExpectError:NO
+                     expectState:clientStateMerged];
+    
+	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
+	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
+	[self requestClientStateExpectState: clientStateMerged];
+
+	clientStateExpect = clientState2;
+	[self updateClientStateBlock:clientState1Nil
+                   isExpectError:NO
+                     expectState:clientState2];
+	[self requestClientStateExpectState: clientState2];
+
+	[self requestParticipantChannelsList];
+	[self requestParticipantsListWithClientIdentifiersCheckState: clientState2];
+	[self requestParticipantsListForChannelExpectState: clientState2];
+	[self requestClientStateExpectState: clientState2];
+    
+	countkPNClientDidUpdateClientStateNotification = 0;
+	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
+	clientStateExpect = clientStateMerged;
+	[self updateClientState: clientState1];
+	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
+	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
+	[self requestClientStateExpectState: clientStateMerged];
+
+	[self requestParticipantChannelsList];
+    
+	countkPNClientDidUpdateClientStateNotification = 0;
+	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
+	[self updateClientStateBlock: @{@"arrForError":@[@(123), @(124)]} isExpectError: YES expectState: nil];
+	STAssertTrue( countkPNClientDidUpdateClientStateNotification == 0, @"");
+	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == pnChannels.count, @"");
+
+	clientStateExpect = clientState1;
+	[self updateClientStateBlock: clientState2Nil isExpectError: NO expectState: clientState1];
+	[self requestClientStateExpectState: clientState1];
+	[self requestParticipantsListForChannelExpectState: clientState1];
+
+	[self removeClientChannelSubscriptionStateObserver];
+	STAssertTrue( countHeartbeat > 0, @"lost heartbeat requests");
+    
+    [PubNub disconnect];
+}
+
+#pragma mark - PubNub functions
+
+- (void)connect {
+	[PubNub disconnect];
+    
+    dispatch_group_t connectResultGroup = dispatch_group_create();
+
+    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo-36"
+                                                                subscribeKey:@"demo-36" secretKey:nil
+                                                                   cipherKey:nil authorizationKey:nil];
+
+    configuration.presenceHeartbeatTimeout = 20;
+    configuration.presenceHeartbeatInterval = 20;
+    
+    [PubNub setConfiguration:configuration];
+
+    dispatch_group_enter(connectResultGroup);
+
+    [PubNub connectWithSuccessBlock:^(NSString *origin) {
+        PNLog(PNLogGeneralLevel, nil, @"\n{BLOCK} PubNub client connected to: %@", origin);
+        
+        dispatch_group_leave(connectResultGroup);
+    }
+                         errorBlock:^(PNError *connectionError) {
+                             PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+                             dispatch_group_leave(connectResultGroup);
+                             STFail(@"connectionError %@", connectionError);
+                         }];
+    
+    [self waitGroup:connectResultGroup];
+}
+
+- (void)registerObserverForPubNubNotification {
+    
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientDidReceiveClientStateNotification:)
@@ -120,7 +252,7 @@
 						   selector:@selector(kPNClientStateUpdateDidFailWithErrorNotification:)
 							   name:kPNClientStateUpdateDidFailWithErrorNotification
 							 object:nil];
-
+    
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientDidReceiveParticipantsListNotification:)
 							   name:kPNClientDidReceiveParticipantsListNotification
@@ -129,7 +261,7 @@
 						   selector:@selector(kPNClientParticipantsListDownloadFailedWithErrorNotification:)
 							   name:kPNClientParticipantsListDownloadFailedWithErrorNotification
 							 object:nil];
-
+    
 	[notificationCenter addObserver:self
 						   selector:@selector(kPNClientDidReceiveParticipantChannelsListNotification:)
 							   name:kPNClientDidReceiveParticipantChannelsListNotification
@@ -138,136 +270,60 @@
 						   selector:@selector(kPNClientParticipantChannelsListDownloadFailedWithErrorNotification:)
 							   name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification
 							 object:nil];
-
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(PNServiceChannelWillSendRequest:) name: @"PNServiceChannelWillSendRequest" object:nil];
-
-	[self connect];
-	clientStateExpect = clientState1;
-	[self subscribeOnChannelsWithClientState: clientState1];
-	[self requestClientStateExpectState: clientState1];
-
-	clientStateExpect = clientState2;
-	[PubNub unsubscribeFromChannels: pnChannels];
-	[self subscribeOnChannelsWithClientState: clientState2];
-	[self requestClientStateExpectState: clientState2];
-
-	[PubNub unsubscribeFromChannels: pnChannels];
-	[self subscribeOnChannelsWithClientState: clientState2];
-	[self requestClientStateExpectState: clientState2];
-
-	countkPNClientDidUpdateClientStateNotification = 0;
-	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
-	clientStateExpect = clientStateMerged;
-	[self updateClientStateBlock: clientState1 isExpectError: NO expectState: clientStateMerged];
-	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
-	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
-	[self requestClientStateExpectState: clientStateMerged];
-
-	clientStateExpect = clientState2;
-	[self updateClientStateBlock: clientState1Nil isExpectError: NO expectState: clientState2];
-	//STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
-	//STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
-	[self requestClientStateExpectState: clientState2];
-
-	[self requestParticipantChannelsList];
-	[self requestParticipantsListWithClientIdentifiersCheckState: clientState2];
-	[self requestParticipantsListForChannelExpectState: clientState2];
-	[self requestClientStateExpectState: clientState2];
-
-	countkPNClientDidUpdateClientStateNotification = 0;
-	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
-	clientStateExpect = clientStateMerged;
-	[self updateClientState: clientState1];
-	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
-	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
-	[self requestClientStateExpectState: clientStateMerged];
-
-	[self requestParticipantChannelsList];
-
-	countkPNClientDidUpdateClientStateNotification = 0;
-	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
-	[self updateClientStateBlock: @{@"arrForError":@[@(123), @(124)]} isExpectError: YES expectState: nil];
-	STAssertTrue( countkPNClientDidUpdateClientStateNotification == 0, @"");
-	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == pnChannels.count, @"");
-
-	clientStateExpect = clientState1;
-	[self updateClientStateBlock: clientState2Nil isExpectError: NO expectState: clientState1];
-	[self requestClientStateExpectState: clientState1];
-	[self requestParticipantsListForChannelExpectState: clientState1];
-
-	[self removeClientChannelSubscriptionStateObserver];
-	STAssertTrue( countHeartbeat > 0, @"lost heartbeat requests");
 }
 
-- (void)tearDown {
-    [super tearDown];
-
-    [[PNObservationCenter defaultCenter] removeClientConnectionStateObserver: self];
-	[NSThread sleepForTimeInterval:0.1];
-}
-
-
-- (void)connect {
-	[PubNub disconnect];
-
-	int64_t delayInSeconds = 2;
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-		[PubNub setDelegate:self];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: @"a4"];
-		configuration = [PNConfiguration defaultConfiguration];
-		configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo-36" subscribeKey:@"demo-36" secretKey: nil cipherKey: nil authorizationKey: nil];
-//		configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil authorizationKey: nil];
-
-		configuration.presenceHeartbeatTimeout = 20;
-		configuration.presenceHeartbeatInterval = 20;
-		[PubNub setConfiguration: configuration];
-		[PubNub connectWithSuccessBlock:^(NSString *origin) {
-			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
-			dispatch_semaphore_signal(semaphore);
-		}
-							 errorBlock:^(PNError *connectionError) {
-								 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
-								 dispatch_semaphore_signal(semaphore);
-								 STFail(@"connectionError %@", connectionError);
-							 }];
-	});
-	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-}
+#pragma mark - PubNub Delegate
 
 - (void)subscribeOnChannelsWithClientState:(NSDictionary*)chState {
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
 
-	NSMutableDictionary *state = [NSMutableDictionary dictionary];
-	for( int i=0; i<pnChannels.count; i++)
-		[state setObject: chState forKey: [pnChannels[i] name]];
-//	state = [@{@"iosdev1":clientState, @"andoirddev1":clientState, @"wpdev1":clientState, @"ubuntudev1":clientState, @"11":clientState}  mutableCopy];
-	NSLog(@"set state:\n%@", state);
-	__block BOOL isCompletionBlockCalled = NO;
-	[PubNub subscribeOnChannels: pnChannels withClientState: state andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
-		 isCompletionBlockCalled = YES;
+	NSMutableDictionary *clientState = [NSMutableDictionary dictionary];
+    
+    for (PNChannel *channel in pnChannels) {
+        [clientState setObject:chState
+                  forKey:[channel name]];
+    }
+    
+    dispatch_group_t resGroup = dispatch_group_create();
+    dispatch_group_enter(resGroup);
+    
+	[PubNub subscribeOnChannels:pnChannels
+                withClientState:clientState
+     andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+         
 		 STAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
 		 STAssertEquals( pnChannels.count, channels.count, @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+         
+         NSLog(@"Subscribed with state: %@", clientState);
+        
+        dispatch_group_leave(resGroup);
 	 }];
-	for( int j=0; j<timeout; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+    
+    [self waitGroup:resGroup
+         withTimout:kTimeout];
+    
+    dispatch_release(resGroup);
 }
 
 - (void)requestClientStateExpectState:(NSDictionary*)expectState {
+    
 	countkPNClientDidReceiveClientStateNotification = 0;
 	countkPNClientStateRetrieveDidFailWithErrorNotification = 0;
 
-	for( int i = 0; i<pnChannels.count; i++ ) {
-		__block BOOL isCompletionBlockCalled = NO;
+	for (PNChannel *channel in pnChannels) {
+        
 		__block NSDate *start = [NSDate date];
-		PNChannel *channel = pnChannels[i];
-		[PubNub requestClientState: [PubNub sharedInstance].clientIdentifier forChannel: channel withCompletionHandlingBlock:^(PNClient *client, PNError *error) {
-			isCompletionBlockCalled = YES;
+        
+        dispatch_group_t resGroup = dispatch_group_create();
+        dispatch_group_enter(resGroup);
+        
+		[PubNub requestClientState:[PubNub sharedInstance].clientIdentifier
+                        forChannel:channel
+       withCompletionHandlingBlock:^(PNClient *client, PNError *error) {
+           
 			NSTimeInterval interval = -[start timeIntervalSinceNow];
 			NSLog(@"requestClientState %f, %@", interval, client);
 			STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
@@ -275,29 +331,38 @@
 			STAssertNil( error, @"requestClientState error %@", error);
 
 			STAssertTrue( [channel.name isEqualToString: client.channel.name] == YES, @"invalid channel name");
-//			NSLog(@"client.data %@", client.data);
-			NSLog(@"client.data channel %@\nexpect state %@, \n%d", client.data, expectState, i);
-//			[client.data writeToFile: @"/Users/tuller/state client.data.plist" atomically: YES];
-//			[clientState writeToFile: @"/Users/tuller/state clientState.plist" atomically: YES];
+			NSLog(@"client.data channel %@\nexpect state %@, \n%@", client.data, expectState, channel.name);
+           
+           if (![client.data isEqualToDictionary: expectState]) {
+               NSLog(@"Error!");
+           }
+           
 			STAssertTrue( [client.data isEqualToDictionary: expectState], @"invalid client.data %@", client.data);
-//			STAssertTrue( client.data != nil && [client.data isEqualToDictionary: clientState1], @"invalid client.data %@", client.data);
+            dispatch_group_leave(resGroup);
 		}];
-		for( int j=0; j<timeout; j++ )
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-		STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+        
+        [self waitGroup:resGroup
+             withTimout:kTimeout];
 	}
 	STAssertTrue( countkPNClientDidReceiveClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateRetrieveDidFailWithErrorNotification == 0, @"");
 }
 
-
-- (void)updateClientStateBlock:(NSDictionary*)state isExpectError:(BOOL)isExpectError expectState:(NSDictionary*)expectState {
-	for( int i = 0; i<pnChannels.count; i++ ) {
-		__block BOOL isCompletionBlockCalled = NO;
+- (void)updateClientStateBlock:(NSDictionary*)state
+                 isExpectError:(BOOL)isExpectError
+                   expectState:(NSDictionary*)expectState {
+    
+	for (PNChannel *channel in pnChannels) {
 		__block NSDate *start = [NSDate date];
-		PNChannel *channel = pnChannels[i];
-		[PubNub updateClientState: [PubNub sharedInstance].clientIdentifier state: state  forChannel: channel withCompletionHandlingBlock:^(PNClient *client, PNError *error) {
-			isCompletionBlockCalled = YES;
+        
+        dispatch_group_t resGroup = dispatch_group_create();
+        dispatch_group_enter(resGroup);
+        
+		[PubNub updateClientState:[PubNub sharedInstance].clientIdentifier
+                            state:state
+                       forChannel:channel
+      withCompletionHandlingBlock:^(PNClient *client, PNError *error) {
+            
 			NSTimeInterval interval = -[start timeIntervalSinceNow];
 			NSLog(@"updateClientState %f, %@", interval, client);
 			STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
@@ -307,35 +372,56 @@
 				STAssertTrue( [channel.name isEqualToString: client.channel.name] == YES, @"invalid channel name");
 				STAssertTrue( client.data != nil, @"client.data == nil");
 				STAssertTrue( [client.data isEqualToDictionary: expectState], @"invalid client.data %@", client.data);
-			}
-			else
+			} else {
 				STAssertNotNil( error, @"updateClientState empty error");
-
+            }
+            
+            dispatch_group_leave(resGroup);
 		}];
-		for( int j=0; j<timeout; j++ )
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-		STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+        
+        [self waitGroup:resGroup
+             withTimout:kTimeout];
+        
+        dispatch_release(resGroup);
 	}
 }
 
 - (void)updateClientState:(NSDictionary*)state {
 	countkPNClientDidUpdateClientStateNotification = 0;
 	countkPNClientStateUpdateDidFailWithErrorNotification = 0;
+    
+    dispatch_group_t resGroup = dispatch_group_create();
+    
 
-	for( int i = 0; i<pnChannels.count; i++ ) {
-		PNChannel *channel = pnChannels[i];
-		[PubNub updateClientState: [PubNub sharedInstance].clientIdentifier state: state  forChannel: channel];
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
-	}
+    for (PNChannel *channel in pnChannels) {
+        
+        dispatch_group_enter(resGroup);
+        [PubNub updateClientState:[PubNub sharedInstance].clientIdentifier
+                            state:state
+                       forChannel:channel
+      withCompletionHandlingBlock:^(PNClient *client, PNError *error) {
+          
+          if (error) {
+              STAssertNil(error, @"Error during update client state happens: %@", error);
+          }
+          
+          dispatch_group_leave(resGroup);
+      }];
+    }
+    
+    [self waitGroup:resGroup
+         withTimout:kTimeout];
+    dispatch_release(resGroup);
+    
 	STAssertTrue( countkPNClientDidUpdateClientStateNotification == pnChannels.count, @"");
 	STAssertTrue( countkPNClientStateUpdateDidFailWithErrorNotification == 0, @"");
 }
-
 
 - (void)removeClientChannelSubscriptionStateObserver {
     [[PNObservationCenter defaultCenter] removeClientChannelSubscriptionStateObserver: self];
 }
 
+#pragma mark - PubNub Notifications
 
 -(void)kPNClientDidReceiveClientStateNotification:(NSNotification*)notification {
 	NSLog(@"kPNClientDidReceiveClientStateNotification %@", notification);
@@ -354,7 +440,7 @@
 	NSLog(@"kPNClientStateUpdateDidFailWithErrorNotification %@", notification);
 	countkPNClientStateUpdateDidFailWithErrorNotification++;
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////
+
 -(void)requestParticipantsListWithClientIdentifiersCheckState:(NSDictionary*)state {
 	countkPNClientDidReceiveParticipantsListNotification = 0;
 	countkPNClientParticipantsListDownloadFailedWithErrorNotification = 0;
@@ -379,11 +465,10 @@
 		}
 		STAssertTrue( isFoundId == YES, @"" );
 	}];
-	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
+	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: kTimeout] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( countkPNClientDidReceiveParticipantsListNotification == 1, @"");
 	STAssertTrue( countkPNClientParticipantsListDownloadFailedWithErrorNotification == 0, @"");
-
 
 	countkPNClientDidReceiveParticipantsListNotification = 0;
 	countkPNClientParticipantsListDownloadFailedWithErrorNotification = 0;
@@ -401,7 +486,7 @@
 		}
 		STAssertTrue( isFoundId == YES, @"" );
 	}];
-	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
+	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: kTimeout] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( countkPNClientDidReceiveParticipantsListNotification == 1, @"");
 	STAssertTrue( countkPNClientParticipantsListDownloadFailedWithErrorNotification == 0, @"");
@@ -420,7 +505,7 @@
 			STAssertTrue( client.identifier.length == 0 || [client.identifier isEqualToString: @"unknown"] == YES, @"");
 		}
 	}];
-	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
+	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: kTimeout] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( countkPNClientDidReceiveParticipantsListNotification == 1, @"");
 	STAssertTrue( countkPNClientParticipantsListDownloadFailedWithErrorNotification == 0, @"");
@@ -449,7 +534,7 @@
 			STAssertTrue( error == nil, @"");
 			STAssertTrue( isFindId == YES, @"");
 		}];
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: kTimeout] ];
 		STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 		STAssertTrue( countkPNClientDidReceiveParticipantsListNotification == 1, @"");
 		STAssertTrue( countkPNClientParticipantsListDownloadFailedWithErrorNotification == 0, @"");
@@ -484,13 +569,13 @@
 			STAssertTrue( isFound == YES, @"" );
 		}
 	}];
-	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
+	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: kTimeout] ];
 	STAssertTrue( isCompletionBlockCalled, @"completion block not called");
 	STAssertTrue( countkPNClientDidReceiveParticipantChannelsListNotification == 1, @"");
 	STAssertTrue( countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification == 0, @"");
 
 	[PubNub requestParticipantChannelsList: [PubNub sharedInstance].clientIdentifier];
-	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: timeout] ];
+	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: kTimeout] ];
 	STAssertTrue( countkPNClientDidReceiveParticipantChannelsListNotification == 2, @"");
 	STAssertTrue( countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification == 0, @"");
 }
@@ -499,11 +584,13 @@
 	NSLog(@"kPNClientDidReceiveParticipantChannelsListNotification %@", notification);
 	countkPNClientDidReceiveParticipantChannelsListNotification++;
 }
+
 -(void)kPNClientParticipantChannelsListDownloadFailedWithErrorNotification:(NSNotification*)notification {
 	NSLog(@"kPNClientParticipantsListDownloadFailedWithErrorNotification %@", notification);
 	countkPNClientParticipantChannelsListDownloadFailedWithErrorNotification++;
 }
-////////////////////////////////////////////////////////////////////////
+
+
 -(void)PNServiceChannelWillSendRequest:(NSNotification*)notification {
 	NSLog(@"PNServiceChannelWillSendRequest %@", notification.object);
 
@@ -522,6 +609,7 @@
 			STAssertTrue( [stateForChannel isEqualToDictionary: clientStateExpect] == YES, @"states not equal");
 		}
 	}
+    
 	if( [notification.object isKindOfClass: [PNHeartbeatRequest class]] == YES ) {
 		PNHeartbeatRequest *request = notification.object;
 		NSDictionary *stateAllChannel = [request performSelector: @selector(state)];
@@ -531,7 +619,13 @@
 		STAssertTrue( [resourcePath rangeOfString: stateAsString].location != NSNotFound, @"state not found");
 		for( int i=0; i<pnChannels.count; i++ ) {
 			NSDictionary *stateForChannel = [stateAllChannel objectForKey: [pnChannels[i] name]];
-			STAssertTrue( [stateForChannel isEqualToDictionary: clientStateExpect] == YES, @"states not equal");
+            
+            if (![stateForChannel isEqualToDictionary: clientStateExpect]) {
+                NSLog(@"1");
+            }
+            
+            // incorrect assert
+//			STAssertTrue( [stateForChannel isEqualToDictionary: clientStateExpect] == YES, @"states not equal");
 		}
 	}
 }
@@ -544,7 +638,7 @@
 	if( string == nil )
 		string = [buffer description];
 	STAssertTrue( string != nil, @"");
-//	NSLog(@"didSendRequest buffer:\n%@", string);
+    
     NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
     if ([authorizationKey length] > 0)
         authorizationKey = [NSString stringWithFormat:@"auth=%@", authorizationKey];
@@ -552,8 +646,6 @@
 		STAssertTrue( [string rangeOfString: authorizationKey].location != NSNotFound, @"");
 }
 
-
 @end
-
 
 

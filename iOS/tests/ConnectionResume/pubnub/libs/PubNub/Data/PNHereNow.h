@@ -24,7 +24,7 @@
 /**
  Stores how much participants have been found subscribed on concrete channel.
  */
-@property (nonatomic, readonly, assign) unsigned int participantsCount;
+@property (nonatomic, readonly, assign) unsigned long participantsCount;
 
 /**
  Stores reference on channel inside of which \b PubNub client searched for participants (clients).

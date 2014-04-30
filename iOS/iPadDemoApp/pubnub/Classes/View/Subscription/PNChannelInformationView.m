@@ -116,6 +116,17 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [self updateLayout];
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    
+    // Forward method call to the super class
+    [super willMoveToSuperview:newSuperview];
+    
+    if (!newSuperview) {
+        
+        [self disableDataObservation];
+    }
+}
+
 - (NSTimeInterval)appearAnimationDuration {
     
     return kPNViewAppearAnimationDuration;
@@ -153,7 +164,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     self.fetchClientStateButton.enabled = [self.channelHelper canCreateChannel];
     
     PNChannel *channel = ([self.channelHelper canCreateChannel] ? [PNChannel channelWithName:self.channelHelper.channelName] : nil);
-    self.channelParticipantsCount.text = [NSString stringWithFormat:@"%d", (channel ? channel.participantsCount : 0)];
+    self.channelParticipantsCount.text = [NSString stringWithFormat:@"%d", (unsigned int)(channel ? channel.participantsCount : 0)];
     
     [self.saveButton setTitle:(self.shouldAllowEditing ? @"channelInformationSaveButtonTitle" : @"channelInformationCreateButtonTitle")
                      forState:UIControlStateNormal];
@@ -406,11 +417,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (void)channelInformationDidChange {
     
     [self updateLayout];
-}
-
-- (void)dealloc {
-    
-    [self disableDataObservation];
 }
 
 #pragma mark -

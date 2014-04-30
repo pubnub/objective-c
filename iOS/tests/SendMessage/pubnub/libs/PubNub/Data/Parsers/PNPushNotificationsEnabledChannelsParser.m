@@ -55,6 +55,11 @@
     return nil;
 }
 
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    return [response.response isKindOfClass:[NSArray class]];
+}
+
 
 #pragma mark - Instance methods
 

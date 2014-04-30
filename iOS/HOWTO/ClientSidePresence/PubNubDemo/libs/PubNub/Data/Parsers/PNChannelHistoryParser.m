@@ -35,6 +35,35 @@
     return nil;
 }
 
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    // Checking base requirement about payload data type.
+    BOOL conforms = [response.response isKindOfClass:[NSArray class]];
+
+    // Checking base components
+    if (conforms) {
+
+        NSArray *responseData = response.response;
+        conforms = ([responseData count] > PNChannelHistoryResponseEndDate);
+        if (conforms) {
+
+            id startTimeToken = [responseData objectAtIndex:PNChannelHistoryResponseStartDate];
+            id endTimeToken = [responseData objectAtIndex:PNChannelHistoryResponseEndDate];
+            conforms = (conforms ? (startTimeToken && [startTimeToken isKindOfClass:[NSNumber class]]) : conforms);
+            conforms = (conforms ? (endTimeToken && [endTimeToken isKindOfClass:[NSNumber class]]) : conforms);
+        }
+
+        if (conforms && [responseData count] > PNChannelHistoryResponseMessagesList) {
+
+            id messages = [responseData objectAtIndex:PNChannelHistoryResponseMessagesList];
+            conforms = ((conforms && messages) ? [messages isKindOfClass:[NSArray class]] : conforms);
+        }
+    }
+
+
+    return conforms;
+}
+
 + (BOOL)isErrorResponse:(PNResponse *)response {
     
     NSArray *data = (NSArray *)response.response;

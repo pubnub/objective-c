@@ -9,8 +9,8 @@
 #import "PNAccessRightsResponseParser+Protected.h"
 #import "PNAccessRightsInformation+Protected.h"
 #import "PNAccessRightsCollection+Protected.h"
-#import "PNPrivateMacro.h"
 #import "PNResponse.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -100,6 +100,100 @@ struct PNAccessLevelsStruct PNAccessLevels = {
     
     
     return nil;
+}
+
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    // Checking base requirement about payload data type.
+    __block BOOL conforms = [response.response isKindOfClass:[NSDictionary class]];
+
+    // Checking base components
+    if (conforms) {
+
+        NSDictionary *accessInformation = response.response;
+        id accessLevel = [accessInformation valueForKeyPath:kPNAccessLevelKey];
+        id accessPeriod = [accessInformation valueForKeyPath:kPNAccessRightsPeriodKey];
+        id readRights = [accessInformation valueForKeyPath:kPNReadAccessRightStateKey];
+        id writeRights = [accessInformation valueForKeyPath:kPNWriteAccessRightStateKey];
+        id subscribeKey = [accessInformation valueForKeyPath:kPNApplicationIdentifierKey];
+
+        conforms = ((conforms && accessLevel) ? [accessLevel isKindOfClass:[NSString class]] : conforms);
+        conforms = ((conforms && accessPeriod) ? [accessPeriod isKindOfClass:[NSNumber class]] : conforms);
+        conforms = ((conforms && readRights) ? [readRights isKindOfClass:[NSNumber class]] : conforms);
+        conforms = ((conforms && writeRights) ? [writeRights isKindOfClass:[NSNumber class]] : conforms);
+        conforms = ((conforms && subscribeKey) ? [subscribeKey isKindOfClass:[NSString class]] : conforms);
+    }
+
+    if (conforms) {
+
+        NSDictionary *accessInformation = response.response;
+
+        id channels = [accessInformation valueForKeyPath:kPNAccessChannelsKey];
+        id clients = [accessInformation valueForKeyPath:kPNAccessChannelsAuthorizationKey];
+        conforms = ((conforms && channels) ? [channels isKindOfClass:[NSDictionary class]] : conforms);
+        conforms = ((conforms && clients) ? [clients isKindOfClass:[NSDictionary class]] : conforms);
+
+        void(^checkClients)(NSDictionary *) = ^(NSDictionary *clientsData) {
+
+            if (clientsData && conforms) {
+
+                conforms = ([clientsData isKindOfClass:[NSDictionary class]]);
+                if (conforms) {
+
+                    NSString *channelName = [clientsData valueForKeyPath:kPNAccessChannelKey];
+                    __block id accessPeriod = [clientsData valueForKeyPath:kPNAccessRightsPeriodKey];
+                    conforms = ((conforms && channelName) ? [channelName isKindOfClass:[NSString class]] : conforms);
+                    conforms = ((conforms && accessPeriod) ? [accessPeriod isKindOfClass:[NSNumber class]] : conforms);
+
+                    [clients enumerateKeysAndObjectsUsingBlock:^(id clientAuthorizationKey, id clientInformation,
+                                                                 BOOL *clientInformationEnumeratorStop) {
+
+                        conforms = (conforms ? (clientAuthorizationKey && [clientAuthorizationKey isKindOfClass:[NSString class]]) : conforms);
+                        conforms = (conforms ? [clientInformation isKindOfClass:[NSDictionary class]] : conforms);
+                        if (conforms){
+
+                            accessPeriod = [clientInformation valueForKeyPath:kPNAccessRightsPeriodKey];
+                            conforms = ((conforms && accessPeriod) ? [accessPeriod isKindOfClass:[NSNumber class]] : conforms);
+
+                            id readRights = [clientInformation valueForKeyPath:kPNReadAccessRightStateKey];
+                            id writeRights = [clientInformation valueForKeyPath:kPNWriteAccessRightStateKey];
+                            conforms = ((conforms && readRights) ? [readRights isKindOfClass:[NSNumber class]] : conforms);
+                            conforms = ((conforms && writeRights) ? [writeRights isKindOfClass:[NSNumber class]] : conforms);
+                        }
+
+                        *clientInformationEnumeratorStop = !conforms;
+                    }];
+                }
+            }
+        };
+
+        // Checking whether found information for channel access rights or not.
+        if (conforms && channels) {
+
+            [(NSDictionary *)channels enumerateKeysAndObjectsUsingBlock:^(id channelName, id channelInformation,
+                                                                         BOOL *channelInformationEnumeratorStop) {
+
+                conforms = (conforms ? (channelName && [channelName isKindOfClass:[NSString class]]) : conforms);
+                conforms = (conforms ? [channelInformation isKindOfClass:[NSDictionary class]] : conforms);
+                if (conforms){
+
+                    id accessLevel = [channelInformation valueForKeyPath:kPNAccessLevelKey];
+                    id accessPeriod = [channelInformation valueForKeyPath:kPNAccessRightsPeriodKey];
+                    conforms = ((conforms && accessLevel) ? [accessLevel isKindOfClass:[NSString class]] : conforms);
+                    conforms = ((conforms && accessPeriod) ? [accessPeriod isKindOfClass:[NSNumber class]] : conforms);
+                    checkClients([channelInformation valueForKeyPath:kPNAccessChannelsAuthorizationKey]);
+                }
+                *channelInformationEnumeratorStop = !conforms;
+            }];
+        }
+        else if (conforms && clients) {
+
+            checkClients(clients);
+        }
+    }
+
+
+    return conforms;
 }
 
 
@@ -275,18 +369,18 @@ struct PNAccessLevelsStruct PNAccessLevels = {
     NSNumber *writeRightState = [accessRightsInformation objectForKey:kPNWriteAccessRightStateKey];
 
     if (readRightState != nil && [readRightState intValue] != 0) {
-
-        PNBitOn(&accessRights, PNReadAccessRight);
+        
+        [PNBitwiseHelper addTo:&accessRights bit:PNReadAccessRight];
     }
 
     if (writeRightState != nil && [writeRightState intValue] != 0) {
-
-        PNBitOn(&accessRights, PNWriteAccessRight);
+        
+        [PNBitwiseHelper addTo:&accessRights bit:PNWriteAccessRight];
     }
 
-    if (PNBitsIsOn(accessRights, NO, PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR)) {
+    if ([PNBitwiseHelper is:accessRights containsBits:PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR]) {
 
-        PNBitOff(&accessRights, PNNoAccessRights);
+        [PNBitwiseHelper removeFrom:&accessRights bit:PNNoAccessRights];
     }
 
 

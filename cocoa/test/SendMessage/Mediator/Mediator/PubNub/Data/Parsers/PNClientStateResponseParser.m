@@ -51,6 +51,16 @@
     return nil;
 }
 
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    // Checking base requirement about payload data type.
+    BOOL conforms = [response.response isKindOfClass:[NSDictionary class]];
+    conforms = (conforms ? (response.additionalData && [response.additionalData isKindOfClass:[PNClient class]]) : conforms);
+
+
+    return conforms;
+}
+
 
 #pragma mark - Instance methods
 

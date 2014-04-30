@@ -460,7 +460,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     self.actionButton.enabled = [self.accessRightsHelper isAbleToChangeAccessRights];
     if (self.accessRightsHelper.accessRightsApplicationDuration > 0) {
         
-        self.accessRightsApplicationDuration.text = [NSString stringWithFormat:@"%d", self.accessRightsHelper.accessRightsApplicationDuration];
+        self.accessRightsApplicationDuration.text = [NSString stringWithFormat:@"%d", (unsigned int)self.accessRightsHelper.accessRightsApplicationDuration];
     }
     else {
         
@@ -578,11 +578,21 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                 
                 detailedDescription = (requestError ? @"accessRightsAuditApplicationFailureAlertViewShortDescription" :
                                                       @"accessRightsAuditApplicationSuccessAlertViewShortDescription");
+                if (requestError) {
+
+                    detailedDescription = [NSString stringWithFormat:[detailedDescription localized],
+                                           requestError.localizedFailureReason];
+                }
             }
             else {
                 
                 detailedDescription = (requestError ? @"accessRightsChangeApplicationFailureAlertViewShortDescription" :
                                                       @"accessRightsChangeApplicationSuccessAlertViewShortDescription");
+                if (requestError) {
+
+                    detailedDescription = [NSString stringWithFormat:[detailedDescription localized],
+                                           requestError.localizedFailureReason];
+                }
             }
         }
         else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {
@@ -731,7 +741,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     
-    return [NSString stringWithFormat:@"%d", (row + 1)];
+    return [NSString stringWithFormat:@"%d", (int)(row + 1)];
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {

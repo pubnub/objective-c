@@ -49,6 +49,22 @@
     return nil;
 }
 
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    // Checking base requirement about payload data type.
+    BOOL conforms = [response.response isKindOfClass:[NSDictionary class]];
+
+    // Checking base components
+    if (conforms) {
+
+        id actionName = [response.response objectForKey:kPNResponseActionKey];
+        conforms = (actionName && [actionName isKindOfClass:[NSString class]]);
+    }
+
+
+    return conforms;
+}
+
 
 #pragma mark - Instance methods
 

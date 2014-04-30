@@ -45,6 +45,11 @@ struct PNServiceResponseServiceDataKeysStruct {
     __unsafe_unretained NSString *errorState;
 
     /**
+     Allow to identify whether this response should be treated as warning explanation or not.
+     */
+    __unsafe_unretained NSString *warningState;
+
+    /**
      Service populated messages as for request processing results (description of statusCode field).
      */
     __unsafe_unretained NSString *message;

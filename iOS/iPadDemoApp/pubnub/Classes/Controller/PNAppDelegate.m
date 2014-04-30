@@ -43,6 +43,7 @@
 
     [PubNub setDelegate:self];
 
+    __pn_desired_weak __typeof__(self) weakSelf = self;
 
     // Subscribe for client connection state change (observe when client will be disconnected)
     [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
@@ -52,15 +53,16 @@
 
                 if (!connected && error) {
 
-                    PNLog(PNLogGeneralLevel, self, @"#2 PubNub client was unable to connect because of error: %@",
-                          [error localizedDescription],
-                          [error localizedFailureReason]);
+                    [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
+
+                        return [NSString stringWithFormat:@"#2 PubNub client was unable to connect because of error: %@",
+                                [error localizedFailureReason]];
+                    }];
                 }
             }];
 
 
     // Subscribe application delegate on subscription updates (events when client subscribe on some channel)
-    __pn_desired_weak __typeof__(self) weakSelf = self;
     [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:weakSelf
                                                                  withCallbackBlock:^(PNSubscriptionProcessState state,
                                                                                      NSArray *channels,
@@ -69,31 +71,43 @@
                                             switch (state) {
 
                                                 case PNSubscriptionProcessNotSubscribedState:
+                                                    {
+                                                        [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
 
-                                                    PNLog(PNLogGeneralLevel, weakSelf,
-                                                          @"{BLOCK-P} PubNub client subscription failed with error: %@",
-                                                          subscriptionError);
+                                                            return [NSString stringWithFormat:@"{BLOCK-P} PubNub client subscription failed with error: %@",
+                                                                    [subscriptionError localizedFailureReason]];
+                                                        }];
+                                                    }
                                                     break;
 
                                                 case PNSubscriptionProcessSubscribedState:
+                                                    {
+                                                        [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
 
-                                                     PNLog(PNLogGeneralLevel, weakSelf,
-                                                           @"{BLOCK-P} PubNub client subscribed on channels: %@",
-                                                           channels);
+                                                            return [NSString stringWithFormat:@"{BLOCK-P} PubNub client subscribed on channels: %@",
+                                                                    channels];
+                                                        }];
+                                                    }
                                                     break;
 
                                                 case PNSubscriptionProcessWillRestoreState:
+                                                    {
+                                                        [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
 
-                                                    PNLog(PNLogGeneralLevel, weakSelf,
-                                                          @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
-                                                          channels);
+                                                            return [NSString stringWithFormat:@"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
+                                                                    channels];
+                                                        }];
+                                                    }
                                                     break;
 
                                                 case PNSubscriptionProcessRestoredState:
+                                                    {
+                                                        [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
 
-                                                    PNLog(PNLogGeneralLevel, weakSelf,
-                                                          @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
-                                                          channels);
+                                                            return [NSString stringWithFormat:@"{BLOCK-P} PubNub client restores subscribed on channels: %@",
+                                                                    channels];
+                                                        }];
+                                                    }
                                                     break;
                                             }
                                         }];
@@ -102,16 +116,22 @@
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:weakSelf
                                                          withBlock:^(PNMessage *message) {
 
-                                     PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new message: %@",
-                                           message);
+                                     [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
+
+                                         return [NSString stringWithFormat:@"{BLOCK-P} PubNubc client received new message: %@",
+                                                 message];
+                                     }];
                             }];
 
     // Subscribe on presence event arrival events with block
     [[PNObservationCenter defaultCenter] addPresenceEventObserver:weakSelf
                                                         withBlock:^(PNPresenceEvent *presenceEvent) {
 
-                                                            PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new event: %@",
-                                                                    presenceEvent);
+                                                            [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
+
+                                                                 return [NSString stringWithFormat:@"{BLOCK-P} PubNubc client received new event: %@",
+                                                                         presenceEvent];
+                                                            }];
                                                      }];
 }
 
@@ -124,6 +144,8 @@
         
         [[PNDataManager sharedInstance] handleOpenWithURL:[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey]];
     }
+    
+    [self initializePubNubClient];
     
     UIRemoteNotificationType type = (UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound);
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:type];
@@ -161,282 +183,423 @@
 #pragma mark - PubNub client delegate methods
 
 - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
-    
-    PNLog(PNLogGeneralLevel, self, @"PubNub client changed access rights configuration: %@", accessRightsCollection);
+
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client changed access rights configuration: %@",
+                accessRightsCollection];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
-    
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to change access rights configuration because of error: %@", error);
+
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to change access rights configuration because of error: %@",
+                error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
-    
-    PNLog(PNLogGeneralLevel, self, @"PubNub client completed access rights audition: %@", accessRightsCollection);
+
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client completed access rights audition: %@",
+                accessRightsCollection];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error {
-    
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to audit access rights because of error: %@", error);
+
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to audit access rights because of error: %@",
+                error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didEnablePushNotificationsOnChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client enabled push notifications on channels: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client enabled push notifications on channels: %@",
+                channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client pushNotificationEnableDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed push notification enable because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed push notification enable because of error: %@",
+                error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didDisablePushNotificationsOnChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client disabled push notifications on channels: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client disabled push notifications on channels: %@",
+                channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client pushNotificationDisableDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to disable push notifications because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to disable push notifications because of error: %@",
+                error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didReceivePushNotificationEnabledChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client received push notificatino enabled channels: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client received push notificatino enabled channels: %@",
+                channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client pushNotificationEnabledChannelsReceiveDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to receive list of channels because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to receive list of channels because of error: %@",
+                error];
+    }];
 }
 
 - (void)pubnubClientDidRemovePushNotifications:(PubNub *)client {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client removed push notifications from all channels");
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return @"PubNub client removed push notifications from all channels";
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client pushNotificationsRemoveFromChannelsDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed remove push notifications from channels because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed remove push notifications from channels because of error: %@",
+                error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client error:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client report that error occurred: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client report that error occurred: %@", error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client willConnectToOrigin:(NSString *)origin {
 
 
+    NSString *message = [NSString stringWithFormat:@"PubNub client is about to connect to PubNub origin at: %@", origin];
     if (self.isDisconnectedOnNetworkError) {
 
-        PNLog(PNLogGeneralLevel, self, @"PubNub client trying to restore connection to PubNub origin at: %@", origin);
+        message = [NSString stringWithFormat:@"PubNub client trying to restore connection to PubNub origin at: %@", origin];
     }
-    else {
 
-        PNLog(PNLogGeneralLevel, self, @"PubNub client is about to connect to PubNub origin at: %@", origin);
-    }
+    [PNLogger logGeneralMessageFrom:self message:^NSString * { return message; }];
 }
 
 - (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
 
+
+
+    NSString *message = [NSString stringWithFormat:@"PubNub client successfully connected to PubNub origin at: %@", origin];
     if (self.isDisconnectedOnNetworkError) {
 
-        PNLog(PNLogGeneralLevel, self, @"PubNub client restored connection to PubNub origin at: %@", origin);
-    }
-    else {
-
-        PNLog(PNLogGeneralLevel, self, @"PubNub client successfully connected to PubNub origin at: %@", origin);
+        message = [NSString stringWithFormat:@"PubNub client restored connection to PubNub origin at: %@", origin];
     }
 
+    [PNLogger logGeneralMessageFrom:self message:^NSString * { return message; }];
 
     self.disconnectedOnNetworkError = NO;
 }
 
 - (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"#1 PubNub client was unable to connect because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"#1 PubNub client was unable to connect because of error: %@", error];
+    }];
 
     self.disconnectedOnNetworkError = error.code == kPNClientConnectionFailedOnInternetFailureError;
 }
 
 - (void)pubnubClient:(PubNub *)client willDisconnectWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub clinet will close connection because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub clinet will close connection because of error: %@", error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin withError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client closed connection because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client closed connection because of error: %@", error];
+    }];
 
     self.disconnectedOnNetworkError = error.code == kPNClientConnectionClosedOnInternetFailureError;
 }
 
 - (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client disconnected from PubNub origin at: %@", origin);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client disconnected from PubNub origin at: %@", origin];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully received state for client %@ on channel %@: %@ ",
-          remoteClient.identifier, remoteClient.channel, remoteClient.data);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client successfully received state for client %@ on channel %@: %@",
+                remoteClient.identifier, remoteClient.channel, remoteClient.data];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client clientStateRetrieveDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to receive state for client %@ on channel %@ because of error: %@",
-            ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client did fail to receive state for client %@ on channel %@ because of error: %@",
+                ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully updated state for client %@ at channel %@: %@ ",
-          remoteClient.identifier, remoteClient.channel, remoteClient.data);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client successfully updated state for client %@ at channel %@: %@",
+                remoteClient.identifier, remoteClient.channel, remoteClient.data];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client did fail to update state for client %@ at channel %@ because of error: %@",
-            ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client did fail to update state for client %@ at channel %@ because of error: %@",
+                ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully subscribed on channels: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client successfully subscribed on channels: %@", channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client resuming subscription on: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client resuming subscription on: %@", channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully restored subscription on channels: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client successfully restored subscription on channels: %@", channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to subscribe because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to subscribe because of error: %@", error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully unsubscribed from channels: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client successfully unsubscribed from channels: %@", channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to unsubscribe because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to unsubscribe because of error: %@", error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully enabled presence observation on channels: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client successfully enabled presence observation on channels: %@", channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to enable presence observation because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to enable presence observation because of error: %@", error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client successfully disabled presence observation on channels: %@", channels);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client successfully disabled presence observation on channels: %@", channels];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to disable presence observation because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to disable presence observation because of error: %@", error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveTimeToken:(NSNumber *)timeToken {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client recieved time token: %@", timeToken);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client recieved time token: %@", timeToken];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client timeTokenReceiveDidFailWithError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to receive time token because of error: %@", error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to receive time token because of error: %@", error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client is about to send message: %@", message);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client is about to send message: %@", message];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to send message '%@' because of error: %@", message, error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to send message '%@' because of error: %@", message, error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client sent message: %@", message);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client sent message: %@", message];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client received message: %@", message);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client received message: %@", message];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client received presence event: %@", event);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client received presence event: %@", event];
+    }];
 }
 
-- (void)    pubnubClient:(PubNub *)client
-didReceiveMessageHistory:(NSArray *)messages
-              forChannel:(PNChannel *)channel
-            startingFrom:(PNDate *)startDate
-                      to:(PNDate *)endDate {
+- (void)pubnubClient:(PubNub *)client didReceiveMessageHistory:(NSArray *)messages forChannel:(PNChannel *)channel
+        startingFrom:(PNDate *)startDate to:(PNDate *)endDate {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client received history for %@ starting from %@ to %@: %@",
-          channel, startDate, endDate, messages);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client received history for %@ starting from %@ to %@: %@",
+                channel, startDate, endDate, messages];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download history for %@ because of error: %@",
-          channel, error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to download history for %@ because of error: %@",
+                channel, error];
+    }];
 }
 
-- (void)      pubnubClient:(PubNub *)client
-didReceiveParticipantsList:(NSArray *)participantsList
-                forChannel:(PNChannel *)channel {
+- (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList
+          forChannel:(PNChannel *)channel {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client received participants list for channel %@: %@",
-          participantsList, channel);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client received participants list for channel %@: %@",
+                participantsList, channel];
+    }];
 }
 
-- (void)                     pubnubClient:(PubNub *)client
-didFailParticipantsListDownloadForChannel:(PNChannel *)channel
-                                withError:(PNError *)error {
+- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel
+           withError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download participants list for channel %@ because of error: %@",
-          channel, error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to download participants list for channel %@ because of error: %@",
+                channel, error];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantChannelsList:(NSArray *)participantChannelsList
        forIdentifier:(NSString *)clientIdentifier {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client received participant channels list for identifier %@: %@",
-          participantChannelsList, clientIdentifier);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client received participant channels list for identifier %@: %@",
+                participantChannelsList, clientIdentifier];
+    }];
 }
 
 - (void)pubnubClient:(PubNub *)client didFailParticipantChannelsListDownloadForIdentifier:(NSString *)clientIdentifier
            withError:(PNError *)error {
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download participant channels list for identifier %@ "
-            "because of error: %@", clientIdentifier, error);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client failed to download participant channels list for identifier %@ "
+                "because of error: %@", clientIdentifier, error];
+    }];
 }
 
 - (NSNumber *)shouldResubscribeOnConnectionRestore {
 
     NSNumber *shouldResubscribeOnConnectionRestore = @(YES);
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription? %@", [shouldResubscribeOnConnectionRestore boolValue] ? @"YES" : @"NO");
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client should restore subscription? %@",
+                [shouldResubscribeOnConnectionRestore boolValue] ? @"YES" : @"NO"];
+    }];
 
 
     return shouldResubscribeOnConnectionRestore;
@@ -452,8 +615,11 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
         lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
     }
 
-    PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
-            [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken);
+    [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+        return [NSString stringWithFormat:@"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
+                    [shouldRestoreSubscriptionFromLastTimeToken boolValue]?@"YES":@"NO", lastTimeToken];
+    }];
 
 
     return shouldRestoreSubscriptionFromLastTimeToken;

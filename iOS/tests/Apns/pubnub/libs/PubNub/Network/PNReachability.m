@@ -20,6 +20,7 @@
 #import "PNResponse.h"
 #import <netinet/in.h>
 #import <arpa/inet.h>
+#import "PNHelper.h"
 
 
 // ARC check
@@ -185,11 +186,11 @@ static PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFl
 PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     
     PNReachabilityStatus status = PNReachabilityStatusNotReachable;
-    BOOL isServiceReachable = PNBitIsOn(flags, kSCNetworkReachabilityFlagsReachable);
+    BOOL isServiceReachable = [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsReachable];
     if (isServiceReachable) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-        status = PNBitIsOn(flags, kSCNetworkReachabilityFlagsIsWWAN) ? PNReachabilityStatusReachableViaCellular : status;
-        if (status == PNReachabilityStatusReachableViaCellular && PNBitIsOn(flags, kSCNetworkReachabilityFlagsConnectionRequired)) {
+        status = [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsIsWWAN] ? PNReachabilityStatusReachableViaCellular : status;
+        if (status == PNReachabilityStatusReachableViaCellular && [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsConnectionRequired]) {
             
             status = PNReachabilityStatusNotReachable;
         }
@@ -201,8 +202,9 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
                 status = PNReachabilityStatusReachableViaWiFi;
 
                 unsigned long flagsForCleanUp = (unsigned long)flags;
-                PNBitsOff(&flagsForCleanUp, kSCNetworkReachabilityFlagsReachable, kSCNetworkReachabilityFlagsIsDirect,
-                                            kSCNetworkReachabilityFlagsIsLocalAddress, BITS_LIST_TERMINATOR);
+                
+                [PNBitwiseHelper removeFrom:&flagsForCleanUp bits:kSCNetworkReachabilityFlagsReachable,
+                 kSCNetworkReachabilityFlagsIsDirect, kSCNetworkReachabilityFlagsIsLocalAddress, BITS_LIST_TERMINATOR];
                 flags = (SCNetworkReachabilityFlags)flagsForCleanUp;
 
                 if (flags != 0) {
@@ -210,11 +212,12 @@ PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags fla
                     status = PNReachabilityStatusNotReachable;
 
                     // Check whether connection is down (required connection)
-                    if (!PNBitStrictIsOn(flags, (kSCNetworkReachabilityFlagsConnectionRequired |
-                                                 kSCNetworkReachabilityFlagsTransientConnection))) {
-
-                        if (PNBitIsOn(flags, kSCNetworkReachabilityFlagsConnectionRequired) ||
-                            PNBitIsOn(flags, kSCNetworkReachabilityFlagsTransientConnection)) {
+                    
+                    if (![PNBitwiseHelper is:flags strictly:YES containsBits:kSCNetworkReachabilityFlagsConnectionRequired,
+                          kSCNetworkReachabilityFlagsTransientConnection, BITS_LIST_TERMINATOR]) {
+                        
+                        if ([PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsConnectionRequired] ||
+                            [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsTransientConnection]) {
 
                             status = PNReachabilityStatusReachableViaWiFi;
                         }
@@ -252,8 +255,11 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     
     if (!reachabilityMonitor.isNotificationsSuspended) {
 
-        PNLog(PNLogReachabilityLevel, reachabilityMonitor, @"{CALLBACK} PubNub services reachability flags changes: "
-              "%d (%@) [CONNECTED? %@]", flags, [reachabilityMonitor humanReadableStatus:status], available ? @"YES" : @"NO");
+        [PNLogger logReachabilityMessageFrom:reachabilityMonitor message:^NSString * {
+
+            return [NSString stringWithFormat:@"{CALLBACK} PubNub services reachability flags changes: %d (%@) [CONNECTED? %@]",
+                    flags, [reachabilityMonitor humanReadableStatus:status], available ? @"YES" : @"NO"];
+        }];
 
         // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
         // connection state in non appropriate state
@@ -290,16 +296,22 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             reachabilityMonitor.status = status;
         }
         else {
-            
-            PNLog(PNLogReachabilityLevel, reachabilityMonitor, @"{CALLBACK} PubNub services reachability change ignored because origin lookup support "
-                  "system reported different state (%@ / %@) [CONNECTED? %@]", [reachabilityMonitor humanReadableStatus:reachabilityMonitor.reachabilityStatus],
-                   [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus], available ? @"YES" : @"NO");
+
+            [PNLogger logReachabilityMessageFrom:reachabilityMonitor message:^NSString * {
+
+                return [NSString stringWithFormat:@"{CALLBACK} PubNub services reachability change ignored because origin lookup support "
+                        "system reported different state (%@ / %@) [CONNECTED? %@]", [reachabilityMonitor humanReadableStatus:reachabilityMonitor.reachabilityStatus],
+                        [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus], available ? @"YES" : @"NO"];
+            }];
         }
     }
     else {
 
-        PNLog(PNLogReachabilityLevel, reachabilityMonitor, @"{CALLBACK} PubNub services reachability changed while "
-              "suspended (%@) [CONNECTED? %@]", [reachabilityMonitor humanReadableStatus:status], available ? @"YES" : @"NO");
+        [PNLogger logReachabilityMessageFrom:reachabilityMonitor message:^NSString * {
+
+            return [NSString stringWithFormat:@"{CALLBACK} PubNub services reachability changed while suspended (%@) [CONNECTED? %@]",
+                    [reachabilityMonitor humanReadableStatus:status], available ? @"YES" : @"NO"];
+        }];
     }
 }
 
@@ -347,11 +359,14 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             }
         }
 
-        PNLog(PNLogReachabilityLevel, self, @"%@ REACHABILITY OBSERVATION", shouldStopPrevious ? @"START" : @"RESTART");
+        [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+            return [NSString stringWithFormat:@"%@ REACHABILITY OBSERVATION", shouldStopPrevious ? @"START" : @"RESTART"];
+        }];
     }
     else {
 
-        PNLog(PNLogReachabilityLevel, self, @"REACHABILITY OBSERVATION IS IMPOSSIBLE W/O ORIGIN");
+        [PNLogger logReachabilityMessageFrom:self message:^NSString * { return @"REACHABILITY OBSERVATION IS IMPOSSIBLE W/O ORIGIN"; }];
     }
 }
 
@@ -399,8 +414,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         CFRelease(_serviceReachability);
         _serviceReachability = NULL;
 
-
-        PNLog(PNLogGeneralLevel, self, @"STOP REACHABILITY OBSERVATION");
+        [PNLogger logReachabilityMessageFrom:self message:^NSString * { return @"STOP REACHABILITY OBSERVATION"; }];
     }
 
     [self startServiceReachabilityMonitoring:NO];
@@ -415,8 +429,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         CFRelease(_serviceReachability);
         _serviceReachability = NULL;
 
-
-        PNLog(PNLogGeneralLevel, self, @"STOP REACHABILITY OBSERVATION");
+        [PNLogger logReachabilityMessageFrom:self message:^NSString * { return @"STOP REACHABILITY OBSERVATION"; }];
     }
 
     // Make sure that simulation block won't be called after reachability observation has been disabled
@@ -443,7 +456,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Check whether reachability instance crated before destroy it
     if (self.serviceReachability) {
 
-        PNLog(PNLogReachabilityLevel, self, @" SUSPENDED");
+        [PNLogger logReachabilityMessageFrom:self message:^NSString * { return @"SUSPENDED"; }];
         self.notificationsSuspended = YES;
         [self stopOriginLookup];
         
@@ -462,7 +475,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Check whether reachability instance crated before destroy it
     if (self.serviceReachability && [self isSuspended]) {
 
-        PNLog(PNLogReachabilityLevel, self, @" RESUMED");
+        [PNLogger logReachabilityMessageFrom:self message:^NSString * { return @"RESUMED"; }];
         self.notificationsSuspended = NO;
         [self startOriginLookup];
     }
@@ -532,21 +545,30 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                 case NSURLErrorDataNotAllowed:
                 case NSURLErrorCannotFindHost:
                 case NSURLErrorCallIsActive:
-                    
-                    PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKUP FAILED WITH ERROR: %@", error);
-                    isConnectionAvailable = NO;
+                    {
+                        [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"{ERROR} LOOKUP FAILED WITH ERROR: %@", error];
+                        }];
+                        isConnectionAvailable = NO;
+                    }
                     break;
                 case NSURLErrorBadServerResponse:
-                    
-                    PNLog(PNLogReachabilityLevel, self, @"{ERROR} MALFORMED SERVER RESPONSE");
+                    {
+
+                        [PNLogger logReachabilityMessageFrom:self message:^NSString * { return @"{ERROR} MALFORMED SERVER RESPONSE"; }];
+                    }
                     break;
                 default:
                     break;
             }
         }
         else if (response.statusCode != 200 && response.statusCode != 302) {
-            
-            PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKUP GOT RESPONSE WITH UNACCEPTABLE HTTP STATUS CODE (%d)", response.statusCode);
+
+            [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                return [NSString stringWithFormat:@"{ERROR} LOOKUP GOT RESPONSE WITH UNACCEPTABLE HTTP STATUS CODE (%ld)", (long)response.statusCode];
+            }];
             isConnectionAvailable = NO;
         }
         
@@ -571,8 +593,12 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                                          ![self isServiceAvailableForStatus:self.reachabilityStatus];
             self.lookupStatus = PNReachabilityStatusForFlags([self synchronousStatusFlags]);
             if (wasDisconnectedBefore) {
-                
-                PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' RETURNED BACK.", [self humanReadableInterfaceFromStatus:self.lookupStatus]);
+
+                [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                    return [NSString stringWithFormat:@"{ERROR} LOOKS LIKE UPLINK FROM '%@' RETURNED BACK.",
+                            [self humanReadableInterfaceFromStatus:self.lookupStatus]];
+                }];
             }
             
             // If after check reachability we find out that it has been changed from the moment of last reachability callback/refresh we trigger
@@ -587,31 +613,40 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         else if ([self isServiceAvailableForStatus:self.reachabilityStatus]) {
             
             if (self.lookupStatus != PNReachabilityStatusNotReachable) {
-                
-                PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.",
-                      [self humanReadableInterfaceFromStatus:self.reachabilityStatus]);
+
+                [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                    return [NSString stringWithFormat:@"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.",
+                            [self humanReadableInterfaceFromStatus:self.reachabilityStatus]];
+                }];
                 self.lookupStatus = PNReachabilityStatusNotReachable;
                 
                 self.status = self.lookupStatus;
             }
             else {
-                
-                PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' STILL DOWN.",
-                      [self humanReadableInterfaceFromStatus:self.reachabilityStatus]);
+
+                [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                    return [NSString stringWithFormat:@"{ERROR} LOOKS LIKE UPLINK FROM '%@' STILL DOWN.",
+                            [self humanReadableInterfaceFromStatus:self.reachabilityStatus]];
+                }];
             }
         }
         // Looks like both routes reported that there is no connection
         else if (self.lookupStatus != PNReachabilityStatusNotReachable) {
-            
-            PNLog(PNLogReachabilityLevel, self, @"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.",
-                  [self humanReadableInterfaceFromStatus:self.reachabilityStatus]);
+
+            [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                return [NSString stringWithFormat:@"{ERROR} LOOKS LIKE UPLINK FROM '%@' WENT DOWN.",
+                        [self humanReadableInterfaceFromStatus:self.reachabilityStatus]];
+            }];
             
             self.lookupStatus = PNReachabilityStatusNotReachable;
         }
     }
     else if (self.isNotificationsSuspended) {
-        
-        PNLog(PNLogReachabilityLevel, self, @"{UPLINK} Service state changed while suspended");
+
+        [PNLogger logReachabilityMessageFrom:self message:^NSString * { return @"{UPLINK} Service state changed while suspended"; }];
     }
 }
 
@@ -814,11 +849,14 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         ([self isServiceAvailableForStatus:self.status] && [self isServiceAvailableForStatus:updatedStatus])) {
         
         if (oldStatus != updatedStatus) {
-            
-            PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub service reachability refresing it state: %@ / %@ "
-                  "[CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", [self humanReadableStatus:oldStatus],
-                  [self humanReadableStatus:updatedStatus], available ? @"YES" : @"NO", currentNetworkAddress,
-                  reachabilityFlags);
+
+            [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                return [NSString stringWithFormat:@"{REFRESH} PubNub service reachability refresing it state: %@ / %@ "
+                        "[CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", [self humanReadableStatus:oldStatus],
+                        [self humanReadableStatus:updatedStatus], available ? @"YES" : @"NO", currentNetworkAddress,
+                        reachabilityFlags];
+            }];
         }
         
         if (self.isSimulatingNetworkSwitchEvent && [self isServiceAvailableForStatus:updatedStatus]) {
@@ -857,16 +895,22 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         if (!isConnectionAvailabilityChanged) {
             
             if (!originallyShouldGenerateReachabilityChangeEvent && shouldGenerateReachabilityChangeEvent) {
-                
-                PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub service reachability forced to generate 'change event' "
-                      "[CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", available ? @"YES" : @"NO", currentNetworkAddress,
-                      reachabilityFlags);
+
+                [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                    return [NSString stringWithFormat:@"{REFRESH} PubNub service reachability forced to generate 'change event' "
+                            "[CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", available ? @"YES" : @"NO", currentNetworkAddress,
+                            reachabilityFlags];
+                }];
             }
         }
         else {
-            
-            PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub service reachability changed [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
-                  available ? @"YES" : @"NO", currentNetworkAddress, reachabilityFlags);
+
+            [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                return [NSString stringWithFormat:@"{REFRESH} PubNub service reachability changed [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
+                        available ? @"YES" : @"NO", currentNetworkAddress, reachabilityFlags];
+            }];
         }
         
         
@@ -904,9 +948,12 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                 
                 [self startOriginLookup:NO];
             }
-            
-            PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub service reachability changed w/o event [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
-                  available ? @"YES" : @"NO", currentNetworkAddress, reachabilityFlags);
+
+            [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                return [NSString stringWithFormat:@"{REFRESH} PubNub service reachability changed w/o event [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
+                        available ? @"YES" : @"NO", currentNetworkAddress, reachabilityFlags];
+            }];
         }
     }
     else {
@@ -915,10 +962,13 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             
             [self startOriginLookup:NO];
         }
-        
-        PNLog(PNLogReachabilityLevel, self, @"{REFRESH} PubNub services reachability change ignored because origin lookup support "
-              "system reported different state (%@ / %@) [CONNECTED? %@]", [self humanReadableStatus:self.reachabilityStatus],
-              [self humanReadableStatus:self.lookupStatus], [self isServiceAvailableForStatus:self.lookupStatus] ? @"YES" : @"NO");
+
+        [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+            return [NSString stringWithFormat:@"{REFRESH} PubNub services reachability change ignored because origin lookup support "
+                    "system reported different state (%@ / %@) [CONNECTED? %@]", [self humanReadableStatus:self.reachabilityStatus],
+                    [self humanReadableStatus:self.lookupStatus], [self isServiceAvailableForStatus:self.lookupStatus] ? @"YES" : @"NO"];
+        }];
     }
 
 
@@ -1024,9 +1074,12 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                     isSimulationNetworkSwitchRequired = [self isNetworkAddressChanged];
                     if (isSimulationNetworkSwitchRequired) {
 
-                        PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability report network address changed: '%@' "
-                              "/ '%@' [CONNECTED? %@](FLAGS: %d)", self.currentNetworkAddress, currentNetworkAddress,
-                              available ? @"YES" : @"NO", self.reachabilityFlags);
+                        [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"{SETTER} PubNub services reachability report network address changed: '%@' "
+                                    "/ '%@' [CONNECTED? %@](FLAGS: %d)", self.currentNetworkAddress, currentNetworkAddress,
+                                    available ? @"YES" : @"NO", self.reachabilityFlags];
+                        }];
                     }
                     else if (newStatus == PNReachabilityStatusReachableViaWiFi) {
 
@@ -1035,9 +1088,12 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                         NSString *updatedWLANSSID = [PNNetworkHelper WLANServiceSetIdentifier];
                         if (isSimulationNetworkSwitchRequired) {
 
-                            PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability report switch to another WiFi: "
-                                  "'%@' / '%@' [CONNECTED? %@](FLAGS: %d)", self.currentWLANSSID, updatedWLANSSID,
-                                  available ? @"YES" : @"NO", self.reachabilityFlags);
+                            [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                                return [NSString stringWithFormat:@"{SETTER} PubNub services reachability report switch to another WiFi: "
+                                        "'%@' / '%@' [CONNECTED? %@](FLAGS: %d)", self.currentWLANSSID, updatedWLANSSID,
+                                        available ? @"YES" : @"NO", self.reachabilityFlags];
+                            }];
                         }
                     }
                 }
@@ -1046,10 +1102,13 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
                     isSimulationNetworkSwitchRequired = YES;
 
-                    PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability noticed interface changed from "
-                          "%@ to %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
-                          [self humanReadableInterfaceFromStatus:oldStatus], [self humanReadableInterfaceFromStatus:newStatus],
-                          available ? @"YES" : @"NO", currentNetworkAddress, self.reachabilityFlags);
+                    [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                        return [NSString stringWithFormat:@"{SETTER} PubNub services reachability noticed interface changed from "
+                                "%@ to %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
+                                [self humanReadableInterfaceFromStatus:oldStatus], [self humanReadableInterfaceFromStatus:newStatus],
+                                available ? @"YES" : @"NO", currentNetworkAddress, self.reachabilityFlags];
+                    }];
                 }
             }
 
@@ -1077,10 +1136,14 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             if (isSimulationNetworkSwitchRequired) {
 
                 BOOL available = [self isServiceAvailableForStatus:newStatus];
-                PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub service reachability forced to generate 'change "
-                      "event' [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", available ? @"YES" : @"NO",
-                      self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'",
-                      self.reachabilityFlags);
+
+                [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                    return [NSString stringWithFormat:@"{SETTER} PubNub service reachability forced to generate 'change "
+                            "event' [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", available ? @"YES" : @"NO",
+                            self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'",
+                            self.reachabilityFlags];
+                }];
 
                 // Simulate disconnected event (disconnected from previous interface, WiFi point or old IP address)
                 isServiceConnected = NO;
@@ -1098,11 +1161,14 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                     // Check whether there is no new events arrived while simulated network change event
                     if (weakSelf.isSimulatingNetworkSwitchEvent) {
 
-                        PNLog(PNLogReachabilityLevel, self, @"{FORCED} PubNub service reachability generated "
-                              "'change event' [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
-                              available ? @"YES" : @"NO",
-                              weakSelf.currentNetworkAddress ? weakSelf.currentNetworkAddress : @"'not assigned'",
-                              weakSelf.reachabilityFlags);
+                        [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"{FORCED} PubNub service reachability generated "
+                                    "'change event' [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
+                                    available ? @"YES" : @"NO",
+                                    weakSelf.currentNetworkAddress ? weakSelf.currentNetworkAddress : @"'not assigned'",
+                                    weakSelf.reachabilityFlags];
+                        }];
 
                         weakSelf.simulatingNetworkSwitchEvent = NO;
                         weakSelf.reachabilityStatus = originalReachabilityStatus;
@@ -1112,11 +1178,14 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             }
             else {
 
-                PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability changed to: %@ "
-                      "[CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", [self humanReadableStatus:newStatus],
-                      [self isServiceAvailable] ? @"YES" : @"NO",
-                      self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'",
-                      self.reachabilityFlags);
+                [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                    return [NSString stringWithFormat:@"{SETTER} PubNub services reachability changed to: %@ "
+                            "[CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)", [self humanReadableStatus:newStatus],
+                            [self isServiceAvailable] ? @"YES" : @"NO",
+                            self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'",
+                            self.reachabilityFlags];
+                }];
             }
 
             if (self.reachabilityChangeHandleBlock) {
@@ -1126,12 +1195,15 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         }
         else if (_serviceReachability){
 
-            PNLog(PNLogReachabilityLevel, self, @"{SETTER} PubNub services reachability got strange state: %@"
-                  ". Fallback to the previous: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
-                  [self humanReadableStatus:newStatus], [self humanReadableStatus:oldStatus],
-                  [self isServiceAvailable] ? @"YES" : @"NO",
-                  self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'",
-                  self.reachabilityFlags);
+            [PNLogger logReachabilityMessageFrom:self message:^NSString * {
+
+                return [NSString stringWithFormat:@"{SETTER} PubNub services reachability got strange state: %@"
+                        ". Fallback to the previous: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %d)",
+                        [self humanReadableStatus:newStatus], [self humanReadableStatus:oldStatus],
+                        [self isServiceAvailable] ? @"YES" : @"NO",
+                        self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'",
+                        self.reachabilityFlags];
+            }];
             
             // Reset reachability status to old
             self.reachabilityStatus = oldStatus;
