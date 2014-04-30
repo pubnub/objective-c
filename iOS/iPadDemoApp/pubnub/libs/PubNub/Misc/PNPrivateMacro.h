@@ -77,14 +77,12 @@
 
 #pragma mark - GCD helper functions
 
-static void PNDispatchRetain(dispatch_object_t object);
-void PNDispatchRetain(dispatch_object_t object) {
+static inline void PNDispatchRetain(dispatch_object_t object) {
 
     pn_dispatch_object_retain(object);
 }
 
-static void PNDispatchRelease(dispatch_object_t object);
-void PNDispatchRelease(dispatch_object_t object) {
+static inline void PNDispatchRelease(dispatch_object_t object) {
 
     pn_dispatch_object_release(object);
 }
@@ -111,21 +109,18 @@ unsigned long PNBitCompound(va_list masksList) {
     return compoundMask;
 }
 
-static void PNBitClear(unsigned long *flag);
-void PNBitClear(unsigned long *flag) {
+static inline void PNBitClear(unsigned long *flag) {
 
     *flag = 0;
 }
 
-static BOOL PNBitStrictIsOn(unsigned long flag, unsigned long mask);
-BOOL PNBitStrictIsOn(unsigned long flag, unsigned long mask) {
+static inline BOOL PNBitStrictIsOn(unsigned long flag, unsigned long mask) {
 
     return (flag & mask) == mask;
 }
 
 
-static BOOL PNBitIsOn(unsigned long flag, unsigned long mask);
-BOOL PNBitIsOn(unsigned long flag, unsigned long mask) {
+static inline BOOL PNBitIsOn(unsigned long flag, unsigned long mask) {
 
     return (flag & mask) != 0;
 }
@@ -147,8 +142,7 @@ void PNBitOn(unsigned long *flag, unsigned long mask) {
     *flag |= mask;
 }
 
-static void PNBitsOn(unsigned long *flag, ...);
-void PNBitsOn(unsigned long *flag, ...) {
+static inline void PNBitsOn(unsigned long *flag, ...) {
 
     va_list bits;
     va_start(bits, flag);
@@ -163,8 +157,7 @@ void PNBitOff(unsigned long *flag, unsigned long mask) {
     *flag &= ~mask;
 }
 
-static void PNBitsOff(unsigned long *flag, ...);
-void PNBitsOff(unsigned long *flag, ...) {
+static inline void PNBitsOff(unsigned long *flag, ...) {
 
     va_list bits;
     va_start(bits, flag);
@@ -176,8 +169,7 @@ void PNBitsOff(unsigned long *flag, ...) {
 
 #pragma mark - CoreFoundation helper functions
 
-static void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject);
-void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
+static inline void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
     if (CFObject != NULL) {
 
         if (*((CFTypeRef*)CFObject) != NULL) {
@@ -189,8 +181,7 @@ void PNCFRelease(CF_RELEASES_ARGUMENT void *CFObject) {
     }
 }
 
-static NSNull* PNNillIfNotSet(id object);
-NSNull* PNNillIfNotSet(id object) {
+static inline NSNull* PNNillIfNotSet(id object) {
 
     return (object ? object : [NSNull null]);
 }
@@ -204,8 +195,7 @@ NSUInteger PNRandomValueInRange(NSRange valuesRange) {
     return valuesRange.location + (random() % (valuesRange.length - valuesRange.location));
 }
 
-static NSString* PNUniqueIdentifier();
-NSString* PNUniqueIdentifier() {
+static inline NSString* PNUniqueIdentifier() {
 
     // Generating new unique identifier
     CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
@@ -218,8 +208,7 @@ NSString* PNUniqueIdentifier() {
     return [(NSString *)CFBridgingRelease(cfUUID) lowercaseString];
 }
 
-static NSString* PNShortenedIdentifierFromUUID(NSString *uuid);
-NSString* PNShortenedIdentifierFromUUID(NSString *uuid) {
+static inline NSString* PNShortenedIdentifierFromUUID(NSString *uuid) {
 
     NSMutableString *shortenedUUID = [NSMutableString string];
 
@@ -234,8 +223,7 @@ NSString* PNShortenedIdentifierFromUUID(NSString *uuid) {
     return shortenedUUID;
 }
 
-static NSString *PNHMACSHA256String(NSString *key, NSString *signedData);
-NSString *PNHMACSHA256String(NSString *key, NSString *signedData) {
+static inline NSString *PNHMACSHA256String(NSString *key, NSString *signedData) {
 
     const char *cKey = [key cStringUsingEncoding:NSUTF8StringEncoding];
     const char *cSignedData = [signedData cStringUsingEncoding:NSUTF8StringEncoding];
@@ -249,8 +237,7 @@ NSString *PNHMACSHA256String(NSString *key, NSString *signedData) {
     return [HMACData base64Encoding];
 }
 
-static BOOL PNIsUserGeneratedUUID(NSString *uuid);
-BOOL PNIsUserGeneratedUUID(NSString *uuid) {
+static inline BOOL PNIsUserGeneratedUUID(NSString *uuid) {
 
     NSString *uuidSearchRegex = @"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
     NSPredicate *generatedUUIDCheckPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", uuidSearchRegex];
@@ -259,8 +246,7 @@ BOOL PNIsUserGeneratedUUID(NSString *uuid) {
     return ![generatedUUIDCheckPredicate evaluateWithObject:uuid];
 }
 
-static NSInteger PNRandomInteger();
-NSInteger PNRandomInteger() {
+static inline NSInteger PNRandomInteger() {
 
     return (arc4random() %(INT32_MAX)-1);
 }
