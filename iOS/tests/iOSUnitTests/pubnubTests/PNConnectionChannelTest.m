@@ -130,6 +130,17 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
     PNConnectionProcessingRequests = 1 << 25
 };
 
+@interface PNConnectionTestChannel : PNConnectionChannel
+@end
+
+@implementation PNConnectionTestChannel
+// it should be reloaded in subclasses
+- (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
+    return YES;
+}
+
+@end
+
 
 @interface PNConnection ()
 @property (nonatomic, assign) unsigned long state;
@@ -140,7 +151,7 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
 @property (nonatomic, strong) PNConnection *connection;
 @property (nonatomic, strong) PNRequestsQueue *requestsQueue;
 
-- (BOOL)shouldStoreRequest:(PNBaseRequest *)request;
+//- (BOOL)shouldStoreRequest:(PNBaseRequest *)request;
 - (id)requestFromStorage:(NSMutableDictionary *)storage withIdentifier:(NSString *)identifier;
 - (void)removeRequest:(PNBaseRequest *)request fromStorage:(NSMutableDictionary *)storage;
 - (PNBaseRequest *)observedRequestWithIdentifier:(NSString *)identifier;
@@ -154,12 +165,6 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
 
 @end
 
-@implementation PNConnectionChannel (Test)
-- (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
-    return YES;
-}
-@end
-
 @interface PNConnectionChannelTest () <PNConnectionChannelDelegate>
 
 @end
@@ -170,7 +175,6 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
 	[NSThread sleepForTimeInterval:0.1];
 	[super tearDown];
 }
-
 
 #pragma mark - States tests
 
@@ -190,27 +194,7 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
     STAssertNotNil(connectionChannel, @"Couldn't create connection with service type and delegate");
 }
 
-//- (void)testIsConnected {
-//    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
-//    STAssertFalse([connectionChannel isConnected], @"By default channel shouldn't be connected");
-//}
-
 #pragma mark - Interaction tests
-
-//- (void)testConnect {
-//    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
-//    [connectionChannel connect];
-//    
-//    STAssertFalse([connectionChannel isConnected], @"Cannot connect without configuration");
-//}
-
-//- (void)testDisconnect {
-//    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
-//    
-//    [connectionChannel disconnect];
-//    
-//    STAssertFalse([connectionChannel isConnected], @"Cannot connect without configuration");
-//}
 
 - (void)testScheduleRequestShouldObserveProcessing {
     PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
@@ -302,6 +286,7 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
 - (void)connectionChannelWillResume:(PNConnectionChannel *)channel {}
 - (void)connectionChannelDidSuspend:(PNConnectionChannel *)channel {}
 - (void)connectionChannelDidResume:(PNConnectionChannel *)channel {}
+- (void)connectionChannelDidResume:(PNConnectionChannel *)channel requireWarmUp:(BOOL)isWarmingUpRequired {}
 
 - (void)connectionChannel:(PNConnectionChannel *)channel
          didConnectToHost:(NSString *)host {}
@@ -319,7 +304,9 @@ connectionDidFailToOrigin:(NSString *)host
 - (void)connectionChannel:(PNConnectionChannel *)channel
  willDisconnectFromOrigin:(NSString *)host
                 withError:(PNError *)error {}
-///////////////////////////////////////////////////////////////////////////////////////////////////////
+- (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel {return NO;}
+
+#pragma mark - Tests
 
 -(void)testConnectionChannelWithType {
 	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
@@ -383,9 +370,6 @@ connectionDidFailToOrigin:(NSString *)host
 
 -(void)testDisconnect {
 	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
-//	unsigned long state = channel.state;
-//	PNBitsOff( &state, PNConnectionChannelConnected);
-//	channel.state = state;
 	[channel disconnect];
 	STAssertTrue( channel.state == 128, @"");
 }
@@ -543,26 +527,24 @@ connectionDidFailToOrigin:(NSString *)host
 }
 
 -(void)testNextStoredRequest {
-	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNConnectionChannel *channel = [PNConnectionTestChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	PNBaseRequest *request = [[PNBaseRequest alloc] init];
 	request.identifier = @"id";
 	[channel scheduleRequest: request shouldObserveProcessing: YES];
 	PNBaseRequest *request1 = [[PNBaseRequest alloc] init];
 	request.identifier = @"id1";
 	[channel scheduleRequest: request1 shouldObserveProcessing: YES];
+    
 	STAssertTrue( [channel nextStoredRequest] == request, @"");
-
 	STAssertTrue( [channel nextStoredRequestAfter: request] == request1, @"");
-
 	STAssertTrue( [channel lastStoredRequest] == request1, @"");
-
 	STAssertTrue( [channel storedRequestAtIndex: 0] == request, @"");
 	STAssertTrue( [channel storedRequestAtIndex: 1] == request1, @"");
 	STAssertTrue( [channel storedRequestAtIndex: 2] == nil, @"");
 }
 
 -(void)testIsWaitingStoredRequestCompletion {
-	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNConnectionChannel *channel = [PNConnectionTestChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	PNBaseRequest *request = [[PNBaseRequest alloc] init];
 	request.identifier = @"id";
 	[channel scheduleRequest: request shouldObserveProcessing: NO];
@@ -573,7 +555,7 @@ connectionDidFailToOrigin:(NSString *)host
 }
 
 -(void)testRemoveStoredRequest {
-	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNConnectionChannel *channel = [PNConnectionTestChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	PNBaseRequest *request = [[PNBaseRequest alloc] init];
 	request.identifier = @"id";
 	[channel scheduleRequest: request shouldObserveProcessing: NO];
@@ -587,7 +569,7 @@ connectionDidFailToOrigin:(NSString *)host
 }
 
 -(void)testDestroyRequest {
-	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNConnectionChannel *channel = [PNConnectionTestChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	PNBaseRequest *request = [[PNBaseRequest alloc] init];
 	request.identifier = @"id";
 	[channel scheduleRequest: request shouldObserveProcessing: NO];
@@ -601,7 +583,7 @@ connectionDidFailToOrigin:(NSString *)host
 }
 
 -(void)testDestroyByRequestClass {
-	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNConnectionChannel *channel = [PNConnectionTestChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	PNBaseRequest *request = [[PNBaseRequest alloc] init];
 	request.identifier = @"id";
 	[channel scheduleRequest: request shouldObserveProcessing: NO];
@@ -614,7 +596,7 @@ connectionDidFailToOrigin:(NSString *)host
 }
 
 -(void)testHasRequestsWithClass {
-	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNConnectionChannel *channel = [PNConnectionTestChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	PNBaseRequest *request = [[PNBaseRequest alloc] init];
 	request.identifier = @"id";
 	[channel scheduleRequest: request shouldObserveProcessing: NO];
@@ -626,7 +608,7 @@ connectionDidFailToOrigin:(NSString *)host
 }
 
 -(void)testRequestsWithClass {
-	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNConnectionChannel *channel = [PNConnectionTestChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	NSArray *requests = [channel requestsWithClass: [PNBaseRequest class]];
 	STAssertTrue( requests.count == 0, @"");
 
@@ -645,26 +627,12 @@ connectionDidFailToOrigin:(NSString *)host
 }
 
 -(void)testScheduleRequest {
-	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
+	PNConnectionChannel *channel = [PNConnectionTestChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
 	PNBaseRequest *request = [[PNBaseRequest alloc] init];
 	request.identifier = @"id";
 	[channel scheduleRequest: request shouldObserveProcessing: YES];
 	STAssertTrue( channel.storedRequestsList.count == 1, @"");
 }
-
-//-(void)testScheduleNextRequest {
-//	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: self];
-//	PNBaseRequest *request = [[PNBaseRequest alloc] init];
-//	request.identifier = @"id";
-//
-//	PNConnection *connection = [channel connection];
-//	unsigned long state = connection.state;
-//	PNBitOn( &state, PNConnectionConnected);
-//	connection.state = state;
-//
-//	[channel scheduleRequest: request shouldObserveProcessing: YES];
-//	[channel scheduleNextRequest];
-//}
 
 -(void)testReconnect {
 	PNConnectionChannel *channel = [PNConnectionChannel connectionChannelWithType: PNConnectionChannelMessaging andDelegate: nil];

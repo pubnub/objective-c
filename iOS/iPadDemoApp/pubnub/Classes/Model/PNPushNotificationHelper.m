@@ -115,7 +115,7 @@
 
 - (void)addChannel:(PNChannel *)channel {
     
-    if (![self willChangePushNotificationStateForChanne:channel] && ![self.pushNotificationEnabledChannels containsObject:channel]) {
+    if (![self willChangePushNotificationStateForChanne:channel]) {
         
         [self.channelsForPushNotificationManipulation addObject:channel];
     }
@@ -168,7 +168,7 @@
                 
                 [weakSelf reset];
                 
-                weakSelf.pushNotificationEnabledChannels = channels;
+                weakSelf.pushNotificationEnabledChannels = auditedChannels;
                 [weakSelf updateData];
             }
             if (handlerBlock) {

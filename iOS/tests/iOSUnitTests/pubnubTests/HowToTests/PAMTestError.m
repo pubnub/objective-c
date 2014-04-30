@@ -433,7 +433,7 @@
 		indexMessage++;
 		NSLog(@"start sendMessage   %@", string);
 		[PubNub sendMessage: string toChannel:pnChannels[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-			NSLog(@"sendMessage, state %d", messageSendingState);
+			NSLog(@"sendMessage, state %d", (int)messageSendingState);
 			if( messageSendingState == PNMessageSending )
 				return;
 

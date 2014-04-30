@@ -91,8 +91,7 @@
 		}
 	}
 }
-//str1	__NSCFConstantString *	@"\nHTTP STATUS CODE: 200\nCONNECTION WILL BE CLOSE? NO\nRESPONSE SIZE: 33\nRESPONSE CONTENT SIZE: 290\nIS JSONP: YES\nCALLBACK METHOD: s\nREQUEST IDENTIFIER: 40e18\nRESPONSE: (\n        (\n    ),\n    13911647874628309\n)\n"	0x0a2185fcs
-//str2	__NSCFString *	@"\nHTTP STATUS CODE: 200\nSTATUS MESSAGE: (null)\nIS ERROR RESPONSE? NO\nCONNECTION WILL BE CLOSE? NO\nRESPONSE SIZE: 33\nRESPONSE CONTENT SIZE: 290\nIS JSONP: YES\nCALLBACK METHOD: s\nSERVICE NAME: (null)\nREQUEST IDENTIFIER: 40e18\nRESPONSE: (\n        (\n    ),\n    13911647874628309\n)\nADDITIONAL DATA: (null)\n"	0x0ff162a0
+
 -(void)testIsChunkedTransfer {
 	PNResponseDeserialize *des = [[PNResponseDeserialize alloc] init];
 	NSDictionary *header = @{@"Transfer-Encoding":@"chunked"};

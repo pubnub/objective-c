@@ -127,11 +127,12 @@
             message = [PubNub AESEncrypt:message error:&encryptionError];
             
             if (encryptionError != nil) {
-                
-                PNLog(PNLogCommunicationChannelLayerErrorLevel,
-                      self,
-                      @"Message encryption failed with error: %@\nUnencrypted message will be sent.",
-                      encryptionError);
+
+                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+
+                    return [NSString stringWithFormat:@"Message encryption failed with error: %@\nUnencrypted message"
+                            " will be sent.", encryptionError];
+                }];
             }
         }
         

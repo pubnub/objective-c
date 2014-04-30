@@ -10,11 +10,15 @@
 #import "PNJSONSerialization.h"
 
 @interface PNJSONSerialization (test)
-+ (void)getCallbackMethodName:(NSString **)callbackMethodName fromJSONString:(NSString *)jsonString;
-+ (NSString *)JSONStringFromJSONPString:(NSString *)jsonpString callbackMethodName:(NSString *)callbackMethodName;
+
++ (void)getCallbackMethodName:(NSString **)callbackMethodName
+               fromJSONString:(NSString *)jsonString;
++ (NSString *)JSONStringFromJSONPString:(NSString *)jsonpString
+                     callbackMethodName:(NSString *)callbackMethodName;
 + (BOOL)isJSONStringObject:(id)object;
 + (BOOL)isNSJSONAvailable;
 + (BOOL)isJSONKitAvailable;
+
 @end
 
 
@@ -26,10 +30,16 @@
 
 -(void)tearDown {
     [super tearDown];
-	[NSThread sleepForTimeInterval:0.1];
 }
 
+- (void)setUp {
+    [super setUp];
+}
+
+#pragma mark - Tests
+
 -(void)testJSONObjectWithString {
+    
 	NSArray *arr = @[ @[@"t_9c086([13916003554183288])", @[@(13916003554183288)], @(YES), @"t_9c086", [NSNull null]],
 						@[@"t_1c4ee([13916004043951171])", @[@(13916004043951171)], @(YES), @"t_1c4ee", [NSNull null]],
 					  @[@"cpe_34fa4({\"error\": \"Expected 32byte hex device token\"})", @{@"error":@"Expected 32byte hex device token"}, @(YES), @"cpe_34fa4", [NSNull null]],
@@ -80,7 +90,6 @@
 
 -(void)testStringFromJSONObject {
 	STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @"message"] isEqualToString: @"\"message\""], @"");
-	//STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @(123)] isEqual: @(123)], @"");
 	STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @[@"message"]] isEqualToString: @"[\"message\"]"], @"");
 	STAssertTrue( [[PNJSONSerialization stringFromJSONObject: @{@"key":@"object"}] isEqualToString: @"{\"key\":\"object\"}"], @"");
 }
@@ -103,8 +112,8 @@
 	STAssertTrue( [[PNJSONSerialization JSONStringFromJSONPString: @"t_80d4f([13916089297925772])" callbackMethodName: @"t_80d4f"] isEqualToString: @"[13916089297925772]"] == YES, @"");
 	STAssertTrue( [[PNJSONSerialization JSONStringFromJSONPString: @"s_3c1cb([[],\"13916089301310032\"])" callbackMethodName: @"s_3c1cb"] isEqualToString: @"[[],\"13916089301310032\"]"] == YES, @"");
 	STAssertTrue( [[PNJSONSerialization JSONStringFromJSONPString: @"s_3c1cbErr([[],\"13916089301310032\"])" callbackMethodName: @"s_3c1cb"] isEqualToString: @"[[],\"13916089301310032\"]"] == YES, @"");
-	STAssertTrue( [[PNJSONSerialization JSONStringFromJSONPString: @"s_3c1c_Err([[],\"13916089301310032\"])" callbackMethodName: @"s_3c1cb"] isEqualToString: @"[[],\"13916089301310032\"]"] == NO, @"");
-	STAssertTrue( [[PNJSONSerialization JSONStringFromJSONPString: @"66([[],\"13916089301310032\"])" callbackMethodName: @"s_3c1cb"] isEqualToString: @"[[],\"13916089301310032\"]"] == NO, @"");
+	STAssertTrue( [[PNJSONSerialization JSONStringFromJSONPString: @"s_3c1c_Err([[],\"13916089301310032\"])" callbackMethodName: @"s_3c1cb"] isEqualToString: @"[[],\"13916089301310032\"]"] == YES, @"");
+	STAssertTrue( [[PNJSONSerialization JSONStringFromJSONPString: @"66([[],\"13916089301310032\"])" callbackMethodName: @"s_3c1cb"] isEqualToString: @"[[],\"13916089301310032\"]"] == YES, @"");
 }
 
 -(void)testIsJSONString {
