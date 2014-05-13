@@ -21,7 +21,6 @@
 #import "PNConnection.h"
 #import "TestSemaphor.h"
 #import "Swizzler.h"
-#import "PNConnectionBadJson.h"
 #import "PNMessageHistoryRequest.h"
 
 @interface HowToTestsCompressed : SenTestCase
@@ -565,9 +564,6 @@
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 
 	STAssertTrue( handleClientConnectionStateChange, @"notification not called");
-
-	//	[Swizzler swizzleSelector:@selector(reconnect) forClass:[PNConnection class] withSelector:@selector(myReconnect)];
-	//	receiptReconnect = [self setReconnect];
 	_reconnectCount = 0;
 }
 

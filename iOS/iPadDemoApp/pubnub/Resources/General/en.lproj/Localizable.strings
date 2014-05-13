@@ -122,7 +122,7 @@
 "accessRightsChangeChannelSuccessAlertViewShortDescription"="PubNub client successfully changed access rights on channel level for:\n%@.";
 "accessRightsChangeUserSuccessAlertViewShortDescription"="PubNub client successfully changed access rights on user level for:\n%@.";
 "accessRightsChangeFailureAlertViewShortDescription"="Access Rights change did fail.";
-"accessRightsChangeApplicationFailureAlertViewShortDescription"="PubNub client was unable to change access rights on application level.";
+"accessRightsChangeApplicationFailureAlertViewShortDescription"="PubNub client was unable to change access rights on application level because of error:\n%@.";
 "accessRightsChangeChannelFailureAlertViewShortDescription"="PubNub client was unable to change access rights on channel level for:\n%@\nBecause of error:\n%@.";
 "accessRightsChangeUserFailureAlertViewShortDescription"="PubNub client was unable to change access rights on user level for:\n%@\nBecause of error:\n%@.";
 "accessRightsAuditSuccessAlertViewShortDescription"="Access Rights successfully received.";

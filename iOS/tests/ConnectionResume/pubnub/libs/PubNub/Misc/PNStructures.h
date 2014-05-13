@@ -38,6 +38,9 @@ typedef NS_OPTIONS(NSUInteger, PNPresenceEventType) {
     // Number of persons changed in observed channel
     PNPresenceEventChanged,
 
+    // Client's state changed on one of channels
+    PNPresenceEventStateChanged,
+
     // New person joined to the channel
     PNPresenceEventJoin,
     

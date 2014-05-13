@@ -24,7 +24,6 @@
     [super setUp];
     
     NSLog(@"setUp: %@", self.name);
-    // Set-up code here.
 }
 
 - (void)tearDown
@@ -76,17 +75,11 @@
     
     PNServiceChannel *channel = [PNServiceChannel serviceChannelWithDelegate:nil];
     
-    id mock = [OCMockObject mockForClass:[PNServiceChannel class]];
+    id mock = [OCMockObject partialMockForObject:channel];
     
-	//    [[mock expect] message]; - (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
+	[[[[mock expect] ignoringNonObjectArgs] andReturn:nil] sendMessage: [OCMArg any] toChannel:[OCMArg any] compressed:NO];
 
-	[[[[mock expect] ignoringNonObjectArgs] andReturn:nil] sendMessage: [OCMArg any] toChannel: [OCMArg any] compressed: [OCMArg any]];
-
-	[[[[mock stub] ignoringNonObjectArgs] andReturn:nil] sendMessage: [OCMArg any] toChannel: [OCMArg any] compressed: [OCMArg any]];
-//    [[[mock stub] andReturn:nil] message];
-//    [[[mock stub] andReturn:nil] channel];
-
-    [channel sendMessage:mock];
+    [mock sendMessage:[PNMessage new]];
     
     [mock verify];
 }
@@ -98,15 +91,16 @@
      - send a message to specific channel
      - expect scheduleRequest method of channel ivoked
      */
-    
     PNServiceChannel *channel = [PNServiceChannel serviceChannelWithDelegate:nil];
     
     id mockChannel = [OCMockObject partialMockForObject:channel];
     
-    [[mockChannel expect] scheduleRequest:OCMOCK_ANY
-                  shouldObserveProcessing:YES];
+    [[[mockChannel expect] ignoringNonObjectArgs] sendMessage:[OCMArg any] toChannel:[OCMArg any]
+                                                   compressed:NO];
     
-    [mockChannel sendMessage:@"Message from unit-tests" toChannel:mockChannel];
+    [mockChannel sendMessage:[PNMessage new]
+                   toChannel:mockChannel
+                  compressed:NO];
     [mockChannel verify];
 }
 

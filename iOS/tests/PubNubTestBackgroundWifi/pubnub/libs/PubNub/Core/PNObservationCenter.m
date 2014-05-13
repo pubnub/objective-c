@@ -1822,7 +1822,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     [notificationCenter removeObserver:self name:kPNClientDidReceiveParticipantChannelsListNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification object:nil];
 
-    PNLog(PNLogGeneralLevel, self, @"Destroyed");
+    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"Destroyed"; }];
 }
 
 #pragma mark -

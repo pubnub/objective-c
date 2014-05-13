@@ -73,6 +73,40 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
     return nil;
 }
 
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    // Checking base requirement about payload data type.
+    BOOL conforms = [response.response isKindOfClass:[NSArray class]];
+
+    // Checking base components
+    if (conforms) {
+
+        NSArray *responseData = response.response;
+        conforms = ([responseData count] > kPNResponseEventsListElementIndex);
+        if (conforms) {
+
+            if ([responseData count] > kPNResponseTimeTokenElementIndexForEvent) {
+
+                id timeToken = [responseData objectAtIndex:kPNResponseTimeTokenElementIndexForEvent];
+                conforms = (timeToken && ([timeToken isKindOfClass:[NSNumber class]] || [timeToken isKindOfClass:[NSString class]]));
+            }
+
+            id events = [responseData objectAtIndex:kPNResponseEventsListElementIndex];
+            conforms = ((conforms && events) ? [events isKindOfClass:[NSArray class]] : conforms);
+
+            if ([responseData count] > kPNResponseChannelsListElementIndex) {
+
+                id channelsList = [responseData objectAtIndex:kPNResponseChannelsListElementIndex];
+                conforms = ((conforms && channelsList) ? [channelsList isKindOfClass:[NSString class]] : conforms);
+
+            }
+        }
+    }
+
+
+    return conforms;
+}
+
 
 #pragma mark - Instance methods
 

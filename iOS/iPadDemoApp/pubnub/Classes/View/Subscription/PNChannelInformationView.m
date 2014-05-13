@@ -116,6 +116,17 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [self updateLayout];
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    
+    // Forward method call to the super class
+    [super willMoveToSuperview:newSuperview];
+    
+    if (!newSuperview) {
+        
+        [self disableDataObservation];
+    }
+}
+
 - (NSTimeInterval)appearAnimationDuration {
     
     return kPNViewAppearAnimationDuration;
@@ -406,11 +417,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (void)channelInformationDidChange {
     
     [self updateLayout];
-}
-
-- (void)dealloc {
-    
-    [self disableDataObservation];
 }
 
 #pragma mark -

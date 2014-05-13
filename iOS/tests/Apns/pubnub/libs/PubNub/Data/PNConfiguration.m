@@ -171,7 +171,7 @@
         self.realOrigin = self.origin;
         self.publishKey = (publishKey ? publishKey : @"");
         self.subscriptionKey = (subscribeKey ? subscribeKey:@"");
-        self.secretKey = (secretKey ? secretKey : @"0");
+        self.secretKey = (secretKey ? secretKey : nil);
         self.cipherKey = (cipherKey ? cipherKey : @"");
         self.authorizationKey = (authorizationKey ? authorizationKey : @"");
         self.useSecureConnection = kPNSecureConnectionRequired;
@@ -191,7 +191,13 @@
         // Checking whether user changed origin host from default
         // or not
         if ([self.origin isEqualToString:kPNDefaultOriginHost]) {
-            PNLog(PNLogGeneralLevel, self, @"\n{WARN} Before running in production, please contact support@pubnub.com for your custom origin.\nPlease set the origin from %@ to IUNDERSTAND.pubnub.com to remove this warning.", self.origin);
+
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+                return [NSString stringWithFormat:@"\n{WARN} Before running in production, please contact "
+                        "support@pubnub.com for your custom origin.\nPlease set the origin from %@ to "
+                        "IUNDERSTAND.pubnub.com to remove this warning.", self.origin];
+            }];
         }
     }
     
@@ -208,7 +214,7 @@
     updatedConfiguration.realOrigin = self.origin;
     updatedConfiguration.publishKey = (publishKey ? publishKey : @"");
     updatedConfiguration.subscriptionKey = (subscribeKey ? subscribeKey:@"");
-    updatedConfiguration.secretKey = (secretKey ? secretKey : @"0");
+    updatedConfiguration.secretKey = (secretKey ? secretKey : nil);
     updatedConfiguration.cipherKey = (cipherKey ? cipherKey : @"");
     updatedConfiguration.authorizationKey = (authorizationKey ? authorizationKey : @"");
     

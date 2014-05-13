@@ -40,10 +40,6 @@
 #pragma mark - Class methods
 
 /**
- * Retrieve reference on class of parser which should be used
- * to parse response which arrived from PubNub service
- */
-/**
  Retrieve reference on parser class which is able to parse data from \b PNResponse instance.
 
  @param response
@@ -52,6 +48,16 @@
  @return Class of the parser which is able to parse data from response.
  */
 + (Class)classForResponse:(PNResponse *)response;
+
+/**
+ Verify whether suggested class is able to process provided data payload or it doesn't recognize it's structure.
+
+ @param response
+ \b PNParser instance against which check should be performed.
+
+ @return \c YES in case if suggested parser is able to handle provided data.
+ */
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response;
 
 #pragma mark -
 
@@ -76,9 +82,18 @@
             response = [PNResponse errorResponseWithMessage:[PNChannelHistoryParser errorMessage:response]];
         }
     }
-    
 
-    return [[[self classForResponse:response] alloc] initWithResponse:response];
+    Class parserClass = [self classForResponse:response];
+
+    // Looks like server provided response which doesn't conform to standards required for concrete packet processing.
+    if (!parserClass) {
+
+        parserClass = [PNErrorResponseParser class];
+        response = nil;
+    }
+
+
+    return [[parserClass alloc] initWithResponse:response];
 }
 
 + (Class)classForResponse:(PNResponse *)response {
@@ -87,95 +102,86 @@
 
     if ([response.response isKindOfClass:[NSArray class]]) {
 
-        NSArray *responseData = response.response;
-        if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.pushNotificationEnabledChannelsCallback]) {
+        // Check whether result is result for "Time token" request or not.
+        if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.timeTokenCallback]) {
+
+            parserClass = [PNTimeTokenResponseParser class];
+        }
+        // Check whether result is result for "Push notification enabled channels" request or not.
+        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.pushNotificationEnabledChannelsCallback]) {
 
             parserClass = [PNPushNotificationsEnabledChannelsParser class];
         }
-        else {
+        // Check whether result is result for push notification state manipulation request or not.
+        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelPushNotificationsEnableCallback] ||
+                 [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelPushNotificationsDisableCallback] ||
+                 [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.pushNotificationRemoveCallback] ||
+                 [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.sendMessageCallback]) {
 
-            // Check whether there is only single item in array which will mean that this is time token.
-            if ([responseData count] == 1) {
+            parserClass = [PNOperationStatusResponseParser class];
+        }
+        // Check whether result is result for "Channel History" request or not.
+        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.messageHistoryCallback]) {
 
-                parserClass = [PNTimeTokenResponseParser class];
-            }
-            // Check whether first element in array is array as well (which will mean that response holds set of
-            // events for set of channels or at least one channel).
-            else if ([[responseData objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+            parserClass = [PNChannelHistoryParser class];
+        }
+        // Check whether result is result for "Subscribe" request or not.
+        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.subscriptionCallback]) {
 
-                // Check whether there is 3 elements in response array or not (depending on whether two last elements
-                // is number or not, this will mean whether response is for history or not).
-                if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.messageHistoryCallback]) {
-                    
-                    parserClass = [PNChannelHistoryParser class];
-                }
-                else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.subscriptionCallback]) {
-
-                    parserClass = [PNChannelEventsResponseParser class];
-                }
-            }
-            // Looks like this is response with status message
-            else {
-
-                parserClass = [PNOperationStatusResponseParser class];
-            }
+            parserClass = [PNChannelEventsResponseParser class];
         }
     }
-    else if ([response.response isKindOfClass:[NSDictionary class]]){
+    // Check whether response arrived as result of specific action execution.
+    if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.leaveChannelCallback]) {
 
-        NSDictionary *responseData = response.response;
+        parserClass = [PNActionResponseParser class];
+    }
+    // Check whether result is result for "State retrieval" request or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateRetrieveCallback]) {
 
-        // Check whether response arrived as result of specific action execution.
-        if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.leaveChannelCallback] ||
-            [responseData objectForKey:kPNResponseActionKey]) {
+        parserClass = [PNClientStateResponseParser class];
+    }
+    // Check whether result is result for "State update" request or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateUpdateCallback]) {
 
-            parserClass = [PNActionResponseParser class];
-        }
-        // Check whether result is result for "State retrieval" request or not.
-        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateRetrieveCallback]) {
+        parserClass = [PNClientStateUpdateResponseParser class];
+    }
+    // Check whether result is result for "Here now" request execution or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelParticipantsCallback]) {
 
-            parserClass = [PNClientStateResponseParser class];
-        }
-        // Check whether result is result for "State update" request or not.
-        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateUpdateCallback]) {
+        parserClass = [PNHereNowResponseParser class];
+    }
+    // Check whether result is result for "Where now" request execution or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.participantChannelsCallback]) {
 
-            parserClass = [PNClientStateUpdateResponseParser class];
-        }
-        // Check whether result is result for "Here now" request execution or not.
-        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelParticipantsCallback]) {
+        parserClass = [PNWhereNowResponseParser class];
+    }
+    // Check whether response arrived as result of channel access rights change or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelAccessRightsChangeCallback] ||
+             [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelAccessRightsAuditCallback]) {
 
-            parserClass = [PNHereNowResponseParser class];
-        }
-        // Check whether result is result for "Where now" request execution or not.
-        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.participantChannelsCallback]) {
+        if (![response isErrorResponse]) {
 
-            parserClass = [PNWhereNowResponseParser class];
-        }
-        // Check whether response arrived as result of channel access rights change or not.
-        else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelAccessRightsChangeCallback] ||
-                 [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelAccessRightsAuditCallback]) {
-
-            if (![response isErrorResponse]) {
-
-                parserClass = [PNAccessRightsResponseParser class];
-            }
-        }
-        // Check whether error report response arrived
-        else if ([responseData objectForKey:kPNResponseErrorMessageKey]) {
-
-            parserClass = [PNErrorResponseParser class];
+            parserClass = [PNAccessRightsResponseParser class];
         }
     }
 
-    // Looks like server sent malformed JSON string (there is no array or dictionary at top level) and we should
-    // treat it as error.
     if (parserClass == nil) {
         
         parserClass = [PNErrorResponseParser class];
     }
+    else if (![parserClass isResponseConformToRequiredStructure:response]){
+
+        parserClass = nil;
+    }
 
 
     return parserClass;
+}
+
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    return YES;
 }
 
 

@@ -55,6 +55,26 @@
     return nil;
 }
 
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    // Checking base requirement about payload data type.
+    BOOL conforms = [response.response isKindOfClass:[NSArray class]];
+
+    // Checking base components
+    if (conforms) {
+
+        conforms = ([(NSArray *)response.response count] == 1);
+        if (conforms) {
+
+            id timeToken = [(NSArray *)response.response lastObject];
+            conforms = ([timeToken isKindOfClass:[NSNumber class]] || [timeToken isKindOfClass:[NSString class]]);
+        }
+    }
+
+
+    return conforms;
+}
+
 
 #pragma mark - Instance methods
 

@@ -90,8 +90,11 @@
 }
 
 - (NSString *)resourcePath {
-    
-    PNLog(PNLogCommunicationChannelLayerWarnLevel, self, @" THIS METHOD SHOULD BE RELOADED IN SUBCLASS");
+
+    [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+
+        return @"THIS METHOD SHOULD BE RELOADED IN SUBCLASS";
+    }];
     
     return [self resourcePath:NO];
 }
@@ -103,7 +106,11 @@
 
 - (NSString *)resourcePath:(BOOL)forConsole {
 
-    PNLog(PNLogCommunicationChannelLayerWarnLevel, self, @" THIS METHOD SHOULD BE RELOADED IN SUBCLASS");
+    [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+
+        return @"THIS METHOD SHOULD BE RELOADED IN SUBCLASS";
+    }];
+
 
     return @"/";
 }

@@ -26,6 +26,7 @@ struct PNServiceResponseServiceDataKeysStruct PNServiceResponseServiceDataKeys =
     .name = @"service",
     .statusCode = @"status",
     .errorState = @"error",
+    .warningState = @"warning",
     .message = @"message",
     .response = @"payload",
     .privateData = @"^_(.*?)_(?=[^\\s])"
@@ -176,8 +177,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                           [weakSelf extractServiceData];
                                       }
                                            errorBlock:^(NSError *error) {
+                                               [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
 
-                                               PNLog(PNLogGeneralLevel, weakSelf, @"JSON DECODE ERROR: %@", error);
+                                                   return [NSString stringWithFormat:@"JSON DECODE ERROR: %@", error];
+                                               }];
                                                [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
         }
@@ -185,7 +188,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         // characters which can't be encoded.
         else {
 
-            PNLog(PNLogGeneralLevel, self, @"FAILED TO DECODE DATA");
+            [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"FAILED TO DECODE DATA"; }];
             [self handleJSONDecodeErrorWithCode:kPNResponseEncodingError];
         }
     }
@@ -252,6 +255,14 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
             self.message = [processedData objectForKey:PNServiceResponseServiceDataKeys.message];
             [processedData removeObjectForKey:PNServiceResponseServiceDataKeys.message];
+        }
+
+        // Check whether response contains information about whether this is warning clarification or not.
+        if ([[processedData objectForKey:PNServiceResponseServiceDataKeys.warningState] boolValue]) {
+
+            PNLog(PNLogGeneralLevel, self, @"\n\n==================== PubNub PAM ====================\n%@\n====================================================\n\n",
+                  self.message);
+            [processedData removeObjectForKey:PNServiceResponseServiceDataKeys.warningState];
         }
 
         // Check whether server messed up and there is actual error or not.

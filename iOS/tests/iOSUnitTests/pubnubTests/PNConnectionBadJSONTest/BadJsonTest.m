@@ -217,7 +217,7 @@
 			__block NSDate *start = [NSDate date];
 			dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 			[PubNub sendMessage:[NSString stringWithFormat: @"Hello PubNub %d", i] toChannel:pnChannels1[i] withCompletionBlock:^(PNMessageState messageSendingState, id data) {
-				NSLog( @"sendMessage state %lu", messageSendingState);
+				NSLog( @"sendMessage state %d", (int)messageSendingState);
 				if( messageSendingState == PNMessageSending && i == 0 )
 	//				[self unswizzleFromReceipt: receiptError];
 	//				countSendMessageNumber0 ++;

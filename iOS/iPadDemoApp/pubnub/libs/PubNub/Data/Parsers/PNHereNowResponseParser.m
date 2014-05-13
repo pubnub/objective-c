@@ -35,6 +35,68 @@
     return nil;
 }
 
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
+
+    // Checking base requirement about payload data type.
+    __block BOOL conforms = [response.response isKindOfClass:[NSDictionary class]];
+
+    // Checking base components
+    if (conforms) {
+
+        NSDictionary *responseData = response.response;
+        id channels = [responseData objectForKey:kPNResponseChannelsKey];
+        conforms = (channels ? [channels isKindOfClass:[NSDictionary class]] : conforms);
+        if (!channels) {
+
+            id channel = response.additionalData;
+            conforms = (channel ? [channel isKindOfClass:[PNChannel class]] : conforms);
+            id identifiers = [responseData objectForKey:kPNResponseUUIDKey];
+            id occupancyCount = [responseData objectForKey:kPNResponseOccupancyKey];
+            conforms = ((conforms && identifiers) ? [identifiers isKindOfClass:[NSArray class]] : conforms);
+            conforms = ((conforms && occupancyCount) ? [occupancyCount isKindOfClass:[NSNumber class]] : conforms);
+        }
+        else {
+
+            [channels enumerateKeysAndObjectsUsingBlock:^(id channelName, id channelParticipantsInformation,
+                                                          BOOL *channelNamesEnumeratorStop) {
+
+                conforms = (conforms ? [channelName isKindOfClass:[NSString class]] : conforms);
+                conforms = (conforms ? [channelParticipantsInformation isKindOfClass:[NSDictionary class]] : conforms);
+                if (conforms) {
+
+                    id identifiers = [channelParticipantsInformation objectForKey:kPNResponseUUIDKey];
+                    id occupancyCount = [channelParticipantsInformation objectForKey:kPNResponseOccupancyKey];
+                    conforms = ((conforms && identifiers) ? [identifiers isKindOfClass:[NSArray class]] : conforms);
+                    conforms = ((conforms && occupancyCount) ? [occupancyCount isKindOfClass:[NSNumber class]] : conforms);
+
+                    [identifiers enumerateObjectsUsingBlock:^(id clientInformation, NSUInteger clientInformationIdx,
+                                                              BOOL *clientInformationEnumerator) {
+
+                        id clientIdentifier = nil;
+
+                        // Looks like we received detailed information about client.
+                        if ([clientInformation respondsToSelector:@selector(allKeys)]) {
+
+                            clientIdentifier = [clientInformation valueForKey:kPNResponseClientUUIDKey];
+                        }
+                        // Plain client identifier is received.
+                        else {
+
+                            clientIdentifier = clientInformation;
+                        }
+                        conforms = ((conforms && clientIdentifier) ? [clientIdentifier isKindOfClass:[NSString class]] : conforms);
+                    }];
+                }
+
+                *channelNamesEnumeratorStop = !conforms;
+            }];
+        }
+    }
+
+
+    return conforms;
+}
+
 
 #pragma mark - Instance methods
 
@@ -50,7 +112,8 @@
         if (!channels) {
 
             PNChannel *channel = (PNChannel *)response.additionalData;
-            channels = @{channel.name: @{kPNResponseUUIDKey: [responseData objectForKey:kPNResponseUUIDKey],
+            NSArray *participants = [responseData objectForKey:kPNResponseUUIDKey];
+            channels = @{channel.name: @{kPNResponseUUIDKey: (participants ? participants : @[]),
                                     kPNResponseOccupancyKey: [responseData objectForKey:kPNResponseOccupancyKey]
             }};
         }
@@ -95,6 +158,7 @@
 
         [clients addObject:[self clientFromData:clientInformation forChannel:channel]];
     }];
+
 
     return clients;
 }
