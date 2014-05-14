@@ -10204,6 +10204,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 /**
  * Tells whether logging is enabled
  */
-+ (BOOL)isLoggingEnabled
++ (BOOL)isLoggingEnabled;
 
 @end
