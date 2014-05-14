@@ -6362,8 +6362,12 @@ didReceiveNetworkLatency:(double)latency
 
 #pragma mark - Logging methods
 
-+(void) toggleLogging {
++ (void)toggleLogging {
     _isLoggingEnabled = !_isLoggingEnabled;
+}
+
++ (BOOL)isLoggingEnabled {
+    return _isLoggingEnabled;
 }
 
 @end

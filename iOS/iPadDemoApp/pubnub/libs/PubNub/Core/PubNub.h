@@ -10199,6 +10199,11 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 /**
  * Toggles logging both on console and to file
  */
-+(void)toggleLogging;
++ (void)toggleLogging;
+
+/**
+ * Tells whether logging is enabled
+ */
++ (BOOL)isLoggingEnabled
 
 @end
