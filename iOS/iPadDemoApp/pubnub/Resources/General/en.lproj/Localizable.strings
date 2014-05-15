@@ -64,7 +64,7 @@
 // Global presence messages
 "presenceAlertViewTitle"="Global presence information";
 "presenceSuccessShortDescription"="Global presence requested.";
-"presenceSuccessDetailedDescription"="PubNub client successfully retrieved subscription key based presence infogmration.";
+"presenceSuccessDetailedDescription"="PubNub client successfully retrieved subscription key based presence information.";
 "presenceFailureShortDescription"="Global presence request did fail.";
 "presenceFailureDetailedDescription"="PubNub client was unable to retrieve subscription key based presence information\nBecause of error:\n%@";
 
