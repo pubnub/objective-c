@@ -1326,8 +1326,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] RETRY CONNECTION (%lu / %d) (STATE: %lu)",
-                self.name ? self.name : self, (unsigned long)self.connectionRetryCount, kPNMaximumConnectionRetryCount, self.state];
+        return [NSString stringWithFormat:@"[CONNECTION::%@] RETRY CONNECTION (%lu / %lu) (STATE: %lu)",
+                self.name ? self.name : self, (unsigned long)self.connectionRetryCount, (unsigned long)kPNMaximumConnectionRetryCount, self.state];
     }];
     
     // Check whether reconnection was issued because of SSL error or not

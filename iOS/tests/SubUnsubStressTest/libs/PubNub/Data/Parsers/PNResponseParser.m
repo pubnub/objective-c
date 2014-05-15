@@ -148,8 +148,11 @@
     }
     // Check whether result is result for "Here now" request execution or not.
     else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelParticipantsCallback]) {
-
-        parserClass = [PNHereNowResponseParser class];
+        
+        if (![response isErrorResponse]) {
+            
+            parserClass = [PNHereNowResponseParser class];
+        }
     }
     // Check whether result is result for "Where now" request execution or not.
     else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.participantChannelsCallback]) {

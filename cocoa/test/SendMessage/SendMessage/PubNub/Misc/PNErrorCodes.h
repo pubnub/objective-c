@@ -138,15 +138,18 @@ static NSInteger const kPNStorageNotEnabledError = 134;
 
 #pragma mark - Service error (caused by remote server)
 
+// Server responded that developer used concrete API too much and exceeded access rate.
+static NSInteger const kPNAPIRateExceededError = 135;
+
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 135;
+static NSInteger const kPNResponseEncodingError = 136;
 
 // Server provided response with malformed JSON in it (in such cases library will try to resend request to
 // remote origin)
-static NSInteger const kPNResponseMalformedJSONError = 136;
+static NSInteger const kPNResponseMalformedJSONError = 137;
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some errors
-static NSInteger const kPNConnectionErrorOnSetup = 137;
+static NSInteger const kPNConnectionErrorOnSetup = 138;

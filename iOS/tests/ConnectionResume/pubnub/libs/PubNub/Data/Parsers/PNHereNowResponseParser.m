@@ -112,10 +112,13 @@
         if (!channels) {
 
             PNChannel *channel = (PNChannel *)response.additionalData;
-            NSArray *participants = [responseData objectForKey:kPNResponseUUIDKey];
-            channels = @{channel.name: @{kPNResponseUUIDKey: (participants ? participants : @[]),
-                                    kPNResponseOccupancyKey: [responseData objectForKey:kPNResponseOccupancyKey]
-            }};
+            if (channel.name.length) {
+                
+                NSArray *participants = [responseData objectForKey:kPNResponseUUIDKey];
+                channels = @{channel.name: @{kPNResponseUUIDKey: (participants ? participants : @[]),
+                                             kPNResponseOccupancyKey: [responseData objectForKey:kPNResponseOccupancyKey]
+                                             }};
+            }
         }
         NSMutableArray *participants = [NSMutableArray array];
         [channels enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelParticipantsInformation,
