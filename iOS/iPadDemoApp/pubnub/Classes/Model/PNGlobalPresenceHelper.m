@@ -73,13 +73,16 @@
                 [self.fetchedChannels addObject:client.channel];
             }
             
-            if (![self.mappedParticipants valueForKey:client.channel.name]) {
+            if (client.channel.name) {
                 
-                [self.mappedParticipants setValue:[NSMutableArray array] forKey:client.channel.name];
-            }
-            if (![[self.mappedParticipants valueForKey:client.channel.name] containsObject:client]) {
-                
-                [[self.mappedParticipants valueForKey:client.channel.name] addObject:client];
+                if (![self.mappedParticipants valueForKey:client.channel.name]) {
+                    
+                    [self.mappedParticipants setValue:[NSMutableArray array] forKey:client.channel.name];
+                }
+                if (![[self.mappedParticipants valueForKey:client.channel.name] containsObject:client]) {
+                    
+                    [[self.mappedParticipants valueForKey:client.channel.name] addObject:client];
+                }
             }
         }];
         
