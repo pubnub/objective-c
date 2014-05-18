@@ -215,7 +215,11 @@ static NSMutableArray *pendingInvocations = nil;
 #pragma mark - Messages processing methods
 
 + (void)postponeSendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+<<<<<<< HEAD
         withCompletionBlock:(id)success;
+=======
+             storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
+>>>>>>> e3243d4... * added ability to specify whether sent message should be stored on PubNub servers for usage with History API or not.
 
 
 #pragma mark - History methods
@@ -3118,22 +3122,48 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel {
     
-    return [self sendMessage:message toChannel:channel compressed:NO];
+    return [self sendMessage:message toChannel:channel storeInHistory:YES];
+}
+
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory {
+    
+    return [self sendMessage:message toChannel:channel compressed:NO storeInHistory:shouldStoreInHistory];
 }
 
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
     
-    return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage withCompletionBlock:nil];
+    return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage storeInHistory:YES];
+}
+
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory {
+    
+    return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory
+         withCompletionBlock:nil];
 }
 
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
-    return [self sendMessage:message toChannel:channel compressed:NO withCompletionBlock:success];
+    return [self sendMessage:message toChannel:channel compressed:NO storeInHistory:YES withCompletionBlock:success];
+}
+
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success {
+    
+    return [self sendMessage:message toChannel:channel compressed:NO storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
+<<<<<<< HEAD
+=======
+    return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage storeInHistory:YES withCompletionBlock:success];
+}
+
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success {
+    
+>>>>>>> e3243d4... * added ability to specify whether sent message should be stored on PubNub servers for usage with History API or not.
     [PNLogger logGeneralMessageFrom:[self sharedInstance] message:^NSString * {
         
         return [NSString stringWithFormat:@"TRYING TO SEND MESSAGE: %@ ON CHANNEL: %@ (STATE: %@)",
@@ -3142,7 +3172,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     // Create object instance
     PNError *error = nil;
-    PNMessage *messageObject = [PNMessage messageWithObject:message forChannel:channel compressed:shouldCompressMessage error:&error];
+    PNMessage *messageObject = [PNMessage messageWithObject:message forChannel:channel compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory
+                                                      error:&error];
     
     [self performAsyncLockingBlock:^{
         
@@ -3196,7 +3227,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                            [self humanReadableStateFrom:[self sharedInstance].state]];
                }];
                
+<<<<<<< HEAD
                [self postponeSendMessage:message toChannel:channel compressed:shouldCompressMessage
+=======
+               [self postponeSendMessage:message toChannel:channel compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory
+>>>>>>> e3243d4... * added ability to specify whether sent message should be stored on PubNub servers for usage with History API or not.
                      withCompletionBlock:(success ? [success copy] : nil)];
            }];
     
@@ -3205,33 +3240,64 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeSendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+<<<<<<< HEAD
         withCompletionBlock:(id)success {
+=======
+             storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success {
+>>>>>>> e3243d4... * added ability to specify whether sent message should be stored on PubNub servers for usage with History API or not.
     
-    [[self sharedInstance] postponeSelector:@selector(sendMessage:toChannel:compressed:withCompletionBlock:)
+    [[self sharedInstance] postponeSelector:@selector(sendMessage:toChannel:compressed:storeInHistory:withCompletionBlock:)
                                   forObject:self
                              withParameters:@[[PNHelper nilifyIfNotSet:message], [PNHelper nilifyIfNotSet:channel], @(shouldCompressMessage),
+<<<<<<< HEAD
                                               [PNHelper nilifyIfNotSet:success]]
                                  outOfOrder:[success isKindOfClass:[NSString class]]];
+=======
+                                              @(shouldStoreInHistory), [PNHelper nilifyIfNotSet:(id)success]]
+                                 outOfOrder:NO];
+>>>>>>> e3243d4... * added ability to specify whether sent message should be stored on PubNub servers for usage with History API or not.
 }
 
 + (void)sendMessage:(PNMessage *)message {
     
-    [self sendMessage:message compressed:NO];
+    [self sendMessage:message storeInHistory:YES];
+}
+
++ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory {
+    
+    [self sendMessage:message compressed:NO storeInHistory:shouldStoreInHistory];
 }
 
 + (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage {
     
-    [self sendMessage:message.message toChannel:message.channel compressed:shouldCompressMessage withCompletionBlock:nil];
+    [self sendMessage:message compressed:shouldCompressMessage storeInHistory:YES];
+}
+
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory {
+    
+    [self sendMessage:message compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
 + (void)sendMessage:(PNMessage *)message withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
-    [self sendMessage:message.message compressed:NO withCompletionBlock:success];
+    [self sendMessage:message storeInHistory:YES withCompletionBlock:success];
+}
+
++ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success {
+    
+    [self sendMessage:message compressed:NO storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
 + (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
-    [self sendMessage:message.message toChannel:message.channel compressed:shouldCompressMessage withCompletionBlock:success];
+    [self sendMessage:message compressed:shouldCompressMessage storeInHistory:YES withCompletionBlock:success];
+}
+
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
+withCompletionBlock:(PNClientMessageProcessingBlock)success {
+    
+    [self sendMessage:message.message toChannel:message.channel compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory
+  withCompletionBlock:success];
 }
 
 

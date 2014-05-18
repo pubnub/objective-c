@@ -169,9 +169,20 @@
         [resourcePath appendFormat:@"/%@", self.preparedMessage];
     }
     
+<<<<<<< HEAD
     [resourcePath appendFormat:@"?uuid=%@%@&pnsdk=%@", self.clientIdentifier,
                                ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
                                [self clientInformationField]];
+=======
+    [resourcePath appendFormat:@"?uuid=%@%@", self.clientIdentifier,
+                               ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @"")];
+    
+    if (!self.message.shouldStoreInHistory) {
+        
+        [resourcePath appendString:@"&store=0"];
+    }
+    
+>>>>>>> e3243d4... * added ability to specify whether sent message should be stored on PubNub servers for usage with History API or not.
 
     return resourcePath;
 }

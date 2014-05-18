@@ -932,10 +932,29 @@ You can use the following methods to send messages:
 ```objc
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel;   
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
-+      withCompletionBlock:(PNClientMessageProcessingBlock)success;  
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;  
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;  
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;  
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;  
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+            storeInHistory:(BOOL)shouldStoreInHistory;  
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+            storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+            storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
 + (void)sendMessage:(PNMessage *)message;  
-+ (void)sendMessage:(PNMessage *)message withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (void)sendMessage:(PNMessage *)message withCompletionBlock:(PNClientMessageProcessingBlock)success;  
++ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory;  
++ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory 
+withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage;  
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage 
+withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;  
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
+withCompletionBlock:(PNClientMessageProcessingBlock)success;
 ```
 
 The first two methods return a [__PNMessage__](iPadDemoApp/pubnub/libs/PubNub/Data/PNMessage.h) instance. If there is a need to re-publish this message for any reason, (for example, the publish request timed-out due to lack of Internet connection), it can be passed back to the last two methods to easily re-publish.

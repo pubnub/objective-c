@@ -8742,7 +8742,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  }
  @endcode
  
- There is also way to observe connection state from any place in your application using  \b PNObservationCenter:
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
  @code
  [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
   withBlock:^(PNMessageState state, id data) {
@@ -8766,11 +8766,86 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @param message
  Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
- \c NSDictionary .
+ \c NSDictionary.
+ 
+ @param channel
+ \b PNChannel instance into which message should be sent.
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel;
+
+/**
+ Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
+ 
+ @code
+ @endcode
+ This method extendeds \a +sendMessage:toChannel: and allow to specify whether message should be stored in history or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub sendMessage:@{@"array": @[@"of", @"strings"], @"and": @16} toChannel:[PNChannel channelWithName:@"iosdev"] 
+      storeInHistory:NO];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
+ 
+     // PubNub client is sending message at this moment.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
+ 
+     // PubNub client failed to send message and reason is in 'error'.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
+ 
+     // PubNub client successfully sent message to specified channel.
+ }
+ @endcode
+ 
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
+  withBlock:^(PNMessageState state, id data) {
+ 
+  switch (state) {
+      case PNMessageSending:
+ 
+          // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+          break;
+      case PNMessageSendingError:
+ 
+          // PubNub client failed to send message and reason is in 'data' object.
+          break;
+      case PNMessageSent:
+ 
+          // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+          break;
+      }
+ }];
+ @endcode
+ 
+ @param message
+ Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
+ \c NSDictionary.
+ 
+ @param channel
+ \b PNChannel instance into which message should be sent.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ 
+ @return \b PNMessage instance if message payload is correct or \c nil if not.
+ */
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -8807,7 +8882,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  }
  @endcode
  
- There is also way to observe connection state from any place in your application using  \b PNObservationCenter:
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
  @code
  [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
   withBlock:^(PNMessageState state, id data) {
@@ -8831,19 +8906,108 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @param message
  Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
- \c NSDictionary .
+ \c NSDictionary.
+ 
+ @param channel
+ \b PNChannel instance into which message should be sent.
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
+ Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
+ @code
+ @endcode
+ This method extendeds \a +sendMessage:toChannel:compressed: and allow to specify whether message should be stored in history or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub sendMessage:@{@"array": @[@"of", @"strings"], @"and": @16} toChannel:[PNChannel channelWithName:@"iosdev"] 
+          compressed:YES storeInHistory:NO];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
+ 
+     // PubNub client is sending message at this moment.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
+ 
+     // PubNub client failed to send message and reason is in 'error'.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
+ 
+     // PubNub client successfully sent message to specified channel.
+ }
+ @endcode
+ 
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
+  withBlock:^(PNMessageState state, id data) {
+ 
+  switch (state) {
+      case PNMessageSending:
+ 
+          // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+          break;
+      case PNMessageSendingError:
+ 
+          // PubNub client failed to send message and reason is in 'data' object.
+          break;
+      case PNMessageSent:
+ 
+          // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+          break;
+      }
+ }];
+ @endcode
+ 
+ @param message
+ Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
+ \c NSDictionary.
+ 
+ @param channel
+ \b PNChannel instance into which message should be sent.
+ 
+ @param shouldCompressMessage
+ \c YES in case if message should be compressed before sending to the PubNub service.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ 
+ @return \b PNMessage instance if message payload is correct or \c nil if not.
+ */
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
+
+/**
  Same as +sendMessage:toChannel: but allow to specify completion block which will be called when message will be sent or in case of error.
  
- Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods 
+ Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods
  for this purpose.
  */
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+/**
+ Same as +sendMessage:toChannel:withCompletionBlock: but allow to specify whether message should be stored in history or not.
+ 
+ @warning Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods
+ for this purpose.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ */
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -8898,7 +9062,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  }
  @endcode
  
- There is also way to observe connection state from any place in your application using  \b PNObservationCenter:
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
  @code
  [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
                                                          withBlock:^(PNMessageState state, id data) {
@@ -8922,7 +9086,10 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @param message
  Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
- \c NSDictionary .
+ \c NSDictionary.
+ 
+ @param channel
+ \b PNChannel instance into which message should be sent.
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
@@ -8930,9 +9097,166 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
+ Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
+ 
+ @code
+ @endcode
+ This method extendeds \a +sendMessage:toChannel:compressed:withCompletionBlock: and allow to specify whether message should be stored in history or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub sendMessage:@{@"array": @[@"of", @"strings"], @"and": @16} toChannel:[PNChannel channelWithName:@"iosdev"] compressed:YES 
+      storeInHistory:NO withCompletionBlock:^(PNMessageState state, id data) {
+ 
+  switch (state) {
+      case PNMessageSending:
+ 
+          // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+          break;
+      case PNMessageSendingError:
+ 
+          // PubNub client failed to send message and reason is in 'data' object.
+          break;
+      case PNMessageSent:
+ 
+          // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+          break;
+      }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
+ 
+    // PubNub client is sending message at this moment.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
+ 
+    // PubNub client failed to send message and reason is in 'error'.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
+ 
+    // PubNub client successfully sent message to specified channel.
+ }
+ @endcode
+ 
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
+                                                         withBlock:^(PNMessageState state, id data) {
+ 
+    switch (state) {
+        case PNMessageSending:
+ 
+            // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+            break;
+    case PNMessageSendingError:
+ 
+            // PubNub client failed to send message and reason is in 'data' object.
+            break;
+    case PNMessageSent:
+ 
+            // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+            break;
+    }
+ }];
+ @endcode
+ 
+ @param message
+ Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
+ \c NSDictionary.
+ 
+ @param channel
+ \b PNChannel instance into which message should be sent.
+ 
+ @param shouldCompressMessage
+ \c YES in case if message should be compressed before sending to the PubNub service.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ 
+ @return \b PNMessage instance if message payload is correct or \c nil if not.
+ */
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+/**
  Asynchronously send configured message object to PubNub service.
  */
 + (void)sendMessage:(PNMessage *)message;
+
+/**
+ Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
+ 
+ @code
+ @endcode
+ This method extendeds \a +sendMessage: and allow to specify whether message should be stored in history or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub sendMessage:storedMessageInstance storeInHistory:YES];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
+ 
+     // PubNub client is sending message at this moment.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
+ 
+     // PubNub client failed to send message and reason is in 'error'.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
+ 
+     // PubNub client successfully sent message to specified channel.
+ }
+ @endcode
+ 
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
+  withBlock:^(PNMessageState state, id data) {
+ 
+  switch (state) {
+      case PNMessageSending:
+ 
+          // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+          break;
+      case PNMessageSendingError:
+ 
+          // PubNub client failed to send message and reason is in 'data' object.
+          break;
+      case PNMessageSent:
+ 
+          // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+          break;
+      }
+ }];
+ @endcode
+ 
+ @param message
+ Configured message which will be sent to the channel for which it previously has been created.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ */
++ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
@@ -8969,7 +9293,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  }
  @endcode
  
- There is also way to observe connection state from any place in your application using  \b PNObservationCenter:
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
  @code
  [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
   withBlock:^(PNMessageState state, id data) {
@@ -8992,18 +9316,99 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @endcode
  
  @param message
- Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
- \c NSDictionary .
+ Configured message which will be sent to the channel for which it previously has been created.
+ 
+ @param shouldCompressMessage
+ \c YES in case if message should be compressed before sending to the PubNub service.
  */
 + (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage;
 
 /**
+ Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
+ 
+ @code
+ @endcode
+ This method extendeds \a +sendMessage:compressed: and allow to specify whether message should be stored in history or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub sendMessage:storedMessageInstance compressed:YES storeInHistory:YES];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
+ 
+     // PubNub client is sending message at this moment.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
+ 
+     // PubNub client failed to send message and reason is in 'error'.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
+ 
+     // PubNub client successfully sent message to specified channel.
+ }
+ @endcode
+ 
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
+  withBlock:^(PNMessageState state, id data) {
+ 
+  switch (state) {
+      case PNMessageSending:
+ 
+          // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+          break;
+      case PNMessageSendingError:
+ 
+          // PubNub client failed to send message and reason is in 'data' object.
+          break;
+      case PNMessageSent:
+ 
+          // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+          break;
+      }
+ }];
+ @endcode
+ 
+ @param message
+ Configured message which will be sent to the channel for which it previously has been created.
+ 
+ @param shouldCompressMessage
+ \c YES in case if message should be compressed before sending to the PubNub service.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ */
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
+
+/**
  Same as +sendMessage: but allow to specify completion block which will be called when message will be sent or in case of error.
  
- Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods 
+ Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods
  for this purpose.
  */
 + (void)sendMessage:(PNMessage *)message withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+/**
+ Same as +sendMessage:withCompletionBlock: but allow to specify whether message should be stored in history or not.
+ 
+ @warning Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods
+ for this purpose.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ */
++ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
@@ -9057,7 +9462,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  }
  @endcode
  
- There is also way to observe connection state from any place in your application using  \b PNObservationCenter:
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
  @code
  [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
   withBlock:^(PNMessageState state, id data) {
@@ -9080,10 +9485,98 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  @endcode
  
  @param message
- Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
- \c NSDictionary .
+ Configured message which will be sent to the channel for which it previously has been created.
+ 
+ @param shouldCompressMessage
+ \c YES in case if message should be compressed before sending to the PubNub service.
  */
 + (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+/**
+ Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
+ 
+ @code
+ @endcode
+ This method extendeds \a +sendMessage:compressed:withCompletionBlock: and allow to specify whether message should be stored in history or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub sendMessage:storedMessageInstance compressed:YES storeInHistory:NO
+ withCompletionBlock:^(PNMessageState state, id data) {
+ 
+  switch (state) {
+      case PNMessageSending:
+ 
+          // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+          break;
+      case PNMessageSendingError:
+ 
+          // PubNub client failed to send message and reason is in 'data' object.
+          break;
+      case PNMessageSent:
+ 
+          // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+          break;
+      }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
+ 
+     // PubNub client is sending message at this moment.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
+ 
+     // PubNub client failed to send message and reason is in 'error'.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
+ 
+     // PubNub client successfully sent message to specified channel.
+ }
+ @endcode
+ 
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
+  withBlock:^(PNMessageState state, id data) {
+ 
+  switch (state) {
+      case PNMessageSending:
+ 
+          // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+          break;
+      case PNMessageSendingError:
+ 
+          // PubNub client failed to send message and reason is in 'data' object.
+          break;
+      case PNMessageSent:
+ 
+          // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+          break;
+      }
+ }];
+ @endcode
+ 
+ @param message
+ Configured message which will be sent to the channel for which it previously has been created.
+ 
+ @param shouldCompressMessage
+ \c YES in case if message should be compressed before sending to the PubNub service.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ */
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
+withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 
 #pragma mark - History methods
