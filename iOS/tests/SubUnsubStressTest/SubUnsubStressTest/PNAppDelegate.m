@@ -75,7 +75,7 @@ static const NSInteger kTimeout = 6;
 //                                                                   cipherKey:nil authorizationKey:nil];
 
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo-36" subscribeKey:@"demo-36" secretKey:nil
+    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"presence-beta.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:nil
                                                                    cipherKey:nil authorizationKey:nil];
 
     
@@ -133,9 +133,16 @@ static const NSInteger kTimeout = 6;
            
            NSLog(@"1.4:%ld client.data channel %@\nexpect state %@, \n%@", i, client.data, clientState, channel.name);
            
-           if (![client.data isEqualToDictionary:clientState]) {
-               NSLog(@"1.4.1 Error!: %ld", i);
-           }
+//           if (![client.data isEqualToDictionary:clientState]) {
+//               NSLog(@"1.4.1 Error!: %ld", i);
+//           }
+           
+           [[clientState allKeys] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+               if (![client.data[obj] isEqual:clientState[obj]]) {
+                    NSLog(@"1.4.1 Error!: %ld", i);
+                   *stop = YES;
+               }
+           }];
            
            NSLog(@"SubPub: %@ <-> %@", client.data, clientState);
            
