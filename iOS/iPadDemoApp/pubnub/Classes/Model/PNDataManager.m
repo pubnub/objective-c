@@ -135,12 +135,16 @@ static PNDataManager *_sharedInstance = nil;
                 NSDateFormatter *dateFormatter = [NSDateFormatter new];
                 dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
                 NSString *eventType = @"joined";
-                if (event.type == PNPresenceEventLeave) {
+                if (event.type == PNPresenceEventStateChanged) {
 
+                    eventType = @"state changed";
+                }
+                else if (event.type == PNPresenceEventLeave) {
+                    
                     eventType = @"leaved";
                 }
                 else if (event.type == PNPresenceEventTimeout) {
-
+                    
                     eventType = @"timeout";
                 }
                 PNChannel *channel = event.channel;

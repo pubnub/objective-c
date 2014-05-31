@@ -180,7 +180,7 @@
 
 - (NSRange)presenceEventRangeInRange:(NSRange)searchRange forString:(NSString *)string {
     
-    return [string rangeOfString:@"<[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}>.+(joined|leaved|timeout)"
+    return [string rangeOfString:@"<[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}>.+(joined|state changed|leaved|timeout)"
                          options:NSRegularExpressionSearch range:searchRange];
 }
 
@@ -189,6 +189,10 @@
     UIColor *color = [UIColor colorWithRed:(64.0f/255.0f) green:(176.0f/255.0f) blue:(73.0f/255.0f) alpha:1.0f];
     NSString *substring = [string substringWithRange:searchRange];
     if ([substring rangeOfString:@"leaved"].location != NSNotFound) {
+        
+        color = [UIColor lightGrayColor];
+    }
+    if ([substring rangeOfString:@"state changed"].location != NSNotFound) {
         
         color = [UIColor darkGrayColor];
     }
