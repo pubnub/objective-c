@@ -23,6 +23,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "AbbreviatedPresenceTest">
+               </Test>
+               <Test
                   Identifier = "ApnsToken">
                </Test>
                <Test
@@ -30,9 +33,6 @@
                </Test>
                <Test
                   Identifier = "CatchupTest">
-               </Test>
-               <Test
-                  Identifier = "ChangingChannels">
                </Test>
                <Test
                   Identifier = "ChannelLimitTest">

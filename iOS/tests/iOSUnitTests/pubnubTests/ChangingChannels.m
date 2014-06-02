@@ -6,17 +6,31 @@
 //  Copyright (c) 2013 PubNub Inc. All rights reserved.
 //
 
+/* Test descripition:
+ This test should work only when Presence and Access Manager features
+ enabled for developer account.
+ 
+ It should check following scenario:
+ - connect to pubsub; For configuration we setup 20 sec as a presence heartbeat timeout;
+ - grant all access rights;
+ - subscribe to channes with observing events
+ - check that we receive two Presence events: join and timeout
+ */
+
+
 #import <SenTestingKit/SenTestingKit.h>
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
-
-//#import <OCMock/OCMock.h>
 
 #import "PubNub.h"
 #import "PubNub+Protected.h"
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
+#import "GCDWrapper.h"
+
+static NSUInteger const kTestTimout = 60;
+static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
 
 @interface ChangingChannels : SenTestCase <PNDelegate>
 
@@ -24,20 +38,22 @@
 
 @implementation ChangingChannels
 
-
-- (void)tearDown {
-	[NSThread sleepForTimeInterval:0.1];
-	[super tearDown];
-}
-
 - (void)setUp
 {
     [super setUp];
     [PubNub setDelegate:self];
 }
 
+- (void)tearDown {
+	[super tearDown];
+}
+
 - (void)test10Connect {
 	[PubNub disconnect];
+    
+    // unknown delay
+    
+    // 1. Connect to pubnub
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -58,9 +74,12 @@
 								 STFail(@"connectionError %@", connectionError);
 							 }];
 	});
+    
 	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
 								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+    
+    
 
 	BOOL isConnect = [[PubNub sharedInstance] isConnected];
 	STAssertTrue( isConnect, @"not connected");
