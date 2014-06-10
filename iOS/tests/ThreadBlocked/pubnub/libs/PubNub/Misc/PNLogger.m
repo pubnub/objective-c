@@ -34,8 +34,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
  @note Default file size is 10Mb
  */
-static NSUInteger const  kPNLoggerMaximumDumpFileSize = (24 * 1024);
-//static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
+static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 
 
 #pragma mark - Private interface declaration

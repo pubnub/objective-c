@@ -2319,7 +2319,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         // Terminate wake up timer
         [self stopWakeUpTimer];
-        [self stopTimeoutTimer];
 
         
         BOOL isRestoredAfterServerClosed = [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect,
@@ -2747,6 +2746,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleWriteStreamCanAcceptData {
 
+    if (!self.isWriteStreamCanHandleData) {
+        
+        [self stopTimeoutTimer];
+    }
     self.writeStreamCanHandleData = YES;
 
     if (![PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {

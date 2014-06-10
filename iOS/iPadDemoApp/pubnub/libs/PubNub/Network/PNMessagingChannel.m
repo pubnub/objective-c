@@ -1699,9 +1699,15 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         [self destroyByRequestClass:[PNSubscribeRequest class]];
         
         if ([self.messagingDelegate shouldMessagingChannelRestoreSubscription:self]) {
-            
-            [PNBitwiseHelper addTo:&_messagingState bit:PNMessagingChannelResubscribeOnTimeOut];
-            [self restoreSubscription:[self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self]];
+
+            // Ensure that client doesn't try to restore subscription on its own (after connection failure) to
+            // prevent race of conditions and process this request if required to resubscribe because of channel
+            // 'idle' state.
+            if (![PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription]) {
+
+                [PNBitwiseHelper addTo:&_messagingState bit:PNMessagingChannelResubscribeOnTimeOut];
+                [self restoreSubscription:[self.messagingDelegate shouldMessagingChannelRestoreWithLastTimeToken:self]];
+            }
         }
         else {
             
