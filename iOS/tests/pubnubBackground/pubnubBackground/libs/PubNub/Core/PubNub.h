@@ -4133,8 +4133,7 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
                          withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
 
 /**
- Receive list of channels on which push notifications has been enabled with specified \c pushToken. As soon as this
- request will be completed, \b PubNub client won't receive remote push notification on any of the channels when new message is posted into it.
+ Receive list of channels on which push notifications has been enabled with specified \c pushToken.
  
  @code
  @endcode
