@@ -35,6 +35,9 @@
                   Identifier = "CatchupTest">
                </Test>
                <Test
+                  Identifier = "ChangingChannels">
+               </Test>
+               <Test
                   Identifier = "ChannelLimitTest">
                </Test>
                <Test

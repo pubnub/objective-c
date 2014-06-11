@@ -188,6 +188,8 @@
 		79C32298166DFA56006DB535 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 79C3228C166DFA56006DB535 /* Default@2x.png */; };
 		79DC83611773A8680061A76C /* PNCryptoHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DC83601773A8680061A76C /* PNCryptoHelperTest.m */; };
 		79ECCF361675DFB5005E83B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */; };
+		961B87BA19474CF200AE602A /* PNLeaveUsubscribeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 961B87B919474CF200AE602A /* PNLeaveUsubscribeBlock.m */; };
+		961B87BB19475B4300AE602A /* PNLeaveUsubscribeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 961B87B919474CF200AE602A /* PNLeaveUsubscribeBlock.m */; };
 		9645C115174FDA7D00F82D09 /* PNReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */; };
 		9645C117174FDA7D00F82D09 /* PNBaseRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FC174FDA7D00F82D09 /* PNBaseRequestTest.m */; };
 		9645C118174FDA7D00F82D09 /* PNHereNowRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9645C0FE174FDA7D00F82D09 /* PNHereNowRequestTest.m */; };
@@ -501,6 +503,7 @@
 		79DC835F1773A8680061A76C /* PNCryptoHelperTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNCryptoHelperTest.h; path = ../../../pubnubTests/PNCryptoHelperTest.h; sourceTree = "<group>"; };
 		79DC83601773A8680061A76C /* PNCryptoHelperTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNCryptoHelperTest.m; path = ../../../pubnubTests/PNCryptoHelperTest.m; sourceTree = "<group>"; };
 		79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		961B87B919474CF200AE602A /* PNLeaveUsubscribeBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLeaveUsubscribeBlock.m; sourceTree = "<group>"; };
 		963A848B17FCA9B100D8DD4E /* BadJsonTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BadJsonTest.h; sourceTree = "<group>"; };
 		963A848C17FCA9B100D8DD4E /* BadJsonTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BadJsonTest.m; sourceTree = "<group>"; };
 		9645C0F8174FDA7D00F82D09 /* PNReachabilityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNReachabilityTest.m; sourceTree = "<group>"; };
@@ -1087,6 +1090,7 @@
 		79C3221D166DF846006DB535 = {
 			isa = PBXGroup;
 			children = (
+				961B87B719474CA600AE602A /* FunctionalTests */,
 				96D23C9419336F6800717966 /* PNTestSuite */,
 				96D544391906BF70000C4F9D /* PubNub */,
 				5ACC5F9218EAC98400DD6A86 /* PublicTests */,
@@ -1265,6 +1269,22 @@
 				79C3228C166DFA56006DB535 /* Default@2x.png */,
 			);
 			path = Defaults;
+			sourceTree = "<group>";
+		};
+		961B87B719474CA600AE602A /* FunctionalTests */ = {
+			isa = PBXGroup;
+			children = (
+				961B87B819474CA600AE602A /* LeaveUnsubscribeBlock */,
+			);
+			path = FunctionalTests;
+			sourceTree = "<group>";
+		};
+		961B87B819474CA600AE602A /* LeaveUnsubscribeBlock */ = {
+			isa = PBXGroup;
+			children = (
+				961B87B919474CF200AE602A /* PNLeaveUsubscribeBlock.m */,
+			);
+			path = LeaveUnsubscribeBlock;
 			sourceTree = "<group>";
 		};
 		963A848A17FCA9B100D8DD4E /* PNConnectionBadJSONTest */ = {
@@ -1984,6 +2004,7 @@
 				5AFDFD8A18EACF10004FDD28 /* PNResponseTest.m in Sources */,
 				5AFDFD8C18EACF17004FDD28 /* HowToTestsCompressed.m in Sources */,
 				5AFDFD9018EACF24004FDD28 /* PAMTestError.m in Sources */,
+				961B87BB19475B4300AE602A /* PNLeaveUsubscribeBlock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2088,6 +2109,7 @@
 				5A8A4A4818D30FF500A08A28 /* PNJSONSerializationTest.m in Sources */,
 				5ABE6C43182B9F1800204DC6 /* TestSemaphor.m in Sources */,
 				5A8A4A4E18D30FF500A08A28 /* PNPushNotificationsRemoveRequestTest.m in Sources */,
+				961B87BA19474CF200AE602A /* PNLeaveUsubscribeBlock.m in Sources */,
 				5A198E891815410400D20005 /* TimeOutTest.m in Sources */,
 				5AC703EB180D89B000B0FC53 /* W_ChaosTest.m in Sources */,
 				5A198E881815405B00D20005 /* BadJsonTest.m in Sources */,
