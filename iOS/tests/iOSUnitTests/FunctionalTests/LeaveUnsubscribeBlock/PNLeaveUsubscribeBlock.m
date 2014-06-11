@@ -31,12 +31,25 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "GCDWrapper.h"
 
-#import "PNLeaveRequest.h"
+//#import "PNLeaveRequest.h"
+#import "PNMessagingChannel.h"
+#import "PNConnection.h"
+//#import "PNConnectionChannel+Protected.h"
 
-#import "OCMock.h"
+#import "Swizzler.h"
 
-static NSUInteger const kTestTimout = 60;
-static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
+@interface PNMessagingChannel ()
+
+- (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response;
+
+@end
+
+@interface PubNub ()
+
+// Reference on channels which is used to communicate with PubNub service
+@property (nonatomic, strong) PNMessagingChannel *messagingChannel;
+
+@end
 
 @interface PNLeaveUsubscribeBlock : SenTestCase
 
@@ -48,7 +61,6 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
 {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    [PubNub setDelegate:self];
 }
 
 - (void)tearDown
@@ -104,22 +116,27 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
     
     [GCDWrapper waitGroup:resGroup];
     
+    // Here we need to break leave request
+    __block SwizzleReceipt *receipt = [Swizzler swizzleSelector:@selector(connection: didReceiveResponse:) forInstancesOfClass:[PNMessagingChannel class]
+                                                      withBlock:^(id self, SEL sel){
+                                                          [Swizzler unswizzleFromReceipt:receipt];
+                                                      }];
+    
+    
+    
+    
     dispatch_group_enter(resGroup);
-    
-    // TODO: here we need to break leave request
-    
-    //             [[self sharedInstance].messagingChannel unsubscribeFromChannels:channels];
-    //
-    
-    id mock = [OCMockObject mockForClass:[PNLeaveRequest class]];
-    
-//    [[[mock stub] andCall:@selector(aMethod:) onObject:anObject] someMethod:someArgument];
     
     [PubNub unsubscribeFromChannel:channels[1]
        withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
            dispatch_group_leave(resGroup);
        }];
     
+    [GCDWrapper waitGroup:resGroup];
+    
+    channels = [PubNub subscribedChannels];
+    
+    STAssertTrue([channels count] == 2, @"Subscribed on channels: %d", [channels count]);
 }
 
 @end
