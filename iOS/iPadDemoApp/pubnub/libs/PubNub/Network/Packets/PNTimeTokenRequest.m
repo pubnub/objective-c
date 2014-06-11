@@ -51,10 +51,12 @@
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"/time/%@_%@%@",
+    return [NSString stringWithFormat:@"/time/%@_%@%@%@",
             [self callbackMethodName],
             self.shortIdentifier,
-            ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
+            ([self authorizationField] ? [NSString stringWithFormat:@"?%@", [self authorizationField]] : @""),
+            ([self authorizationField] ? [NSString stringWithFormat:@"&pnsdk=%@", [self clientInformationField]] :
+                                         [NSString stringWithFormat:@"?pnsdk=%@", [self clientInformationField]])];
 }
 
 - (NSString *)debugResourcePath {
