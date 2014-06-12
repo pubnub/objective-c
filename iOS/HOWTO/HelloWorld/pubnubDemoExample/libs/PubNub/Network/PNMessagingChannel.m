@@ -1378,70 +1378,38 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     
     PNLeaveRequest *leaveRequest = (PNLeaveRequest *)request;
     BOOL isSuccessfulResponse = ![result isKindOfClass:[PNError class]];
-    if (isSuccessfulResponse || result == nil) {
+    
+    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
         
-        PNResponse *response = (PNResponse *)result;
-        BOOL shouldRemoveChannels = [leaveRequest.channels count] > 0;
-        
-        if (response != nil) {
-            
-            PNResponseParser *parser = [PNResponseParser parserForResponse:response];
-            
-            [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
-                
-                return [NSString stringWithFormat:@"[CHANNEL::%@] LEAVE REQUEST RESULT: %@ (STATE: %lu)",
-                        self, parser, self.messagingState];
-            }];
-            
-            PNOperationResultEvent result = PNOperationResultLeave;
-            shouldRemoveChannels = YES;
-            
-            // Ensure that parsed data has numeric data, which will mean that this is status code or event enum value
-            if ([[parser parsedData] isKindOfClass:[NSNumber class]]) {
-                
-                result = (PNOperationResultEvent)[[parser parsedData] intValue];
-                shouldRemoveChannels = result == PNOperationResultLeave;
-            }
-        }
-        
-        if (shouldRemoveChannels) {
-            
-            [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
-            [self.subscribedChannelsSet minusSet:[self channelsWithPresenceFromList:leaveRequest.channels forSubscribe:NO]];
-        }
-        
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"[CHANNEL::%@] UNSUBSCRIBED FROM CHANNELS: %@\n(STATE: %lu)",
-                    self, leaveRequest.channels, self.messagingState];
-        }];
-        
-        if (request.isSendingByUserRequest) {
-            
-            if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
-
-                [self.messagingDelegate messagingChannel:self
-                              didUnsubscribeFromChannels:[self channelsWithOutPresenceFromList:leaveRequest.channels]
-                                               sequenced:NO];
-            }
-        }
-    }
-    else {
+        return [NSString stringWithFormat:@"[CHANNEL::%@] LEAVE REQUEST COMPLETED (STATE: %lu)",
+                self, self.messagingState];
+    }];
+    if (!(isSuccessfulResponse || result == nil)) {
         
         [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
             
-            return [NSString stringWithFormat:@"[CHANNEL::%@] UNSUBSCRIPTION FAILED WITH ERROR: %@\nCHANNELS: %@\n(STATE: %lu)",
+            return [NSString stringWithFormat:@"[CHANNEL::%@] PRESENCE 'LEAVE' REQUEST ERROR: %@\nCHANNELS: %@\n(STATE: %lu)",
                     self, result, leaveRequest.channels, self.messagingState];
         }];
-        
-        // Checking whether user generated request or not
-        if (request.isSendingByUserRequest) {
+    }
             
-            [self.messagingDelegate messagingChannel:self didFailUnsubscribeOnChannels:leaveRequest.channels
-                                           withError:result sequenced:NO];
-        }
+    [self.oldSubscribedChannelsSet setSet:self.subscribedChannelsSet];
+    [self.subscribedChannelsSet minusSet:[self channelsWithPresenceFromList:leaveRequest.channels forSubscribe:NO]];
         
-        [self restoreSubscriptionOnPreviousChannels];
+    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        
+        return [NSString stringWithFormat:@"[CHANNEL::%@] UNSUBSCRIBED FROM CHANNELS: %@\n(STATE: %lu)",
+                self, leaveRequest.channels, self.messagingState];
+    }];
+    
+    if (request.isSendingByUserRequest) {
+        
+        if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
+
+            [self.messagingDelegate messagingChannel:self
+                          didUnsubscribeFromChannels:[self channelsWithOutPresenceFromList:leaveRequest.channels]
+                                           sequenced:NO];
+        }
     }
     
     // Removing failed request from queue
