@@ -31,10 +31,8 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "GCDWrapper.h"
 
-//#import "PNLeaveRequest.h"
 #import "PNMessagingChannel.h"
 #import "PNConnection.h"
-//#import "PNConnectionChannel+Protected.h"
 
 #import "Swizzler.h"
 
