@@ -63,11 +63,12 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/uuid/%@?callback=%@_%@%@",
+    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/uuid/%@?callback=%@_%@%@&pnsdk=%@",
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       [self.clientIdentifier percentEscapedString], [self callbackMethodName],
                                       self.shortIdentifier,
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {

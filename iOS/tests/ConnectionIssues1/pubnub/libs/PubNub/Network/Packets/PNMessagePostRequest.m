@@ -169,8 +169,9 @@
         [resourcePath appendFormat:@"/%@", self.preparedMessage];
     }
     
-    [resourcePath appendFormat:@"?uuid=%@%@", self.clientIdentifier,
-                               ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @"")];
+    [resourcePath appendFormat:@"?uuid=%@%@&pnsdk=%@", self.clientIdentifier,
+                               ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+                               [self clientInformationField]];
 
     return resourcePath;
 }
@@ -193,11 +194,11 @@
 
         NSString *signedRequestPath = [NSString stringWithFormat:@"%@/%@/%@/%@/%@%@",
                         [PubNub sharedInstance].configuration.publishKey,
-                        [PubNub sharedInstance].configuration.subscriptionKey,
-                        secretKey,
-                        [self.message.channel escapedName],
-                        self.message.message,
-                        ([self authorizationField]?[NSString stringWithFormat:@"?%@", [self authorizationField]]:@"")];
+                        [PubNub sharedInstance].configuration.subscriptionKey, secretKey,
+                        [self.message.channel escapedName], self.message.message,
+                        ([self authorizationField] ? [NSString stringWithFormat:@"?%@", [self authorizationField]] : @""),
+                        ([self authorizationField] ? [NSString stringWithFormat:@"&pnsdk=%@", [self clientInformationField]] :
+                                                     [NSString stringWithFormat:@"?pnsdk=%@", [self clientInformationField]])];
         
         signature = [PNEncryptionHelper HMACSHA256FromString:signedRequestPath withKey:secretKey];
     }

@@ -80,13 +80,11 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@/remove?callback=%@_%@&uuid=%@%@",
+    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@/remove?callback=%@_%@&uuid=%@%@&pnsdk=%@",
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                                      self.pushToken,
-                                      [self callbackMethodName],
-                                      self.shortIdentifier,
-                                      [PubNub escapedClientIdentifier],
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+                                      self.pushToken, [self callbackMethodName], self.shortIdentifier, [PubNub escapedClientIdentifier],
+                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {

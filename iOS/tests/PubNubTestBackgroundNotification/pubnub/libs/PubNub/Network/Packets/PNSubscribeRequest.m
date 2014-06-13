@@ -257,13 +257,13 @@
         state = [NSString stringWithFormat:@"&state=%@",
                  [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
     }
-    return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@",
+    return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@&pnsdk=%@",
             [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
             [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
             [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
             self.clientIdentifier, heartbeatValue, state,
-            ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
-                                          [self authorizationField]] : @"")];
+            ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+            [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {

@@ -85,6 +85,13 @@ typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
 - (NSString *)authorizationField;
 
 /**
+ Composed client SDK information.
+ 
+ @return String which should be used along with requests.
+ */
+- (NSString *)clientInformationField;
+
+/**
  * Retrieve reference on full resource path
  */
 - (NSString *)requestPath;

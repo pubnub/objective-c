@@ -171,6 +171,19 @@
     return authorizationKey;
 }
 
+- (NSString *)clientInformationField {
+    
+    static NSString *clientInformation;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        clientInformation = [NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion];
+    });
+    
+    
+    return clientInformation;
+}
+
 - (NSString *)requestPath {
     
     return [NSString stringWithFormat:@"http://%@%@", [PubNub sharedInstance].configuration.origin, [self resourcePath]];
@@ -214,9 +227,8 @@
         }
     }
     
-    [plainPayload appendFormat:@"%@ %@ HTTP/1.1\r\nHost: %@\r\nV: %@\r\nUser-Agent: %@\r\nAccept: */*\r\n%@",
-     HTTPMethod, [self resourcePath], [PubNub sharedInstance].configuration.origin, kPNClientVersion, kPNClientName,
-     acceptEncoding];
+    [plainPayload appendFormat:@"%@ %@ HTTP/1.1\r\nHost: %@\r\nAccept: */*\r\n%@",
+     HTTPMethod, [self resourcePath], [PubNub sharedInstance].configuration.origin, acceptEncoding];
     
     if (postBody) {
         

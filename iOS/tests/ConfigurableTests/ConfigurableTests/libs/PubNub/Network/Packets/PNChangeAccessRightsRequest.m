@@ -122,7 +122,7 @@
         [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel percentEscapedString]]];
     }
 
-    
+    [parameters addObject:[NSString stringWithFormat:@"pnsdk=%@", [self clientInformationField]]];
     [parameters addObject:[NSString stringWithFormat:@"r=%@",
                            [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNReadAccessRight] ? @"1" : @"0"]];
     [parameters addObject:[NSString stringWithFormat:@"timestamp=%lu", (unsigned long)[self requestTimestamp]]];
@@ -172,14 +172,16 @@
     }
 
 
-    return [NSString stringWithFormat:@"/v1/auth/grant/sub-key/%@?%@callback=%@_%@%@&%@&timestamp=%lu&ttl=%lu&signature"
+    return [NSString stringWithFormat:@"/v1/auth/grant/sub-key/%@?%@callback=%@_%@%@&pnsdk=%@&%@&timestamp=%lu&ttl=%lu&signature"
                                        "=%@&%@", [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                     (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey percentEscapedString]] : @""),
                     [self callbackMethodName], self.shortIdentifier,
                     (channel ? [NSString stringWithFormat:@"&channel=%@", [channel percentEscapedString]] : @""),
-                    [NSString stringWithFormat:@"r=%@", [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNReadAccessRight] ? @"1" : @"0"],
-                    (unsigned long)[self requestTimestamp], (unsigned long)self.accessRightOptions.accessPeriodDuration, [self PAMSignature],
-                    [NSString stringWithFormat:@"w=%@", [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNWriteAccessRight] ? @"1" : @"0"]];
+                    [self clientInformationField], [NSString stringWithFormat:@"r=%@", [PNBitwiseHelper is:self.accessRightOptions.rights
+                                                                                               containsBit:PNReadAccessRight] ? @"1" : @"0"],
+                    (unsigned long)[self requestTimestamp], (unsigned long)self.accessRightOptions.accessPeriodDuration,
+                    [self PAMSignature], [NSString stringWithFormat:@"w=%@",
+                    [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNWriteAccessRight] ? @"1" : @"0"]];
 }
 
 - (NSString *)debugResourcePath {

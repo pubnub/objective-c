@@ -109,7 +109,8 @@
         }
         [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel percentEscapedString]]];
     }
-
+    
+    [parameters addObject:[NSString stringWithFormat:@"pnsdk=%@", [self clientInformationField]]];
     [parameters addObject:[NSString stringWithFormat:@"timestamp=%lu", (unsigned long)[self requestTimestamp]]];
 
     [signature appendString:[parameters componentsJoinedByString:@"&"]];
@@ -154,12 +155,12 @@
     }
 
 
-    return [NSString stringWithFormat:@"/v1/auth/audit/sub-key/%@?%@callback=%@_%@%@&timestamp=%lu&signature=%@",
+    return [NSString stringWithFormat:@"/v1/auth/audit/sub-key/%@?%@callback=%@_%@%@&pnsdk=%@&timestamp=%lu&signature=%@",
                     [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                     (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey percentEscapedString]] : @""),
                     [self callbackMethodName], self.shortIdentifier,
                     (channel ? [NSString stringWithFormat:@"&channel=%@", [channel percentEscapedString]] : @""),
-                    (unsigned long)[self requestTimestamp], [self PAMSignature]];
+                    [self clientInformationField], (unsigned long)[self requestTimestamp], [self PAMSignature]];
 }
 
 - (NSString *)debugResourcePath {

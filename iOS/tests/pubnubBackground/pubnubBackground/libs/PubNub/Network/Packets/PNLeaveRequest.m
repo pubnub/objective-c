@@ -94,13 +94,12 @@
     NSArray *channelsToLeave = [self.channels filteredArrayUsingPredicate:filterPredicate];
 
 
-    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@",
+    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@&pnsdk=%@",
                                       [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
                                       [[channelsToLeave valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      self.clientIdentifier,
-                                      [self callbackMethodName],
-                                      self.shortIdentifier,
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@"")];
+                                      self.clientIdentifier, [self callbackMethodName], self.shortIdentifier,
+                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
