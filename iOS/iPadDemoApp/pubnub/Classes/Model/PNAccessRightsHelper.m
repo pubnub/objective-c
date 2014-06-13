@@ -151,6 +151,7 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     self.operationMode = mode;
     self.auditingAccessRights = shouldAuditAccessRights;
     self.revokingAccessRights = shouldRevokeAccessRights;
+    [self prepareData];
 }
 
 - (BOOL)isAbleToChangeAccessRights {

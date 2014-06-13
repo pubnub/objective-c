@@ -469,6 +469,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     
     [self.readRightsSwitch setOn:self.accessRightsHelper.shouldAllowRead animated:YES];
     [self.writeRightsSwitch setOn:self.accessRightsHelper.shouldAllowWrite animated:YES];
+    [self.userProvidedDataList reloadData];
 }
 
 - (void)updateLayoutForAccessRightsInformation:(PNAccessRightsInformation *)information {
@@ -486,7 +487,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     else if (information.level == PNChannelAccessRightsLevel) {
         
         [self.accessRightsHelper addObject:information.channel];
-        [self.userProvidedDataList reloadData];
     }
     
     [self updateLayout];
@@ -671,7 +671,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [view dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
     
     [self.accessRightsHelper addObject:clientIdentifier];
-    [self.userProvidedDataList reloadData];
     [self updateLayout];
 }
 
@@ -684,7 +683,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [informationView dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
     
     [self.accessRightsHelper addObject:channel];
-    [self.userProvidedDataList reloadData];
     [self updateLayout];
 }
 
@@ -850,7 +848,12 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     }
     else {
         
-        if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {
+        if ([targetCellIdentifier isEqualToString:channelCellIdentifier]) {
+            
+            PNChannel *channel = [[self.accessRightsHelper channels] objectAtIndex:indexPath.row];
+            [(PNChannelCell *)cell updateForChannel:channel];
+        }
+        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {
             
             PNChannel *channel = [[self.accessRightsHelper userData] objectAtIndex:indexPath.row];
             [(PNChannelCell *)cell updateForChannel:channel];
@@ -866,13 +869,11 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         }
         else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperUserMode) {
             
-            NSString *identifier = [[self.accessRightsHelper userData] objectAtIndex:indexPath.row];
-            ((UITableViewCell *)cell).textLabel.text = identifier;
-        }
-        else if ([targetCellIdentifier isEqualToString:channelCellIdentifier]) {
-            
-            PNChannel *channel = [[self.accessRightsHelper channels] objectAtIndex:indexPath.row];
-            [(PNChannelCell *)cell updateForChannel:channel];
+            if (indexPath.row < [[self.accessRightsHelper userData] count]) {
+                
+                NSString *identifier = [[self.accessRightsHelper userData] objectAtIndex:indexPath.row];
+                ((UITableViewCell *)cell).textLabel.text = identifier;
+            }
         }
     }
     
@@ -938,7 +939,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         
         NSString *identifier = [[self.accessRightsHelper userData] objectAtIndex:indexPath.row];
         [self.accessRightsHelper removeObject:identifier];
-        [self.userProvidedDataList reloadData];
         [self updateLayout];
     }
 }
