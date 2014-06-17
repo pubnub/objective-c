@@ -1,3 +1,11 @@
+6-17-2014 - bdfed87 - 3.6.3
+. added PNSDK url param to each request
+. fixed crash on PAM grant bug
+. leave operation will not block unsubscribe
+. fixed indefinite postpone corner case
+. added TCP handshake timer in rare cases where device hangs on handshake
+
+
 5-20-2014 - 3.6.2
 . New Demo App
 . New presence state change support
