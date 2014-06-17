@@ -1,3 +1,18 @@
+5-20-2014 - 3.6.2
+. New Demo App
+. New presence state change support
+. Fixed issue where channel name could be blank during global presence request
+. Handling of API throttling response
+. Handling of global here now with state
+. Fixed issue where there was a subscribe dependency on unsubscribing from presence channels
+. Added class based logger which allows dynamic configurable log levels, dump file size and HTTP packets storage at run-time
+. Fixed Xcode warnings when PubNub client built for 64bit architecture
+. Suppressed Xcode warning by replacement of C functions with utility classes
+. Better JSON validation pre-processing 
+. Added crypto helper reset when empty key is provided
+. Fixed issue with "Fetch History" button
+. Fixed issue with wrong state in heartbeat after update client state API usage
+
 3-19-2014 - 3.6.1
 . new presence features
 . fixed issue where rapid repeated sub/unsub could hang client
