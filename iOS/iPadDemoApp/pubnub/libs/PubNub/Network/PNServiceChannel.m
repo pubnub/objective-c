@@ -339,7 +339,7 @@
                 }];
 
                 [self.serviceDelegate serviceChannel:self didFailParticipantChannelsListLoadForIdentifier:identifier
-                        withError:parsedData];
+                                           withError:parsedData];
             }
         }
         else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
@@ -364,7 +364,7 @@
                 parameters = @[self, channels];
             }
             else {
-
+                
                 logLevel = PNLogCommunicationChannelLayerErrorLevel;
                 message = @"[CHANNEL::%@] PUSH NOTIFICATIONS ENABLING FAILED WITH ERROR: %@";
                 selector = @selector(serviceChannel:didFailPushNotificationEnableForChannels:withError:);
@@ -408,7 +408,7 @@
                     return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATIONS REMOVE FAILED WITH ERROR: %@",
                             self, parsedData];
                 }];
-
+                
                 [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:parsedData];
             }
         }
@@ -433,7 +433,7 @@
                     return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATION ENABLED CHANNELS LIST RECEIVE FAILED WITH ERROR: %@",
                             self, parsedData];
                 }];
-
+                
                 [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:parsedData];
             }
         }
@@ -533,9 +533,9 @@
     else if ([request isKindOfClass:[PNClientStateRequest class]] ||
             [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
+        NSDictionary *clientData = ([request isKindOfClass:[PNClientStateUpdateRequest class]] ? [request valueForKey:@"state"] : nil);
         error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
-                                                       channel:[request valueForKey:@"channel"]
-                                                       andData:nil];
+                                                       channel:[request valueForKey:@"channel"] andData:clientData];
 
         NSString *message = [NSString stringWithFormat:@"[CHANNEL::%@] CLIENT STATE REVIEW FAILED WITH ERROR: %@", self, error];
         SEL errorSelector = @selector(serviceChannel:clientStateReceiveDidFailWithError:);
@@ -562,16 +562,25 @@
     // Check whether this is 'Message history' request or not
     else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
 
+        PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
+        error.associatedObject = @{@"startDate":historyRequest.startDate, @"endDate":historyRequest.endDate,
+                                   @"limit":@(historyRequest.limit), @"revertMessages":@(historyRequest.shouldRevertMessages),
+                                   @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)};
+        
         // Notify delegate about message history download failed
         [self.serviceDelegate serviceChannel:self
-             didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel withError:error];
+             didFailHisoryDownloadForChannel:historyRequest.channel withError:error];
     }
     // Check whether this is 'Here now' request or not
     else if ([request isKindOfClass:[PNHereNowRequest class]]) {
+        
+        PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
+        error.associatedObject = @{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
+                                   @"fetchClientState":@(hereNowRequest.shouldFetchClientState)};
 
         // Notify delegate about participants list can't be downloaded
         [self.serviceDelegate serviceChannel:self
-       didFailParticipantsListLoadForChannel:((PNHereNowRequest *)request).channel withError:error];
+       didFailParticipantsListLoadForChannel:hereNowRequest.channel withError:error];
     }
     // Check whether this is 'Where now' request or not
     else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
@@ -591,7 +600,8 @@
             return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATION [%@] REQUEST HAS BEEN FAILED: %@", self,
                     [targetState uppercaseString], error];
         }];
-
+        
+        error.associatedObject = ((PNPushNotificationsStateChangeRequest *)request).devicePushToken;
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 
             [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels
@@ -611,7 +621,8 @@
             return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATION REMOVE REQUEST HAS BEEN FAILED: %@",
                     self, error];
         }];
-
+        
+        error.associatedObject = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
         [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:error];
     }
     // Check whether this is 'Push notification enabled channels' request or not
@@ -622,7 +633,8 @@
             return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATION ENABLED CHANNELS REQUEST HAS BEEN FAILED: %@",
                     self, error];
         }];
-
+        
+        error.associatedObject = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
         [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:error];
     }
     // Check whether this is 'Access rights change' request or not
@@ -682,17 +694,11 @@
                [request resetWithRetryCount:shouldResetRequestsRetryCount];
                request.closeConnection = NO;
 
-               // Check whether client is waiting for request completion
-               BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
-
                // Clean up query (if request has been stored in it)
                [self destroyRequest:request];
-
-               // Send request back into queue with higher priority among other requests
-               [self scheduleRequest:request
-             shouldObserveProcessing:isWaitingForCompletion
-                          outOfOrder:YES
-                    launchProcessing:NO];
+                                  
+               [self requestsQueue:nil didFailRequestSend:request
+                         withError:[PNError errorWithCode:kPNRequestCantBeProcessedWithOutRescheduleError]];
            }];
 
         [self scheduleNextRequest];
@@ -982,11 +988,11 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
 
     // Check whether request can be rescheduled or not
-    if (![request canRetry]) {
+    if (![request canRetry] || error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@]",
+            return [NSString stringWithFormat:@"[CHANNEL::%@] REQUEST WON'T BE SENT: %@ [BODY: %@]",
                     self, request, request.debugResourcePath];
         }];
 
