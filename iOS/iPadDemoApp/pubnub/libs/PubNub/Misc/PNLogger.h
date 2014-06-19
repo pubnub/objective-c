@@ -228,6 +228,7 @@ typedef NS_OPTIONS(unsigned long, PNLogLevel) {
  */
 + (NSString *)dumpFilePath;
 
++ (void)closeConsoleDumpFile;
 
 #pragma mark - File dump manipulation methods
 

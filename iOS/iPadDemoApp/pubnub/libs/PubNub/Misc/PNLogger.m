@@ -6,7 +6,9 @@
 //  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
+#import "NSDate+PNAdditions.h"
 #import "PNLogger.h"
+#import "PNMacro.h"
 #import "PNHelper.h"
 #include <stdlib.h>
 
@@ -68,6 +70,9 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
  Stores reference on queue which will be used during console dump and log rotation process to reduce main thread load.
  */
 @property (nonatomic, pn_dispatch_property_ownership) dispatch_queue_t dumpProcessingQueue;
+
+
+@property (nonatomic, assign) FILE *consoleDumpFilePointer;
 
 /**
  Stores reference on queue which will be used during HTTP packet saving process to reduce main thread load.
@@ -172,6 +177,20 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
     [[self sharedInstance] rotateDumpFiles];
 }
 
++ (FILE *)consoleDumpFilePointer {
+    if ([self sharedInstance].consoleDumpFilePointer == NULL) {
+        [self sharedInstance].consoleDumpFilePointer = fopen([[self dumpFilePath] UTF8String], "a+");
+    }
+    return [self sharedInstance].consoleDumpFilePointer;
+}
+
++ (void)closeConsoleDumpFile {
+    if ([self sharedInstance].consoleDumpFilePointer) {
+        fclose([self sharedInstance].consoleDumpFilePointer);
+        [self sharedInstance].consoleDumpFilePointer = nil;
+    }
+}
+
 + (void)logFrom:(id)sender forLevel:(PNLogLevel)level message:(NSString *(^)(void))messageBlock {
 
     // Ensure that user allowed message output for provided logging level.
@@ -180,32 +199,33 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
         // Checking whether logger allowed to log or dump console output.
         if ([self isLoggerEnabled] || [self isDumpingToFile]) {
 
-            __block __unsafe_unretained id weakSender = sender;
-            NSString *message = [NSString stringWithFormat:@"%@ (%p) %@%@", NSStringFromClass([weakSender class]),
-                            weakSender, [[self sharedInstance] logEntryPrefixForLevel:level], messageBlock()];
+            NSString *message = [NSString stringWithFormat:@"%@ (%p) %@%@", NSStringFromClass([sender class]),
+                            sender, [[self sharedInstance] logEntryPrefixForLevel:level], messageBlock()];
 
-            if ([self isLoggerEnabled]) {
-
-                NSLog(@"%@", message);
-            }
-            
             if ([self isDumpingToFile]) {
                 
-                message = [[[NSDate date] consoleOutputTimestamp] stringByAppendingFormat:@"> %@\n", message];
                 dispatch_sync([self sharedInstance].dumpProcessingQueue, ^{
                     
-                    FILE *consoleDumpFilePointer = fopen([[self dumpFilePath] UTF8String], "a+");
+                    FILE *consoleDumpFilePointer = [self consoleDumpFilePointer];
                     if (consoleDumpFilePointer == NULL) {
                         
                         NSLog(@"PNLog: Can't open console dump file (%@)", [self dumpFilePath]);
                     }
                     else {
                         
-                        const char *cOutput = [message UTF8String];
+                        const char *cOutput = [[[NSDate date] consoleOutputTimestamp] UTF8String];
                         fwrite(cOutput, strlen(cOutput), 1, consoleDumpFilePointer);
-                        fclose(consoleDumpFilePointer);
+                        fwrite("> ", 2, 1, consoleDumpFilePointer);
+                        cOutput = [message UTF8String];
+                        fwrite(cOutput, strlen(cOutput), 1, consoleDumpFilePointer);
+                        fwrite("\n", 1, 1, consoleDumpFilePointer);
+                        fflush(consoleDumpFilePointer);
                     }
                 });
+            }
+            else if ([self isLoggerEnabled]) {
+
+                NSLog(@"%@", message);
             }
         }
     }
@@ -473,7 +493,8 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
     if ([[self class] isDumpingToFile]) {
         
         dispatch_sync(self.dumpProcessingQueue, ^{
-            
+
+            [[self class] closeConsoleDumpFile];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             if ([fileManager fileExistsAtPath:self.dumpFilePath]) {
                 
