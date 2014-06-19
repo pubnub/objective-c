@@ -133,11 +133,10 @@ static NSMutableArray *pendingInvocations = nil;
 #pragma mark - Client state management
 
 + (void)postponeRequestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
-        witCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
+        witCompletionHandlingBlock:(id)handlerBlock;
 
-+ (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-                       forChannel:(PNChannel *)channel
-      withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock;
++ (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState forChannel:(PNChannel *)channel
+      withCompletionHandlingBlock:(id)handlerBlock;
 
 
 #pragma mark - Channels subscription management
@@ -154,16 +153,16 @@ static NSMutableArray *pendingInvocations = nil;
 #pragma mark - APNS management
 
 + (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                       andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+                       andCompletionHandlingBlock:(id)handlerBlock;
 
 + (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                        andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+                        andCompletionHandlingBlock:(id)handlerBlock;
 
 + (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
-                                 withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+                                 withCompletionHandlingBlock:(id)handlerBlock;
 
 + (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
-                                             withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+                                             withCompletionHandlingBlock:(id)handlerBlock;
 
 
 #pragma mark - PAM management
@@ -183,13 +182,13 @@ static NSMutableArray *pendingInvocations = nil;
                                  accessRights:(PNAccessRights)accessRights
                                       clients:(NSArray *)clientsAuthorizationKeys
                                     forPeriod:(NSInteger)accessPeriodDuration
-                  withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+                  withCompletionHandlingBlock:(id)handlerBlock;
 
 + (void)auditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
          withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
 
 + (void)postponeAuditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
-                 withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+                 withCompletionHandlingBlock:(id)handlerBlock;
 
 #pragma mark - Presence management
 
@@ -201,7 +200,7 @@ static NSMutableArray *pendingInvocations = nil;
 
 #pragma mark - Time token
 
-+ (void)postponeRequestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success;
++ (void)postponeRequestServerTimeTokenWithCompletionBlock:(id)success;
 
 
 #pragma mark - Messages processing methods
@@ -215,7 +214,7 @@ static NSMutableArray *pendingInvocations = nil;
 + (void)postponeRequestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                                    limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
                       includingTimeToken:(BOOL)shouldIncludeTimeToken
-                     withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+                     withCompletionBlock:(id)handleBlock;
 
 
 #pragma mark - Participant methods
@@ -223,10 +222,10 @@ static NSMutableArray *pendingInvocations = nil;
 + (void)postponeRequestParticipantsListForChannel:(PNChannel *)channel
                        clientIdentifiersLRequired:(BOOL)isClientIdentifiersRequired
                                       clientState:(BOOL)shouldFetchClientState
-                              withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
+                              withCompletionBlock:(id)handleBlock;
 
 + (void)postponeRequestParticipantChannelsList:(NSString *)clientIdentifier
-                           withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
+                           withCompletionBlock:(id)handleBlock;
 
 
 #pragma mark - Misc methods
@@ -1524,7 +1523,7 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 }
 
 + (void)postponeRequestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
-        witCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
+        witCompletionHandlingBlock:(id)handlerBlock {
 
     [[self sharedInstance] postponeSelector:@selector(requestClientState:forChannel:withCompletionHandlingBlock:)
                                   forObject:self
@@ -1627,9 +1626,8 @@ withCompletionHandlingBlock:nil];
            }];
 }
 
-+ (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-                       forChannel:(PNChannel *)channel
-      withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
++ (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState forChannel:(PNChannel *)channel
+      withCompletionHandlingBlock:(id)handlerBlock {
 
     [[self sharedInstance] postponeSelector:@selector(updateClientState:state:forChannel:withCompletionHandlingBlock:)
                                   forObject:self
@@ -2018,7 +2016,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                       andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+                       andCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(enablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector forObject:self
@@ -2122,7 +2120,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                        andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+                        andCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(disablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector forObject:self withParameters:@[channels, pushToken,
@@ -2202,7 +2200,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
-                                 withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
+                                 withCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(removeAllPushNotificationsForDevicePushToken:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector forObject:self
@@ -2283,7 +2281,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
-                                             withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
+                                             withCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(requestPushNotificationEnabledChannelsForDevicePushToken:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector forObject:self
@@ -2649,7 +2647,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)postponeChangeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
                                       clients:(NSArray *)clientsAuthorizationKeys
                                     forPeriod:(NSInteger)accessPeriodDuration
-                  withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+                  withCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(changeAccessRightsForChannels:accessRights:clients:forPeriod:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
@@ -2800,7 +2798,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeAuditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
-                 withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+                 withCompletionHandlingBlock:(id)handlerBlock {
 
     SEL selector = @selector(auditAccessRightsForChannels:clients:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
@@ -3088,7 +3086,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
            }];
 }
 
-+ (void)postponeRequestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success {
++ (void)postponeRequestServerTimeTokenWithCompletionBlock:(id)success {
     
     [[self sharedInstance] postponeSelector:@selector(requestServerTimeTokenWithCompletionBlock:)
                                   forObject:self withParameters:@[[PNHelper nilifyIfNotSet:success]]
@@ -3471,7 +3469,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)postponeRequestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                                    limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
                       includingTimeToken:(BOOL)shouldIncludeTimeToken
-                     withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+                     withCompletionBlock:(id)handleBlock {
 
     SEL selector = @selector(requestHistoryForChannel:from:to:limit:reverseHistory:includingTimeToken:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:selector forObject:self
@@ -3628,7 +3626,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)postponeRequestParticipantsListForChannel:(PNChannel *)channel
                        clientIdentifiersLRequired:(BOOL)isClientIdentifiersRequired
                                       clientState:(BOOL)shouldFetchClientState
-                              withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+                              withCompletionBlock:(id)handleBlock {
 
     SEL targetSelector = @selector(requestParticipantsListForChannel:clientIdentifiersRequired:clientState:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:targetSelector forObject:self
@@ -3711,7 +3709,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeRequestParticipantChannelsList:(NSString *)clientIdentifier
-                           withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
+                           withCompletionBlock:(id)handleBlock {
 
     SEL targetSelector = @selector(requestParticipantChannelsList:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:targetSelector forObject:self
