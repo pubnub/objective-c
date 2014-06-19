@@ -94,7 +94,7 @@
 /**
  Bit which should be placed at the end of bit lists, so va_list will know where it should stop.
  */
-static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
+#define BITS_LIST_TERMINATOR   ((NSUInteger)0)
 
 
 @interface PNBitwiseHelper : NSObject
@@ -271,7 +271,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
 
 #pragma mark - Crypto helper declaration
 
-static NSUInteger PN_SHOULD_USE_SIGNATURE = 0;
+#define PN_SHOULD_USE_SIGNATURE  0
 
 
 @interface PNEncryptionHelper : NSObject
