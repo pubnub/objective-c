@@ -204,7 +204,7 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 
             if ([self isDumpingToFile]) {
                 
-                dispatch_sync([self sharedInstance].dumpProcessingQueue, ^{
+                dispatch_async([self sharedInstance].dumpProcessingQueue, ^{
                     
                     FILE *consoleDumpFilePointer = [self consoleDumpFilePointer];
                     if (consoleDumpFilePointer == NULL) {
