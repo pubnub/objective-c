@@ -174,7 +174,7 @@
     [PNDataManager sharedInstance].devicePushToken = nil;
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     // Application received push notification (only in foreground or if application is able to work in background),
 }
