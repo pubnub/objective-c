@@ -74,82 +74,86 @@ static NSInteger const kPNAPIAccessForbiddenError = 117;
  */
 static NSInteger const kPNAPINotAvailableOrNotEnabledError = 118;
 
+/**
+ Scheduled request can't be processed w/o initial API calling based on object data.
+ */
+static NSInteger const kPNRequestCantBeProcessedWithOutRescheduleError = 119;
+
 
 #pragma mark - Cryptography error
 
 // Developer tried to initialize Cryptor helper with configuration which doesn't has cipher key in it
-static NSInteger const kPNCryptoEmptyCipherKeyError = 119;
+static NSInteger const kPNCryptoEmptyCipherKeyError = 120;
 
 // Error occurred during cryptor initialization because of error in provided parameters
-static NSInteger const kPNCryptoIllegalInitializationParametersError = 120;
+static NSInteger const kPNCryptoIllegalInitializationParametersError = 121;
 
 // Error occurred because buffer with insufficient size was provided for encrypted/decrypted data output
-static NSInteger const kPNCryptoInsufficentBufferSizeError = 121;
+static NSInteger const kPNCryptoInsufficentBufferSizeError = 122;
 
 // Error occurred in case if during cryptor operation there was not enough memory for it's operation
-static NSInteger const kPNCryptoInsufficentMemoryError = 122;
+static NSInteger const kPNCryptoInsufficentMemoryError = 123;
 
 // Error occurred because input data wasn't properly aligned
-static NSInteger const kPNCryptoAligmentInputDataError = 123;
+static NSInteger const kPNCryptoAligmentInputDataError = 124;
 
 // Error occurred during input data encode/decode process
-static NSInteger const kPNCryptoInputDataProcessingError = 124;
+static NSInteger const kPNCryptoInputDataProcessingError = 125;
 
 // Error occurred if developer try to use one of features which is not available in specified algorithm
-static NSInteger const kPNCryptoUnavailableFeatureError = 125;
-
+static NSInteger const kPNCryptoUnavailableFeatureError = 126;
 
 
 #pragma mark - Developers error (caused by developer)
 
 // Developer tries to submit empty (nil) request by passing no message object to PubNub service
-static NSInteger const kPNMessageObjectError = 126;
+static NSInteger const kPNMessageObjectError = 127;
 
 // Developer tried to submit message w/o text to PubNub service
-static NSInteger const kPNMessageHasNoContentError = 127;
+static NSInteger const kPNMessageHasNoContentError = 128;
 
 // Developer tried to submit message w/o target channel to PubNub service
-static NSInteger const kPNMessageHasNoChannelError = 128;
+static NSInteger const kPNMessageHasNoChannelError = 129;
 
 /**
  Developer tried to push state w/ invalid content (used keys with forbidden prefix or unsupported values).
  */
-static NSInteger const kPNInvalidStatePayloadError = 129;
+static NSInteger const kPNInvalidStatePayloadError = 130;
 
 /**
  Developer tried to push state for channel on which client not subscribed at this moment.
  */
-static NSInteger const kPNCantUpdateStateForNotSubscribedChannelsError = 130;
+static NSInteger const kPNCantUpdateStateForNotSubscribedChannelsError = 131;
 
 // Developer tried to use APNS API w/o enabling push notifications support on admin.punub.com
-static NSInteger const kPNPushNotificationsNotEnabledError = 131;
+static NSInteger const kPNPushNotificationsNotEnabledError = 132;
 
 /**
  Developer tried to use PAM API w/o specifying \a 'secret' key.
  */
-static NSInteger const kPNSecretKeyNotSpecifiedError = 132;
+static NSInteger const kPNSecretKeyNotSpecifiedError = 133;
 
 // Developer tried to use empty device push notification to enable push notification on specified channel
-static NSInteger const kPNDevicePushTokenIsEmptyError = 133;
+static NSInteger const kPNDevicePushTokenIsEmptyError = 134;
 
 // Developer tried to to obtain history in the same time when it is disabled on portal.
-static NSInteger const kPNStorageNotEnabledError = 134;
+static NSInteger const kPNStorageNotEnabledError = 135;
 
 
 #pragma mark - Service error (caused by remote server)
 
 // Server responded that developer used concrete API too much and exceeded access rate.
-static NSInteger const kPNAPIRateExceededError = 135;
+static NSInteger const kPNAPIRateExceededError = 136;
 
 // Server provided response which can't be decoded with UTF8
-static NSInteger const kPNResponseEncodingError = 136;
+static NSInteger const kPNResponseEncodingError = 137;
 
 // Server provided response with malformed JSON in it (in such cases library will try to resend request to
 // remote origin)
-static NSInteger const kPNResponseMalformedJSONError = 137;
+static NSInteger const kPNResponseMalformedJSONError = 138;
 
 
 #pragma mark - Connection (transport layer) error codes
 
 // Was unable to configure connection because of some errors
-static NSInteger const kPNConnectionErrorOnSetup = 138;
+static NSInteger const kPNConnectionErrorOnSetup = 139;

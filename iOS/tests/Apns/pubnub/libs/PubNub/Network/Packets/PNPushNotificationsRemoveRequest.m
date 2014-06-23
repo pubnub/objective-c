@@ -33,6 +33,7 @@
 
 // Stores reference on stringified push notification token
 @property (nonatomic, strong) NSString *pushToken;
+@property (nonatomic, strong) NSData *devicePushToken;
 
 #pragma mark -
 
@@ -61,6 +62,7 @@
     if ((self = [super init])) {
 
         self.sendingByUserRequest = YES;
+        self.devicePushToken = pushToken;
         self.pushToken = [[pushToken HEXPushToken] lowercaseString];
     }
 

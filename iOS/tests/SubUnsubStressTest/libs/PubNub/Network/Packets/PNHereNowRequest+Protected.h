@@ -25,6 +25,16 @@
 // list will be requested
 @property (nonatomic, readonly, strong) PNChannel *channel;
 
+/**
+ Stores whether request should fetch client identifiers or just get number of participants.
+ */
+@property (nonatomic, readonly, assign, getter = isClientIdentifiersRequired) BOOL clientIdentifiersRequired;
+
+/**
+ Stores whether request should fetch client's state or not.
+ */
+@property (nonatomic, readonly, assign, getter = shouldFetchClientState) BOOL fetchClientState;
+
 #pragma mark -
 
 
