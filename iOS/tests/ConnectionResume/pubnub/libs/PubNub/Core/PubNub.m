@@ -1503,7 +1503,7 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
             [[self sharedInstance] notifyDelegateAboutStateRetrievalDidFailWithError:requestError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(requestError.associatedObject, requestError);
             }
@@ -1607,7 +1607,7 @@ withCompletionHandlingBlock:nil];
             [[self sharedInstance] notifyDelegateAboutStateUpdateDidFailWithError:requestError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(requestError.associatedObject, requestError);
             }
@@ -1995,7 +1995,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(channels, stateChangeError);
             }
@@ -2099,7 +2099,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(channels, stateChangeError);
             }
@@ -2180,7 +2180,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(removalError);
             }
@@ -2261,7 +2261,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(nil, listRetrieveError);
             }
@@ -2621,7 +2621,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutAccessRightsChangeFailedWithError:accessRightChangeError];
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(nil, accessRightChangeError);
             }
@@ -2777,7 +2777,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutAccessRightsAuditFailedWithError:accessRightAuditError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(nil, accessRightAuditError);
             }
@@ -3068,7 +3068,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutTimeTokenRetrievalFailWithError:timeTokenError];
             
             
-            if (success) {
+            if (success && ![success isKindOfClass:[NSString class]]) {
                 
                 success(nil, timeTokenError);
             }
@@ -3162,7 +3162,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutMessageSendingFailedWithError:sendingError];
             
             
-            if (success) {
+            if (success && ![success isKindOfClass:[NSString class]]) {
                 
                 success(PNMessageSendingError, sendingError);
             }
@@ -3445,7 +3445,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             
             [[self sharedInstance] notifyDelegateAboutHistoryDownloadFailedWithError:sendingError];
             
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
                 
                 handleBlock(nil, channel, startDate, endDate, sendingError);
             }
@@ -3602,7 +3602,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
 
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
 
                 handleBlock(nil, channel, sendingError);
             }
@@ -3689,7 +3689,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutParticipantChannelsListDownloadFailedWithError:sendingError];
 
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
 
                 handleBlock(clientIdentifier, nil, sendingError);
             }
@@ -4917,57 +4917,157 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
 	if (![self canRunInBackground]) {
 
-        [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"APPLICATION CAN'T RUN IN BACKGROUND."; }];
-        [self.reachability suspend];
+        BOOL canInformAboutSuspension = [self.delegate respondsToSelector:@selector(pubnubClient:willSuspendWithBlock:)];
+        void(^suspensionCompletionBlock)(void) = ^{
 
-        // Check whether application connected or not
-        if ([self isConnected]) {
+            // Ensure that application is still in background execution context.
+            if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
 
-            [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"SUSPENDING..."; }];
+                if (!canInformAboutSuspension) {
 
-            self.state = PNPubNubClientStateSuspended;
-            
-            self.asyncLockingOperationInProgress = NO;
-            [self.messagingChannel suspend];
-            [self.serviceChannel suspend];
+                    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"APPLICATION CAN'T RUN IN BACKGROUND."; }];
+                }
+                else {
+
+                    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"COMPLETED TASKS BEFORE ENETERING BACKGROUND."; }];
+                }
+                [self.reachability suspend];
+
+                // Check whether application connected or not
+                if ([self isConnected]) {
+
+                    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"SUSPENDING..."; }];
+
+                    self.state = PNPubNubClientStateSuspended;
+
+                    self.asyncLockingOperationInProgress = NO;
+                    [self.messagingChannel suspend];
+                    [self.serviceChannel suspend];
+                }
+                else if (self.state == PNPubNubClientStateConnecting ||
+                         self.state == PNPubNubClientStateDisconnecting ||
+                         self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+
+                    if (self.state == PNPubNubClientStateConnecting) {
+
+                        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"CLIENT TRIED TO CONNECT. TERMINATE CONNECTION AND MARK ERROR "
+                                    "(STATE: %@)", [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
+                    }
+                    else if (self.state == PNPubNubClientStateDisconnecting){
+
+                        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK AS "
+                                    "DISCONNECTED (STATE: %@)", [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        self.state = PNPubNubClientStateDisconnected;
+                    }
+                    else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError){
+
+                        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR "
+                                    "(STATE: %@)", [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
+                    }
+
+                    [self.messagingChannel disconnectWithEvent:NO];
+                    [self.serviceChannel disconnectWithEvent:NO];
+                }
+            }
+            else {
+
+                [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"APPLICATION NOT IN BACKGROUND."; }];
+            }
+        };
+
+        if (!canInformAboutSuspension) {
+
+            suspensionCompletionBlock();
         }
-        else if (self.state == PNPubNubClientStateConnecting ||
-                 self.state == PNPubNubClientStateDisconnecting ||
-                 self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+        else {
 
-            if (self.state == PNPubNubClientStateConnecting) {
+            // Informing delegate that PubNub client will suspend soon.
+            [self.delegate pubnubClient:self
+                   willSuspendWithBlock:^(void(^actionsBlock)(void (^)())) {
 
-                [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                if (actionsBlock) {
 
-                    return [NSString stringWithFormat:@"CLIENT TRIED TO CONNECT. TERMINATE CONNECTION AND MARK ERROR "
-                            "(STATE: %@)", [self humanReadableStateFrom:self.state]];
-                }];
+                    [PNLogger logGeneralMessageFrom:self message:^NSString * {
 
-                self.state = PNPubNubClientStateDisconnectedOnNetworkError;
-            }
-            else if (self.state == PNPubNubClientStateDisconnecting){
+                        return [NSString stringWithFormat:@"CLIENT TRY TO POSTPONE APPLICATION SUSPENSION "
+                                "(STATE: %@)", [self humanReadableStateFrom:self.state]];
+                    }];
 
-                [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                    // This variable is used to provide enough time to complete suspension process.
+                    __block NSUInteger suspensionDelay = 3;
+                    __block UIBackgroundTaskIdentifier identifier = UIBackgroundTaskInvalid;
+                    __block BOOL shouldKeepAliveInBackground = YES;
+                    __block BOOL isFirstWhileCycle = YES;
+                    __block BOOL isSuspending = NO;
 
-                    return [NSString stringWithFormat:@"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK AS "
-                            "DISCONNECTED (STATE: %@)", [self humanReadableStateFrom:self.state]];
-                }];
+                    void(^backgroundTaskCompletionBlock)(void) = ^{
 
-                self.state = PNPubNubClientStateDisconnected;
-            }
-            else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError){
+                        if (identifier != UIBackgroundTaskInvalid) {
 
-                [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                            [[UIApplication sharedApplication] endBackgroundTask:identifier];
+                        }
+                        identifier = UIBackgroundTaskInvalid;
+                    };
 
-                    return [NSString stringWithFormat:@"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR "
-                            "(STATE: %@)", [self humanReadableStateFrom:self.state]];
-                }];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-                self.state = PNPubNubClientStateDisconnectedOnNetworkError;
-            }
+                        while (shouldKeepAliveInBackground || suspensionDelay > 0) {
 
-            [self.messagingChannel disconnectWithEvent:NO];
-            [self.serviceChannel disconnectWithEvent:NO];
+                            if (!shouldKeepAliveInBackground) {
+
+                                suspensionDelay--;
+                            }
+                            if ([UIApplication sharedApplication].backgroundTimeRemaining <= 15.0 && !isSuspending && !isFirstWhileCycle) {
+                                
+                                [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"USER DIDN'T "
+                                    "CALLED COMPLETION BLOCK IN TIME. FORE BLOCK EXECUTION."; }];
+                                
+                                if (!isSuspending) {
+                                    
+                                    isSuspending = YES;
+                                    dispatch_async(dispatch_get_main_queue(), suspensionCompletionBlock);
+                                }
+                                shouldKeepAliveInBackground = NO;
+                            }
+                            isFirstWhileCycle = NO;
+                            [NSThread sleepForTimeInterval:1];
+                        }
+                        
+                        dispatch_async(dispatch_get_main_queue(), backgroundTaskCompletionBlock);
+                    });
+
+                    // Requesting additional time for execution in background
+                    identifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:backgroundTaskCompletionBlock];
+                    
+                    actionsBlock(^{
+
+                        if (!isSuspending) {
+
+                            isSuspending = YES;
+                            suspensionCompletionBlock();
+                        }
+                        shouldKeepAliveInBackground = NO;
+                    });
+                }
+                else {
+
+                    suspensionCompletionBlock();
+                }
+            }];
         }
     }
 }

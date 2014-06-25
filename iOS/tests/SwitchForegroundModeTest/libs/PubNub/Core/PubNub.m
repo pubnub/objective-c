@@ -133,11 +133,10 @@ static NSMutableArray *pendingInvocations = nil;
 #pragma mark - Client state management
 
 + (void)postponeRequestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
-        witCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
+        witCompletionHandlingBlock:(id)handlerBlock;
 
-+ (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-                       forChannel:(PNChannel *)channel
-      withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock;
++ (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState forChannel:(PNChannel *)channel
+      withCompletionHandlingBlock:(id)handlerBlock;
 
 
 #pragma mark - Channels subscription management
@@ -154,16 +153,16 @@ static NSMutableArray *pendingInvocations = nil;
 #pragma mark - APNS management
 
 + (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                       andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
+                       andCompletionHandlingBlock:(id)handlerBlock;
 
 + (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                        andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
+                        andCompletionHandlingBlock:(id)handlerBlock;
 
 + (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
-                                 withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
+                                 withCompletionHandlingBlock:(id)handlerBlock;
 
 + (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
-                                             withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
+                                             withCompletionHandlingBlock:(id)handlerBlock;
 
 
 #pragma mark - PAM management
@@ -183,13 +182,13 @@ static NSMutableArray *pendingInvocations = nil;
                                  accessRights:(PNAccessRights)accessRights
                                       clients:(NSArray *)clientsAuthorizationKeys
                                     forPeriod:(NSInteger)accessPeriodDuration
-                  withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+                  withCompletionHandlingBlock:(id)handlerBlock;
 
 + (void)auditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
          withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
 
 + (void)postponeAuditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
-                 withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+                 withCompletionHandlingBlock:(id)handlerBlock;
 
 #pragma mark - Presence management
 
@@ -201,13 +200,13 @@ static NSMutableArray *pendingInvocations = nil;
 
 #pragma mark - Time token
 
-+ (void)postponeRequestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success;
++ (void)postponeRequestServerTimeTokenWithCompletionBlock:(id)success;
 
 
 #pragma mark - Messages processing methods
 
 + (void)postponeSendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
-        withCompletionBlock:(PNClientMessageProcessingBlock)success;
+        withCompletionBlock:(id)success;
 
 
 #pragma mark - History methods
@@ -215,7 +214,7 @@ static NSMutableArray *pendingInvocations = nil;
 + (void)postponeRequestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                                    limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
                       includingTimeToken:(BOOL)shouldIncludeTimeToken
-                     withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
+                     withCompletionBlock:(id)handleBlock;
 
 
 #pragma mark - Participant methods
@@ -223,10 +222,10 @@ static NSMutableArray *pendingInvocations = nil;
 + (void)postponeRequestParticipantsListForChannel:(PNChannel *)channel
                        clientIdentifiersLRequired:(BOOL)isClientIdentifiersRequired
                                       clientState:(BOOL)shouldFetchClientState
-                              withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
+                              withCompletionBlock:(id)handleBlock;
 
 + (void)postponeRequestParticipantChannelsList:(NSString *)clientIdentifier
-                           withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
+                           withCompletionBlock:(id)handleBlock;
 
 
 #pragma mark - Misc methods
@@ -1464,7 +1463,10 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 
     [self performAsyncLockingBlock:^{
 
-        [[PNObservationCenter defaultCenter] removeClientAsStateRequestObserver];
+        if (!handlerBlock || (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]])) {
+            
+            [[PNObservationCenter defaultCenter] removeClientAsStateRequestObserver];
+        }
 
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
@@ -1476,7 +1478,7 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
                         clientIdentifier, channel, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
 
-            if (handlerBlock != nil) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 [[PNObservationCenter defaultCenter] addClientAsStateRequestObserverWithBlock:[handlerBlock copy]];
             }
@@ -1501,7 +1503,7 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
             [[self sharedInstance] notifyDelegateAboutStateRetrievalDidFailWithError:requestError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(requestError.associatedObject, requestError);
             }
@@ -1521,13 +1523,13 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 }
 
 + (void)postponeRequestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
-        witCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
+        witCompletionHandlingBlock:(id)handlerBlock {
 
     [[self sharedInstance] postponeSelector:@selector(requestClientState:forChannel:withCompletionHandlingBlock:)
                                   forObject:self
                              withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:channel],
                                               [PNHelper nilifyIfNotSet:handlerBlock]]
-                                 outOfOrder:NO];
+                                 outOfOrder:[handlerBlock isKindOfClass:[NSString class]]];
 }
 
 + (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState forChannel:(PNChannel *)channel {
@@ -1546,8 +1548,11 @@ withCompletionHandlingBlock:nil];
     }];
 
     [self performAsyncLockingBlock:^{
-
-        [[PNObservationCenter defaultCenter] removeClientAsStateUpdateObserver];
+        
+        if (!handlerBlock || (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]])) {
+            
+            [[PNObservationCenter defaultCenter] removeClientAsStateUpdateObserver];
+        }
         
         NSDictionary *mergedClientState = @{channel.name: clientState};
         
@@ -1575,7 +1580,7 @@ withCompletionHandlingBlock:nil];
                         clientIdentifier, channel, mergedClientState, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
 
-            if (handlerBlock != nil) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 [[PNObservationCenter defaultCenter] addClientAsStateUpdateObserverWithBlock:[handlerBlock copy]];
             }
@@ -1602,7 +1607,7 @@ withCompletionHandlingBlock:nil];
             [[self sharedInstance] notifyDelegateAboutStateUpdateDidFailWithError:requestError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(requestError.associatedObject, requestError);
             }
@@ -1621,15 +1626,15 @@ withCompletionHandlingBlock:nil];
            }];
 }
 
-+ (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-                       forChannel:(PNChannel *)channel
-      withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
++ (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState forChannel:(PNChannel *)channel
+      withCompletionHandlingBlock:(id)handlerBlock {
 
     [[self sharedInstance] postponeSelector:@selector(updateClientState:state:forChannel:withCompletionHandlingBlock:)
                                   forObject:self
                              withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:clientState],
-                                              [PNHelper nilifyIfNotSet:channel], [PNHelper nilifyIfNotSet:handlerBlock]]
-                                 outOfOrder:NO];
+                                              [PNHelper nilifyIfNotSet:channel],
+                                              [PNHelper nilifyIfNotSet:handlerBlock]]
+                                 outOfOrder:[handlerBlock isKindOfClass:[NSString class]]];
 }
 
 
@@ -1944,9 +1949,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     [self performAsyncLockingBlock:^{
         
-        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
-        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+        if (!handlerBlock || (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]])) {
         
+            [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+        }
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
@@ -1958,7 +1965,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         channels, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnableObserverWithBlock:[handlerBlock copy]];
             }
@@ -1988,7 +1995,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(channels, stateChangeError);
             }
@@ -2009,13 +2016,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                       andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+                       andCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(enablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
-    [[self sharedInstance] postponeSelector:selector
-                                  forObject:self
-                             withParameters:@[channels, [PNHelper nilifyIfNotSet:pushToken], [PNHelper nilifyIfNotSet:handlerBlock]]
-                                 outOfOrder:NO];
+    [[self sharedInstance] postponeSelector:selector forObject:self
+                             withParameters:@[channels, [PNHelper nilifyIfNotSet:pushToken],
+                                              [PNHelper nilifyIfNotSet:handlerBlock]]
+                                 outOfOrder:[handlerBlock isKindOfClass:[NSString class]]];
 }
 
 + (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken {
@@ -2045,9 +2052,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     [self performAsyncLockingBlock:^{
         
-        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
-        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+        if (!handlerBlock || (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]])) {
         
+            [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnableObserver];
+            [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsDisableObserver];
+        }
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
@@ -2059,7 +2068,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         channels, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 [[PNObservationCenter defaultCenter] addClientAsPushNotificationsDisableObserverWithBlock:[handlerBlock copy]];
             }
@@ -2090,7 +2099,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(channels, stateChangeError);
             }
@@ -2111,13 +2120,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                        andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+                        andCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(disablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:);
-    [[self sharedInstance] postponeSelector:selector
-                                  forObject:self
-                             withParameters:@[channels, pushToken, [PNHelper nilifyIfNotSet:handlerBlock]]
-                                 outOfOrder:NO];
+    [[self sharedInstance] postponeSelector:selector forObject:self withParameters:@[channels, pushToken,
+                                              [PNHelper nilifyIfNotSet:handlerBlock]]
+                                 outOfOrder:[handlerBlock isKindOfClass:[NSString class]]];
 }
 
 + (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
@@ -2131,7 +2139,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     [self performAsyncLockingBlock:^{
         
-        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsRemoveObserver];
+        if (!handlerBlock || (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]])) {
+        
+            [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsRemoveObserver];
+        }
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
@@ -2143,7 +2154,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 [[PNObservationCenter defaultCenter] addClientAsPushNotificationsRemoveObserverWithBlock:[handlerBlock copy]];
             }
@@ -2169,7 +2180,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(removalError);
             }
@@ -2189,13 +2200,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
-                                 withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
+                                 withCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(removeAllPushNotificationsForDevicePushToken:withCompletionHandlingBlock:);
-    [[self sharedInstance] postponeSelector:selector
-                                  forObject:self
+    [[self sharedInstance] postponeSelector:selector forObject:self
                              withParameters:@[pushToken, [PNHelper nilifyIfNotSet:handlerBlock]]
-                                 outOfOrder:NO];
+                                 outOfOrder:[handlerBlock isKindOfClass:[NSString class]]];
 }
 
 + (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
@@ -2209,8 +2219,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
     [self performAsyncLockingBlock:^{
         
-        [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnabledChannelsObserver];
+        if (!handlerBlock || (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]])) {
         
+            [[PNObservationCenter defaultCenter] removeClientAsPushNotificationsEnabledChannelsObserver];
+        }
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
@@ -2222,7 +2234,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 [[PNObservationCenter defaultCenter] addClientAsPushNotificationsEnabledChannelsObserverWithBlock:[handlerBlock copy]];
             }
@@ -2249,7 +2261,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(nil, listRetrieveError);
             }
@@ -2269,13 +2281,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
-                                             withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
+                                             withCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(requestPushNotificationEnabledChannelsForDevicePushToken:withCompletionHandlingBlock:);
-    [[self sharedInstance] postponeSelector:selector
-                                  forObject:self
+    [[self sharedInstance] postponeSelector:selector forObject:self
                              withParameters:@[pushToken, [PNHelper nilifyIfNotSet:handlerBlock]]
-                                 outOfOrder:NO];
+                                 outOfOrder:[handlerBlock isKindOfClass:[NSString class]]];
 }
 
 
@@ -2562,8 +2573,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
     [self performAsyncLockingBlock:^{
-
-        [[PNObservationCenter defaultCenter] removeClientAsAccessRightsChangeObserver];
+        
+        if (!handlerBlock || (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]])) {
+            
+            [[PNObservationCenter defaultCenter] removeClientAsAccessRightsChangeObserver];
+        }
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
@@ -2575,7 +2589,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 [[PNObservationCenter defaultCenter] addClientAsAccessRightsChangeObserverWithBlock:[handlerBlock copy]];
             }
@@ -2607,7 +2621,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutAccessRightsChangeFailedWithError:accessRightChangeError];
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(nil, accessRightChangeError);
             }
@@ -2624,7 +2638,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
                [self postponeChangeAccessRightsForChannels:channels accessRights:accessRights
                                                    clients:clientsAuthorizationKeys forPeriod:accessPeriodDuration
-                               withCompletionHandlingBlock:handlerBlock];
+                               withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
                
     }];
     
@@ -2633,7 +2647,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)postponeChangeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
                                       clients:(NSArray *)clientsAuthorizationKeys
                                     forPeriod:(NSInteger)accessPeriodDuration
-                  withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+                  withCompletionHandlingBlock:(id)handlerBlock {
     
     SEL selector = @selector(changeAccessRightsForChannels:accessRights:clients:forPeriod:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
@@ -2641,7 +2655,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                              withParameters:@[channels, [NSNumber numberWithUnsignedLong:accessRights],
                                               clientsAuthorizationKeys, [NSNumber numberWithInteger:accessPeriodDuration],
                                               [PNHelper nilifyIfNotSet:handlerBlock]]
-                                 outOfOrder:NO];
+                                 outOfOrder:[handlerBlock isKindOfClass:[NSString class]]];
 }
 
 + (void)auditAccessRightsForApplication {
@@ -2715,9 +2729,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 
     [self performAsyncLockingBlock:^{
-
-        [[PNObservationCenter defaultCenter] removeClientAsAccessRightsAuditObserver];
-
+        
+        if (!handlerBlock || (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]])) {
+            
+            [[PNObservationCenter defaultCenter] removeClientAsAccessRightsAuditObserver];
+        }
 
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
@@ -2729,7 +2745,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 [[PNObservationCenter defaultCenter] addClientAsAccessRightsAuditObserverWithBlock:[handlerBlock copy]];
             }
@@ -2761,7 +2777,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutAccessRightsAuditFailedWithError:accessRightAuditError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(nil, accessRightAuditError);
             }
@@ -2777,18 +2793,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 }];
 
                 [self postponeAuditAccessRightsForChannels:channels clients:clientsAuthorizationKeys
-                               withCompletionHandlingBlock:handlerBlock];
+                               withCompletionHandlingBlock:(handlerBlock ? [handlerBlock copy] : nil)];
             }];
 }
 
 + (void)postponeAuditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys
-                 withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+                 withCompletionHandlingBlock:(id)handlerBlock {
 
     SEL selector = @selector(auditAccessRightsForChannels:clients:withCompletionHandlingBlock:);
     [[self sharedInstance] postponeSelector:selector
                                   forObject:self
-                             withParameters:@[channels, clientsAuthorizationKeys, [PNHelper nilifyIfNotSet:handlerBlock]]
-                                 outOfOrder:NO];
+                             withParameters:@[channels, clientsAuthorizationKeys,
+                                              [PNHelper nilifyIfNotSet:handlerBlock]]
+                                 outOfOrder:[handlerBlock isKindOfClass:[NSString class]]];
 }
 
 
@@ -3025,8 +3042,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
-            [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
-            if (success) {
+            if (!success || (success && ![success isKindOfClass:[NSString class]])) {
+                
+                [[PNObservationCenter defaultCenter] removeClientAsTimeTokenReceivingObserver];
+            }
+            if (success && ![success isKindOfClass:[NSString class]]) {
+                
                 [[PNObservationCenter defaultCenter] addClientAsTimeTokenReceivingObserverWithCallbackBlock:[success copy]];
             }
             
@@ -3047,7 +3068,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutTimeTokenRetrievalFailWithError:timeTokenError];
             
             
-            if (success) {
+            if (success && ![success isKindOfClass:[NSString class]]) {
                 
                 success(nil, timeTokenError);
             }
@@ -3065,12 +3086,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
            }];
 }
 
-+ (void)postponeRequestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success {
++ (void)postponeRequestServerTimeTokenWithCompletionBlock:(id)success {
     
     [[self sharedInstance] postponeSelector:@selector(requestServerTimeTokenWithCompletionBlock:)
-                                  forObject:self
-                             withParameters:@[[PNHelper nilifyIfNotSet:success]]
-                                 outOfOrder:NO];
+                                  forObject:self withParameters:@[[PNHelper nilifyIfNotSet:success]]
+                                 outOfOrder:[success isKindOfClass:[NSString class]]];
 }
 
 
@@ -3116,8 +3136,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         message, channel, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
-            [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
-            if (success) {
+            if (!success || (success && ![success isKindOfClass:[NSString class]])) {
+            
+                [[PNObservationCenter defaultCenter] removeClientAsMessageProcessingObserver];
+            }
+            if (success && ![success isKindOfClass:[NSString class]]) {
                 
                 [[PNObservationCenter defaultCenter] addClientAsMessageProcessingObserverWithBlock:[success copy]];
             }
@@ -3139,7 +3162,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutMessageSendingFailedWithError:sendingError];
             
             
-            if (success) {
+            if (success && ![success isKindOfClass:[NSString class]]) {
                 
                 success(PNMessageSendingError, sendingError);
             }
@@ -3153,7 +3176,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                            [self humanReadableStateFrom:[self sharedInstance].state]];
                }];
                
-               [self postponeSendMessage:message toChannel:channel compressed:shouldCompressMessage withCompletionBlock:(success ? [success copy] : nil)];
+               [self postponeSendMessage:message toChannel:channel compressed:shouldCompressMessage
+                     withCompletionBlock:(success ? [success copy] : nil)];
            }];
     
     
@@ -3161,12 +3185,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeSendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
-        withCompletionBlock:(PNClientMessageProcessingBlock)success {
+        withCompletionBlock:(id)success {
     
     [[self sharedInstance] postponeSelector:@selector(sendMessage:toChannel:compressed:withCompletionBlock:)
                                   forObject:self
-                             withParameters:@[[PNHelper nilifyIfNotSet:message], [PNHelper nilifyIfNotSet:channel], @(shouldCompressMessage), [PNHelper nilifyIfNotSet:(id)success]]
-                                 outOfOrder:NO];
+                             withParameters:@[[PNHelper nilifyIfNotSet:message], [PNHelper nilifyIfNotSet:channel], @(shouldCompressMessage),
+                                              [PNHelper nilifyIfNotSet:success]]
+                                 outOfOrder:[success isKindOfClass:[NSString class]]];
 }
 
 + (void)sendMessage:(PNMessage *)message {
@@ -3391,8 +3416,11 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                         channel, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
-            [[PNObservationCenter defaultCenter] removeClientAsHistoryDownloadObserver];
-            if (handleBlock) {
+            if (!handleBlock || (handleBlock && ![handleBlock isKindOfClass:[NSString class]])) {
+            
+                [[PNObservationCenter defaultCenter] removeClientAsHistoryDownloadObserver];
+            }
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
                 
                 [[PNObservationCenter defaultCenter] addClientAsHistoryDownloadObserverWithBlock:[handleBlock copy]];
             }
@@ -3417,7 +3445,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             
             [[self sharedInstance] notifyDelegateAboutHistoryDownloadFailedWithError:sendingError];
             
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
                 
                 handleBlock(nil, channel, startDate, endDate, sendingError);
             }
@@ -3441,14 +3469,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)postponeRequestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                                    limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
                       includingTimeToken:(BOOL)shouldIncludeTimeToken
-                     withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+                     withCompletionBlock:(id)handleBlock {
 
     SEL selector = @selector(requestHistoryForChannel:from:to:limit:reverseHistory:includingTimeToken:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:selector forObject:self
                              withParameters:@[[PNHelper nilifyIfNotSet:channel], [PNHelper nilifyIfNotSet:startDate], [PNHelper nilifyIfNotSet:endDate],
                                               @(limit), @(shouldReverseMessageHistory), @(shouldIncludeTimeToken),
                                               [PNHelper nilifyIfNotSet:handleBlock]]
-                                 outOfOrder:NO];
+                                 outOfOrder:[handleBlock isKindOfClass:[NSString class]]];
 }
 
 
@@ -3544,9 +3572,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 return [NSString stringWithFormat:@"REQUEST PARTICIPANTS LIST FOR CHANNEL: %@ (STATE: %@)",
                         channel, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
+            
+            if (!handleBlock || (handleBlock && ![handleBlock isKindOfClass:[NSString class]])) {
 
-            [[PNObservationCenter defaultCenter] removeClientAsParticipantsListDownloadObserver];
-            if (handleBlock) {
+                [[PNObservationCenter defaultCenter] removeClientAsParticipantsListDownloadObserver];
+            }
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
 
                 [[PNObservationCenter defaultCenter] addClientAsParticipantsListDownloadObserverWithBlock:[handleBlock copy]];
             }
@@ -3571,7 +3602,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
 
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
 
                 handleBlock(nil, channel, sendingError);
             }
@@ -3595,13 +3626,14 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 + (void)postponeRequestParticipantsListForChannel:(PNChannel *)channel
                        clientIdentifiersLRequired:(BOOL)isClientIdentifiersRequired
                                       clientState:(BOOL)shouldFetchClientState
-                              withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+                              withCompletionBlock:(id)handleBlock {
 
     SEL targetSelector = @selector(requestParticipantsListForChannel:clientIdentifiersRequired:clientState:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:targetSelector forObject:self
                              withParameters:@[[PNHelper nilifyIfNotSet:channel], @(isClientIdentifiersRequired),
-                                              @(shouldFetchClientState), [PNHelper nilifyIfNotSet:handleBlock]]
-                                 outOfOrder:NO];
+                                              @(shouldFetchClientState),
+                                              [PNHelper nilifyIfNotSet:handleBlock]]
+                                 outOfOrder:[handleBlock isKindOfClass:[NSString class]]];
 }
 
 
@@ -3630,9 +3662,12 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
                 return [NSString stringWithFormat:@"REQUEST PARTICIPANT CHANNELS LIST FOR IDENTIFIER: %@ "
                         "(STATE: %@)", clientIdentifier, [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
+            
+            if (!handleBlock || (handleBlock && ![handleBlock isKindOfClass:[NSString class]])) {
 
-            [[PNObservationCenter defaultCenter] removeClientAsParticipantChannelsListDownloadObserver];
-            if (handleBlock) {
+                [[PNObservationCenter defaultCenter] removeClientAsParticipantChannelsListDownloadObserver];
+            }
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
 
                 [[PNObservationCenter defaultCenter] addClientAsParticipantChannelsListDownloadObserverWithBlock:[handleBlock copy]];
             }
@@ -3654,7 +3689,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutParticipantChannelsListDownloadFailedWithError:sendingError];
 
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
 
                 handleBlock(clientIdentifier, nil, sendingError);
             }
@@ -3674,12 +3709,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 + (void)postponeRequestParticipantChannelsList:(NSString *)clientIdentifier
-                           withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
+                           withCompletionBlock:(id)handleBlock {
 
     SEL targetSelector = @selector(requestParticipantChannelsList:withCompletionBlock:);
     [[self sharedInstance] postponeSelector:targetSelector forObject:self
-                             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:handleBlock]]
-                                 outOfOrder:NO];
+                             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier],
+                                              [PNHelper nilifyIfNotSet:handleBlock]]
+                                 outOfOrder:[handleBlock isKindOfClass:[NSString class]]];
 }
 
 
@@ -4881,57 +4917,157 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     
 	if (![self canRunInBackground]) {
 
-        [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"APPLICATION CAN'T RUN IN BACKGROUND."; }];
-        [self.reachability suspend];
+        BOOL canInformAboutSuspension = [self.delegate respondsToSelector:@selector(pubnubClient:willSuspendWithBlock:)];
+        void(^suspensionCompletionBlock)(void) = ^{
 
-        // Check whether application connected or not
-        if ([self isConnected]) {
+            // Ensure that application is still in background execution context.
+            if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
 
-            [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"SUSPENDING..."; }];
+                if (!canInformAboutSuspension) {
 
-            self.state = PNPubNubClientStateSuspended;
-            
-            self.asyncLockingOperationInProgress = NO;
-            [self.messagingChannel suspend];
-            [self.serviceChannel suspend];
+                    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"APPLICATION CAN'T RUN IN BACKGROUND."; }];
+                }
+                else {
+
+                    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"COMPLETED TASKS BEFORE ENETERING BACKGROUND."; }];
+                }
+                [self.reachability suspend];
+
+                // Check whether application connected or not
+                if ([self isConnected]) {
+
+                    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"SUSPENDING..."; }];
+
+                    self.state = PNPubNubClientStateSuspended;
+
+                    self.asyncLockingOperationInProgress = NO;
+                    [self.messagingChannel suspend];
+                    [self.serviceChannel suspend];
+                }
+                else if (self.state == PNPubNubClientStateConnecting ||
+                         self.state == PNPubNubClientStateDisconnecting ||
+                         self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+
+                    if (self.state == PNPubNubClientStateConnecting) {
+
+                        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"CLIENT TRIED TO CONNECT. TERMINATE CONNECTION AND MARK ERROR "
+                                    "(STATE: %@)", [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
+                    }
+                    else if (self.state == PNPubNubClientStateDisconnecting){
+
+                        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK AS "
+                                    "DISCONNECTED (STATE: %@)", [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        self.state = PNPubNubClientStateDisconnected;
+                    }
+                    else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError){
+
+                        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+
+                            return [NSString stringWithFormat:@"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR "
+                                    "(STATE: %@)", [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        self.state = PNPubNubClientStateDisconnectedOnNetworkError;
+                    }
+
+                    [self.messagingChannel disconnectWithEvent:NO];
+                    [self.serviceChannel disconnectWithEvent:NO];
+                }
+            }
+            else {
+
+                [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"APPLICATION NOT IN BACKGROUND."; }];
+            }
+        };
+
+        if (!canInformAboutSuspension) {
+
+            suspensionCompletionBlock();
         }
-        else if (self.state == PNPubNubClientStateConnecting ||
-                 self.state == PNPubNubClientStateDisconnecting ||
-                 self.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+        else {
 
-            if (self.state == PNPubNubClientStateConnecting) {
+            // Informing delegate that PubNub client will suspend soon.
+            [self.delegate pubnubClient:self
+                   willSuspendWithBlock:^(void(^actionsBlock)(void (^)())) {
 
-                [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                if (actionsBlock) {
 
-                    return [NSString stringWithFormat:@"CLIENT TRIED TO CONNECT. TERMINATE CONNECTION AND MARK ERROR "
-                            "(STATE: %@)", [self humanReadableStateFrom:self.state]];
-                }];
+                    [PNLogger logGeneralMessageFrom:self message:^NSString * {
 
-                self.state = PNPubNubClientStateDisconnectedOnNetworkError;
-            }
-            else if (self.state == PNPubNubClientStateDisconnecting){
+                        return [NSString stringWithFormat:@"CLIENT TRY TO POSTPONE APPLICATION SUSPENSION "
+                                "(STATE: %@)", [self humanReadableStateFrom:self.state]];
+                    }];
 
-                [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                    // This variable is used to provide enough time to complete suspension process.
+                    __block NSUInteger suspensionDelay = 3;
+                    __block UIBackgroundTaskIdentifier identifier = UIBackgroundTaskInvalid;
+                    __block BOOL shouldKeepAliveInBackground = YES;
+                    __block BOOL isFirstWhileCycle = YES;
+                    __block BOOL isSuspending = NO;
 
-                    return [NSString stringWithFormat:@"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK AS "
-                            "DISCONNECTED (STATE: %@)", [self humanReadableStateFrom:self.state]];
-                }];
+                    void(^backgroundTaskCompletionBlock)(void) = ^{
 
-                self.state = PNPubNubClientStateDisconnected;
-            }
-            else if (self.state == PNPubNubClientStateDisconnectingOnNetworkError){
+                        if (identifier != UIBackgroundTaskInvalid) {
 
-                [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                            [[UIApplication sharedApplication] endBackgroundTask:identifier];
+                        }
+                        identifier = UIBackgroundTaskInvalid;
+                    };
 
-                    return [NSString stringWithFormat:@"CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR "
-                            "(STATE: %@)", [self humanReadableStateFrom:self.state]];
-                }];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-                self.state = PNPubNubClientStateDisconnectedOnNetworkError;
-            }
+                        while (shouldKeepAliveInBackground || suspensionDelay > 0) {
 
-            [self.messagingChannel disconnectWithEvent:NO];
-            [self.serviceChannel disconnectWithEvent:NO];
+                            if (!shouldKeepAliveInBackground) {
+
+                                suspensionDelay--;
+                            }
+                            if ([UIApplication sharedApplication].backgroundTimeRemaining <= 15.0 && !isSuspending && !isFirstWhileCycle) {
+                                
+                                [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"USER DIDN'T "
+                                    "CALLED COMPLETION BLOCK IN TIME. FORE BLOCK EXECUTION."; }];
+                                
+                                if (!isSuspending) {
+                                    
+                                    isSuspending = YES;
+                                    dispatch_async(dispatch_get_main_queue(), suspensionCompletionBlock);
+                                }
+                                shouldKeepAliveInBackground = NO;
+                            }
+                            isFirstWhileCycle = NO;
+                            [NSThread sleepForTimeInterval:1];
+                        }
+                        
+                        dispatch_async(dispatch_get_main_queue(), backgroundTaskCompletionBlock);
+                    });
+
+                    // Requesting additional time for execution in background
+                    identifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:backgroundTaskCompletionBlock];
+                    
+                    actionsBlock(^{
+
+                        if (!isSuspending) {
+
+                            isSuspending = YES;
+                            suspensionCompletionBlock();
+                        }
+                        shouldKeepAliveInBackground = NO;
+                    });
+                }
+                else {
+
+                    suspensionCompletionBlock();
+                }
+            }];
         }
     }
 }
@@ -5353,7 +5489,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }];
     methodInvocation.target = object;
     [methodInvocation retainArguments];
-    
+
     
     // Place invocation instance into mending invocations set for future usage
     if (placeOutOfOrder) {
@@ -6659,8 +6795,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel clientStateReceiveDidFailWithError:(PNError *)error {
-
-    [self notifyDelegateAboutStateRetrievalDidFailWithError:error];
+    
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        [self notifyDelegateAboutStateRetrievalDidFailWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE CLIENT STATE AUDIT REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+        }];
+        
+        PNClient *clientInformation = (PNClient *)error.associatedObject;
+        [[self class] requestClientState:clientInformation.identifier forChannel:clientInformation.channel
+             withCompletionHandlingBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didUpdateClientState:(PNClient *)client {
@@ -6704,8 +6854,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel clientStateUpdateDidFailWithError:(PNError *)error {
-
-    [self notifyDelegateAboutStateUpdateDidFailWithError:error];
+    
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        [self notifyDelegateAboutStateUpdateDidFailWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE CLIENT STATE UPDATE REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+        }];
+        
+        PNClient *clientInformation = (PNClient *)error.associatedObject;
+        [[self class] updateClientState:clientInformation.identifier state:clientInformation.data
+                             forChannel:clientInformation.channel withCompletionHandlingBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
@@ -6742,8 +6906,24 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel accessRightsChangeDidFailWithError:(PNError *)error {
-
-    [self notifyDelegateAboutAccessRightsChangeFailedWithError:error];
+    
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        [self notifyDelegateAboutAccessRightsChangeFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE ACCESS RIGHTS UPDATE REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+        }];
+        
+        PNAccessRightOptions *rightsInformation = (PNAccessRightOptions *)error.associatedObject;
+        [[self class] changeAccessRightsForChannels:rightsInformation.channels accessRights:rightsInformation.rights
+                                            clients:rightsInformation.clientsAuthorizationKeys
+                                          forPeriod:rightsInformation.accessPeriodDuration
+                        withCompletionHandlingBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
@@ -6780,8 +6960,22 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel accessRightsAuditDidFailWithError:(PNError *)error {
-
-    [self notifyDelegateAboutAccessRightsAuditFailedWithError:error];
+    
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        [self notifyDelegateAboutAccessRightsAuditFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE ACCESS RIGHTS AUDIT REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+        }];
+        
+        PNAccessRightOptions *rightsInformation = (PNAccessRightOptions *)error.associatedObject;
+        [[self class] auditAccessRightsForChannels:rightsInformation.channels clients:rightsInformation.clientsAuthorizationKeys
+                       withCompletionHandlingBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveTimeToken:(NSNumber *)timeToken {
@@ -6817,7 +7011,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)serviceChannel:(PNServiceChannel *)channel receiveTimeTokenDidFailWithError:(PNError *)error {
     
-    [self notifyDelegateAboutTimeTokenRetrievalFailWithError:error];
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        [self notifyDelegateAboutTimeTokenRetrievalFailWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE TIME TOKEN REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [[self class] requestServerTimeTokenWithCompletionBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didEnablePushNotificationsOnChannels:(NSArray *)channels {
@@ -6858,8 +7064,23 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 didFailPushNotificationEnableForChannels:(NSArray *)channels
                                withError:(PNError *)error {
     
-    error.associatedObject = channels;
-    [self notifyDelegateAboutPushNotificationsEnableFailedWithError:error];
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        error.associatedObject = channels;
+        [self notifyDelegateAboutPushNotificationsEnableFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION ENABLE REQUEST (STATE: %@)",
+                    [self humanReadableStateFrom:self.state]];
+        }];
+        
+        NSData *devicePushToken = (NSData *)error.associatedObject;
+        [[self class] enablePushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
+                             andCompletionHandlingBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didDisablePushNotificationsOnChannels:(NSArray *)channels {
@@ -6900,8 +7121,23 @@ didFailPushNotificationEnableForChannels:(NSArray *)channels
 didFailPushNotificationDisableForChannels:(NSArray *)channels
                                 withError:(PNError *)error {
     
-    error.associatedObject = channels;
-    [self notifyDelegateAboutPushNotificationsDisableFailedWithError:error];
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        error.associatedObject = channels;
+        [self notifyDelegateAboutPushNotificationsDisableFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION DISABLE REQUEST (STATE: %@)",
+                    [self humanReadableStateFrom:self.state]];
+        }];
+        
+        NSData *devicePushToken = (NSData *)error.associatedObject;
+        [[self class] disablePushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
+                              andCompletionHandlingBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannelDidRemovePushNotifications:(PNServiceChannel *)channel {
@@ -6941,7 +7177,22 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationsRemoveWithError:(PNError *)error {
     
-    [self notifyDelegateAboutPushNotificationsRemoveFailedWithError:error];
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        [self notifyDelegateAboutPushNotificationsRemoveFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION REMOVAL REQUEST (STATE: %@)",
+                    [self humanReadableStateFrom:self.state]];
+        }];
+        
+        NSData *devicePushToken = (NSData *)error.associatedObject;
+        [[self class] removeAllPushNotificationsForDevicePushToken:devicePushToken
+                                       withCompletionHandlingBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceivePushNotificationsEnabledChannels:(NSArray *)channels {
@@ -6982,7 +7233,22 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
 
 - (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationEnabledChannelsReceiveWithError:(PNError *)error {
     
-    [self notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:error];
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        [self notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION AUDIT REQUEST (STATE: %@)",
+                    [self humanReadableStateFrom:self.state]];
+        }];
+        
+        NSData *devicePushToken = (NSData *)error.associatedObject;
+        [[self class] requestPushNotificationEnabledChannelsForDevicePushToken:devicePushToken
+                                                   withCompletionHandlingBlock:(id)@""];
+    }
 }
 
 - (void)  serviceChannel:(PNServiceChannel *)channel
@@ -7050,12 +7316,24 @@ didReceiveNetworkLatency:(double)latency
                                 shouldStartNext:YES];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel
-    didFailMessageSend:(PNMessage *)message
-             withError:(PNError *)error {
+- (void)serviceChannel:(PNServiceChannel *)channel didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
     
-    error.associatedObject = message;
-    [self notifyDelegateAboutMessageSendingFailedWithError:error];
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        error.associatedObject = message;
+        [self notifyDelegateAboutMessageSendingFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE MESSAGE SENDING REQUEST (STATE: %@)",
+                    [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [[self class] sendMessage:message compressed:message.shouldCompressMessage
+              withCompletionBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveMessagesHistory:(PNMessagesHistory *)history {
@@ -7096,8 +7374,26 @@ didReceiveNetworkLatency:(double)latency
   didFailHisoryDownloadForChannel:(PNChannel *)channel
                         withError:(PNError *)error {
     
-    error.associatedObject = channel;
-    [self notifyDelegateAboutHistoryDownloadFailedWithError:error];
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        error.associatedObject = channel;
+        [self notifyDelegateAboutHistoryDownloadFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE MESSAGES HISTORY REQUEST (STATE: %@)",
+                    [self humanReadableStateFrom:self.state]];
+        }];
+        
+        NSDictionary *options = (NSDictionary *)error.associatedObject;
+        [[self class] requestHistoryForChannel:channel from:[options valueForKey:@"startDate"] to:[options valueForKey:@"endDate"]
+                                         limit:[[options valueForKey:@"limit"] integerValue]
+                                reverseHistory:[[options valueForKey:@"revertMessages"] boolValue]
+                            includingTimeToken:[[options valueForKey:@"includeTimeToken"] boolValue]
+                           withCompletionBlock:(id)@""];
+    }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantsList:(PNHereNow *)participants {
@@ -7135,8 +7431,24 @@ didReceiveNetworkLatency:(double)latency
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantsListLoadForChannel:(PNChannel *)channel
              withError:(PNError *)error {
     
-    error.associatedObject = channel;
-    [self notifyDelegateAboutParticipantsListDownloadFailedWithError:error];
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        error.associatedObject = channel;
+        [self notifyDelegateAboutParticipantsListDownloadFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE PARTICIPANTS LIST REQUEST (STATE: %@)",
+                    [self humanReadableStateFrom:self.state]];
+        }];
+        
+        NSDictionary *options = (NSDictionary *)error.associatedObject;
+        [[self class] requestParticipantsListForChannel:channel clientIdentifiersRequired:[[options valueForKey:@"clientIdentifiersRequired"] boolValue]
+                                            clientState:[[options valueForKey:@"fetchClientState"] boolValue]
+                                    withCompletionBlock:(id)@""];
+    }
     
 }
 
@@ -7175,9 +7487,23 @@ didReceiveNetworkLatency:(double)latency
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantChannelsListLoadForIdentifier:(NSString *)clientIdentifier
              withError:(PNError *)error {
-
-    error.associatedObject = clientIdentifier;
-    [self notifyDelegateAboutParticipantChannelsListDownloadFailedWithError:error];
+    
+    if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
+        
+        error.associatedObject = clientIdentifier;
+        [self notifyDelegateAboutParticipantChannelsListDownloadFailedWithError:error];
+    }
+    else {
+        
+        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+            
+            return [NSString stringWithFormat:@"RESCHEDULE CLIENT'S CHANNELS REQUEST (STATE: %@)",
+                    [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [[self class] requestParticipantChannelsList:clientIdentifier
+                                 withCompletionBlock:(id)@""];
+    }
 }
 
 

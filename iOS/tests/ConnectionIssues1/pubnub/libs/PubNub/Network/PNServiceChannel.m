@@ -533,9 +533,12 @@
     else if ([request isKindOfClass:[PNClientStateRequest class]] ||
             [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
-        NSDictionary *clientData = ([request isKindOfClass:[PNClientStateUpdateRequest class]] ? [request valueForKey:@"state"] : nil);
-        error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
-                                                       channel:[request valueForKey:@"channel"] andData:clientData];
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+            
+            NSDictionary *clientData = ([request isKindOfClass:[PNClientStateUpdateRequest class]] ? [request valueForKey:@"state"] : nil);
+            error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
+                                                           channel:[request valueForKey:@"channel"] andData:clientData];
+        }
 
         NSString *message = [NSString stringWithFormat:@"[CHANNEL::%@] CLIENT STATE REVIEW FAILED WITH ERROR: %@", self, error];
         SEL errorSelector = @selector(serviceChannel:clientStateReceiveDidFailWithError:);
@@ -561,21 +564,24 @@
     }
     // Check whether this is 'Message history' request or not
     else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
-
-        PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
-        NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:@{
-                                           @"limit":@(historyRequest.limit), @"revertMessages":@(historyRequest.shouldRevertMessages),
-                                           @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)}];
-        if (historyRequest.startDate) {
-            
-            [options setValue:historyRequest.startDate forKey:@"startDate"];
-        }
         
-        if (historyRequest.endDate) {
+        PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            [options setValue:historyRequest.endDate forKey:@"endDate"];
+            NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:@{
+                                               @"limit":@(historyRequest.limit), @"revertMessages":@(historyRequest.shouldRevertMessages),
+                                               @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)}];
+            if (historyRequest.startDate) {
+                
+                [options setValue:historyRequest.startDate forKey:@"startDate"];
+            }
+            
+            if (historyRequest.endDate) {
+                
+                [options setValue:historyRequest.endDate forKey:@"endDate"];
+            }
+            error.associatedObject = options;
         }
-        error.associatedObject = options;
         
         // Notify delegate about message history download failed
         [self.serviceDelegate serviceChannel:self
@@ -585,8 +591,11 @@
     else if ([request isKindOfClass:[PNHereNowRequest class]]) {
         
         PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
-        error.associatedObject = @{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
-                                   @"fetchClientState":@(hereNowRequest.shouldFetchClientState)};
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+            
+            error.associatedObject = @{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
+                                       @"fetchClientState":@(hereNowRequest.shouldFetchClientState)};
+        }
 
         // Notify delegate about participants list can't be downloaded
         [self.serviceDelegate serviceChannel:self
@@ -611,7 +620,10 @@
                     [targetState uppercaseString], error];
         }];
         
-        error.associatedObject = ((PNPushNotificationsStateChangeRequest *)request).devicePushToken;
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+            
+            error.associatedObject = ((PNPushNotificationsStateChangeRequest *)request).devicePushToken;
+        }
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 
             [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels
@@ -632,7 +644,10 @@
                     self, error];
         }];
         
-        error.associatedObject = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+            
+            error.associatedObject = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
+        }
         [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:error];
     }
     // Check whether this is 'Push notification enabled channels' request or not
@@ -644,13 +659,19 @@
                     self, error];
         }];
         
-        error.associatedObject = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+            
+            error.associatedObject = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
+        }
         [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:error];
     }
     // Check whether this is 'Access rights change' request or not
     else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
 
-        error.associatedObject = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+            
+            error.associatedObject = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
+        }
         [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
 
             return [NSString stringWithFormat:@"[CHANNEL::%@] ACCESS RIGHTS CHANGE FAILED WITH ERROR: %@", self, error];
@@ -661,7 +682,10 @@
     // Check whether this is 'Access rights audit' request or not
     else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
 
-        error.associatedObject = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+            
+            error.associatedObject = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
+        }
         [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
 
             return [NSString stringWithFormat:@"[CHANNEL::%@] ACCESS RIGHTS AUDIT FAILED WITH ERROR: %@", self, error];

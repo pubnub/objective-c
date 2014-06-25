@@ -67,6 +67,19 @@
 - (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error;
 
 /**
+ Called on delegate when \b PubNub client is about to suspend on application transferring into background execution
+ context (when application is unable to work in background persistently).
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param preSuspensionBlock
+ \b PubNub client pass this block to the user which should provide another block from his side. User's block should accept
+ one parameter (void block) which should be pulled by user's code when he is done with his tasks before app suspension.
+ */
+- (void)pubnubClient:(PubNub *)client willSuspendWithBlock:(void(^)(void(^)(void(^)(void))))preSuspensionBlock;
+
+/**
  Called on delegate when \b PubNub client successfully retrieved state for client.
 
  @param client
