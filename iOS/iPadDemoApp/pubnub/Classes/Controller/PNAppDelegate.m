@@ -357,38 +357,6 @@
     }];
 }
 
-- (void)pubnubClient:(PubNub *)client willSuspendWithBlock:(void(^)(void(^)(void(^)(void))))preSuspensionBlock {
-
-    if ([PubNub sharedInstance].isConnected) {
-        
-        preSuspensionBlock(^(void(^completionBlock)(void)){
-
-            int64_t delayInSeconds = 3;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-
-                [PubNub sendMessage:@"Hello my friend" toChannel:[PNChannel channelWithName:@"boom"]
-                withCompletionBlock:^(PNMessageState state, id data) {
-
-                    if (state != PNMessageSending) {
-
-                        NSString *message = @"Message has been sent";
-                        if (state == PNMessageSendingError) {
-
-                            message = [NSString stringWithFormat:@"Message sending failed with error: %@", ((PNError *)data).localizedFailureReason];
-                        }
-                        [PNLogger logGeneralMessageFrom:self message:^NSString *{
-
-                            return message;
-                        }];
-                        completionBlock();
-                    }
-                }];
-            });
-        });
-    }
-}
-
 - (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient {
 
     [PNLogger logGeneralMessageFrom:self message:^NSString * {

@@ -114,7 +114,7 @@ static const NSInteger kTimeout = 6;
                    withClientState:clientState
         andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
             
-            NSLog(@"1.2:%ld Subscribed with state: %@ error: %@", i, clientState, subscriptionError);
+            NSLog(@"1.2:%d Subscribed with state: %@ error: %@", (int)i, clientState, subscriptionError);
             
             dispatch_group_leave(resGroup);
         }];
@@ -131,7 +131,7 @@ static const NSInteger kTimeout = 6;
                         forChannel:channel
        withCompletionHandlingBlock:^(PNClient *client, PNError *error) {
            
-           NSLog(@"1.4:%ld client.data channel %@\nexpect state %@, \n%@", i, client.data, clientState, channel.name);
+           NSLog(@"1.4:%d client.data channel %@\nexpect state %@, \n%@",(int)i, client.data, clientState, channel.name);
            
 //           if (![client.data isEqualToDictionary:clientState]) {
 //               NSLog(@"1.4.1 Error!: %ld", i);
@@ -139,7 +139,7 @@ static const NSInteger kTimeout = 6;
            
            [[clientState allKeys] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                if (![client.data[obj] isEqual:clientState[obj]]) {
-                    NSLog(@"1.4.1 Error!: %ld", i);
+                    NSLog(@"1.4.1 Error!: %d", (int)i);
                    *stop = YES;
                }
            }];
@@ -160,7 +160,7 @@ static const NSInteger kTimeout = 6;
             if (error == nil) {
                 
                 // PubNub client successfully unsubscribed from specified channels.
-                NSLog(@"1.5:%ld Successfully unsubscribed from channel: %@ with state: %@", i, [channel name], clientState);
+                NSLog(@"1.5:%d Successfully unsubscribed from channel: %@ with state: %@", (int)i, [channel name], clientState);
                 
                 dispatch_group_leave(resGroup);
             }
@@ -177,12 +177,12 @@ static const NSInteger kTimeout = 6;
             [GCDWrapper waitGroup:resGroup
                        withTimout:kTimeout];
             
-            NSLog(@"BEFORE sleep: %ld", i);
+            NSLog(@"BEFORE sleep: %d", (int)i);
             [GCDWrapper sleepForSeconds:1];
-            NSLog(@"AFTER sleep: %ld", i);
+            NSLog(@"AFTER sleep: %d", (int)i);
         }];
         
-        NSLog(@"iteration: %ld", i);
+        NSLog(@"iteration: %d", (int)i);
     }
     
     [PubNub disconnect];
