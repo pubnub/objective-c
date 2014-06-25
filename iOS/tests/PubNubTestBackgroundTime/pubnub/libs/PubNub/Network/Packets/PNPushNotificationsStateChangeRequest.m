@@ -47,6 +47,7 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 
 // Stores reference on stringified push notification token
 @property (nonatomic, strong) NSString *pushToken;
+@property (nonatomic, strong) NSData *devicePushToken;
 
 // Stores reference on state which should be set for specified
 // channel(s)
@@ -95,6 +96,7 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
         self.sendingByUserRequest = YES;
         self.channels = [NSArray arrayWithArray:channels];
         self.targetState = state;
+        self.devicePushToken = pushToken;
         self.pushToken = [[pushToken HEXPushToken] lowercaseString];
     }
 

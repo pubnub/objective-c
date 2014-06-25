@@ -1503,7 +1503,7 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
             [[self sharedInstance] notifyDelegateAboutStateRetrievalDidFailWithError:requestError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(requestError.associatedObject, requestError);
             }
@@ -1607,7 +1607,7 @@ withCompletionHandlingBlock:nil];
             [[self sharedInstance] notifyDelegateAboutStateUpdateDidFailWithError:requestError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(requestError.associatedObject, requestError);
             }
@@ -1995,7 +1995,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(channels, stateChangeError);
             }
@@ -2099,7 +2099,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(channels, stateChangeError);
             }
@@ -2180,7 +2180,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(removalError);
             }
@@ -2261,7 +2261,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
             
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(nil, listRetrieveError);
             }
@@ -2621,7 +2621,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutAccessRightsChangeFailedWithError:accessRightChangeError];
             
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
                 
                 handlerBlock(nil, accessRightChangeError);
             }
@@ -2777,7 +2777,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutAccessRightsAuditFailedWithError:accessRightAuditError];
 
 
-            if (handlerBlock) {
+            if (handlerBlock && ![handlerBlock isKindOfClass:[NSString class]]) {
 
                 handlerBlock(nil, accessRightAuditError);
             }
@@ -3068,7 +3068,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutTimeTokenRetrievalFailWithError:timeTokenError];
             
             
-            if (success) {
+            if (success && ![success isKindOfClass:[NSString class]]) {
                 
                 success(nil, timeTokenError);
             }
@@ -3162,7 +3162,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             [[self sharedInstance] notifyDelegateAboutMessageSendingFailedWithError:sendingError];
             
             
-            if (success) {
+            if (success && ![success isKindOfClass:[NSString class]]) {
                 
                 success(PNMessageSendingError, sendingError);
             }
@@ -3445,7 +3445,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
             
             [[self sharedInstance] notifyDelegateAboutHistoryDownloadFailedWithError:sendingError];
             
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
                 
                 handleBlock(nil, channel, startDate, endDate, sendingError);
             }
@@ -3602,7 +3602,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
 
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
 
                 handleBlock(nil, channel, sendingError);
             }
@@ -3689,7 +3689,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
             [[self sharedInstance] notifyDelegateAboutParticipantChannelsListDownloadFailedWithError:sendingError];
 
-            if (handleBlock) {
+            if (handleBlock && ![handleBlock isKindOfClass:[NSString class]]) {
 
                 handleBlock(clientIdentifier, nil, sendingError);
             }
