@@ -12,6 +12,8 @@
 
 #import <Foundation/Foundation.h>
 #import "NSDate+PNAdditions.h"
+#import "PNStructures.h"
+#import "PNLogger.h"
 
 
 #ifndef PNMacro_h

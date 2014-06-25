@@ -10,6 +10,7 @@
 #import "PNAccessRightsInformation+Protected.h"
 #import "PNAccessRightsCollection+Protected.h"
 #import "PNAccessRightOptions+Protected.h"
+#import "PNChannel.h"
 #import "PNHelper.h"
 
 

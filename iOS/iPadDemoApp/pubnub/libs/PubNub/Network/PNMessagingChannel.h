@@ -16,12 +16,15 @@
 
 #import "PNConnectionChannel.h"
 #import "PNMessageChannelDelegate.h"
+#import "PNMacro.h"
 
 
 #pragma mark Class forward
 
 @class PNChannel;
 
+
+#pragma mark - Public interface declaration
 
 @interface PNMessagingChannel : PNConnectionChannel
 

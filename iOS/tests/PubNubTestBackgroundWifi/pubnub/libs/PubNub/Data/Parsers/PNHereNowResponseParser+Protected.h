@@ -37,6 +37,11 @@ static NSString * const kPNResponseOccupancyKey = @"occupancy";
 static NSString * const kPNResponseChannelsKey = @"channels";
 
 
+#pragma mark - Class forward
+
+@class PNHereNow, PNChannel, PNClient;
+
+
 #pragma mark - Private interface methods
 
 @interface PNHereNowResponseParser ()

@@ -17,6 +17,11 @@
 
 #import "PNMessage+Protected.h"
 #import "PNJSONSerialization.h"
+#import "PNErrorCodes.h"
+#import "PNChannel.h"
+#import "PNError.h"
+#import "PNDate.h"
+#import "PubNub.h"
 
 
 // ARC check

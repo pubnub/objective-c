@@ -13,8 +13,10 @@
 
 #import "PNPushNotificationsRemoveRequest.h"
 #import "PNServiceResponseCallbacks.h"
-#import "PubNub+Protected.h"
 #import "PNBaseRequest+Protected.h"
+#import "NSString+PNAddition.h"
+#import "NSData+PNAdditions.h"
+#import "PubNub+Protected.h"
 
 
 // ARC check

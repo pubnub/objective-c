@@ -9,8 +9,9 @@
 
 #import "PNErrorResponseParser.h"
 #import "PNErrorResponseParser+Protected.h"
-#import "PNResponse.h"
 #import "PNError+Protected.h"
+#import "PNResponse.h"
+#import "PNChannel.h"
 
 
 // ARC check

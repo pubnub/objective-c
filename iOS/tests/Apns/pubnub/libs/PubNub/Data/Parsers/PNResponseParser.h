@@ -1,3 +1,6 @@
+#import <Foundation/Foundation.h>
+
+
 #pragma mark Class forward
 
 @class PNResponse, PNError;

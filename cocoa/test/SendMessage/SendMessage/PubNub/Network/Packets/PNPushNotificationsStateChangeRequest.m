@@ -15,6 +15,8 @@
 #import "PNPushNotificationsStateChangeRequest.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
+#import "NSString+PNAddition.h"
+#import "NSData+PNAdditions.h"
 #import "PubNub+Protected.h"
 
 

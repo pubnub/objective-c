@@ -6,6 +6,9 @@
 //
 //
 
+#import <Foundation/Foundation.h>
+
+
 #ifndef PNDefaultConfiguration_h
 #define PNDefaultConfiguration_h
 

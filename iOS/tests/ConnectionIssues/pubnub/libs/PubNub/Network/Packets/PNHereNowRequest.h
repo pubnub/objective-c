@@ -11,6 +11,13 @@
 #import "PNBaseRequest.h"
 
 
+#pragma mark Class forward
+
+@class PNChannel;
+
+
+#pragma mark - Public interface declaration
+
 @interface PNHereNowRequest : PNBaseRequest
 
 

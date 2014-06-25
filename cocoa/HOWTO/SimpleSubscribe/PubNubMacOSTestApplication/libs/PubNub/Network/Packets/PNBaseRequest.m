@@ -13,6 +13,8 @@
 
 #import <Foundation/Foundation.h>
 #import "PNBaseRequest+Protected.h"
+#import "NSString+PNAddition.h"
+#import "NSData+PNAdditions.h"
 #import "PubNub+Protected.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"

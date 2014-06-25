@@ -10,6 +10,9 @@
 #import "PNErrorResponseParser+Protected.h"
 #import "PNJSONSerialization.h"
 #import "PNRequestsImport.h"
+#import "PNErrorCodes.h"
+#import "PNError.h"
+#import "PNMacro.h"
 
 
 // ARC check

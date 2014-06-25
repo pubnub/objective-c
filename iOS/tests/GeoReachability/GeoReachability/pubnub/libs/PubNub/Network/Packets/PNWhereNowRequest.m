@@ -9,6 +9,7 @@
 #import "PNWhereNowRequest.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
+#import "NSString+PNAddition.h"
 #import "PubNub+Protected.h"
 #import "PNConfiguration.h"
 

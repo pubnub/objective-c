@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 
 #pragma mark Public interface declaration
 

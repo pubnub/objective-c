@@ -10,6 +10,8 @@
 #import "PNOperationStatusResponseParser.h"
 #import "PNOperationStatus+Protected.h"
 #import "PNResponse.h"
+#import "PNError.h"
+#import "PNMacro.h"
 
 
 // ARC check

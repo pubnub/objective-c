@@ -11,6 +11,7 @@
 #import "PNHereNow+Protected.h"
 #import "PNClient+Protected.h"
 #import "PNResponse.h"
+#import "PNChannel.h"
 
 
 // ARC check

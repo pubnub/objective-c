@@ -19,8 +19,10 @@
 
 #pragma mark Class forward
 
-@class PNChannel;
+@class PNChannel, PNDate;
 
+
+#pragma mark - Public interface declaration
 
 @interface PNMessage : NSObject
 

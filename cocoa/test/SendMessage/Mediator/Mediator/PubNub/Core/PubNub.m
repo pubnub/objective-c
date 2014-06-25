@@ -21,6 +21,7 @@
 #import "PNServiceChannel.h"
 #import "PNRequestsImport.h"
 #import "PNHereNowRequest.h"
+#import "PNNotifications.h"
 #import "PNCryptoHelper.h"
 #import "PNConstants.h"
 #import "PNHelper.h"

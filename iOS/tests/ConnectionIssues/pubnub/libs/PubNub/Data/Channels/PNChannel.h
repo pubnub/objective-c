@@ -13,6 +13,13 @@
 #import <Foundation/Foundation.h>
 
 
+#pragma mark Class forward
+
+@class PNDate;
+
+
+#pragma mark - Public interface declaration
+
 @interface PNChannel : NSObject
 
 

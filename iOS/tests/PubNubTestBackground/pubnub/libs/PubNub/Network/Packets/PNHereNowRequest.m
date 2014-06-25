@@ -9,6 +9,7 @@
 
 #import "PNHereNowRequest.h"
 #import "PNChannel+Protected.h"
+#import "NSString+PNAddition.h"
 #import "PNRequestsImport.h"
 #import "PubNub+Protected.h"
 

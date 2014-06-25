@@ -59,6 +59,11 @@
  */
 + (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response;
 
+
+#pragma mark - Instance methods
+
+- (id)initWithResponse:(PNResponse *)response;
+
 #pragma mark -
 
 
@@ -189,6 +194,13 @@
 
 
 #pragma mark - Instance methods
+
+- (id)initWithResponse:(PNResponse *)response {
+    
+    NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
+    
+    return nil;
+}
 
 - (id)parsedData {
 

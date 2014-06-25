@@ -16,6 +16,7 @@
 #import "PNResponseDeserialize.h"
 #import "NSData+PNAdditions.h"
 #import "PNResponse.h"
+#import "PNLogger.h"
 
 
 // ARC check

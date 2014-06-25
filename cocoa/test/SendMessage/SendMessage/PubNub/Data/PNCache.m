@@ -6,6 +6,7 @@
  */
 
 #import "PNCache.h"
+#import "PNChannel.h"
 
 
 #pragma mark Private interface declaration

@@ -6,11 +6,18 @@
 //
 //
 
-
 #import <Foundation/Foundation.h>
 
 
+#pragma mark Class forward
+
+@class PNError;
+
+
+#pragma mark - Public interface declaration
+
 @interface PNOperationStatus : NSObject
+
 
 #pragma mark Properties
 

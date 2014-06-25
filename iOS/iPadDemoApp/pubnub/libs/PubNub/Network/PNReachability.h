@@ -15,6 +15,13 @@
 #import <Foundation/Foundation.h>
 
 
+#pragma mark Class forward
+
+@class PNError;
+
+
+#pragma mark - Public interface declaration
+
 @interface PNReachability : NSObject
 
 

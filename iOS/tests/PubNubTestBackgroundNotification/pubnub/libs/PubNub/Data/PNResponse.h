@@ -1,5 +1,11 @@
 #import <Foundation/Foundation.h>
 
+
+#pragma mark Class forward
+
+@class PNError;
+
+
 /**
  Base class used to store \b PubNub service response along with identifiers which will allow to identify API endpoint
  which provided this response.

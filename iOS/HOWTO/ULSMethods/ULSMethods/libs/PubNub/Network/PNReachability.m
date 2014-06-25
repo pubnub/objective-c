@@ -16,6 +16,7 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #import "PNResponseParser.h"
 #import "PubNub+Protected.h"
+#import "PNNetworkHelper.h"
 #import "PNConstants.h"
 #import "PNResponse.h"
 #import <netinet/in.h>

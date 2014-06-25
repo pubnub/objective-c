@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    #import <UIKit/UIKit.h>
+#endif
 
 
 @interface NSString (PNAddition)

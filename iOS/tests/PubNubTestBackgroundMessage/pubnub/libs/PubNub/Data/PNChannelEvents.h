@@ -1,3 +1,6 @@
+#import <Foundation/Foundation.h>
+
+
 /**
  This class allow to describe set of events which occurred on one of the channels and passed to the user.
 

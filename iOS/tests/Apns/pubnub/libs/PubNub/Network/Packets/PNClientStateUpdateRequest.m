@@ -8,6 +8,7 @@
 
 #import "PNClientStateUpdateRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
+#import "NSString+PNAddition.h"
 #import "PNPrivateImports.h"
 
 

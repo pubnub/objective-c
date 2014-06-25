@@ -13,6 +13,7 @@
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import "NSString+PNAddition.h"
+#import "NSData+PNAdditions.h"
 #import "PNPrivateImports.h"
 
 

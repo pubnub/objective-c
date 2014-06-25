@@ -17,6 +17,11 @@
 static NSString * const kPNResponseChannelsKey = @"channels";
 
 
+#pragma mark - Class forward
+
+@class PNWhereNow;
+
+
 #pragma mark - Private interface declaration
 
 @interface PNWhereNowResponseParser ()

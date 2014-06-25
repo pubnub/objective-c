@@ -3404,23 +3404,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         // Configure security settings
         _streamSecuritySettings = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 6, NULL, NULL);
+        CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLLevel, kCFStreamSocketSecurityLevelSSLv3);
+        CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLPeerName, kCFNull);
         if (self.sslConfigurationLevel == PNConnectionSSLConfigurationStrict) {
 
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLLevel, kCFStreamSocketSecurityLevelSSLv3);
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLAllowsExpiredCertificates, kCFBooleanFalse);
             CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLValidatesCertificateChain, kCFBooleanTrue);
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLAllowsExpiredRoots, kCFBooleanFalse);
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLAllowsAnyRoot, kCFBooleanFalse);
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLPeerName, kCFNull);
         }
         else {
 
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLLevel, kCFStreamSocketSecurityLevelSSLv3);
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLAllowsExpiredCertificates, kCFBooleanTrue);
             CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLValidatesCertificateChain, kCFBooleanFalse);
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLAllowsExpiredRoots, kCFBooleanTrue);
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLAllowsAnyRoot, kCFBooleanTrue);
-            CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLPeerName, kCFNull);
         }
     }
     else if (!self.configuration.shouldUseSecureConnection ||

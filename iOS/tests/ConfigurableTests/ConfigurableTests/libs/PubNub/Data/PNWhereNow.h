@@ -1,3 +1,6 @@
+#import <Foundation/Foundation.h>
+
+
 /**
  This class allow to get access to result of 'Where now' API and find out to which channel client (specified by \c
  identifier property) subscribed at this moment.

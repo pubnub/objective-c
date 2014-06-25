@@ -8,6 +8,7 @@
 
 #import "PNClient+Protected.h"
 #import "PNConstants.h"
+#import "PNChannel.h"
 
 
 #pragma mark Public interface implementation

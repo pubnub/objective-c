@@ -8,6 +8,7 @@
 
 #import "PNBaseRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
+#import "NSString+PNAddition.h"
 #import "PNHeartbeatRequest.h"
 #import "PubNub+Protected.h"
 

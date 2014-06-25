@@ -8,11 +8,12 @@
 
 
 #import "PNBaseRequest.h"
+#import "PNStructures.h"
 
 
 #pragma mark Class forward
 
-@class PNChannel, PNAccessRightOptions;
+@class PNAccessRightOptions, PNChannel;
 
 
 #pragma mark - Public interface declaration

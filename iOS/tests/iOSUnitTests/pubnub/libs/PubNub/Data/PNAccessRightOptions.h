@@ -6,6 +6,9 @@
 //  Copyright (c) 2013 PubNub Inc. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import "PNStructures.h"
+
 
 #pragma mark Public interface declaration
 

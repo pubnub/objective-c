@@ -9,6 +9,7 @@
 #import "NSString+PNAddition.h"
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
+#import "NSData+PNAdditions.h"
 
 
 // ARC check

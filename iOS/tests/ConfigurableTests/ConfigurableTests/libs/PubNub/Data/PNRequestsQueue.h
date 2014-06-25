@@ -13,12 +13,15 @@
 #import <Foundation/Foundation.h>
 #import "PNRequestsQueueDelegate.h"
 #import "PNConnectionDelegate.h"
+#import "PNMacro.h"
 
 
 #pragma mark Class forward
 
 @class PNBaseRequest;
 
+
+#pragma mark - Public interface declaration
 
 @interface PNRequestsQueue : NSObject <PNConnectionDataSource>
 
