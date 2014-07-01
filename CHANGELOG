@@ -1,3 +1,8 @@
+6-24-2014 - 8491d - 3.6.4
+. Swift compatibility
+. Fixed postpone race condition
+. Added willSuspendWithBlock delegate
+
 6-17-2014 - bdfed87 - 3.6.3
 . added PNSDK url param to each request
 . fixed crash on PAM grant bug
