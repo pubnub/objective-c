@@ -9,13 +9,12 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
-
+#import "TestSemaphor.h"
 #import "PubNub.h"
 #import "PubNub+Protected.h"
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
-#import "TestSemaphor.h"
 
 @interface ChannelLimitTest : SenTestCase <PNDelegate> {
 	int clientUnsubscriptionDidCompleteNotificationCount;

@@ -9,8 +9,10 @@ DerivedData
 *.xcodeproj/xcuserdata
 *.xcodeproj/*.pbxuser
 *.xcodeproj/*.perspectivev3
-xcshareddata
 xcuserdata
+
+# We need this file to keep all our shared schemas
+#xcshareddata
 
 # OS generated files #
 ######################

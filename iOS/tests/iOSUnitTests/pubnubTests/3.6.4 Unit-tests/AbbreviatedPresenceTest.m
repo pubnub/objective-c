@@ -27,7 +27,6 @@
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
-#import "TestSemaphor.h"
 #import "PNClient.h"
 #import "PNPresenceEvent.h"
 #import "GCDWrapper.h"
