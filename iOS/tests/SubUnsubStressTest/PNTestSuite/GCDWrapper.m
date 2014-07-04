@@ -53,6 +53,27 @@
          withTimout:30];
 }
 
++ (BOOL)isGroup:(dispatch_group_t)dispatchGroup timeoutFiredValue:(NSInteger)timeout {
+    NSDate *dateLimit = [NSDate dateWithTimeIntervalSinceNow:timeout];
+    
+    BOOL res = NO;
+    
+    while(YES) {
+        if (!dispatch_group_wait(dispatchGroup, DISPATCH_TIME_NOW)) {
+            break;
+        }
+        
+        if ([[NSDate date] compare:dateLimit] == NSOrderedDescending) {
+            res = YES;
+            break;
+        }
+        
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+    }
+    
+    return res;
+}
+
 + (void)sleepForSeconds:(NSUInteger)sec {
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:sec]];
 }

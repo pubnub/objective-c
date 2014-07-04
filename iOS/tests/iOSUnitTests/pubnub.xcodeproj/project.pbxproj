@@ -145,14 +145,10 @@
 		960D7981196459DF00F8A89F /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D791F196459DF00F8A89F /* TimeCommand.m */; };
 		960D7982196459DF00F8A89F /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D7921196459DF00F8A89F /* W_ChaosTest.m */; };
 		960D7983196459DF00F8A89F /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D7921196459DF00F8A89F /* W_ChaosTest.m */; };
-		960D798619645A1400F8A89F /* TestSemaphor.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D798519645A1400F8A89F /* TestSemaphor.m */; };
-		960D798719645A1400F8A89F /* TestSemaphor.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D798519645A1400F8A89F /* TestSemaphor.m */; };
 		96831B6917500135002F150F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71BF43E328EDCD6FF8F254 /* Security.framework */; };
 		96831B6A17500139002F150F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
 		96831B6B1750013B002F150F /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */; };
 		96831B6C17500171002F150F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32230166DF847006DB535 /* CoreGraphics.framework */; };
-		96CBB7F418FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CBB7F318FD333C00BA43E3 /* SenTestCase+GCD.m */; };
-		96CBB7F518FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CBB7F318FD333C00BA43E3 /* SenTestCase+GCD.m */; };
 		96CE1BAE190A570E00F163F8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222E166DF847006DB535 /* Foundation.framework */; };
 		96CE1BAF190A570E00F163F8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32230166DF847006DB535 /* CoreGraphics.framework */; };
 		96CE1BB0190A570E00F163F8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222C166DF847006DB535 /* UIKit.framework */; };
@@ -438,10 +434,6 @@
 		960D791F196459DF00F8A89F /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeCommand.m; sourceTree = "<group>"; };
 		960D7920196459DF00F8A89F /* W_ChaosTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = W_ChaosTest.h; sourceTree = "<group>"; };
 		960D7921196459DF00F8A89F /* W_ChaosTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = W_ChaosTest.m; sourceTree = "<group>"; };
-		960D798419645A1400F8A89F /* TestSemaphor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSemaphor.h; sourceTree = "<group>"; };
-		960D798519645A1400F8A89F /* TestSemaphor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSemaphor.m; sourceTree = "<group>"; };
-		96CBB7F218FD333C00BA43E3 /* SenTestCase+GCD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SenTestCase+GCD.h"; path = "pubnubTests/SenTestCase+GCD.h"; sourceTree = SOURCE_ROOT; };
-		96CBB7F318FD333C00BA43E3 /* SenTestCase+GCD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SenTestCase+GCD.m"; path = "pubnubTests/SenTestCase+GCD.m"; sourceTree = SOURCE_ROOT; };
 		96CE1B67190A557500F163F8 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		96CE1BAD190A570E00F163F8 /* pnSubUnsubTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pnSubUnsubTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96D23C9519336F6800717966 /* GCDWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWrapper.h; sourceTree = "<group>"; };
@@ -769,8 +761,6 @@
 				5A65FDCD18EB523500FFEC42 /* OCMock */,
 				5ACCA97817F3201D00FE90CF /* Swizzler.h */,
 				5ACCA97917F3201D00FE90CF /* Swizzler.m */,
-				96CBB7F218FD333C00BA43E3 /* SenTestCase+GCD.h */,
-				96CBB7F318FD333C00BA43E3 /* SenTestCase+GCD.m */,
 			);
 			name = PublicTests;
 			path = pubnub/libs/PubNub;
@@ -868,8 +858,6 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
-				960D798419645A1400F8A89F /* TestSemaphor.h */,
-				960D798519645A1400F8A89F /* TestSemaphor.m */,
 				960D78E2196459DF00F8A89F /* 3.6.4 Unit-tests */,
 				79C32257166DF848006DB535 /* Supporting Files */,
 			);
@@ -1651,7 +1639,6 @@
 				960D7929196459DF00F8A89F /* ChannelLimitTest.m in Sources */,
 				960D797F196459DF00F8A89F /* SubscribeLeaveTest.m in Sources */,
 				960D7941196459DF00F8A89F /* PNChannelConstructor.m in Sources */,
-				96CBB7F518FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */,
 				960D7977196459DF00F8A89F /* PNServiceChannelTest.m in Sources */,
 				960D7975196459DF00F8A89F /* PNResponseTest.m in Sources */,
 				960D7953196459DF00F8A89F /* PNDateTest.m in Sources */,
@@ -1683,7 +1670,6 @@
 				960D7955196459DF00F8A89F /* PNErrorResponseParserTest.m in Sources */,
 				960D7971196459DF00F8A89F /* PNPushNotificationsEnabledChannelsParserTest.m in Sources */,
 				960D7967196459DF00F8A89F /* PNMessageTest.m in Sources */,
-				960D798719645A1400F8A89F /* TestSemaphor.m in Sources */,
 				960D7933196459DF00F8A89F /* PAMTestError.m in Sources */,
 				960D7961196459DF00F8A89F /* PNLeaveUsubscribeBlock.m in Sources */,
 				960D797D196459DF00F8A89F /* PNWriteBufferTest.m in Sources */,
@@ -1799,7 +1785,6 @@
 				960D7974196459DF00F8A89F /* PNResponseTest.m in Sources */,
 				960D7952196459DF00F8A89F /* PNDateTest.m in Sources */,
 				960D792A196459DF00F8A89F /* Configuration.m in Sources */,
-				96CBB7F418FD333C00BA43E3 /* SenTestCase+GCD.m in Sources */,
 				960D795A196459DF00F8A89F /* PNHereNowResponseParserTest.m in Sources */,
 				960D795E196459DF00F8A89F /* PNLeaveRequestTest.m in Sources */,
 				960D7968196459DF00F8A89F /* PNMessagingChannelTest.m in Sources */,
@@ -1826,7 +1811,6 @@
 				960D7954196459DF00F8A89F /* PNErrorResponseParserTest.m in Sources */,
 				960D7970196459DF00F8A89F /* PNPushNotificationsEnabledChannelsParserTest.m in Sources */,
 				960D7966196459DF00F8A89F /* PNMessageTest.m in Sources */,
-				960D798619645A1400F8A89F /* TestSemaphor.m in Sources */,
 				960D7932196459DF00F8A89F /* PAMTestError.m in Sources */,
 				960D7960196459DF00F8A89F /* PNLeaveUsubscribeBlock.m in Sources */,
 				960D797C196459DF00F8A89F /* PNWriteBufferTest.m in Sources */,

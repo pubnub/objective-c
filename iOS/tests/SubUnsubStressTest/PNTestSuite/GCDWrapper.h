@@ -1,5 +1,5 @@
 //
-//  SenTestCase+GCD.h
+//  GCDWrapper.h
 //  pubnub
 //
 //  Created by Vadim Osovets on 4/15/14.
@@ -39,5 +39,13 @@
  * Hold main thread and for number of seconds
  */
 + (void)sleepForSeconds:(NSUInteger)sec;
+
+/**
+ * Hold current thread and keep it for
+ * timeout value,
+ * if timeout fires return value is YES
+ * timeout 30 second
+ */
++ (BOOL)isGroup:(dispatch_group_t)dispatchGroup timeoutFiredValue:(NSInteger)timeout;
 
 @end
