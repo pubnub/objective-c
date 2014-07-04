@@ -385,7 +385,6 @@
 		960D78EE196459DF00F8A89F /* PNAccessRightsCollectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightsCollectionTest.m; sourceTree = "<group>"; };
 		960D78EF196459DF00F8A89F /* PNAccessRightsInformationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightsInformationTest.m; sourceTree = "<group>"; };
 		960D78F0196459DF00F8A89F /* PNActionResponseParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNActionResponseParserTest.m; sourceTree = "<group>"; };
-		960D78F1196459DF00F8A89F /* PNBaseRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBaseRequestTest.h; sourceTree = "<group>"; };
 		960D78F2196459DF00F8A89F /* PNBaseRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBaseRequestTest.m; sourceTree = "<group>"; };
 		960D78F3196459DF00F8A89F /* PNChannelConstructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelConstructor.m; sourceTree = "<group>"; };
 		960D78F4196459DF00F8A89F /* PNChannelEventsResponseParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelEventsResponseParserTest.m; sourceTree = "<group>"; };
@@ -975,7 +974,6 @@
 				960D78EE196459DF00F8A89F /* PNAccessRightsCollectionTest.m */,
 				960D78EF196459DF00F8A89F /* PNAccessRightsInformationTest.m */,
 				960D78F0196459DF00F8A89F /* PNActionResponseParserTest.m */,
-				960D78F1196459DF00F8A89F /* PNBaseRequestTest.h */,
 				960D78F2196459DF00F8A89F /* PNBaseRequestTest.m */,
 				960D78F3196459DF00F8A89F /* PNChannelConstructor.m */,
 				960D78F4196459DF00F8A89F /* PNChannelEventsResponseParserTest.m */,

@@ -27,10 +27,6 @@
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
-#import "GCDWrapper.h"
-
-static NSUInteger const kTestTimout = 60;
-static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
 
 @interface ChangingChannels : SenTestCase <PNDelegate>
 
@@ -50,36 +46,28 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
 
 - (void)test10Connect {
 	[PubNub disconnect];
-    
-    // unknown delay
-    
-    // 1. Connect to pubnub
-	int64_t delayInSeconds = 2;
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 
-		[PubNub setDelegate:self];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
-		[PubNub setConfiguration: configuration];
+    [PubNub setDelegate:self];
+    
+    dispatch_group_t resGroup = dispatch_group_create();
+    
+    dispatch_group_enter(resGroup);
+    
+    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+    [PubNub setConfiguration: configuration];
 
-		[PubNub connectWithSuccessBlock:^(NSString *origin) {
+    [PubNub connectWithSuccessBlock:^(NSString *origin) {
 
-			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
-			dispatch_semaphore_signal(semaphore);
-		}
-							 errorBlock:^(PNError *connectionError) {
-								 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
-								 dispatch_semaphore_signal(semaphore);
-								 STFail(@"connectionError %@", connectionError);
-							 }];
-	});
+        PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
+        dispatch_group_leave(resGroup);
+    }
+                         errorBlock:^(PNError *connectionError) {
+                             PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+                             STFail(@"connectionError %@", connectionError);
+                            dispatch_group_leave(resGroup);
+                         }];
     
-	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-    
-    
+    [GCDWrapper waitGroup:resGroup];
 
 	BOOL isConnect = [[PubNub sharedInstance] isConnected];
 	STAssertTrue( isConnect, @"not connected");
@@ -88,18 +76,22 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
 }
 
 -(void)t20SubscribeOnChannelsByTurns {
+    
+    dispatch_group_t resGroup = dispatch_group_create();
+    
 	for( int i = 0; i<90; i++ ) {
-		//		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-		__block BOOL isCompletionBlockCalled = NO;
+        
 		NSString *channelName = [NSString stringWithFormat: @"%@ %d", [NSDate date], i];
 		NSArray *arr = [PNChannel channelsWithNames: @[channelName]];
 		NSDate *start = [NSDate date];
+        
 		NSLog(@"Start subscribe to channel %@", channelName);
+        
+        dispatch_group_enter(resGroup);
+        
 		[PubNub subscribeOnChannels: arr
 		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 		 {
-			 //			 dispatch_semaphore_signal(semaphore);
-			 isCompletionBlockCalled = YES;
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 NSLog(@"subscribed %f, %@, %@", interval, channels, subscriptionError);
 			 STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
@@ -115,16 +107,13 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
 				 }
 				 STAssertTrue( isSubscribed == YES, @"Channel no subecribed");
 			 }
+             
+             dispatch_group_leave(resGroup);
 		 }];
-		// Run loop
-		for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-			isCompletionBlockCalled == NO; j++ )
-			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-		BOOL isConnect = [PubNub sharedInstance].isConnected;
-		if( isConnect == YES )
-			STAssertTrue( isCompletionBlockCalled, @"completion block not called");
+        
+		STAssertTrue(![GCDWrapper isGroup:resGroup
+                        timeoutFiredValue:[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"timout fired.");
 	}
 }
-
 
 @end

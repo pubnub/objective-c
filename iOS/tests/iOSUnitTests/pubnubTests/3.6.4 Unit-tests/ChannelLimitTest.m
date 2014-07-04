@@ -33,9 +33,6 @@
     
     dispatch_group_enter(resetGroup);
     
-    
-	int64_t delayInSeconds = 2;
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [PubNub setDelegate:self];
 		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];

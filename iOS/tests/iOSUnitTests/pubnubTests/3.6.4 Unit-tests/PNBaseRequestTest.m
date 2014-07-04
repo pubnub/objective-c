@@ -5,8 +5,8 @@
 //  Created by Vadim Osovets on 5/19/13.
 //  Copyright (c) 2013 Micro-B. All rights reserved.
 //
+#import <SenTestingKit/SenTestingKit.h>
 
-#import "PNBaseRequestTest.h"
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
 
@@ -16,24 +16,28 @@
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 
+@interface PNBaseRequestTest : SenTestCase
+
+@end
+
 @interface PNBaseRequest ()
 
 @property (nonatomic, assign) NSUInteger retryCount;
 
 @end
 
-
 @implementation PNBaseRequestTest
 
 -(void)tearDown {
 	[super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
 }
 
 #pragma mark - States tests
 -(void)testInit {
 	PNBaseRequest *request = [[PNBaseRequest alloc] init];
+    
 	NSLog(@"id %@", request.identifier);
+    
 	STAssertTrue( request.identifier.length == 36, @"" );
 	STAssertTrue( request.shortIdentifier.length == 5, @"" );
 }
@@ -62,25 +66,11 @@
     STAssertTrue([[baseRequest buffer] isKindOfClass:[PNWriteBuffer class]], @"Should return valid object of write buffer here");
 }
 
-// Protected methods
-/*
-- (void)testReset {
-    id mockBaseRequest = [OCMockObject partialMockForObject:[[PNBaseRequest alloc] init]];
-    [[mockBaseRequest expect] setRetryCount:0];
-    [[mockBaseRequest expect] setProcessed:NO];
-    [[mockBaseRequest expect] setProcessing:NO];
-    
-    [mockBaseRequest reset];
-    
-    [mockBaseRequest verify];
-}
-*/
 - (void)testAllowedRetryCount {
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
     
     STAssertTrue([baseRequest allowedRetryCount] == kPNRequestMaximumRetryCount, @"Should be defined as kPNRequestMaximumRetryCount");
 }
-
 
 - (void)testIncreaseRetryCount {
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
@@ -89,26 +79,6 @@
     
     STAssertTrue([baseRequest retryCount] == 1, @"By default retryCount should be 0");
 }
-
-/*
-- (void)testCanRetry {
-    id mockBaseRequest = [OCMockObject partialMockForObject:[[PNBaseRequest alloc] init]];
-    [[mockBaseRequest expect] retryCount];
-    [[mockBaseRequest expect] allowedRetryCount];
-    
-    [mockBaseRequest canRetry];
-    
-    [mockBaseRequest verify];
-}
-*/
-//- (void)testHTTPPayload {
-//    PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
-//    
-//    NSData *payload = [baseRequest HTTPPayload];
-//    
-//    STAssertTrue([payload isKindOfClass:[NSData class]], @"Payload should be a string");
-//    STAssertTrue([payload length] > 0, @"Payload should has length more than zero");
-//}
 
 -(void)testAuthorizationField {
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
@@ -160,6 +130,3 @@
 }
 
 @end
-
-
-
