@@ -13,6 +13,14 @@
 #import "PNConnection.h"
 #import "PNConnection+Protected.h"
 
+// used from PNConnection.m
+
+// Default origin host connection port
+__unused static UInt32 const kPNOriginConnectionPort = 80;
+
+// Default origin host SSL connection port
+static UInt32 const kPNOriginSSLConnectionPort = 443;
+
 @interface PNConnection () <PNConnectionDelegate>
 
 + (NSMutableDictionary *)connectionsPool;
@@ -22,6 +30,16 @@
 - (void)resumeWakeUpTimer;
 - (void)handleRequestSendingCancelation;
 
+// Stream configuration
+- (CFMutableDictionaryRef)streamSecuritySettings;
+
+- (void)configureReadStream:(CFReadStreamRef)readStream;
+- (void)configureWriteStream:(CFWriteStreamRef)writeStream;
+
+- (void)retrieveSystemProxySettings;
+
+@property (nonatomic, strong) NSDictionary *proxySettings;
+
 @end
 
 @implementation PNConnectionTest
@@ -29,15 +47,18 @@
 - (void)setUp
 {
     [super setUp];
-    
-    NSLog(@"setUp: %@", self.name);
-    // Set-up code here.
 }
 
 - (void)tearDown
 {
-	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
+}
+
+- (PNConfiguration *)configuration {
+    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+    configuration.useSecureConnection = YES;
+    
+    return [PNConfiguration defaultConfiguration];
 }
 
 #pragma mark - States tests
@@ -133,6 +154,41 @@
     [mockConnenction verify];
 }
 
+#pragma mark - Configuration tests
+
+- (void)testConfigureReadStream {
+    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
+    
+    id mockConnenction = [OCMockObject partialMockForObject:connection];
+    
+    CFReadStreamRef _socketReadStream;
+    CFWriteStreamRef _socketWriteStream;
+    
+    // Create stream pair on socket which is connected to specified remote host
+    CFStreamCreatePairWithSocketToHost(CFAllocatorGetDefault(), (__bridge CFStringRef)(self.configuration.origin),
+                                       kPNOriginSSLConnectionPort, &_socketReadStream, &_socketWriteStream);
+    
+    [[mockConnenction expect] streamSecuritySettings];
+    
+    [mockConnenction configureReadStream:_socketReadStream];
+    [mockConnenction configureWriteStream:_socketWriteStream];
+    
+    [mockConnenction verify];
+}
+
+- (void)testSystemProxySettings {
+    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
+    [PubNub setConfiguration:[self configuration]];
+    
+    id mockConnenction = [OCMockObject partialMockForObject:connection];
+    
+    [[mockConnenction expect] proxySettings];
+    
+    [mockConnenction retrieveSystemProxySettings];
+    
+    [mockConnenction verify];
+}
+
 #pragma mark - PNConnectionDelegate
 
 - (BOOL)connectionCanConnect:(PNConnection *)connection {
@@ -142,6 +198,5 @@
 - (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName {
 
 }
-
 
 @end
