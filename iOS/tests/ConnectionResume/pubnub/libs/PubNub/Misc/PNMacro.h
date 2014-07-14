@@ -177,4 +177,18 @@ NSString *PNObfuscateString(NSString *string) {
 
 #pragma clang diagnostic pop
 
+
+#pragma mark Debug options
+
+#ifdef DEBUG
+    #define PN_SOCKET_PROXY_ENABLED 0
+#endif // DEBUG
+
+#ifdef PN_SOCKET_PROXY_ENABLED
+    #if PN_SOCKET_PROXY_ENABLED == 1
+        #define PN_SOCKET_PROXY_HOST @"0.0.0.0"
+        #define PN_SPCKET_PROXY_PORT @(0)
+    #endif // PN_SOCKET_PROXY_ENABLED
+#endif // PN_SOCKET_PROXY_ENABLED
+
 #endif

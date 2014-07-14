@@ -10,14 +10,11 @@
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
 
-//#import <OCMock/OCMock.h>
-
 #import "PubNub.h"
 #import "PubNub+Protected.h"
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
-#import "TestSemaphor.h"
 #import "Swizzler.h"
 #import "PNConnection.h"
 

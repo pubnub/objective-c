@@ -1627,6 +1627,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         isStreamReady = CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
     }
+    if (isStreamReady && self.proxySettings) {
+        
+        isStreamReady = CFReadStreamSetProperty(readStream, kCFStreamPropertySOCKSProxy, (__bridge CFTypeRef)(self.proxySettings));
+    }
 
     if (self.streamSecuritySettings != NULL && isStreamReady) {
 
@@ -1945,6 +1949,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     if (isStreamReady) {
         
         isStreamReady = CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
+    }
+    if (isStreamReady && self.proxySettings) {
+        
+        isStreamReady = CFWriteStreamSetProperty(writeStream, kCFStreamPropertySOCKSProxy, (__bridge CFTypeRef)(self.proxySettings));
     }
 
 
@@ -3426,61 +3434,35 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 }
 
 - (void)retrieveSystemProxySettings {
-
+        
+#ifdef PN_SOCKET_PROXY_ENABLED
+    
     if (self.proxySettings == NULL) {
-
+        
+    #if PN_SOCKET_PROXY_ENABLED == 1
         [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
 
             return [NSString stringWithFormat:@"[CONNECTION::%@] FETCHING PROXY CONFIGURATION SETTINGS (STATE: %lu)",
                     self.name ? self.name : self, self.state];
         }];
+        
+        self.proxySettings = @{(__bridge NSString *)kCFStreamPropertySOCKSProxyHost:PN_SOCKET_PROXY_HOST,
+                               (__bridge NSString *)kCFStreamPropertySOCKSProxyPort:PN_SPCKET_PROXY_PORT};
 
-        // Fetch list of all available proxy settings in system
-        CFDictionaryRef proxiesList = CFNetworkCopySystemProxySettings();
+        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
 
-        if (proxiesList) {
+            return [NSString stringWithFormat:@"[CONNECTION::%@] PROXY CONFIGURATION SETTINGS: %@\n(STATE: %lu)",
+                    self.name ? self.name : self, self.proxySettings, self.state];
+        }];
+    #else
+        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
 
-            NSString *scheme = @"http";
-            if (self.streamSecuritySettings != NULL) {
-
-                scheme = @"https";
-            }
-
-            // Construct URL basing on which system will return list of proxy settings which can be used to open
-            // socket
-            NSURL *targetHost = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@", scheme, self.configuration.origin]];
-
-            // Retrieve list of proxy settings which can be used to reach specific resources
-            CFArrayRef suitableProxies = CFNetworkCopyProxiesForURL((__bridge CFURLRef)targetHost, proxiesList);
-
-            if (CFArrayGetCount(suitableProxies) > 0) {
-
-                // Retrieve reference on first suitable proxy settings
-                CFDictionaryRef suitableProxySettings = CFArrayGetValueAtIndex(suitableProxies, 0);
-
-                if (suitableProxySettings != NULL) {
-
-                    self.proxySettings = CFBridgingRelease(CFDictionaryCreateCopy(kCFAllocatorDefault, suitableProxySettings));
-                }
-            }
-            CFRelease(suitableProxies);
-            CFRelease(proxiesList);
-
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
-
-                return [NSString stringWithFormat:@"[CONNECTION::%@] PROXY CONFIGURATION SETTINGS: %@\n(STATE: %lu)",
-                        self.name ? self.name : self, self.proxySettings, self.state];
-            }];
-        }
-        else {
-
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
-
-                return [NSString stringWithFormat:@"[CONNECTION::%@] THERE IS NO PROXY CONFIGURATION IN SYSTEM "
-                        "(STATE: %lu)", self.name ? self.name : self, self.state];
-            }];
-        }
+            return [NSString stringWithFormat:@"[CONNECTION::%@] SOCKET PROXY NOT REQUIRED (STATE: %lu)",
+                    self.name ? self.name : self, self.state];
+        }];
+    #endif // PN_SOCKET_PROXY_ENABLED
     }
+#endif // PN_SOCKET_PROXY_ENABLED
 }
 
 /**

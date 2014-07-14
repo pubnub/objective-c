@@ -9,6 +9,8 @@
     #import <Foundation/Foundation.h>
     #import "PNImports.h"
 
+    #import "GCDWrapper.h"
+
 static NSUInteger const kTestTestTimout = 60;
 
 // Stores reference on host URL which is used to access PubNub services during testing

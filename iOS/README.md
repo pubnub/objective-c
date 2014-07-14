@@ -1,4 +1,4 @@
-# PubNub 3.6.3 for iOS 5.1+ (iPhone, iPad, iPod)
+# PubNub 3.6.4 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -1472,6 +1472,39 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client was unable to connect because of error: %@", error);
 }
 ```
+####- (void)pubnubClient:(PubNub *)client willSuspendWithBlock:(void(^)(void(^)(void(^)(void))))preSuspensionBlock;  
+
+This delegate method can be called (if specified in delegate) when the client is about to suspend its operation because application is entering background execution context. You can use this delegate in case if you need to perform some actions using **PubNub** client before it will be suspended.  
+Example usage follows:
+```objc
+- (void)pubnubClient:(PubNub *)client willSuspendWithBlock:(void(^)(void(^)(void(^)(void))))preSuspensionBlock {
+
+    if ([PubNub sharedInstance].isConnected) {
+        
+        preSuspensionBlock(^(void(^completionBlock)(void)){
+
+            [PubNub sendMessage:@"Hello my friend" toChannel:[PNChannel channelWithName:@"boom"]
+            withCompletionBlock:^(PNMessageState state, id data) {
+
+                if (state != PNMessageSending) {
+
+                    NSString *message = @"Message has been sent";
+                    if (state == PNMessageSendingError) {
+
+                        message = [NSString stringWithFormat:@"Message sending failed with error: %@", ((PNError *)data).localizedFailureReason];
+                    }
+                    [PNLogger logGeneralMessageFrom:self message:^NSString *{
+
+                        return message;
+                    }];
+                    completionBlock();
+                }
+            }];
+        });
+    }
+}
+```
+**NOTE:** You should call `completionBlock()` as soon as all actions will be completed. It will be better than suspension by the iOS system. Use only block-based PubNub API in this delegate callback to make sure that they will be able gito complete and return result to you before complete suspension and `completionBlock()` block call.  
 ####- (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels;  
 
 This delegate method is called when the client is successfully subscribed call to the channels. 

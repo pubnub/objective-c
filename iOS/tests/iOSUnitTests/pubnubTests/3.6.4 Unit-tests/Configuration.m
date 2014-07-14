@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 PubNub Inc. All rights reserved.
 //
 
+// TODO: needs improvement. It practically doesn't test anything.
+
 #import <SenTestingKit/SenTestingKit.h>
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
@@ -15,15 +17,10 @@
 #import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
-#import "TestSemaphor.h"
 
 @interface Configuration : SenTestCase <PNDelegate> {
     
 	NSMutableArray *_configurations;
-    
-	BOOL _isDidConnectToOrigin;
-	BOOL _isConnectionDidFailWithError;
-	BOOL _isError;
 }
 
 @end
@@ -136,50 +133,6 @@
         STAssertEqualObjects([[PubNub sharedInstance] configuration].subscriptionKey, configuration.subscriptionKey, @"SubcriptionKeys are not equial");
         STAssertEqualObjects([[PubNub sharedInstance] configuration].cipherKey, configuration.cipherKey, @"CipherKeys are not equial");
     }
-}
-
-#pragma mark - Connect with configuration
-
-- (BOOL)connectWithConfiguration:(PNConfiguration*)configuration {
-	int64_t delayInSeconds = 2;
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-        
-		[PubNub setConfiguration: configuration];
-        
-	});
-    
-	for( int j=0; j<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 /*&&
-		_isDidConnectToOrigin == NO && _isConnectionDidFailWithError == NO*/; j++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	return _isDidConnectToOrigin;
-}
-
-#pragma mark - PubNub Notifications
-
--(void)clientErrorNotification:(NSNotification *)notification {
-	NSLog(@"kPNClientErrorNotification %@", notification);
-	_isError = YES;
-}
-
-#pragma mark - PubNub delegates
-
-- (void)pubnubClient:(PubNub *)client error:(PNError *)error {
-	NSLog(@"pubnubClient error %@", error);
-    
-	_isError = YES;
-}
-
--(void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
-	NSLog(@"didConnectToOrigin %@", origin);
-    
-	_isDidConnectToOrigin = YES;
-}
-
--(void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
-	NSLog(@"connectionDidFailWithError %@", error);
-    
-	_isConnectionDidFailWithError = YES;
 }
 
 @end

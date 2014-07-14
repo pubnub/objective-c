@@ -7,7 +7,6 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-//#import <OCMock/OCMock.h>
 #import "PNObservationCenter.h"
 #import "PNObservationCenter+Protected.h"
 
@@ -34,6 +33,7 @@ struct PNObservationEventsStruct {
     __unsafe_unretained NSString *clientReceivedHistory;
     __unsafe_unretained NSString *clientReceivedParticipantsList;
 };
+
 static struct PNObservationEventsStruct PNObservationEvents = {
     .clientConnectionStateChange = @"clientConnectionStateChangeEvent",
     .clientTimeTokenReceivingComplete = @"clientReceivingTimeTokenEvent",
@@ -107,15 +107,12 @@ static struct PNObservationEventsStruct PNObservationEvents = {
 - (void)tearDown {
     // Put teardown code here; it will be run once, after the last test case.
     [super tearDown];
-	[NSThread sleepForTimeInterval:1.0];
 }
 
 - (void)testDefaultCenter {
-//    id mockBaseRequest = [OCMockObject mockForClass:[PNObservationCenter class]];
-//    [[mockBaseRequest expect] defaultCenter];
-//    [mockBaseRequest verify];
 
 	PNObservationCenter *center = [PNObservationCenter defaultCenter];
+    
     STAssertNotNil( center, @"empty defaultCenter");
     STAssertNotNil( center.observers, @"empty");
     STAssertNotNil( center.oneTimeObservers, @"empty");

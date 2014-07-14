@@ -17,7 +17,6 @@
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 #import "PNConnection.h"
-#import "TestSemaphor.h"
 #import "Swizzler.h"
 #import "PNMessageHistoryRequest.h"
 #import <AppKit/AppKit.h>
@@ -1001,7 +1000,6 @@
 		NSLog(@"Start subscribe to channel %@", channelName);
 		[PubNub subscribeOnChannels: arr withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 			isCompletionBlockCalled = YES;
-			//			 [[TestSemaphor sharedInstance] lift:channelName];
 			NSTimeInterval interval = -[start timeIntervalSinceNow];
 			NSLog(@"subscribed %f, %@", interval, channels);
 			STAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
