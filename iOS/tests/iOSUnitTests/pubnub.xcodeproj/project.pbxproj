@@ -149,7 +149,7 @@
 		96831B6A17500139002F150F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
 		96831B6B1750013B002F150F /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */; };
 		96831B6C17500171002F150F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32230166DF847006DB535 /* CoreGraphics.framework */; };
-		96877B8E197404430014D4A8 /* PubNubTemporaryMethodInvocationStorageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96877B8D197404430014D4A8 /* PubNubTemporaryMethodInvocationStorageTest.m */; };
+		96877B8E197404430014D4A8 /* PubNubInvocationStorageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96877B8D197404430014D4A8 /* PubNubInvocationStorageTest.m */; };
 		96CE1BAE190A570E00F163F8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222E166DF847006DB535 /* Foundation.framework */; };
 		96CE1BAF190A570E00F163F8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C32230166DF847006DB535 /* CoreGraphics.framework */; };
 		96CE1BB0190A570E00F163F8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79C3222C166DF847006DB535 /* UIKit.framework */; };
@@ -434,7 +434,7 @@
 		960D791F196459DF00F8A89F /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeCommand.m; sourceTree = "<group>"; };
 		960D7920196459DF00F8A89F /* W_ChaosTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = W_ChaosTest.h; sourceTree = "<group>"; };
 		960D7921196459DF00F8A89F /* W_ChaosTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = W_ChaosTest.m; sourceTree = "<group>"; };
-		96877B8D197404430014D4A8 /* PubNubTemporaryMethodInvocationStorageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNubTemporaryMethodInvocationStorageTest.m; sourceTree = "<group>"; };
+		96877B8D197404430014D4A8 /* PubNubInvocationStorageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNubInvocationStorageTest.m; sourceTree = "<group>"; };
 		96CE1B67190A557500F163F8 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		96CE1BAD190A570E00F163F8 /* pnSubUnsubTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pnSubUnsubTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96D23C9519336F6800717966 /* GCDWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWrapper.h; sourceTree = "<group>"; };
@@ -1032,7 +1032,7 @@
 		96877B8C197404090014D4A8 /* 3.6.5 Functional tests */ = {
 			isa = PBXGroup;
 			children = (
-				96877B8D197404430014D4A8 /* PubNubTemporaryMethodInvocationStorageTest.m */,
+				96877B8D197404430014D4A8 /* PubNubInvocationStorageTest.m */,
 			);
 			path = "3.6.5 Functional tests";
 			sourceTree = "<group>";
@@ -1795,7 +1795,7 @@
 				960D7952196459DF00F8A89F /* PNDateTest.m in Sources */,
 				960D792A196459DF00F8A89F /* Configuration.m in Sources */,
 				960D795A196459DF00F8A89F /* PNHereNowResponseParserTest.m in Sources */,
-				96877B8E197404430014D4A8 /* PubNubTemporaryMethodInvocationStorageTest.m in Sources */,
+				96877B8E197404430014D4A8 /* PubNubInvocationStorageTest.m in Sources */,
 				960D795E196459DF00F8A89F /* PNLeaveRequestTest.m in Sources */,
 				960D7968196459DF00F8A89F /* PNMessagingChannelTest.m in Sources */,
 				960D7978196459DF00F8A89F /* PNSubscribeUnsubscribeTest.m in Sources */,
