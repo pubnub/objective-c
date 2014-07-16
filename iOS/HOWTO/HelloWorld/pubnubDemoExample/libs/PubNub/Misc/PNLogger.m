@@ -9,7 +9,13 @@
 #import "PNLogger.h"
 #import "NSDate+PNAdditions.h"
 #import "PNHelper.h"
-#import "PNMacro.h"
+#ifdef DEBUG
+    #include <sys/sysctl.h>
+    #include <sys/types.h>
+    #include <stdbool.h>
+    #include <unistd.h>
+    #include <assert.h>
+#endif
 #include <stdlib.h>
 
 
@@ -17,6 +23,28 @@
 
 static NSString * const kPNLoggerDumpFileName = @"pubnub-console-dump.txt";
 static NSString * const kPNLoggerOldDumpFileName = @"pubnub-console-dump.1.txt";
+
+/**
+ Stores maximum in-memory log size before storing it into the file. As soon as in-memory storage will reach this limit it
+ will be flushed on file system.
+ 
+ @note Default in-memory storage size is 16Kb.
+ */
+static NSUInteger const kPNLoggerMaximumInMemoryLogSize = (16 * 1024);
+
+/**
+ Stores maximum file size which should be stored on file system. As soon as limit will be reached, beginning of the file
+ will be truncated.
+ 
+ @note Default file size is 10Mb
+ */
+static NSUInteger const kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
+
+/**
+ Timeout which is used by timer to configure timeouts after which logger should force console dump.
+ */
+static NSTimeInterval const kPNLoggerDumpForceTimeout = 10.0f;
+
 
 #pragma mark - Types
 
@@ -29,14 +57,6 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
     PNConsoleDumpIntoFile = 1 << 12,
     PNHTTPResponseDumpIntoFile = 1 << 13
 };
-
-/**
- Stores maximum file size which should be stored on file system. As soon as limit will be reached, beginning of the file
- will be truncated.
-
- @note Default file size is 10Mb
- */
-static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 
 
 #pragma mark - Private interface declaration
@@ -77,9 +97,26 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 @property (nonatomic, pn_dispatch_property_ownership) dispatch_queue_t httpProcessingQueue;
 
 /**
+ Stores reference on channel which is used to perform I/O operations when writting file in more efficient way.
+ */
+@property (nonatomic, pn_dispatch_property_ownership) dispatch_io_t consoleDumpStoringChannel;
+
+/**
+ Stores reference on data storage which is used to write into the file using GCD i/O.
+ */
+@property (nonatomic, strong) NSMutableData *consoleDump;
+
+/**
+ Stores reference on timer which should force dump process in case if buffer size is not enough and last dump update
+ passed allowed delay.
+ */
+@property (nonatomic, strong) NSTimer *consoleDumpTimer;
+
+/**
  Stores maximum dump file size after which it should be truncated or log rotation should be performed.
  */
 @property (nonatomic, assign) NSUInteger maximumDumpFileSize;
+
 
 #pragma mark - Class methods
 
@@ -102,6 +139,12 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 - (void)prepareForAsynchronousFileProcessing;
 
 /**
+ Manage I/O channel which is responsible for console output dumping.
+ */
+- (void)openConsoleDumpChannel;
+- (void)closeConsoleDumpChannel;
+
+/**
  Check whether logger has been enabled for specified level or not.
 
  @param level
@@ -122,9 +165,23 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 - (NSString *)logEntryPrefixForLevel:(PNLogLevel)level;
 
 /**
+ Store currently accumulated console output into the file (if required.
+ 
+ @param output
+ If specified, this message will be placed into the dump if required, in case if this entry is empty, it will force data
+ storage.
+ */
+- (void)dumpConsoleOutput:(NSString *)output;
+
+/**
  Perform log rotation if required (depending on whether current log file reached limit or not).
  */
 - (void)rotateDumpFiles;
+
+
+#pragma mark - Handler methods
+
+- (void)handleConsoleDumpTimer:(NSTimer *)timer;
 
 #pragma mark -
 
@@ -136,6 +193,29 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 
 @implementation PNLogger
 
+
+#pragma mark 
+
+/**
+ Function allow to check whether debugger connected to the running process or not.
+ 
+ @return \c false if application is running w/o debugger.
+ */
+static bool IsDebuggerAttached(void) {
+    
+    bool isDebuggerAttached = false;
+#ifdef DEBUG
+    struct kinfo_proc info;
+    info.kp_proc.p_flag = 0;
+    int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid()};
+    size_t size = sizeof(info);
+    int junk = sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, NULL, 0);
+    assert(junk == 0);
+    isDebuggerAttached = ((info.kp_proc.p_flag & P_TRACED) != 0);
+#endif
+    
+    return isDebuggerAttached;
+}
 
 #pragma mark - Class methods
 
@@ -184,30 +264,18 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 
             __block __unsafe_unretained id weakSender = sender;
             NSString *message = [NSString stringWithFormat:@"%@ (%p) %@%@", NSStringFromClass([weakSender class]),
-                            weakSender, [[self sharedInstance] logEntryPrefixForLevel:level], messageBlock()];
+                                         weakSender, [[self sharedInstance] logEntryPrefixForLevel:level], messageBlock()];
 
-            if ([self isLoggerEnabled]) {
+            // Checking whether logger should print out log entries in console depending on user configuration
+            // and on whether app is running through Xcode debugger connected to it or not.
+            if ([self isLoggerEnabled] && IsDebuggerAttached()) {
 
                 NSLog(@"%@", message);
             }
             
             if ([self isDumpingToFile]) {
                 
-                message = [[[NSDate date] consoleOutputTimestamp] stringByAppendingFormat:@"> %@\n", message];
-                dispatch_sync([self sharedInstance].dumpProcessingQueue, ^{
-                    
-                    FILE *consoleDumpFilePointer = fopen([[self dumpFilePath] UTF8String], "a+");
-                    if (consoleDumpFilePointer == NULL) {
-                        
-                        NSLog(@"PNLog: Can't open console dump file (%@)", [self dumpFilePath]);
-                    }
-                    else {
-                        
-                        const char *cOutput = [message UTF8String];
-                        fwrite(cOutput, strlen(cOutput), 1, consoleDumpFilePointer);
-                        fclose(consoleDumpFilePointer);
-                    }
-                });
+                [[self sharedInstance] dumpConsoleOutput:message];
             }
         }
     }
@@ -271,7 +339,7 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
                                [[NSDate date] consoleOutputTimestamp]];
 
         NSData *packetData = httpPacketBlock();
-        dispatch_sync([self sharedInstance].httpProcessingQueue, ^{
+        dispatch_async([self sharedInstance].httpProcessingQueue, ^{
 
             if(![packetData writeToFile:storePath atomically:YES]){
 
@@ -308,6 +376,18 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
     if (isDumpingIntoFile != [self isDumpingToFile] && [self isDumpingToFile]) {
 
         [[self sharedInstance] rotateDumpFiles];
+        if ([self isDumpingToFile] && ![self sharedInstance].consoleDumpTimer) {
+            
+            [self sharedInstance].consoleDumpTimer = [NSTimer timerWithTimeInterval:kPNLoggerDumpForceTimeout
+                                                                             target:[self sharedInstance]
+                                                                           selector:@selector(handleConsoleDumpTimer:)
+                                                                           userInfo:nil repeats:YES];
+            [[NSRunLoop currentRunLoop] addTimer:[self sharedInstance].consoleDumpTimer forMode:NSRunLoopCommonModes];
+        } else if (![self isDumpingToFile] && [[self sharedInstance].consoleDumpTimer isValid]) {
+            
+            [[self sharedInstance].consoleDumpTimer invalidate];
+            [self sharedInstance].consoleDumpTimer = nil;
+        }
     }
 }
 
@@ -421,12 +501,47 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
 
 - (void)prepareForAsynchronousFileProcessing {
 
+    self.consoleDump = [NSMutableData data];
     dispatch_queue_t dumpProcessingQueue = dispatch_queue_create("com.pubnub.logger-dump-processing", DISPATCH_QUEUE_SERIAL);
-    dispatch_queue_t httpProcessingQueue = dispatch_queue_create("com.pubnub.logger-http-processing", DISPATCH_QUEUE_SERIAL);
+    dispatch_set_target_queue(dumpProcessingQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0));
     [PNDispatchHelper retain:dumpProcessingQueue];
-    [PNDispatchHelper retain:httpProcessingQueue];
     self.dumpProcessingQueue = dumpProcessingQueue;
+    [self openConsoleDumpChannel];
+    
+    dispatch_queue_t httpProcessingQueue = dispatch_queue_create("com.pubnub.logger-http-processing", DISPATCH_QUEUE_SERIAL);
+    [PNDispatchHelper retain:httpProcessingQueue];
     self.httpProcessingQueue = httpProcessingQueue;
+}
+
+- (void)openConsoleDumpChannel {
+    
+    dispatch_async(self.dumpProcessingQueue, ^{
+        
+        dispatch_io_t consoleDumpStoringChannel = dispatch_io_create_with_path(DISPATCH_IO_STREAM, [self.dumpFilePath UTF8String],
+                                                                               (O_RDWR|O_CREAT|O_NONBLOCK|O_APPEND), (S_IRWXU|S_IRWXG|S_IRWXO),
+                                                                               self.dumpProcessingQueue, ^(int error) {
+               
+               if (error != 0) {
+                   
+                   [self closeConsoleDumpChannel];
+               }
+           });
+        [PNDispatchHelper retain:consoleDumpStoringChannel];
+        self.consoleDumpStoringChannel = consoleDumpStoringChannel;
+    });
+}
+
+- (void)closeConsoleDumpChannel {
+    
+    if (self.consoleDumpStoringChannel) {
+        
+        dispatch_async(self.dumpProcessingQueue, ^{
+            
+            dispatch_io_close(self.consoleDumpStoringChannel, 0);
+            [PNDispatchHelper release:self.consoleDumpStoringChannel];
+            self.consoleDumpStoringChannel = NULL;
+        });
+    }
 }
 
 - (BOOL)isLoggerEnabledFor:(PNLogLevel)level {
@@ -470,11 +585,59 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
     return prefix;
 }
 
+- (void)dumpConsoleOutput:(NSString *)output {
+    
+    dispatch_async(self.dumpProcessingQueue, ^{
+        
+        if (output) {
+            
+            [self.consoleDump appendData:[[[[NSDate date] consoleOutputTimestamp] stringByAppendingFormat:@"> %@\n", output]
+                                          dataUsingEncoding:NSUTF8StringEncoding]];
+        }
+        
+        
+        if (([self.consoleDump length] >= kPNLoggerMaximumInMemoryLogSize || !output) && [self.consoleDump length] > 0) {
+            
+            if (self.consoleDumpStoringChannel) {
+                
+                dispatch_data_t data = dispatch_data_create([self.consoleDump bytes], [self.consoleDump length],
+                                                            self.dumpProcessingQueue, NULL);
+                [self.consoleDump setLength:0];
+                dispatch_io_write(self.consoleDumpStoringChannel, 0, data, self.dumpProcessingQueue,
+                                  ^(bool done, dispatch_data_t data, int error) {
+                                      
+                                      if (!done && error != 0) {
+                                          
+                                          NSLog(@"PNLog: Can't write into file (%@)", [self dumpFilePath]);
+                                          [self closeConsoleDumpChannel];
+                                      }
+                                  });
+            }
+            else {
+                
+                FILE *consoleDumpFilePointer = fopen([[self dumpFilePath] UTF8String], "a+");
+                if (consoleDumpFilePointer == NULL) {
+                    
+                    NSLog(@"PNLog: Can't open console dump file (%@)", [self dumpFilePath]);
+                }
+                else {
+                    
+                    fwrite([self.consoleDump bytes], [self.consoleDump length], 1, consoleDumpFilePointer);
+                    fclose(consoleDumpFilePointer);
+                    [self.consoleDump setLength:0];
+                }
+            }
+        }
+    });
+}
+
 - (void)rotateDumpFiles {
 
     if ([[self class] isDumpingToFile]) {
         
-        dispatch_sync(self.dumpProcessingQueue, ^{
+        [self dumpConsoleOutput:nil];
+        [self closeConsoleDumpChannel];
+        dispatch_async(self.dumpProcessingQueue, ^{
             
             NSFileManager *fileManager = [NSFileManager defaultManager];
             if ([fileManager fileExistsAtPath:self.dumpFilePath]) {
@@ -528,13 +691,32 @@ static NSUInteger const  kPNLoggerMaximumDumpFileSize = (10 * 1024 * 1024);
                         }
                     }
                 }
+                [self openConsoleDumpChannel];
             }
         });
     }
 }
 
+
+#pragma mark - Handler methods
+
+- (void)handleConsoleDumpTimer:(NSTimer *)timer {
+    
+    [self dumpConsoleOutput:nil];
+}
+
+
+#pragma mark - Misc methods
+
 - (void)dealloc {
 
+    if (_consoleDumpStoringChannel) {
+        
+        dispatch_io_close(_consoleDumpStoringChannel, 0);
+    }
+    [PNDispatchHelper release:_consoleDumpStoringChannel];
+    _consoleDumpStoringChannel = NULL;
+    _consoleDump = nil;
     [PNDispatchHelper release:_dumpProcessingQueue];
     _dumpProcessingQueue = NULL;
     [PNDispatchHelper release:_httpProcessingQueue];

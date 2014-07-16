@@ -46,6 +46,7 @@ static dispatch_once_t onceToken;
 
 // Stores reference on list of invocation instances which is used to support synchronous library methods call
 // (connect/disconnect/subscribe/unsubscribe)
+static NSMutableArray *reprioritizedPendingInvocations = nil;
 static NSMutableArray *pendingInvocations = nil;
 
 
@@ -109,6 +110,10 @@ static NSMutableArray *pendingInvocations = nil;
 // Stores whether library is performing one of async locking methods or not (if yes, other calls will be placed
 // into pending set)
 @property (nonatomic, assign, getter = isAsyncLockingOperationInProgress) BOOL asyncLockingOperationInProgress;
+
+// Stores whether library is performing lock operation completion block or not (if yes, all further PubNub method calls
+// will be placed into separate methods list and appended at the end of block execution).
+@property (nonatomic, assign, getter = isAsyncOperationCompletionInProgress) BOOL asyncOperationCompletionInProgress;
 
 // Stores whether client updating client identifier or not
 @property (nonatomic, assign, getter = isUpdatingClientIdentifier) BOOL updatingClientIdentifier;
@@ -558,6 +563,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [_sharedInstance.reachability stopServiceReachabilityMonitoring];
     _sharedInstance.reachability = nil;
     
+    reprioritizedPendingInvocations = nil;
     pendingInvocations = nil;
     
     [_sharedInstance unsubscribeFromNotifications];
@@ -4004,6 +4010,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         self.launchSessionIdentifier = [PNHelper UUID];
         self.reachability = [PNReachability serviceReachability];
         pendingInvocations = [NSMutableArray array];
+        reprioritizedPendingInvocations = [NSMutableArray array];
         
         // Adding PubNub services availability observer
         __block __pn_desired_weak PubNub *weakSelf = self;
@@ -5307,7 +5314,8 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 - (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext {
     
     self.asyncLockingOperationInProgress = NO;
-    
+    self.asyncOperationCompletionInProgress = YES;
+
     // Perform post completion block
     // INFO: This is done to handle situation when some block may launch locking operation
     //       and this handling block will release another one
@@ -5316,6 +5324,21 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         operationPostBlock();
     }
     
+    self.asyncOperationCompletionInProgress = NO;
+
+    // In case if during locking operation completion block execution user submitted new methods they should be placed
+    // into pending invocation list.
+    if ([reprioritizedPendingInvocations count] > 0) {
+        
+        [reprioritizedPendingInvocations enumerateObjectsWithOptions:NSEnumerationReverse
+                                                          usingBlock:^(id pendingInvocation, NSUInteger pendingInvocationIdx,
+                                                                       BOOL *pendingInvocationEnumeratorStop) {
+            
+                                                              [pendingInvocations insertObject:pendingInvocation atIndex:0];
+        }];
+        
+        [reprioritizedPendingInvocations removeAllObjects];
+    }
     
     if (shouldStartNext) {
         
@@ -5334,7 +5357,6 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         }
     }
 }
-
 
 #pragma mark - Misc methods
 
@@ -5468,12 +5490,10 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (BOOL)shouldPostponeMethodCall {
     
-    return self.isAsyncLockingOperationInProgress;
+    return self.isAsyncLockingOperationInProgress || self.isAsyncOperationCompletionInProgress;
 }
 
-- (void)postponeSelector:(SEL)calledMethodSelector
-               forObject:(id)object
-          withParameters:(NSArray *)parameters
+- (void)postponeSelector:(SEL)calledMethodSelector forObject:(id)object withParameters:(NSArray *)parameters
               outOfOrder:(BOOL)placeOutOfOrder{
     
     // Initialize variables required to perform postponed method call
@@ -5532,12 +5552,26 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     if (placeOutOfOrder) {
         
         // Placing method invocation at first index, so it will be called as soon
-        // as possible
-        [pendingInvocations insertObject:methodInvocation atIndex:0];
+        // as possible.
+        if (self.isAsyncOperationCompletionInProgress) {
+            
+            [reprioritizedPendingInvocations insertObject:methodInvocation atIndex:0];
+        }
+        else {
+            
+            [pendingInvocations insertObject:methodInvocation atIndex:0];
+        }
     }
     else {
         
-        [pendingInvocations addObject:methodInvocation];
+        if (self.isAsyncOperationCompletionInProgress) {
+            
+            [reprioritizedPendingInvocations addObject:methodInvocation];
+        }
+        else {
+            
+            [pendingInvocations addObject:methodInvocation];
+        }
     }
 }
 
