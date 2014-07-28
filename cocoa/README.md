@@ -1,6 +1,8 @@
 MacOS Cocoa PubNub 3.5 Real-time Cloud Push API
 ===============================================
 
+# Please direct all Support Questions and Concerns to Support@PubNub.com
+
 **PubNub Account**
 
 You must have a pubnub account to use the API.
@@ -18,3 +20,4 @@ Please refer to the [main documentation](../iOS) page for instructions on how to
 
 In addition, a simple demo app is included in this directory to get you started.
 
+# Please direct all Support Questions and Concerns to Support@PubNub.com
