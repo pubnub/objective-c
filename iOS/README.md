@@ -1,3 +1,5 @@
+# Please direct all Support Questions and Concerns to Support@PubNub.com
+
 # PubNub 3.6.4 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
@@ -2192,3 +2194,5 @@ Unit-tests for each class are grouped by class. To configure the test scheme fur
 1. Product -> Scheme -> pubnubTests -> Edit
 2. Select the test item from the left menu
 3. Select tests to run as wanted from right menu
+
+# Please direct all Support Questions and Concerns to Support@PubNub.com
