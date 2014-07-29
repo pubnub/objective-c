@@ -37,8 +37,8 @@
 
 #pragma mark Static
 
-static NSString * const kPNCodebaseBranch = @"fix-pt74518632";
-static NSString * const kPNCodeCommitIdentifier = @"aaaf278b4ad1dc94ce095b55dae39a9aaabda624";
+static NSString * const kPNCodebaseBranch = @"fix-pt75474728";
+static NSString * const kPNCodeCommitIdentifier = @"c465ea96f2c7abb93a39768d1de38e2307770788";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -4305,12 +4305,40 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
 
 - (void)rescheduleMethodCall:(void(^)(void))methodBlock {
     
+<<<<<<< HEAD
+<<<<<<< HEAD
     // Check whether 
+=======
+    // Check whether
+>>>>>>> 7160bf1... * fixed condition
+=======
+    BOOL willRestoreSubscription = [self.messagingChannel willRestoreSubscription];
+    [PNLogger logGeneralMessageFrom:self message:^NSString *{
+        
+        return [NSString stringWithFormat:@"WILL CLIENT RESTORE SUBSCRIPTION? %@", (willRestoreSubscription ? @"YES" :@"NO")];
+    }];
+    [PNLogger logGeneralMessageFrom:self message:^NSString *{
+        
+        return [NSString stringWithFormat:@"\nLAST RESCHEDULED METHOD CALL DATE: %@\nDIFFERENCE FROM PREVIOUS CALL: %f",
+                self.methodCallRescheduleDate, [self.methodCallRescheduleDate timeIntervalSinceNow]];
+    }];
+    
+    // Check whether
+>>>>>>> 1e2cd1b... * added debug log messages
     if (![self.messagingChannel willRestoreSubscription]) {
         
         // Checking whether previous rescheduled method call was more than a second ago.
         // This limitation allow to prevent set of postponed methods performed at once w/o procedural lock.
+<<<<<<< HEAD
+<<<<<<< HEAD
         if (self.methodCallRescheduleDate && [self.methodCallRescheduleDate timeIntervalSinceNow] > 1.0f) {
+=======
+        if (!self.methodCallRescheduleDate ||
+            (self.methodCallRescheduleDate && ABS([self.methodCallRescheduleDate timeIntervalSinceNow]) > 1.0f)) {
+>>>>>>> c1e0884... * fixed condition
+=======
+        if (self.methodCallRescheduleDate && ABS([self.methodCallRescheduleDate timeIntervalSinceNow]) > 1.0f) {
+>>>>>>> 7160bf1... * fixed condition
             
             self.asyncLockingOperationInProgress = NO;
         }
@@ -4918,13 +4946,13 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self.reachability refreshReachabilityState];
     
     BOOL isSimulatingReachability = [self.reachability isSimulatingNetworkSwitchEvent];
-    BOOL shouldRestoreConnection = self.state == PNPubNubClientStateConnecting ||
-    self.state == PNPubNubClientStateConnected ||
-    self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
-    self.state == PNPubNubClientStateDisconnectedOnNetworkError;
+    BOOL shouldRestoreConnection = (self.state == PNPubNubClientStateConnecting ||
+                                    self.state == PNPubNubClientStateConnected ||
+                                    self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+                                    self.state == PNPubNubClientStateDisconnectedOnNetworkError);
     
     // Ensure that there is connection available as well as permission to connect
-    shouldRestoreConnection = shouldRestoreConnection && [self.reachability isServiceAvailable] && !isSimulatingReachability;
+    shouldRestoreConnection = (shouldRestoreConnection && [self.reachability isServiceAvailable] && !isSimulatingReachability);
     
     
     return shouldRestoreConnection;

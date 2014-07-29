@@ -422,6 +422,7 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
  */
 - (NSString *)stringifyStreamStatus:(CFStreamStatus)status;
 
+- (void)handleStreamError:(PNConnectionErrorStateFlag)failedStream fromBlock:(CFErrorRef(^)(void))errorBlock;
 - (void)handleStreamError:(CFErrorRef)error;
 - (void)handleStreamError:(CFErrorRef)error shouldCloseConnection:(BOOL)shouldCloseConnection;
 - (void)handleStreamSetupError;
@@ -697,14 +698,11 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                     return [NSString stringWithFormat:@"[CONNECTION::%@::READ] ERROR OCCURRED (%@)(STATE: %lu)",
                             connection.name ? connection.name : connection, status, connection.state];
                 }];
-
-                // Mark that read stream caught and error
-                [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamError];
-
-                CFErrorRef error = CFReadStreamCopyError(stream);
-                [connection handleStreamError:error shouldCloseConnection:YES];
-
-                [PNHelper releaseCFObject:&error];
+                
+                [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef{
+                    
+                    return CFReadStreamCopyError(stream);
+                }];
             }
             break;
 
@@ -776,14 +774,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] ERROR OCCURRED (%@)(STATE: %lu)",
                             connection.name ? connection.name : connection, status, connection.state];
                 }];
-
-                // Mark that write stream caught and error
-                [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamError];
-
-                CFErrorRef error = CFWriteStreamCopyError(stream);
-                [connection handleStreamError:error shouldCloseConnection:YES];
-
-                [PNHelper releaseCFObject:&error];
+                
+                [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef{
+                    
+                    return CFWriteStreamCopyError(stream);
+                }];
             }
             break;
 
@@ -2935,6 +2930,63 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     return stringifiedStatus;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 1bb6c24... * adjusted error handling in PNConnection to prevent from blocking in case of RST error (code 54) by calling CFReadStreamCopyError or CFWriteStreamCopyError functions
+- (void)handleStreamError:(PNConnectionErrorStateFlag)failedStream fromBlock:(CFErrorRef(^)(void))errorBlock {
+    
+    __block CFErrorRef error = NULL;
+    __block BOOL isErrorProcessed = NO;
+    void(^errorProcessingBlock)(void) = ^{
+        
+        if (!isErrorProcessed) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                if (error == NULL) {
+                    
+                    error = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, ECONNRESET, NULL);
+                }
+                
+                // Mark that read stream caught and error
+                [PNBitwiseHelper addTo:&_state bit:failedStream];
+                
+                [self handleStreamError:error shouldCloseConnection:YES];
+<<<<<<< HEAD
+                isErrorProcessed = YES;
+            });
+        }
+        
+        [PNHelper releaseCFObject:&error];
+=======
+                
+                [PNHelper releaseCFObject:&error];
+                isErrorProcessed = YES;
+            });
+        }
+>>>>>>> 1bb6c24... * adjusted error handling in PNConnection to prevent from blocking in case of RST error (code 54) by calling CFReadStreamCopyError or CFWriteStreamCopyError functions
+    };
+    
+    // Sending error copy request to another thread to make sure that it won't block
+    // run-loop (it looks like in case if stream has been reset, CFReadStreamCopyError blocks code execution
+    // and may take significant amount of time to return controll back).
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)),
+                       dispatch_get_main_queue(), errorProcessingBlock);
+        
+        // Try to retrieve error
+        error = errorBlock();
+        errorProcessingBlock();
+    });
+}
+
+<<<<<<< HEAD
+>>>>>>> 7ae14b1... * taken into account information about possible memory leak
+=======
+>>>>>>> 1bb6c24... * adjusted error handling in PNConnection to prevent from blocking in case of RST error (code 54) by calling CFReadStreamCopyError or CFWriteStreamCopyError functions
 - (void)handleStreamError:(CFErrorRef)error {
 
     [self handleStreamError:error shouldCloseConnection:NO];
