@@ -3047,6 +3047,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         // Configure security settings
         _streamSecuritySettings = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 6, NULL, NULL);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+
         if (self.sslConfigurationLevel == PNConnectionSSLConfigurationStrict) {
 
             CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLLevel, kCFStreamSocketSecurityLevelSSLv3);
@@ -3065,6 +3069,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLAllowsAnyRoot, kCFBooleanTrue);
             CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLPeerName, kCFNull);
         }
+        #pragma GCC diagnostic pop
     }
     else if (!self.configuration.shouldUseSecureConnection ||
              self.sslConfigurationLevel == PNConnectionSSLConfigurationInsecure) {
