@@ -10193,7 +10193,16 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  */
 - (BOOL)isConnected;
 
-#pragma mark -
+#pragma mark - Logging methods
 
+/**
+ * Toggles logging both on console and to file
+ */
++ (void)toggleLogging;
+
+/**
+ * Tells whether logging is enabled
+ */
++ (BOOL)isLoggingEnabled;
 
 @end

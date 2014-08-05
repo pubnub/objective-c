@@ -12,7 +12,7 @@
 //
 
 #import "PNJSONSerialization.h"
-
+#import "PGJSONUtility.h"
 
 // ARC check
 #if !__has_feature(objc_arc)
@@ -94,7 +94,8 @@
         result = [jsonString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
     }
     else {
-        
+        result = [PGJSONUtility objectFromString:jsonString];
+        /*
         // Checking whether native JSONSerializer is available or not
         if ([self isNSJSONAvailable]) {
             
@@ -128,6 +129,7 @@
                         format:@"There is no JSON serialization library available. If you are targeting 4.3+ versions, "
              "please make sure to read 'How-to' on JSONKit addition"];
         }
+         */
     }
 
 

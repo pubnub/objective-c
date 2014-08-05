@@ -37,8 +37,12 @@
 	#define PNLOG_LOGGING_ENABLED 0
 	#define PNLOG_STORE_LOG_TO_FILE 0
 #else
-	#define PNLOG_LOGGING_ENABLED 0
-	#define PNLOG_STORE_LOG_TO_FILE 0
+#ifdef DEBUG
+    #define PNLOG_LOGGING_ENABLED 1
+#else
+    #define PNLOG_LOGGING_ENABLED 0
+#endif
+	#define PNLOG_STORE_LOG_TO_FILE 1
 #endif
 
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
@@ -92,16 +96,16 @@
 
 static void PNLog(PNLogLevel level, id sender, ...);
 void PNLog(PNLogLevel level, id sender, ...) {
-
     va_list args;
     va_start(args, sender);
+#if PNLOG_LOGGING_ENABLED == 1
     NSString *logFormatString = va_arg(args, NSString*);
     NSString *formattedLogString = [[NSString alloc] initWithFormat:logFormatString arguments:args];
+#endif
     va_end(args);
     
     [PNLogger logFrom:sender forLevel:level message:^NSString * { return formattedLogString; }];
 }
-
 
 #pragma mark - Misc functions
 

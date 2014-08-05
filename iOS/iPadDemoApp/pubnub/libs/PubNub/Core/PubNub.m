@@ -33,6 +33,7 @@
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
 
+BOOL _isLoggingEnabled = NO;
 
 #pragma mark Static
 
@@ -7417,7 +7418,14 @@ didReceiveNetworkLatency:(double)latency
     [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"Destroyed"; }];
 }
 
-#pragma mark -
+#pragma mark - Logging methods
 
++ (void)toggleLogging {
+    _isLoggingEnabled = !_isLoggingEnabled;
+}
+
++ (BOOL)isLoggingEnabled {
+    return _isLoggingEnabled;
+}
 
 @end
