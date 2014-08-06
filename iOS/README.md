@@ -1233,9 +1233,7 @@ pubnub.publish(
 
 #### Python
 ```python
-pubnub.publish({
-    'channel': 'my_channel',
-    'message': {
+message= {
       "aps" : {
         "alert": "You got your emails.",
         "badge": 9,
@@ -1243,7 +1241,8 @@ pubnub.publish({
       },
       "acme 1": 42
     }
-})
+
+pubnub.publish(channel='my_channel', message=message)
 ```
 
 ## PAM Methods
