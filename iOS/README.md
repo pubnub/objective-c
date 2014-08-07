@@ -475,7 +475,7 @@ The above directive will allow this current PubNub iOS client to speak **ONLY** 
 
 It is advised for security and network/battery/power considerations to upgrade all clients to iPadDemoApp+ encryption as soon as possible, and to only use this backward compatibility mode if absolutely necessary.
 
-#### Encrypt / Descrypt Methods
+#### Encrypt / Decrypt Methods
 
 If you wish to manually utilize the encryption logic for your own purposes (decrypt messages sent via PubNub from APNS for example), the following public methods can be used:
 
