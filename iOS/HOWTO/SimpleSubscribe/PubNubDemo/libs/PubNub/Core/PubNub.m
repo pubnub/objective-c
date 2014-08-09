@@ -111,6 +111,9 @@ static NSMutableArray *pendingInvocations = nil;
 // into pending set)
 @property (nonatomic, assign, getter = isAsyncLockingOperationInProgress) BOOL asyncLockingOperationInProgress;
 
+// Stores reference on last rescheduled method call date
+@property (nonatomic, strong) NSDate *methodCallRescheduleDate;
+
 // Stores whether library is performing lock operation completion block or not (if yes, all further PubNub method calls
 // will be placed into separate methods list and appended at the end of block execution).
 @property (nonatomic, assign, getter = isAsyncOperationCompletionInProgress) BOOL asyncOperationCompletionInProgress;
@@ -251,6 +254,16 @@ static NSMutableArray *pendingInvocations = nil;
 
 
 #pragma mark - Instance methods
+
+/**
+ Reschedule \b PubNub method call. Depending on whether client will perform some actions on it's own, this method will 
+ deal with procedural lock to make sure that re-scheduled method will be triggered in time.
+ 
+ @param methodBlock
+ Block which contains reference on method call which should be launched again w/o handling block modification.
+ */
+- (void)rescheduleMethodCall:(void(^)(void))methodBlock;
+
 
 #pragma mark - Client connection management methods
 
@@ -4290,6 +4303,27 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     return [self.messagingChannel presenceEnabledChannels];
 }
 
+- (void)rescheduleMethodCall:(void(^)(void))methodBlock {
+    
+    // Check whether
+    if (![self.messagingChannel willRestoreSubscription]) {
+        
+        // Checking whether previous rescheduled method call was more than a second ago.
+        // This limitation allow to prevent set of postponed methods performed at once w/o procedural lock.
+        if (!self.methodCallRescheduleDate ||
+            (self.methodCallRescheduleDate && ABS([self.methodCallRescheduleDate timeIntervalSinceNow]) > 1.0f)) {
+            
+            self.asyncLockingOperationInProgress = NO;
+        }
+    }
+    self.methodCallRescheduleDate = [NSDate new];
+    
+    if (methodBlock) {
+        
+        methodBlock();
+    }
+}
+
 
 #pragma mark - Client connection management methods
 
@@ -4885,6 +4919,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     [self.reachability refreshReachabilityState];
 
     BOOL isSimulatingReachability = [self.reachability isSimulatingNetworkSwitchEvent];
+<<<<<<< HEAD
     BOOL shouldRestoreConnection = self.state == PNPubNubClientStateConnecting ||
                                    self.state == PNPubNubClientStateConnected ||
                                    self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
@@ -4894,6 +4929,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     shouldRestoreConnection = shouldRestoreConnection && [self.reachability isServiceAvailable] && !isSimulatingReachability;
 
 
+=======
+    BOOL shouldRestoreConnection = (self.state == PNPubNubClientStateConnecting ||
+                                    self.state == PNPubNubClientStateConnected ||
+                                    self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+                                    self.state == PNPubNubClientStateDisconnectedOnNetworkError);
+    
+    // Ensure that there is connection available as well as permission to connect
+    shouldRestoreConnection = (shouldRestoreConnection && [self.reachability isServiceAvailable] && !isSimulatingReachability);
+    
+    
+>>>>>>> 6f757ad... Copy libs.
     return shouldRestoreConnection;
 }
 
@@ -6837,14 +6883,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
+        [self rescheduleMethodCall:^{
             
-            return [NSString stringWithFormat:@"RESCHEDULE CLIENT STATE AUDIT REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE CLIENT STATE AUDIT REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+            }];
+            
+            PNClient *clientInformation = (PNClient *)error.associatedObject;
+            [[self class] requestClientState:clientInformation.identifier forChannel:clientInformation.channel
+                 withCompletionHandlingBlock:(id)@""];
         }];
-        
-        PNClient *clientInformation = (PNClient *)error.associatedObject;
-        [[self class] requestClientState:clientInformation.identifier forChannel:clientInformation.channel
-             withCompletionHandlingBlock:(id)@""];
     }
 }
 
@@ -6896,14 +6945,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE CLIENT STATE UPDATE REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        PNClient *clientInformation = (PNClient *)error.associatedObject;
-        [[self class] updateClientState:clientInformation.identifier state:clientInformation.data
-                             forChannel:clientInformation.channel withCompletionHandlingBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE CLIENT STATE UPDATE REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+            }];
+            
+            PNClient *clientInformation = (PNClient *)error.associatedObject;
+            [[self class] updateClientState:clientInformation.identifier state:clientInformation.data
+                                 forChannel:clientInformation.channel withCompletionHandlingBlock:(id)@""];
+        }];
     }
 }
 
@@ -6948,16 +7000,19 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE ACCESS RIGHTS UPDATE REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        PNAccessRightOptions *rightsInformation = (PNAccessRightOptions *)error.associatedObject;
-        [[self class] changeAccessRightsForChannels:rightsInformation.channels accessRights:rightsInformation.rights
-                                            clients:rightsInformation.clientsAuthorizationKeys
-                                          forPeriod:rightsInformation.accessPeriodDuration
-                        withCompletionHandlingBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE ACCESS RIGHTS UPDATE REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+            }];
+            
+            PNAccessRightOptions *rightsInformation = (PNAccessRightOptions *)error.associatedObject;
+            [[self class] changeAccessRightsForChannels:rightsInformation.channels accessRights:rightsInformation.rights
+                                                clients:rightsInformation.clientsAuthorizationKeys
+                                              forPeriod:rightsInformation.accessPeriodDuration
+                            withCompletionHandlingBlock:(id)@""];
+        }];
     }
 }
 
@@ -7002,14 +7057,17 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE ACCESS RIGHTS AUDIT REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        PNAccessRightOptions *rightsInformation = (PNAccessRightOptions *)error.associatedObject;
-        [[self class] auditAccessRightsForChannels:rightsInformation.channels clients:rightsInformation.clientsAuthorizationKeys
-                       withCompletionHandlingBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE ACCESS RIGHTS AUDIT REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+            }];
+            
+            PNAccessRightOptions *rightsInformation = (PNAccessRightOptions *)error.associatedObject;
+            [[self class] auditAccessRightsForChannels:rightsInformation.channels clients:rightsInformation.clientsAuthorizationKeys
+                           withCompletionHandlingBlock:(id)@""];
+        }];
     }
 }
 
@@ -7052,12 +7110,15 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE TIME TOKEN REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        [[self class] requestServerTimeTokenWithCompletionBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE TIME TOKEN REQUEST (STATE: %@)", [self humanReadableStateFrom:self.state]];
+            }];
+            
+            [[self class] requestServerTimeTokenWithCompletionBlock:(id)@""];
+        }];
     }
 }
 
@@ -7106,15 +7167,18 @@ didFailPushNotificationEnableForChannels:(NSArray *)channels
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION ENABLE REQUEST (STATE: %@)",
-                    [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        NSData *devicePushToken = (NSData *)error.associatedObject;
-        [[self class] enablePushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                             andCompletionHandlingBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION ENABLE REQUEST (STATE: %@)",
+                        [self humanReadableStateFrom:self.state]];
+            }];
+            
+            NSData *devicePushToken = (NSData *)error.associatedObject;
+            [[self class] enablePushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
+                                 andCompletionHandlingBlock:(id)@""];
+        }];
     }
 }
 
@@ -7163,15 +7227,18 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION DISABLE REQUEST (STATE: %@)",
-                    [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        NSData *devicePushToken = (NSData *)error.associatedObject;
-        [[self class] disablePushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                              andCompletionHandlingBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION DISABLE REQUEST (STATE: %@)",
+                        [self humanReadableStateFrom:self.state]];
+            }];
+            
+            NSData *devicePushToken = (NSData *)error.associatedObject;
+            [[self class] disablePushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
+                                  andCompletionHandlingBlock:(id)@""];
+        }];
     }
 }
 
@@ -7218,15 +7285,18 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION REMOVAL REQUEST (STATE: %@)",
-                    [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        NSData *devicePushToken = (NSData *)error.associatedObject;
-        [[self class] removeAllPushNotificationsForDevicePushToken:devicePushToken
-                                       withCompletionHandlingBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION REMOVAL REQUEST (STATE: %@)",
+                        [self humanReadableStateFrom:self.state]];
+            }];
+            
+            NSData *devicePushToken = (NSData *)error.associatedObject;
+            [[self class] removeAllPushNotificationsForDevicePushToken:devicePushToken
+                                           withCompletionHandlingBlock:(id)@""];
+        }];
     }
 }
 
@@ -7274,20 +7344,22 @@ didFailPushNotificationDisableForChannels:(NSArray *)channels
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION AUDIT REQUEST (STATE: %@)",
-                    [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        NSData *devicePushToken = (NSData *)error.associatedObject;
-        [[self class] requestPushNotificationEnabledChannelsForDevicePushToken:devicePushToken
-                                                   withCompletionHandlingBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE PUSH NOTIFICATION AUDIT REQUEST (STATE: %@)",
+                        [self humanReadableStateFrom:self.state]];
+            }];
+            
+            NSData *devicePushToken = (NSData *)error.associatedObject;
+            [[self class] requestPushNotificationEnabledChannelsForDevicePushToken:devicePushToken
+                                                       withCompletionHandlingBlock:(id)@""];
+        }];
     }
 }
 
-- (void)  serviceChannel:(PNServiceChannel *)channel
-didReceiveNetworkLatency:(double)latency
+- (void)  serviceChannel:(PNServiceChannel *)channel didReceiveNetworkLatency:(double)latency
      andNetworkBandwidth:(double)bandwidth {
     
     // TODO: NOTIFY NETWORK METER INSTANCE ABOUT ARRIVED DATA
@@ -7360,14 +7432,17 @@ didReceiveNetworkLatency:(double)latency
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE MESSAGE SENDING REQUEST (STATE: %@)",
-                    [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        [[self class] sendMessage:message compressed:message.shouldCompressMessage
-              withCompletionBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE MESSAGE SENDING REQUEST (STATE: %@)",
+                        [self humanReadableStateFrom:self.state]];
+            }];
+            
+            [[self class] sendMessage:message compressed:message.shouldCompressMessage
+                  withCompletionBlock:(id)@""];
+        }];
     }
 }
 
@@ -7416,18 +7491,21 @@ didReceiveNetworkLatency:(double)latency
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE MESSAGES HISTORY REQUEST (STATE: %@)",
-                    [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        NSDictionary *options = (NSDictionary *)error.associatedObject;
-        [[self class] requestHistoryForChannel:channel from:[options valueForKey:@"startDate"] to:[options valueForKey:@"endDate"]
-                                         limit:[[options valueForKey:@"limit"] integerValue]
-                                reverseHistory:[[options valueForKey:@"revertMessages"] boolValue]
-                            includingTimeToken:[[options valueForKey:@"includeTimeToken"] boolValue]
-                           withCompletionBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE MESSAGES HISTORY REQUEST (STATE: %@)",
+                        [self humanReadableStateFrom:self.state]];
+            }];
+            
+            NSDictionary *options = (NSDictionary *)error.associatedObject;
+            [[self class] requestHistoryForChannel:channel from:[options valueForKey:@"startDate"] to:[options valueForKey:@"endDate"]
+                                             limit:[[options valueForKey:@"limit"] integerValue]
+                                    reverseHistory:[[options valueForKey:@"revertMessages"] boolValue]
+                                includingTimeToken:[[options valueForKey:@"includeTimeToken"] boolValue]
+                               withCompletionBlock:(id)@""];
+        }];
     }
 }
 
@@ -7473,16 +7551,19 @@ didReceiveNetworkLatency:(double)latency
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE PARTICIPANTS LIST REQUEST (STATE: %@)",
-                    [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        NSDictionary *options = (NSDictionary *)error.associatedObject;
-        [[self class] requestParticipantsListForChannel:channel clientIdentifiersRequired:[[options valueForKey:@"clientIdentifiersRequired"] boolValue]
-                                            clientState:[[options valueForKey:@"fetchClientState"] boolValue]
-                                    withCompletionBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE PARTICIPANTS LIST REQUEST (STATE: %@)",
+                        [self humanReadableStateFrom:self.state]];
+            }];
+            
+            NSDictionary *options = (NSDictionary *)error.associatedObject;
+            [[self class] requestParticipantsListForChannel:channel clientIdentifiersRequired:[[options valueForKey:@"clientIdentifiersRequired"] boolValue]
+                                                clientState:[[options valueForKey:@"fetchClientState"] boolValue]
+                                        withCompletionBlock:(id)@""];
+        }];
     }
     
 }
@@ -7530,14 +7611,16 @@ didReceiveNetworkLatency:(double)latency
     }
     else {
         
-        [PNLogger logGeneralMessageFrom:self message:^NSString * {
-            
-            return [NSString stringWithFormat:@"RESCHEDULE CLIENT'S CHANNELS REQUEST (STATE: %@)",
-                    [self humanReadableStateFrom:self.state]];
-        }];
+        [self rescheduleMethodCall:^{
         
-        [[self class] requestParticipantChannelsList:clientIdentifier
-                                 withCompletionBlock:(id)@""];
+            [PNLogger logGeneralMessageFrom:self message:^NSString * {
+                
+                return [NSString stringWithFormat:@"RESCHEDULE CLIENT'S CHANNELS REQUEST (STATE: %@)",
+                        [self humanReadableStateFrom:self.state]];
+            }];
+            
+            [[self class] requestParticipantChannelsList:clientIdentifier withCompletionBlock:(id)@""];
+        }];
     }
 }
 

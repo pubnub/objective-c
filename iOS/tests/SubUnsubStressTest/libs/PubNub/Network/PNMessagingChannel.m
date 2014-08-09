@@ -656,6 +656,19 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     return [self.subscribedChannelsSet containsObject:channel];
 }
 
+- (BOOL)willRestoreSubscription {
+    
+    BOOL willRestoreSubscription = [PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
+    if (!willRestoreSubscription) {
+        
+        willRestoreSubscription = ([self canResubscribe] && [self.messagingDelegate shouldMessagingChannelRestoreSubscription:self] &&
+                                   ![PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelSubscriptionWaitingForEvents]);
+    }
+    
+    
+    return willRestoreSubscription;
+}
+
 - (BOOL)canResubscribe {
     
     return [self.subscribedChannelsSet count] > 0;

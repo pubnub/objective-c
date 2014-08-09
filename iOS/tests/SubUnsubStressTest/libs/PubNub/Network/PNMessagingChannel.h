@@ -62,6 +62,11 @@
 - (BOOL)isSubscribedForChannel:(PNChannel *)channel;
 
 /**
+ Check whether channel is able and will restore subscription on set of channels.
+ */
+- (BOOL)willRestoreSubscription;
+
+/**
  Method will initiate subscription on specified set of channels. This request will add provided channels set to the
  list of channels on which client already subscribed.
 
