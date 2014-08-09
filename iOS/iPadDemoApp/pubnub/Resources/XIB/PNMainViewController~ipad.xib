@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1296" identifier="iOS"/>
+        <deployment defaultVersion="1552" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <objects>
@@ -286,7 +286,8 @@
                                     <color key="value" red="0.29411764709999999" green="0.2901960784" blue="0.2901960784" alpha="1" colorSpace="calibratedRGB"/>
                                 </userDefinedRuntimeAttribute>
                                 <userDefinedRuntimeAttribute type="string" keyPath="itemsStructure">
-                                    <string key="value">[{"title":"Subscribe","action":"subscribe:"},{"title":"Unsubscribe","action":"unsubscribe:"},{"title":"Client State","items":[{"title":"Get","action":"getClientState:"},{"title":"Set","action":"setClientState:"}]},{"title":"Presence Observation","items":[{"title":"Enable","action":"enablePresenceObservation:"},{"title":"Disable","action":"disablePresenceObservation:"}]},{"title":"Time token","action":"timeToken:"}]</string>
+                                    <mutableString key="value">[{"title":"Subscribe","action":"subscribe:"},{"title":"Unsubscribe","action":"unsubscribe:"},{"title":"Client State","items":[{"title":"Get","action":"getClientState:"},{"title":"Set","action":"setClientState:"}]},{"title":"Presence Observation","items":[{"title":"Enable","action":"enablePresenceObservation:"},{"title":"Disable","action":"disablePresenceObservation:"}]},{"title":"Time token","action":"timeToken:"},
+     {"title":"Auto-Messaging","items":[{"title":"Enable","action":"enableAutoMessaging:"},{"title":"Disable","action":"disableAutoMessaging:"}]}]</mutableString>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                             <connections>

@@ -175,6 +175,7 @@
 		79DF895918F32C2500314CB6 /* PNClientIdentifierAddView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DF895818F32C2500314CB6 /* PNClientIdentifierAddView.m */; };
 		79EBCA2816AC578900E616E8 /* PNMainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79EBCA2716AC578900E616E8 /* PNMainViewController.xib */; };
 		79ECCF361675DFB5005E83B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */; };
+		9669B8931996C452001C01B7 /* PNAutoMessager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9669B8921996C452001C01B7 /* PNAutoMessager.m */; };
 		DD71B1612F26F66082DB9F6A /* pubnub-large.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71B75FC2A1E90064167370 /* pubnub-large.png */; };
 		DD71B29E58A35A3AFEE4034D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71BF43E328EDCD6FF8F254 /* Security.framework */; };
 		DD71B4EFCF66A11086D65A2F /* pubnub-large2.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71BA90D925864CA27764CD /* pubnub-large2.png */; };
@@ -545,6 +546,8 @@
 		79E4E0C018B945C000978FB5 /* PNConfigurationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNConfigurationDelegate.h; sourceTree = "<group>"; };
 		79EBCA2716AC578900E616E8 /* PNMainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PNMainViewController.xib; sourceTree = "<group>"; };
 		79ECCF351675DFB5005E83B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		9669B8911996C452001C01B7 /* PNAutoMessager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNAutoMessager.h; sourceTree = "<group>"; };
+		9669B8921996C452001C01B7 /* PNAutoMessager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAutoMessager.m; sourceTree = "<group>"; };
 		DD71B1720D2FC6C2462806A1 /* NSString+PNDemoAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PNDemoAddition.m"; sourceTree = "<group>"; };
 		DD71B1A253ABE258B2CCF9F2 /* right-section-header-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right-section-header-background.png"; sourceTree = "<group>"; };
 		DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
@@ -1149,6 +1152,8 @@
 				79A70EBD18E1C5880085EE98 /* PNPresenceHelper.m */,
 				79052A3218EDD17300A5C63B /* PNHistoryHelper.h */,
 				79052A3318EDD17300A5C63B /* PNHistoryHelper.m */,
+				9669B8911996C452001C01B7 /* PNAutoMessager.h */,
+				9669B8921996C452001C01B7 /* PNAutoMessager.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1543,6 +1548,7 @@
 				79D8A49B18EC0BD3004A4A4F /* PNTableView.m in Sources */,
 				79A70EB318DF0A1A0085EE98 /* PNSubscriptionHelper.m in Sources */,
 				797B6FD718E2F0E100D88AAF /* PNRoundedView.m in Sources */,
+				9669B8931996C452001C01B7 /* PNAutoMessager.m in Sources */,
 				799C3C0718F468EA002BC638 /* PNAccessRightsResponseParser.m in Sources */,
 				799C3C1718F468EA002BC638 /* PNAccessRightsInformation.m in Sources */,
 				797B6FF018E45B3100D88AAF /* PNUnsubscribeView.m in Sources */,

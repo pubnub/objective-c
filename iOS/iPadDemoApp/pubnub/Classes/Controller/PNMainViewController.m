@@ -29,6 +29,7 @@
 #import "PNAlertView.h"
 #import "PNTableView.h"
 #import "PNButton.h"
+#import "PNAutoMessager.h"
 
 // Don't use this import, because it is private PubNub API
 #import "PNConfiguration+Protected.h"
@@ -192,6 +193,12 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
                                         context:nil];
     [[PNDataManager sharedInstance] addObserver:self forKeyPath:@"subscribedChannelsList" options:NSKeyValueObservingOptionNew
                                         context:nil];
+    
+    // initialize auto messager
+    
+    [[PNAutoMessager sharedManager] setPresendMessageBlock:^(NSString *message) {
+        _messageInputField.text = message;
+    }];
 }
 
 /**
@@ -449,6 +456,13 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     [presenceView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
+- (void)enableAutoMessaging:(id)sender {
+    [[PNAutoMessager sharedManager] start];
+}
+
+- (void)disableAutoMessaging:(id)sender {
+    [[PNAutoMessager sharedManager] stop];
+}
 
 - (IBAction)handleSendMessageButtonTap:(id)sender {
     
