@@ -2956,8 +2956,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [self handleStreamError:error shouldCloseConnection:YES];
 <<<<<<< HEAD
                 isErrorProcessed = YES;
+
+                [PNHelper releaseCFObject:&error];
             });
         }
+<<<<<<< HEAD
         
         [PNHelper releaseCFObject:&error];
 =======
@@ -2967,6 +2970,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             });
         }
 >>>>>>> 1bb6c24... * adjusted error handling in PNConnection to prevent from blocking in case of RST error (code 54) by calling CFReadStreamCopyError or CFWriteStreamCopyError functions
+=======
+        else {
+
+            [PNHelper releaseCFObject:&error];
+        }
+>>>>>>> 0a5abc2... [#76652180] * fixed crash when error released too early in PNConnection
     };
     
     // Sending error copy request to another thread to make sure that it won't block
