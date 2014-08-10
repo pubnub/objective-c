@@ -47,8 +47,12 @@ static NSString * const kPNCodeCommitIdentifier = @"cbbd6001193fd34650c0e21e5cbd
 >>>>>>> 73a89fc... * updated information about source code base branch and commit SHA
 =======
 static NSString * const kPNCodebaseBranch = @"develop";
+<<<<<<< HEAD
 static NSString * const kPNCodeCommitIdentifier = @"0a5abc2d44dcaf2f3bd044013d1b2960e0632e09";
 >>>>>>> bbcac4f... * updated information about source code base branch and commit SHA
+=======
+static NSString * const kPNCodeCommitIdentifier = @"5b9a43a90579aa5f893469415044dfba7449954f";
+>>>>>>> 0849495... * updated information about source code base branch and commit SHA
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
