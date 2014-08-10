@@ -734,9 +734,6 @@
  \c state - is \b PNDictionary instance which store state previously bounded to the client at specified channel;
  \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
 
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
-
  @since 3.6.0
  */
 + (void) requestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
@@ -790,9 +787,6 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
 
  @note You can delete previously configured key from state by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's state at specified channel.
-
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
 
  @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
 
@@ -1069,9 +1063,6 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
  subscription process changed state; \c error - error because of which subscription failed. Always check \a error.code to find out what caused error
  (check \b PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human
  readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track subscribe process from many places, use \b PNObservationCenter
- methods for this purpose.
 
  @since 3.4.0
 
@@ -1288,9 +1279,6 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
  @note You can delete previously configured key from state by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's state at specified channel.
 
- @warning Only last call of this method will call completion block. If you need to track subscribe process from many places, use \b PNObservationCenter
- methods for this purpose.
-
  @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
 
  @warning If you already subscribed on channel (for which already specified state) and will subscribe to another
@@ -1503,9 +1491,6 @@ withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
  subscription process changed state; \c error - error because of which subscription failed. Always check \a error.code to find out what caused error
  (check \b PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human
  readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track subscribe process from many places, 
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.0
 
@@ -1701,9 +1686,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  subscription process changed state; \c error - error because of which subscription failed. Always check \a error.code to find out what caused
  error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
  human readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track subscribe process from many places,
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.0
 
@@ -1921,9 +1903,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
 
  @note You can delete previously configured key from state by passing [NSNull null] as value for target key and \b
   PubNub service will remove specified key from client's state at specified channel.
-
- @warning Only last call of this method will call completion block. If you need to track subscribe process from many places,
- use \b PNObservationCenter methods for this purpose.
  
  @warning Client state should be represented with dictionary with channel names as keys and channel state as values. Channel state shouldn't contain any nesting and values should be one of: int, float or string. As keys should be used \b only channel names on which you are subscribing or already subscribed.
 
@@ -2137,9 +2116,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  subscription process changed state; \c error - error because of which subscription failed. Always check \a error.code to find out what caused error
  (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human
  readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track subscribe process from many places,
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.0
 
@@ -2308,9 +2284,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \c channels - array of \b PNChannel instances from which client unsubscribe; \c error - error because of which unsubscription failed.
  Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track unsubscribe process from many places, 
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.0
 
@@ -2488,9 +2461,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \c channels - array of \b PNChannel instances from which client unsubscribe; \c error - error because of which unsubscription failed.
  Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track unsubscribe process from many places,
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.0
 
@@ -2649,9 +2619,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \c channels - array of \b PNChannel instances from which client unsubscribe; \c error - error because of which unsubscription failed.
  Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track unsubscribe process from many places, 
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.0
 
@@ -2804,9 +2771,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \c channels - array of \b PNChannel instances from which client unsubscribe; \c error - error because of which unsubscription failed.
  Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track unsubscribe process from many places,
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.0
 
@@ -3107,9 +3071,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  
  @note PubNub service will keep sending push notifications till PubNub client explicitly disable them on specified channel or on all at once.
- 
- @warning Only last call of this method will call completion block. If you need to track push notification enabling process from many places,
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.2
 
@@ -3411,9 +3372,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  
  @note PubNub service will keep sending push notifications till PubNub client explicitly disable them on specified channel or on all at once.
- 
- @warning Only last call of this method will call completion block. If you need to track push notification enabling process from many places,
- use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.2
 
@@ -3694,9 +3652,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \c channels - list of channels for which push notification disabling state changed; \c error - error because of which push notification disabling
  failed. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track push notification disabling
- process from many places, use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.2
 
@@ -3975,9 +3930,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \c channels - list of channels for which push notification disabling state changed; \c error - error because of which push notification disabling
  failed. Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
- 
- @warning Only last call of this method will call completion block. If you need to track push notification disabling
- process from many places, use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.2
 
@@ -4115,9 +4067,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  The block which is called when push notification disabling state changed. The block takes one argument:
  \c error - error because of which push notification disabling failed. Always check \a error.code to find out what caused error (check PNErrorCodes
  header file and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
-
- @warning Only last call of this method will call completion block. If you need to track push notification removal
- process from many places, use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.2
 
@@ -4257,9 +4206,6 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  \c error - error because of push notification enabled channels fetch failed. Always check \a error.code to find out what
  caused error (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and
  \a -localizedRecoverySuggestion to get human readable description for error).
-
- @warning Only last call of this method will call completion block. If you need to track push notification enabled
- channels retrieval process from many places, use \b PNObservationCenter methods for this purpose.
 
  @since 3.4.2
 
@@ -8788,6 +8734,90 @@ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
  
  @code
  @endcode
+<<<<<<< HEAD
+=======
+ This method extendeds \a +sendMessage:toChannel: and allow to specify whether message should be stored in history or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub sendMessage:@{@"array": @[@"of", @"strings"], @"and": @16} toChannel:[PNChannel channelWithName:@"iosdev"] 
+      storeInHistory:NO];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client willSendMessage:(PNMessage *)message {
+ 
+     // PubNub client is sending message at this moment.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
+ 
+     // PubNub client failed to send message and reason is in 'error'.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
+ 
+     // PubNub client successfully sent message to specified channel.
+ }
+ @endcode
+ 
+ There is also way to observe message processing from any place in your application using  \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addMessageProcessingObserver:self
+  withBlock:^(PNMessageState state, id data) {
+ 
+  switch (state) {
+      case PNMessageSending:
+ 
+          // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+          break;
+      case PNMessageSendingError:
+ 
+          // PubNub client failed to send message and reason is in 'data' object.
+          break;
+      case PNMessageSent:
+ 
+          // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+          break;
+      }
+ }];
+ @endcode
+ 
+ @param message
+ Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
+ \c NSDictionary.
+ 
+ @param channel
+ \b PNChannel instance into which message should be sent.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ 
+ @return \b PNMessage instance if message payload is correct or \c nil if not.
+ */
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
+
+/**
+ Same as +sendMessage:toChannel:withCompletionBlock: but allow to specify whether message should be stored in history or not.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ */
++ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+/**
+ Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
+ 
+ @code
+ @endcode
+>>>>>>> 5b9a43a... [#75855640 #75854606 #75661506] * completed tasks and merged code verification
  This method extends \a +sendMessage:toChannel: and allow to specify separate payload which will be sent along with message using APNS.
  
  @code
@@ -10285,6 +10315,17 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
 + (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
+<<<<<<< HEAD
+=======
+ Same as +sendMessage:withCompletionBlock: but allow to specify whether message should be stored in history or not.
+ 
+ @param shouldStoreInHistory
+ \c YES in case if message should be stored on \b PubNub service side and become available with History API.
+ */
++ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+/**
+>>>>>>> 5b9a43a... [#75855640 #75854606 #75661506] * completed tasks and merged code verification
  Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
  
  @code
@@ -10634,9 +10675,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process, 
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestFullHistoryForChannel:(PNChannel *)channel withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
@@ -10675,9 +10713,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestFullHistoryForChannel:(PNChannel *)channel includingTimeToken:(BOOL)shouldIncludeTimeToken
                  withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -10712,9 +10747,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -10760,9 +10792,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate includingTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -10809,9 +10838,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -10866,9 +10892,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
               includingTimeToken:(BOOL)shouldIncludeTimeToken withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -10914,9 +10937,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -10970,9 +10990,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
               includingTimeToken:(BOOL)shouldIncludeTimeToken withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -11026,9 +11043,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -11090,9 +11104,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
               includingTimeToken:(BOOL)shouldIncludeTimeToken withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -11145,9 +11156,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -11207,9 +11215,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken
@@ -11271,9 +11276,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -11341,9 +11343,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c channel - \b PNChannel instance for which history request has been made; \c startDate - \b PNDate instance which represent date
  of the first message from returned list of messages; \c endDate - \b PNDate instance which represent date of the last message
  from returned list of messages; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes).
- 
- @warning Only last call of this method will call completion block. If you need to track history request process,
- use \b PNObservationCenter methods for this purpose.
  */
 + (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory includingTimeToken:(BOOL)shouldIncludeTimeToken
@@ -11376,9 +11375,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  exactly went wrong (check error code and compare it with \b PNErrorCodes ).
 
  @note This method by default won't request client's state.
-
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
 
  @since 3.6.0
  */
@@ -11421,9 +11417,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  exactly went wrong (check error code and compare it with \b PNErrorCodes ).
 
  @note This method by default won't request client's state.
-
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
 
  @since 3.6.0
  */
@@ -11481,9 +11474,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then value of \a 'shouldFetchClientState' will be
  ignored and returned result array will contain list of \b PNClient instances with names set to \a 'unknown'.
 
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
-
  @since 3.6.0
  */
 + (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
@@ -11520,9 +11510,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  exactly went wrong (check error code and compare it with \b PNErrorCodes ).
 
  @note This method by default won't request client's state.
-
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
  */
 + (void)requestParticipantsListForChannel:(PNChannel *)channel withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
@@ -11577,9 +11564,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then result array will contain list of \b PNClient
  instances with names set to \a 'unknown'.
-
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
 
  @since 3.6.0
  */
@@ -11647,9 +11631,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then value of \a 'shouldFetchClientState' will be
  ignored and returned result array will contain list of \b PNClient instances with names set to \a 'unknown'.
 
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
-
  @since 3.6.0
  */
 + (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
@@ -11683,9 +11664,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  \c clientIdentifier - identifier for which \b PubNub client search for channels;
  \c channels - is list of \b PNChannel instances in which \c clientIdentifier has been found as subscriber; \c error -
  describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
-
- @warning Only last call of this method will call completion block. If you need to track participants loading events
- from many places, use PNObservationCenter methods for this purpose.
 
  @since 3.6.0
  */
