@@ -34,7 +34,7 @@ if [ "$PRE_COMMIT_SHA" != "$POST_COMMIT_SHA" ]; then
 	git commit -a -m "* updated information about source code base branch and commit SHA"
 
 	# Send changes to remote origin
-	git push --set-upstream origin "$CURRENT_BRANCH_NAME"
+	git push --force --set-upstream origin "$CURRENT_BRANCH_NAME"
 
 	echo "[DELIVER::SUCCESS] $CURRENT_BRANCH_NAME has been delivered and code base information has been updated"
 fi

@@ -172,6 +172,12 @@
     [resourcePath appendFormat:@"?uuid=%@%@&pnsdk=%@", self.clientIdentifier,
                                ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
                                [self clientInformationField]];
+    
+    if (!self.message.shouldStoreInHistory) {
+        
+        [resourcePath appendString:@"&store=0"];
+    }
+    
 
     return resourcePath;
 }

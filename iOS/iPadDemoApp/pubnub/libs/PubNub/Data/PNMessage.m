@@ -81,8 +81,8 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
 #pragma mark - Class methods
 
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
-                           error:(PNError **)error {
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+                  storeInHistory:(BOOL)shouldStoreInHistory error:(PNError **)error {
 
     PNMessage *messageObject = nil;
     BOOL isValidMessage = NO;
@@ -103,7 +103,8 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     // Ensure that all parameters provided and they are valid or not
     if (isValidMessage && channel != nil) {
 
-        messageObject = [[[self class] alloc] initWithObject:object forChannel:channel compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory];
+        messageObject = [[[self class] alloc] initWithObject:object forChannel:channel compressed:shouldCompressMessage
+                                              storeInHistory:shouldStoreInHistory];
     }
     // Looks like some conditions not met
     else {

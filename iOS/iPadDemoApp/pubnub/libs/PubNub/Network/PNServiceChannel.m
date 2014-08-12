@@ -754,12 +754,13 @@
 
 #pragma mark - Messages processing methods
 
-- (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory {
+- (PNMessage *)sendMessage:(id)object toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory {
 
     // Create object instance
     PNError *error = nil;
-    PNMessage *messageObject = [PNMessage messageWithObject:object forChannel:channel compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory
-                                                      error:&error];
+    PNMessage *messageObject = [PNMessage messageWithObject:object forChannel:channel compressed:shouldCompressMessage
+                                             storeInHistory:shouldStoreInHistory error:&error];
 
     // Checking whether
     if (messageObject) {
@@ -782,7 +783,8 @@
     if (message) {
 
         // Schedule message sending request
-        [self sendMessage:message.message toChannel:message.channel compressed:message.shouldCompressMessage storeInHistory:message.shouldStoreInHistory];
+        [self sendMessage:message.message toChannel:message.channel compressed:message.shouldCompressMessage
+           storeInHistory:message.shouldStoreInHistory];
     }
 }
 

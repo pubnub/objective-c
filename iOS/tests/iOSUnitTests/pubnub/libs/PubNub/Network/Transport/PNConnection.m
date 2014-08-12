@@ -2950,10 +2950,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 
                 [self handleStreamError:error shouldCloseConnection:YES];
                 isErrorProcessed = YES;
+
+                [PNHelper releaseCFObject:&error];
             });
         }
-        
-        [PNHelper releaseCFObject:&error];
+        else {
+
+            [PNHelper releaseCFObject:&error];
+        }
     };
     
     // Sending error copy request to another thread to make sure that it won't block
@@ -2961,7 +2965,13 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // and may take significant amount of time to return controll back).
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)),
+        // There is corner case because of which Apple's C API may block run-loop of the thread on which it has been
+        // called for very long period. In normal situation error fetching doesn't take more than few milliseconds.
+        // Delay for 0.4 second should be more than enough to fetch error and in case if it will take longer, secondary
+        // logic will be used to create custom error. In case of error client will have to perform handshacke again and it
+        // will take at least 250 ms for one side and 500ms for full round-trip (this is ethernet values). SSL handshake will
+        // require twice time from regular connection.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),
                        dispatch_get_main_queue(), errorProcessingBlock);
         
         // Try to retrieve error

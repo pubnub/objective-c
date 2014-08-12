@@ -2930,11 +2930,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     return stringifiedStatus;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 1bb6c24... * adjusted error handling in PNConnection to prevent from blocking in case of RST error (code 54) by calling CFReadStreamCopyError or CFWriteStreamCopyError functions
 - (void)handleStreamError:(PNConnectionErrorStateFlag)failedStream fromBlock:(CFErrorRef(^)(void))errorBlock {
     
     __block CFErrorRef error = NULL;
@@ -2954,28 +2949,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [PNBitwiseHelper addTo:&_state bit:failedStream];
                 
                 [self handleStreamError:error shouldCloseConnection:YES];
-<<<<<<< HEAD
                 isErrorProcessed = YES;
 
                 [PNHelper releaseCFObject:&error];
             });
         }
-<<<<<<< HEAD
-        
-        [PNHelper releaseCFObject:&error];
-=======
-                
-                [PNHelper releaseCFObject:&error];
-                isErrorProcessed = YES;
-            });
-        }
->>>>>>> 1bb6c24... * adjusted error handling in PNConnection to prevent from blocking in case of RST error (code 54) by calling CFReadStreamCopyError or CFWriteStreamCopyError functions
-=======
         else {
 
             [PNHelper releaseCFObject:&error];
         }
->>>>>>> 0a5abc2... [#76652180] * fixed crash when error released too early in PNConnection
     };
     
     // Sending error copy request to another thread to make sure that it won't block
@@ -2998,10 +2980,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     });
 }
 
-<<<<<<< HEAD
->>>>>>> 7ae14b1... * taken into account information about possible memory leak
-=======
->>>>>>> 1bb6c24... * adjusted error handling in PNConnection to prevent from blocking in case of RST error (code 54) by calling CFReadStreamCopyError or CFWriteStreamCopyError functions
 - (void)handleStreamError:(CFErrorRef)error {
 
     [self handleStreamError:error shouldCloseConnection:NO];

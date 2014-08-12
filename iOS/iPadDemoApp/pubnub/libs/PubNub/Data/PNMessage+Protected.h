@@ -98,8 +98,8 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
  * object object and target channel
  * Message should be in stringified JSON format
  */
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
-                           error:(PNError **)error;
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+                  storeInHistory:(BOOL)shouldStoreInHistory error:(PNError **)error;
 
 /**
  * Return reference on message data object which will represent
@@ -113,8 +113,8 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
 /**
  * Initialize object instance with text and channel
  */
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
-
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+      storeInHistory:(BOOL)shouldStoreInHistory;;
 - (void)setReceiveDate:(PNDate *)receiveDate;
 
 

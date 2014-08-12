@@ -44,6 +44,11 @@ struct PNMessageDataKeysStruct {
      Stores key under which stored whether message should be compressed or not
      */
     __unsafe_unretained NSString *compress;
+    
+    /**
+     Stores key under which stored whether message should be stored on PubNub servers or not.
+     */
+    __unsafe_unretained NSString *store;
 
     /**
      Stores key under which message receive will be encoded.
@@ -72,6 +77,9 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
 // Stores whether message should be compressed or not
 @property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
 
+// Stores whether message should be stored on PubNub servers for future usage with History API.
+@property (nonatomic, assign, getter = shouldStoreInHistory) BOOL storeInHistory;
+
 // Stores reference on channel to which this message
 // should be sent
 @property (nonatomic, strong) PNChannel *channel;
@@ -90,7 +98,8 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
  * object object and target channel
  * Message should be in stringified JSON format
  */
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage error:(PNError **)error;
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+                  storeInHistory:(BOOL)shouldStoreInHistory error:(PNError **)error;
 
 /**
  * Return reference on message data object which will represent
@@ -104,8 +113,8 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
 /**
  * Initialize object instance with text and channel
  */
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
-
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+      storeInHistory:(BOOL)shouldStoreInHistory;;
 - (void)setReceiveDate:(PNDate *)receiveDate;
 
 
