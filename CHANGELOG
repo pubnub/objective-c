@@ -1,3 +1,17 @@
+8-11-2014 - 4c1c1 - 3.6.5
+. added more verbosity to comments for clarity
+. refactored out some redundant conditional expressions
+. removed legacy comments about blocks only triggering on last requested calls
+. fixed a crash condition possible when switching between WiFi and Cellular
+. helper method support for sending GCM, APNS, and Native PubNub messaging in a single publish message
+. sendMessage now has a storeInHistory flag which determines whether or not a message will be stored in history
+. fixed a couple issues surrounding potential for hangs around postpones (procedural locks)
+. willSuspendWithBlock delegate method added which allows a user to perform actions before suspend on background
+. improved performance when full logging is enabled
+. fixed potential hang when client is suspended during embryonic connection/reconnection phases
+. added debug proxy support, tested using Charles Proxy
+
+
 6-24-2014 - 8491d - 3.6.4
 . Swift compatibility
 . Fixed postpone race condition
