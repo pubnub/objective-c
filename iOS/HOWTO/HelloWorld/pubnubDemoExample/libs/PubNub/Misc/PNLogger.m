@@ -537,9 +537,12 @@ static bool IsDebuggerAttached(void) {
         
         dispatch_async(self.dumpProcessingQueue, ^{
             
-            dispatch_io_close(self.consoleDumpStoringChannel, 0);
-            [PNDispatchHelper release:self.consoleDumpStoringChannel];
-            self.consoleDumpStoringChannel = NULL;
+            if (self.consoleDumpStoringChannel) {
+                
+                dispatch_io_close(self.consoleDumpStoringChannel, 0);
+                [PNDispatchHelper release:self.consoleDumpStoringChannel];
+                self.consoleDumpStoringChannel = NULL;
+            }
         });
     }
 }
