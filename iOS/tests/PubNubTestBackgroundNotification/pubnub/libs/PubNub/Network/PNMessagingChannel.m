@@ -409,46 +409,50 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                                        usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
                                                     BOOL *requestIdentifierEnumeratorStop) {
 
-                                           PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+               PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+               [request resetWithRetryCount:shouldResetRequestsRetryCount];
+               request.closeConnection = NO;
 
-                                           [request resetWithRetryCount:shouldResetRequestsRetryCount];
-                                           request.closeConnection = NO;
+               BOOL isSubscribeRequest = [request isKindOfClass:[PNSubscribeRequest class]];
+               if (isSubscribeRequest && self.isRestoringSubscriptionOnResume) {
+                   
+                   BOOL shouldNotifyAboutSubscriptionRestore = ![PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
+                   if (!useLastTimeToken) {
 
-                                           BOOL isSubscribeRequest = [request isKindOfClass:[PNSubscribeRequest class]];
-                                           if (isSubscribeRequest && self.isRestoringSubscriptionOnResume) {
+                       [(PNSubscribeRequest *)request resetTimeToken];
+                   }
 
-                                               if (!useLastTimeToken) {
+                   [PNBitwiseHelper removeFrom:&_messagingState bits:PNMessagingChannelUpdateSubscription, PNMessagingChannelResubscribeOnTimeOut,
+                    PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR];
 
-                                                   [(PNSubscribeRequest *)request resetTimeToken];
-                                               }
+                   [PNBitwiseHelper addTo:&_messagingState bits:PNMessagingChannelRestoringSubscription,
+                    PNMessagingChannelSubscriptionTimeTokenRetrieve, BITS_LIST_TERMINATOR];
 
-                                               [PNBitwiseHelper removeFrom:&_messagingState bits:PNMessagingChannelUpdateSubscription, PNMessagingChannelResubscribeOnTimeOut,
-                                                PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR];
+                   [(PNSubscribeRequest *)request resetSubscriptionTimeToken];
 
-                                               [PNBitwiseHelper addTo:&_messagingState bits:PNMessagingChannelRestoringSubscription,
-                                                PNMessagingChannelSubscriptionTimeTokenRetrieve, BITS_LIST_TERMINATOR];
 
-                                               [(PNSubscribeRequest *)request resetSubscriptionTimeToken];
+                   if (shouldNotifyAboutSubscriptionRestore) {
+                       
+                       // Notify delegate that messaging channel is about to restore subscription on previous channels
+                       [self.messagingDelegate messagingChannel:self willRestoreSubscriptionOnChannels:((PNSubscribeRequest *)request).channels
+                                                      sequenced:NO];
+                   }
+               }
 
-                                               // Notify delegate that messaging channel is about to restore subscription on previous channels
-                                               [self.messagingDelegate messagingChannel:self willRestoreSubscriptionOnChannels:((PNSubscribeRequest *)request).channels
-                                                                              sequenced:NO];
-                                           }
+               // Check whether client is waiting for request completion
+               BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+               if (isSubscribeRequest) {
 
-                                           // Check whether client is waiting for request completion
-                                           BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
-                                           if (isSubscribeRequest) {
+                   isWaitingForCompletion = [(PNSubscribeRequest *)request isInitialSubscription];
+               }
 
-                                               isWaitingForCompletion = [(PNSubscribeRequest *)request isInitialSubscription];
-                                           }
+               // Clean up query (if request has been stored in it)
+               [self destroyRequest:request];
 
-                                           // Clean up query (if request has been stored in it)
-                                           [self destroyRequest:request];
-
-                                           // Send request back into queue with higher priority among other requests
-                                           [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
-                                                launchProcessing:NO];
-                                       }];
+               // Send request back into queue with higher priority among other requests
+               [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
+                    launchProcessing:NO];
+           }];
 
         // Try to check whether there is leave request or not in stack
         if ([self hasRequestsWithClass:[PNLeaveRequest class]]) {
@@ -1991,9 +1995,14 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (void)connection:(PNConnection *)connection didReconnectToHost:(NSString *)hostName {
     
+    self.restoringSubscriptionOnResume = [PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
     [PNBitwiseHelper removeFrom:&_messagingState bits:PNMessagingChannelSubscriptionTimeTokenRetrieve,
      PNMessagingChannelSubscriptionWaitingForEvents, PNMessagingChannelRestoringConnectionTerminatedByServer,
      PNMessagingChannelRestoringSubscription, PNMessagingChannelResubscribeOnTimeOut, BITS_LIST_TERMINATOR];
+    if (self.isRestoringSubscriptionOnResume) {
+        
+        [PNBitwiseHelper addTo:&_messagingState bit:PNMessagingChannelRestoringSubscription];
+    }
     
     // Check whether client updated subscription or not
     if ([PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelUpdateSubscription]) {
@@ -2022,6 +2031,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     
     // Forward to the super class
     [super connection:connection didReconnectToHost:hostName];
+    
+    self.restoringSubscriptionOnResume = NO;
 }
 
 - (void)connection:(PNConnection *)connection willReconnectToHostAfterError:(NSString *)hostName {
@@ -2035,7 +2046,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (void)connection:(PNConnection *)connection didReconnectToHostAfterError:(NSString *)hostName {
     
+    self.restoringSubscriptionOnResume = [PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
     [PNBitwiseHelper clear:&_messagingState];
+    if (self.isRestoringSubscriptionOnResume) {
+        
+        [PNBitwiseHelper addTo:&_messagingState bit:PNMessagingChannelRestoringSubscription];
+    }
     
     // Check whether subscription request already scheduled or not
     if (![self hasRequestsWithClass:[PNSubscribeRequest class]]) {
@@ -2047,6 +2063,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     
     // Forward to the super class
     [super connection:connection didReconnectToHostAfterError:hostName];
+    
+    self.restoringSubscriptionOnResume = NO;
 }
 
 - (void)connection:(PNConnection *)connection willDisconnectFromHost:(NSString *)host withError:(PNError *)error {
@@ -2383,7 +2401,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] DID CANCEL REQUEST: %@ [BODY: %@](STATE: %lu)",
+        return [NSString stringWithFormat:@"[CHANNEL::%@] F: %@ [BODY: %@](STATE: %lu)",
                   self, request, request.debugResourcePath, self.messagingState];
     }];
 
