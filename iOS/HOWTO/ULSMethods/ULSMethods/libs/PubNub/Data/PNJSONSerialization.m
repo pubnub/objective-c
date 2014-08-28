@@ -12,6 +12,7 @@
 //
 
 #import "PNJSONSerialization.h"
+#import "PNLoggerSymbols.h"
 #import "PNLogger.h"
 
 
@@ -217,7 +218,10 @@
     }
     else {
 
-        [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"JSON string is empty"; }];
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.JSONserializer.emptyJSONString];
+        }];
     }
 }
 

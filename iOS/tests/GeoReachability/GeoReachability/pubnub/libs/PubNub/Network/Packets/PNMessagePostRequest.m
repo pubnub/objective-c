@@ -19,6 +19,7 @@
 #import "PNMessage+Protected.h"
 #import "PNChannel+Protected.h"
 #import "PubNub+Protected.h"
+#import "PNLoggerSymbols.h"
 #import "PNCryptoHelper.h"
 #import "PNConstants.h"
 #import "PNHelper.h"
@@ -128,10 +129,10 @@
             
             if (encryptionError != nil) {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"Message encryption failed with error: %@\nUnencrypted message"
-                            " will be sent.", encryptionError];
+                    return @[PNLoggerSymbols.requests.messagePost.messageBodyEncryptionError,
+                            (encryptionError ? encryptionError : [NSNull null])];
                 }];
             }
         }

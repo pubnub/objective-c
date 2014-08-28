@@ -72,6 +72,27 @@
     return isValidState;
 }
 
+- (NSString *)logDescription {
+    
+    __block NSString *logDescription = @"<{";
+    __block NSUInteger entryIdx = 0;
+    
+    [self enumerateKeysAndObjectsUsingBlock:^(NSString *entryKey, id entry, BOOL *entryEnumeratorStop) {
+        
+        // Check whether parameter can be transformed for log or not
+        if ([entry respondsToSelector:@selector(logDescription)]) {
+            
+            entry = [entry performSelector:@selector(logDescription)];
+            entry = (entry ? entry : @"");
+        }
+        logDescription = [logDescription stringByAppendingFormat:@"%@:%@%@", entryKey, entry, (entryIdx + 1 != [self count] ? @"|" : @"}>")];
+        entryIdx++;
+    }];
+    
+    
+    return logDescription;
+}
+
 #pragma mark -
 
 

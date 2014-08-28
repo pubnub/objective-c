@@ -339,6 +339,11 @@ static unsigned char decodeCharTable[256] =
     return stringBuffer;
 }
 
+- (NSString *)logDescription {
+    
+    return [NSString stringWithFormat:@"<%@>", [self HEXPushToken]];
+}
+
 #pragma mark -
 
 

@@ -37,6 +37,28 @@
     return array;
 }
 
+
+#pragma mark - Instance methods
+
+- (NSString *)logDescription {
+    
+    __block NSString *logDescription = @"<[";
+    
+    [self enumerateObjectsUsingBlock:^(id entry, NSUInteger entryIdx, BOOL *entryEnumeratorStop) {
+        
+        // Check whether parameter can be transformed for log or not
+        if ([entry respondsToSelector:@selector(logDescription)]) {
+            
+            entry = [entry performSelector:@selector(logDescription)];
+            entry = (entry ? entry : @"");
+        }
+        logDescription = [logDescription stringByAppendingFormat:@"%@%@", entry, (entryIdx + 1 != [self count] ? @"|" : @"]>")];
+    }];
+    
+    
+    return logDescription;
+}
+
 #pragma mark -
 
 

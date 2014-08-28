@@ -170,6 +170,31 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
                     self.date, (unsigned long)self.occupancy, self.channel];
 }
 
+- (NSString *)logDescription {
+    
+    NSString *action = @"join";
+    if (self.type == PNPresenceEventLeave) {
+        
+        action = @"leave";
+    }
+    else if (self.type == PNPresenceEventTimeout) {
+        
+        action = @"timeout";
+    }
+    else if (self.type == PNPresenceEventStateChanged) {
+        
+        action = @"state changed";
+    }
+    else if (self.type == PNPresenceEventChanged) {
+        
+        action = @"occupancy changed";
+    }
+    
+    return [NSString stringWithFormat:@"<%@|%@|%@|%ld|%@>", action, (self.date ? [self.date performSelector:@selector(logDescription)] : [NSNull null]),
+            (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null]), (unsigned long)self.occupancy,
+            (self.client ? [self.client performSelector:@selector(logDescription)] : [NSNull null])];
+}
+
 #pragma mark -
 
 

@@ -19,6 +19,11 @@
 @interface PNConnectionChannel (Protected)
 
 
+#pragma mark - Properties
+
+@property (nonatomic, strong) NSString *name;
+
+
 #pragma mark - Instance methods
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request;

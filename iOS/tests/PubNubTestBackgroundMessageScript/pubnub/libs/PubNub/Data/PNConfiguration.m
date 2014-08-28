@@ -189,18 +189,6 @@
         self.presenceHeartbeatTimeout = kPNPresenceHeartbeatTimeout;
         self.presenceHeartbeatInterval = MAX(self.presenceHeartbeatTimeout - kPNHeartbeatRequestTimeoutOffset,
                                              kPNPresenceHeartbeatInterval);
-
-        // Checking whether user changed origin host from default
-        // or not
-        if ([self.origin isEqualToString:kPNDefaultOriginHost]) {
-
-            [PNLogger logGeneralMessageFrom:self message:^NSString * {
-
-                return [NSString stringWithFormat:@"\n{WARN} Before running in production, please contact "
-                        "support@pubnub.com for your custom origin.\nPlease set the origin from %@ to "
-                        "IUNDERSTAND.pubnub.com to remove this warning.", self.origin];
-            }];
-        }
     }
     
     

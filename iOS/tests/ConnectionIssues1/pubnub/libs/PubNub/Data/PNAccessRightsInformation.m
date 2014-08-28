@@ -109,7 +109,7 @@
     }
     [description appendFormat:@" rights: %@;", rights];
 
-    [description appendFormat:@" application: %@;", self.subscriptionKey];
+    [description appendFormat:@" application: %@;", PNObfuscateString(self.subscriptionKey)];
 
     if (self.level == PNChannelAccessRightsLevel) {
 
@@ -125,6 +125,34 @@
 
 
     return description;
+}
+
+- (NSString *)logDescription {
+    
+    NSString *level = @"application";
+    if (self.level == PNChannelAccessRightsLevel) {
+        
+        level = @"channel";
+    }
+    else if (self.level == PNUserAccessRightsLevel) {
+        
+        level = @"user";
+    }
+    NSMutableString *logDescription = [NSMutableString stringWithFormat:@"<%@|%@|%@|%lu", level, PNObfuscateString(self.subscriptionKey),
+                                       @(self.rights), (unsigned long)self.accessPeriodDuration];
+    if (self.level == PNChannelAccessRightsLevel) {
+        
+        [logDescription appendFormat:@"|%@", (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null])];
+    }
+    else if (self.level == PNUserAccessRightsLevel) {
+        
+        [logDescription appendFormat:@"|%@|%@", self.authorizationKey,
+         (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null])];
+    }
+    [logDescription appendString:@">"];
+
+    
+    return logDescription;
 }
 
 #pragma mark -

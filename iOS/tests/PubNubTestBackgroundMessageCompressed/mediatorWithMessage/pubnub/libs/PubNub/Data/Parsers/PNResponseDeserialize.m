@@ -15,6 +15,7 @@
 
 #import "PNResponseDeserialize.h"
 #import "NSData+PNAdditions.h"
+#import "PNLoggerSymbols.h"
 #import "PNResponse.h"
 #import "PNLogger.h"
 
@@ -132,7 +133,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
     void(^malformedResponseParseErrorHandler)(NSData *, NSRange) = ^(NSData *responseData, NSRange subrange) {
 
-        [PNLogger logDeserializerErrorMessageFrom:self message:^NSString * {
+        [PNLogger logDeserializerErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
             NSData *failedResponseData = [responseData subdataWithRange:subrange];
             NSString *encodedContent = [[NSString alloc] initWithData:failedResponseData encoding:NSUTF8StringEncoding];
@@ -146,8 +147,8 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                 }
             }
 
-            return [NSString stringWithFormat:@"Failed to parse response (%llu bytes long)\nContent: %@\n",
-                    (unsigned long long)[failedResponseData length], encodedContent];
+            return @[PNLoggerSymbols.deserializer.unableToEncodeResponseData, @([failedResponseData length]),
+                    (encodedContent ? encodedContent : [NSNull null])];
         }];
     };
 
@@ -353,11 +354,10 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     NSData *httpPayload = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(message));
                     NSString *encodedContent = [[NSString alloc] initWithData:httpPayload
                                                                      encoding:NSASCIIStringEncoding];
-                    [PNLogger logDeserializerInfoMessageFrom:self
-                                                     message:^NSString * {
+                    [PNLogger logDeserializerInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                        return [NSString stringWithFormat:@"Received strange response with '%ld' status code\nContent: %@\n",
-                                (long)statusCode, encodedContent];
+                        return @[PNLoggerSymbols.deserializer.unexpectedResponseStatusCode, @(statusCode),
+                                (encodedContent ? encodedContent : [NSNull null])];
                     }];
                 }
 
@@ -409,15 +409,13 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     }
 
                     *isIncompleteResponse = responseBody == nil;
-                    [PNLogger logDeserializerInfoMessageFrom:self
-                                                     message:^NSString * {
+                    [PNLogger logDeserializerInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                        return [NSString stringWithFormat:@"RAW DATA: %@",
-                                [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding]];
+                        NSString *rawData = [[NSString alloc] initWithData:responseBody encoding:NSUTF8StringEncoding];
+                        return @[PNLoggerSymbols.deserializer.rawResponseData, @(statusCode),
+                                (rawData ? rawData : [NSNull null])];
                     }];
-                    response = [PNResponse responseWithContent:responseBody
-                                                          size:responseSubdata.length
-                                                          code:statusCode
+                    response = [PNResponse responseWithContent:responseBody size:responseSubdata.length code:statusCode
                                       lastResponseOnConnection:!isKeepAliveConnection];
                 }
             }

@@ -19,27 +19,24 @@ typedef NS_OPTIONS(unsigned long, PNLogLevel) {
     // This level can be used for any information output. PubNub client itself use this level a lot for own needs.
     PNLogGeneralLevel = 1 << 0,
     
-    // This method allow to log out when certain delegate method is about to be called.
-    PNLogDelegateLevel = 1 << 1,
-    
     // Level which allow to observe for events related to network reachability.
-    PNLogReachabilityLevel = 1 << 2,
+    PNLogReachabilityLevel = 1 << 1,
     
     // Response deserializer level which allow to analyze possible issues with received data.
-    PNLogDeserializerInfoLevel = 1 << 3,
+    PNLogDeserializerInfoLevel = 1 << 2,
     
     // Underlaying layer which is responsible for connection with PubNub servers.
-    PNLogDeserializerErrorLevel = 1 << 4,
-    PNLogConnectionLayerErrorLevel = 1 << 5,
-    PNLogConnectionLayerInfoLevel = 1 << 6,
+    PNLogDeserializerErrorLevel = 1 << 3,
+    PNLogConnectionLayerErrorLevel = 1 << 4,
+    PNLogConnectionLayerInfoLevel = 1 << 5,
     
     // Additional level for connection which allow to print out raw HTTP packet content.
-    PNLogConnectionLayerHTTPLoggingLevel = 1 << 7,
+    PNLogConnectionLayerHTTPLoggingLevel = 1 << 6,
     
     // Underlaying layer which is responsible requests-response processing.
-    PNLogCommunicationChannelLayerErrorLevel = 1 << 8,
-    PNLogCommunicationChannelLayerWarnLevel = 1 << 9,
-    PNLogCommunicationChannelLayerInfoLevel = 1 << 10
+    PNLogCommunicationChannelLayerErrorLevel = 1 << 7,
+    PNLogCommunicationChannelLayerWarnLevel = 1 << 8,
+    PNLogCommunicationChannelLayerInfoLevel = 1 << 9
 };
 
 
@@ -51,22 +48,6 @@ typedef NS_OPTIONS(unsigned long, PNLogLevel) {
 #pragma mark - Class methods
 
 /**
- Complete logger initialization process.
- */
-+ (void)prepare;
-
-/**
- Log out message for specified level using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logFrom:(id)sender forLevel:(PNLogLevel)level message:(NSString *(^)(void))messageBlock;
-
-/**
  Log out \c 'general' level log message using data returned from \c messageBlock block.
 
  @param sender
@@ -76,113 +57,6 @@ typedef NS_OPTIONS(unsigned long, PNLogLevel) {
  Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
  */
 + (void)logGeneralMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'delegate' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logDelegateMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'reachability' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logReachabilityMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'deserializer info' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logDeserializerInfoMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'deserializer error' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logDeserializerErrorMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'connection error' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logConnectionErrorMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'connection info' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logConnectionInfoMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'communication channel error' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logCommunicationChannelErrorMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'communication channel warn' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logCommunicationChannelWarnMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Log out \c 'communication channel info' level log message using data returned from \c messageBlock block.
-
- @param sender
- Reference on instance from the name of which message will be logged.
-
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
- */
-+ (void)logCommunicationChannelInfoMessageFrom:(id)sender message:(NSString *(^)(void))messageBlock;
-
-/**
- Store data passed through \c httpPacketBlock block into separate file which will represent single HTTP packet.
-
- @param httpPacketBlock
- Block which is used by logger to receive \b NSData instance which contains all payload which has been received from server.
- */
-+ (void)storeHTTPPacketData:(NSData *(^)(void))httpPacketBlock;
 
 
 #pragma mark - General logger state manipulation

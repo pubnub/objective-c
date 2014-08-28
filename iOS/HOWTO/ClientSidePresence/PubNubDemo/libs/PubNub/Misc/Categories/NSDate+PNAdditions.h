@@ -12,10 +12,6 @@
 @interface NSDate (PNAdditions)
 
 
-#pragma mark - Instance methods
-
-- (NSString *)consoleOutputTimestamp;
-
 #pragma mark -
 
 

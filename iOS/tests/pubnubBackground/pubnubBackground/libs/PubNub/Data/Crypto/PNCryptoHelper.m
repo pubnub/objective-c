@@ -15,6 +15,7 @@
 #import "NSString+PNAddition.h"
 #import "NSData+PNAdditions.h"
 #import "PNPrivateImports.h"
+#import "PNLoggerSymbols.h"
 
 
 // ARC check
@@ -585,7 +586,10 @@ static NSData *_cryptorKeyData = nil;
 
 - (void)dealloc {
 
-    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"Destroyed"; }];
+    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+        return @[PNLoggerSymbols.cryptor.destroyed];
+    }];
 }
 
 #pragma mark -
