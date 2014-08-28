@@ -250,6 +250,29 @@
     return descriptionString;
 }
 
+- (NSString *)logDescription {
+    
+    NSMutableString *descriptionString = [NSMutableString stringWithString:@"<"];
+    if (self.applicationAccessRightsInformation != nil) {
+        
+        [descriptionString appendFormat:@"%@%@", [self.applicationAccessRightsInformation performSelector:@selector(logDescription)],
+         ([self.channelsAccessRightsInformation count] || [self.clientsAccessRightsInformation count] ? @"|" : @"")];
+    }
+    if ([self.channelsAccessRightsInformation count]) {
+        
+        [descriptionString appendFormat:@"%@%@", [[self.channelsAccessRightsInformation allValues] performSelector:@selector(logDescription)],
+         ([self.clientsAccessRightsInformation count] ? @"|" : @"")];
+    }
+    if ([self.clientsAccessRightsInformation count]) {
+        
+        [descriptionString appendString:[[self.clientsAccessRightsInformation allValues] performSelector:@selector(logDescription)]];
+    }
+    [descriptionString appendString:@">"];
+    
+    
+    return descriptionString;
+}
+
 #pragma mark -
 
 
