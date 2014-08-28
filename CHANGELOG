@@ -1,4 +1,4 @@
-8-22-2014 - 61c63 - 3.6.7
+8-22-2014 - 61c63 - 3.6.6
 . Support for socket reconnect during during subscription restore process
 . Fixed a crash bug in logger
 
