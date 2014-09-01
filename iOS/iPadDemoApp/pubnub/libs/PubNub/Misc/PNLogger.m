@@ -7,6 +7,7 @@
 //
 
 #import "PNLogger.h"
+#import "NSString+PNAddition.h"
 #import "NSDate+PNAdditions.h"
 #import "PNLoggerSymbols.h"
 #import "PNConstants.h"
@@ -19,6 +20,7 @@
     #include <assert.h>
 #endif
 #include <stdlib.h>
+#import "PNMacro.h"
 
 
 #pragma mark Static
@@ -609,6 +611,8 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .rescheduleParticipantChannelsListRequest = @"0900234",
         .destroyed = @"0900235",
         .willConnect = @"0900236",
+        .clientInformation = @"0900237",
+        .configurationInformation = @"0900238",
     },
     .observationCenter = {
         
@@ -854,7 +858,6 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
     }
 
     [[self sharedInstance] applyDefaultConfiguration];
-    [[self sharedInstance] rotateDumpFiles];
 }
 
 + (void)logFrom:(id)sender forLevel:(PNLogLevel)level withParametersFromBlock:(NSArray *(^)(void))parametersBlock {
@@ -903,12 +906,15 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                     // Transform parameters using description suitable for log
                     [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger idx, BOOL *stop) {
                         
+                        #pragma clang diagnostic push
+                        #pragma clang diagnostic ignored "-Wundeclared-selector"
                         // Check whether parameter can be transformed for log or not
                         if ([parameter respondsToSelector:@selector(logDescription)]) {
                             
                             parameter = [parameter performSelector:@selector(logDescription)];
                             parameter = (parameter ? parameter : @"");
                         }
+                        #pragma clang diagnostic pop
                         [parametersForLog addObject:parameter];
                     }];
                     
@@ -993,8 +999,11 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
     if ([self isDumpingHTTPResponse] && httpPacketBlock) {
 
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
         NSString *storePath = [[self sharedInstance].httpPacketStoreFolderPath stringByAppendingFormat:@"/response-%@.dmp",
                                [[NSDate date] performSelector:@selector(logDescription)]];
+        #pragma clang diagnostic pop
 
         NSData *packetData = httpPacketBlock();
         dispatch_async([self sharedInstance].httpProcessingQueue, ^{
@@ -1355,8 +1364,11 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         
         if (output) {
             
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wundeclared-selector"
             [self.consoleDump appendData:[[NSString stringWithFormat:@";ls;%@;sp;%@;le;\n", [[NSDate date] performSelector:@selector(logDescription)], output]
                                           dataUsingEncoding:NSUTF8StringEncoding]];
+            #pragma clang diagnostic pop
         }
         
         if (([self.consoleDump length] >= kPNLoggerMaximumInMemoryLogSize || !output) && [self.consoleDump length] > 0) {

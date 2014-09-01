@@ -474,7 +474,7 @@ static NSData *_cryptorKeyData = nil;
 
                 if (cryptorType == PNCryptorEncrypt) {
 
-                    processedString = [processedData base64Encoding];
+                    processedString = [processedData pn_base64Encoding];
                 }
                 else {
 

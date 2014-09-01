@@ -1084,6 +1084,52 @@
 			<string>DESTROYED</string>
 			<key>0900236</key>
 			<string>WILL CONNECT TO ORIGIN: %@ (STATE: %@)</string>
+			<key>0900237</key>
+			<string>
+
++--------------------------------------------------------------
+| +--------+          +-+       +-+     +-+          +-+
+| | +----+ |          | |       |  \    | |          | |
+| | |    | |          | |       | \ \   | |          | |
+| | +----+ | +-+  +-+ | +-----\ | |\ \  | | +-+  +-+ | +-----\
+| | +------+ | |  | | | +---+ | | | \ \ | | | |  | | | +---+ |
+| | |        | |  | | | |   | | | |  \ \| | | |  | | | |   | |
+| | |        | +--+ | | +---+ | | |   \   | | +--+ | | +---+ |
+| +-+        \------/ +-------/ +-+    \--+ \------/ +-------/
+|
+|
+| PubNub.com real-time messaging network information:
+| - version: %@
+| - git branch: %@
+| - commit identifier: %@
++--------------------------------------------------------------
+
+</string>
+			<key>0900238</key>
+			<string>
+
++-------------------------------------------------------------
+| PubNub configuration information:
+| - origin: %@
+| - publish key: %@
+| - subscribe key: %@
+| - secret key: %@
+| - cipher key: %@
+| - subscribe request timeout: %@
+| - non-subscribe request timeout: %@
+| - should auto-reconnect: %@
+| - should keep time token on channels list change: %@
+| - should resubscribe on connection restore: %@
+| - should restore subscription with last time token: %@
+| - should use secure connection: %@
+| - able to reduce security level on error: %@
+| - able to use insecure connection: %@
+| - should accept compressed responses: %@
+| - presence heartbeat timeout: %@
+| - presence heartbeat interval: %@
++--------------------------------------------------------------
+
+</string>
 		</dict>
 		<key>10</key>
 		<dict>

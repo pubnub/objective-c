@@ -10,7 +10,9 @@
 #import "PNConnectionChannel+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import "UIApplication+PNAdditions.h"
+    #import "UIApplication+PNAdditions.h"
+#else
+    #import <AppKit/AppKit.h>
 #endif
 #import "PNAccessRightOptions+Protected.h"
 #import "PNServiceChannelDelegate.h"
@@ -27,6 +29,8 @@
 #import "PNConstants.h"
 #import "PNHelper.h"
 #import "PNCache.h"
+#import "PNMacro.h"
+#import "PNDate.h"
 
 
 // ARC check
@@ -241,6 +245,11 @@ static NSMutableArray *pendingInvocations = nil;
  * Print out PubNub library information
  */
 + (void)showVserionInfo;
+
+/**
+ * Print out PubNub client configuration information
+ */
++ (void)showConfigurationInfo;
 
 + (NSString *)humanReadableStateFrom:(PNPubNubClientState)state;
 
@@ -1054,6 +1063,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 [self sharedInstance].temporaryConfiguration = nil;
                 
                 [[self sharedInstance] prepareCryptoHelper];
+                [self showConfigurationInfo];
                 
                 // Refresh reachability configuration
                 [[self sharedInstance].reachability startServiceReachabilityMonitoring];
@@ -1166,6 +1176,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             void(^updateConfigurationBlock)(void) = ^{
                 
                 [self sharedInstance].configuration = configuration;
+                [self showConfigurationInfo];
                 
                 [[self sharedInstance] prepareCryptoHelper];
             };
@@ -4135,25 +4146,27 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
 + (void)showVserionInfo {
     
-    NSString *pubnubLogo = @"| +--------+          +-+       +-+     +-+          +-+\n"
-    "| | +----+ |          | |       | |    /  |          | |\n"
-    "| | |    | |          | |       | |   / / |          | |\n"
-    "| | +----+ | +-+  +-+ | +-----\\ | |  / /| | +-+  +-+ | +-----\\\n"
-    "| | +------+ | |  | | | +---+ | | | / / | | | |  | | | +---+ |\n"
-    "| | |        | |  | | | |   | | | |/ /  | | | |  | | | |   | |\n"
-    "| | |        | +--+ | | +---+ | |   /   | | | +--+ | | +---+ |\n"
-    "| +-+        \\------/ +-------/ +--/    +-+ \\------/ +-------/\n|\n|\n";
-    NSString *informationBlockSeparator = @"\n+--------------------------------------------------------------\n";
+    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+       
+        return @[PNLoggerSymbols.api.clientInformation, kPNLibraryVersion, kPNCodebaseBranch, kPNCodeCommitIdentifier];
+    }];
+}
 
-    [PNLogger logGeneralMessageFrom:self message:^NSString * {
-
-        return [NSString stringWithFormat:@"\n\n%@%@| PubNub.com real-time messaging network information:\n| - version: %@\n| - git branch: %@\n| - commit identifier: %@%@\n\n",
-                                          informationBlockSeparator,
-                                          pubnubLogo,
-                                          kPNLibraryVersion,
-                                          kPNCodebaseBranch,
-                                          kPNCodeCommitIdentifier,
-                                          informationBlockSeparator];
++ (void)showConfigurationInfo {
+    
+    [PNLogger logGeneralMessageFrom:[self sharedInstance] withParametersFromBlock:^NSArray *{
+        
+        return @[PNLoggerSymbols.api.configurationInformation, ([self sharedInstance].configuration.origin ? [self sharedInstance].configuration.origin : [NSNull null]),
+                 ([self sharedInstance].configuration.publishKey ? PNObfuscateString([self sharedInstance].configuration.publishKey) : [NSNull null]),
+                 ([self sharedInstance].configuration.subscriptionKey ? PNObfuscateString([self sharedInstance].configuration.subscriptionKey) : [NSNull null]),
+                 ([self sharedInstance].configuration.secretKey ? PNObfuscateString([self sharedInstance].configuration.secretKey) : [NSNull null]),
+                 ([[self sharedInstance].configuration.cipherKey length] ? @"specified" : @"not specified"), @([self sharedInstance].configuration.subscriptionRequestTimeout),
+                 @([self sharedInstance].configuration.nonSubscriptionRequestTimeout), @([self sharedInstance].configuration.shouldAutoReconnectClient),
+                 @([self sharedInstance].configuration.shouldKeepTimeTokenOnChannelsListChange), @([self sharedInstance].configuration.shouldResubscribeOnConnectionRestore),
+                 @([self sharedInstance].configuration.shouldRestoreSubscriptionFromLastTimeToken), @([self sharedInstance].configuration.shouldUseSecureConnection),
+                 @([self sharedInstance].configuration.shouldReduceSecurityLevelOnError), @([self sharedInstance].configuration.canIgnoreSecureConnectionRequirement),
+                 @([self sharedInstance].configuration.shouldAcceptCompressedResponse), @([self sharedInstance].configuration.presenceHeartbeatTimeout),
+                 @([self sharedInstance].configuration.presenceHeartbeatInterval)];
     }];
 }
 
