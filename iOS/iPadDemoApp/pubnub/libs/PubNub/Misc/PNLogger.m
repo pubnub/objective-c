@@ -868,12 +868,12 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
             NSArray *parameters = parametersBlock();
             NSString *message = @"";
             NSString *messageToStore = @"";
-            if ([parameters count] == 1) {
+            if ([parameters count] == 1 && [[self sharedInstance] logEntryMessageForSymbol:[parameters lastObject]].length == 0) {
                 
                 message = [parameters lastObject];
                 messageToStore = message;
             }
-            else if ([parameters count] > 1){
+            else if ([parameters count]){
                 
                 // Extract symbol code and clear parameters array to be ready for format.
                 NSString *symbolCode = [parameters objectAtIndex:0];
@@ -887,10 +887,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                     // Composing initial entry prefix
                     message = [NSString stringWithFormat:@"%@ (%p) %@%@", NSStringFromClass([sender class]), sender,
                                (symbolPrefix ? symbolPrefix : @""), [[self sharedInstance] logEntryMessageForSymbol:symbolCode]];
-                    
-                    NSMutableData *vargList = [NSMutableData dataWithLength:(sizeof(id) * [parameters count])];
-                    [parameters getObjects:(__unsafe_unretained id *)vargList.mutableBytes range:NSMakeRange(0, [parameters count])];
-                    message = [[NSString alloc] initWithFormat:message arguments:vargList.mutableBytes];
+                    message = [NSString stringWithFormat:message argumentsArray:parameters];
                 }
                 
                 if ([self isDumpingToFile]) {

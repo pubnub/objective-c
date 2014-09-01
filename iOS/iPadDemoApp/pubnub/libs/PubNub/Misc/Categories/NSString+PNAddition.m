@@ -34,6 +34,28 @@
 @implementation NSString (PNAddition)
 
 
+#pragma mark - Class methods
+
++ (NSString *)stringWithFormat:(NSString *)format argumentsArray:(NSArray *)arguments {
+    
+    NSUInteger argumentIndex = 0;
+    NSMutableString *formattedString = [format mutableCopy];
+    NSRange replacementMarkRange = [formattedString rangeOfString:@"%@"];
+    while (replacementMarkRange.location != NSNotFound) {
+        
+        // Choose and apply argument which should be applied to corresponding token place.
+        id argument = (argumentIndex < [arguments count] ? [arguments objectAtIndex:argumentIndex] : @"");
+        [formattedString replaceCharactersInRange:replacementMarkRange withString:[argument description]];
+        
+        replacementMarkRange = [formattedString rangeOfString:@"%@"];
+        argumentIndex++;
+    }
+    
+    
+    return formattedString;
+}
+
+
 #pragma mark - Instance methods
 
 - (BOOL)isEmpty {
