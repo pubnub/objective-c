@@ -15,6 +15,25 @@
 @interface NSString (PNAddition)
 
 
+#pragma mark - Class methods
+
+
+/**
+ Create string using specified format and list of arguments.
+ @note This method accept for format only strings with "%@" tokens.
+ 
+ @param format
+ String which will be modified using arguments from array.
+ 
+ @param arguments
+ List of objects which should be applied to specified format.
+ 
+ 
+ @return formatted string.
+ */
++ (NSString *)stringWithFormat:(NSString *)format argumentsArray:(NSArray *)arguments;
+
+
 #pragma mark Instance methods
 
 /**
