@@ -163,7 +163,7 @@
     NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
     if ([authorizationKey length] > 0) {
 
-		authorizationKey = [NSString stringWithFormat:@"auth=%@", [authorizationKey percentEscapedString]];
+		authorizationKey = [NSString stringWithFormat:@"auth=%@", [authorizationKey pn_percentEscapedString]];
     }
     else {
 
@@ -226,7 +226,7 @@
         
         if ([self shouldCompressPOSTBody]) {
             
-            postBody = [postBody GZIPDeflate];
+            postBody = [postBody pn_GZIPDeflate];
         }
     }
     

@@ -400,11 +400,11 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
                         if ([self isGZIPCompressedTransfer:headers]) {
 
-                            responseBody = [responseBody GZIPInflate];
+                            responseBody = [responseBody pn_GZIPInflate];
                         }
                         else {
 
-                            responseBody = [responseBody inflate];
+                            responseBody = [responseBody pn_inflate];
                         }
                     }
 

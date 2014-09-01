@@ -108,7 +108,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     self.changeUUIDButton.enabled = [[PubNub sharedInstance] isConnected];
     if (self.changeUUIDButton.isEnabled && !self.clientUUIDImnputTextField.isHidden) {
         
-        self.changeUUIDButton.enabled = ![self.clientsUUID isEmpty];
+        self.changeUUIDButton.enabled = ![self.clientsUUID pn_isEmpty];
     }
     
     NSString *identifier = self.clientsUUID;

@@ -408,8 +408,8 @@
                 }];
             }
 
-            NSInvocation *invocation = [NSInvocation invocationForObject:self.serviceDelegate selector:selector
-                                                        retainsArguments:NO parameters:parameters];
+            NSInvocation *invocation = [NSInvocation pn_invocationForObject:self.serviceDelegate selector:selector
+                                                           retainsArguments:NO parameters:parameters];
             [invocation invoke];
         }
         else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {

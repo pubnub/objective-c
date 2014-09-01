@@ -249,7 +249,7 @@ typedef enum _PNHistoryMode {
 
 - (void)updateLayout {
     
-    self.requestHistoryButton.enabled = (self.historyHelper.channelName && ![self.historyHelper.channelName isEmpty] &&
+    self.requestHistoryButton.enabled = (self.historyHelper.channelName && ![self.historyHelper.channelName pn_isEmpty] &&
                                          !self.pagingModeSwitch.isOn);
     if (self.mode == PNPeriodChannelHistoryMode && self.requestHistoryButton.isEnabled) {
         
@@ -263,7 +263,7 @@ typedef enum _PNHistoryMode {
     
     self.messagesCountLimitTextField.text = [NSString stringWithFormat:@"%d", (unsigned int)self.historyHelper.maximumNumberOfMessages];
     
-    BOOL canUsePagedHistory = (self.historyHelper.channelName && ![self.historyHelper.channelName isEmpty]);
+    BOOL canUsePagedHistory = (self.historyHelper.channelName && ![self.historyHelper.channelName pn_isEmpty]);
     self.previousPageButton.enabled = canUsePagedHistory;
     self.previousPageButton.hidden = !self.pagingModeSwitch.isOn;
     self.nextPageButton.enabled = canUsePagedHistory;

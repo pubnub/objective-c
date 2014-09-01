@@ -36,7 +36,7 @@
 
 - (BOOL)isAbleToProcessRequest {
     
-    return self.clientIdentifier && ![self.clientIdentifier isEmpty];
+    return self.clientIdentifier && ![self.clientIdentifier pn_isEmpty];
 }
 
 - (NSArray *)channels {

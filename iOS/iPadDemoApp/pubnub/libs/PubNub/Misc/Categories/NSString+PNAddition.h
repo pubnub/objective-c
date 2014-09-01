@@ -31,7 +31,7 @@
  
  @return formatted string.
  */
-+ (NSString *)stringWithFormat:(NSString *)format argumentsArray:(NSArray *)arguments;
++ (NSString *)pn_stringWithFormat:(NSString *)format argumentsArray:(NSArray *)arguments;
 
 
 #pragma mark Instance methods
@@ -41,24 +41,24 @@
  
  @return \c YES if string doesn't contain any characters except newlines and spaces.
  */
-- (BOOL)isEmpty;
+- (BOOL)pn_isEmpty;
 
-- (NSString *)percentEscapedString;
+- (NSString *)pn_percentEscapedString;
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-- (NSString *)nonStringPercentEscapedString;
+- (NSString *)pn_nonStringPercentEscapedString;
 #endif
 
 /**
  * Generate string which is composed of ASCII char
  * codes
  */
-- (NSString *)ASCIIString;
+- (NSString *)pn_ASCIIString;
 
 /**
  * Generate string which is composed of HEX values
  * of ASCII char codes
  */
-- (NSString *)ASCIIHEXString;
+- (NSString *)pn_ASCIIHEXString;
 
 /**
  Allow to truncate string to specified length and truncate by specified parameter.
@@ -69,17 +69,17 @@
  @param lineBreakMode
  Specify what kind of truncation logic should be used: NSLineBreakModeClip, NSLineBreakModeHeadTruncation, NSLineBreakModeTailTruncation or NSLineBreakModeMiddleTruncation.
  */
-- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode;
+- (NSString *)pn_truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode;
 
 
 #pragma mark - Cryptography methods
 
-- (NSData *)sha256Data;
-- (NSString *)sha256HEXString;
-- (NSString *)base64DecodedString;
+- (NSData *)pn_sha256Data;
+- (NSString *)pn_sha256HEXString;
+- (NSString *)pn_base64DecodedString;
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-- (NSData *)md5Data;
+- (NSData *)pn_md5Data;
 #endif
 
 #pragma mark -

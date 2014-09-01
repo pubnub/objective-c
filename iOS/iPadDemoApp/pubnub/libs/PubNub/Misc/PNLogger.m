@@ -887,7 +887,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                     // Composing initial entry prefix
                     message = [NSString stringWithFormat:@"%@ (%p) %@%@", NSStringFromClass([sender class]), sender,
                                (symbolPrefix ? symbolPrefix : @""), [[self sharedInstance] logEntryMessageForSymbol:symbolCode]];
-                    message = [NSString stringWithFormat:message argumentsArray:parameters];
+                    message = [NSString pn_stringWithFormat:message argumentsArray:parameters];
                 }
                 
                 if ([self isDumpingToFile]) {

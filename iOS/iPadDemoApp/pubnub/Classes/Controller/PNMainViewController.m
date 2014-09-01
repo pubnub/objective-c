@@ -669,7 +669,7 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     
     BOOL isSubscribed = [[PNDataManager sharedInstance].subscribedChannelsList count] > 0;
     BOOL isChannelSelected = [PNDataManager sharedInstance].currentChannel != nil;
-    BOOL isEmptyMessage = message == nil || [message isEmpty];
+    BOOL isEmptyMessage = message == nil || [message pn_isEmpty];
     
     if (!isChannelSelected) {
         
