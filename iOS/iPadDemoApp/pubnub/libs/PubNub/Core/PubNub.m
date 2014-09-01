@@ -38,8 +38,8 @@
 
 #pragma mark Static
 
-static NSString * const kPNCodebaseBranch = @"develop";
-static NSString * const kPNCodeCommitIdentifier = @"6fc7827a5301b42c903c604ccc5d2abcf4a03276";
+static NSString * const kPNCodebaseBranch = @"fix-pt76892416";
+static NSString * const kPNCodeCommitIdentifier = @"0f8d12b05ad0c7e5f410445ce213632f63c1c0dc";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -1574,7 +1574,7 @@ withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-        if (statusCode == 0 && mergedClientState && (![mergedClientState isValidState] || ![[self subscribedChannels] containsObject:channel])) {
+        if (statusCode == 0 && mergedClientState && (![mergedClientState pn_isValidState] || ![[self subscribedChannels] containsObject:channel])) {
             
             statusCode = kPNInvalidStatePayloadError;
             if (![[self subscribedChannels] containsObject:channel]) {
@@ -1736,7 +1736,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-        if (statusCode == 0 && clientState && ![clientState isValidState]) {
+        if (statusCode == 0 && clientState && ![clientState pn_isValidState]) {
             
             statusCode = kPNInvalidStatePayloadError;
         }
@@ -6461,7 +6461,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (BOOL)canRunInBackground {
     
-    BOOL canRunInBackground = [UIApplication canRunInBackground];
+    BOOL canRunInBackground = [UIApplication pn_canRunInBackground];
     
     if ([self.delegate respondsToSelector:@selector(shouldRunClientInBackground)]) {
         

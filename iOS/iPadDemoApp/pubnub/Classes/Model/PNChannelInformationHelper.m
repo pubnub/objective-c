@@ -74,7 +74,7 @@
 
 - (BOOL)canCreateChannel {
     
-    BOOL canCreateChannel = (self.channelName ? ![self.channelName isEmpty] : NO);
+    BOOL canCreateChannel = (self.channelName ? ![self.channelName pn_isEmpty] : NO);
     if (canCreateChannel && self.state != nil) {
         
         canCreateChannel = [self.state isKindOfClass:[NSDictionary class]];
@@ -87,7 +87,7 @@
 - (BOOL)shouldChangePresenceObservationState {
     
     BOOL shouldChangePresenceObservationState = NO;
-    PNChannel *channel = (self.channelName && ![self.channelName isEmpty] ? [PNChannel channelWithName:self.channelName] : nil);
+    PNChannel *channel = (self.channelName && ![self.channelName pn_isEmpty] ? [PNChannel channelWithName:self.channelName] : nil);
     if (channel && [PubNub isSubscribedOnChannel:channel]) {
         
         shouldChangePresenceObservationState = self.observePresence != [PubNub isPresenceObservationEnabledForChannel:channel];
@@ -100,7 +100,7 @@
 - (BOOL)shouldChangeChannelState {
     
     BOOL shouldChangeChannelState = NO;
-    PNChannel *channel = (self.channelName && ![self.channelName isEmpty] ? [PNChannel channelWithName:self.channelName] : nil);
+    PNChannel *channel = (self.channelName && ![self.channelName pn_isEmpty] ? [PNChannel channelWithName:self.channelName] : nil);
     if (channel && [PubNub isSubscribedOnChannel:channel]) {
         
         shouldChangeChannelState = [self.state isEqualToDictionary:self.originalState];
@@ -121,7 +121,7 @@
             // Checking whether user provided some data or not
             if (self.state) {
                 
-                isChannelStateValid = [@{self.channelName: self.state} isValidState];
+                isChannelStateValid = [@{self.channelName : self.state} pn_isValidState];
             }
         }
         else {
