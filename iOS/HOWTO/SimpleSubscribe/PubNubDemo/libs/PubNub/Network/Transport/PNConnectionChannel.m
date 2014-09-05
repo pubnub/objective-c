@@ -447,18 +447,18 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     };
 
     // Check whether connection already suspended but channel internal state is out of sync
-    if ([self.connection isSuspended] && ![self isSuspended]) {
-
+    if ([self.connection isSuspended] && ![self.connection isResuming] && ![self isSuspended]) {
+        
         [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
-
+            
             return @[PNLoggerSymbols.connectionChannel.outOfSyncWithSuspension, (self.name ? self.name : self),
                      @(self.state)];
         }];
-
+        
         suspensionCompletionSimulation();
     }
-    // Checking whether data connection is suspended or not
-    else if (![self.connection isSuspended]) {
+    // Checking whether data connection is suspended or try to resume
+    else if (![self.connection isSuspended] || [self.connection isResuming]) {
 
         [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 

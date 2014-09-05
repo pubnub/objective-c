@@ -15,9 +15,9 @@
 
 #import "PNResponseDeserialize.h"
 #import "NSData+PNAdditions.h"
+#import "PNLogger+Protected.h"
 #import "PNLoggerSymbols.h"
 #import "PNResponse.h"
-#import "PNLogger.h"
 
 
 // ARC check
@@ -400,11 +400,11 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
                         if ([self isGZIPCompressedTransfer:headers]) {
 
-                            responseBody = [responseBody GZIPInflate];
+                            responseBody = [responseBody pn_GZIPInflate];
                         }
                         else {
 
-                            responseBody = [responseBody inflate];
+                            responseBody = [responseBody pn_inflate];
                         }
                     }
 

@@ -99,7 +99,7 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
         self.channels = [NSArray arrayWithArray:channels];
         self.targetState = state;
         self.devicePushToken = pushToken;
-        self.pushToken = [[pushToken HEXPushToken] lowercaseString];
+        self.pushToken = [[pushToken pn_HEXPushToken] lowercaseString];
     }
 
 
@@ -126,17 +126,22 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 - (NSString *)resourcePath {
 
     return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@?%@=%@&callback=%@_%@&uuid=%@%@&pnsdk=%@",
-            [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-            self.pushToken, self.targetState, [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-            [self callbackMethodName], self.shortIdentifier, [PubNub escapedClientIdentifier],
-            ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
-            [self clientInformationField]];
+                                      [[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString],
+                                      self.pushToken,
+                                      self.targetState,
+                                      [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
+                                      [self callbackMethodName],
+                                      self.shortIdentifier,
+                                      [PubNub escapedClientIdentifier],
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                                                                              [self authorizationField]] : @""),
+                                      [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

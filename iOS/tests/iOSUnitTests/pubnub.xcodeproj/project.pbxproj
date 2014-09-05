@@ -57,8 +57,6 @@
 		960D7929196459DF00F8A89F /* ChannelLimitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E6196459DF00F8A89F /* ChannelLimitTest.m */; };
 		960D792A196459DF00F8A89F /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E7196459DF00F8A89F /* Configuration.m */; };
 		960D792B196459DF00F8A89F /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E7196459DF00F8A89F /* Configuration.m */; };
-		960D792C196459DF00F8A89F /* NSData+PNAdditionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E8196459DF00F8A89F /* NSData+PNAdditionsTest.m */; };
-		960D792D196459DF00F8A89F /* NSData+PNAdditionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E8196459DF00F8A89F /* NSData+PNAdditionsTest.m */; };
 		960D792E196459DF00F8A89F /* NSString+PNAdditionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E9196459DF00F8A89F /* NSString+PNAdditionTest.m */; };
 		960D792F196459DF00F8A89F /* NSString+PNAdditionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E9196459DF00F8A89F /* NSString+PNAdditionTest.m */; };
 		960D7930196459DF00F8A89F /* OversizedJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78EA196459DF00F8A89F /* OversizedJSON.m */; };
@@ -145,6 +143,9 @@
 		960D7981196459DF00F8A89F /* TimeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D791F196459DF00F8A89F /* TimeCommand.m */; };
 		960D7982196459DF00F8A89F /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D7921196459DF00F8A89F /* W_ChaosTest.m */; };
 		960D7983196459DF00F8A89F /* W_ChaosTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D7921196459DF00F8A89F /* W_ChaosTest.m */; };
+		963AD66E19B8A22100B45E27 /* NSData+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BE719AF80AD00D59197 /* NSData+PNAdditions.m */; };
+		963AD66F19B8A23900B45E27 /* NSData+PNAdditionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E8196459DF00F8A89F /* NSData+PNAdditionsTest.m */; };
+		963AD67019B8A23A00B45E27 /* NSData+PNAdditionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E8196459DF00F8A89F /* NSData+PNAdditionsTest.m */; };
 		96831B6917500135002F150F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71BF43E328EDCD6FF8F254 /* Security.framework */; };
 		96831B6A17500139002F150F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
 		96831B6B1750013B002F150F /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */; };
@@ -189,7 +190,6 @@
 		96CE0C7419AF80AD00D59197 /* PNResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BDE19AF80AD00D59197 /* PNResponse.m */; };
 		96CE0C7519AF80AD00D59197 /* PNWhereNow.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BE119AF80AD00D59197 /* PNWhereNow.m */; };
 		96CE0C7619AF80AD00D59197 /* NSArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BE519AF80AD00D59197 /* NSArray+PNAdditions.m */; };
-		96CE0C7719AF80AD00D59197 /* NSData+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BE719AF80AD00D59197 /* NSData+PNAdditions.m */; };
 		96CE0C7819AF80AD00D59197 /* NSDate+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BE919AF80AD00D59197 /* NSDate+PNAdditions.m */; };
 		96CE0C7919AF80AD00D59197 /* NSDictionary+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BEB19AF80AD00D59197 /* NSDictionary+PNAdditions.m */; };
 		96CE0C7A19AF80AD00D59197 /* NSError+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BED19AF80AD00D59197 /* NSError+PNAdditions.m */; };
@@ -1568,10 +1568,10 @@
 				960D794D196459DF00F8A89F /* PNConnectionTest.m in Sources */,
 				960D7957196459DF00F8A89F /* PNErrorTest.m in Sources */,
 				960D7935196459DF00F8A89F /* PNAccessRightOptionsTest.m in Sources */,
+				963AD66F19B8A23900B45E27 /* NSData+PNAdditionsTest.m in Sources */,
 				960D796D196459DF00F8A89F /* PNOperationStatusResponseParserTest.m in Sources */,
 				960D7959196459DF00F8A89F /* PNHereNowRequestTest.m in Sources */,
 				960D7923196459DF00F8A89F /* AbbreviatedPresenceTest.m in Sources */,
-				960D792D196459DF00F8A89F /* NSData+PNAdditionsTest.m in Sources */,
 				5AFDFD6518EACCB9004FDD28 /* Swizzler.m in Sources */,
 				960D7955196459DF00F8A89F /* PNErrorResponseParserTest.m in Sources */,
 				960D7971196459DF00F8A89F /* PNPushNotificationsEnabledChannelsParserTest.m in Sources */,
@@ -1617,7 +1617,6 @@
 				96CE0C5F19AF80AD00D59197 /* PNOperationStatusResponseParser.m in Sources */,
 				96CE0C8B19AF80AD00D59197 /* PNLeaveRequest.m in Sources */,
 				96CE0C7419AF80AD00D59197 /* PNResponse.m in Sources */,
-				96CE0C7719AF80AD00D59197 /* NSData+PNAdditions.m in Sources */,
 				96CE0C9219AF80AD00D59197 /* PNTimeTokenRequest.m in Sources */,
 				96CE0C5C19AF80AD00D59197 /* PNClientStateUpdateResponseParser.m in Sources */,
 				96CE0C8919AF80AD00D59197 /* PNHereNowRequest.m in Sources */,
@@ -1627,6 +1626,7 @@
 				96CE0C6019AF80AD00D59197 /* PNPushNotificationsEnabledChannelsParser.m in Sources */,
 				96D23C9C19336F6800717966 /* PNBaseTestCase.m in Sources */,
 				96CE0C5619AF80AD00D59197 /* PNCryptoHelper.m in Sources */,
+				963AD66E19B8A22100B45E27 /* NSData+PNAdditions.m in Sources */,
 				96CE0C5819AF80AD00D59197 /* PNActionResponseParser.m in Sources */,
 				96CE0C5519AF80AD00D59197 /* PNPresenceEvent.m in Sources */,
 				96CE0C6519AF80AD00D59197 /* PNAccessRightOptions.m in Sources */,
@@ -1715,8 +1715,8 @@
 				960D7934196459DF00F8A89F /* PNAccessRightOptionsTest.m in Sources */,
 				960D796C196459DF00F8A89F /* PNOperationStatusResponseParserTest.m in Sources */,
 				960D7958196459DF00F8A89F /* PNHereNowRequestTest.m in Sources */,
+				963AD67019B8A23A00B45E27 /* NSData+PNAdditionsTest.m in Sources */,
 				960D7922196459DF00F8A89F /* AbbreviatedPresenceTest.m in Sources */,
-				960D792C196459DF00F8A89F /* NSData+PNAdditionsTest.m in Sources */,
 				5ACCA97C17F3201D00FE90CF /* Swizzler.m in Sources */,
 				960D7954196459DF00F8A89F /* PNErrorResponseParserTest.m in Sources */,
 				960D7970196459DF00F8A89F /* PNPushNotificationsEnabledChannelsParserTest.m in Sources */,

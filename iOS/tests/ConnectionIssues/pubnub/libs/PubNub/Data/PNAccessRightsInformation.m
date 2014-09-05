@@ -9,7 +9,9 @@
 
 #import "PNAccessRightsInformation+Protected.h"
 #import "PNAccessRightOptions+Protected.h"
+#import "PNChannel.h"
 #import "PNHelper.h"
+#import "PNMacro.h"
 
 
 // ARC check
@@ -142,12 +144,18 @@
                                        @(self.rights), (unsigned long)self.accessPeriodDuration];
     if (self.level == PNChannelAccessRightsLevel) {
         
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
         [logDescription appendFormat:@"|%@", (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null])];
+        #pragma clang diagnostic pop
     }
     else if (self.level == PNUserAccessRightsLevel) {
         
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
         [logDescription appendFormat:@"|%@|%@", self.authorizationKey,
          (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null])];
+        #pragma clang diagnostic pop
     }
     [logDescription appendString:@">"];
 

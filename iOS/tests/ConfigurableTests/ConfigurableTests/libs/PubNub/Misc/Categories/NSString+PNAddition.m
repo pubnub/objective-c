@@ -23,8 +23,8 @@
 
 @interface NSString (PNAdditionPrivate)
 
-- (NSString *)percentEscapedStringWithEscapeString:(NSString *)stringWithCharsForEscape;
-- (NSString *)ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes;
+- (NSString *)pn_percentEscapedStringWithEscapeString:(NSString *)stringWithCharsForEscape;
+- (NSString *)pn_ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes;
 
 @end
 
@@ -34,9 +34,31 @@
 @implementation NSString (PNAddition)
 
 
+#pragma mark - Class methods
+
++ (NSString *)pn_stringWithFormat:(NSString *)format argumentsArray:(NSArray *)arguments {
+    
+    NSUInteger argumentIndex = 0;
+    NSMutableString *formattedString = [format mutableCopy];
+    NSRange replacementMarkRange = [formattedString rangeOfString:@"%@"];
+    while (replacementMarkRange.location != NSNotFound) {
+        
+        // Choose and apply argument which should be applied to corresponding token place.
+        id argument = (argumentIndex < [arguments count] ? [arguments objectAtIndex:argumentIndex] : @"");
+        [formattedString replaceCharactersInRange:replacementMarkRange withString:[argument description]];
+        
+        replacementMarkRange = [formattedString rangeOfString:@"%@"];
+        argumentIndex++;
+    }
+    
+    
+    return formattedString;
+}
+
+
 #pragma mark - Instance methods
 
-- (BOOL)isEmpty {
+- (BOOL)pn_isEmpty {
     
     static NSCharacterSet *nonNewlineCharSet;
     static dispatch_once_t onceToken;
@@ -49,19 +71,19 @@
     return [[[self stringByReplacingOccurrencesOfString:@" " withString:@""] stringByTrimmingCharactersInSet:nonNewlineCharSet] length] == 0;
 }
 
-- (NSString *)percentEscapedString {
+- (NSString *)pn_percentEscapedString {
 
-    return [self percentEscapedStringWithEscapeString:@":/?#[]@!$&’()*+,;="];
+    return [self pn_percentEscapedStringWithEscapeString:@":/?#[]@!$&’()*+,;="];
 }
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-- (NSString *)nonStringPercentEscapedString {
+- (NSString *)pn_nonStringPercentEscapedString {
 
-    return [self percentEscapedStringWithEscapeString:@":/?#[]@!$&’()*+;="];
+    return [self pn_percentEscapedStringWithEscapeString:@":/?#[]@!$&’()*+;="];
 }
 #endif
 
-- (NSString *)percentEscapedStringWithEscapeString:(NSString *)stringWithCharsForEscape {
+- (NSString *)pn_percentEscapedStringWithEscapeString:(NSString *)stringWithCharsForEscape {
 
     NSString *newlineEscapedString = [self stringByReplacingOccurrencesOfString:@"\n" withString:@"%5Cn"];
     newlineEscapedString = [newlineEscapedString stringByReplacingOccurrencesOfString:@"\r" withString:@"%5Cr"];
@@ -75,17 +97,17 @@
     return CFBridgingRelease(escapedString);
 }
 
-- (NSString *)ASCIIString {
+- (NSString *)pn_ASCIIString {
 
-    return [self ASCIIStringHEXEncodedString:NO];
+    return [self pn_ASCIIStringHEXEncodedString:NO];
 }
 
-- (NSString *)ASCIIHEXString {
+- (NSString *)pn_ASCIIHEXString {
 
-    return [self ASCIIStringHEXEncodedString:YES];
+    return [self pn_ASCIIStringHEXEncodedString:YES];
 }
 
-- (NSString *)ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes {
+- (NSString *)pn_ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes {
 
     NSMutableString *asciiString = [NSMutableString stringWithCapacity:([self length]*2.0f)];
     NSUInteger charIdx, charsCount = [self length];
@@ -99,7 +121,7 @@
     return asciiString;
 }
 
-- (NSString *)truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode {
+- (NSString *)pn_truncatedString:(NSUInteger)length lineBreakMode:(NSLineBreakMode)lineBreakMode {
 
     NSString *truncatedString = self;
     if (length < self.length) {
@@ -158,7 +180,7 @@
 
 #pragma mark - Cryptography methods
 
-- (NSData *)sha256Data {
+- (NSData *)pn_sha256Data {
 
     unsigned char hashedData[CC_SHA256_DIGEST_LENGTH];
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
@@ -168,18 +190,18 @@
     return [NSData dataWithBytes:hashedData length:CC_SHA256_DIGEST_LENGTH];
 }
 
-- (NSString *)sha256HEXString {
+- (NSString *)pn_sha256HEXString {
 
-    return [[[self sha256Data] HEXString] lowercaseString];
+    return [[[self pn_sha256Data] pn_HEXString] lowercaseString];
 }
 
-- (NSString *)base64DecodedString {
+- (NSString *)pn_base64DecodedString {
 
-    return [NSString stringWithUTF8String:[[NSData dataFromBase64String:self] bytes]];
+    return [NSString stringWithUTF8String:[[NSData pn_dataFromBase64String:self] bytes]];
 }
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-- (NSData *)md5Data {
+- (NSData *)pn_md5Data {
 
     const char *src = [self UTF8String];
     unsigned char result[CC_MD5_DIGEST_LENGTH];

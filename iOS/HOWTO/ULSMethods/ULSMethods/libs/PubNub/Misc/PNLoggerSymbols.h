@@ -1611,9 +1611,15 @@ struct PNLoggerSymbolsStructure {
 
         // Parameters requirements: [code]
         __unsafe_unretained NSString *destroyed;
-
+        
         // Parameters requirements: [code, origin name, stringified state]
         __unsafe_unretained NSString *willConnect;
+        
+        // Parameters requirements: [code, version, git branch name, commit SHA]
+        __unsafe_unretained NSString *clientInformation;
+        
+        // Parameters requirements: [code, origin name, publish key, subscribe key, secret key, whether cipher key used, subscribe requests timeout, non-subscribe requests timeout, whether should reconnect on network restore, whether should keep previous time token on channels list change, whether should resubscribe on connection restore, whether should use previous token during resubscription process, whether should use secure connection, whether allowed to decrease security level, whetehr allowed to use unsecure connection, whether allowed to receive GZIP compressed responses, presence heartbeat timeout, presence heartbeat interval]
+        __unsafe_unretained NSString *configurationInformation;
     } api;
     
     // Observation center symbols. Group code: 10xxyyy

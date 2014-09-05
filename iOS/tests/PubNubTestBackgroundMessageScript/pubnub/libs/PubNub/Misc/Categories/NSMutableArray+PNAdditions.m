@@ -23,12 +23,12 @@
 
 #pragma mark - Class methods
 
-+ (NSMutableArray *)arrayUsingWeakReferences {
++ (NSMutableArray *)pn_arrayUsingWeakReferences {
     
-    return [self arrayUsingWeakReferencesWithCapacity:0];
+    return [self pn_arrayUsingWeakReferencesWithCapacity:0];
 }
 
-+ (NSMutableArray *)arrayUsingWeakReferencesWithCapacity:(NSUInteger)capacity {
++ (NSMutableArray *)pn_arrayUsingWeakReferencesWithCapacity:(NSUInteger)capacity {
     
     CFArrayCallBacks callbacks = {0, NULL, NULL, NULL, CFEqual};
     

@@ -24,27 +24,22 @@
 
 #pragma mark - Class methods
 
-+ (NSInvocation *)invocationForObject:(id)targetObject
-                             selector:(SEL)selector
++ (NSInvocation *)pn_invocationForObject:(id)targetObject selector:(SEL)selector
                      retainsArguments:(BOOL)shouldRetainArguments, ... NS_REQUIRES_NIL_TERMINATION {
 
     // Compose list of parameters
     va_list parametersList;
     va_start(parametersList, shouldRetainArguments);
-    NSArray *parameters = [NSArray arrayWithVarietyList:parametersList];
+    NSArray *parameters = [NSArray pn_arrayWithVarietyList:parametersList];
     va_end(parametersList);
 
 
-    return [self invocationForObject:targetObject
-                            selector:selector
-                    retainsArguments:shouldRetainArguments
-                          parameters:parameters];
+    return [self pn_invocationForObject:targetObject selector:selector retainsArguments:shouldRetainArguments
+                             parameters:parameters];
 }
 
-+ (NSInvocation *)invocationForObject:(id)targetObject
-                             selector:(SEL)selector
-                     retainsArguments:(BOOL)shouldRetainArguments
-                           parameters:(NSArray *)parameters {
++ (NSInvocation *)pn_invocationForObject:(id)targetObject selector:(SEL)selector retainsArguments:(BOOL)shouldRetainArguments
+                              parameters:(NSArray *)parameters {
 
     // Initialze variables required to perform postponed method call
     int signatureParameterOffset = 2;

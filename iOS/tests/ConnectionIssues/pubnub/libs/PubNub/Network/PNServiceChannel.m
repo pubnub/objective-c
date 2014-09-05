@@ -148,7 +148,7 @@
                 [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
                     return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestCompleted, (self.name ? self.name : self),
-                             [parser parsedData]];
+                             (parser ? [parser parsedData] : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didReceiveTimeToken:[parser parsedData]];
@@ -408,8 +408,8 @@
                 }];
             }
 
-            NSInvocation *invocation = [NSInvocation invocationForObject:self.serviceDelegate selector:selector
-                                                        retainsArguments:NO parameters:parameters];
+            NSInvocation *invocation = [NSInvocation pn_invocationForObject:self.serviceDelegate selector:selector
+                                                           retainsArguments:NO parameters:parameters];
             [invocation invoke];
         }
         else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
@@ -476,7 +476,7 @@
                 [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
                     return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestCompleted, (self.name ? self.name : self),
-                            (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                             (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
                              (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
                              (parsedData ? parsedData : [NSNull null])];
                 }];
@@ -642,7 +642,7 @@
                      (historyRequest.startDate ? historyRequest.startDate : [NSNull null]),
                      (historyRequest.endDate ? historyRequest.endDate : [NSNull null]), @(historyRequest.limit),
                      @(historyRequest.shouldRevertMessages), @(historyRequest.shouldIncludeTimeToken),
-                    (error ? error : [NSNull null])];
+                     (error ? error : [NSNull null])];
         }];
         
         // Notify delegate about message history download failed
@@ -677,7 +677,8 @@
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
             return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestFailed, (self.name ? self.name : self),
-                    ((PNWhereNowRequest *)request).identifier, (error ? error : [NSNull null])];
+                     (((PNWhereNowRequest *)request).identifier ? ((PNWhereNowRequest *)request).identifier : [NSNull null]),
+                     (error ? error : [NSNull null])];
         }];
 
         // Notify delegate about participant channels list can't be downloaded.
@@ -699,7 +700,7 @@
             [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
                 return @[PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestFailed, (self.name ? self.name : self),
-                        (error.associatedObject ? error.associatedObject : [NSNull null]), (channels ? channels : [NSNull null]),
+                         (error.associatedObject ? error.associatedObject : [NSNull null]), (channels ? channels : [NSNull null]),
                          (error ? error : [NSNull null])];
             }];
 

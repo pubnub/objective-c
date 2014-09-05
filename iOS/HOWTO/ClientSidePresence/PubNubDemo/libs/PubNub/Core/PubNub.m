@@ -10,7 +10,9 @@
 #import "PNConnectionChannel+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-#import "UIApplication+PNAdditions.h"
+    #import "UIApplication+PNAdditions.h"
+#else
+    #import <AppKit/AppKit.h>
 #endif
 #import "PNAccessRightOptions+Protected.h"
 #import "PNServiceChannelDelegate.h"
@@ -27,6 +29,8 @@
 #import "PNConstants.h"
 #import "PNHelper.h"
 #import "PNCache.h"
+#import "PNMacro.h"
+#import "PNDate.h"
 
 
 // ARC check
@@ -38,8 +42,8 @@
 
 #pragma mark Static
 
-static NSString * const kPNCodebaseBranch = @"develop";
-static NSString * const kPNCodeCommitIdentifier = @"1c5942813310aebdb24fb5520f9bbff2e35aad8d";
+static NSString * const kPNCodebaseBranch = @"develop-pt77055716";
+static NSString * const kPNCodeCommitIdentifier = @"193031403b05b7879f6b0b808325be3d3f71c6bd";
 
 // Stores reference on singleton PubNub instance
 static PubNub *_sharedInstance = nil;
@@ -241,6 +245,11 @@ static NSMutableArray *pendingInvocations = nil;
  * Print out PubNub library information
  */
 + (void)showVserionInfo;
+
+/**
+ * Print out PubNub client configuration information
+ */
++ (void)showConfigurationInfo;
 
 + (NSString *)humanReadableStateFrom:(PNPubNubClientState)state;
 
@@ -738,8 +747,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                         [PNLogger logGeneralMessageFrom:[self sharedInstance] withParametersFromBlock:^NSArray *{
 
-                            return @[PNLoggerSymbols.api.willConnect, [self sharedInstance].configuration.origin,
-                                    [self humanReadableStateFrom:[self sharedInstance].state]];
+                            return @[PNLoggerSymbols.api.willConnect,
+                                     ([self sharedInstance].configuration.origin ? [self sharedInstance].configuration.origin : [NSNull null]),
+                                     [self humanReadableStateFrom:[self sharedInstance].state]];
                         }];
                         
                         BOOL channelsDestroyed = ([self sharedInstance].messagingChannel == nil &&
@@ -1013,8 +1023,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             [PNLogger logGeneralMessageFrom:[self sharedInstance] withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.api.disconnected, [self sharedInstance].configuration.origin,
-                        [self humanReadableStateFrom:[self sharedInstance].state]];
+                return @[PNLoggerSymbols.api.disconnected,
+                         ([self sharedInstance].configuration.origin ? [self sharedInstance].configuration.origin : [NSNull null]),
+                         [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
             
             [[self sharedInstance] flushPostponedMethods:YES];
@@ -1031,8 +1042,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             [PNLogger logGeneralMessageFrom:[self sharedInstance] withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.api.disconnected, [self sharedInstance].configuration.origin,
-                        [self humanReadableStateFrom:[self sharedInstance].state]];
+                return @[PNLoggerSymbols.api.disconnected,
+                         ([self sharedInstance].configuration.origin ? [self sharedInstance].configuration.origin : [NSNull null]),
+                         [self humanReadableStateFrom:[self sharedInstance].state]];
             }];
         }
         
@@ -1051,6 +1063,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 [self sharedInstance].temporaryConfiguration = nil;
                 
                 [[self sharedInstance] prepareCryptoHelper];
+                [self showConfigurationInfo];
                 
                 // Refresh reachability configuration
                 [[self sharedInstance].reachability startServiceReachabilityMonitoring];
@@ -1163,6 +1176,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             void(^updateConfigurationBlock)(void) = ^{
                 
                 [self sharedInstance].configuration = configuration;
+                [self showConfigurationInfo];
                 
                 [[self sharedInstance] prepareCryptoHelper];
             };
@@ -1233,6 +1247,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 [self sharedInstance].state = PNPubNubClientStateDisconnected;
                 
                 reachabilityConfigurationBlock(isInitialConfiguration);
+                [self sharedInstance].asyncLockingOperationInProgress = NO;
                 
                 [self connect];
             }
@@ -1570,7 +1585,7 @@ withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-        if (statusCode == 0 && mergedClientState && (![mergedClientState isValidState] || ![[self subscribedChannels] containsObject:channel])) {
+        if (statusCode == 0 && mergedClientState && (![mergedClientState pn_isValidState] || ![[self subscribedChannels] containsObject:channel])) {
             
             statusCode = kPNInvalidStatePayloadError;
             if (![[self subscribedChannels] containsObject:channel]) {
@@ -1732,7 +1747,7 @@ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBloc
         
         // Check whether client is able to send request or not
         NSInteger statusCode = [[self sharedInstance] requestExecutionPossibilityStatusCode];
-        if (statusCode == 0 && clientState && ![clientState isValidState]) {
+        if (statusCode == 0 && clientState && ![clientState pn_isValidState]) {
             
             statusCode = kPNInvalidStatePayloadError;
         }
@@ -4131,25 +4146,27 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
 + (void)showVserionInfo {
     
-    NSString *pubnubLogo = @"| +--------+          +-+       +-+     +-+          +-+\n"
-    "| | +----+ |          | |       | |    /  |          | |\n"
-    "| | |    | |          | |       | |   / / |          | |\n"
-    "| | +----+ | +-+  +-+ | +-----\\ | |  / /| | +-+  +-+ | +-----\\\n"
-    "| | +------+ | |  | | | +---+ | | | / / | | | |  | | | +---+ |\n"
-    "| | |        | |  | | | |   | | | |/ /  | | | |  | | | |   | |\n"
-    "| | |        | +--+ | | +---+ | |   /   | | | +--+ | | +---+ |\n"
-    "| +-+        \\------/ +-------/ +--/    +-+ \\------/ +-------/\n|\n|\n";
-    NSString *informationBlockSeparator = @"\n+--------------------------------------------------------------\n";
+    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+       
+        return @[PNLoggerSymbols.api.clientInformation, kPNLibraryVersion, kPNCodebaseBranch, kPNCodeCommitIdentifier];
+    }];
+}
 
-    [PNLogger logGeneralMessageFrom:self message:^NSString * {
-
-        return [NSString stringWithFormat:@"\n\n%@%@| PubNub.com real-time messaging network information:\n| - version: %@\n| - git branch: %@\n| - commit identifier: %@%@\n\n",
-                                          informationBlockSeparator,
-                                          pubnubLogo,
-                                          kPNLibraryVersion,
-                                          kPNCodebaseBranch,
-                                          kPNCodeCommitIdentifier,
-                                          informationBlockSeparator];
++ (void)showConfigurationInfo {
+    
+    [PNLogger logGeneralMessageFrom:[self sharedInstance] withParametersFromBlock:^NSArray *{
+        
+        return @[PNLoggerSymbols.api.configurationInformation, ([self sharedInstance].configuration.origin ? [self sharedInstance].configuration.origin : [NSNull null]),
+                 ([self sharedInstance].configuration.publishKey ? PNObfuscateString([self sharedInstance].configuration.publishKey) : [NSNull null]),
+                 ([self sharedInstance].configuration.subscriptionKey ? PNObfuscateString([self sharedInstance].configuration.subscriptionKey) : [NSNull null]),
+                 ([self sharedInstance].configuration.secretKey ? PNObfuscateString([self sharedInstance].configuration.secretKey) : [NSNull null]),
+                 ([[self sharedInstance].configuration.cipherKey length] ? @"specified" : @"not specified"), @([self sharedInstance].configuration.subscriptionRequestTimeout),
+                 @([self sharedInstance].configuration.nonSubscriptionRequestTimeout), @([self sharedInstance].configuration.shouldAutoReconnectClient),
+                 @([self sharedInstance].configuration.shouldKeepTimeTokenOnChannelsListChange), @([self sharedInstance].configuration.shouldResubscribeOnConnectionRestore),
+                 @([self sharedInstance].configuration.shouldRestoreSubscriptionFromLastTimeToken), @([self sharedInstance].configuration.shouldUseSecureConnection),
+                 @([self sharedInstance].configuration.shouldReduceSecurityLevelOnError), @([self sharedInstance].configuration.canIgnoreSecureConnectionRequirement),
+                 @([self sharedInstance].configuration.shouldAcceptCompressedResponse), @([self sharedInstance].configuration.presenceHeartbeatTimeout),
+                 @([self sharedInstance].configuration.presenceHeartbeatInterval)];
     }];
 }
 
@@ -4647,7 +4664,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return @[PNLoggerSymbols.api.connectionChannelConnected, (channel.name ? channel.name : channel),
+        return @[PNLoggerSymbols.api.connectionChannelConnected, (channel ? (channel.name ? channel.name : channel) : [NSNull null]),
                 (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]), [self humanReadableStateFrom:self.state]];
     }];
     
@@ -4684,9 +4701,10 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return @[PNLoggerSymbols.api.connectionChannelReconnected, (channel.name ? channel.name : channel),
-                (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
-                [self humanReadableStateFrom:self.state]];
+        return @[PNLoggerSymbols.api.connectionChannelReconnected,
+                 (channel ? (channel.name ? channel.name : channel) : [NSNull null]),
+                 (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
+                 [self humanReadableStateFrom:self.state]];
     }];
 
     // Check whether received event from same host on which client is configured or not and client connected at this
@@ -4697,9 +4715,10 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.api.anotherConnectionChannelNotReconnectedYet, (channel.name ? channel.name : channel),
-                        (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
-                        [self humanReadableStateFrom:self.state]];
+                return @[PNLoggerSymbols.api.anotherConnectionChannelNotReconnectedYet,
+                         (channel ? (channel.name ? channel.name : channel) : [NSNull null]),
+                         (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
+                         [self humanReadableStateFrom:self.state]];
             }];
             
             [self connectionChannel:channel didConnectToHost:host];
@@ -4716,9 +4735,10 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return @[PNLoggerSymbols.api.connectionChannelConnectionFailed, (channel.name ? channel.name : channel),
-                (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
-                [self humanReadableStateFrom:self.state]];
+        return @[PNLoggerSymbols.api.connectionChannelConnectionFailed,
+                 (channel ? (channel.name ? channel.name : channel) : [NSNull null]),
+                 (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
+                 [self humanReadableStateFrom:self.state]];
     }];
     
     // Check whether client in corresponding state and all communication channels not connected to the server
@@ -4781,17 +4801,20 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.api.connectionChannelDisconnected, (channel.name ? channel.name : channel),
-                    (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
-                    [self humanReadableStateFrom:self.state]];
+            return @[PNLoggerSymbols.api.connectionChannelDisconnected,
+                     (channel ? (channel.name ? channel.name : channel) : [NSNull null]),
+                     (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
         }];
     }
     else {
 
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.api.connectionChannelDisconnectedOnReleaseWithOutEvent, (channel.name ? channel.name : channel),
-                    (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]), [self humanReadableStateFrom:self.state]];
+            return @[PNLoggerSymbols.api.connectionChannelDisconnectedOnReleaseWithOutEvent,
+                     (channel ? (channel.name ? channel.name : channel) : [NSNull null]),
+                     (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
         }];
     }
     
@@ -4811,9 +4834,10 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.api.disconnectingServiceChannel, (channel.name ? channel.name : channel),
-                        (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
-                        [self humanReadableStateFrom:self.state]];
+                return @[PNLoggerSymbols.api.disconnectingServiceChannel,
+                         (channel ? (channel.name ? channel.name : channel) : [NSNull null]),
+                         (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
+                         [self humanReadableStateFrom:self.state]];
             }];
             
             isForceClosingSecondChannel = YES;
@@ -4824,9 +4848,10 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.api.disconnectingMessagingChannel, (channel.name ? channel.name : channel),
-                        (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
-                        [self humanReadableStateFrom:self.state]];
+                return @[PNLoggerSymbols.api.disconnectingMessagingChannel,
+                         (channel ? (channel.name ? channel.name : channel) : [NSNull null]),
+                         (channel ? [NSString stringWithFormat:@"%p", channel] : [NSNull null]),
+                         [self humanReadableStateFrom:self.state]];
             }];
             
             isForceClosingSecondChannel = YES;
@@ -5369,7 +5394,6 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
     // library to handle sockets timeout/error)
     BOOL reachabilityWillSimulateAction = [self.reachability refreshReachabilityState];
     
-    
     if ([self.reachability isServiceAvailable]) {
 
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -5403,8 +5427,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.api.shouldRestoreConnection,
-                            [self humanReadableStateFrom:self.state]];
+                    return @[PNLoggerSymbols.api.shouldRestoreConnection, [self humanReadableStateFrom:self.state]];
                 }];
                 
                 
@@ -6451,7 +6474,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (BOOL)canRunInBackground {
     
-    BOOL canRunInBackground = [UIApplication canRunInBackground];
+    BOOL canRunInBackground = [UIApplication pn_canRunInBackground];
     
     if ([self.delegate respondsToSelector:@selector(shouldRunClientInBackground)]) {
         

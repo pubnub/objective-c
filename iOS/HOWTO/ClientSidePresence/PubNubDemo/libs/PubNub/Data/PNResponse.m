@@ -184,7 +184,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
                                                [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
 
-                                                   return @[PNLoggerSymbols.JSONserializer.JSONDecodeError, error];
+                                                   return @[PNLoggerSymbols.JSONserializer.JSONDecodeError, (error ? error : [NSNull null])];
                                                }];
                                                [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];

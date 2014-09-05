@@ -108,7 +108,7 @@
             authorizationKey = [self.accessRightOptions.clientsAuthorizationKeys componentsJoinedByString:@","];
         }
 
-        [parameters addObject:[NSString stringWithFormat:@"auth=%@", [authorizationKey percentEscapedString]]];
+        [parameters addObject:[NSString stringWithFormat:@"auth=%@", [authorizationKey pn_percentEscapedString]]];
     }
     [parameters addObject:[NSString stringWithFormat:@"callback=%@_%@", [self callbackMethodName], self.shortIdentifier]];
 
@@ -119,7 +119,7 @@
 
             channel = [[self.accessRightOptions.channels valueForKey:@"name"] componentsJoinedByString:@","];
         }
-        [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel percentEscapedString]]];
+        [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel pn_percentEscapedString]]];
     }
 
     [parameters addObject:[NSString stringWithFormat:@"pnsdk=%@", [self clientInformationField]]];
@@ -138,7 +138,7 @@
                                     range:NSMakeRange(0, [signature length])];
 
 
-    return [signature percentEscapedString];
+    return [signature pn_percentEscapedString];
 }
 
 - (NSUInteger)requestTimestamp {
@@ -173,10 +173,10 @@
 
 
     return [NSString stringWithFormat:@"/v1/auth/grant/sub-key/%@?%@callback=%@_%@%@&pnsdk=%@&%@&timestamp=%lu&ttl=%lu&signature"
-                                       "=%@&%@", [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                    (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey percentEscapedString]] : @""),
+                                       "=%@&%@", [[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString],
+                    (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey pn_percentEscapedString]] : @""),
                     [self callbackMethodName], self.shortIdentifier,
-                    (channel ? [NSString stringWithFormat:@"&channel=%@", [channel percentEscapedString]] : @""),
+                    (channel ? [NSString stringWithFormat:@"&channel=%@", [channel pn_percentEscapedString]] : @""),
                     [self clientInformationField], [NSString stringWithFormat:@"r=%@", [PNBitwiseHelper is:self.accessRightOptions.rights
                                                                                                containsBit:PNReadAccessRight] ? @"1" : @"0"],
                     (unsigned long)[self requestTimestamp], (unsigned long)self.accessRightOptions.accessPeriodDuration,
@@ -187,7 +187,7 @@
 - (NSString *)debugResourcePath {
     
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString])];
     
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

@@ -65,7 +65,7 @@
 
         self.sendingByUserRequest = YES;
         self.devicePushToken = pushToken;
-        self.pushToken = [[pushToken HEXPushToken] lowercaseString];
+        self.pushToken = [[pushToken pn_HEXPushToken] lowercaseString];
     }
 
 
@@ -85,16 +85,20 @@
 - (NSString *)resourcePath {
 
     return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@/remove?callback=%@_%@&uuid=%@%@&pnsdk=%@",
-                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                                      self.pushToken, [self callbackMethodName], self.shortIdentifier, [PubNub escapedClientIdentifier],
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      [[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString],
+                                      self.pushToken,
+                                      [self callbackMethodName],
+                                      self.shortIdentifier,
+                                      [PubNub escapedClientIdentifier],
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                                                                              [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

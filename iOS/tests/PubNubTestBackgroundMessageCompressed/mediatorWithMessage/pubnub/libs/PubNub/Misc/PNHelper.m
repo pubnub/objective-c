@@ -264,7 +264,7 @@
     NSData *HMACData = [[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)];
     
     
-    return [HMACData base64Encoding];
+    return [HMACData pn_base64Encoding];
 }
 
 #pragma mark -

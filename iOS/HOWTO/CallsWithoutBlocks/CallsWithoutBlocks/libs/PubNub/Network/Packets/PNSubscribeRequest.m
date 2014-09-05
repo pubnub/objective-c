@@ -256,21 +256,22 @@
     if (self.state) {
         
         state = [NSString stringWithFormat:@"&state=%@",
-                 [[PNJSONSerialization stringFromJSONObject:self.state] percentEscapedString]];
+                                           [[PNJSONSerialization stringFromJSONObject:self.state] pn_percentEscapedString]];
     }
     return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@&pnsdk=%@",
-            [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-            [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-            [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
-            self.clientIdentifier, heartbeatValue, state,
-            ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
-            [self clientInformationField]];
+                                      [[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString],
+                                      [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
+                                      [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
+                                      self.clientIdentifier, heartbeatValue, state,
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                                                                              [self authorizationField]] : @""),
+                                      [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
     
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString])];
     
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

@@ -669,8 +669,9 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
             {
                 [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.connection.stream.read.opened, (connection.name ? connection.name : connection),
-                            (status ? status : [NSNull null]), @(connection.state)];
+                    return @[PNLoggerSymbols.connection.stream.read.opened,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanDisconnection];
@@ -685,8 +686,9 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
             {
                 [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.connection.stream.read.hasData, (connection.name ? connection.name : connection),
-                            (status ? status : [NSNull null]), @(connection.state)];
+                    return @[PNLoggerSymbols.connection.stream.read.hasData,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [connection handleReadStreamHasData];
@@ -698,8 +700,9 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
             {
                 [PNLogger logConnectionErrorMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.connection.stream.read.error, (connection.name ? connection.name : connection),
-                            (status ? status : [NSNull null]), @(connection.state)];
+                    return @[PNLoggerSymbols.connection.stream.read.error,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
                 
                 [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef{
@@ -714,8 +717,9 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
             {
                 [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.connection.stream.read.cantAcceptDataAnymore, (connection.name ? connection.name : connection),
-                            (status ? status : [NSNull null]), @(connection.state)];
+                    return @[PNLoggerSymbols.connection.stream.read.cantAcceptDataAnymore,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanAll];
@@ -745,8 +749,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             {
                 [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.connection.stream.write.opened, (connection.name ? connection.name : connection),
-                            (status ? status : [NSNull null]), @(connection.state)];
+                    return @[PNLoggerSymbols.connection.stream.write.opened,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNWriteStreamCleanDisconnection];
@@ -761,8 +766,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             {
                 [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.connection.stream.write.canSendData, (connection.name ? connection.name : connection),
-                            (status ? status : [NSNull null]), @(connection.state)];
+                    return @[PNLoggerSymbols.connection.stream.write.canSendData,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [connection handleWriteStreamCanAcceptData];
@@ -774,8 +780,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             {
                 [PNLogger logConnectionErrorMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.connection.stream.write.error, (connection.name ? connection.name : connection),
-                            (status ? status : [NSNull null]), @(connection.state)];
+                    return @[PNLoggerSymbols.connection.stream.write.error,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
                 
                 [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef{
@@ -790,8 +797,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             {
                 [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.connection.stream.write.cantSendDataAnymore, (connection.name ? connection.name : connection),
-                            (status ? status : [NSNull null]), @(connection.state)];
+                    return @[PNLoggerSymbols.connection.stream.write.cantSendDataAnymore,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNWriteStreamCleanAll];
@@ -1294,7 +1302,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connection.connectionImpossibleAtCurrentMoment, (self.name ? self.name : self), @(self.state)];
+            return @[PNLoggerSymbols.connection.connectionImpossibleAtCurrentMoment, (self.name ? self.name : self),
+                     @(self.state)];
         }];
 
         [PNBitwiseHelper addTo:&_state bit:PNConnectionWakeUpTimer];
@@ -2893,32 +2902,32 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleStreamError:(PNConnectionErrorStateFlag)failedStream fromBlock:(CFErrorRef(^)(void))errorBlock {
     
-    __block CFErrorRef error = NULL;
     __block BOOL isErrorProcessed = NO;
-    void(^errorProcessingBlock)(void) = ^{
+    void(^errorProcessingBlock)(CFErrorRef) = ^(CFErrorRef streamError){
         
-        if (!isErrorProcessed) {
+        dispatch_async(dispatch_get_main_queue(), ^{
             
-            dispatch_async(dispatch_get_main_queue(), ^{
+            CFErrorRef errorReference = streamError;
+            if (!isErrorProcessed) {
                 
-                if (error == NULL) {
+                if (streamError == NULL) {
                     
-                    error = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, ECONNRESET, NULL);
+                    errorReference = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, ECONNRESET, NULL);
                 }
                 
                 // Mark that read stream caught and error
                 [PNBitwiseHelper addTo:&_state bit:failedStream];
                 
-                [self handleStreamError:error shouldCloseConnection:YES];
+                [self handleStreamError:streamError shouldCloseConnection:YES];
                 isErrorProcessed = YES;
 
-                [PNHelper releaseCFObject:&error];
-            });
-        }
-        else {
+                [PNHelper releaseCFObject:&errorReference];
+            }
+            else if (errorReference != NULL){
 
-            [PNHelper releaseCFObject:&error];
-        }
+                [PNHelper releaseCFObject:&errorReference];
+            }
+        });
     };
     
     // Sending error copy request to another thread to make sure that it won't block
@@ -2932,12 +2941,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // logic will be used to create custom error. In case of error client will have to perform handshacke again and it
         // will take at least 250 ms for one side and 500ms for full round-trip (this is ethernet values). SSL handshake will
         // require twice time from regular connection.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),
-                       dispatch_get_main_queue(), errorProcessingBlock);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            errorProcessingBlock(NULL);
+        });
         
         // Try to retrieve error
-        error = errorBlock();
-        errorProcessingBlock();
+        CFErrorRef error = errorBlock();
+        errorProcessingBlock(error);
     });
 }
 

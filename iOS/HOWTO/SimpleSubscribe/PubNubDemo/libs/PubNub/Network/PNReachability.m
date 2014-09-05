@@ -675,7 +675,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
 - (NSString *)humanReadableStatus:(PNReachabilityStatus)status {
 
-    NSString *humanReadableStatus = nil;
+    NSString *humanReadableStatus = @"";
     switch (status) {
 
         case PNReachabilityStatusUnknown:
@@ -705,7 +705,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
 - (NSString *)humanReadableInterfaceFromStatus:(PNReachabilityStatus)status {
 
-    NSString *humanReadableInterface = nil;
+    NSString *humanReadableInterface = @"";
     switch (status) {
 
         case PNReachabilityStatusUnknown:

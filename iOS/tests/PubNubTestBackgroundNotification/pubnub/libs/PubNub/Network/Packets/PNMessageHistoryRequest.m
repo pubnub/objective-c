@@ -131,7 +131,7 @@
 
 
     return [NSString stringWithFormat:@"/v2/history/sub-key/%@/channel/%@%@%@&pnsdk=%@",
-                    [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString], [self.channel escapedName],
+                    [[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString], [self.channel escapedName],
                     parameters, ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
                     [self clientInformationField]];
 }
@@ -139,7 +139,7 @@
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }

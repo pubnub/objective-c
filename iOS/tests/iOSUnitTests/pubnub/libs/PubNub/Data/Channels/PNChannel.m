@@ -321,7 +321,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
 - (NSString *)escapedName {
     
-    return [self.name percentEscapedString];
+    return [self.name pn_percentEscapedString];
 }
 
 - (NSString *)description {

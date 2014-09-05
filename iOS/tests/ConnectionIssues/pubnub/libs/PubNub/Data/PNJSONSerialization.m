@@ -12,8 +12,8 @@
 //
 
 #import "PNJSONSerialization.h"
+#import "PNLogger+Protected.h"
 #import "PNLoggerSymbols.h"
-#import "PNLogger.h"
 
 
 // ARC check

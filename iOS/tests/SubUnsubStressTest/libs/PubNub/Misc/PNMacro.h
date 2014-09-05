@@ -166,13 +166,13 @@ NSString *PNObfuscateString(NSString *string) {
         obfuscatedString = [NSString stringWithFormat:@"%@*****%@", [string substringToIndex:minimumWidth],
                             [string substringFromIndex:([string length] - minimumWidth)]];
     }
-    else {
+    else if([obfuscatedString length]) {
 
         obfuscatedString = [obfuscatedString substringToIndex:stringWidth];
     }
 
 
-    return obfuscatedString;
+    return (obfuscatedString ? obfuscatedString : @"");
 }
 
 #pragma clang diagnostic pop
