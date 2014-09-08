@@ -503,10 +503,11 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             
             NSError *requestError;
             NSHTTPURLResponse *response;
-            NSMutableURLRequest *timeTokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:[PNNetworkHelper originLookupResourcePath]]];
+            NSMutableURLRequest *timeTokenRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[PNNetworkHelper originLookupResourcePath]]];
             timeTokenRequest.timeoutInterval = kPNReachabilityOriginLookupTimeout;
             NSData *downloadedTimeTokenData = [NSURLConnection sendSynchronousRequest:timeTokenRequest returningResponse:&response error:&requestError];
-            
+            [[NSURLCache sharedURLCache] removeCachedResponseForRequest:timeTokenRequest];
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 [weakSelf handleOriginLookupCompletionWithData:downloadedTimeTokenData response:response error:requestError];
