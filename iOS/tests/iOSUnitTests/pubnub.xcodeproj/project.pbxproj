@@ -146,6 +146,7 @@
 		963AD66E19B8A22100B45E27 /* NSData+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CE0BE719AF80AD00D59197 /* NSData+PNAdditions.m */; };
 		963AD66F19B8A23900B45E27 /* NSData+PNAdditionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E8196459DF00F8A89F /* NSData+PNAdditionsTest.m */; };
 		963AD67019B8A23A00B45E27 /* NSData+PNAdditionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960D78E8196459DF00F8A89F /* NSData+PNAdditionsTest.m */; };
+		964E081619BA074A00331899 /* PNConfigurationChangeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E081519BA074A00331899 /* PNConfigurationChangeTest.m */; };
 		96831B6917500135002F150F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71BF43E328EDCD6FF8F254 /* Security.framework */; };
 		96831B6A17500139002F150F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
 		96831B6B1750013B002F150F /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */; };
@@ -367,6 +368,7 @@
 		960D791F196459DF00F8A89F /* TimeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeCommand.m; sourceTree = "<group>"; };
 		960D7920196459DF00F8A89F /* W_ChaosTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = W_ChaosTest.h; sourceTree = "<group>"; };
 		960D7921196459DF00F8A89F /* W_ChaosTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = W_ChaosTest.m; sourceTree = "<group>"; };
+		964E081519BA074A00331899 /* PNConfigurationChangeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConfigurationChangeTest.m; sourceTree = "<group>"; };
 		96877B8D197404430014D4A8 /* PubNubInvocationStorageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNubInvocationStorageTest.m; sourceTree = "<group>"; };
 		96CE0B7819AF80AC00D59197 /* PNObservationCenter+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNObservationCenter+Protected.h"; sourceTree = "<group>"; };
 		96CE0B7919AF80AC00D59197 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
@@ -801,6 +803,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				964E081419BA070300331899 /* 3.6.7 Regression tests */,
 				96877B8C197404090014D4A8 /* 3.6.5 Functional tests */,
 				960D78E2196459DF00F8A89F /* 3.6.4 Unit-tests */,
 				79C32257166DF848006DB535 /* Supporting Files */,
@@ -969,6 +972,14 @@
 				960D7921196459DF00F8A89F /* W_ChaosTest.m */,
 			);
 			path = "3.6.4 Unit-tests";
+			sourceTree = "<group>";
+		};
+		964E081419BA070300331899 /* 3.6.7 Regression tests */ = {
+			isa = PBXGroup;
+			children = (
+				964E081519BA074A00331899 /* PNConfigurationChangeTest.m */,
+			);
+			path = "3.6.7 Regression tests";
 			sourceTree = "<group>";
 		};
 		96877B8C197404090014D4A8 /* 3.6.5 Functional tests */ = {
@@ -1725,6 +1736,7 @@
 				960D7960196459DF00F8A89F /* PNLeaveUsubscribeBlock.m in Sources */,
 				960D797C196459DF00F8A89F /* PNWriteBufferTest.m in Sources */,
 				960D794A196459DF00F8A89F /* PNConnectionChannelTest.m in Sources */,
+				964E081619BA074A00331899 /* PNConfigurationChangeTest.m in Sources */,
 				960D792E196459DF00F8A89F /* NSString+PNAdditionTest.m in Sources */,
 				960D7938196459DF00F8A89F /* PNAccessRightsCollectionTest.m in Sources */,
 				960D796E196459DF00F8A89F /* PNPresenceEventTest.m in Sources */,
