@@ -103,6 +103,11 @@
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }
 
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+}
+
 #pragma mark -
 
 

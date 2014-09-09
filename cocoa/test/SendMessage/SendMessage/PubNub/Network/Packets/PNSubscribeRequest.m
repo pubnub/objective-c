@@ -278,8 +278,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@> %p [PATH: %@]", NSStringFromClass([self class]),
-            self, [self debugResourcePath]];
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

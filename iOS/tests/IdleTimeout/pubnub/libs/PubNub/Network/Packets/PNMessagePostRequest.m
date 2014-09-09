@@ -216,6 +216,11 @@
     return signature;
 }
 
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+}
+
 #pragma mark -
 
 
