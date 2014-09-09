@@ -25,12 +25,39 @@ PNDelegate
     dispatch_group_t _resultGroup1;
     dispatch_group_t _resultGroup2;
     dispatch_group_t _resultGroup3;
+    dispatch_group_t _resultGroup4;
+    
+    PNConfiguration *_testConfiguration1;
+    PNConfiguration *_testConfiguration2;
+    PNConfiguration *_testConfiguration3;
 }
 
 - (void)setUp
 {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    /*
+     [9/8/14, 11:00:58 AM] Vadim Osovets: Product 	Sandbox
+     Subscribe Key 	sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe
+     Publish Key 	pub-c-12b1444d-4535-4c42-a003-d509cc071e09
+     Secret Key 	sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz
+     Key Status 	Enabled Disable
+     
+     [9/8/14, 4:39:01 PM] Sergey Kazanskiy: static NSString * const kPNPublishKey = @"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6";
+     static NSString * const kPNSubscriptionKey = @"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe";
+     static NSString * const kPNSecretKey = @"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw";
+     */
+    
+    _testConfiguration1 = [PNConfiguration defaultConfiguration];
+    // Vadim's keys
+    _testConfiguration2 = [PNConfiguration configurationForOrigin:kTestPNOriginHost
+                                                                       publishKey:@"pub-c-12b1444d-4535-4c42-a003-d509cc071e09" subscribeKey:@"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe"
+                                                                        secretKey:@"sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz"];
+    // SergeyK's keys
+    _testConfiguration3 = [PNConfiguration configurationForOrigin:kTestPNOriginHost
+                                                                       publishKey:@"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6" subscribeKey:@"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe"
+                                                                        secretKey:@"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw"];
 }
 
 - (void)tearDown {
@@ -84,47 +111,33 @@ PNDelegate
     
     _resultGroup3 = dispatch_group_create();
     
-    /*
-     [9/8/14, 11:00:58 AM] Vadim Osovets: Product 	Sandbox
-     Subscribe Key 	sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe
-     Publish Key 	pub-c-12b1444d-4535-4c42-a003-d509cc071e09
-     Secret Key 	sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz
-     Key Status 	Enabled Disable
-     
-     [9/8/14, 4:39:01 PM] Sergey Kazanskiy: static NSString * const kPNPublishKey = @"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6";
-     static NSString * const kPNSubscriptionKey = @"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe";
-     static NSString * const kPNSecretKey = @"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw";
-     */
-    
-    PNConfiguration *testConfiguration1 = [PNConfiguration defaultConfiguration];
-    // Vadim's keys
-    PNConfiguration *testConfiguration2 = [PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                       publishKey:@"pub-c-12b1444d-4535-4c42-a003-d509cc071e09" subscribeKey:@"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe"
-                                                                        secretKey:@"sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz"];
-    // SergeyK's keys
-    PNConfiguration *testConfiguration3 = [PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                       publishKey:@"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6" subscribeKey:@"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe"
-                                                                        secretKey:@"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw"];
-    
     // Test-case 1: connect and change configuration
     dispatch_group_enter(_resultGroup3);
     
-    [PubNub setupWithConfiguration:testConfiguration1 andDelegate:self];
+    [PubNub setupWithConfiguration:_testConfiguration1 andDelegate:self];
     [PubNub connect];
-    [PubNub setupWithConfiguration:testConfiguration2 andDelegate:self];
-    [PubNub setupWithConfiguration:testConfiguration3 andDelegate:self];
+    [PubNub setupWithConfiguration:_testConfiguration2 andDelegate:self];
+    [PubNub setupWithConfiguration:_testConfiguration3 andDelegate:self];
     
     if ([GCDWrapper isGroup:_resultGroup3 timeoutFiredValue:10]) {
         STFail(@"Cannot connect with configuration.");
     }
     
-    [PubNub disconnect];
+    _resultGroup3 = NULL;
+}
+
+#warning 3.6.7 version doesn't support multithreading.
+- (void)testChangingSeveralConfigurationsInDifferentThreads {
+    [PubNub setDelegate:self];
     
     // Test-case 2: start connect and chanding configuration simultaneously
+    _resultGroup4 = dispatch_group_create();
+    
+    dispatch_group_enter(_resultGroup4);
     
     dispatch_group_t _startGroup = dispatch_group_create();
 
-    [PubNub setupWithConfiguration:testConfiguration1 andDelegate:self];
+    [PubNub setupWithConfiguration:_testConfiguration1 andDelegate:self];
     
     dispatch_group_enter(_startGroup);
     
@@ -142,7 +155,7 @@ PNDelegate
         
         if (dispatch_group_wait(_startGroup, DISPATCH_TIME_FOREVER) == 0) {
             NSLog(@"t2.1");
-            [PubNub setupWithConfiguration:testConfiguration2 andDelegate:self];
+            [PubNub setupWithConfiguration:_testConfiguration2 andDelegate:self];
         }
     });
     
@@ -150,7 +163,7 @@ PNDelegate
         NSLog(@"t3");
         if (dispatch_group_wait(_startGroup, DISPATCH_TIME_FOREVER) == 0) {
             NSLog(@"t3.1");
-            [PubNub setupWithConfiguration:testConfiguration3 andDelegate:self];
+            [PubNub setupWithConfiguration:_testConfiguration3 andDelegate:self];
         }
 
     });
@@ -159,11 +172,11 @@ PNDelegate
     
     dispatch_group_leave(_startGroup);
     
-    if ([GCDWrapper isGroup:_resultGroup3 timeoutFiredValue:20]) {
+    if ([GCDWrapper isGroup:_resultGroup4 timeoutFiredValue:10]) {
         STFail(@"Cannot connect with configuration.");
     }
     
-    _resultGroup3 = NULL;
+    _resultGroup4 = NULL;
 }
 
 #pragma mark - PubNub Delegate
@@ -183,8 +196,13 @@ PNDelegate
     }
     
     if (_resultGroup3 != NULL) {
-        NSLog(@"origin: %@, pub-key: %@", origin, [PubNub configuration].publishKey);
+        STAssertEquals(_testConfiguration3.publishKey, [[PubNub configuration] publishKey], @"Configuration wasn't updated.");
         dispatch_group_leave(_resultGroup3);
+    }
+    
+    if (_resultGroup4 != NULL) {
+        STAssertEquals(_testConfiguration3.publishKey, [[PubNub configuration] publishKey], @"Configuration wasn't updated.");
+        dispatch_group_leave(_resultGroup4);
     }
 }
 
