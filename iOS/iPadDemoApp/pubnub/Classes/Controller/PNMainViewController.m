@@ -479,7 +479,7 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
             
             if (((PNError *)object).code == kPNAPIAccessForbiddenError) {
                 
-                detailedDescription = [NSString stringWithFormat:[@"messageSendGeneralErrorAlertViewDetailedDescription" localized],
+                detailedDescription = [NSString stringWithFormat:[@"messageSendPAMErrorAlertViewDetailedDescription" localized],
                                        [PNDataManager sharedInstance].currentChannel.name, (int)kPNActionRetryDelayOnPAMError];
                 
                 cancelButtonTitle = @"cancelButtonTitle";
