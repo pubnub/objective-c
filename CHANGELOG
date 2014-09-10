@@ -1,3 +1,7 @@
+8-22-2014 - 61c63 - 3.6.6
+. Support for socket reconnect during during subscription restore process
+. Fixed a crash bug in logger
+
 8-11-2014 - 4c1c1 - 3.6.5
 . added more verbosity to comments for clarity
 . refactored out some redundant conditional expressions
