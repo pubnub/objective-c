@@ -18,6 +18,9 @@
 		79052A4818F0985E00A5C63B /* PNPushNotificationsAuditionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052A4718F0985E00A5C63B /* PNPushNotificationsAuditionHelper.m */; };
 		79052A4B18F14B9900A5C63B /* PNAccessRightsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052A4A18F14B9900A5C63B /* PNAccessRightsView.m */; };
 		790E637A16AD6AEB00CAD373 /* PNChannelInformationView~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 790E637916AD6AEB00CAD373 /* PNChannelInformationView~ipad.xib */; };
+		790FB90119AF401C00BAD65E /* NSError+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 790FB90019AF401C00BAD65E /* NSError+PNAdditions.m */; };
+		790FB90419AF5E8800BAD65E /* NSSet+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 790FB90319AF5E8800BAD65E /* NSSet+PNAdditions.m */; };
+		790FB90719AF5F0B00BAD65E /* NSMutableSet+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 790FB90619AF5F0B00BAD65E /* NSMutableSet+PNAdditions.m */; };
 		792C1F4016777BD50054E18E /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 792C1F3F16777BD40054E18E /* CFNetwork.framework */; };
 		793E41ED18B0FBED0028413E /* cloud-pubnub-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 793E41EC18B0FBED0028413E /* cloud-pubnub-logo.png */; };
 		793E41F918B136C80028413E /* UIView+PNAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 793E41F818B136C80028413E /* UIView+PNAddition.m */; };
@@ -188,6 +191,7 @@
 		DD71B993313A90FEE751189F /* right-single-entry-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71BCBCB80DE682EE0D5602 /* right-single-entry-background.png */; };
 		DD71BB431648E3B85C7E11F6 /* left-single-entry-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71B51E11D1E063A1AC9714 /* left-single-entry-background.png */; };
 		DD71BBB0E1B261CE7F7EF674 /* left-section-header-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71BDDDEF09AD121CF5E771 /* left-section-header-background.png */; };
+		DD71BC4892C045DC02C6ECB9 /* PNLoggerSymbols.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD71BB62851EFED07B162185 /* PNLoggerSymbols.plist */; };
 		DD71BD38C16E57D4A47BCD86 /* NSString+PNDemoAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71B1720D2FC6C2462806A1 /* NSString+PNDemoAddition.m */; };
 		DD71BF3FB8749DEA41B7A50A /* side-menu-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DD71BF3FAB64C46ADBF20C9F /* side-menu-background.png */; };
 /* End PBXBuildFile section */
@@ -211,6 +215,13 @@
 		79052A4A18F14B9900A5C63B /* PNAccessRightsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAccessRightsView.m; sourceTree = "<group>"; };
 		790E637916AD6AEB00CAD373 /* PNChannelInformationView~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PNChannelInformationView~ipad.xib"; sourceTree = "<group>"; };
 		790E63BF16ADB41000CAD373 /* PNChannelCreationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelCreationDelegate.h; sourceTree = "<group>"; };
+		790FB8FE19ACF2E900BAD65E /* PNLogger+Protected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNLogger+Protected.h"; sourceTree = "<group>"; };
+		790FB8FF19AF401C00BAD65E /* NSError+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+PNAdditions.h"; sourceTree = "<group>"; };
+		790FB90019AF401C00BAD65E /* NSError+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+PNAdditions.m"; sourceTree = "<group>"; };
+		790FB90219AF5E8800BAD65E /* NSSet+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+PNAdditions.h"; sourceTree = "<group>"; };
+		790FB90319AF5E8800BAD65E /* NSSet+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+PNAdditions.m"; sourceTree = "<group>"; };
+		790FB90519AF5F0B00BAD65E /* NSMutableSet+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableSet+PNAdditions.h"; sourceTree = "<group>"; };
+		790FB90619AF5F0B00BAD65E /* NSMutableSet+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableSet+PNAdditions.m"; sourceTree = "<group>"; };
 		792C1F3F16777BD40054E18E /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		793E41EC18B0FBED0028413E /* cloud-pubnub-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cloud-pubnub-logo.png"; sourceTree = "<group>"; };
 		793E41F718B136C80028413E /* UIView+PNAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+PNAddition.h"; sourceTree = "<group>"; };
@@ -555,10 +566,12 @@
 		DD71B51E11D1E063A1AC9714 /* left-single-entry-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "left-single-entry-background.png"; sourceTree = "<group>"; };
 		DD71B64F7EC81A7C74192010 /* PNDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDataManager.h; sourceTree = "<group>"; };
 		DD71B69965406630E1169DA3 /* PNLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLogger.m; sourceTree = "<group>"; };
+		DD71B6B5054827A3AC52F175 /* PNLoggerSymbols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLoggerSymbols.h; sourceTree = "<group>"; };
 		DD71B75FC2A1E90064167370 /* pubnub-large.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pubnub-large.png"; sourceTree = "<group>"; };
 		DD71B76AAA1DD2BD6FBF5A92 /* white-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-button.png"; sourceTree = "<group>"; };
 		DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DD71BA90D925864CA27764CD /* pubnub-large2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pubnub-large2.png"; sourceTree = "<group>"; };
+		DD71BB62851EFED07B162185 /* PNLoggerSymbols.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = PNLoggerSymbols.plist; sourceTree = "<group>"; };
 		DD71BCBCB80DE682EE0D5602 /* right-single-entry-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right-single-entry-background.png"; sourceTree = "<group>"; };
 		DD71BD05C2940121A5DADA92 /* PNChannelInformationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChannelInformationDelegate.h; sourceTree = "<group>"; };
 		DD71BD8F3333E37E45EE02FB /* PNDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDataManager.m; sourceTree = "<group>"; };
@@ -739,6 +752,7 @@
 				799C3B3C18F468EA002BC638 /* Data */,
 				799C3BA018F468EA002BC638 /* Misc */,
 				799C3BC518F468EA002BC638 /* Network */,
+				DD71B2585904FA21FDB3FA33 /* Resources */,
 			);
 			path = PubNub;
 			sourceTree = "<group>";
@@ -914,8 +928,10 @@
 				799C3BBC18F468EA002BC638 /* PNStructures.h */,
 				799C3C4518F5DBD1002BC638 /* PNHelper.h */,
 				799C3C4618F5DBD1002BC638 /* PNHelper.m */,
+				790FB8FE19ACF2E900BAD65E /* PNLogger+Protected.h */,
 				DD71B2D069477553F7F8224D /* PNLogger.h */,
 				DD71B69965406630E1169DA3 /* PNLogger.m */,
+				DD71B6B5054827A3AC52F175 /* PNLoggerSymbols.h */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -925,6 +941,8 @@
 			children = (
 				799C3BA218F468EA002BC638 /* NSArray+PNAdditions.h */,
 				799C3BA318F468EA002BC638 /* NSArray+PNAdditions.m */,
+				790FB90219AF5E8800BAD65E /* NSSet+PNAdditions.h */,
+				790FB90319AF5E8800BAD65E /* NSSet+PNAdditions.m */,
 				799C3BA418F468EA002BC638 /* NSData+PNAdditions.h */,
 				799C3BA518F468EA002BC638 /* NSData+PNAdditions.m */,
 				799C3BA618F468EA002BC638 /* NSDate+PNAdditions.h */,
@@ -935,8 +953,12 @@
 				799C3BAB18F468EA002BC638 /* NSInvocation+PNAdditions.m */,
 				799C3BAC18F468EA002BC638 /* NSMutableArray+PNAdditions.h */,
 				799C3BAD18F468EA002BC638 /* NSMutableArray+PNAdditions.m */,
+				790FB90519AF5F0B00BAD65E /* NSMutableSet+PNAdditions.h */,
+				790FB90619AF5F0B00BAD65E /* NSMutableSet+PNAdditions.m */,
 				799C3BAE18F468EA002BC638 /* NSString+PNAddition.h */,
 				799C3BAF18F468EA002BC638 /* NSString+PNAddition.m */,
+				790FB8FF19AF401C00BAD65E /* NSError+PNAdditions.h */,
+				790FB90019AF401C00BAD65E /* NSError+PNAdditions.m */,
 				799C3BB018F468EA002BC638 /* UIApplication+PNAdditions.h */,
 				799C3BB118F468EA002BC638 /* UIApplication+PNAdditions.m */,
 			);
@@ -1280,6 +1302,14 @@
 			path = Categories;
 			sourceTree = "<group>";
 		};
+		DD71B2585904FA21FDB3FA33 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DD71BB62851EFED07B162185 /* PNLoggerSymbols.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		DD71BBAB576F8184E3A46B44 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
@@ -1429,6 +1459,7 @@
 				79D4EA3618C01B7800373A38 /* PNSubscribeView~ipad.xib in Resources */,
 				794DA19F1845800300C89A6C /* red-small-left-segmented-button.png in Resources */,
 				793E41ED18B0FBED0028413E /* cloud-pubnub-logo.png in Resources */,
+				DD71BC4892C045DC02C6ECB9 /* PNLoggerSymbols.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1471,6 +1502,7 @@
 				79DEAD3518EC582800A06B0C /* PNClientChannelsHelper.m in Sources */,
 				79DEAD3A18ECAD0600A06B0C /* PNGlobalPresenceView.m in Sources */,
 				799C3C2E18F468EA002BC638 /* PNAccessRightsAuditRequest.m in Sources */,
+				790FB90719AF5F0B00BAD65E /* NSMutableSet+PNAdditions.m in Sources */,
 				79DF895918F32C2500314CB6 /* PNClientIdentifierAddView.m in Sources */,
 				799C3C0318F468EA002BC638 /* PNChannel.m in Sources */,
 				797B6FEB18E2F6FC00D88AAF /* PNTextBadgeView.m in Sources */,
@@ -1511,6 +1543,7 @@
 				793E41FC18B13AB60028413E /* UIScreen+PNAddition.m in Sources */,
 				799C3C1C18F468EA002BC638 /* PNDate.m in Sources */,
 				799C3C2018F468EA002BC638 /* PNMessage.m in Sources */,
+				790FB90119AF401C00BAD65E /* NSError+PNAdditions.m in Sources */,
 				79765F2E18E58B360058CE47 /* PNConfigurationView.m in Sources */,
 				799C3C0218F468EA002BC638 /* PNWriteBuffer.m in Sources */,
 				79DF894E18F18E8100314CB6 /* PNAccessRightsHelper.m in Sources */,
@@ -1525,6 +1558,7 @@
 				797B6FDA18E2F0E100D88AAF /* PNNumberBadgeView.m in Sources */,
 				799C3C0618F468EA002BC638 /* PNCryptoHelper.m in Sources */,
 				799C3C1318F468EA002BC638 /* PNTimeTokenResponseParser.m in Sources */,
+				790FB90419AF5E8800BAD65E /* NSSet+PNAdditions.m in Sources */,
 				799C3C0F18F468EA002BC638 /* PNOperationStatusResponseParser.m in Sources */,
 				799C3C4718F5DBD1002BC638 /* PNHelper.m in Sources */,
 				799C3C4018F468EA002BC638 /* PNNetworkHelper.m in Sources */,

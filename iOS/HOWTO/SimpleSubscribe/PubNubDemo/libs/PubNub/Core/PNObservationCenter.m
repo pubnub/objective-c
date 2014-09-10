@@ -17,6 +17,7 @@
 #import "PNError+Protected.h"
 #import "PubNub+Protected.h"
 #import "PNNotifications.h"
+#import "PNLoggerSymbols.h"
 #import "PNClient.h"
 
 
@@ -1823,7 +1824,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     [notificationCenter removeObserver:self name:kPNClientDidReceiveParticipantChannelsListNotification object:nil];
     [notificationCenter removeObserver:self name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification object:nil];
 
-    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"Destroyed"; }];
+    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        
+        return @[PNLoggerSymbols.observationCenter.destroyed];
+    }];
 }
 
 #pragma mark -

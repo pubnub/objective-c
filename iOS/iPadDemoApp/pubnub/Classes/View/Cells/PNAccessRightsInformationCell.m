@@ -148,7 +148,7 @@ static struct PNAccessRightsDataKeysStruct PNAccessRightsDataKeys = {
         [labelValue setString:data.authorizationKey];
     }
     
-    [labelValue setString:[labelValue truncatedString:30 lineBreakMode:self.textLabel.lineBreakMode]];
+    [labelValue setString:[labelValue pn_truncatedString:30 lineBreakMode:self.textLabel.lineBreakMode]];
     
     if (data.accessPeriodDuration > 0) {
         

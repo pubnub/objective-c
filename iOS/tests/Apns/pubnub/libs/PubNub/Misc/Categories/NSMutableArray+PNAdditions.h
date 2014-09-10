@@ -18,13 +18,13 @@
  * Returns array which wouldn't retain it's
  * values
  */
-+ (NSMutableArray *)arrayUsingWeakReferences;
++ (NSMutableArray *)pn_arrayUsingWeakReferences;
 
 /**
  * Returns array which wouldn't retain it's
  * values
  */
-+ (NSMutableArray *)arrayUsingWeakReferencesWithCapacity:(NSUInteger)capacity;
++ (NSMutableArray *)pn_arrayUsingWeakReferencesWithCapacity:(NSUInteger)capacity;
 
 #pragma mark -
 

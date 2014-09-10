@@ -79,7 +79,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (void)updateLayout {
     
-    self.addButton.enabled = (self.clientIdentifierTextField.text && ![self.clientIdentifierTextField.text isEmpty]);
+    self.addButton.enabled = (self.clientIdentifierTextField.text && ![self.clientIdentifierTextField.text pn_isEmpty]);
 }
 
 

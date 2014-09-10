@@ -17,6 +17,7 @@
 #import "PNClient+Protected.h"
 #import "PNPrivateImports.h"
 #import "PNPresenceEvent.h"
+#import "PNLoggerSymbols.h"
 #import "PNConstants.h"
 #import "PNHelper.h"
 #import "PNDate.h"
@@ -133,7 +134,10 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     }
     else if ([channelName length] == 0) {
 
-        [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"CAN'T CREATE CHANNEL WITH EMPTY NAME"; }];
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.channel.nameRequired];
+        }];
     }
 
     if (shouldUpdatePresenceObservingFlag) {
@@ -317,12 +321,17 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
 - (NSString *)escapedName {
     
-    return [self.name percentEscapedString];
+    return [self.name pn_percentEscapedString];
 }
 
 - (NSString *)description {
 
     return [NSString stringWithFormat:@"%@(%p) %@", NSStringFromClass([self class]), self, self.name];
+}
+
+- (NSString *)logDescription {
+    
+    return [NSString stringWithFormat:@"<%@>", self.name];
 }
 
 - (BOOL)isPresenceObserver {

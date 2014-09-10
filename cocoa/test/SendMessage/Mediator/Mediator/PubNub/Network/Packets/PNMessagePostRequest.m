@@ -19,6 +19,7 @@
 #import "PNMessage+Protected.h"
 #import "PNChannel+Protected.h"
 #import "PubNub+Protected.h"
+#import "PNLoggerSymbols.h"
 #import "PNCryptoHelper.h"
 #import "PNConstants.h"
 #import "PNHelper.h"
@@ -128,10 +129,10 @@
             
             if (encryptionError != nil) {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"Message encryption failed with error: %@\nUnencrypted message"
-                            " will be sent.", encryptionError];
+                    return @[PNLoggerSymbols.requests.messagePost.messageBodyEncryptionError,
+                            (encryptionError ? encryptionError : [NSNull null])];
                 }];
             }
         }
@@ -141,9 +142,9 @@
             // Encode message with % so it will be delivered w/o damages to
             // the PubNub service
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
-            self.preparedMessage = [message percentEscapedString];
+            self.preparedMessage = [message pn_percentEscapedString];
 #else
-            self.preparedMessage = [message nonStringPercentEscapedString];
+            self.preparedMessage = [message pn_nonStringPercentEscapedString];
 #endif
         }
         else {
@@ -159,10 +160,12 @@
 - (NSString *)resourcePath {
     
     NSMutableString *resourcePath = [NSMutableString stringWithFormat:@"/publish/%@/%@/%@/%@/%@_%@",
-                                     [[PubNub sharedInstance].configuration.publishKey percentEscapedString],
-                                     [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                                     [self signature], [self.message.channel escapedName], [self callbackMethodName],
-                                     self.shortIdentifier];
+                                                                      [[PubNub sharedInstance].configuration.publishKey pn_percentEscapedString],
+                                                                      [[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString],
+                                                                      [self signature],
+                                                                      [self.message.channel escapedName],
+                                                                      [self callbackMethodName],
+                                                                      self.shortIdentifier];
     
     if (!self.message.shouldCompressMessage) {
         
@@ -185,8 +188,8 @@
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.publishKey percentEscapedString])];
-    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:2 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.publishKey pn_percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:3 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
 }
@@ -211,6 +214,11 @@
 #endif
 
     return signature;
+}
+
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

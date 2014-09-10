@@ -78,7 +78,7 @@
 
 - (BOOL)isValidChannelNameAdnIdentifier {
     
-    return (self.channelName && self.clientIdentifier && ![self.channelName isEmpty] && ![self.clientIdentifier isEmpty]);
+    return (self.channelName && self.clientIdentifier && ![self.channelName pn_isEmpty] && ![self.clientIdentifier pn_isEmpty]);
 }
 
 - (BOOL)isValidClientState {
@@ -92,7 +92,7 @@
             // Checking whether user provided some data or not
             if ([self.state count]) {
                 
-                isChannelStateValid = [@{self.channelName: self.state} isValidState];
+                isChannelStateValid = [@{self.channelName : self.state} pn_isValidState];
             }
             else {
                 

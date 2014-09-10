@@ -21,7 +21,7 @@
 
  @return \c YES if provided dictionary conforms to the requirements.
  */
-- (BOOL)isValidState;
+- (BOOL)pn_isValidState;
 
 #pragma mark -
 

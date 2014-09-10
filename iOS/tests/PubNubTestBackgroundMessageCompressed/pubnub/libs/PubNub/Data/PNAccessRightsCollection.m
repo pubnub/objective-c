@@ -250,6 +250,38 @@
     return descriptionString;
 }
 
+- (NSString *)logDescription {
+    
+    NSMutableString *descriptionString = [NSMutableString stringWithString:@"<"];
+    if (self.applicationAccessRightsInformation != nil) {
+        
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
+        [descriptionString appendFormat:@"%@%@", [self.applicationAccessRightsInformation performSelector:@selector(logDescription)],
+         ([self.channelsAccessRightsInformation count] || [self.clientsAccessRightsInformation count] ? @"|" : @"")];
+        #pragma clang diagnostic pop
+    }
+    if ([self.channelsAccessRightsInformation count]) {
+        
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
+        [descriptionString appendFormat:@"%@%@", [[self.channelsAccessRightsInformation allValues] performSelector:@selector(logDescription)],
+         ([self.clientsAccessRightsInformation count] ? @"|" : @"")];
+        #pragma clang diagnostic pop
+    }
+    if ([self.clientsAccessRightsInformation count]) {
+        
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
+        [descriptionString appendString:[[self.clientsAccessRightsInformation allValues] performSelector:@selector(logDescription)]];
+        #pragma clang diagnostic pop
+    }
+    [descriptionString appendString:@">"];
+    
+    
+    return descriptionString;
+}
+
 #pragma mark -
 
 

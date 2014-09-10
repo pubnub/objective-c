@@ -16,6 +16,7 @@
 #import "NSString+PNAddition.h"
 #import "NSData+PNAdditions.h"
 #import "PubNub+Protected.h"
+#import "PNLoggerSymbols.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 #import "PNHelper.h"
@@ -93,9 +94,9 @@
 
 - (NSString *)resourcePath {
 
-    [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return @"THIS METHOD SHOULD BE RELOADED IN SUBCLASS";
+        return @[PNLoggerSymbols.requests.methodRequiresOwnImplementation, NSStringFromSelector(_cmd)];
     }];
     
     return [self resourcePath:NO];
@@ -108,9 +109,9 @@
 
 - (NSString *)resourcePath:(BOOL)forConsole {
 
-    [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return @"THIS METHOD SHOULD BE RELOADED IN SUBCLASS";
+        return @[PNLoggerSymbols.requests.methodRequiresOwnImplementation, NSStringFromSelector(_cmd)];
     }];
 
 
@@ -162,7 +163,7 @@
     NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
     if ([authorizationKey length] > 0) {
 
-		authorizationKey = [NSString stringWithFormat:@"auth=%@", [authorizationKey percentEscapedString]];
+		authorizationKey = [NSString stringWithFormat:@"auth=%@", [authorizationKey pn_percentEscapedString]];
     }
     else {
 
@@ -225,7 +226,7 @@
         
         if ([self shouldCompressPOSTBody]) {
             
-            postBody = [postBody GZIPDeflate];
+            postBody = [postBody pn_GZIPDeflate];
         }
     }
     
@@ -250,6 +251,12 @@
     
     
     return payloadData;
+}
+
+- (NSString *)logDescription {
+    
+    return [NSString stringWithFormat:@"<%@|%@|%@>", ([self HTTPMethod] == PNRequestPOSTMethod ? @"POST" :@"GET"),
+            [self resourcePath], @([self shouldCompressPOSTBody])];
 }
 
 #pragma mark -

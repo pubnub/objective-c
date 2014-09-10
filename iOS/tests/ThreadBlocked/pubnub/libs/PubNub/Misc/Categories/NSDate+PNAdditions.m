@@ -16,50 +16,13 @@
 #endif
 
 
-#pragma mark Private category interface declaration
-
-@interface NSDate (PNAdditionPrivate)
-
-
-#pragma mark - Instance methods
-
-#pragma mark - Misc methods
-
-- (NSDateFormatter *)consoleOutputDateFormatter;
-
-#pragma mark -
-
-
-@end
-
-
 #pragma mark - Public category interface implementation
 
 @implementation NSDate (PNAdditions)
 
-
-#pragma mark - Instance methods
-
-- (NSString *)consoleOutputTimestamp {
-
-    return [[self consoleOutputDateFormatter] stringFromDate:self];
-}
-
-
-#pragma mark - Misc methods
-
-- (NSDateFormatter *)consoleOutputDateFormatter {
-
-    static dispatch_once_t dispatchOnceToken;
-    static NSDateFormatter *dateFormatter;
-    dispatch_once(&dispatchOnceToken, ^{
-
-        dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"YYYY-MM-dd HH:mm:ss.SSS";
-    });
-
-
-    return dateFormatter;
+- (NSString *)logDescription {
+    
+    return [NSString stringWithFormat:@"<%@>", @([self timeIntervalSince1970] * 1000)];
 }
 
 #pragma mark -

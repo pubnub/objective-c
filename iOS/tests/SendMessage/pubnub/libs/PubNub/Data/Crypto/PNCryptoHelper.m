@@ -15,6 +15,7 @@
 #import "NSString+PNAddition.h"
 #import "NSData+PNAdditions.h"
 #import "PNPrivateImports.h"
+#import "PNLoggerSymbols.h"
 
 
 // ARC check
@@ -449,7 +450,7 @@ static NSData *_cryptorKeyData = nil;
         NSData *inputData;
         if (cryptorType == PNCryptorDecrypt) {
 
-            inputData = [NSData dataFromBase64String:string];
+            inputData = [NSData pn_dataFromBase64String:string];
             
             if (inputData == nil) {
                 
@@ -473,7 +474,7 @@ static NSData *_cryptorKeyData = nil;
 
                 if (cryptorType == PNCryptorEncrypt) {
 
-                    processedString = [processedData base64Encoding];
+                    processedString = [processedData pn_base64Encoding];
                 }
                 else {
 
@@ -517,7 +518,7 @@ static NSData *_cryptorKeyData = nil;
 
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE
     // Update cryptor key
-    _cryptorKeyData = [[_configuration.cipherKey sha256HEXString] dataUsingEncoding:NSUTF8StringEncoding];
+    _cryptorKeyData = [[_configuration.cipherKey pn_sha256HEXString] dataUsingEncoding:NSUTF8StringEncoding];
 #else
     // Update cryptor key
     _cryptorKeyData = [_configuration.cipherKey md5Data];
@@ -585,7 +586,10 @@ static NSData *_cryptorKeyData = nil;
 
 - (void)dealloc {
 
-    [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"Destroyed"; }];
+    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+        return @[PNLoggerSymbols.cryptor.destroyed];
+    }];
 }
 
 #pragma mark -

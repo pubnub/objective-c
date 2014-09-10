@@ -22,7 +22,7 @@
 /**
  * Will check application Property List file to fetch whether application can run in background or not
  */
-+ (BOOL)canRunInBackground;
++ (BOOL)pn_canRunInBackground;
 
 #pragma mark -
 

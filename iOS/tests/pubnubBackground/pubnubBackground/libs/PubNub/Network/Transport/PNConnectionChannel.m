@@ -12,6 +12,7 @@
 #import "PNConnectionChannel.h"
 #import "PNConnection+Protected.h"
 #import "PubNub+Protected.h"
+#import "PNLoggerSymbols.h"
 #import "PNRequestsQueue.h"
 #import "PNResponse.h"
 #import "PNHelper.h"
@@ -234,10 +235,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connect {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] TRYING TO CONNECT (STATE: %lu)",
-                self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.connectionAttempt, (self.name ? self.name : self), @(self.state)];
     }];
 
 
@@ -255,10 +255,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Check whether connection already connected but channel internal state is out of sync
     if (([self.connection isConnected] && ![self isConnected])) {
 
-        [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] OUT OF SYNC WITH CONNECTION. UPDATING... (STATE: %lu)",
-                    self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.outOfSyncWithConnection, (self.name ? self.name : self), @(self.state)];
         }];
 
         connectionCompletionSimulation();
@@ -266,9 +265,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Checking whether data connection is connected or not
     else if (![self.connection isConnected]) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] CONNECTING... (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.connecting, (self.name ? self.name : self), @(self.state)];
         }];
         
         [PNBitwiseHelper clear:&_state];
@@ -306,20 +305,22 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)disconnectWithEvent:(BOOL)shouldNotifyOnDisconnection {
 
-    NSString *shouldNotify = shouldNotifyOnDisconnection ? @" AND NOTIFY ON DISCONNECTION" : @" W/O DISCONNECTION "
-                                                           "NOTIFY";
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    NSString *symbolCode = PNLoggerSymbols.connectionChannel.disconnectingWithEvent;
+    if (!shouldNotifyOnDisconnection) {
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] TRYING TO DISCONNECT%@ (STATE: %lu)",
-                self.name, shouldNotify, self.state];
+        symbolCode = PNLoggerSymbols.connectionChannel.disconnectingWithOutEvent;
+    }
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+        return @[symbolCode, (self.name ? self.name : self), @(self.state)];
     }];
 
 
     void(^disconnectionCompletionSimulation)() = ^{
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] DISCONNECTED (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.disconnected, (self.name ? self.name : self), @(self.state)];
         }];
         
         [PNBitwiseHelper clear:&_state];
@@ -339,10 +340,10 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Check whether connection already disconnected but channel internal state is out of sync
     if ([self.connection isDisconnected] && ![self isDisconnected] ) {
 
-        [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] OUT OF SYNC WITH DISCONNECTION. UPDATING... (STATE: %lu)",
-                    self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.outOfSyncWithDisconnection, (self.name ? self.name : self),
+                     @(self.state)];
         }];
 
 
@@ -356,9 +357,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Checking whether data connection is disconnected or not
     else if (![self.connection isDisconnected]) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] DISCONNECTING... (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.disconnecting, (self.name ? self.name : self), @(self.state)];
         }];
 
         
@@ -384,9 +385,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Check whether channel already disconnected or not
     else if ([self isConnected]) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] DISCONNECTING... (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.disconnecting, (self.name ? self.name : self), @(self.state)];
         }];
 
         self.connection.delegate = nil;
@@ -397,9 +398,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     }
     else {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] ALREADY DISCONNECTED (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.alreadyDisconnected, (self.name ? self.name : self), @(self.state)];
         }];
 
         self.connection.delegate = nil;
@@ -426,9 +427,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)suspend {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] TRYING TO SUSPEND (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.suspensionAttempt, (self.name ? self.name : self), @(self.state)];
     }];
 
 
@@ -446,22 +447,22 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     };
 
     // Check whether connection already suspended but channel internal state is out of sync
-    if ([self.connection isSuspended] && ![self isSuspended]) {
-
-        [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
-
-            return [NSString stringWithFormat:@"[CHANNEL::%@] OUT OF SYNC WITH SUSPENSION. UPDATING... (STATE: %lu)",
-                    self.name, self.state];
+    if ([self.connection isSuspended] && ![self.connection isResuming] && ![self isSuspended]) {
+        
+        [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.connectionChannel.outOfSyncWithSuspension, (self.name ? self.name : self),
+                     @(self.state)];
         }];
-
+        
         suspensionCompletionSimulation();
     }
-    // Checking whether data connection is suspended or not
-    else if (![self.connection isSuspended]) {
+    // Checking whether data connection is suspended or try to resume
+    else if (![self.connection isSuspended] || [self.connection isResuming]) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] SUSPENDING... (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.suspending, (self.name ? self.name : self), @(self.state)];
         }];
         
         [PNBitwiseHelper clear:&_state];
@@ -495,9 +496,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)resume {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] TRYING TO RESUME (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.resumeAttempt, (self.name ? self.name : self), @(self.state)];
     }];
 
 
@@ -514,10 +515,10 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Check whether connection already resumed but channel internal state is out of sync
     if (![self.connection isSuspended] && [self isSuspended]) {
 
-        [PNLogger logCommunicationChannelWarnMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] OUT OF SYNC WITH RESUME. UPDATING... (STATE: %lu)",
-                    self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.outOfSyncWithResuming, (self.name ? self.name : self),
+                     @(self.state)];
         }];
 
         resumingCompletionSimulation();
@@ -525,9 +526,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     // Checking whether data connection is suspended or not
     else if ([self.connection isSuspended]) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] RESUMING... (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.resuming, (self.name ? self.name : self), @(self.state)];
         }];
         
         [PNBitwiseHelper clear:&_state];
@@ -876,10 +877,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     }
     else {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] IGNORE SCHEDULED REQUEST: %@ (STATE: %lu)",
-                    self.name, request, self.state];
+            return @[PNLoggerSymbols.connectionChannel.ignoreScheduledRequest, (self.name ? self.name : self),
+                    (request ? request : [NSNull null]), @(self.state)];
         }];
     }
 }
@@ -901,9 +902,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)reconnect {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] RECONNECTING BY REQUEST... (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.reconnectingByRequest, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     BOOL isConnected = [self isConnected];
@@ -993,9 +995,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connectionConfigurationDidFail:(PNConnection *)connection {
 
-    [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] CONFIGUIRATION FAILED (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.configurationFailed, (self.name ? self.name : self),
+                @(self.state)];
     }];
     
     [PNBitwiseHelper clear:&_state];
@@ -1017,9 +1020,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connectionDidReset:(PNConnection *)connection {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HAS BEEN RESET (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionReset, (self.name ? self.name : self),
+                @(self.state)];
     }];
     
     [PNBitwiseHelper clear:&_state];
@@ -1037,9 +1041,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HANDLE CONNECTION EVENT (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionReady, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     // Check whether channel is waiting for connection completion or not
@@ -1059,9 +1064,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     if (isExpected) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] CONNECTED (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.connected, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
         [self.delegate connectionChannel:self didConnectToHost:hostName];
@@ -1070,9 +1076,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connectionDidSuspend:(PNConnection *)connection {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HANDLE SUSPENSION EVENT (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleSuspension, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     // Check whether channel is waiting for suspension or not
@@ -1087,9 +1094,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     if (isExpected) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] SUSPENDED (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.suspended, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
         [self.delegate connectionChannelDidSuspend:self];
@@ -1098,9 +1106,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connectionDidResume:(PNConnection *)connection {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HANDLE RESUME EVENT (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleResume, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     // Check whether channel is waiting for resume or not
@@ -1122,9 +1131,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     if (isExpected) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] RESUMED (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.resumed, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
         [self.delegate connectionChannelDidResume:self requireWarmUp:doesWarmingUpRequired];
@@ -1143,9 +1153,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] WILL RESTORE CONNECTION (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.willRestoreConnection, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
 
@@ -1160,9 +1171,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection didReconnectToHost:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HANDLE CONNECTION RESTORE EVENT (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionRestore, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
 
@@ -1185,9 +1197,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     if (isExpected && doesWarmingUpRequired) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] RESTORED CONNECTION (STATE: %lu)", self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.connectionRestored, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
         [self.delegate connectionChannel:self didReconnectToHost:hostName];
@@ -1196,9 +1209,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection willReconnectToHostAfterError:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] WILL RESTORE CONNECTION AFTER ERROR (STATE: %lu)", self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.willRestoreConnectionAfterError, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
 
@@ -1213,10 +1227,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection didReconnectToHostAfterError:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HANDLE CONNECTION RESTORE AFTER ERROR EVENT (STATE: %lu)",
-                self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionRestoreAfterError, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     // Check whether channel is waiting for reconnection completion or not
@@ -1238,10 +1252,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     if (isExpected && doesWarmingUpRequired) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] RESTORED CONNECTION (STATE: %lu)",
-                    self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.connectionRestored, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
         [self.delegate connectionChannel:self didReconnectToHost:hostName];
@@ -1251,10 +1265,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection willDisconnectFromHost:(NSString *)host withError:(PNError *)error {
 
-    [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HANDLE DISCONNECTION ON ERROR EVENT (STATE: %lu)",
-                self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleDisconnectionBecauseOfError, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     // Check whether channel is in suitable state to handle this event or not
@@ -1282,10 +1296,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     if (isExpected) {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] DISCONNECTED ON ERROR (STATE: %lu)",
-                    self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.disconnectedBecauseOfError, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
         [self.delegate connectionChannel:self willDisconnectFromOrigin:host withError:error];
@@ -1294,10 +1308,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection didDisconnectFromHost:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HANDLE DISCONNECTION EVENT (STATE: %lu)",
-                self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleDisconnection, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     // Check whether channel is in suitable state to handle this event or not
@@ -1326,10 +1340,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     if(isExpected) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] DISCONNECTED (STATE: %lu)",
-                    self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.disconnected, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
         [self.delegate connectionChannel:self didDisconnectFromOrigin:hostName];
@@ -1338,10 +1352,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection didRestoreAfterServerCloseConnectionToHost:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] CONNECTION RESTORED AFTER CLOSING BY SERVER REQUEST... (STATE: %lu)",
-                self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.connectionRestoredAfterClosingByServerRequest, (self.name ? self.name : self),
+                @(self.state)];
     }];
     
     [PNBitwiseHelper clear:&_state];
@@ -1360,10 +1374,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection willDisconnectByServerRequestFromHost:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] CLOSING CONNECTION BY SERVER REQUEST... (STATE: %lu)",
-                self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.closingConnectionByServerRequest, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     [self stopTimeoutTimerForRequest:nil];
@@ -1375,10 +1389,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection didDisconnectByServerRequestFromHost:(NSString *)hostName {
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] CONNECTION CLOSE BY SERVER REQUEST... (STATE: %lu)",
-                self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.disconnectedByServerRequest, (self.name ? self.name : self),
+                @(self.state)];
     }];
     
     [PNBitwiseHelper clear:&_state];
@@ -1390,10 +1404,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
 - (void)connection:(PNConnection *)connection connectionDidFailToHost:(NSString *)hostName withError:(PNError *)error {
 
-    [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] HANDLE CONNECTION FAILURE EVENT (STATE: %lu)",
-                self.name, self.state];
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionFailedBecauseOfError, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     // Check whether channel is in suitable state to handle this event or not
@@ -1417,10 +1431,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
     if (isExpected) {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] CONNECTION FAILED (STATE: %lu)",
-                    self.name, self.state];
+            return @[PNLoggerSymbols.connectionChannel.connectionFailedBecauseOfError, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
         [self.delegate connectionChannel:self connectionDidFailToOrigin:hostName withError:error];
@@ -1460,10 +1474,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
     // Check whether response is valid or not
     if (shouldResendRequest) {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] RECEIVED MALFORMED RESPONSE: %@ (STATE: %lu)",
-                    self.name, response, self.state];
+            return @[PNLoggerSymbols.connectionChannel.malformedJSONPResponse, (self.name ? self.name : self),
+                    (response ? response : [NSNull null]), @(self.state)];
         }];
 
         if (request) {
@@ -1487,10 +1501,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
         if (shouldHandleResponse && isRequestSentByUser) {
 
-            [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CHANNEL::%@] RECIEVED RESPONSE: %@ (STATE: %lu)",
-                        self.name, response, self.state];
+                return @[PNLoggerSymbols.connectionChannel.receivedResponse, (self.name ? self.name : self),
+                        (response ? response : [NSNull null]), @(self.state)];
             }];
         }
 
@@ -1507,10 +1521,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
 
         if (request) {
 
-            [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CHANNEL::%@] RESCHEDULING REQUEST: %@ (STATE: %lu)",
-                        self.name, request, self.state];
+                return @[PNLoggerSymbols.connectionChannel.reschedulingRequest, (self.name ? self.name : self),
+                        (request ? request : [NSNull null]), @(self.state)];
             }];
 
             [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution outOfOrder:YES
@@ -1518,10 +1532,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
         }
         else {
 
-            [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+            [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CHANNEL::%@] CAN'T RESCHEDULE REQUEST FOR RESPONSE: %@ (STATE: %lu)",
-                        self.name, response, self.state];
+                return @[PNLoggerSymbols.connectionChannel.requestRescheduleImpossible, (self.name ? self.name : self),
+                        (request ? request : [NSNull null]), @(self.state)];
             }];
         }
 
@@ -1614,10 +1628,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
         [_delegate connectionChannel:self didDisconnectFromOrigin:nil];
     }
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] RESETTING CONNECTION INSTANCE: %@ (STATE: %lu)",
-                self.name, _connection, self.state];
+        return @[PNLoggerSymbols.connectionChannel.connectionReset, (self.name ? self.name : self),
+                (_connection ? [NSString stringWithFormat:@"%p", _connection] : [NSNull null]),
+                (_connection ? _connection : [NSNull null]), @(self.state)];
     }];
 
     _connection.delegate = nil;
@@ -1633,9 +1648,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing
         [self cleanUp];
     }
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] DESTROYED (STATE: %lu)", _name, _state];
+        return @[PNLoggerSymbols.connectionChannel.destroyed, (_name ? _name : @""),
+                @(_state)];
     }];
 }
 

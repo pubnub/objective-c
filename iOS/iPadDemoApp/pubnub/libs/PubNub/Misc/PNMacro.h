@@ -12,8 +12,8 @@
 
 #import <Foundation/Foundation.h>
 #import "NSDate+PNAdditions.h"
+#import "PNLogger+Protected.h"
 #import "PNStructures.h"
-#import "PNLogger.h"
 
 
 #ifndef PNMacro_h
@@ -44,7 +44,6 @@
 #endif
 
 #define PNLOG_GENERAL_LOGGING_ENABLED 1
-#define PNLOG_DELEGATE_LOGGING_ENABLED 1
 #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
 #define PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED 1
 #define PNLOG_DESERIALIZER_ERROR_LOGGING_ENABLED 1
@@ -63,8 +62,6 @@
     #define PNLOG_STORE_LOG_TO_FILE 1
     #undef PNLOG_GENERAL_LOGGING_ENABLED
     #define PNLOG_GENERAL_LOGGING_ENABLED 1
-    #undef PNLOG_DELEGATE_LOGGING_ENABLED
-    #define PNLOG_DELEGATE_LOGGING_ENABLED 1
     #undef PNLOG_REACHABILITY_LOGGING_ENABLED
     #define PNLOG_REACHABILITY_LOGGING_ENABLED 1
     #undef PNLOG_DESERIALIZER_INFO_LOGGING_ENABLED
@@ -101,7 +98,10 @@ void PNLog(PNLogLevel level, id sender, ...) {
     NSString *formattedLogString = [[NSString alloc] initWithFormat:logFormatString arguments:args];
     va_end(args);
     
-    [PNLogger logFrom:sender forLevel:level message:^NSString * { return formattedLogString; }];
+    [PNLogger logFrom:sender forLevel:level withParametersFromBlock:^NSArray *{
+        
+        return @[(formattedLogString ? formattedLogString : @"nothing to say")];
+    }];
 }
 
 
@@ -166,13 +166,13 @@ NSString *PNObfuscateString(NSString *string) {
         obfuscatedString = [NSString stringWithFormat:@"%@*****%@", [string substringToIndex:minimumWidth],
                             [string substringFromIndex:([string length] - minimumWidth)]];
     }
-    else {
+    else if([obfuscatedString length]) {
 
         obfuscatedString = [obfuscatedString substringToIndex:stringWidth];
     }
 
 
-    return obfuscatedString;
+    return (obfuscatedString ? obfuscatedString : @"");
 }
 
 #pragma clang diagnostic pop
@@ -187,7 +187,7 @@ NSString *PNObfuscateString(NSString *string) {
 #ifdef PN_SOCKET_PROXY_ENABLED
     #if PN_SOCKET_PROXY_ENABLED == 1
         #define PN_SOCKET_PROXY_HOST @"0.0.0.0"
-        #define PN_SPCKET_PROXY_PORT @(0)
+        #define PN_SOCKET_PROXY_PORT @(0)
     #endif // PN_SOCKET_PROXY_ENABLED
 #endif // PN_SOCKET_PROXY_ENABLED
 

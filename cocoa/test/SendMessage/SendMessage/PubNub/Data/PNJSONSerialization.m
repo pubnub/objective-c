@@ -12,7 +12,8 @@
 //
 
 #import "PNJSONSerialization.h"
-#import "PNLogger.h"
+#import "PNLogger+Protected.h"
+#import "PNLoggerSymbols.h"
 
 
 // ARC check
@@ -217,7 +218,10 @@
     }
     else {
 
-        [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"JSON string is empty"; }];
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.JSONserializer.emptyJSONString];
+        }];
     }
 }
 

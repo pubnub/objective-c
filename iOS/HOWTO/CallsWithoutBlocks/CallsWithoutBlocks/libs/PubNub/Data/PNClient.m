@@ -64,6 +64,16 @@
                     self.identifier, self.channel.name, self.data];
 }
 
+- (NSString *)logDescription {
+    
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
+    return [NSString stringWithFormat:@"<%@|%@|%@>", (self.identifier ? self.identifier : [NSNull null]),
+            (self.channel.name ? self.channel.name : [NSNull null]),
+            (self.data ? [self.data performSelector:@selector(logDescription)] : [NSNull null])];
+    #pragma clang diagnostic pop
+}
+
 #pragma mark -
 
 

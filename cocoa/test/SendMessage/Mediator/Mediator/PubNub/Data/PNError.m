@@ -716,6 +716,11 @@
                                       self.associatedObject];
 }
 
+- (NSString *)logDescription {
+    
+    return [NSString stringWithFormat:@"<%@|%ld>", self.domain, (long)self.code];
+}
+
 - (NSString *)domainForError:(NSInteger)errorCode {
     
     NSString *domain = kPNDefaultErrorDomain;

@@ -165,7 +165,7 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
         }
         else {
             
-            isAbleToChangeAccessRights  = (self.channelName && ![self.channelName isEmpty] && [self.dataManipulation count] > 0);
+            isAbleToChangeAccessRights  = (self.channelName && ![self.channelName pn_isEmpty] && [self.dataManipulation count] > 0);
         }
     }
     

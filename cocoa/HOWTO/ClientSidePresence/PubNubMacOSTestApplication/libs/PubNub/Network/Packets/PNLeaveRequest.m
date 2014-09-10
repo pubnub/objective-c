@@ -96,19 +96,25 @@
 
 
     return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@&pnsdk=%@",
-                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+                                      [[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString],
                                       [[channelsToLeave valueForKey:@"escapedName"] componentsJoinedByString:@","],
                                       self.clientIdentifier, [self callbackMethodName], self.shortIdentifier,
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                                                                              [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
+}
+
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

@@ -10,6 +10,7 @@
 #import "PNErrorResponseParser+Protected.h"
 #import "PNJSONSerialization.h"
 #import "PNRequestsImport.h"
+#import "PNLoggerSymbols.h"
 #import "PNErrorCodes.h"
 #import "PNError.h"
 #import "PNMacro.h"
@@ -180,9 +181,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                           [weakSelf extractServiceData];
                                       }
                                            errorBlock:^(NSError *error) {
-                                               [PNLogger logGeneralMessageFrom:weakSelf message:^NSString * {
 
-                                                   return [NSString stringWithFormat:@"JSON DECODE ERROR: %@", error];
+                                               [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+
+                                                   return @[PNLoggerSymbols.JSONserializer.JSONDecodeError, (error ? error : [NSNull null])];
                                                }];
                                                [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
                                            }];
@@ -191,7 +193,10 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         // characters which can't be encoded.
         else {
 
-            [PNLogger logGeneralMessageFrom:self message:^NSString * { return @"FAILED TO DECODE DATA"; }];
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                return @[PNLoggerSymbols.JSONserializer.decodeFailed];
+            }];
             [self handleJSONDecodeErrorWithCode:kPNResponseEncodingError];
         }
     }
@@ -372,6 +377,15 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                       self.isLastResponseOnConnection ? @"YES" : @"NO", (unsigned long)[self.content length],
                                       (unsigned long)self.size, self.callbackMethod ? @"YES" : @"NO", self.callbackMethod,
                                       self.serviceName, self.requestIdentifier, self.response, self.additionalData];
+}
+
+- (NSString *)logDescription {
+    
+    return [NSString stringWithFormat:@"<%ld|%@|%@|%@|%ld|%ld|%@|%@|%@|%@>", (long)self.statusCode, (self.message ? self.message : [NSNull null]),
+            @(self.isErrorResponse), @(self.isLastResponseOnConnection), (unsigned long)[self.content length],
+            (unsigned long)self.size, (self.callbackMethod ? self.callbackMethod : [NSNull null]),
+            (self.serviceName ? self.serviceName : [NSNull null]), (self.requestIdentifier ? self.requestIdentifier : [NSNull null]),
+            (self.response ? self.response : [NSNull null])];
 }
 
 #pragma mark -

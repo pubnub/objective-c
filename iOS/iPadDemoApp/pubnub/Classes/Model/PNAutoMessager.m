@@ -73,7 +73,7 @@ static double const kTimeIntervalBetweenMessages = 0.7f;
             
             if (((PNError *)object).code == kPNAPIAccessForbiddenError) {
                 
-                detailedDescription = [NSString stringWithFormat:[@"messageSendGeneralErrorAlertViewDetailedDescription" localized],
+                detailedDescription = [NSString stringWithFormat:[@"messageSendPAMErrorAlertViewDetailedDescription" localized],
                                        [PNDataManager sharedInstance].currentChannel.name, (int)kPNActionRetryDelayOnPAMError];
                 
                 cancelButtonTitle = @"cancelButtonTitle";

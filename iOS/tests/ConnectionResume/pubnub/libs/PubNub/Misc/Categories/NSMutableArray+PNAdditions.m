@@ -23,17 +23,40 @@
 
 #pragma mark - Class methods
 
-+ (NSMutableArray *)arrayUsingWeakReferences {
++ (NSMutableArray *)pn_arrayUsingWeakReferences {
     
-    return [self arrayUsingWeakReferencesWithCapacity:0];
+    return [self pn_arrayUsingWeakReferencesWithCapacity:0];
 }
 
-+ (NSMutableArray *)arrayUsingWeakReferencesWithCapacity:(NSUInteger)capacity {
++ (NSMutableArray *)pn_arrayUsingWeakReferencesWithCapacity:(NSUInteger)capacity {
     
     CFArrayCallBacks callbacks = {0, NULL, NULL, NULL, CFEqual};
     
     
     return (__bridge id)(CFArrayCreateMutable(0, capacity, &callbacks));
+}
+
+
+#pragma mark - Instance methods
+
+
+- (NSString *)logDescription {
+    
+    __block NSString *logDescription = @"<[";
+    
+    [self enumerateObjectsUsingBlock:^(id entry, NSUInteger entryIdx, BOOL *entryEnumeratorStop) {
+        
+        // Check whether parameter can be transformed for log or not
+        if ([entry respondsToSelector:@selector(logDescription)]) {
+            
+            entry = [entry performSelector:@selector(logDescription)];
+            entry = (entry ? entry : @"");
+        }
+        logDescription = [logDescription stringByAppendingFormat:@"%@%@", entry, (entryIdx + 1 != [self count] ? @"|" : @"]>")];
+    }];
+    
+    
+    return logDescription;
 }
 
 #pragma mark -

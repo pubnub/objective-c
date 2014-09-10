@@ -24,7 +24,7 @@
 
  @return \c YES if provided dictionary conforms to the requirements.
 */
-- (BOOL)isValidState:(BOOL)isFirstLevelNesting;
+- (BOOL)pn_isValidState:(BOOL)isFirstLevelNesting;
 
 #pragma mark -
 
@@ -39,12 +39,12 @@
 
 #pragma mark - Instance methods
 
-- (BOOL)isValidState {
+- (BOOL)pn_isValidState {
 
-    return [self count] && [self isValidState:YES];
+    return [self count] && [self pn_isValidState:YES];
 }
 
-- (BOOL)isValidState:(BOOL)isFirstLevelNesting {
+- (BOOL)pn_isValidState:(BOOL)isFirstLevelNesting {
 
     __block BOOL isValidState = YES;
 
@@ -56,7 +56,7 @@
             isValidState = NO;
             if (isFirstLevelNesting) {
 
-                isValidState = [value isValidState:NO];
+                isValidState = [value pn_isValidState:NO];
             }
         }
         else {
@@ -70,6 +70,27 @@
 
 
     return isValidState;
+}
+
+- (NSString *)logDescription {
+    
+    __block NSString *logDescription = @"<{";
+    __block NSUInteger entryIdx = 0;
+    
+    [self enumerateKeysAndObjectsUsingBlock:^(NSString *entryKey, id entry, BOOL *entryEnumeratorStop) {
+        
+        // Check whether parameter can be transformed for log or not
+        if ([entry respondsToSelector:@selector(logDescription)]) {
+            
+            entry = [entry performSelector:@selector(logDescription)];
+            entry = (entry ? entry : @"");
+        }
+        logDescription = [logDescription stringByAppendingFormat:@"%@:%@%@", entryKey, entry, (entryIdx + 1 != [self count] ? @"|" : @"}>")];
+        entryIdx++;
+    }];
+    
+    
+    return logDescription;
 }
 
 #pragma mark -

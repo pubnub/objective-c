@@ -37,6 +37,7 @@
 #import "PNRequestsImport.h"
 #import "PNResponseParser.h"
 #import "PNRequestsQueue.h"
+#import "PNLoggerSymbols.h"
 #import "PNClient.h"
 #import "PNDate.h"
 
@@ -103,9 +104,9 @@
     // Check whether request is 'Latency meter' request or not
     if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] LATENCY METER MESSAGE HAS BEEN PROCESSED", self];
+            return @[PNLoggerSymbols.connectionChannel.service.latencyMeterRequestCompleted, (self.name ? self.name : self)];
         }];
 
         [(PNLatencyMeasureRequest *)request markEndTime];
@@ -132,7 +133,8 @@
 
             NSString *identifier = [request valueForKey:@"clientIdentifier"];
             PNChannel *channel = [request valueForKey:@"channel"];
-            response.additionalData = [PNClient clientForIdentifier:identifier channel:channel andData:nil];
+            NSDictionary *clientData = ([request isKindOfClass:[PNClientStateUpdateRequest class]] ? [request valueForKey:@"state"] : nil);
+            response.additionalData = [PNClient clientForIdentifier:identifier channel:channel andData:clientData];
         }
 
         PNResponseParser *parser = [PNResponseParser parserForResponse:response];
@@ -143,19 +145,20 @@
 
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] TIME TOKEN MESSAGE HAS BEEN PROCESSED", self];
+                    return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestCompleted, (self.name ? self.name : self),
+                             (parser ? [parser parsedData] : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didReceiveTimeToken:[parser parsedData]];
             }
             else {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] TIME TOKEN MESSAGE PROCESSING HAS BEEN FAILED: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestFailed, (self.name ? self.name : self),
+                            (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:parsedData];
@@ -167,20 +170,20 @@
             // Check whether there is no error while loading participants list
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] CLIENT STATE DOWNLOADED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestCompleted, (self.name ? self.name : self),
+                            (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didReceiveClientState:parsedData];
             }
             else {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] CLIENT STATE DOWNLOAD FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed, (self.name ? self.name : self),
+                             (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
                 }];
 
                 ((PNError *)parsedData).associatedObject = response.additionalData;
@@ -193,20 +196,20 @@
             // Check whether there is no error while loading participants list
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] CLIENT STATE UPDATED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestCompleted, (self.name ? self.name : self),
+                            (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didUpdateClientState:parsedData];
             }
             else {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] CLIENT STATE UPDATE FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestFailed, (self.name ? self.name : self),
+                            (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
                 }];
 
                 ((PNError *)parsedData).associatedObject = response.additionalData;
@@ -229,65 +232,74 @@
                     parsedData = ((PNOperationStatus *)parsedData).error;
                 }
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] MESSAGE SENDING FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestFailed, (self.name ? self.name : self),
+                            (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didFailMessageSend:message withError:parsedData];
             }
             else {
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
-
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] MESSAGE HAS BEEN SENT. SERVICE RESPONSE: %@",
-                            self, parsedData];
-                }];
-
+                
                 // Storing message sent date.
                 if ([parsedData isKindOfClass:[PNOperationStatus class]]) {
-
+                    
                     message.date = [PNDate dateWithToken:((PNOperationStatus *)parsedData).timeToken];
                 }
+
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                    return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestCompleted, (self.name ? self.name : self),
+                            (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
+                }];
+                
                 [self.serviceDelegate serviceChannel:self didSendMessage:message];
             }
         }
         // Check whether request was sent for message history or not
         else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
 
-            PNChannel *channel = ((PNMessageHistoryRequest *)request).channel;
+            PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
 
             // Check whether there is no error while loading messages history
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                ((PNMessagesHistory *)parsedData).channel = channel;
-                [((PNMessagesHistory *)parsedData).messages makeObjectsPerformSelector:@selector(setChannel:)
-                                                                            withObject:channel];
+                PNMessagesHistory *history = (PNMessagesHistory *)parsedData;
+                history.channel = historyRequest.channel;
+                [history.messages makeObjectsPerformSelector:@selector(setChannel:) withObject:historyRequest.channel];
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] HISTORY HAS BEEN DOWNLOADED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.historyRequestCompleted, (self.name ? self.name : self),
+                             (history.channel ? history.channel : [NSNull null]), (history.startDate ? history.startDate : [NSNull null]),
+                             (history.endDate ? history.endDate : [NSNull null]), @(historyRequest.limit),
+                             @(historyRequest.shouldRevertMessages), @(historyRequest.shouldIncludeTimeToken),
+                             (history.messages ? history.messages : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didReceiveMessagesHistory:parsedData];
             }
             else {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] HISTORY DOWNLOAD FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.historyRequestFailed, (self.name ? self.name : self),
+                             (historyRequest.channel ? historyRequest.channel : [NSNull null]),
+                             (historyRequest.startDate ? historyRequest.startDate : [NSNull null]),
+                             (historyRequest.endDate ? historyRequest.endDate : [NSNull null]), @(historyRequest.limit),
+                             @(historyRequest.shouldRevertMessages), @(historyRequest.shouldIncludeTimeToken),
+                            (parsedData ? parsedData : [NSNull null])];
                 }];
 
-                [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:channel withError:parsedData];
+                [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:historyRequest.channel withError:parsedData];
             }
         }
         // Check whether request was sent for participants list or not
         else if ([request isKindOfClass:[PNHereNowRequest class]]) {
 
-            PNChannel *channel = ((PNHereNowRequest *)request).channel;
+            PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
+            PNChannel *channel = hereNowRequest.channel;
 
             // Check whether there is no error while loading participants list
             if (![parsedData isKindOfClass:[PNError class]]) {
@@ -295,20 +307,22 @@
                 ((PNHereNow *)parsedData).channel = channel;
                 [channel updateWithParticipantsList:parsedData];
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] PARTICIPANTS LIST DOWNLOADED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestCompleted, (self.name ? self.name : self),
+                             (channel ? channel : [NSNull null]), @(hereNowRequest.isClientIdentifiersRequired),
+                             @(hereNowRequest.shouldFetchClientState), (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didReceiveParticipantsList:parsedData];
             }
             else {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] PARTICIPANTS LIST DOWNLOAD FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestFailed, (self.name ? self.name : self),
+                             (channel ? channel : [NSNull null]), @(hereNowRequest.isClientIdentifiersRequired),
+                             @(hereNowRequest.shouldFetchClientState), (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannel:channel withError:parsedData];
@@ -322,20 +336,20 @@
             // Check whether there is no error while loading channels
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] PARTICIPANT CHANNELS LIST DOWNLOADED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestCompleted, (self.name ? self.name : self),
+                             (identifier ? identifier : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didReceiveParticipantChannelsList:parsedData];
             }
             else {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] PARTICIPANT CHANNELS LIST DOWNLOAD FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestFailed, (self.name ? self.name : self),
+                            (identifier ? identifier : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self didFailParticipantChannelsListLoadForIdentifier:identifier
@@ -346,10 +360,11 @@
 
             SEL selector;
             NSArray *parameters;
+            NSData *devicePushToken = ((PNPushNotificationsStateChangeRequest *)request).devicePushToken;
             NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
             NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
             PNLogLevel logLevel = PNLogCommunicationChannelLayerInfoLevel;
-            NSString *message = @"[CHANNEL::%@] PUSH NOTIFICATIONS ENABLED. SERVICE RESPONSE: %@";
+            NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestCompleted;
 
             // Check whether there is no error while processed push notifications state change
             if (![parsedData isKindOfClass:[PNError class]]) {
@@ -357,7 +372,7 @@
                 selector = @selector(serviceChannel:didEnablePushNotificationsOnChannels:);
                 if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
 
-                    message = @"[CHANNEL::%@] PUSH NOTIFICATIONS DISABLED. SERVICE RESPONSE: %@";
+                    symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestCompleted;
                     selector = @selector(serviceChannel:didDisablePushNotificationsOnChannels:);
                 }
 
@@ -366,61 +381,75 @@
             else {
                 
                 logLevel = PNLogCommunicationChannelLayerErrorLevel;
-                message = @"[CHANNEL::%@] PUSH NOTIFICATIONS ENABLING FAILED WITH ERROR: %@";
+                symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestFailed;
                 selector = @selector(serviceChannel:didFailPushNotificationEnableForChannels:withError:);
                 if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
 
-                    message = @"[CHANNEL::%@] PUSH NOTIFICATIONS DISABLING FAILED WITH ERROR: %@";
+                    symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestFailed;
                     selector = @selector(serviceChannel:didFailPushNotificationDisableForChannels:withError:);
                 }
 
                 parameters = @[self, channels, parsedData];
             }
-            [PNLogger logFrom:self forLevel:logLevel message:^NSString * {
+            if (logLevel == PNLogCommunicationChannelLayerInfoLevel) {
 
-                return [NSString stringWithFormat:message, self, parsedData];
-            }];
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            NSInvocation *invocation = [NSInvocation invocationForObject:self.serviceDelegate
-                                                                selector:selector
-                                                        retainsArguments:NO
-                                                              parameters:parameters];
+                    return @[symbolCode, (self.name ? self.name : self), (devicePushToken ? devicePushToken : [NSNull null]),
+                             (channels ? channels : [NSNull null])];
+                }];
+            }
+            else {
+
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                    return @[symbolCode, (self.name ? self.name : self), (devicePushToken ? devicePushToken : [NSNull null]),
+                             (channels ? channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                }];
+            }
+
+            NSInvocation *invocation = [NSInvocation pn_invocationForObject:self.serviceDelegate selector:selector
+                                                           retainsArguments:NO parameters:parameters];
             [invocation invoke];
         }
         else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
+            
+            NSData *devicePushToken = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
 
             // Check whether there is no error while removed push notifications from specified set
             // of channels or not
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATIONS REMOVED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestCompleted, (self.name ? self.name : self),
+                            (devicePushToken ? devicePushToken : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannelDidRemovePushNotifications:self];
             }
             else {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATIONS REMOVE FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestFailed, (self.name ? self.name : self),
+                            (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                 }];
                 
                 [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:parsedData];
             }
         }
         else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
+            
+            NSData *devicePushToken = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
 
             // Check whether there is no error while retrieved list of channels on which push notifications was enabled
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATIONS ENABLED CHANNELS LIST RECEIVED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestCompleted, (self.name ? self.name : self),
+                            (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self
@@ -428,10 +457,10 @@
             }
             else {
 
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATION ENABLED CHANNELS LIST RECEIVE FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestFailed, (self.name ? self.name : self),
+                            (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                 }];
                 
                 [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:parsedData];
@@ -444,10 +473,12 @@
             // Check whether there is no error while tried to change access rights.
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] ACCESS RIGHTS SUCCESSFULLY CHANGED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestCompleted, (self.name ? self.name : self),
+                             (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                             (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
+                             (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [(PNAccessRightsCollection *)parsedData correlateAccessRightsWithOptions:options];
@@ -456,10 +487,12 @@
             else {
 
                 ((PNError *)parsedData).associatedObject = options;
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] ACCESS RIGHTS CHANGE FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestFailed, (self.name ? self.name : self),
+                             (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                             (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
+                             (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:parsedData];
@@ -472,10 +505,11 @@
             // Check whether there is no error while tried to audit access rights.
             if (![parsedData isKindOfClass:[PNError class]]) {
 
-                [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] ACCESS RIGHTS SUCCESSFULLY AUDITED. SERVICE RESPONSE: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestCompleted, (self.name ? self.name : self),
+                            (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                            (options.channels ? options.channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [(PNAccessRightsCollection *)parsedData correlateAccessRightsWithOptions:options];
@@ -484,10 +518,11 @@
             else {
 
                 ((PNError *)parsedData).associatedObject = options;
-                [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CHANNEL::%@] ACCESS RIGHTS AUDIT FAILED WITH ERROR: %@",
-                            self, parsedData];
+                    return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestFailed, (self.name ? self.name : self),
+                            (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                            (options.channels ? options.channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                 }];
 
                 [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:parsedData];
@@ -495,15 +530,15 @@
         }
         else {
 
-            [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CHANNEL::%@] PARSED DATA: %@",
-                        self, parser];
+                return @[PNLoggerSymbols.connectionChannel.service.parsedData, (self.name ? self.name : self),
+                        (parsedData ? parsedData : [NSNull null])];
             }];
-            [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CHANNEL::%@] OBSERVED REQUEST COMPLETED: %@",
-                        self, request];
+                return @[PNLoggerSymbols.connectionChannel.service.observerRequestCompleted, (self.name ? self.name : self),
+                        (request ? request : [NSNull null])];
             }];
         }
     }
@@ -514,17 +549,19 @@
     // Check whether request is 'Latency meter' request or not
     if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] LATENCY METER REQUEST SENDING FAILED", self];
+            return @[PNLoggerSymbols.connectionChannel.service.latencyMeterRequestDidFail, (self.name ? self.name : self),
+                    (error ? error : [NSNull null])];
         }];
     }
     // Check whether request is 'Time token' request or not
     else if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] TIME TOKEN MESSAGE PROCESSING HAS BEEN FAILED: %@", self, error];
+            return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestFailed, (self.name ? self.name : self),
+                    (error ? error : [NSNull null])];
         }];
 
         [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
@@ -532,23 +569,28 @@
     // Check whether request was sent for state retrieval / update
     else if ([request isKindOfClass:[PNClientStateRequest class]] ||
             [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
+        
+        NSDictionary *clientData = ([request isKindOfClass:[PNClientStateUpdateRequest class]] ? [request valueForKey:@"state"] : nil);
+        PNClient *client = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
+                                                 channel:[request valueForKey:@"channel"] andData:clientData];
 
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            NSDictionary *clientData = ([request isKindOfClass:[PNClientStateUpdateRequest class]] ? [request valueForKey:@"state"] : nil);
-            error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
-                                                           channel:[request valueForKey:@"channel"] andData:clientData];
+            error.associatedObject = client;
         }
 
-        NSString *message = [NSString stringWithFormat:@"[CHANNEL::%@] CLIENT STATE REVIEW FAILED WITH ERROR: %@", self, error];
+        NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed;
         SEL errorSelector = @selector(serviceChannel:clientStateReceiveDidFailWithError:);
         if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
-            message = [NSString stringWithFormat:@"[CHANNEL::%@] CLIENT STATE UPDATE FAILED WITH ERROR: %@", self, error];
+            symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestFailed;
             errorSelector = @selector(serviceChannel:clientStateUpdateDidFailWithError:);
         }
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * { return message; }];
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[symbolCode, (self.name ? self.name : self), (error ? error : [NSNull null]), (client ? client : [NSNull null])];
+        }];
 
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -557,6 +599,16 @@
     }
     // Check whether this is 'Post message' request or not
     else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
+
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            // Retrieve reference on message which has been sent
+            PNMessage *message = ((PNMessagePostRequest *)request).message;
+
+            return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestFailed, (self.name ? self.name : self),
+                     (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null]),
+                     (error ? error : [NSNull null])];
+        }];
 
         // Notify delegate about that message can't be send
         [self.serviceDelegate serviceChannel:self didFailMessageSend:((PNMessagePostRequest *)request).message
@@ -582,6 +634,16 @@
             }
             error.associatedObject = options;
         }
+
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.connectionChannel.service.historyRequestFailed, (self.name ? self.name : self),
+                     (historyRequest.channel ? historyRequest.channel : [NSNull null]),
+                     (historyRequest.startDate ? historyRequest.startDate : [NSNull null]),
+                     (historyRequest.endDate ? historyRequest.endDate : [NSNull null]), @(historyRequest.limit),
+                     @(historyRequest.shouldRevertMessages), @(historyRequest.shouldIncludeTimeToken),
+                     (error ? error : [NSNull null])];
+        }];
         
         // Notify delegate about message history download failed
         [self.serviceDelegate serviceChannel:self
@@ -597,12 +659,27 @@
                                        @"fetchClientState":@(hereNowRequest.shouldFetchClientState)};
         }
 
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestFailed, (self.name ? self.name : self),
+                     (hereNowRequest.channel ? hereNowRequest.channel : [NSNull null]),
+                     @(hereNowRequest.isClientIdentifiersRequired), @(hereNowRequest.shouldFetchClientState),
+                     (error ? error : [NSNull null])];
+        }];
+
         // Notify delegate about participants list can't be downloaded
         [self.serviceDelegate serviceChannel:self
        didFailParticipantsListLoadForChannel:hereNowRequest.channel withError:error];
     }
     // Check whether this is 'Where now' request or not
     else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
+
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestFailed, (self.name ? self.name : self),
+                     (((PNWhereNowRequest *)request).identifier ? ((PNWhereNowRequest *)request).identifier : [NSNull null]),
+                     (error ? error : [NSNull null])];
+        }];
 
         // Notify delegate about participant channels list can't be downloaded.
         [self.serviceDelegate serviceChannel:self
@@ -613,12 +690,6 @@
 
         NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
         NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
-
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
-
-            return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATION [%@] REQUEST HAS BEEN FAILED: %@", self,
-                    [targetState uppercaseString], error];
-        }];
         
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
@@ -626,22 +697,36 @@
         }
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 
-            [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels
-                                       withError:error];
+            [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                return @[PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestFailed, (self.name ? self.name : self),
+                         (error.associatedObject ? error.associatedObject : [NSNull null]), (channels ? channels : [NSNull null]),
+                         (error ? error : [NSNull null])];
+            }];
+
+            [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels withError:error];
         }
         else {
 
-            [self.serviceDelegate serviceChannel:self didFailPushNotificationDisableForChannels:channels
-                                       withError:error];
+            [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                return @[PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestFailed, (self.name ? self.name : self),
+                         (error.associatedObject ? error.associatedObject : [NSNull null]), (channels ? channels : [NSNull null]),
+                         (error ? error : [NSNull null])];
+            }];
+
+            [self.serviceDelegate serviceChannel:self didFailPushNotificationDisableForChannels:channels withError:error];
         }
     }
     // Check whether this is 'Push notification remove' request or not
     else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
+        
+        NSData *devicePushToken = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATION REMOVE REQUEST HAS BEEN FAILED: %@",
-                    self, error];
+            return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestFailed, (self.name ? self.name : self),
+                    (devicePushToken ? devicePushToken : [NSNull null]), (error ? error : [NSNull null])];
         }];
         
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
@@ -652,11 +737,13 @@
     }
     // Check whether this is 'Push notification enabled channels' request or not
     else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
+        
+        NSData *devicePushToken = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] PUSH NOTIFICATION ENABLED CHANNELS REQUEST HAS BEEN FAILED: %@",
-                    self, error];
+            return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestFailed, (self.name ? self.name : self),
+                    (devicePushToken ? devicePushToken : [NSNull null]), (error ? error : [NSNull null])];
         }];
         
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
@@ -667,28 +754,37 @@
     }
     // Check whether this is 'Access rights change' request or not
     else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
+        
+        PNAccessRightOptions *options = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
 
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
+            error.associatedObject = options;
         }
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] ACCESS RIGHTS CHANGE FAILED WITH ERROR: %@", self, error];
+            return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestFailed, (self.name ? self.name : self),
+                     (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                     (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
+                     (error ? error : [NSNull null])];
         }];
 
         [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:error];
     }
     // Check whether this is 'Access rights audit' request or not
     else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
+        
+        PNAccessRightOptions *options = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
 
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
             error.associatedObject = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
         }
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] ACCESS RIGHTS AUDIT FAILED WITH ERROR: %@", self, error];
+            return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestFailed, (self.name ? self.name : self),
+                     (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                     (options.channels ? options.channels : [NSNull null]), (error ? error : [NSNull null])];
         }];
 
         [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:error];
@@ -951,9 +1047,10 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     // Forward to the super class
     [super requestsQueue:queue willSendRequest:request];
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] WILL START REQUEST PROCESSING: %@ [BODY: %@]", self, request, request.debugResourcePath];
+        return @[PNLoggerSymbols.connectionChannel.service.willStartRequestProcessing, (self.name ? self.name : self),
+                (request ? request : [NSNull null])];
     }];
 
 
@@ -969,9 +1066,10 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     // Forward to the super class
     [super requestsQueue:queue didSendRequest:request];
-    [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] DID SEND REQUEST: %@ [BODY: %@]", self, request, request.debugResourcePath];
+        return @[PNLoggerSymbols.connectionChannel.service.didSendRequest, (self.name ? self.name : self),
+                (request ? request : [NSNull null])];
     }];
 
 
@@ -982,9 +1080,9 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
         // Checking whether request was sent to measure network latency or not
         if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
 
-            [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CHANNEL::%@] LATENCY METER MESSAGE SENT", self];
+                return @[PNLoggerSymbols.connectionChannel.service.latencyMeterRequestSent, (self.name ? self.name : self)];
             }];
             [(PNLatencyMeasureRequest *)request markStartTime];
         }
@@ -994,9 +1092,9 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
         // Check whether this is 'Post message' request or not
         if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
-            [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CHANNEL::%@] DID SEND MESSAGE REQUEST", self];
+                return @[PNLoggerSymbols.connectionChannel.service.messagePostRequestSent, (self.name ? self.name : self)];
             }];
 
             // Notify delegate about that message post request will be sent now
@@ -1018,19 +1116,20 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
     // Forward to the super class
     [super requestsQueue:queue didFailRequestSend:request withError:error];
-    [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CHANNEL::%@] DID FAIL TO SEND REQUEST: %@ [BODY: %@]", self, request, request.debugResourcePath];
+        return @[PNLoggerSymbols.connectionChannel.service.requestSendingDidFail, (self.name ? self.name : self),
+                (request ? request : [NSNull null])];
     }];
 
 
     // Check whether request can be rescheduled or not
     if (![request canRetry] || error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] REQUEST WON'T BE SENT: %@ [BODY: %@]",
-                    self, request, request.debugResourcePath];
+            return @[PNLoggerSymbols.connectionChannel.service.requestWontBeSent, (self.name ? self.name : self),
+                    (request ? request : [NSNull null])];
         }];
 
         // Removing failed request from queue
@@ -1052,13 +1151,13 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
     // Check whether request is 'Latency meter' request or not
     if ([request isKindOfClass:[PNLatencyMeasureRequest class]]) {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self message:^NSString * {
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CHANNEL::%@] LATENCY METER REQUEST CANCELED", self];
+            return @[PNLoggerSymbols.connectionChannel.service.latencyMeterRequestSendingCanceled, (self.name ? self.name : self)];
         }];
 
-        // Removing 'Latency meter' request because PubNub client
-        // is not interested in delayed response on network measurements
+        // Removing 'Latency meter' request because PubNub client is not interested in delayed response on network
+        // measurements
         [self destroyRequest:request];
     }
 

@@ -95,11 +95,17 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p) <date: %@; time token: %@>",
-                    NSStringFromClass([self class]),
-                    self,
-                    self.date,
-                    self.timeToken];
+    return [NSString stringWithFormat:@"%@ (%p) <date: %@; time token: %@>", NSStringFromClass([self class]),
+                    self, self.date, self.timeToken];
+}
+
+- (NSString *)logDescription {
+    
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
+    return [NSString stringWithFormat:@"<%@|%@>", (self.date ? [self.date performSelector:@selector(logDescription)] : [NSNull null]),
+            (self.timeToken ? self.timeToken : [NSNull null])];
+    #pragma clang diagnostic pop
 }
 
 #pragma mark -

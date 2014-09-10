@@ -84,20 +84,29 @@
 - (NSString *)resourcePath {
 
     return [NSString stringWithFormat:@"/v2/presence/sub-key/%@%@?callback=%@_%@&disable_uuids=%@&state=%@%@&pnsdk=%@",
-                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                                      (self.channel ? [NSString stringWithFormat:@"/channel/%@", [self.channel escapedName]] : @""),
-                                      [self callbackMethodName], self.shortIdentifier, (self.isClientIdentifiersRequired ? @"0" : @"1"),
+                                      [[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString],
+                                      (self.channel ? [NSString stringWithFormat:@"/channel/%@",
+                                                                                 [self.channel escapedName]] : @""),
+                                      [self callbackMethodName],
+                                      self.shortIdentifier,
+                                      (self.isClientIdentifiersRequired ? @"0" : @"1"),
                                       (self.shouldFetchClientState ? @"1" : @"0"),
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                                                                              [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
 
     NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey pn_percentEscapedString])];
 
     return [resourcePathComponents componentsJoinedByString:@"/"];
+}
+
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

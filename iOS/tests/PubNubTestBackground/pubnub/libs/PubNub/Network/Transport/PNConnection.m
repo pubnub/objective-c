@@ -18,6 +18,7 @@
 #import "PNResponseDeserialize.h"
 #import "PNResponseProtocol.h"
 #import "PubNub+Protected.h"
+#import "PNLoggerSymbols.h"
 #import "PNWriteBuffer.h"
 #import "PNHelper.h"
 
@@ -477,6 +478,8 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
  */
 - (NSString *)stateDescription;
 
+#pragma mark -
+
 
 @end
 
@@ -632,10 +635,10 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
         }
         else {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] ALREADY SENDING DATA (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.write.alreadySendingData, (self.name ? self.name : self),
+                        @(self.state)];
             }];
         }
     }
@@ -664,10 +667,11 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
         // Stream successfully opened
         case kCFStreamEventOpenCompleted:
             {
-                [PNLogger logConnectionInfoMessageFrom:connection message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::READ] STREAM OPENED (%@)(STATE: %lu)",
-                            connection.name ? connection.name : connection, status, connection.state];
+                    return @[PNLoggerSymbols.connection.stream.read.opened,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanDisconnection];
@@ -680,10 +684,11 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
         // Read stream has some data which arrived from remote server
         case kCFStreamEventHasBytesAvailable:
             {
-                [PNLogger logConnectionInfoMessageFrom:connection message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::READ] HAS DATA FOR READ OUT (%@)(STATE: %lu)",
-                            connection.name ? connection.name : connection, status, connection.state];
+                    return @[PNLoggerSymbols.connection.stream.read.hasData,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [connection handleReadStreamHasData];
@@ -693,10 +698,11 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
         // Some error occurred on read stream
         case kCFStreamEventErrorOccurred:
             {
-                [PNLogger logConnectionErrorMessageFrom:connection message:^NSString * {
+                [PNLogger logConnectionErrorMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::READ] ERROR OCCURRED (%@)(STATE: %lu)",
-                            connection.name ? connection.name : connection, status, connection.state];
+                    return @[PNLoggerSymbols.connection.stream.read.error,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
                 
                 [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef{
@@ -709,10 +715,11 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
         // Server disconnected socket probably because of timeout
         case kCFStreamEventEndEncountered:
             {
-                [PNLogger logConnectionInfoMessageFrom:connection message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::READ] NOTHING TO READ (%@)(STATE: %lu)",
-                            connection.name ? connection.name : connection, status, connection.state];
+                    return @[PNLoggerSymbols.connection.stream.read.cantAcceptDataAnymore,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanAll];
@@ -740,10 +747,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Stream successfully opened
         case kCFStreamEventOpenCompleted:
             {
-                [PNLogger logConnectionInfoMessageFrom:connection message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] STREAM OPENED (%@)(STATE: %lu)",
-                            connection.name ? connection.name : connection, status, connection.state];
+                    return @[PNLoggerSymbols.connection.stream.write.opened,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNWriteStreamCleanDisconnection];
@@ -756,10 +764,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Write stream is ready to accept data from data source
         case kCFStreamEventCanAcceptBytes:
             {
-                [PNLogger logConnectionInfoMessageFrom:connection message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] READY TO SEND (%@)(STATE: %lu)",
-                                      connection.name ? connection.name : connection, status, connection.state];
+                    return @[PNLoggerSymbols.connection.stream.write.canSendData,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [connection handleWriteStreamCanAcceptData];
@@ -769,10 +778,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Some error occurred on write stream
         case kCFStreamEventErrorOccurred:
             {
-                [PNLogger logConnectionErrorMessageFrom:connection message:^NSString * {
+                [PNLogger logConnectionErrorMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] ERROR OCCURRED (%@)(STATE: %lu)",
-                            connection.name ? connection.name : connection, status, connection.state];
+                    return @[PNLoggerSymbols.connection.stream.write.error,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
                 
                 [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef{
@@ -785,10 +795,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Server disconnected socket probably because of timeout
         case kCFStreamEventEndEncountered:
             {
-                [PNLogger logConnectionInfoMessageFrom:connection message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] MAYBE STREAM IS CLOSED (%@)(STATE: %lu)",
-                            connection.name ? connection.name : connection, status, connection.state];
+                    return @[PNLoggerSymbols.connection.stream.write.cantSendDataAnymore,
+                             (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                             (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
                 [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNWriteStreamCleanAll];
@@ -1017,10 +1028,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)prepareStreams {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] PREPARE READ/WRITE STREAMS (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.prepareForUsage, (self.name ? self.name : self), @(self.state)];
     }];
 
     BOOL streamsPrepared = YES;
@@ -1028,33 +1038,30 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Check whether stream was prepared and configured before
     if ([PNBitwiseHelper is:self.state strictly:YES containsBit:PNConnectionConfigured]) {
 
-        NSString *state = @"";
+        NSString *symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlier;
         if ([self isConnecting]) {
 
-            state = @"CONNECTING...";
+            symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndConnecting;
 
         }
         else if ([self isConnected]) {
 
-            state = @"CONNECTED.";
+            symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndConnected;
         }
         if ([self isResuming]) {
 
-            state = @"RESUMING...";
+            symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndResuming;
         }
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] STREAMS ALREADY CONFIGURATED%@ (STATE: %lu)",
-                    self.name ? self.name : self, [state length] ? [NSString stringWithFormat:@" AND %@", state] : @".",
-                    self.state];
+            return @[symbolCode, (self.name ? self.name : self), @(self.state)];
         }];
     }
     else {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] CONFIGURATION STARTED (STATE: %lu)",
-                    (self.name ? self.name : self), self.state];
+            return @[PNLoggerSymbols.connection.stream.configurationStarted, (self.name ? self.name : self), @(self.state)];
         }];
 
         // Make sure that streams will be unable to operate (protection in case of state has been interrupted in some
@@ -1088,10 +1095,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Check whether at least one of the streams was unable to complete configuration
         if (![PNBitwiseHelper is:self.state containsBit:PNConnectionConfigured]) {
 
-            [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] CONFIGURATION FAILED (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.configurationFailed, (self.name ? self.name : self), @(self.state)];
             }];
 
             streamsPrepared = NO;
@@ -1101,10 +1107,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         else {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] CONFIGURATION COMPLETED (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.configurationCompleted, (self.name ? self.name : self), @(self.state)];
             }];
         }
     }
@@ -1123,11 +1128,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)connectByInternalRequest {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@)(STATE: %lu)",
-                self.name ? self.name : self, [PNBitwiseHelper is:self.state containsBit:PNByUserRequest] ? @"YES" : @"NO",
-                self.state];
+        return @[PNLoggerSymbols.connection.connectionAttempt, (self.name ? self.name : self),
+                @([PNBitwiseHelper is:self.state containsBit:PNByUserRequest]), @(self.state)];
     }];
 
     __block BOOL isStreamOpened = NO;
@@ -1169,7 +1173,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 // Mark that connection currently doesn't connected to the server
                 [PNBitwiseHelper addTo:&_state bit:PNConnectionDisconnected];
 
-                NSString *action = @"";
+                NSString *symbolCode = @"";
 
                 // Check whether connection has been suspended before or not
                 if ([PNBitwiseHelper is:self.state containsBit:PNConnectionSuspended]) {
@@ -1179,20 +1183,24 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                      BITS_LIST_TERMINATOR];
                     [PNBitwiseHelper addTo:&_state bit:PNConnectionResuming];
 
-                    action = @"RESUMING";
+                    symbolCode = PNLoggerSymbols.connection.connectionResumingInProgress;
                     
                 }
                 else if (![PNBitwiseHelper is:self.state strictly:YES containsBit:PNConnectionConnected]) {
                     
                     [PNBitwiseHelper removeFrom:&_state bits:PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming,
                      BITS_LIST_TERMINATOR];
-                    action = [self shouldReconnect] ? @"RECONNECTING" : @"CONNECTING";
+
+                    symbolCode = PNLoggerSymbols.connection.connectionInProgress;
+                    if ( [self shouldReconnect]) {
+
+                        symbolCode = PNLoggerSymbols.connection.reconnectionInProgress;
+                    }
                 }
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] %@... (STATE: %lu)",
-                            self.name ? self.name : self, action, self.state];
+                    return @[symbolCode, (self.name ? self.name : self), @(self.state)];
                 }];
 
                 isStreamOpened = YES;
@@ -1210,11 +1218,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     [self stopTimeoutTimer];
                     [self suspendWakeUpTimer];
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] LOOKS LIKE STREAMS IN INTERMEDIATE "
-                                "STATE AND OUT OF SYNC. FORCIBLY CONNECTING... (STATE: %lu)",
-                                self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.outOfSyncWithStateForciblyReconnect, (self.name ? self.name : self),
+                                @(self.state)];
                     }];
 
                     BOOL isConnectingByUserRequest = [PNBitwiseHelper is:self.state containsBit:PNByUserRequest];
@@ -1240,16 +1247,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                     if (isConnecting) {
 
-                        NSString *state = @"CONNECTING...";
+                        NSString *symbolCode = PNLoggerSymbols.connection.alreadyConnecting;
                         if ([self isConnected]) {
 
-                            state = @"CONNECTED.";
+                            symbolCode = PNLoggerSymbols.connection.alreadyConnected;
                         }
 
-                        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                            return [NSString stringWithFormat:@"[CONNECTION::%@] ALREADY %@ (STATE: %lu)",
-                                    self.name ? self.name : self, state, self.state];
+                            return @[symbolCode, (self.name ? self.name : self), @(self.state)];
                         }];
                     }
                     // Looks like tried to connect while was in some intermediate state (both streams in different
@@ -1261,10 +1267,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 }
                 else if ([self isDisconnecting]) {
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] TRIED TO CONNECT WHILE DISCONNETING"
-                                ". WAIT FOR DISCONNECTION... (STATE: %lu)", self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.triedToConnectDuringDisconnection, (self.name ? self.name : self),
+                                @(self.state)];
                     }];
 
                     // Mark that client should try to connect back as soon as disconnection will be completed
@@ -1279,10 +1285,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Looks like configuration not completed
         else {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] NOT CONFIGURED YET (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.notConfigured, (self.name ? self.name : self), @(self.state)];
             }];
 
             // Try prepare connection's streams for future usage
@@ -1295,10 +1300,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Looks like connection can't be established at this moment. Launch wake up timer
     else {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECTION IS IMPOSSIBLE AT THIS MOMENT. "
-                    "WAITING... (STATE: %lu)", self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.connectionImpossibleAtCurrentMoment, (self.name ? self.name : self),
+                     @(self.state)];
         }];
 
         [PNBitwiseHelper addTo:&_state bit:PNConnectionWakeUpTimer];
@@ -1319,29 +1324,27 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     
     self.connectionRetryCount++;
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] RETRY CONNECTION (%lu / %lu) (STATE: %lu)",
-                self.name ? self.name : self, (unsigned long)self.connectionRetryCount, (unsigned long)kPNMaximumConnectionRetryCount, self.state];
+        return @[PNLoggerSymbols.connection.connectionRetry, (self.name ? self.name : self), @(self.connectionRetryCount),
+                @(kPNMaximumConnectionRetryCount), @(self.state)];
     }];
     
     // Check whether reconnection was issued because of SSL error or not
     if (self.sslConfigurationLevel == PNConnectionSSLConfigurationInsecure &&
         [PNBitwiseHelper is:self.state strictly:YES containsBits:PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR]) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] RETRY CONNECTION BECAUSE OF INTERNAL SSL ERROR (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.connectionRetryOnSSLError, (self.name ? self.name : self), @(self.state)];
         }];
     }
     // Check whether reconnection was issued because of socket temporary issues or not
     else if ([PNBitwiseHelper is:self.state strictly:YES containsBits:PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR]) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] RETRY CONNECTION BECAUSE OF TEMPORARY ISSUES WITH SERVER "
-                    "OR SOCKET (STATE: %lu)", self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.connectionRetryOnTemporaryConnectionIssues, (self.name ? self.name : self), @(self.state)];
         }];
     }
     
@@ -1361,18 +1364,17 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         if (shouldReconnect) {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] TRYING TO RECONNECT... (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.connectionRetryAttempt, (self.name ? self.name : self), @(self.state)];
             }];
         }
         else {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] RECONNECT IS IMPOSSIBLE AT THIS MOMENT. WAITING. (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.connectionRetryImpossibleAtCurrentMoment, (self.name ? self.name : self),
+                         @(self.state)];
             }];
         }
 
@@ -1417,10 +1419,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] RECONNECT CANCELED. CONNECTION STATE HAS BEEN CHANGED "
-                    "FROM OUTSIDE. (STATE: %lu)", self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.connectionRetryCanceledBecauseStateAltered, (self.name ? self.name : self),
+                     @(self.state)];
         }];
 
         [PNBitwiseHelper addTo:&_state bit:PNConnectionWakeUpTimer];
@@ -1455,11 +1457,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     [self startWakeUpTimer];
     [self stopTimeoutTimer];
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] TRYING DISCONNECT... (BY USER REQUEST? %@)(STATE: %lu)",
-                self.name ? self.name : self, [PNBitwiseHelper is:self.state containsBit:PNByUserRequest] ? @"YES" : @"NO",
-                self.state];
+        return @[PNLoggerSymbols.connection.disconnectionAttempt, (self.name ? self.name : self),
+                @([PNBitwiseHelper is:self.state containsBit:PNByUserRequest]), @(self.state)];
     }];
     
     [PNBitwiseHelper removeFrom:&_state bits:PNConnectionConnecting, PNConnectionPrepareToConnect, PNConnectionResuming, BITS_LIST_TERMINATOR];
@@ -1487,10 +1488,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     BOOL isAnyOfStreamsStillValid = _socketReadStream != NULL || _socketWriteStream != NULL;
     if (isAnyOfStreamsStillValid) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] DESTROYING STREAMS... (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.destroying, (self.name ? self.name : self), @(self.state)];
         }];
     }
 
@@ -1520,10 +1520,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (isAnyOfStreamsStillValid) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] READ AND WRITE STREAMS DESTROYED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.destroyed, (self.name ? self.name : self), @(self.state)];
         }];
     }
 }
@@ -1603,10 +1602,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)configureReadStream:(CFReadStreamRef)readStream {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@::READ] CONFIGURING... (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.read.configurationStarted, (self.name ? self.name : self), @(self.state)];
     }];
 
     [PNBitwiseHelper removeFrom:&_state bit:PNReadStreamCleanConfiguration];
@@ -1644,10 +1642,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (isStreamReady) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::READ] CONFIGURATION COMPLETED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.read.configurationCompleted, (self.name ? self.name : self),
+                     @(self.state)];
         }];
 
         [PNBitwiseHelper removeFrom:&_state bit:PNReadStreamConfiguring];
@@ -1658,10 +1656,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
-        [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::READ] CONFIGURATION FAILED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.read.configurationFailed, (self.name ? self.name : self), @(self.state)];
         }];
 
         [PNBitwiseHelper addTo:&_state bit:PNReadStreamError];
@@ -1670,10 +1667,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)openReadStream:(CFReadStreamRef)readStream {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@::READ] SCHEDULING OPENING... (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.read.initOpening, (self.name ? self.name : self), @(self.state)];
     }];
 
     [PNBitwiseHelper removeFrom:&_state bit:PNReadStreamCleanConnection];
@@ -1684,10 +1680,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         CFErrorRef error = CFReadStreamCopyError(readStream);
         if (error && CFErrorGetCode(error) != 0) {
 
-            [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@::READ] FAILED TO OPEN (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.read.unableToOpen, (self.name ? self.name : self), @(self.state)];
             }];
 
             [PNBitwiseHelper addTo:&_state bit:PNReadStreamError];
@@ -1702,20 +1697,18 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::READ] OPEN IS SCHEDULED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.read.opening, (self.name ? self.name : self), @(self.state)];
         }];
     }
 }
 
 - (void)disconnectReadStream:(CFReadStreamRef)readStream {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@::READ] DISCONNECTING... (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.read.disconnecting, (self.name ? self.name : self), @(self.state)];
     }];
     
     [PNBitwiseHelper removeFrom:&_state bits:PNReadStreamConnecting, PNReadStreamCleanDisconnection, BITS_LIST_TERMINATOR];
@@ -1746,10 +1739,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     BOOL isStreamExists = readStream != NULL;
     if (isStreamExists) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::READ] DESTROYING... (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.read.destroying, (self.name ? self.name : self), @(self.state)];
         }];
     }
 
@@ -1765,10 +1757,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (isStreamExists) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::READ] DESTROYED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.read.destroyed, (self.name ? self.name : self), @(self.state)];
         }];
     }
 }
@@ -1778,10 +1769,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)readStreamContent {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@::READ] READING ARRIVED DATA... (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.read.readingArrivedData, (self.name ? self.name : self), @(self.state)];
     }];
 
     // Check whether data available right now or not (this is non-blocking request)
@@ -1794,10 +1784,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Checking whether client was able to read out some data from stream or not
         if (readedBytesCount > 0) {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@::READ] READED %lld BYTES (STATE: %lu)",
-                        self.name ? self.name : self, (long long)readedBytesCount, self.state];
+                return @[PNLoggerSymbols.connection.stream.read.readedPortionOfArrivedData, (self.name ? self.name : self),
+                        @(readedBytesCount), @(self.state)];
             }];
 
             if ([PNLogger isDumpingHTTPResponse] || [PNLogger isLoggerEnabled]) {
@@ -1809,7 +1799,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     return tempData;
                 }];
 
-                [PNLogger logFrom:self forLevel:PNLogConnectionLayerHTTPLoggingLevel message:^NSString * {
+                [PNLogger logConnectionHTTPPacketFrom:self withParametersFromBlock:^NSArray *{
 
                     NSString *responseString = [[NSString alloc] initWithData:tempData encoding:NSUTF8StringEncoding];
                     if (!responseString) {
@@ -1818,21 +1808,21 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     }
                     if (!responseString) {
 
-                        responseString = @"Can't striongify response. Try check response dump on file system (if enabled)";
+                        responseString = @"Can't stringify response. Try check response dump on file system (if enabled)";
                     }
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::READ] RESPONSE: %@",
-                            self.name ? self.name : self, responseString];
+                    return @[PNLoggerSymbols.connection.stream.read.rawHTTPResponse, (self.name ? self.name : self),
+                            responseString, @(self.state)];
                 }];
             }
 
             // Check whether working on data deserialization or not
             if (self.deserializer.isDeserializing) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@::READ] DESERIALIZED IS BUSY. WRITTING INTO TEMPORARY"
-                            " STORAGE (STATE: %lu)", self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.stream.read.deserializerIsBusy, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
 
                 // Temporary store data in object
@@ -1848,10 +1838,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Looks like there is no data or error occurred while tried to read out stream content
         else if (readedBytesCount < 0) {
 
-            [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@::READ] READ ERROR (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.read.readingError, (self.name ? self.name : self),
+                        @(self.state)];
             }];
 
             CFErrorRef error = CFReadStreamCopyError(self.socketReadStream);
@@ -1868,10 +1858,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Retrieve response objects from server response
     NSArray *responses = [self.deserializer parseResponseData:self.retrievedData];
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@::READ] {%lu} RESPONSE MESSAGES PROCESSED (STATE: %lu)",
-                self.name ? self.name : self, (unsigned long)[responses count], self.state];
+        return @[PNLoggerSymbols.connection.stream.read.processedArrivedData, (self.name ? self.name : self),
+                @([responses count]), @(self.state)];
     }];
 
     if ([responses count] > 0) {
@@ -1896,10 +1886,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Check whether connection stored some response in temporary storage or not
     if ([_temporaryRetrievedData length] > 0) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::READ] THERE IS %lu BYTES IN TEMPORARY BUFFER. PROCESS... (STATE: %lu)",
-                    self.name ? self.name : self, (unsigned long)[_temporaryRetrievedData length], self.state];
+            return @[PNLoggerSymbols.connection.stream.read.processingAdditionalData, (self.name ? self.name : self),
+                    @([_temporaryRetrievedData length]), @(self.state)];
         }];
 
         [self.retrievedData appendData:_temporaryRetrievedData];
@@ -1926,10 +1916,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)configureWriteStream:(CFWriteStreamRef)writeStream {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] CONFIGURING... (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.write.configurationStarted, (self.name ? self.name : self), @(self.state)];
     }];
 
     [PNBitwiseHelper removeFrom:&_state bit:PNWriteStreamCleanConfiguration];
@@ -1953,10 +1942,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (isStreamReady) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] CONFIGURATION COMPLETED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.write.configurationCompleted, (self.name ? self.name : self),
+                     @(self.state)];
         }];
 
         [PNBitwiseHelper removeFrom:&_state bit:PNWriteStreamConfiguring];
@@ -1967,10 +1956,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
-        [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] CONFIGURATION FAILED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.write.configurationFailed, (self.name ? self.name : self), @(self.state)];
         }];
 
         [PNBitwiseHelper addTo:&_state bit:PNWriteStreamError];
@@ -1979,10 +1967,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)openWriteStream:(CFWriteStreamRef)writeStream {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] SCHEDULING OPENING... (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.write.initOpening, (self.name ? self.name : self), @(self.state)];
     }];
 
     [PNBitwiseHelper removeFrom:&_state bit:PNWriteStreamCleanConnection];
@@ -1993,10 +1980,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         CFErrorRef error = CFWriteStreamCopyError(writeStream);
         if (error && CFErrorGetCode(error) != 0) {
 
-            [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] FAILED TO OPEN (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.write.unableToOpen, (self.name ? self.name : self), @(self.state)];
             }];
 
             [PNBitwiseHelper addTo:&_state bit:PNWriteStreamError];
@@ -2011,20 +1997,18 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     else {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] OPEN IS SCHEDULED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.write.opening, (self.name ? self.name : self), @(self.state)];
         }];
     }
 }
 
 - (void)disconnectWriteStream:(CFWriteStreamRef)writeStream {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] DISCONNECTING... (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.write.disconnecting, (self.name ? self.name : self), @(self.state)];
     }];
     
     [PNBitwiseHelper removeFrom:&_state bits:PNWriteStreamConnecting, PNWriteStreamCleanDisconnection, BITS_LIST_TERMINATOR];
@@ -2049,10 +2033,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     BOOL isStreamExists = writeStream != NULL;
     if (isStreamExists) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] DESTROYING... (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.write.destroying, (self.name ? self.name : self), @(self.state)];
         }];
     }
 
@@ -2068,10 +2051,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     if (isStreamExists) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] DESTROYED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stream.write.destroyed, (self.name ? self.name : self), @(self.state)];
         }];
     }
 }
@@ -2082,7 +2064,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 - (void)prepareNextRequestPacket {
 
     // Ensure that connection is able to send next portion of data which will be prepared
-    
     BOOL shouldPrepareData = [self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
                              ![PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect,
                                PNByServerRequest, BITS_LIST_TERMINATOR] && ![self isResuming];
@@ -2112,10 +2093,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         if (self.writeBuffer != nil) {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] WRITE BUFFER CONTENT (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.write.writeDataFromBuffer, (self.name ? self.name : self),
+                         @(self.state)];
             }];
 
             [PNBitwiseHelper removeFrom:&_state bit:PNWriteStreamError];
@@ -2151,10 +2132,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             // Check whether error occurred while tried to process request
                             if (bytesWritten < 0) {
 
-                                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                                [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                                    return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] WRITE ERROR (STATE: %lu)",
-                                            self.name ? self.name : self, self.state];
+                                    return @[PNLoggerSymbols.connection.stream.write.dataWriteError,
+                                             (self.name ? self.name : self), @(self.state)];
                                 }];
 
                                 // Mark that buffer content is not processed at this moment
@@ -2173,11 +2154,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             // Check whether socket was able to transfer whole write buffer at once or not
                             else if (bytesWritten == self.writeBuffer.length) {
 
-                                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                                    return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] WRITTEN WHOLE REQUEST BODY"
-                                            " (%lld/%lld BYTES)(STATE: %lu)", self.name ? self.name : self,
-                                            (long long)bytesWritten, (long long)self.writeBuffer.length, self.state];
+                                    return @[PNLoggerSymbols.connection.stream.write.writenDataFromBufferAtOnce,
+                                             (self.name ? self.name : self), @(bytesWritten), @(self.writeBuffer.length),
+                                             @(self.state)];
                                 }];
 
                                 // Mark that buffer content is not processed at this moment
@@ -2190,12 +2171,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             }
                             else {
 
-                                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                                    return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] WRITTEN PART OF REQUEST BODY"
-                                            " (%lld/%lld BYTES)(STATE: %lu)", self.name ? self.name : self,
-                                            (long long)(self.writeBuffer.offset + bytesWritten), (long long)self.writeBuffer.length,
-                                            self.state];
+                                    return @[PNLoggerSymbols.connection.stream.write.writenPartOfDataFromBuffer,
+                                             (self.name ? self.name : self), @(self.writeBuffer.offset + bytesWritten),
+                                             @(self.writeBuffer.length), @(self.state)];
                                 }];
 
                                 self.writeStreamCanHandleData = NO;
@@ -2211,10 +2191,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         }
                         else {
 
-                            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                                return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] WRITE CANCELED (STATE: %lu)",
-                                        self.name ? self.name : self, self.state];
+                                return @[PNLoggerSymbols.connection.stream.write.writeCanceled, (self.name ? self.name : self),
+                                        @(self.state)];
                             }];
                         }
                     }
@@ -2241,11 +2221,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         }
                         else if ([PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
 
-                            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                                return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] CAN'T PROCESS NEXT REQUEST "
-                                        "BECAUSE CONNECTION WILL BE CLOSED SOON (STATE: %lu)", self.name ? self.name : self,
-                                        self.state];
+                                return @[PNLoggerSymbols.connection.stream.write.unableProcessNextRequestOnConnectionTermination,
+                                        (self.name ? self.name : self), @(self.state)];
                             }];
                         }
                     }
@@ -2262,11 +2241,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     }
                     else if([PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
 
-                        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                            return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] CAN'T PROCESS NEXT REQUEST "
-                                    "BECAUSE CONNECTION WILL BE CLOSED SOON (STATE: %lu)", self.name ? self.name : self,
-                                    self.state];
+                            return @[PNLoggerSymbols.connection.stream.write.unableProcessNextRequestOnConnectionTermination,
+                                    (self.name ? self.name : self), @(self.state)];
                         }];
                     }
                 }
@@ -2281,18 +2259,18 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         if ([PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] CAN'T PROCESS NEXT REQUEST BECAUSE CONNECTION"
-                        " WILL BE CLOSED SOON (STATE: %lu)", self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.write.unableProcessNextRequestOnConnectionTermination,
+                        (self.name ? self.name : self), @(self.state)];
             }];
         }
         else {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@::WRITE] NOTHING TO WRITE (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.stream.write.nothingToWrite, (self.name ? self.name : self),
+                        @(self.state)];
             }];
         }
     }
@@ -2303,10 +2281,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleStreamConnection {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] HANDLE STREAM CONNECTION OPENED (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.opened, (self.name ? self.name : self), @(self.state)];
     }];
 
     // Ensure that both read and write streams are connected before notify
@@ -2348,20 +2325,20 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         if (retriedConnection) {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECTED ON RETRY (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.connectedOnRetryAttempt, (self.name ? self.name : self),
+                        @(self.state)];
             }];
         }
 
         // Check whether connection has been established as result of user calling '-connect' method or not
         if (isByUserRequest) {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECTED (BY USER REQUEST? %@)(STATE: %lu)",
-                        self.name ? self.name : self, isByUserRequest ? @"YES" : @"NO", self.state];
+                return @[PNLoggerSymbols.connection.connected, (self.name ? self.name : self),
+                        @(isByUserRequest), @(self.state)];
             }];
 
             // Notify delegate that initial connection is established
@@ -2372,10 +2349,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether connection is resuming after it was suspended or not
             if (isResuming) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] RESUMED (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.resumed, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
 
                 [self.delegate connectionDidResume:self];
@@ -2396,10 +2373,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether connection has been restored after some error occurred on streams
             else if (connectedAfterError) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] RECONNECTED AFTER ERROR (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.reconnectedAfterError, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
 
                 [self.delegate connection:self didReconnectToHostAfterError:self.configuration.origin];
@@ -2407,20 +2384,19 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether connection has been reconnected by request from 'wake up' timer/SSL/sockets
             else if (isReconnectedByWakeUpTimer || isReconnectedBySSL || isReconnectedBySocket) {
 
-                NSString *eventSource = @"WAKE UP TIMER";
+                NSString *symbolCode = PNLoggerSymbols.connection.reconnectedOnWakeUpTimerRequest;
                 if (isReconnectedBySSL) {
 
-                    eventSource = @"SSL ERROR";
+                    symbolCode = PNLoggerSymbols.connection.reconnectedBecauseOfSSLError;
                 }
                 else if (isReconnectedBySocket) {
 
-                    eventSource = @"NETWORK FAILURE OR SERVER TEMPORARY ISSUES";
+                    symbolCode = PNLoggerSymbols.connection.reconnectedBecauseOfTemporaryConnectionIssues;
                 }
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] RECONNECTED BECAUSE OF %@ (STATE: %lu)",
-                            self.name ? self.name : self, eventSource, self.state];
+                    return @[symbolCode, (self.name ? self.name : self), @(self.state)];
                 }];
 
                 [self.delegate connection:self didReconnectToHostAfterError:self.configuration.origin];
@@ -2428,10 +2404,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether connection has been reconnected by request or not
             else if (isReconnecting) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] RECONNECTED (BY USER REQUEST? %@)(STATE: %lu)",
-                            self.name ? self.name : self, isByUserRequest ? @"YES" : @"NO", self.state];
+                    return @[PNLoggerSymbols.connection.reconnected, (self.name ? self.name : self), @(isByUserRequest),
+                            @(self.state)];
                 }];
 
                 [self.delegate connection:self didReconnectToHost:self.configuration.origin];
@@ -2452,14 +2428,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleStreamClose {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] HANDLE STREAM CONNECTION CLOSED (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.closed, (self.name ? self.name : self), @(self.state)];
     }];
 
     // Ensure that both read and write streams reset before notify delegate about connection close event
-    
     if ([PNBitwiseHelper is:self.state strictly:YES containsBit:PNConnectionDisconnecting] &&
         ![PNBitwiseHelper is:self.state strictly:YES containsBit:PNConnectionDisconnected]) {
 
@@ -2508,10 +2482,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 // Check whether connection is still in bad state before issue connection
                 if ([PNBitwiseHelper is:weakSelf.state containsBit:PNConnectionError]) {
 
-                    [PNLogger logConnectionInfoMessageFrom:weakSelf message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] RECONNECTING ON ERROR... (STATE: %lu)",
-                                weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state];
+                        return @[PNLoggerSymbols.connection.closedWithFurtherReconnectionBecauseOfError,
+                                 (weakSelf.name ? weakSelf.name : weakSelf), @(weakSelf.state)];
                     }];
 
                     [weakSelf resumeWakeUpTimer];
@@ -2519,11 +2493,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                     if (isByUserRequest) {
 
-                        [PNLogger logConnectionInfoMessageFrom:weakSelf message:^NSString * {
+                        [PNLogger logConnectionInfoMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
 
-                            return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECT FROM THE NAME OF THE USER BECAUSE"
-                                    " INITIAL CONNECT BEFORE ERROR HAS BEEN DONE BY HIM (STATE: %lu)",
-                                    weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state];
+                            return @[PNLoggerSymbols.connection.reconnectFromTheUserName, (weakSelf.name ? weakSelf.name : weakSelf),
+                                    @(weakSelf.state)];
                         }];
 
                         [weakSelf connect];
@@ -2538,10 +2511,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         if (retriedConnection) {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] DISCONNECTED ON RETRY (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.closedOnRetryAttemptWithFurtherReconnection, (self.name ? self.name : self),
+                        @(self.state)];
             }];
         }
 
@@ -2554,18 +2527,18 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether there was attempt to connect while was connection was in disconnection state
             if (shouldConnectOnDisconnect) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] CATCH UP PREVIOUS REQUEST TO CONNECT (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.closedWithFurtherConnectionOnUserRequest, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
             }
             else if (isDisconnectedByServerRequest) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] EXPECTED DISCONNECTION. RECONNECTING... (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.closedOnExpectedCloseWithFurtherReconnection, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
                 
                 [PNBitwiseHelper addTo:&flagsToEnableBack bits:PNByServerRequest, PNConnectionDisconnect, BITS_LIST_TERMINATOR];
@@ -2576,17 +2549,17 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else if (isDisconnectedOnReset) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] DISCONNECTED ON CONNECTION RESET. RECONNECTING... (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.closedOnConnectionResetWithFurtherReconnection, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
                 
                 [PNBitwiseHelper addTo:&flagsToEnableBack bits:PNByInternalRequest, PNConnectionError, BITS_LIST_TERMINATOR];
             }
             else if (isDisconnectedByWakeUpTimer || isDisconnectedBySSL || isDisconnectedBySocket) {
 
-                NSString *eventSource = @"WAKE UP TIMER";
+                NSString *symbolCode = PNLoggerSymbols.connection.closedOnWakeUpTimerRequestWithFurtherReconnection;
                 [PNBitwiseHelper addTo:&flagsToEnableBack bits:PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR];
 
                 if (isDisconnectedBySSL) {
@@ -2594,20 +2567,19 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     [PNBitwiseHelper clear:&flagsToEnableBack];
                     [PNBitwiseHelper addTo:&flagsToEnableBack bits:PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR];
 
-                    eventSource = @"SSL ERROR";
+                    symbolCode = PNLoggerSymbols.connection.closedBecauseOfSSLErrorWithFurtherReconnection;
                 }
                 else if (isDisconnectedBySocket) {
                     
                     [PNBitwiseHelper clear:&flagsToEnableBack];
                     [PNBitwiseHelper addTo:&flagsToEnableBack bits:PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR];
 
-                    eventSource = @"NETWORK FAILURE OR SERVER TEMPORARY ISSUES";
+                    symbolCode = PNLoggerSymbols.connection.closedBecauseOfTemporaryConnectionIssuesWithFurtherReconnection;
                 }
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] RECONNECTING BECAUSE OF %@ (STATE: %lu)",
-                            self.name ? self.name : self, eventSource, self.state];
+                    return @[symbolCode, (self.name ? self.name : self), @(self.state)];
                 }];
 
                 [PNBitwiseHelper addTo:&_state bit:flagsToEnableBack];
@@ -2617,10 +2589,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else if (isReconnecting) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] RECONNECTING... (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.closedWithFurtherReconnection, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
 
                 [PNBitwiseHelper addTo:&flagsToEnableBack bit:PNConnectionReconnection];
@@ -2630,10 +2602,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else if (retriedConnection) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] RETRYING CONNECTION... (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.connectionRetry, (self.name ? self.name : self), @(self.connectionRetryCount),
+                            @(kPNMaximumConnectionRetryCount), @(self.state)];
                 }];
             }
 
@@ -2641,11 +2613,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             [self resumeWakeUpTimer];
             if (isByUserRequest) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECT FROM THE NAME OF THE USER BECAUSE INITIAL"
-                            " CONNECT BEFORE ERROR HAS BEEN DONE BY HIM (STATE: %lu)", self.name ? self.name : self,
-                            self.state];
+                    return @[PNLoggerSymbols.connection.reconnectFromTheUserName, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
 
                 [self connect];
@@ -2661,10 +2632,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // Check whether connection has been closed by user request or not
         else if (isByUserRequest) {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECTION CLOSED BY USER REQUEST (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.closedByUserRequest, (self.name ? self.name : self),
+                        @(self.state)];
             }];
 
             if (!isDisconnectedOnError) {
@@ -2677,10 +2648,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] DISCONNECTED BECAUSE OF ERROR (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.closedBecauseOfError, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
 
                 reconnectOnErrorBlock();
@@ -2691,10 +2662,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             if (isSuspending) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] SUSPENDED (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.suspended, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
 
                 [PNBitwiseHelper addTo:&_state bit:PNConnectionSuspended];
@@ -2705,16 +2676,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else {
 
-                NSString *errorReason = @"";
+                NSString *symbolCode = PNLoggerSymbols.connection.disconnected;
                 if (isDisconnectedOnError) {
 
-                    errorReason = @"BECAUSE OF ERROR ";
+                    symbolCode = PNLoggerSymbols.connection.disconnectedBecauseOfError;
                 }
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] DISCONNECTED %@(STATE: %lu)",
-                            self.name ? self.name : self, errorReason, self.state];
+                    return @[symbolCode, (self.name ? self.name : self), @(self.state)];
                 }];
 
                 // Check whether connection has been terminated because of error or not
@@ -2724,10 +2694,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 }
                 else {
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] NOTIFY DELEGATE ABOUT DISCONNECTION (STATE: %lu)",
-                                self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.notifyDelegateAboutDisconnection, (self.name ? self.name : self),
+                                @(self.state)];
                     }];
                     self.connectionRetryCount = 0;
 
@@ -2768,10 +2738,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         NSString *interruptedRequestIdentifier = self.writeBuffer.requestIdentifier;
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] UNSCHEDULE REQUEST SENDING (%@)(STATE: %lu)",
-                    self.name ? self.name : self, interruptedRequestIdentifier, self.state];
+            return @[PNLoggerSymbols.connection.unscheduleRequestProcessing, (self.name ? self.name : self),
+                    (interruptedRequestIdentifier ? interruptedRequestIdentifier : [NSNull null]), @(self.state)];
         }];
 
         self.writeBuffer = nil;
@@ -2794,10 +2764,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleTimeoutTimer:(NSTimer *)timer {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] HANDLE 'TIMEOUT' TIMER EVENT (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.handleTimeoutTimer, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     [self handleStreamTimeout];
@@ -2805,20 +2775,20 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleWakeUpTimer {
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] HANDLE 'WAKE UP' TIMER EVENT (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.handleWakeUpTimer, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
 
     // Check whether connection not connected
     if ((![self isConnected] && ![self isConnecting]) || [PNBitwiseHelper is:self.state containsBit:PNConnectionWakeUpTimer]) {
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] STILL IN BAD STATE... (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.stillInBadState, (self.name ? self.name : self),
+                    @(self.state)];
         }];
 
 
@@ -2841,10 +2811,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [PNBitwiseHelper removeFrom:&_state bits:PNByUserRequest, PNByServerRequest, BITS_LIST_TERMINATOR];
                 [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionWakeUpTimer, BITS_LIST_TERMINATOR];
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] HAVE A CHANCE TO FIX ITS STATE (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.stateCanBeRecovered, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
 
                 // Check whether connection should be restored via '-reconnect' method or not
@@ -2878,10 +2848,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         else {
 
-            [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] WAKE UP EVENT CANCELED. CONNECTION STATE HAS BEEN CHANGED"
-                        " FROM OUTSIDE. (STATE: %lu)", self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.wakeUpEventCanceledBecauseStateHasBeenAltered, (self.name ? self.name : self),
+                        @(self.state)];
             }];
         }
     }
@@ -2932,32 +2902,32 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleStreamError:(PNConnectionErrorStateFlag)failedStream fromBlock:(CFErrorRef(^)(void))errorBlock {
     
-    __block CFErrorRef error = NULL;
     __block BOOL isErrorProcessed = NO;
-    void(^errorProcessingBlock)(void) = ^{
+    void(^errorProcessingBlock)(CFErrorRef) = ^(CFErrorRef streamError){
         
-        if (!isErrorProcessed) {
+        dispatch_async(dispatch_get_main_queue(), ^{
             
-            dispatch_async(dispatch_get_main_queue(), ^{
+            CFErrorRef errorReference = streamError;
+            if (!isErrorProcessed) {
                 
-                if (error == NULL) {
+                if (streamError == NULL) {
                     
-                    error = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, ECONNRESET, NULL);
+                    errorReference = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, ECONNRESET, NULL);
                 }
                 
                 // Mark that read stream caught and error
                 [PNBitwiseHelper addTo:&_state bit:failedStream];
                 
-                [self handleStreamError:error shouldCloseConnection:YES];
+                [self handleStreamError:streamError shouldCloseConnection:YES];
                 isErrorProcessed = YES;
 
-                [PNHelper releaseCFObject:&error];
-            });
-        }
-        else {
+                [PNHelper releaseCFObject:&errorReference];
+            }
+            else if (errorReference != NULL){
 
-            [PNHelper releaseCFObject:&error];
-        }
+                [PNHelper releaseCFObject:&errorReference];
+            }
+        });
     };
     
     // Sending error copy request to another thread to make sure that it won't block
@@ -2971,12 +2941,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         // logic will be used to create custom error. In case of error client will have to perform handshacke again and it
         // will take at least 250 ms for one side and 500ms for full round-trip (this is ethernet values). SSL handshake will
         // require twice time from regular connection.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)),
-                       dispatch_get_main_queue(), errorProcessingBlock);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            errorProcessingBlock(NULL);
+        });
         
         // Try to retrieve error
-        error = errorBlock();
-        errorProcessingBlock();
+        CFErrorRef error = errorBlock();
+        errorProcessingBlock(error);
     });
 }
 
@@ -2992,50 +2964,50 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         NSString *errorDomain = (__bridge NSString *)CFErrorGetDomain(error);
         PNError *errorObject = [self processStreamError:error];
 
-        [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] GOT ERROR: %@ (CFNetwork error code: %lld (Domain: %@);"
-                    " connection should be close? %@)(STATE: %lu)", self.name ? self.name : self, errorObject,
-                    (long long)CFErrorGetCode(error), errorDomain, shouldCloseConnection ? @"YES" : @"NO", self.state];
+            return @[PNLoggerSymbols.connection.error, (self.name ? self.name : self),
+                    (errorObject ? errorObject : [NSNull null]), @((long long)CFErrorGetCode(error)),
+                    (errorDomain ? errorDomain : [NSNull null]), @(shouldCloseConnection),
+                    @(self.state)];
         }];
 
         // Check whether error is caused by SSL issues or not
         if ([self isSecurityTransportError:error]) {
 
-            [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] SSL ERROR OCCURRED (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.errorOnSSLLevel, (self.name ? self.name : self), @(self.state)];
             }];
 
             if (![self isInternalSecurityTransportError:error]) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] IS SECURITY LEVEL REDUCTION ALLOWED? %@",
-                            self.name ? self.name : self, self.configuration.shouldReduceSecurityLevelOnError ? @"YES" : @"NO"];
+                    return @[PNLoggerSymbols.connection.isSSLLevelReductionAllowed, (self.name ? self.name : self),
+                            @(self.configuration.shouldReduceSecurityLevelOnError), @(self.state)];
                 }];
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] IS IT ALLOWED TO DISCARD SECURITY SETTINGS? %@",
-                            self.name ? self.name : self, self.configuration.canIgnoreSecureConnectionRequirement ? @"YES" : @"NO"];
+                    return @[PNLoggerSymbols.connection.isSSLDiscardingAllowed, (self.name ? self.name : self),
+                            @(self.configuration.canIgnoreSecureConnectionRequirement), @(self.state)];
                 }];
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] CURRENT SSL CONFIGURATION LEVEL: %d",
-                            self.name ? self.name : self, self.sslConfigurationLevel];
+                    return @[PNLoggerSymbols.connection.currentSSLConfigurationLevel, (self.name ? self.name : self),
+                            @(self.sslConfigurationLevel), @(self.state)];
                 }];
                 
                 // Checking whether user allowed to decrease security options and we can do it
                 if (self.configuration.shouldReduceSecurityLevelOnError &&
                     self.sslConfigurationLevel == PNConnectionSSLConfigurationStrict) {
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] REDUCING SSL REQUIREMENTS",
-                                self.name ? self.name : self];
+                        return @[PNLoggerSymbols.connection.reduceSSLSecurityLevel, (self.name ? self.name : self),
+                                 @(self.state)];
                     }];
 
                     shouldCloseConnection = NO;
@@ -3051,9 +3023,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 else if (self.configuration.canIgnoreSecureConnectionRequirement &&
                          self.sslConfigurationLevel == PNConnectionSSLConfigurationBarelySecure) {
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] DISCARD SSL", self.name ? self.name : self];
+                        return @[PNLoggerSymbols.connection.discardSSLLeyer, (self.name ? self.name : self), @(self.state)];
                     }];
 
                     shouldCloseConnection = NO;
@@ -3068,10 +3040,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] INTERNAL SSL ERROR OCCURRED (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.internalSSLError, (self.name ? self.name : self), @(self.state)];
                 }];
 
                 shouldCloseConnection = NO;
@@ -3084,36 +3055,33 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX] ||
                 [errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
 
-            [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                return [NSString stringWithFormat:@"[CONNECTION::%@] SOCKET GENERAL ERROR OCCURRED (STATE: %lu)",
-                        self.name ? self.name : self, self.state];
+                return @[PNLoggerSymbols.connection.generalError, (self.name ? self.name : self), @(self.state)];
             }];
 
             // Check whether connection should be reconnected because of critical error
             if ([self isConnectionIssuesError:error]) {
 
-                [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] SOCKET ERROR BECAUSE OF INTERNET (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.internetConnectionFailure, (self.name ? self.name : self), @(self.state)];
                 }];
 
                 if ([self isConnectionUplinkError:error]) {
 
-                    [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] MAYBE UPLINK IS DOWN. (STATE: %lu)",
-                                self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.uplinkConnectionFailure, (self.name ? self.name : self), @(self.state)];
                     }];
                 }
 
                 if ([self canRetryConnection]) {
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECTION RETRY IS POSSIBLE (STATE: %lu)",
-                                self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.connectionRetryAttemptIsPossible, (self.name ? self.name : self),
+                                 @(self.state)];
                     }];
                     
                     shouldCloseConnection = NO;
@@ -3121,10 +3089,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 }
                 else {
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECTION RETRY NOT POSSIBLE (STATE: %lu)",
-                                self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.connectionRetryAttemptImpossible, (self.name ? self.name : self),
+                                 @(self.state)];
                     }];
                     
                     // Mark that we should init streams close because of critical error
@@ -3139,28 +3107,28 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 if ([self isServerError:error]) {
 
-                    [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] SOCKET GENERAL ERROR BECAUSE OF SERVER ACTIONS (STATE: %lu)",
-                                self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.generalErrorBecauseOfServerActions, (self.name ? self.name : self),
+                                @(self.state)];
                     }];
                 }
                 else {
 
-                    [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] SOCKET GENERAL ERROR BECAUSE OF TEMPORARY ISSUES WITH SOCKET (STATE: %lu)",
-                                                  self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.generalErrorOfTemporaryConnectionIssues, (self.name ? self.name : self),
+                                @(self.state)];
                     }];
                 }
                 
                 // Checking whether connection is able to perform another connection attempt or not
                 if ([self canRetryConnection]) {
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECTION RETRY IS POSSIBLE (STATE: %lu)",
-                                self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.connectionRetryAttemptIsPossible, (self.name ? self.name : self),
+                                @(self.state)];
                     }];
 
                     
@@ -3169,10 +3137,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 }
                 else {
 
-                    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] CONNECTION RETRY NOT POSSIBLE (STATE: %lu)",
-                                self.name ? self.name : self, self.state];
+                        return @[PNLoggerSymbols.connection.connectionRetryAttemptImpossible, (self.name ? self.name : self),
+                                @(self.state)];
                     }];
                     
                     // Mark that we should init streams close because of critical error
@@ -3212,10 +3180,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
             if ([self isConnected] && ![self isDisconnecting]) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] CLOSING STREAMS BECAUSE OF ERROR (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.closingConnectionBecauseOfError, (self.name ? self.name : self),
+                            @(self.state)];
                 }];
                 
                 [PNBitwiseHelper removeFrom:&_state bits:PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
@@ -3228,10 +3196,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }
             else if ([self isConnecting]) {
 
-                [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return [NSString stringWithFormat:@"[CONNECTION::%@] CLOSING STREAMS BECAUSE OF ERROR WHILE TRIED TO CONNECT (STATE: %lu)",
-                            self.name ? self.name : self, self.state];
+                    return @[PNLoggerSymbols.connection.closingConnectionBecauseOfErrorWhileTriedToConnect,
+                             (self.name ? self.name : self), @(self.state)];
                 }];
                 
                 [PNBitwiseHelper removeFrom:&_state bits:PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
@@ -3248,10 +3216,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)handleStreamSetupError {
 
-    [PNLogger logConnectionErrorMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] HANDLE STREAM CONFIGURATION FAILURE (STATE: %lu)",
-                self.name ? self.name : self, self.state];
+        return @[PNLoggerSymbols.connection.stream.configurationError, (self.name ? self.name : self),
+                @(self.state)];
     }];
 
     // Check whether error occurred while connection attempted to connect to remote services w/o configuration on
@@ -3282,10 +3250,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 if (weakSelf.configurationRetryCount + 1 < kPNMaximumConfigurationRetryCount) {
 
-                    [PNLogger logConnectionErrorMessageFrom:weakSelf message:^NSString * {
+                    [PNLogger logConnectionErrorMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] RETRY CONFIGURATION ATTEMPT... (STATE: %lu)",
-                                weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state];
+                        return @[PNLoggerSymbols.connection.stream.configurationRetryAttempt,
+                                 (weakSelf.name ? weakSelf.name : weakSelf), @(weakSelf.state)];
                     }];
 
                     weakSelf.configurationRetryCount++;
@@ -3304,10 +3272,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 // Looks like connection instance can't retry anymore because it reached maximum retry count
                 else {
 
-                    [PNLogger logConnectionErrorMessageFrom:weakSelf message:^NSString * {
+                    [PNLogger logConnectionErrorMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
 
-                        return [NSString stringWithFormat:@"[CONNECTION::%@] CONFIGURATION RETRY COUNT EXCEEDED LIMIT. CANCEL. (STATE: %lu)",
-                                                  weakSelf.name ? weakSelf.name : weakSelf, weakSelf.state];
+                        return @[PNLoggerSymbols.connection.stream.configurationRetryAttemptsExceeded,
+                                 (weakSelf.name ? weakSelf.name : weakSelf), @(weakSelf.state)];
                     }];
 
                     weakSelf.configurationRetryCount = 0;
@@ -3485,25 +3453,25 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     if (self.proxySettings == NULL) {
         
     #if PN_SOCKET_PROXY_ENABLED == 1
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] FETCHING PROXY CONFIGURATION SETTINGS (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.fetchingProxyConfiguration, (self.name ? self.name : self),
+                    @(self.state)];
         }];
         
         self.proxySettings = @{(__bridge NSString *)kCFStreamPropertySOCKSProxyHost:PN_SOCKET_PROXY_HOST,
-                               (__bridge NSString *)kCFStreamPropertySOCKSProxyPort:PN_SPCKET_PROXY_PORT};
+                               (__bridge NSString *)kCFStreamPropertySOCKSProxyPort:PN_SOCKET_PROXY_PORT};
 
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] PROXY CONFIGURATION SETTINGS: %@\n(STATE: %lu)",
-                    self.name ? self.name : self, self.proxySettings, self.state];
+            return @[PNLoggerSymbols.connection.proxyConfigurationInformation, (self.name ? self.name : self),
+                    (self.proxySettings ? self.proxySettings : [NSNull null]), @(self.state)];
         }];
     #else
-        [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-            return [NSString stringWithFormat:@"[CONNECTION::%@] SOCKET PROXY NOT REQUIRED (STATE: %lu)",
-                    self.name ? self.name : self, self.state];
+            return @[PNLoggerSymbols.connection.proxyConfigurationNotRequired, (self.name ? self.name : self),
+                    @(self.state)];
         }];
     #endif // PN_SOCKET_PROXY_ENABLED
     }
@@ -3723,9 +3691,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     _delegate = nil;
     _proxySettings = nil;
 
-    [PNLogger logConnectionInfoMessageFrom:self message:^NSString * {
+    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        return [NSString stringWithFormat:@"[CONNECTION::%@] DESTROYED (STATE: %lu)", _name ? _name : self, _state];
+        return @[PNLoggerSymbols.connection.destroyed, (_name ? _name : self), @(_state)];
     }];
     
     [PNHelper releaseCFObject:&_streamSecuritySettings];
