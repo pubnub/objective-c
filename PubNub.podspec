@@ -1,21 +1,13 @@
 Pod::Spec.new do |s|
   s.name         = 'PubNub'
-<<<<<<< HEAD
-  s.version      = '3.6.6'
-=======
   s.version      = '3.6.7'
->>>>>>> develop
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'PubNub, Inc.' => 'support@pubnub.com'
   }
   s.source = {
     :git => 'https://github.com/pubnub/objective-c.git',
-<<<<<<< HEAD
-    :tag => 'v3.6.6'
-=======
     :tag => 'v3.6.7'
->>>>>>> develop
   }
   
   # A list of file patterns which select the source files that should be
