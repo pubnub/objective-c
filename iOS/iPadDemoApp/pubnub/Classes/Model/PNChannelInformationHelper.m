@@ -90,7 +90,7 @@
     PNChannel *channel = (self.channelName && ![self.channelName pn_isEmpty] ? [PNChannel channelWithName:self.channelName] : nil);
     if (channel && [PubNub isSubscribedOnChannel:channel]) {
         
-        shouldChangePresenceObservationState = self.observePresence != [PubNub isPresenceObservationEnabledForChannel:channel];
+        shouldChangePresenceObservationState = self.shouldObservePresence != [PubNub isPresenceObservationEnabledForChannel:channel];
     }
     
     

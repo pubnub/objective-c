@@ -28,12 +28,13 @@
 #import "NSInvocation+PNAdditions.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
+#import "NSObject+PNAdditions.h"
 #import "PNResponse+Protected.h"
 #import "PNMessage+Protected.h"
 #import "PNHereNow+Protected.h"
 #import "PNChannel+Protected.h"
 #import "PNClient+Protected.h"
-#import "PubNub+Protected.h"
+#import "PNError+Protected.h"
 #import "PNRequestsImport.h"
 #import "PNResponseParser.h"
 #import "PNRequestsQueue.h"
@@ -60,25 +61,15 @@
  * Return reference on configured service communication
  * channel with specified delegate
  */
-+ (PNServiceChannel *)serviceChannelWithDelegate:(id<PNConnectionChannelDelegate>)delegate {
++ (PNServiceChannel *)serviceChannelWithConfiguration:(PNConfiguration *)configuration
+                                          andDelegate:(id<PNConnectionChannelDelegate>)delegate {
 
-    return (PNServiceChannel *)[super connectionChannelWithType:PNConnectionChannelService
-                                                    andDelegate:delegate];
+    return (PNServiceChannel *)[super connectionChannelWithConfiguration:configuration type:PNConnectionChannelService
+                                                             andDelegate:delegate];
 }
 
 
 #pragma mark - Instance methods
-
-- (id)initWithType:(PNConnectionChannelType)connectionChannelType andDelegate:(id<PNConnectionChannelDelegate>)delegate {
-
-    // Check whether initialization was successful or not
-    if((self = [super initWithType:PNConnectionChannelService andDelegate:delegate])) {
-
-    }
-
-
-    return self;
-}
 
 - (BOOL)shouldHandleResponse:(PNResponse *)response {
 
@@ -136,411 +127,414 @@
             NSDictionary *clientData = ([request isKindOfClass:[PNClientStateUpdateRequest class]] ? [request valueForKey:@"state"] : nil);
             response.additionalData = [PNClient clientForIdentifier:identifier channel:channel andData:clientData];
         }
-
-        PNResponseParser *parser = [PNResponseParser parserForResponse:response];
-        id parsedData = [parser parsedData];
-
-        // Check whether request is 'Time token' request or not
-        if ([request isKindOfClass:[PNTimeTokenRequest class]]){
-
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestCompleted, (self.name ? self.name : self),
-                             (parser ? [parser parsedData] : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didReceiveTimeToken:[parser parsedData]];
-            }
-            else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestFailed, (self.name ? self.name : self),
-                            (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:parsedData];
-            }
-        }
-        // Check whether request was sent for state retrieval
-        else if ([request isKindOfClass:[PNClientStateRequest class]]) {
-
-            // Check whether there is no error while loading participants list
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestCompleted, (self.name ? self.name : self),
-                            (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didReceiveClientState:parsedData];
-            }
-            else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed, (self.name ? self.name : self),
-                             (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
-                }];
-
-                ((PNError *)parsedData).associatedObject = response.additionalData;
-                [self.serviceDelegate serviceChannel:self clientStateReceiveDidFailWithError:parsedData];
-            }
-        }
-        // Check whether request was sent for state update
-        else if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
-
-            // Check whether there is no error while loading participants list
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestCompleted, (self.name ? self.name : self),
-                            (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didUpdateClientState:parsedData];
-            }
-            else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestFailed, (self.name ? self.name : self),
-                            (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
-                }];
-
-                ((PNError *)parsedData).associatedObject = response.additionalData;
-                [self.serviceDelegate serviceChannel:self clientStateUpdateDidFailWithError:parsedData];
-            }
-        }
-
-        // Check whether request was sent for message posting
-        else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
-
-            // Retrieve reference on message which has been sent
-            PNMessage *message = ((PNMessagePostRequest *)request).message;
-
-            if ([parsedData isKindOfClass:[PNError class]] ||
-                ([parsedData isKindOfClass:[PNOperationStatus class]] &&
-                 ((PNOperationStatus *)parsedData).error != nil)) {
-
-                if ([parsedData isKindOfClass:[PNOperationStatus class]]) {
-
-                    parsedData = ((PNOperationStatus *)parsedData).error;
-                }
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestFailed, (self.name ? self.name : self),
-                            (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didFailMessageSend:message withError:parsedData];
-            }
-            else {
+        
+        [self pn_dispatchAsynchronouslyBlock:^{
+            
+            PNResponseParser *parser = [PNResponseParser parserForResponse:response];
+            id parsedData = [parser parsedData];
+            
+            // Check whether request is 'Time token' request or not
+            if ([request isKindOfClass:[PNTimeTokenRequest class]]){
                 
-                // Storing message sent date.
-                if ([parsedData isKindOfClass:[PNOperationStatus class]]) {
+                if (![parsedData isKindOfClass:[PNError class]]) {
                     
-                    message.date = [PNDate dateWithToken:((PNOperationStatus *)parsedData).timeToken];
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestCompleted, (self.name ? self.name : self),
+                                 (parser ? [parser parsedData] : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didReceiveTimeToken:[parser parsedData]];
                 }
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestCompleted, (self.name ? self.name : self),
-                            (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
-                }];
-                
-                [self.serviceDelegate serviceChannel:self didSendMessage:message];
-            }
-        }
-        // Check whether request was sent for message history or not
-        else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
-
-            PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
-
-            // Check whether there is no error while loading messages history
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                PNMessagesHistory *history = (PNMessagesHistory *)parsedData;
-                history.channel = historyRequest.channel;
-                [history.messages makeObjectsPerformSelector:@selector(setChannel:) withObject:historyRequest.channel];
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.historyRequestCompleted, (self.name ? self.name : self),
-                             (history.channel ? history.channel : [NSNull null]), (history.startDate ? history.startDate : [NSNull null]),
-                             (history.endDate ? history.endDate : [NSNull null]), @(historyRequest.limit),
-                             @(historyRequest.shouldRevertMessages), @(historyRequest.shouldIncludeTimeToken),
-                             (history.messages ? history.messages : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didReceiveMessagesHistory:parsedData];
-            }
-            else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.historyRequestFailed, (self.name ? self.name : self),
-                             (historyRequest.channel ? historyRequest.channel : [NSNull null]),
-                             (historyRequest.startDate ? historyRequest.startDate : [NSNull null]),
-                             (historyRequest.endDate ? historyRequest.endDate : [NSNull null]), @(historyRequest.limit),
-                             @(historyRequest.shouldRevertMessages), @(historyRequest.shouldIncludeTimeToken),
-                            (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:historyRequest.channel withError:parsedData];
-            }
-        }
-        // Check whether request was sent for participants list or not
-        else if ([request isKindOfClass:[PNHereNowRequest class]]) {
-
-            PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
-            PNChannel *channel = hereNowRequest.channel;
-
-            // Check whether there is no error while loading participants list
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                ((PNHereNow *)parsedData).channel = channel;
-                [channel updateWithParticipantsList:parsedData];
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestCompleted, (self.name ? self.name : self),
-                             (channel ? channel : [NSNull null]), @(hereNowRequest.isClientIdentifiersRequired),
-                             @(hereNowRequest.shouldFetchClientState), (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didReceiveParticipantsList:parsedData];
-            }
-            else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestFailed, (self.name ? self.name : self),
-                             (channel ? channel : [NSNull null]), @(hereNowRequest.isClientIdentifiersRequired),
-                             @(hereNowRequest.shouldFetchClientState), (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannel:channel withError:parsedData];
-            }
-        }
-        // Check whether request was sent for participant channels list or not
-        else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
-
-            NSString *identifier = ((PNWhereNowRequest *)request).identifier;
-
-            // Check whether there is no error while loading channels
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestCompleted, (self.name ? self.name : self),
-                             (identifier ? identifier : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didReceiveParticipantChannelsList:parsedData];
-            }
-            else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestFailed, (self.name ? self.name : self),
-                            (identifier ? identifier : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self didFailParticipantChannelsListLoadForIdentifier:identifier
-                                           withError:parsedData];
-            }
-        }
-        else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
-
-            SEL selector;
-            NSArray *parameters;
-            NSData *devicePushToken = ((PNPushNotificationsStateChangeRequest *)request).devicePushToken;
-            NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
-            NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
-            PNLogLevel logLevel = PNLogCommunicationChannelLayerInfoLevel;
-            NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestCompleted;
-
-            // Check whether there is no error while processed push notifications state change
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                selector = @selector(serviceChannel:didEnablePushNotificationsOnChannels:);
-                if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
-
-                    symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestCompleted;
-                    selector = @selector(serviceChannel:didDisablePushNotificationsOnChannels:);
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestFailed, (self.name ? self.name : self),
+                                 (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:parsedData];
                 }
-
-                parameters = @[self, channels];
             }
-            else {
+            // Check whether request was sent for state retrieval
+            else if ([request isKindOfClass:[PNClientStateRequest class]]) {
                 
-                logLevel = PNLogCommunicationChannelLayerErrorLevel;
-                symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestFailed;
-                selector = @selector(serviceChannel:didFailPushNotificationEnableForChannels:withError:);
-                if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
-
-                    symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestFailed;
-                    selector = @selector(serviceChannel:didFailPushNotificationDisableForChannels:withError:);
+                // Check whether there is no error while loading participants list
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestCompleted, (self.name ? self.name : self),
+                                 (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didReceiveClientState:parsedData];
                 }
-
-                parameters = @[self, channels, parsedData];
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed, (self.name ? self.name : self),
+                                 (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
+                    }];
+                    
+                    ((PNError *)parsedData).associatedObject = response.additionalData;
+                    [self.serviceDelegate serviceChannel:self clientStateReceiveDidFailWithError:parsedData];
+                }
             }
-            if (logLevel == PNLogCommunicationChannelLayerInfoLevel) {
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[symbolCode, (self.name ? self.name : self), (devicePushToken ? devicePushToken : [NSNull null]),
-                             (channels ? channels : [NSNull null])];
-                }];
-            }
-            else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[symbolCode, (self.name ? self.name : self), (devicePushToken ? devicePushToken : [NSNull null]),
-                             (channels ? channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
-                }];
-            }
-
-            NSInvocation *invocation = [NSInvocation pn_invocationForObject:self.serviceDelegate selector:selector
-                                                           retainsArguments:NO parameters:parameters];
-            [invocation invoke];
-        }
-        else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
-            
-            NSData *devicePushToken = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
-
-            // Check whether there is no error while removed push notifications from specified set
-            // of channels or not
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestCompleted, (self.name ? self.name : self),
-                            (devicePushToken ? devicePushToken : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannelDidRemovePushNotifications:self];
-            }
-            else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestFailed, (self.name ? self.name : self),
-                            (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
-                }];
+            // Check whether request was sent for state update
+            else if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
                 
-                [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:parsedData];
+                // Check whether there is no error while loading participants list
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestCompleted, (self.name ? self.name : self),
+                                 (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didUpdateClientState:parsedData];
+                }
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestFailed, (self.name ? self.name : self),
+                                 (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
+                    }];
+                    
+                    ((PNError *)parsedData).associatedObject = response.additionalData;
+                    [self.serviceDelegate serviceChannel:self clientStateUpdateDidFailWithError:parsedData];
+                }
             }
-        }
-        else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
             
-            NSData *devicePushToken = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
-
-            // Check whether there is no error while retrieved list of channels on which push notifications was enabled
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestCompleted, (self.name ? self.name : self),
-                            (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self
-          didReceivePushNotificationsEnabledChannels:[PNChannel channelsWithNames:parsedData]];
+            // Check whether request was sent for message posting
+            else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
+                
+                // Retrieve reference on message which has been sent
+                PNMessage *message = ((PNMessagePostRequest *)request).message;
+                
+                if ([parsedData isKindOfClass:[PNError class]] ||
+                    ([parsedData isKindOfClass:[PNOperationStatus class]] &&
+                     ((PNOperationStatus *)parsedData).error != nil)) {
+                        
+                        if ([parsedData isKindOfClass:[PNOperationStatus class]]) {
+                            
+                            parsedData = ((PNOperationStatus *)parsedData).error;
+                        }
+                        
+                        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                            
+                            return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestFailed, (self.name ? self.name : self),
+                                     (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
+                        }];
+                        
+                        [self.serviceDelegate serviceChannel:self didFailMessageSend:message withError:parsedData];
+                    }
+                else {
+                    
+                    // Storing message sent date.
+                    if ([parsedData isKindOfClass:[PNOperationStatus class]]) {
+                        
+                        message.date = [PNDate dateWithToken:((PNOperationStatus *)parsedData).timeToken];
+                    }
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestCompleted, (self.name ? self.name : self),
+                                 (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didSendMessage:message];
+                }
+            }
+            // Check whether request was sent for message history or not
+            else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
+                
+                PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
+                
+                // Check whether there is no error while loading messages history
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    PNMessagesHistory *history = (PNMessagesHistory *)parsedData;
+                    history.channel = historyRequest.channel;
+                    [history.messages makeObjectsPerformSelector:@selector(setChannel:) withObject:historyRequest.channel];
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.historyRequestCompleted, (self.name ? self.name : self),
+                                 (history.channel ? history.channel : [NSNull null]), (history.startDate ? history.startDate : [NSNull null]),
+                                 (history.endDate ? history.endDate : [NSNull null]), @(historyRequest.limit),
+                                 @(historyRequest.shouldRevertMessages), @(historyRequest.shouldIncludeTimeToken),
+                                 (history.messages ? history.messages : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didReceiveMessagesHistory:parsedData];
+                }
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.historyRequestFailed, (self.name ? self.name : self),
+                                 (historyRequest.channel ? historyRequest.channel : [NSNull null]),
+                                 (historyRequest.startDate ? historyRequest.startDate : [NSNull null]),
+                                 (historyRequest.endDate ? historyRequest.endDate : [NSNull null]), @(historyRequest.limit),
+                                 @(historyRequest.shouldRevertMessages), @(historyRequest.shouldIncludeTimeToken),
+                                 (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:historyRequest.channel withError:parsedData];
+                }
+            }
+            // Check whether request was sent for participants list or not
+            else if ([request isKindOfClass:[PNHereNowRequest class]]) {
+                
+                PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
+                PNChannel *channel = hereNowRequest.channel;
+                
+                // Check whether there is no error while loading participants list
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    ((PNHereNow *)parsedData).channel = channel;
+                    [channel updateWithParticipantsList:parsedData];
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestCompleted, (self.name ? self.name : self),
+                                 (channel ? channel : [NSNull null]), @(hereNowRequest.isClientIdentifiersRequired),
+                                 @(hereNowRequest.shouldFetchClientState), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didReceiveParticipantsList:parsedData];
+                }
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestFailed, (self.name ? self.name : self),
+                                 (channel ? channel : [NSNull null]), @(hereNowRequest.isClientIdentifiersRequired),
+                                 @(hereNowRequest.shouldFetchClientState), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannel:channel withError:parsedData];
+                }
+            }
+            // Check whether request was sent for participant channels list or not
+            else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
+                
+                NSString *identifier = ((PNWhereNowRequest *)request).identifier;
+                
+                // Check whether there is no error while loading channels
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestCompleted, (self.name ? self.name : self),
+                                 (identifier ? identifier : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didReceiveParticipantChannelsList:parsedData];
+                }
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestFailed, (self.name ? self.name : self),
+                                 (identifier ? identifier : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didFailParticipantChannelsListLoadForIdentifier:identifier
+                                               withError:parsedData];
+                }
+            }
+            else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
+                
+                SEL selector;
+                NSArray *parameters;
+                NSData *devicePushToken = ((PNPushNotificationsStateChangeRequest *)request).devicePushToken;
+                NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
+                NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
+                PNLogLevel logLevel = PNLogCommunicationChannelLayerInfoLevel;
+                NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestCompleted;
+                
+                // Check whether there is no error while processed push notifications state change
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    selector = @selector(serviceChannel:didEnablePushNotificationsOnChannels:);
+                    if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
+                        
+                        symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestCompleted;
+                        selector = @selector(serviceChannel:didDisablePushNotificationsOnChannels:);
+                    }
+                    
+                    parameters = @[self, channels];
+                }
+                else {
+                    
+                    logLevel = PNLogCommunicationChannelLayerErrorLevel;
+                    symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestFailed;
+                    selector = @selector(serviceChannel:didFailPushNotificationEnableForChannels:withError:);
+                    if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
+                        
+                        symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestFailed;
+                        selector = @selector(serviceChannel:didFailPushNotificationDisableForChannels:withError:);
+                    }
+                    
+                    parameters = @[self, channels, parsedData];
+                }
+                if (logLevel == PNLogCommunicationChannelLayerInfoLevel) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[symbolCode, (self.name ? self.name : self), (devicePushToken ? devicePushToken : [NSNull null]),
+                                 (channels ? channels : [NSNull null])];
+                    }];
+                }
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[symbolCode, (self.name ? self.name : self), (devicePushToken ? devicePushToken : [NSNull null]),
+                                 (channels ? channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                }
+                
+                NSInvocation *invocation = [NSInvocation pn_invocationForObject:self.serviceDelegate selector:selector
+                                                               retainsArguments:NO parameters:parameters];
+                [invocation invoke];
+            }
+            else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
+                
+                NSData *devicePushToken = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
+                
+                // Check whether there is no error while removed push notifications from specified set
+                // of channels or not
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestCompleted, (self.name ? self.name : self),
+                                 (devicePushToken ? devicePushToken : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannelDidRemovePushNotifications:self];
+                }
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestFailed, (self.name ? self.name : self),
+                                 (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:parsedData];
+                }
+            }
+            else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
+                
+                NSData *devicePushToken = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
+                
+                // Check whether there is no error while retrieved list of channels on which push notifications was enabled
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestCompleted, (self.name ? self.name : self),
+                                 (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self
+              didReceivePushNotificationsEnabledChannels:[PNChannel channelsWithNames:parsedData]];
+                }
+                else {
+                    
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestFailed, (self.name ? self.name : self),
+                                 (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:parsedData];
+                }
+            }
+            else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
+                
+                PNAccessRightOptions *options = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
+                
+                // Check whether there is no error while tried to change access rights.
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestCompleted, (self.name ? self.name : self),
+                                 (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                                 (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
+                                 (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [(PNAccessRightsCollection *)parsedData correlateAccessRightsWithOptions:options];
+                    [self.serviceDelegate serviceChannel:self didChangeAccessRights:parsedData];
+                }
+                else {
+                    
+                    ((PNError *)parsedData).associatedObject = options;
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestFailed, (self.name ? self.name : self),
+                                 (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                                 (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
+                                 (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:parsedData];
+                }
+            }
+            else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
+                
+                PNAccessRightOptions *options = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
+                
+                // Check whether there is no error while tried to audit access rights.
+                if (![parsedData isKindOfClass:[PNError class]]) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestCompleted, (self.name ? self.name : self),
+                                 (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                                 (options.channels ? options.channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [(PNAccessRightsCollection *)parsedData correlateAccessRightsWithOptions:options];
+                    [self.serviceDelegate serviceChannel:self didAuditAccessRights:parsedData];
+                }
+                else {
+                    
+                    ((PNError *)parsedData).associatedObject = options;
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                        
+                        return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestFailed, (self.name ? self.name : self),
+                                 (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
+                                 (options.channels ? options.channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    }];
+                    
+                    [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:parsedData];
+                }
             }
             else {
-
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestFailed, (self.name ? self.name : self),
-                            (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
-                }];
                 
-                [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:parsedData];
-            }
-        }
-        else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
-
-            PNAccessRightOptions *options = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
-            
-            // Check whether there is no error while tried to change access rights.
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
                 [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestCompleted, (self.name ? self.name : self),
-                             (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
-                             (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
+                    
+                    return @[PNLoggerSymbols.connectionChannel.service.parsedData, (self.name ? self.name : self),
                              (parsedData ? parsedData : [NSNull null])];
                 }];
-
-                [(PNAccessRightsCollection *)parsedData correlateAccessRightsWithOptions:options];
-                [self.serviceDelegate serviceChannel:self didChangeAccessRights:parsedData];
-            }
-            else {
-
-                ((PNError *)parsedData).associatedObject = options;
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestFailed, (self.name ? self.name : self),
-                             (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
-                             (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
-                             (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:parsedData];
-            }
-        }
-        else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
-
-            PNAccessRightOptions *options = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
-
-            // Check whether there is no error while tried to audit access rights.
-            if (![parsedData isKindOfClass:[PNError class]]) {
-
                 [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestCompleted, (self.name ? self.name : self),
-                            (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
-                            (options.channels ? options.channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                    
+                    return @[PNLoggerSymbols.connectionChannel.service.observerRequestCompleted, (self.name ? self.name : self),
+                             (request ? request : [NSNull null])];
                 }];
-
-                [(PNAccessRightsCollection *)parsedData correlateAccessRightsWithOptions:options];
-                [self.serviceDelegate serviceChannel:self didAuditAccessRights:parsedData];
             }
-            else {
-
-                ((PNError *)parsedData).associatedObject = options;
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestFailed, (self.name ? self.name : self),
-                            (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
-                            (options.channels ? options.channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
-                }];
-
-                [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:parsedData];
-            }
-        }
-        else {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.connectionChannel.service.parsedData, (self.name ? self.name : self),
-                        (parsedData ? parsedData : [NSNull null])];
-            }];
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.connectionChannel.service.observerRequestCompleted, (self.name ? self.name : self),
-                        (request ? request : [NSNull null])];
-            }];
-        }
+        }];
     }
 }
 
@@ -806,7 +800,6 @@
 
         // Removing failed request from queue
         [self destroyRequest:request];
-
         [self handleRequestProcessingDidFail:request withError:error];
     }];
 }
@@ -1027,13 +1020,10 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
                                    withError:[PNError errorWithMessage:errorMessage code:errorCode]];
     }
 
-
     [self destroyRequest:request];
 
-
     // Check whether connection available or not
-    [[PubNub sharedInstance].reachability refreshReachabilityState];
-    if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
+    if ([self isConnected] && [self.delegate isPubNubServiceAvailable:YES]) {
 
         // Asking to schedule next request
         [self scheduleNextRequest];
@@ -1140,7 +1130,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
 
     // Check whether connection available or not
-    if ([self isConnected] && [[PubNub sharedInstance].reachability isServiceAvailable]) {
+    if ([self isConnected] && [self.delegate isPubNubServiceAvailable:NO]) {
 
         [self scheduleNextRequest];
     }

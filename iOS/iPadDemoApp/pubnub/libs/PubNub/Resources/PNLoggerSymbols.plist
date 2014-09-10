@@ -144,6 +144,8 @@
 			<string>SOCKET PROXY NOT REQUIRED (STATE: %@)</string>
 			<key>0100067</key>
 			<string>DESTROYED (STATE: %@)</string>
+			<key>0100068</key>
+			<string>INSTANCE USE RESPONSE DESERIALIZER AT %@</string>
 			<key>0110</key>
 			<dict>
 				<key>0110000</key>
@@ -362,6 +364,8 @@
 			<string>RESETTING CONNECTION INSTANCE: %@ (%@) (STATE: %@)</string>
 			<key>0200044</key>
 			<string>DESTROYED (STATE: %@)</string>
+			<key>0200045</key>
+			<string>INSTANCE USE REQUEST QUEUE AT %@ AND CONNECTION AT %@</string>
 			<key>0201</key>
 			<dict>
 				<key>0201000</key>
@@ -1130,6 +1134,8 @@
 +--------------------------------------------------------------
 
 </string>
+			<key>0900239</key>
+			<string>INSTANCE USE OBSERVER INSTANCE AT %@, REACHABILITY INSTANCE AT %@, CRYPTO HELPER INSTANCE AT %@, MESSAGING CHANNEL INSTANCE AT %@, SERVICE CHANNEL INSTANCE AT %@ </string>
 		</dict>
 		<key>10</key>
 		<dict>

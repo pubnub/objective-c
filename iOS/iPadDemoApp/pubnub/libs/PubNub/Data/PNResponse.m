@@ -147,6 +147,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         self.size = responseSize;
         self.statusCode = statusCode;
         self.privateData = [NSMutableDictionary dictionary];
+        self.unknownData = [NSMutableDictionary dictionary];
         self.lastResponseOnConnection = isLastResponseOnConnection;
 
         
@@ -306,14 +307,12 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
             if (isPayloadFound) {
 
-                NSMutableDictionary *responseForModification = [self.response mutableCopy];
                 [unprocessedDataKeys enumerateObjectsUsingBlock:^(NSString *dataKey, NSUInteger dataKeyIdx,
                                                                   BOOL *dataKeyEnumeratorStop) {
 
-                    [responseForModification setValue:[processedData valueForKey:dataKey] forKey:dataKey];
+                    [self.unknownData setValue:[processedData valueForKey:dataKey] forKey:dataKey];
                     [processedData removeObjectForKey:dataKey];
                 }];
-                self.response = [NSDictionary dictionaryWithDictionary:responseForModification];
             }
             else {
 
@@ -324,7 +323,6 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 }
 
 - (void)getCallbackFunction:(NSString **)callback requestIdentifier:(NSString **)identifier fromData:(NSData *)responseData {
-
 
     // Trying to extract callback method and request identifier
     NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];

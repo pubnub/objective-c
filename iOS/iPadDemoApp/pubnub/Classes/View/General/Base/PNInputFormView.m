@@ -67,6 +67,11 @@
     self.originalVerticalPosition = self.frame.origin.y;
 }
 
+- (BOOL)isUserInputActive {
+    
+    return self.originalVerticalPosition != self.frame.origin.y;
+}
+
 - (void)completeUserInput {
     
     [self endEditing:YES];

@@ -124,6 +124,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .proxyConfigurationInformation = @"0100065",
         .proxyConfigurationNotRequired = @"0100066",
         .destroyed = @"0100067",
+        .resourceLinkage = @"0100068",
 
         .stream = {
 
@@ -237,6 +238,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .requestRescheduleImpossible = @"0200042",
         .connectionReset = @"0200043",
         .destroyed = @"0200044",
+        .resourceLinkage = @"0200045",
         .subscribe = {
 
             .leaveAllChannels = @"0201000",
@@ -613,6 +615,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .willConnect = @"0900236",
         .clientInformation = @"0900237",
         .configurationInformation = @"0900238",
+        .resourceLinkage = @"0900239",
     },
     .observationCenter = {
         
@@ -840,24 +843,28 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
 + (void)prepare {
 
-    // Retrieve path to the 'Documents' folder
-    NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    [self sharedInstance].dumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerDumpFileName];
-    [self sharedInstance].oldDumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerOldDumpFileName];
-    [self sharedInstance].httpPacketStoreFolderPath = [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
-    [self sharedInstance].maximumDumpFileSize = kPNLoggerMaximumDumpFileSize;
-
-    [[self sharedInstance] prepareForAsynchronousFileProcessing];
-    [[self sharedInstance] prepareSymbols];
-
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:[self sharedInstance].httpPacketStoreFolderPath isDirectory:NULL]) {
-
-        [fileManager createDirectoryAtPath:[self sharedInstance].httpPacketStoreFolderPath withIntermediateDirectories:YES
-                                attributes:nil error:NULL];
-    }
-
-    [[self sharedInstance] applyDefaultConfiguration];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        // Retrieve path to the 'Documents' folder
+        NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        [self sharedInstance].dumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerDumpFileName];
+        [self sharedInstance].oldDumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerOldDumpFileName];
+        [self sharedInstance].httpPacketStoreFolderPath = [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
+        [self sharedInstance].maximumDumpFileSize = kPNLoggerMaximumDumpFileSize;
+        
+        [[self sharedInstance] prepareForAsynchronousFileProcessing];
+        [[self sharedInstance] prepareSymbols];
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if (![fileManager fileExistsAtPath:[self sharedInstance].httpPacketStoreFolderPath isDirectory:NULL]) {
+            
+            [fileManager createDirectoryAtPath:[self sharedInstance].httpPacketStoreFolderPath withIntermediateDirectories:YES
+                                    attributes:nil error:NULL];
+        }
+        
+        [[self sharedInstance] applyDefaultConfiguration];
+    });
 }
 
 + (void)logFrom:(id)sender forLevel:(PNLogLevel)level withParametersFromBlock:(NSArray *(^)(void))parametersBlock {
@@ -1049,7 +1056,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                                                                              target:[self sharedInstance]
                                                                            selector:@selector(handleConsoleDumpTimer:)
                                                                            userInfo:nil repeats:YES];
-            [[NSRunLoop currentRunLoop] addTimer:[self sharedInstance].consoleDumpTimer forMode:NSRunLoopCommonModes];
+            [[NSRunLoop mainRunLoop] addTimer:[self sharedInstance].consoleDumpTimer forMode:NSRunLoopCommonModes];
         } else if (![self isDumpingToFile] && [[self sharedInstance].consoleDumpTimer isValid]) {
             
             [[self sharedInstance].consoleDumpTimer invalidate];
