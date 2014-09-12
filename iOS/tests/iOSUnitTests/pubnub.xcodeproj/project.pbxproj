@@ -231,6 +231,7 @@
 		96D23C9B19336F6800717966 /* GCDWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D23C9619336F6800717966 /* GCDWrapper.m */; };
 		96D23C9C19336F6800717966 /* PNBaseTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D23C9819336F6800717966 /* PNBaseTestCase.m */; };
 		96D23C9D19336F6800717966 /* PNTestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D23C9A19336F6800717966 /* PNTestManager.m */; };
+		96D6B1BF19C1D44B009BF9E4 /* HugeCompressedMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D6B1B419C1D44B009BF9E4 /* HugeCompressedMessageTest.m */; };
 		DD71B29E58A35A3AFEE4034D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71BF43E328EDCD6FF8F254 /* Security.framework */; };
 		DD71B50871A8083F6E609816 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */; };
 		DD71B861D60C2DB2E44D1B6C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */; };
@@ -579,6 +580,7 @@
 		96D23C9819336F6800717966 /* PNBaseTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBaseTestCase.m; sourceTree = "<group>"; };
 		96D23C9919336F6800717966 /* PNTestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTestManager.h; sourceTree = "<group>"; };
 		96D23C9A19336F6800717966 /* PNTestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTestManager.m; sourceTree = "<group>"; };
+		96D6B1B419C1D44B009BF9E4 /* HugeCompressedMessageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HugeCompressedMessageTest.m; sourceTree = "<group>"; };
 		DD71B1E2DB5B835A0C695908 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		DD71B83AEEA2DBCDE169F068 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DD71BF43E328EDCD6FF8F254 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -801,6 +803,7 @@
 		79C32256166DF848006DB535 /* pubnubTests */ = {
 			isa = PBXGroup;
 			children = (
+				96D6B1AE19C1D44B009BF9E4 /* HowToTests */,
 				96877B8C197404090014D4A8 /* 3.6.5 Functional tests */,
 				960D78E2196459DF00F8A89F /* 3.6.4 Unit-tests */,
 				79C32257166DF848006DB535 /* Supporting Files */,
@@ -1324,6 +1327,14 @@
 			path = ../SubUnsubStressTest/PNTestSuite;
 			sourceTree = "<group>";
 		};
+		96D6B1AE19C1D44B009BF9E4 /* HowToTests */ = {
+			isa = PBXGroup;
+			children = (
+				96D6B1B419C1D44B009BF9E4 /* HugeCompressedMessageTest.m */,
+			);
+			path = HowToTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1360,7 +1371,7 @@
 			name = MacTest;
 			productName = MacTest;
 			productReference = 5AFDFD5318EACC2B004FDD28 /* MacTest.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 		79C32227166DF847006DB535 /* pubnub */ = {
 			isa = PBXNativeTarget;
@@ -1396,7 +1407,7 @@
 			name = pubnubTests;
 			productName = pubnubTests;
 			productReference = 79C3224F166DF848006DB535 /* pubnubTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 		96CE1BAC190A570E00F163F8 /* pnSubUnsubTest */ = {
 			isa = PBXNativeTarget;
@@ -1733,6 +1744,7 @@
 				960D7980196459DF00F8A89F /* TimeCommand.m in Sources */,
 				960D7930196459DF00F8A89F /* OversizedJSON.m in Sources */,
 				960D796A196459DF00F8A89F /* PNObservationCenterTest.m in Sources */,
+				96D6B1BF19C1D44B009BF9E4 /* HugeCompressedMessageTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
