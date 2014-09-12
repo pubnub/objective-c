@@ -149,7 +149,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
         }
     }
 
-    message.message = [PubNub AESDecrypt:messageBody];
+    message.message = messageBody;
     message.channel = channel;
     message.receiveDate = messagePostDate;
 

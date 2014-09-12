@@ -20,7 +20,7 @@
 @protocol PNServiceChannelDelegate<NSObject>
 
 
-@required
+@optional // @required in corresponding categories for PubNub main class.
 
 /**
  Sent to the delegate when \b PubNub client successfully retrieved state for client.

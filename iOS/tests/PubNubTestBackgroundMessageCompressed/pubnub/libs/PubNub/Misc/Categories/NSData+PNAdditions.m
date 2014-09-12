@@ -79,7 +79,7 @@ static unsigned char decodeCharTable[256] =
 
 #pragma mark - Instance methods
 
-- (NSData *)dataUsingGZIPOperation:(GZIPOperations)operation;
+- (NSData *)pn_dataUsingGZIPOperation:(GZIPOperations)operation;
 
 
 #pragma mark -
@@ -94,7 +94,7 @@ static unsigned char decodeCharTable[256] =
 
 #pragma mark Class methods
 
-+ (NSData *)dataFromBase64String:(NSString *)encodedSting {
++ (NSData *)pn_dataFromBase64String:(NSString *)encodedSting {
 
     NSData *encodedData = [encodedSting dataUsingEncoding:NSASCIIStringEncoding];
     const char *encodedDataBuffer = [encodedData bytes];
@@ -151,12 +151,12 @@ static unsigned char decodeCharTable[256] =
 
 #pragma mark - Instance methods
 
-- (unsigned long long int)unsignedLongLongFromHEXData {
+- (unsigned long long int)pn_unsignedLongLongFromHEXData {
 
     return strtoull([self bytes], NULL, 16);
 }
 
-- (NSString *)base64Encoding {
+- (NSString *)pn_base64Encoding {
 
     if ([self length] == 0)
     		return @"";
@@ -189,7 +189,7 @@ static unsigned char decodeCharTable[256] =
     	return [[NSString alloc] initWithBytesNoCopy:characters length:length encoding:NSASCIIStringEncoding freeWhenDone:YES];
 }
 
-- (NSString *)HEXString {
+- (NSString *)pn_HEXString {
 
     NSUInteger capacity = [self length];
     NSMutableString *stringBuffer = [NSMutableString stringWithCapacity:capacity];
@@ -208,22 +208,22 @@ static unsigned char decodeCharTable[256] =
 
 #pragma mark - Compression / Decompression methods
 
-- (NSData *)GZIPDeflate {
+- (NSData *)pn_GZIPDeflate {
     
-    return [self dataUsingGZIPOperation:GZIPCompressDeflateOperation];
+    return [self pn_dataUsingGZIPOperation:GZIPCompressDeflateOperation];
 }
 
-- (NSData *)GZIPInflate {
+- (NSData *)pn_GZIPInflate {
     
-    return [self dataUsingGZIPOperation:GZIPDecompressInflateOperation];
+    return [self pn_dataUsingGZIPOperation:GZIPDecompressInflateOperation];
 }
 
-- (NSData *)inflate {
+- (NSData *)pn_inflate {
     
-    return [self dataUsingGZIPOperation:DecompressInflateOperation];
+    return [self pn_dataUsingGZIPOperation:DecompressInflateOperation];
 }
 
-- (NSData *)dataUsingGZIPOperation:(GZIPOperations)operation {
+- (NSData *)pn_dataUsingGZIPOperation:(GZIPOperations)operation {
     
     NSData *processedData = nil;
     NSUInteger window = operation == GZIPDecompressInflateOperation ? GZIPInflateWindowBits : (operation == GZIPCompressDeflateOperation ? GZIPDeflateWindowBits : DeflateWindowBits);
@@ -323,7 +323,7 @@ static unsigned char decodeCharTable[256] =
 
 #pragma mark - APNS
 
-- (NSString *)HEXPushToken {
+- (NSString *)pn_HEXPushToken {
 
     NSUInteger capacity = [self length];
     NSMutableString *stringBuffer = [NSMutableString stringWithCapacity:capacity];
@@ -341,7 +341,7 @@ static unsigned char decodeCharTable[256] =
 
 - (NSString *)logDescription {
     
-    return [NSString stringWithFormat:@"<%@>", [self HEXPushToken]];
+    return [NSString stringWithFormat:@"<%@>", [self pn_HEXPushToken]];
 }
 
 #pragma mark -

@@ -31,6 +31,11 @@
  */
 @property (nonatomic, strong) NSDictionary *state;
 
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
+
 #pragma mark -
 
 

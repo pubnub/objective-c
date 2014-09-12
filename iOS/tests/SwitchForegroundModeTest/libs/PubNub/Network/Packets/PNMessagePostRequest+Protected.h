@@ -26,6 +26,12 @@
 // be processed
 @property (nonatomic, readonly, strong) PNMessage *message;
 
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
+@property (nonatomic, copy) NSString *publishKey;
+
 #pragma mark -
 
 

@@ -43,6 +43,11 @@
  */
 @property (nonatomic, readonly, assign, getter = shouldIncludeTimeToken) BOOL includeTimeToken;
 
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
+
 #pragma mark -
 
 

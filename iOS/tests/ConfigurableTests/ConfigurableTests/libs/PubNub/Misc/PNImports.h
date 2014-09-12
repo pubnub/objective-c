@@ -39,7 +39,17 @@
 #import "PNLogger.h"
 #import "PNMacro.h"
 #import "PNError.h"
-#import "PubNub.h"
 #import "PNDate.h"
+
+#import "PubNub+PresenceEvents.h"
+#import "PubNub+Subscription.h"
+#import "PubNub+Messaging.h"
+#import "PubNub+Presence.h"
+#import "PubNub+History.h"
+#import "PubNub+State.h"
+#import "PubNub+Time.h"
+#import "PubNub+APNS.h"
+#import "PubNub+PAM.h"
+#import "PubNub.h"
 
 #endif // PNImports_h

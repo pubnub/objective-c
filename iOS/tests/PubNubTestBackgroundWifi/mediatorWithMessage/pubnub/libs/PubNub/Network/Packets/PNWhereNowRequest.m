@@ -10,8 +10,8 @@
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
 #import "NSString+PNAddition.h"
-#import "PubNub+Protected.h"
 #import "PNConfiguration.h"
+#import "PNMacro.h"
 
 
 #pragma mark Private interface declaration
@@ -21,7 +21,10 @@
 
 #pragma mark - Properties
 
-@property (nonatomic, copy) NSString *clientIdentifier;
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
 
 #pragma mark -
 
@@ -57,6 +60,12 @@
     return self;
 }
 
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
+    
+    self.subscriptionKey = configuration.subscriptionKey;
+    self.clientIdentifier = clientIdentifier;
+}
+
 - (NSString *)callbackMethodName {
 
     return PNServiceResponseCallbacks.participantChannelsCallback;
@@ -65,19 +74,23 @@
 - (NSString *)resourcePath {
 
     return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/uuid/%@?callback=%@_%@%@&pnsdk=%@",
-                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                                      [self.clientIdentifier percentEscapedString], [self callbackMethodName],
+                                      [self.subscriptionKey pn_percentEscapedString],
+                                      [self.clientIdentifier pn_percentEscapedString], [self callbackMethodName],
                                       self.shortIdentifier,
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                                                                              [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
+    
+    NSString *subscriptionKey = [self.subscriptionKey pn_percentEscapedString];
+    return [[self resourcePath] stringByReplacingOccurrencesOfString:subscriptionKey withString:PNObfuscateString(subscriptionKey)];
+}
 
-    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
-
-    return [resourcePathComponents componentsJoinedByString:@"/"];
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

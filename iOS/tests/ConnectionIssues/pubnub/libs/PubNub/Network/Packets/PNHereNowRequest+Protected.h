@@ -35,6 +35,11 @@
  */
 @property (nonatomic, readonly, assign, getter = shouldFetchClientState) BOOL fetchClientState;
 
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
+
 #pragma mark -
 
 

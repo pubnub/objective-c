@@ -14,6 +14,7 @@
 
 #import "PNPresenceEvent+Protected.h"
 #import "PNClient+Protected.h"
+#import "PNChannel.h"
 #import "PNClient.h"
 #import "PNDate.h"
 
@@ -190,9 +191,12 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
         action = @"occupancy changed";
     }
     
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
     return [NSString stringWithFormat:@"<%@|%@|%@|%ld|%@>", action, (self.date ? [self.date performSelector:@selector(logDescription)] : [NSNull null]),
             (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null]), (unsigned long)self.occupancy,
             (self.client ? [self.client performSelector:@selector(logDescription)] : [NSNull null])];
+    #pragma clang diagnostic pop
 }
 
 #pragma mark -

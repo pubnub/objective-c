@@ -32,6 +32,7 @@
 
 @property (nonatomic, readonly, assign, getter = isSimulatingNetworkSwitchEvent) BOOL simulatingNetworkSwitchEvent;
 
+@property (atomic, copy) NSString *serviceOrigin;
 
 #pragma mark - Class methods
 

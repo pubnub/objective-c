@@ -27,6 +27,14 @@
 - (BOOL)requiresConnectionResetWithConfiguration:(PNConfiguration *)configuration;
 
 /**
+ Migrates setting options from provided configuration to receiver.
+ 
+ @param configuration
+ Reference on another \b PNConfiguration instance from which parameters should be copied.
+ */
+- (void)migrateConfigurationFrom:(PNConfiguration *)configuration;
+
+/**
  * Check whether caller configuration is equal to the other or not
  */
 - (BOOL)isEqual:(PNConfiguration *)configuration;

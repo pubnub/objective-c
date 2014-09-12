@@ -49,8 +49,7 @@
  * to establish connection with remote PubNub services because
  * of error
  */
-- (void)connectionChannel:(PNConnectionChannel *)channel
-     connectionDidFailToOrigin:(NSString *)host
+- (void)connectionChannel:(PNConnectionChannel *)channel connectionDidFailToOrigin:(NSString *)host
                 withError:(PNError *)error;
 
 /**
@@ -63,8 +62,7 @@
  * Sent to the PubNub client when connection channel disconnected
  * from PubNub services because of error
  */
-- (void)connectionChannel:(PNConnectionChannel *)channel
-    willDisconnectFromOrigin:(NSString *)host
+- (void)connectionChannel:(PNConnectionChannel *)channel willDisconnectFromOrigin:(NSString *)host
                 withError:(PNError *)error;
 
 /**
@@ -101,6 +99,23 @@
  * This method is called periodically by intervals defined in connection class.
  */
 - (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel;
+
+/**
+ Retrieve client identifier provided or generated for user by \b PubNub client.
+ 
+ @return Unique client identifier
+ */
+- (NSString *)clientIdentifier;
+
+/**
+ Sent to the delegate when underlying connection channel want to find out about network and service reachability.
+ 
+ @param shouldUpdateInformation
+ Whether \b PubNub client should trigger syncrhronous state update or not
+ 
+ @return \c YES in case if \b PubNub and network reachable.
+ */
+- (BOOL)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation;
 
 #pragma mark -
 

@@ -15,10 +15,14 @@
 #import "PNConnectionDelegate.h"
 
 
-#pragma mark Structures
+#pragma mark Class forward
+
+@class PNConfiguration;
 
 
-#pragma mark Connection channel types
+#pragma mark - Structures
+
+#pragma mark - Connection channel types
 
 // This enum represents list of available connection
 // channel types
@@ -57,18 +61,41 @@ typedef enum _PNConnectionChannelType {
 #pragma mark Class methods
 
 /**
- * Returns reference on fully configured channel which is ready to be connected and usage
+ Returns reference on fully configured channel which is ready to be connected and usage.
+
+ @param configuration
+ Reference on \b PNConfiguration instance which should be used by connection channel and accompany classes.
+
+ @param connectionChannelType
+ Basing on connection type different identifiers will be used.
+
+ @param delegate
+ Reference on delegate which will accept all general callbacks from underlay connection channel class.
+
+ @return Reference on fully configured and ready to use instance.
  */
-+ (id)connectionChannelWithType:(PNConnectionChannelType)connectionChannelType
-                    andDelegate:(id<PNConnectionChannelDelegate>)delegate;
++ (id)connectionChannelWithConfiguration:(PNConfiguration *)configuration type:(PNConnectionChannelType)connectionChannelType
+                             andDelegate:(id<PNConnectionChannelDelegate>)delegate;
 
 
 #pragma mark - Instance methods
 
 /**
- * Initialize connection channel which on it's own will initiate socket connection with streams
+ Initialize connection channel which on it's own will initiate socket connection with streams
+
+ @param configuration
+ Reference on \b PNConfiguration instance which should be used by connection channel and accompany classes.
+
+ @param connectionChannelType
+ Basing on connection type different identifiers will be used.
+
+ @param delegate
+ Reference on delegate which will accept all general callbacks from underlay connection channel class.
+
+ @return Reference on fully configured and ready to use instance.
  */
-- (id)initWithType:(PNConnectionChannelType)connectionChannelType andDelegate:(id<PNConnectionChannelDelegate>)delegate;
+- (id)initWithConfiguration:(PNConfiguration *)configuration type:(PNConnectionChannelType)connectionChannelType
+                andDelegate:(id<PNConnectionChannelDelegate>)delegate;
 
 - (void)connect;
 
@@ -78,7 +105,7 @@ typedef enum _PNConnectionChannelType {
 - (BOOL)isConnected;
 
 /**
- * Closing connection to the server. Requests queue won't be flushed.
+ Closing connection to the server. Requests queue won't be flushed.
  */
 - (void)disconnect;
 

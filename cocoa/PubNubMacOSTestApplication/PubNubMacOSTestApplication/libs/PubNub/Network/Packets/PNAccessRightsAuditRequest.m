@@ -10,9 +10,11 @@
 #import "PNAccessRightsAuditRequest.h"
 #import "PNAccessRightOptions+Protected.h"
 #import "PNServiceResponseCallbacks.h"
+#import "PNBaseRequest+Protected.h"
 #import "NSString+PNAddition.h"
-#import "PubNub+Protected.h"
+#import "PNConfiguration.h"
 #import "PNHelper.h"
+#import "PNMacro.h"
 
 
 #pragma mark Private interface declaration
@@ -28,6 +30,13 @@
 @property (nonatomic, assign) NSUInteger requestTimestamp;
 
 @property (nonatomic, strong) PNAccessRightOptions *accessRightOptions;
+
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
+@property (nonatomic, copy) NSString *publishKey;
+@property (nonatomic, copy) NSString *secretKey;
 
 
 #pragma mark - Instance methods
@@ -69,10 +78,8 @@
     if ((self = [super init])) {
 
         self.sendingByUserRequest = YES;
-        self.accessRightOptions = [PNAccessRightOptions accessRightOptionsForApplication:[PubNub sharedInstance].configuration.subscriptionKey
-                                                                              withRights:PNUnknownAccessRights
-                                                                                channels:channels
-                                                                                 clients:clientsAccessKeys
+        self.accessRightOptions = [PNAccessRightOptions accessRightOptionsForApplication:nil withRights:PNUnknownAccessRights
+                                                                                channels:channels clients:clientsAccessKeys
                                                                             accessPeriod:0];
 
     }
@@ -81,12 +88,21 @@
     return self;
 }
 
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
+    
+    [super finalizeWithConfiguration:configuration clientIdentifier:clientIdentifier];
+    
+    self.accessRightOptions.applicationKey = configuration.subscriptionKey;
+    self.subscriptionKey = configuration.subscriptionKey;
+    self.publishKey = configuration.publishKey;
+    self.secretKey = configuration.secretKey;
+    self.clientIdentifier = clientIdentifier;
+}
+
 - (NSString *)PAMSignature {
 
     NSMutableArray *parameters = [NSMutableArray array];
-    NSMutableString *signature = [NSMutableString stringWithFormat:@"%@\n%@\naudit\n",
-                                  [PubNub sharedInstance].configuration.subscriptionKey,
-                                  [PubNub sharedInstance].configuration.publishKey];
+    NSMutableString *signature = [NSMutableString stringWithFormat:@"%@\n%@\naudit\n", self.subscriptionKey, self.publishKey];
 
     if ([self.accessRightOptions.clientsAuthorizationKeys count] > 0) {
 
@@ -96,7 +112,7 @@
             authorizationKey = [self.accessRightOptions.clientsAuthorizationKeys componentsJoinedByString:@","];
         }
 
-        [parameters addObject:[NSString stringWithFormat:@"auth=%@", [authorizationKey percentEscapedString]]];
+        [parameters addObject:[NSString stringWithFormat:@"auth=%@", [authorizationKey pn_percentEscapedString]]];
     }
     [parameters addObject:[NSString stringWithFormat:@"callback=%@_%@", [self callbackMethodName], self.shortIdentifier]];
 
@@ -107,21 +123,21 @@
 
             channel = [[self.accessRightOptions.channels valueForKey:@"name"] componentsJoinedByString:@","];
         }
-        [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel percentEscapedString]]];
+        [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel pn_percentEscapedString]]];
     }
     
     [parameters addObject:[NSString stringWithFormat:@"pnsdk=%@", [self clientInformationField]]];
     [parameters addObject:[NSString stringWithFormat:@"timestamp=%lu", (unsigned long)[self requestTimestamp]]];
 
     [signature appendString:[parameters componentsJoinedByString:@"&"]];
-    [signature setString:[PNEncryptionHelper HMACSHA256FromString:signature withKey:[PubNub sharedInstance].configuration.secretKey]];
+    [signature setString:[PNEncryptionHelper HMACSHA256FromString:signature withKey:self.secretKey]];
     [signature replaceOccurrencesOfString:@"+" withString:@"-" options:(NSStringCompareOptions)0
                                     range:NSMakeRange(0, [signature length])];
     [signature replaceOccurrencesOfString:@"/" withString:@"_" options:(NSStringCompareOptions)0
                                     range:NSMakeRange(0, [signature length])];
 
 
-    return [signature percentEscapedString];
+    return [signature pn_percentEscapedString];
 }
 
 - (NSUInteger)requestTimestamp {
@@ -156,19 +172,22 @@
 
 
     return [NSString stringWithFormat:@"/v1/auth/audit/sub-key/%@?%@callback=%@_%@%@&pnsdk=%@&timestamp=%lu&signature=%@",
-                    [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                    (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey percentEscapedString]] : @""),
+                    [self.subscriptionKey pn_percentEscapedString],
+                    (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey pn_percentEscapedString]] : @""),
                     [self callbackMethodName], self.shortIdentifier,
-                    (channel ? [NSString stringWithFormat:@"&channel=%@", [channel percentEscapedString]] : @""),
+                    (channel ? [NSString stringWithFormat:@"&channel=%@", [channel pn_percentEscapedString]] : @""),
                     [self clientInformationField], (unsigned long)[self requestTimestamp], [self PAMSignature]];
 }
 
 - (NSString *)debugResourcePath {
     
-    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
+    NSString *subscriptionKey = [self.subscriptionKey pn_percentEscapedString];
+    return [[self resourcePath] stringByReplacingOccurrencesOfString:subscriptionKey withString:PNObfuscateString(subscriptionKey)];
+}
+
+- (NSString *)description {
     
-    return [resourcePathComponents componentsJoinedByString:@"/"];
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

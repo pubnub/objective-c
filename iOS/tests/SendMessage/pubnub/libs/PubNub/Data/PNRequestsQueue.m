@@ -11,8 +11,10 @@
 //
 
 #import "PNRequestsQueue.h"
+#import "NSObject+PNAdditions.h"
 #import "PNBaseRequest.h"
 #import "PNWriteBuffer.h"
+#import "PNHelper.h"
 
 
 // ARC check
@@ -67,6 +69,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     if((self = [super init])) {
         
         self.query = [NSMutableArray array];
+        [self pn_setPrivateDispatchQueue:[self pn_serialQueueWithOwnerIdentifier:@"connection" andTargetQueue:nil]];
     }
     
     
@@ -88,59 +91,76 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
 - (BOOL)enqueueRequest:(PNBaseRequest *)request outOfOrder:(BOOL)shouldEnqueueRequestOutOfOrder {
 
-    BOOL requestScheduled = NO;
+    __block BOOL requestScheduled = NO;
 
-    // Searching for existing request entry
-    NSPredicate *sameObjectsSearch = [NSPredicate predicateWithFormat:@"identifier = %@ && processing = %@",
-                                      request.identifier,
-                                      @NO];
-    if ([[self.query filteredArrayUsingPredicate:sameObjectsSearch] count] == 0) {
+    [self pn_dispatchSynchronouslyBlock:^{
 
-        if (shouldEnqueueRequestOutOfOrder) {
+        // Searching for existing request entry
+        NSPredicate *sameObjectsSearch = [NSPredicate predicateWithFormat:@"identifier = %@ && processing = %@",
+                                          request.identifier, @NO];
+        if ([[self.query filteredArrayUsingPredicate:sameObjectsSearch] count] == 0) {
 
-            [self.query insertObject:request atIndex:0];
+            if (shouldEnqueueRequestOutOfOrder) {
+
+                [self.query insertObject:request atIndex:0];
+            }
+            else {
+
+                [self.query addObject:request];
+            }
+            requestScheduled = YES;
         }
-        else {
-
-            [self.query addObject:request];
-        }
-        requestScheduled = YES;
-    }
+    }];
 
 
     return requestScheduled;
 }
 
 - (PNBaseRequest *)dequeRequestWithIdentifier:(NSString *)requestIdentifier {
+
+    __block PNBaseRequest *request = nil;
+    if (requestIdentifier) {
+
+        NSPredicate *nextRequestSearch = [NSPredicate predicateWithFormat:@"identifier = %@", requestIdentifier];
+        [self pn_dispatchSynchronouslyBlock:^{
+
+            // Searching for existing request entry by it's identifier which is not launched yet
+            NSArray *filteredRequests = [self.query filteredArrayUsingPredicate:nextRequestSearch];
+
+            request = ([filteredRequests count] > 0 ? [filteredRequests lastObject] : nil);
+        }];
+    }
     
-    // Searching for existing request entry by it's identifier which is not launched yet
-    NSPredicate *nextRequestSearch = [NSPredicate predicateWithFormat:@"identifier = %@", requestIdentifier];
-    NSArray *filteredRequests = [self.query filteredArrayUsingPredicate:nextRequestSearch];
     
-    
-    return ([filteredRequests count] > 0 ? [filteredRequests lastObject] : nil);
+    return request;
 }
 
 - (void)removeRequest:(PNBaseRequest *)request {
-    
-    // Check whether request not in the processing at this moment and remove it if possible
-    if (!request.processing) {
-        
-        [self.query removeObject:request];
-    }
+
+    [self pn_dispatchAsynchronouslyBlock:^{
+
+        // Check whether request not in the processing at this moment and remove it if possible
+        if (!request.processing) {
+
+            [self.query removeObject:request];
+        }
+    }];
 }
 
 - (void)removeAllRequests {
-    
-    // Remove all request which still not launched
-    NSPredicate *activeRequestsSearch = [NSPredicate predicateWithFormat:@"processing = %@", @YES];
-    [self.query filterUsingPredicate:activeRequestsSearch];
+
+    [self pn_dispatchAsynchronouslyBlock:^{
+
+        // Remove all request which still not launched
+        NSPredicate *activeRequestsSearch = [NSPredicate predicateWithFormat:@"processing = %@", @YES];
+        [self.query filterUsingPredicate:activeRequestsSearch];
+    }];
 }
 
 - (NSString *)nextRequestIdentifier {
     
     NSString *nextRequestIndex = nil;
-    
+
     if ([self.query count] > 0) {
         
         PNBaseRequest *nextRequest = (PNBaseRequest *)[self.query objectAtIndex:kPNRequestQueueNextRequestIndex];
@@ -157,13 +177,27 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 #pragma mark - Connection data source methods
 
 - (BOOL)hasDataForConnection:(PNConnection *)connection {
+
+    __block BOOL hasDataForConnection = NO;
+    [self pn_dispatchSynchronouslyBlock:^{
+
+        hasDataForConnection = [self.query count] > 0;
+    }];
+
     
-    return [self.query count] > 0;
+    return hasDataForConnection;
 }
 
 - (NSString *)nextRequestIdentifierForConnection:(PNConnection *)connection {
+
+    __block NSString *nextRequestIdentifier = nil;
+    [self pn_dispatchSynchronouslyBlock:^{
+
+        nextRequestIdentifier = [self nextRequestIdentifier];
+    }];
+
     
-    return [self nextRequestIdentifier];
+    return nextRequestIdentifier;
 }
 
 - (PNBaseRequest *)nextRequestForConnection:(PNConnection *)connection {
@@ -173,9 +207,10 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
 - (PNWriteBuffer *)connection:(PNConnection *)connection requestDataForIdentifier:(NSString *)requestIdentifier {
 
+    PNWriteBuffer *buffer = nil;
+
     // Retrieve reference on next request which will be processed
     PNBaseRequest *nextRequest = [self dequeRequestWithIdentifier:requestIdentifier];
-    PNWriteBuffer *buffer = nil;
 
     // Check whether request already processed or not (processed requests can be leaved in queue to lock it's further
     // execution till specific event or timeout)
@@ -189,10 +224,8 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 }
 
 - (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier {
-    
-    // Mark request as in processing state
-    PNBaseRequest *currentRequest = [self dequeRequestWithIdentifier:requestIdentifier];
 
+    PNBaseRequest *currentRequest = [self dequeRequestWithIdentifier:requestIdentifier];
     if (currentRequest != nil) {
 
         /// Forward request processing start to the delegate
@@ -201,7 +234,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 }
 
 - (void)connection:(PNConnection *)connection didSendRequestWithIdentifier:(NSString *)requestIdentifier {
-    
+
     PNBaseRequest *processedRequest = [self dequeRequestWithIdentifier:requestIdentifier];
     if (processedRequest != nil) {
 
@@ -235,8 +268,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
  */
 - (void)connection:(PNConnection *)connection didFailToProcessRequestWithIdentifier:(NSString *)requestIdentifier
          withError:(PNError *)error {
-    
-    // Mark request as not in processing state
+
     PNBaseRequest *currentRequest = [self dequeRequestWithIdentifier:requestIdentifier];
     if (currentRequest != nil) {
 

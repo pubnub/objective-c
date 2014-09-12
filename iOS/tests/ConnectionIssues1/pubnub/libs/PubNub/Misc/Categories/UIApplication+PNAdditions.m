@@ -24,7 +24,7 @@
 
 #pragma mark - Class methods
 
-+ (BOOL)canRunInBackground {
++ (BOOL)pn_canRunInBackground {
 
     static BOOL canRunInBackground;
     static dispatch_once_t dispatchOnceToken;

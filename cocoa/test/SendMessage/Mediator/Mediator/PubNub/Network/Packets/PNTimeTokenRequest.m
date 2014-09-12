@@ -44,6 +44,12 @@
     return self;
 }
 
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
+    
+    [super finalizeWithConfiguration:configuration clientIdentifier:clientIdentifier];
+    self.clientIdentifier = clientIdentifier;
+}
+
 - (NSString *)callbackMethodName {
 
     return PNServiceResponseCallbacks.timeTokenCallback;
@@ -62,6 +68,11 @@
 - (NSString *)debugResourcePath {
     
     return [self resourcePath];
+}
+
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

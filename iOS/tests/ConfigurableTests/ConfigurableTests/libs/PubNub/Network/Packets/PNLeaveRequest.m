@@ -16,7 +16,8 @@
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
 #import "NSString+PNAddition.h"
-#import "PubNub+Protected.h"
+#import "PNConfiguration.h"
+#import "PNMacro.h"
 
 
 // ARC check
@@ -34,10 +35,6 @@
 // Stores reference on channels list
 @property (nonatomic, strong) NSArray *channels;
 
-// Stores reference on client identifier on the
-// moment of request creation
-@property (nonatomic, copy) NSString *clientIdentifier;
-
 // Stores reference on whether connection should
 // be closed before sending this message or not
 @property (nonatomic, assign, getter = shouldCloseConnection) BOOL closeConnection;
@@ -45,6 +42,11 @@
 // Stores whether leave request was sent to subscribe
 // on new channels or as result of user request
 @property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;
+
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
 
 
 @end
@@ -76,11 +78,18 @@
         self.sendingByUserRequest = isLeavingByUserRequest;
         self.closeConnection = YES;
         self.channels = [NSArray arrayWithArray:channels];
-        self.clientIdentifier = [PubNub escapedClientIdentifier];
     }
     
     
     return self;
+}
+
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
+    
+    [super finalizeWithConfiguration:configuration clientIdentifier:clientIdentifier];
+    
+    self.subscriptionKey = configuration.subscriptionKey;
+    self.clientIdentifier = clientIdentifier;
 }
 
 - (NSString *)callbackMethodName {
@@ -96,19 +105,23 @@
 
 
     return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@&pnsdk=%@",
-                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
+                                      [self.subscriptionKey pn_percentEscapedString],
                                       [[channelsToLeave valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      self.clientIdentifier, [self callbackMethodName], self.shortIdentifier,
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+                                      [self callbackMethodName], self.shortIdentifier,
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
+    
+    NSString *subscriptionKey = [self.subscriptionKey pn_percentEscapedString];
+    return [[self resourcePath] stringByReplacingOccurrencesOfString:subscriptionKey withString:PNObfuscateString(subscriptionKey)];
+}
 
-    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
-
-    return [resourcePathComponents componentsJoinedByString:@"/"];
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

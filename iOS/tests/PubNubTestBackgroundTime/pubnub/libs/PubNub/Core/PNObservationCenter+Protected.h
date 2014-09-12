@@ -1,25 +1,27 @@
-//
-//  PNObservationCenter+Protected.h
-//  pubnub
-//
-//  This header file used by library internal
-//  components which require to access to some
-//  methods and properties which shouldn't be
-//  visible to other application components
-//
-//
-//  Created by Sergey Mamontov.
-//
-//
-
 #import "PNObservationCenter.h"
 #import "PNStructures.h"
 
-
+/**
+ This header file used by library internal components which require to access to some methods and properties which
+ shouldn't be visible to other application components.
+ 
+ @author Sergey Mamontov
+ @version 3.4.0
+ @copyright © 2009-13 PubNub Inc.
+ */
 @interface PNObservationCenter (Protected)
 
 
 #pragma mark - Class methods
+
+/**
+ Create observation instance which is attached to specified observer. This will allow to use simplified methods
+ when API with completion block will be used.
+ 
+ @param defaultObserver
+ Reference on default observer which will be used along with simplified observation manipulation methods.
+ */
++ (PNObservationCenter *)observationCenterWithDefaultObserver:(id)defaultObserver;
 
 /**
  * Completely reset observation center by cleaning up
@@ -29,6 +31,15 @@
 
 
 #pragma mark - Instance methods
+
+/**
+ Initialize observation instance which is attached to specified observer. This will allow to use simplified methods
+ when API with completion block will be used.
+ 
+ @param defaultObserver
+ Reference on default observer which will be used along with simplified observation manipulation methods.
+ */
+- (id)initWithDefaultObserver:(id)defaultObserver;
 
 /**
  * Check whether observer is subscribed on PubNub state

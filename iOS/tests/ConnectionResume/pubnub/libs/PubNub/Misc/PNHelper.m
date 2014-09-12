@@ -12,9 +12,72 @@
 #import "NSData+PNAdditions.h"
 
 
+#pragma mark - Public dispatch objects wrapper declaration
+
+@interface PNDispatchObjectWrapper ()
+
+#pragma mark - Properties
+
+@property (nonatomic, pn_dispatch_property_ownership) dispatch_object_t object;
+
+
+#pragma mark - Instance methods
+
+/**
+ Initialize wrapper around provided object.
+ 
+ @param object
+ \a GCD object which should be stored inside wrapper.
+ 
+ @return Reference on wrapper which will store \a GCD object for us.
+ */
+- (id)initWithObject:(dispatch_object_t)object;
+
+#pragma mark -
+
+
+@end
+
+
+@implementation PNDispatchObjectWrapper : NSObject
+
+
+#pragma mark - Class methods
+
++ (PNDispatchObjectWrapper *)wrapperForObject:(dispatch_object_t)object {
+    
+    return (object ? [[self alloc] initWithObject:object] : nil);
+}
+
+- (id)initWithObject:(dispatch_object_t)object {
+    
+    // Check whether initializatino has been successful or not
+    if ((self = [super init])) {
+        
+        self.object = object;
+        [PNDispatchHelper retain:_object];
+    }
+    
+    
+    return self;
+}
+
+- (void)dealloc {
+    
+    [PNDispatchHelper release:_object];
+    _object = NULL;
+}
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Public dispatch objects helper implementation
 
 @implementation PNDispatchHelper
+
 
 #pragma mark - Class methods
 
@@ -264,7 +327,7 @@
     NSData *HMACData = [[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)];
     
     
-    return [HMACData base64Encoding];
+    return [HMACData pn_base64Encoding];
 }
 
 #pragma mark -

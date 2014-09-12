@@ -111,37 +111,25 @@
 /**
  Retrieve reference on lightweight configuration which require only few parameters from user.
  */
-+ (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
-                                    subscribeKey:(NSString *)subscribeKey
++ (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey
                                        secretKey:(NSString *)secretKey;
-+ (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey
-                                    subscribeKey:(NSString *)subscribeKey
-                                       secretKey:(NSString *)secretKey
-                                authorizationKey:(NSString *)authorizationKey;
-+ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
-                                 publishKey:(NSString *)publishKey 
-                               subscribeKey:(NSString *)subscribeKey
-                                  secretKey:(NSString *)secretKey;
-+ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
-                                 publishKey:(NSString *)publishKey
-                               subscribeKey:(NSString *)subscribeKey
-                                  secretKey:(NSString *)secretKey
++ (PNConfiguration *)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey
+                                       secretKey:(NSString *)secretKey authorizationKey:(NSString *)authorizationKey;
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName publishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey secretKey:(NSString *)secretKey;
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName publishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey secretKey:(NSString *)secretKey
                            authorizationKey:(NSString *)authorizationKey;
 
 /**
  Retrieve reference on configuration with full set of options specified by user.
  */
-+ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
-                                 publishKey:(NSString *)publishKey
-                               subscribeKey:(NSString *)subscribeKey
-                                  secretKey:(NSString *)secretKey
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName publishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey secretKey:(NSString *)secretKey
                                   cipherKey:(NSString *)cipherKey;
-+ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName
-                                 publishKey:(NSString *)publishKey
-                               subscribeKey:(NSString *)subscribeKey
-                                  secretKey:(NSString *)secretKey
-                                  cipherKey:(NSString *)cipherKey
-                           authorizationKey:(NSString *)authorizationKey;
++ (PNConfiguration *)configurationForOrigin:(NSString *)originHostName publishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey secretKey:(NSString *)secretKey
+                                  cipherKey:(NSString *)cipherKey authorizationKey:(NSString *)authorizationKey;
 
 
 #pragma mark - Instance methods
@@ -150,17 +138,10 @@
  * Initialize configuration instance with specified
  * set of parameters
  */
-- (id)initWithOrigin:(NSString *)originHostName
-          publishKey:(NSString *)publishKey
-        subscribeKey:(NSString *)subscribeKey
-           secretKey:(NSString *)secretKey
-           cipherKey:(NSString *)cipherKey;
-- (id)initWithOrigin:(NSString *)originHostName
-          publishKey:(NSString *)publishKey
-        subscribeKey:(NSString *)subscribeKey
-           secretKey:(NSString *)secretKey
-           cipherKey:(NSString *)cipherKey
-    authorizationKey:(NSString *)authorizationKey;
+- (id)initWithOrigin:(NSString *)originHostName publishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey
+           secretKey:(NSString *)secretKey cipherKey:(NSString *)cipherKey;
+- (id)initWithOrigin:(NSString *)originHostName publishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey
+           secretKey:(NSString *)secretKey cipherKey:(NSString *)cipherKey authorizationKey:(NSString *)authorizationKey;
 
 /**
  Construct new configuration based on provided instance with new values. This method is useful if only magor settings should be changed

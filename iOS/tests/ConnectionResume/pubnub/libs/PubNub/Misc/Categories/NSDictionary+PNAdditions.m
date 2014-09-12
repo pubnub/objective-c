@@ -24,7 +24,7 @@
 
  @return \c YES if provided dictionary conforms to the requirements.
 */
-- (BOOL)isValidState:(BOOL)isFirstLevelNesting;
+- (BOOL)pn_isValidState:(BOOL)isFirstLevelNesting;
 
 #pragma mark -
 
@@ -39,12 +39,12 @@
 
 #pragma mark - Instance methods
 
-- (BOOL)isValidState {
+- (BOOL)pn_isValidState {
 
-    return [self count] && [self isValidState:YES];
+    return [self count] && [self pn_isValidState:YES];
 }
 
-- (BOOL)isValidState:(BOOL)isFirstLevelNesting {
+- (BOOL)pn_isValidState:(BOOL)isFirstLevelNesting {
 
     __block BOOL isValidState = YES;
 
@@ -56,7 +56,7 @@
             isValidState = NO;
             if (isFirstLevelNesting) {
 
-                isValidState = [value isValidState:NO];
+                isValidState = [value pn_isValidState:NO];
             }
         }
         else {

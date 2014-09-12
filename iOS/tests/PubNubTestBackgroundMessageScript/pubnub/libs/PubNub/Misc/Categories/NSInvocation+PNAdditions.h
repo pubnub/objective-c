@@ -17,13 +17,10 @@
 /**
  * Returns reference on fully configured invocation instance
  */
-+ (NSInvocation *)invocationForObject:(id)targetObject
-                             selector:(SEL)selector
++ (NSInvocation *)pn_invocationForObject:(id)targetObject selector:(SEL)selector
                      retainsArguments:(BOOL)shouldRetainArguments, ... NS_REQUIRES_NIL_TERMINATION;
-+ (NSInvocation *)invocationForObject:(id)targetObject
-                             selector:(SEL)selector
-                     retainsArguments:(BOOL)shouldRetainArguments
-                           parameters:(NSArray *)parameters;
++ (NSInvocation *)pn_invocationForObject:(id)targetObject selector:(SEL)selector
+                        retainsArguments:(BOOL)shouldRetainArguments parameters:(NSArray *)parameters;
 
 #pragma mark -
 

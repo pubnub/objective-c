@@ -20,6 +20,9 @@
 
 @protocol PNMessageChannelDelegate <NSObject>
 
+
+@optional // @required in corresponding categories for PubNub main class.
+
 /**
  Sent to the delegate when messaging channel would like to change channels set and it need to know whether it should
  proceed with last time token or request new one from server.
@@ -36,6 +39,44 @@
  * subscription or not
  */
 - (BOOL)shouldMessagingChannelRestoreWithLastTimeToken:(PNMessagingChannel *)messagingChannel;
+
+/**
+ Retrieve client state informatino for set of channels.
+ 
+ @param channels
+ List of \b PNChannel instances for which state information should be fetched.
+ 
+ @return Cached information for channels from list,
+ */
+- (NSDictionary *)clientStateInformationForChannels:(NSArray *)channels;
+
+/**
+ Retrieve reference on composed client state which should be used to update client information inside \b PubNub network.
+ 
+ @param updatedState
+ \b NSDictionary instance which should be merged with main client state information.
+ 
+ @return Full client state information with latest changes from provided data.
+ */
+- (NSDictionary *)clientStateMergedWith:(NSDictionary *)updatedState;
+
+/**
+ Retrieve full client state information.
+ 
+ @param Completed client's state information which is stored in cache.
+ */
+- (NSDictionary *)clientStateInformation;
+
+/**
+ Store updated client's state on specified channels in local cache.
+ 
+ @param state
+ Updated state which should be stored for provided channels.
+ 
+ @param channels
+ List of \b PNChannel instances for which client state updated in local cache.
+ */
+- (void)updateClientStateInformationWith:(NSDictionary *)state forChannels:(NSArray *)channels;
 
 /**
  * Sent to the delegate when client did reset it's state

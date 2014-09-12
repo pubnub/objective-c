@@ -16,7 +16,8 @@
 #import "PNBaseRequest+Protected.h"
 #import "NSString+PNAddition.h"
 #import "NSData+PNAdditions.h"
-#import "PubNub+Protected.h"
+#import "PNConfiguration.h"
+#import "PNMacro.h"
 
 
 // ARC check
@@ -36,6 +37,11 @@
 // Stores reference on stringified push notification token
 @property (nonatomic, strong) NSString *pushToken;
 @property (nonatomic, strong) NSData *devicePushToken;
+
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
 
 #pragma mark -
 
@@ -65,16 +71,19 @@
 
         self.sendingByUserRequest = YES;
         self.devicePushToken = pushToken;
-        self.pushToken = [[pushToken HEXPushToken] lowercaseString];
+        self.pushToken = [[pushToken pn_HEXPushToken] lowercaseString];
     }
 
 
     return self;
 }
 
-- (NSTimeInterval)timeout {
-
-    return [PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout;
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
+    
+    [super finalizeWithConfiguration:configuration clientIdentifier:clientIdentifier];
+    
+    self.subscriptionKey = configuration.subscriptionKey;
+    self.clientIdentifier = clientIdentifier;
 }
 
 - (NSString *)callbackMethodName {
@@ -85,18 +94,22 @@
 - (NSString *)resourcePath {
 
     return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@/remove?callback=%@_%@&uuid=%@%@&pnsdk=%@",
-                                      [[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString],
-                                      self.pushToken, [self callbackMethodName], self.shortIdentifier, [PubNub escapedClientIdentifier],
-                                      ([self authorizationField]?[NSString stringWithFormat:@"&%@", [self authorizationField]]:@""),
+                                      [self.subscriptionKey pn_percentEscapedString],
+                                      self.pushToken, [self callbackMethodName], self.shortIdentifier,
+                                      [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
+    
+    NSString *subscriptionKey = [self.subscriptionKey pn_percentEscapedString];
+    return [[self resourcePath] stringByReplacingOccurrencesOfString:subscriptionKey withString:PNObfuscateString(subscriptionKey)];
+}
 
-    NSMutableArray *resourcePathComponents = [[[self resourcePath] componentsSeparatedByString:@"/"] mutableCopy];
-    [resourcePathComponents replaceObjectAtIndex:4 withObject:PNObfuscateString([[PubNub sharedInstance].configuration.subscriptionKey percentEscapedString])];
-
-    return [resourcePathComponents componentsJoinedByString:@"/"];
+- (NSString *)description {
+    
+    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

@@ -1,29 +1,22 @@
-//
-//  PNObservationCenter.h
-//  pubnub
-//
-//  Observation center will allow to subscribe
-//  for particular events with handle block
-//  (block will be provided by subscriber)
-//
-//
-//  Created by Sergey Mamontov.
-//
-//
-
 #import <Foundation/Foundation.h>
 #import "PNStructures.h"
 
-
+/**
+ Observation center will allow to subscribe for particular events with handle block (block will be provided by subscriber).
+ 
+ @author Sergey Mamontov
+ @version 3.4.0
+ @copyright © 2009-13 PubNub Inc.
+ */
 @interface PNObservationCenter : NSObject
 
 
-#pragma mark Class methods
+#pragma mark - Class (singleton) methods
 
 /**
- * Returns reference on shared observer center instance
- * which manage all observers and notify them by request
- * or notification.
+ Returns reference on shared observer center instance which manage all observers and notify them by request or notification.
+ 
+ @return \b PNObservationCenter singleton.
  */
 + (PNObservationCenter *)defaultCenter;
 

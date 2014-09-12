@@ -224,6 +224,9 @@ struct PNLoggerSymbolsStructure {
 
         // Parameters requirements: [code, connection name, connection bit field with state]
         __unsafe_unretained NSString *destroyed;
+        
+        // Parameters requirements: [code, connection name, response deserializer instance memory address]
+        __unsafe_unretained NSString *resourceLinkage;
 
         // Connection instance streams log symbols. Group code: 0110yyy
         struct {
@@ -540,6 +543,9 @@ struct PNLoggerSymbolsStructure {
 
         // Parameters requirements: [code, connection channel name, connection channel bit field with state]
         __unsafe_unretained NSString *destroyed;
+        
+        // Parameters requirements: [code, connection channel name, request queue instance memory address, connection instance memory address]
+        __unsafe_unretained NSString *resourceLinkage;
 
         // Blocking request connection channel symbols. Group code: 0201yyy
         struct {
@@ -880,7 +886,7 @@ struct PNLoggerSymbolsStructure {
         __unsafe_unretained NSString *rawResponseData;
     } deserializer;
 
-    // Cruptor symbols. Group code: 06xxyyy
+    // Cryptor symbols. Group code: 06xxyyy
     struct {
 
         // Parameters requirements: [code]
@@ -1611,9 +1617,18 @@ struct PNLoggerSymbolsStructure {
 
         // Parameters requirements: [code]
         __unsafe_unretained NSString *destroyed;
-
+        
         // Parameters requirements: [code, origin name, stringified state]
         __unsafe_unretained NSString *willConnect;
+        
+        // Parameters requirements: [code, version, git branch name, commit SHA]
+        __unsafe_unretained NSString *clientInformation;
+        
+        // Parameters requirements: [code, origin name, publish key, subscribe key, secret key, whether cipher key used, subscribe requests timeout, non-subscribe requests timeout, whether should reconnect on network restore, whether should keep previous time token on channels list change, whether should resubscribe on connection restore, whether should use previous token during resubscription process, whether should use secure connection, whether allowed to decrease security level, whetehr allowed to use unsecure connection, whether allowed to receive GZIP compressed responses, presence heartbeat timeout, presence heartbeat interval]
+        __unsafe_unretained NSString *configurationInformation;
+        
+        // Parameters requirements: [code, observer instance address, reachability instance memory address, crypto helper instance memory address, messaging channel instance memory address, service channel instance memory address]
+        __unsafe_unretained NSString *resourceLinkage;
     } api;
     
     // Observation center symbols. Group code: 10xxyyy

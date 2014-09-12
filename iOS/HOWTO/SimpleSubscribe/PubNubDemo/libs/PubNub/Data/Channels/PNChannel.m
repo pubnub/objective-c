@@ -12,6 +12,7 @@
 
 #import "PNChannel+Protected.h"
 #import "PNChannelPresence+Protected.h"
+#import "NSObject+PNAdditions.h"
 #import "NSString+PNAddition.h"
 #import "PNHereNow+Protected.h"
 #import "PNClient+Protected.h"
@@ -34,6 +35,7 @@
 
 static NSMutableDictionary *_channelsCache = nil;
 
+static dispatch_queue_t _privateQueue = NULL;
 
 #pragma mark - Private interface methods
 
@@ -78,12 +80,21 @@ static NSMutableDictionary *_channelsCache = nil;
 
 #pragma mark - Class methods
 
++ (void)initialize {
+    
+    if (self == [PNChannel class]) {
+        
+        _privateQueue = [PNChannel pn_serialQueueWithOwnerIdentifier:@"channel" andTargetQueue:NULL];
+    }
+    
+    [super initialize];
+}
+
 + (NSArray *)channelsWithNames:(NSArray *)channelsName {
 
     NSMutableArray *channels = [NSMutableArray arrayWithCapacity:[channelsName count]];
 
-    [channelsName enumerateObjectsUsingBlock:^(NSString *channelName,
-                                               NSUInteger channelNameIdx,
+    [channelsName enumerateObjectsUsingBlock:^(NSString *channelName, NSUInteger channelNameIdx,
                                                BOOL *channelNamesEnumerator) {
 
         PNChannel *channel = [PNChannel channelWithName:channelName];
@@ -121,29 +132,32 @@ static NSMutableDictionary *_channelsCache = nil;
     return channel;
 }
 
-+ (id)            channelWithName:(NSString *)channelName
-            shouldObservePresence:(BOOL)observePresence
-shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
++ (id)              channelWithName:(NSString *)channelName shouldObservePresence:(BOOL)observePresence
+  shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
-    PNChannel *channel = [[[self class] channelsCache] valueForKey:channelName];
-
-    if (channel == nil && [channelName length] > 0) {
-
-        channel = [[[self class] alloc] initWithName:channelName];
-        [[[self class] channelsCache] setValue:channel forKey:channelName];
-    }
-    else if ([channelName length] == 0) {
-
-        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-            return @[PNLoggerSymbols.channel.nameRequired];
-        }];
-    }
-
-    if (shouldUpdatePresenceObservingFlag) {
-
-        channel.observePresence = observePresence;
-    }
+    __block PNChannel *channel = nil;
+    [PNChannel pn_dispatchSynchronouslyOnQueue:_privateQueue block:^{
+        
+        channel = [[self channelsCache] valueForKey:channelName];
+        
+        if (channel == nil && [channelName length] > 0) {
+            
+            channel = [[self alloc] initWithName:channelName];
+            [[self channelsCache] setValue:channel forKey:channelName];
+        }
+        else if ([channelName length] == 0) {
+            
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                
+                return @[PNLoggerSymbols.channel.nameRequired];
+            }];
+        }
+        
+        if (shouldUpdatePresenceObservingFlag) {
+            
+            channel.observePresence = observePresence;
+        }
+    }];
 
 
     return channel;
@@ -151,13 +165,13 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
 + (void)purgeChannelsCache {
     
-    @synchronized(self) {
+    [PNChannel pn_dispatchAsynchronouslyOnQueue:_privateQueue block:^{
         
         if([_channelsCache count] > 0) {
             
             [_channelsCache removeAllObjects];
         }
-    }
+    }];
 }
 
 + (NSDictionary *)channelsCache {
@@ -236,7 +250,7 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 }
 
 - (BOOL)isTimeTokenChangeLocked {
-
+    
     return !self.isAbleToResetTimeToken;
 }
 
@@ -252,76 +266,88 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
 - (NSArray *)participants {
     
-    return [self.participantsList allValues];
+    __block NSArray *participants = nil;
+    [PNChannel pn_dispatchSynchronouslyOnQueue:_privateQueue block:^{
+        
+        participants = [self.participantsList allValues];
+    }];
+    
+    
+    return participants;
 }
 
 - (void)updateWithEvent:(PNPresenceEvent *)event {
+    
+    [PNChannel pn_dispatchAsynchronouslyOnQueue:_privateQueue block:^{
 
-    self.participantsCount = event.occupancy;
+        self.participantsCount = event.occupancy;
 
+        // Checking whether someone is joined to channel or not
+        if (event.type == PNPresenceEventJoin) {
 
-    // Checking whether someone is joined to channel or not
-    if (event.type == PNPresenceEventJoin) {
-
-        event.client.channel = self;
-        [self.participantsList setValue:event.client forKey:event.client.identifier];
-    }
-    // Check whether number of persons changed in channel or not
-    else if (event.type == PNPresenceEventChanged) {
-
-        // Check whether 'anonymous' (or 'unknown') person is joined to the channel
-        // (calculated basing on previous number of participants)
-        if ([self.participantsList count] < event.occupancy) {
-
-
-            [self.participantsList setValue:[PNClient anonymousClientForChannel:self] forKey:[PNHelper UUID]];
+            event.client.channel = self;
+            [self.participantsList setValue:event.client forKey:event.client.identifier];
         }
-        // Check whether 'anonymous' (or 'unknown') person leaved channel
-        // (calculated basing on previous number of participants)
-        else if ([self.participantsList count] > event.occupancy) {
+        // Check whether number of persons changed in channel or not
+        else if (event.type == PNPresenceEventChanged) {
 
-            NSSet *keysForUnknownClients = [self.participantsList keysOfEntriesPassingTest:^BOOL(NSString *clientStoreKey, PNClient *client,
-                                                                                 BOOL *clientKeysEnumeratorStop) {
+            // Check whether 'anonymous' (or 'unknown') person is joined to the channel
+            // (calculated basing on previous number of participants)
+            if ([self.participantsList count] < event.occupancy) {
 
-                    return [client isAnonymous];
-            }];
 
-            if ([keysForUnknownClients count]) {
+                [self.participantsList setValue:[PNClient anonymousClientForChannel:self] forKey:[PNHelper UUID]];
+            }
+            // Check whether 'anonymous' (or 'unknown') person leaved channel
+            // (calculated basing on previous number of participants)
+            else if ([self.participantsList count] > event.occupancy) {
 
-                [self.participantsList removeObjectForKey:[keysForUnknownClients anyObject]];
+                NSSet *keysForUnknownClients = [self.participantsList keysOfEntriesPassingTest:^BOOL(NSString *clientStoreKey, PNClient *client,
+                                                                                     BOOL *clientKeysEnumeratorStop) {
+
+                        return [client isAnonymous];
+                }];
+
+                if ([keysForUnknownClients count]) {
+
+                    [self.participantsList removeObjectForKey:[keysForUnknownClients anyObject]];
+                }
             }
         }
-    }
-    // Looks like someone leaved or was kicked by timeout
-    else {
+        // Looks like someone leaved or was kicked by timeout
+        else {
 
-        [self.participantsList removeObjectForKey:event.client.identifier];
-    }
+            [self.participantsList removeObjectForKey:event.client.identifier];
+        }
 
-    self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
+        self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
+    }];
 }
 
 - (void)updateWithParticipantsList:(PNHereNow *)hereNow {
+    
+    [PNChannel pn_dispatchAsynchronouslyOnQueue:_privateQueue block:^{
 
-    self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
-    self.participantsCount = hereNow.participantsCount;
-    self.participantsList = [NSMutableDictionary dictionary];
-    [hereNow.participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx,
-                                                       BOOL *clientEnumeratorStop) {
+        self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
+        self.participantsCount = hereNow.participantsCount;
+        self.participantsList = [NSMutableDictionary dictionary];
+        [hereNow.participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx,
+                                                           BOOL *clientEnumeratorStop) {
 
-        NSString *clientStoreIdentifier = client.identifier;
-        if ([client isAnonymous]) {
+            NSString *clientStoreIdentifier = client.identifier;
+            if ([client isAnonymous]) {
 
-            client.channel = self;
-            clientStoreIdentifier = [PNHelper UUID];
-        }
-        [self.participantsList setValue:client forKey:clientStoreIdentifier];
+                client.channel = self;
+                clientStoreIdentifier = [PNHelper UUID];
+            }
+            [self.participantsList setValue:client forKey:clientStoreIdentifier];
+        }];
     }];
 }
 
 - (NSString *)escapedName {
     
-    return [self.name percentEscapedString];
+    return [self.name pn_percentEscapedString];
 }
 
 - (NSString *)description {

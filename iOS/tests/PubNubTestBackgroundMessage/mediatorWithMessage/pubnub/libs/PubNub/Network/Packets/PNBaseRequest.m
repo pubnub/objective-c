@@ -15,11 +15,13 @@
 #import "PNBaseRequest+Protected.h"
 #import "NSString+PNAddition.h"
 #import "NSData+PNAdditions.h"
-#import "PubNub+Protected.h"
-#import "PNLoggerSymbols.h"
+#import "PNConfiguration.h"
 #import "PNWriteBuffer.h"
 #import "PNConstants.h"
 #import "PNHelper.h"
+
+#import "PNLogger+Protected.h"
+#import "PNLoggerSymbols.h"
 
 
 // ARC check
@@ -35,14 +37,21 @@
 
 #pragma mark - Properties
 
-// Stores reference on whether connection should
-// be closed before sending this message or not
+// Stores reference on client identifier on the moment of request creation
+@property (nonatomic, copy) NSString *clientIdentifier;
+
+// Stores reference on whether connection should be closed before sending this message or not
 @property (nonatomic, assign, getter = shouldCloseConnection) BOOL closeConnection;
 
-// Stores number of request sending retries
-// (when it will reach limit communication
-// channel should remove it from queue
+// Stores number of request sending retries (when it will reach limit communication channel should remove it from queue
 @property (nonatomic, assign) NSUInteger retryCount;
+
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *authorizationKey;
+@property (nonatomic, copy) NSString *origin;
+@property (nonatomic, assign, getter = shouldAcceptCompressedResponse) BOOL acceptCompressedResponse;
 
 
 #pragma mark - Instance methods
@@ -81,12 +90,6 @@
     
     return self;
 }
-
-- (NSTimeInterval)timeout {
-
-    return [PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout;
-}
-
 - (NSString *)callbackMethodName {
 
     return @"0";
@@ -116,6 +119,14 @@
 
 
     return @"/";
+}
+
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
+    
+    self.acceptCompressedResponse = configuration.shouldAcceptCompressedResponse;
+    self.timeout = configuration.nonSubscriptionRequestTimeout;
+    self.authorizationKey = configuration.authorizationKey;
+    self.origin = configuration.origin;
 }
 
 - (PNWriteBuffer *)buffer {
@@ -160,10 +171,10 @@
 
 - (NSString *)authorizationField {
 
-    NSString *authorizationKey = [PubNub sharedInstance].configuration.authorizationKey;
+    NSString *authorizationKey = self.authorizationKey;
     if ([authorizationKey length] > 0) {
 
-		authorizationKey = [NSString stringWithFormat:@"auth=%@", [authorizationKey percentEscapedString]];
+		authorizationKey = [NSString stringWithFormat:@"auth=%@", [authorizationKey pn_percentEscapedString]];
     }
     else {
 
@@ -189,7 +200,7 @@
 
 - (NSString *)requestPath {
     
-    return [NSString stringWithFormat:@"http://%@%@", [PubNub sharedInstance].configuration.origin, [self resourcePath]];
+    return [NSString stringWithFormat:@"http://%@%@", self.origin, [self resourcePath]];
 }
 
 - (PNRequestHTTPMethod)HTTPMethod {
@@ -212,7 +223,7 @@
     NSMutableString *plainPayload = [NSMutableString string];
     NSMutableData *payloadData = [NSMutableData data];
     NSString *acceptEncoding = @"";
-    if ([PubNub sharedInstance].configuration.shouldAcceptCompressedResponse || [self shouldCompressPOSTBody]) {
+    if (self.shouldAcceptCompressedResponse || [self shouldCompressPOSTBody]) {
 
         acceptEncoding = @"Accept-Encoding: gzip, deflate\r\n";
     }
@@ -226,12 +237,12 @@
         
         if ([self shouldCompressPOSTBody]) {
             
-            postBody = [postBody GZIPDeflate];
+            postBody = [postBody pn_GZIPDeflate];
         }
     }
     
     [plainPayload appendFormat:@"%@ %@ HTTP/1.1\r\nHost: %@\r\nAccept: */*\r\n%@",
-     HTTPMethod, [self resourcePath], [PubNub sharedInstance].configuration.origin, acceptEncoding];
+     HTTPMethod, [self resourcePath], self.origin, acceptEncoding];
     
     if (postBody) {
         

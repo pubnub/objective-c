@@ -23,7 +23,7 @@
 
 #pragma mark - Class methods
 
-+ (NSArray *)arrayWithVarietyList:(va_list)list {
++ (NSArray *)pn_arrayWithVarietyList:(va_list)list {
 
     NSMutableArray *array = [NSMutableArray array];
     id argument;

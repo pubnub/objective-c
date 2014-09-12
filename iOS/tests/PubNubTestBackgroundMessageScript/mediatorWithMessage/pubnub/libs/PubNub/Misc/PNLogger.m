@@ -7,6 +7,7 @@
 //
 
 #import "PNLogger.h"
+#import "NSString+PNAddition.h"
 #import "NSDate+PNAdditions.h"
 #import "PNLoggerSymbols.h"
 #import "PNConstants.h"
@@ -19,6 +20,7 @@
     #include <assert.h>
 #endif
 #include <stdlib.h>
+#import "PNMacro.h"
 
 
 #pragma mark Static
@@ -122,6 +124,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .proxyConfigurationInformation = @"0100065",
         .proxyConfigurationNotRequired = @"0100066",
         .destroyed = @"0100067",
+        .resourceLinkage = @"0100068",
 
         .stream = {
 
@@ -235,6 +238,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .requestRescheduleImpossible = @"0200042",
         .connectionReset = @"0200043",
         .destroyed = @"0200044",
+        .resourceLinkage = @"0200045",
         .subscribe = {
 
             .leaveAllChannels = @"0201000",
@@ -609,6 +613,9 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .rescheduleParticipantChannelsListRequest = @"0900234",
         .destroyed = @"0900235",
         .willConnect = @"0900236",
+        .clientInformation = @"0900237",
+        .configurationInformation = @"0900238",
+        .resourceLinkage = @"0900239",
     },
     .observationCenter = {
         
@@ -836,25 +843,28 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
 + (void)prepare {
 
-    // Retrieve path to the 'Documents' folder
-    NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    [self sharedInstance].dumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerDumpFileName];
-    [self sharedInstance].oldDumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerOldDumpFileName];
-    [self sharedInstance].httpPacketStoreFolderPath = [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
-    [self sharedInstance].maximumDumpFileSize = kPNLoggerMaximumDumpFileSize;
-
-    [[self sharedInstance] prepareForAsynchronousFileProcessing];
-    [[self sharedInstance] prepareSymbols];
-
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:[self sharedInstance].httpPacketStoreFolderPath isDirectory:NULL]) {
-
-        [fileManager createDirectoryAtPath:[self sharedInstance].httpPacketStoreFolderPath withIntermediateDirectories:YES
-                                attributes:nil error:NULL];
-    }
-
-    [[self sharedInstance] applyDefaultConfiguration];
-    [[self sharedInstance] rotateDumpFiles];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        // Retrieve path to the 'Documents' folder
+        NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        [self sharedInstance].dumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerDumpFileName];
+        [self sharedInstance].oldDumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerOldDumpFileName];
+        [self sharedInstance].httpPacketStoreFolderPath = [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
+        [self sharedInstance].maximumDumpFileSize = kPNLoggerMaximumDumpFileSize;
+        
+        [[self sharedInstance] prepareForAsynchronousFileProcessing];
+        [[self sharedInstance] prepareSymbols];
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if (![fileManager fileExistsAtPath:[self sharedInstance].httpPacketStoreFolderPath isDirectory:NULL]) {
+            
+            [fileManager createDirectoryAtPath:[self sharedInstance].httpPacketStoreFolderPath withIntermediateDirectories:YES
+                                    attributes:nil error:NULL];
+        }
+        
+        [[self sharedInstance] applyDefaultConfiguration];
+    });
 }
 
 + (void)logFrom:(id)sender forLevel:(PNLogLevel)level withParametersFromBlock:(NSArray *(^)(void))parametersBlock {
@@ -868,12 +878,12 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
             NSArray *parameters = parametersBlock();
             NSString *message = @"";
             NSString *messageToStore = @"";
-            if ([parameters count] == 1) {
+            if ([parameters count] == 1 && [[self sharedInstance] logEntryMessageForSymbol:[parameters lastObject]].length == 0) {
                 
                 message = [parameters lastObject];
                 messageToStore = message;
             }
-            else if ([parameters count] > 1){
+            else if ([parameters count]){
                 
                 // Extract symbol code and clear parameters array to be ready for format.
                 NSString *symbolCode = [parameters objectAtIndex:0];
@@ -887,10 +897,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                     // Composing initial entry prefix
                     message = [NSString stringWithFormat:@"%@ (%p) %@%@", NSStringFromClass([sender class]), sender,
                                (symbolPrefix ? symbolPrefix : @""), [[self sharedInstance] logEntryMessageForSymbol:symbolCode]];
-                    
-                    NSMutableData *vargList = [NSMutableData dataWithLength:(sizeof(id) * [parameters count])];
-                    [parameters getObjects:(__unsafe_unretained id *)vargList.mutableBytes range:NSMakeRange(0, [parameters count])];
-                    message = [[NSString alloc] initWithFormat:message arguments:vargList.mutableBytes];
+                    message = [NSString pn_stringWithFormat:message argumentsArray:parameters];
                 }
                 
                 if ([self isDumpingToFile]) {
@@ -906,12 +913,15 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                     // Transform parameters using description suitable for log
                     [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger idx, BOOL *stop) {
                         
+                        #pragma clang diagnostic push
+                        #pragma clang diagnostic ignored "-Wundeclared-selector"
                         // Check whether parameter can be transformed for log or not
                         if ([parameter respondsToSelector:@selector(logDescription)]) {
                             
                             parameter = [parameter performSelector:@selector(logDescription)];
                             parameter = (parameter ? parameter : @"");
                         }
+                        #pragma clang diagnostic pop
                         [parametersForLog addObject:parameter];
                     }];
                     
@@ -996,8 +1006,11 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
     if ([self isDumpingHTTPResponse] && httpPacketBlock) {
 
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
         NSString *storePath = [[self sharedInstance].httpPacketStoreFolderPath stringByAppendingFormat:@"/response-%@.dmp",
                                [[NSDate date] performSelector:@selector(logDescription)]];
+        #pragma clang diagnostic pop
 
         NSData *packetData = httpPacketBlock();
         dispatch_async([self sharedInstance].httpProcessingQueue, ^{
@@ -1043,7 +1056,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                                                                              target:[self sharedInstance]
                                                                            selector:@selector(handleConsoleDumpTimer:)
                                                                            userInfo:nil repeats:YES];
-            [[NSRunLoop currentRunLoop] addTimer:[self sharedInstance].consoleDumpTimer forMode:NSRunLoopCommonModes];
+            [[NSRunLoop mainRunLoop] addTimer:[self sharedInstance].consoleDumpTimer forMode:NSRunLoopCommonModes];
         } else if (![self isDumpingToFile] && [[self sharedInstance].consoleDumpTimer isValid]) {
             
             [[self sharedInstance].consoleDumpTimer invalidate];
@@ -1358,8 +1371,11 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         
         if (output) {
             
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wundeclared-selector"
             [self.consoleDump appendData:[[NSString stringWithFormat:@";ls;%@;sp;%@;le;\n", [[NSDate date] performSelector:@selector(logDescription)], output]
                                           dataUsingEncoding:NSUTF8StringEncoding]];
+            #pragma clang diagnostic pop
         }
         
         if (([self.consoleDump length] >= kPNLoggerMaximumInMemoryLogSize || !output) && [self.consoleDump length] > 0) {
