@@ -134,7 +134,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [progressAlertView show];
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    [self.presenceHelper fetchPresenceInformationWithBlock:^(NSArray *participants, PNChannel *channel, PNError *requestError) {
+    [self.presenceHelper fetchPresenceInformationWithBlock:^(PNHereNow *presenceInformation, NSArray *channels, PNError *requestError) {
         
         [progressAlertView dismissWithAnimation:YES];
         
@@ -244,7 +244,8 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         if (![client isAnonymous]) {
             
             PNClientStateView *clientStateView = [PNClientStateView viewFromNibForViewing];
-            [clientStateView configureFor:[self.presenceHelper currentChannel] clientIdentifier:client.identifier andState:client.data];
+            [clientStateView configureFor:[self.presenceHelper currentChannel] clientIdentifier:client.identifier
+                                 andState:[client stateForChannel:client.channel]];
             [clientStateView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
         }
     }

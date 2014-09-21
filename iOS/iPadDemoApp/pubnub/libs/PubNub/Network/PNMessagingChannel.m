@@ -447,7 +447,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                        if (shouldNotifyAboutSubscriptionRestore) {
                            
                            // Notify delegate that messaging channel is about to restore subscription on previous channels
-                           [self.messagingDelegate messagingChannel:self willRestoreSubscriptionOnChannels:((PNSubscribeRequest *)request).channels
+                           [self.messagingDelegate messagingChannel:self
+                         willRestoreSubscriptionOnChannelsAndGroups:((PNSubscribeRequest *)request).channels
                                                           sequenced:NO];
                        }
                    }
@@ -801,7 +802,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             if ([PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription]) {
                 
                 // Notify delegate that messaging channel is about to restore subscription on previous channels
-                [self.messagingDelegate messagingChannel:self willRestoreSubscriptionOnChannels:resubscribeRequest.channels
+                [self.messagingDelegate messagingChannel:self
+              willRestoreSubscriptionOnChannelsAndGroups:resubscribeRequest.channels
                                                sequenced:NO];
             }
             
@@ -1246,8 +1248,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                                          forRequest:nil forcibly:YES];
             }
             
-            [self.messagingDelegate messagingChannel:self didSubscribeOnChannels:channels sequenced:isPresenceModification
-                                     withClientState:clientStateForRequest];
+            [self.messagingDelegate messagingChannel:self didSubscribeOnChannelsAndGroups:channels
+                                           sequenced:isPresenceModification withClientState:clientStateForRequest];
         }
         
         
@@ -2430,7 +2432,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                             
                             [PNBitwiseHelper removeFrom:&_messagingState bit:PNMessagingChannelRestoringSubscription];
                             
-                            [self.messagingDelegate messagingChannel:self didRestoreSubscriptionOnChannels:[channelsForSubscription allObjects]
+                            [self.messagingDelegate messagingChannel:self
+                           didRestoreSubscriptionOnChannelsAndGroups:[channelsForSubscription allObjects]
                                                            sequenced:isInSequence];
                         }
                         else {
@@ -2442,7 +2445,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                             }];
                             
                             [self.messagingDelegate messagingChannel:self
-                                              didSubscribeOnChannels:[channelsForSubscription allObjects]
+                                     didSubscribeOnChannelsAndGroups:[channelsForSubscription allObjects]
                                                            sequenced:isInSequence
                                                      withClientState:((PNSubscribeRequest *)request).state];
                         }

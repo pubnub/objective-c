@@ -1108,9 +1108,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         void(^subscribeBlock)(void) = ^{
                             
                             weakSelf.asyncLockingOperationInProgress = NO;
-                            [self subscribeOnChannels:allChannels withCatchUp:shouldCatchup clientState:nil
-                           andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
-                                                        PNError *subscribeError) {
+                            [self subscribeOnChannelsAndGroups:allChannels withCatchUp:shouldCatchup clientState:nil
+                                    andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
+                                                                 PNError *subscribeError) {
                                
                                if (subscribeError == nil) {
                                    
@@ -1135,8 +1135,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         void(^unsubscribeBlock)(void) = ^{
                             
                             weakSelf.asyncLockingOperationInProgress = NO;
-                            [self unsubscribeFromChannels:allChannels
-                              withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+                            [self unsubscribeFromChannelsAndGroups:allChannels
+                                       withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
                                   
                                   if (leaveError == nil) {
                                       
@@ -1886,6 +1886,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [request isKindOfClass:[PNTimeTokenRequest class]] ||
         [request isKindOfClass:[PNClientStateRequest class]] ||
         [request isKindOfClass:[PNClientStateUpdateRequest class]] ||
+        [request isKindOfClass:[PNChannelGroupsRequest class]] ||
+        [request isKindOfClass:[PNChannelGroupNamespacesRequest class]] ||
+        [request isKindOfClass:[PNChannelGroupNamespaceRemoveRequest class]] ||
+        [request isKindOfClass:[PNChannelGroupRemoveRequest class]] ||
+        [request isKindOfClass:[PNChannelsForGroupRequest class]] ||
+        [request isKindOfClass:[PNChannelsListUpdateForChannelGroupRequest class]] ||
         [request isKindOfClass:[PNMessageHistoryRequest class]] ||
         [request isKindOfClass:[PNHereNowRequest class]] ||
         [request isKindOfClass:[PNWhereNowRequest class]] ||
@@ -2505,7 +2511,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             // Prepare and send request w/o observation (it mean that any response for request will be ignored
             NSArray *channels = [self subscribedChannels];
             [self sendRequest:[PNHeartbeatRequest heartbeatRequestForChannels:channels
-                                                              withClientState:[self.cache stateForChannels:channels]]
+                                                              withClientState:[self.cache state]]
       shouldObserveProcessing:NO];
         }
     }];

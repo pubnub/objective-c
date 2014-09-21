@@ -793,7 +793,7 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
             [PNDataManager sharedInstance].currentChannel = nil;
         }
         
-        [PubNub unsubscribeFromChannel:channel];
+        [PubNub unsubscribeFromChannelsAndGroups:@[channel]];
     }
 }
 

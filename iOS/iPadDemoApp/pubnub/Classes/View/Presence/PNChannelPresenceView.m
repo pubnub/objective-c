@@ -146,7 +146,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [progressAlertView show];
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    [self.presenceHelper fetchPresenceInformationWithBlock:^(NSArray *participants, PNChannel *channel, PNError *requestError) {
+    [self.presenceHelper fetchPresenceInformationWithBlock:^(PNHereNow *presenceInformation, NSArray *channels, PNError *requestError) {
         
         [progressAlertView dismissWithAnimation:YES];
         PNAlertType type = (requestError ? PNAlertWarning : PNAlertSuccess);
@@ -160,14 +160,14 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             [weakSelf updateLayout];
             
             detailedDescription = [NSString stringWithFormat:[@"channelPresenceSuccessDetailedDescription" localized],
-                                   channel.name];
+                                   [channels valueForKey:@"name"]];
         }
         else {
             
             shortDescription = @"channelPresenceFailureShortDescription";
             
             detailedDescription = [NSString stringWithFormat:[@"channelPresenceFailureDetailedDescription" localized],
-                                   ((PNChannel *)requestError.associatedObject).name,
+                                   [(NSArray *)requestError.associatedObject valueForKey:@"name"],
                                    requestError.localizedFailureReason];
         }
         
@@ -236,10 +236,11 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     
     PNClient *client = [[self.presenceHelper data] objectAtIndex:indexPath.row];
     NSString *state = nil;
-    if (client.data) {
+    if ([client stateForChannel:client.channel]) {
         
         NSError *stateSerializationError = nil;
-        NSData *serializedStateData = [NSJSONSerialization dataWithJSONObject:client.data options:NSJSONWritingPrettyPrinted
+        NSData *serializedStateData = [NSJSONSerialization dataWithJSONObject:[client stateForChannel:client.channel]
+                                                                      options:NSJSONWritingPrettyPrinted
                                                                         error:&stateSerializationError];
         if (!stateSerializationError && serializedStateData) {
             

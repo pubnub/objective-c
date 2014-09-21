@@ -35,6 +35,11 @@
 // Stores whether channel presence observation flag was set by developer or not
 @property (nonatomic, assign, getter = isLinkedWithPresenceObservationChannel) BOOL linkedWithPresenceObservationChannel;
 
+/**
+ Stores whether channel represents group of channels or not.
+ */
+@property (nonatomic, assign, getter = isChannelGroup) BOOL channelGroup;
+
 // Stores number of participants for particular channel (this number fetched from presence API if it is used and
 // updated when requested list of participants)
 // INFO: it may differ in count from participants name because of nature of this value update logic
@@ -92,9 +97,15 @@ shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag;
 - (void)updateWithEvent:(PNPresenceEvent *)event;
 
 /**
- * Updating cached channel data with participants list information
+ Updating cached channel data with participants list information.
+ 
+ @param participants
+ List of \b PNClient instances which represents clients subscribed at receiver channel.
+ 
+ @param participantsCount
+ Represent real number of participants in channel
  */
-- (void)updateWithParticipantsList:(PNHereNow *)hereNow;
+- (void)updateWithParticipantsList:(NSArray *)participants andCount:(NSUInteger)participantsCount;
 
 /**
  * Update channel update time token

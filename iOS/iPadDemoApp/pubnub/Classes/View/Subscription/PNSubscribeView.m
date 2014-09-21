@@ -111,8 +111,9 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [progressAlertView show];
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    [PubNub subscribeOnChannels:[self.subscribeHelper channelsForSubscription] withClientState:[self.subscribeHelper channelsState]
-     andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+    [PubNub subscribeOnChannelsAndGroups:[self.subscribeHelper channelsForSubscription]
+                         withClientState:[self.subscribeHelper channelsState]
+              andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
          
          if (state == PNSubscriptionProcessSubscribedState || subscriptionError) {
              

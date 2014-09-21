@@ -271,8 +271,13 @@
 
 - (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient {
 
-    NSLog(@"PubNub client successfully received state for client %@ on channel %@: %@", remoteClient.identifier,
-          remoteClient.channel, remoteClient.data);
+    NSMutableDictionary *state = [NSMutableDictionary dictionary];
+    [remoteClient.channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
+                                                        BOOL *channelEnumeratoStop) {
+        
+        [state setValue:[remoteClient stateForChannel:channel] forKey:channel.name];
+    }];
+    NSLog(@"PubNub client successfully received state for client %@ on channels: %@", remoteClient.identifier, state);
 }
 
 - (void)pubnubClient:(PubNub *)client clientStateRetrieveDidFailWithError:(PNError *)error {
@@ -284,7 +289,7 @@
 - (void)pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient {
 
     NSLog(@"PubNub client successfully updated state for client %@ at channel %@: %@", remoteClient.identifier,
-          remoteClient.channel, remoteClient.data);
+          remoteClient.channel, [remoteClient stateForChannel:remoteClient.channel]);
 }
 
 - (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error {
@@ -293,19 +298,19 @@
           ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
 }
 
-- (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups {
 
-    NSLog(@"PubNub client successfully subscribed on channels: %@", channels);
+    NSLog(@"PubNub client successfully subscribed on channels: %@", channelsAndGroups);
 }
 
-- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannelsAndGroups:(NSArray *)channelsAndGroups {
 
-    NSLog(@"PubNub client resuming subscription on: %@", channels);
+    NSLog(@"PubNub client resuming subscription on: %@", channelsAndGroups);
 }
 
-- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannelsAndGroups:(NSArray *)channelsAndGroups {
 
-    NSLog(@"PubNub client successfully restored subscription on channels: %@", channels);
+    NSLog(@"PubNub client successfully restored subscription on channels: %@", channelsAndGroups);
 }
 
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
@@ -313,9 +318,9 @@
     NSLog(@"PubNub client failed to subscribe because of error: %@", error);
 }
 
-- (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups {
 
-    NSLog(@"PubNub client successfully unsubscribed from channels: %@", channels);
+    NSLog(@"PubNub client successfully unsubscribed from channels: %@", channelsAndGroups);
 }
 
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
@@ -389,16 +394,16 @@
     NSLog(@"PubNub client failed to download history for %@ because of error: %@", channel, error);
 }
 
-- (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList
-          forChannel:(PNChannel *)channel {
-
-    NSLog(@"PubNub client received participants list for channel %@: %@", participantsList, channel);
+- (void)  pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
+  forChannelsAndGroups:(NSArray *)channelsAndGroups {
+    
+    NSLog(@"PubNub client received participants list for channels and groups %@: %@", channelsAndGroups, presenceInformation);
 }
 
-- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel
+- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannelsAndGroups:(NSArray *)channelsAndGroups
            withError:(PNError *)error {
-
-    NSLog(@"PubNub client failed to download participants list for channel %@ because of error: %@", channel, error);
+    
+    NSLog(@"PubNub client failed to download participants list for channels %@ because of error: %@", channelsAndGroups, error);
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantChannelsList:(NSArray *)participantChannelsList

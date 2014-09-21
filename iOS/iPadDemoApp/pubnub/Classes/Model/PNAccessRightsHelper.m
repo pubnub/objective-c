@@ -223,81 +223,73 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                 
                 if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
                     
+                    PNAccessRights rights = PNWriteAccessRight;
                     if (isAllAccessRights) {
                         
-                        [PubNub grantAllAccessRightsForApplicationAtPeriod:self.accessRightsApplicationDuration
-                                                andCompletionHandlingBlock:requestHandlerBlock];
+                        rights = PNAllAccessRights;
                     }
                     else if (self.shouldAllowRead) {
                         
-                        [PubNub grantReadAccessRightForApplicationAtPeriod:self.accessRightsApplicationDuration
-                                                andCompletionHandlingBlock:requestHandlerBlock];
+                        rights = PNReadAccessRight;
                     }
-                    else {
-                        
-                        [PubNub grantWriteAccessRightForApplicationAtPeriod:self.accessRightsApplicationDuration
-                                                 andCompletionHandlingBlock:requestHandlerBlock];
-                    }
+                    
+                    [PubNub changeApplicationAccessRightsTo:rights
+                                                  forPeriod:self.accessRightsApplicationDuration
+                                 andCompletionHandlingBlock:requestHandlerBlock];
                 }
                 else {
                     
-                    [PubNub revokeAccessRightsForApplicationWithCompletionHandlingBlock:requestHandlerBlock];
+                    [PubNub changeApplicationAccessRightsTo:PNNoAccessRights forPeriod:0
+                                 andCompletionHandlingBlock:requestHandlerBlock];
                 }
                 break;
             case PNAccessRightsHelperChannelMode:
                 
                 if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
                     
+                    PNAccessRights rights = PNWriteAccessRight;
                     if (isAllAccessRights) {
                         
-                        [PubNub grantAllAccessRightsForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
-                                    withCompletionHandlingBlock:requestHandlerBlock];
+                        rights = PNAllAccessRights;
                     }
                     else if (self.shouldAllowRead) {
                         
-                        [PubNub grantReadAccessRightForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
-                                    withCompletionHandlingBlock:requestHandlerBlock];
+                        rights = PNReadAccessRight;
                     }
-                    else {
-                        
-                        [PubNub grantWriteAccessRightForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
-                                     withCompletionHandlingBlock:requestHandlerBlock];
-                    }
+                    [PubNub changeAccessRightsForChannels:self.dataManipulation to:rights
+                                                forPeriod:self.accessRightsApplicationDuration
+                              withCompletionHandlingBlock:requestHandlerBlock];
                 }
                 else {
                     
-                    [PubNub revokeAccessRightsForChannels:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
+                    [PubNub changeAccessRightsForChannels:self.dataManipulation to:PNNoAccessRights forPeriod:0
+                              withCompletionHandlingBlock:requestHandlerBlock];
                 }
                 break;
             case PNAccessRightsHelperUserMode:
                 
                 if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
                     
+                    PNAccessRights rights = PNWriteAccessRight;
                     if (isAllAccessRights) {
                         
-                        [PubNub grantAllAccessRightsForChannel:[PNChannel channelWithName:self.channelName]
-                                                     forPeriod:self.accessRightsApplicationDuration
-                                                       clients:self.dataManipulation
-                                   withCompletionHandlingBlock:requestHandlerBlock];
+                        rights = PNAllAccessRights;
                     }
                     else if (self.shouldAllowRead) {
                         
-                        [PubNub grantReadAccessRightForChannel:[PNChannel channelWithName:self.channelName]
-                                                     forPeriod:self.accessRightsApplicationDuration
-                                                       clients:self.dataManipulation
-                                   withCompletionHandlingBlock:requestHandlerBlock];
+                        rights = PNReadAccessRight;
                     }
-                    else {
-                        
-                        [PubNub grantWriteAccessRightForChannel:[PNChannel channelWithName:self.channelName]
-                                                      forPeriod:self.accessRightsApplicationDuration
-                                                        clients:self.dataManipulation
-                                    withCompletionHandlingBlock:requestHandlerBlock];
-                    }
+                    
+                    [PubNub changeAccessRightsForClients:self.dataManipulation
+                                               onChannel:[PNChannel channelWithName:self.channelName]
+                                                      to:rights forPeriod:self.accessRightsApplicationDuration
+                             withCompletionHandlingBlock:requestHandlerBlock];
                 }
                 else {
                     
-                    [PubNub revokeAccessRightsForChannel:[PNChannel channelWithName:self.channelName] clients:self.dataManipulation
+                    [PubNub changeAccessRightsForClients:self.dataManipulation
+                                               onChannel:[PNChannel channelWithName:self.channelName]
+                                                      to:PNNoAccessRights forPeriod:self.accessRightsApplicationDuration
                              withCompletionHandlingBlock:requestHandlerBlock];
                 }
                 break;

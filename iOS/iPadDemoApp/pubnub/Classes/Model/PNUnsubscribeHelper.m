@@ -81,8 +81,8 @@
     if ([self.markedChannels count]) {
         
         __block __pn_desired_weak __typeof(self) weakSelf = self;
-        [PubNub unsubscribeFromChannels:self.markedChannels
-            withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
+        [PubNub unsubscribeFromChannelsAndGroups:self.markedChannels
+                     withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
                 
                 weakSelf.channels = [PubNub subscribedChannels];
                 

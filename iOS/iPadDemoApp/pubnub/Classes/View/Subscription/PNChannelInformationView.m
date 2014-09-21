@@ -372,7 +372,8 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
        
        if (!channelStateRequestError) {
            
-           weakSelf.channelHelper.state = [client.data count] ? client.data : nil;
+           weakSelf.channelHelper.state = ([[client stateForChannel:client.channel] count] ?
+                                           [client stateForChannel:client.channel] : nil);
            [weakSelf updateLayout];
            
            detailedDescription = [NSString stringWithFormat:[@"stateRetrieveSuccessAlertViewDetailedDescription" localized],
@@ -400,10 +401,10 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
     [[PNObservationCenter defaultCenter] addChannelParticipantsListProcessingObserver:self
-                                                                            withBlock:^(NSArray *participants, PNChannel *channel, PNError *reuestError) {
-                                                                                
-                                                                                [weakSelf updateLayout];
-                                                                            }];
+                                withBlock:^(PNHereNow *presenceInformation, NSArray *channels, PNError *requestError) {
+                                    
+                                    [weakSelf updateLayout];
+                                }];
 }
 
 - (void)disableDataObservation {

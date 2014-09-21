@@ -106,7 +106,10 @@
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeApplicationAccessRightsTo:forPeriod:' or "
+                         "'-changeApplicationAccessRightsTo:forPeriod:' with PNReadAccessRight to grant read-only "
+                           "access right. Class method will be removed in future.");
 
 /**
  Grant \a 'read' access right on \a 'application' access level which will be valid for specified amount of time.
@@ -232,7 +235,10 @@
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
 + (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
-                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' or "
+                           "'-changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' with "
+                           "PNReadAccessRight to grant read-only access right. Class method will be removed in future.");
 
 /**
  Grant \a 'write' access right on \a 'application' access level which will be valid for specified amount of time.
@@ -328,7 +334,10 @@
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeApplicationAccessRightsTo:forPeriod:' or "
+                           "'-changeApplicationAccessRightsTo:forPeriod:' with PNWriteAccessRight to grant write-only "
+                           "access right. Class method will be removed in future.");
 
 /**
  Grant \a 'write' access right on \a 'application' access level which will be valid for specified amount of time.
@@ -454,7 +463,11 @@
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
 + (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
-                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' or "
+                           "'-changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' with "
+                           "PNWriteAccessRight to grant write-only access right. Class method will be removed in "
+                           "future.");
 
 /**
  Grant \a 'read'/ \a 'write' access rights on \a 'application' access level which will be valid for specified amount of time.
@@ -546,7 +559,10 @@
 
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
-+ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeApplicationAccessRightsTo:forPeriod:' or "
+                           "'-changeApplicationAccessRightsTo:forPeriod:' with PNAllAccessRight to grant read and write"
+                           " access rights. Class method will be removed in future.");
 
 /**
  Grant \a 'read'/ \a 'write' access rights on \a 'application' access level which will be valid for specified amount of time.
@@ -667,7 +683,11 @@
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
 + (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
-                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' or "
+                           "'-changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' with "
+                           "PNAllAccessRight to grant read and write access rights. Class method will be removed in "
+                           "future.");
 
 /**
  Revoke all access rights on whole \a 'application' level.
@@ -745,7 +765,193 @@
 
  @see +grantAllAccessRightsForChannel:forPeriod:
  */
-+ (void)revokeAccessRightsForApplication;
++ (void)revokeAccessRightsForApplication
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeApplicationAccessRightsTo:forPeriod:' or "
+                           "'-changeApplicationAccessRightsTo:forPeriod:' with PNNoAccessRights to revoke access rights"
+                           " (duration will be ignored). Class method will be removed in future.");
+
+/**
+ @brief Alter application level access rights (based on subscription key).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                     subscribeKey:@"demo" secretKey:@"my-secret-key"]];
+ [PubNub connect];
+ [PubNub changeApplicationAccessRightsTo:PNAllAccessRights forPeriod:10];
+ [PubNub changeAccessRightsForChannels:@[[PNChannel channelWithName:@"iosdev"]] to:PNWriteAccessRight forPeriod:10];
+ @endcode
+
+ Code above configure access rights in a way, which will allow to subscribe and post messages to any channel for \b 10
+ minutes even despite the fact that channel configured only for \a 'write' access rights. It happens because application
+ access rights has higher priority against channel based access rights.
+
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'application' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from application level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addAccessRightsChangeObserver:self 
+                                                          withBlock:^(PNAccessRightsCollection *collection,
+                                                                      PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'application' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from application level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+
+ @param accessPeriodDuration
+ Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
+ 
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on application 
+                             level.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value
+      (default value is \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
++ (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter application level access rights (based on subscription key).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeApplicationAccessRightsTo:PNAllAccessRights forPeriod:10
+              andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'application' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from application level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ [pubnub changeAccessRightsForChannels:@[[PNChannel channelWithName:@"iosdev"]] to:PNWriteAccessRight forPeriod:10];
+ @endcode
+
+ Code above configure access rights in a way, which will allow to subscribe and post messages to any channel for \b 10
+ minutes even despite the fact that channel configured only for \a 'write' access rights. It happens because application
+ access rights has higher priority against channel based access rights.
+
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'application' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from application level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'application' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from application level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+
+ @param accessPeriodDuration
+ Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
+ 
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on application 
+                             level.
+ @param handlerBlock         The block which will be called by \b PubNub client when one of success or error events will 
+                             be received. The block takes two arguments: \c collection - \b PNAccessRightsCollection 
+                             instance which hold set of \b PNAccessRightsInformation instances to describe new 
+                             \a 'application' access rights; \c error - error which describes what exactly went wrong
+                             during access rights change. Always check \a error.code to find out what caused error 
+                             (check PNErrorCodes header file and use \a -localizedDescription / 
+                             \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable 
+                             description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value
+      (default value is \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
++ (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration
+             andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
  Revoke all access rights on whole \a 'application' level.
@@ -849,8 +1055,11 @@
 
  @see +grantAllAccessRightsForChannel:forPeriod:
  */
-+ (void)revokeAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-
++ (void)revokeAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' or "
+                           "'-changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' with "
+                           "PNNoAccessRights to revoke access rights (duration will be ignored). Class method will be "
+                           "removed in future.");
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time.
 
@@ -947,8 +1156,15 @@
  @see +grantReadAccessRightForChannel:forPeriod:withCompletionHandlingBlock:
 
  @see +grantWriteAccessRightForApplicationAtPeriod:
+ 
+ + (void)changeAccessRightsForChannels:(NSArray *)channels to:(PNAccessRights)accessRights
+ forPeriod:(NSInteger)accessPeriodDuration
+ withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
  */
-+ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:' with PNReadAccessRight to grant read-only "
+                           "access right. Class method will be removed in future.");
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -1075,7 +1291,11 @@
  @see +grantWriteAccessRightForApplicationAtPeriod:
  */
 + (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNReadAccessRight to grant read-only access right. Class method will be removed in "
+                           "future.");
 
 /**
  Grant \a 'read' access right on \a 'user' access level which will be valid for specified amount of time.
@@ -1180,7 +1400,10 @@
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
 + (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                                client:(NSString *)clientAuthorizationKey;
+                                client:(NSString *)clientAuthorizationKey
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:' or "
+                           "'-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNReadAccessRight to grant "
+                           "read-only access right. Class method will be removed in future.");
 
 /**
  Grant \a 'read' access right on \a 'user' access level which will be valid for specified amount of time. 
@@ -1313,7 +1536,11 @@
  */
 + (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' or"
+                           " '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNReadAccessRight to grant read-only access right. Class method will be removed in "
+                           "future.");
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -1412,7 +1639,10 @@
 
  @see +grantWriteAccessRightForApplicationAtPeriod:
  */
-+ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:' with PNReadAccessRight to grant read-only "
+                           "access right. Class method will be removed in future.");
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -1539,7 +1769,11 @@
  @see +grantWriteAccessRightForApplicationAtPeriod:
  */
 + (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNReadAccessRight to grant read-only access right. Class method will be removed in "
+                           "future.");
 
 /**
  Grant \a 'read' access right on \a 'user' access level which will be valid for specified amount of time for specific set of cliens authorization keys.
@@ -1644,7 +1878,10 @@
  @see +grantWriteAccessRightForChannel:forPeriod:
  */
 + (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                               clients:(NSArray *)clientsAuthorizationKeys;
+                               clients:(NSArray *)clientsAuthorizationKeys
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:' or "
+                           "'-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNReadAccessRight to grant "
+                           "read-only access right. Class method will be removed in future.");
 
 /**
  Grant \a 'read' access right on \a 'user' access level which will be valid for specified amount of time for specific set of cliens authorization keys.
@@ -1777,7 +2014,11 @@
  */
 + (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' or"
+                           " '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNReadAccessRight to grant read-only access right. Class method will be removed in "
+                           "future.");
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -1876,7 +2117,10 @@
 
  @see +grantReadAccessRightForApplicationAtPeriod:
  */
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:' with PNWriteAccessRight to grant write-only"
+                           " access right. Class method will be removed in future.");
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -2003,12 +2247,24 @@
  @see +grantReadAccessRightForApplicationAtPeriod:
  */
 + (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                                 client:(NSString *)clientAuthorizationKey;
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNWriteAccessRight to grant write-only access right. Class method will be removed in "
+                           "future.");
+
 + (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                  client:(NSString *)clientAuthorizationKey
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:' or "
+                           "'-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNWriteAccessRight to grant "
+                           "write-only access right. Class method will be removed in future.");
++ (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
+                                 client:(NSString *)clientAuthorizationKey
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' or"
+                           " '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNWriteAccessRight to grant write-only access right. Class method will be removed in "
+                           "future.");
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -2107,7 +2363,10 @@
 
  @see +grantReadAccessRightForApplicationAtPeriod:
  */
-+ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
++ (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:' with PNWriteAccessRight to grant write-only"
+                           " access right. Class method will be removed in future.");
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -2234,7 +2493,11 @@
  @see +grantReadAccessRightForApplicationAtPeriod:
  */
 + (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
-             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNWriteAccessRight to grant write-only access right. Class method will be removed in "
+                           "future.");
 
 /**
  Grant \a 'write' access right on \a 'user' access level which will be valid for specified amount of time.
@@ -2344,7 +2607,10 @@
  @see +grantReadAccessRightForChannel:forPeriod:
  */
 + (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                                clients:(NSArray *)clientsAuthorizationKeys;
+                                clients:(NSArray *)clientsAuthorizationKeys
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:' or "
+                           "'-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNWriteAccessRight to grant "
+                           "write-only access right. Class method will be removed in future.");
 
 /**
  Grant \a 'write' access right on \a 'user' access level which will be valid for specified amount of time for specific set of cliens authorization keys.
@@ -2477,26 +2743,61 @@
  */
 + (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' or"
+                           " '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNWriteAccessRight to grant write-only access right. Class method will be removed in "
+                           "future.");
 
-+ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
 + (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:' with PNAllAccessRights to grant read and "
+                           "write access rights. Class method will be removed in future.");
 + (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                                client:(NSString *)clientAuthorizationKey;
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNAllAccessRights to grant read and write access rights. Class method will be removed in "
+                           "future.");
 + (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
-+ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:' or "
+                           "'-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNAllAccessRights to grant and"
+                           " write access rights. Class method will be removed in future.");
 + (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                               clients:(NSArray *)clientsAuthorizationKeys;
+                                client:(NSString *)clientAuthorizationKey
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' or"
+                           " '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNAllAccessRights to grant and write access rights. Class method will be removed in "
+                           "future.");
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:' with PNAllAccessRights to grant read and "
+                           "write access rights. Class method will be removed in future.");
++ (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNAllAccessRights to grant read and write access rights. Class method will be removed in "
+                           "future.");
 + (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:' or "
+                           "'-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNAllAccessRights to grant and"
+                           " write access rights. Class method will be removed in future.");
++ (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
+                               clients:(NSArray *)clientsAuthorizationKeys
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' or"
+                           " '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNAllAccessRights to grant and write access rights. Class method will be removed in "
+                           "future.");
 
-+ (void)revokeAccessRightsForChannel:(PNChannel *)channel;
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:' with PNNoAccessRights to revoke access "
+                           "rights (duration will be ignored). Class method will be removed in future.");
 
 
 /**
@@ -2603,8 +2904,15 @@
  @see \a +grantAllAccessRightsForChannel:forPeriod:client:
  */
 + (void)revokeAccessRightsForChannel:(PNChannel *)channel
-         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey;
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNNoAccessRights to revoke access rights (duration will be ignored). Class method will be "
+                           "removed in future.");
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:' or "
+                           "'-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNNoAccessRights to revoke "
+                           "access rights (duration will be ignored). Class method will be removed in future.");
 
 /**
  Revoke all access rights on \a 'user' level. Access rights will be revoked for specific user on specific channel.
@@ -2710,8 +3018,15 @@
  @see \a +grantAllAccessRightsForChannel:forPeriod:clients:
  */
 + (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
-         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)revokeAccessRightsForChannels:(NSArray *)channels;
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' or"
+                           " '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNNoAccessRights to revoke access rights (duration will be ignored). Class method will be "
+                           "removed in future.");
++ (void)revokeAccessRightsForChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:' with PNNoAccessRights to revoke access "
+                           "rights (duration will be ignored). Class method will be removed in future.");
 
 /**
  Revoke all access rights on whole \a 'channel' level. This method allow to revoke access rights for the set of \b
@@ -2819,9 +3134,373 @@
  @see \a +grantAllAccessRightsForChannel:forPeriod:clients:
  */
 + (void)revokeAccessRightsForChannels:(NSArray *)channels
-          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)revokeAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys;
+          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' or "
+                           "'-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNNoAccessRights to revoke access rights (duration will be ignored). Class method will be "
+                           "removed in future.");
 + (void)revokeAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:' or "
+                           "'-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNNoAccessRights to revoke "
+                           "access rights (duration will be ignored). Class method will be removed in future.");
++ (void)revokeAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' or"
+                           " '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNNoAccessRights to revoke access rights (duration will be ignored). Class method will be "
+                           "removed in future.");
+
+/**
+ @brief Alter channel(s) level access rights.
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                     subscribeKey:@"demo" secretKey:@"my-secret-key"]];
+ [PubNub connect];
+ [PubNub changeAccessRightsForChannels:[PNChannel channelsWithNames:@[@"iosdev", @"androiddev", @"macosdev"]]
+                                    to:PNWriteAccessRight forPeriod:10];
+ [PubNub grantWriteAccessRightForApplicationAtPeriod:10];
+ @endcode
+ 
+ 
+ Code above configure access rights in a way, which will allow to subscribe and post messages to \a 'iosdev', 
+ \a 'androiddev' and \a 'macosdev' channels for \b 10 minutes even despite the fact that channels configured only for
+ \a 'read' access rights. It happens because application access rights has higher priority against channel based access
+ rights.
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addAccessRightsChangeObserver:self 
+                                                          withBlock:^(PNAccessRightsCollection *collection,
+                                                                      PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param channels             List of \b PNChannel instances for which access rights should be changed
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on channel level.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
++ (void)changeAccessRightsForChannels:(NSArray *)channels to:(PNAccessRights)accessRights
+                            forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter channel(s) level access rights.
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                     subscribeKey:@"demo" secretKey:@"my-secret-key"]];
+ [PubNub connect];
+ [PubNub changeAccessRightsForChannels:[PNChannel channelsWithNames:@[@"iosdev", @"androiddev", @"macosdev"]]
+                                    to:PNWriteAccessRight forPeriod:10];
+ [PubNub grantWriteAccessRightForApplicationAtPeriod:10];
+ @endcode
+ 
+ 
+ Code above configure access rights in a way, which will allow to subscribe and post messages to \a 'iosdev', 
+ \a 'androiddev' and \a 'macosdev' channels for \b 10 minutes even despite the fact that channels configured only for
+ \a 'read' access rights. It happens because application access rights has higher priority against channel based access
+ rights.
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addAccessRightsChangeObserver:self 
+                                                          withBlock:^(PNAccessRightsCollection *collection,
+                                                                      PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param channels             List of \b PNChannel instances for which access rights should be changed
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on channel level.
+ @param handlerBlock         The block which will be called by \b PubNub client when one of success or error events will 
+                             be received. The block takes two arguments: \c collection - \b PNAccessRightsCollection 
+                             instance which hold set of \b PNAccessRightsInformation instances to describe new 
+                             \a 'channel' access rights; \c error - error which describes what exactly went wrong during
+                             access rights change. Always check \a error.code to find out what caused error (check 
+                             PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and
+                             \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
++ (void)changeAccessRightsForChannels:(NSArray *)channels to:(PNAccessRights)accessRights
+                            forPeriod:(NSInteger)accessPeriodDuration
+          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+
+/**
+ @brief Alter channel(s) level access rights.
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                     subscribeKey:@"demo" secretKey:@"my-secret-key"]];
+ [PubNub connect];
+ [PubNub changeAccessRightsForClients:@[@"spectator", @"visitor"] onChannel:[PNChannel channelWithName:@"iosdev"]
+                                   to:PNReadAccessRight forPeriod:10];
+ [PubNub changeAccessRightsForChannels:[PNChannel channelsWithNames:@"iosdev"] to:PNWriteAccessRight forPeriod:10];
+ @endcode
+ 
+ Code above allow to subscribe and post messages to \a 'iosdev' channel even for \a 'spectator' and \a 'visitor' users.
+ It happens because channel access rights has higher priority against user based access rights.
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addAccessRightsChangeObserver:self 
+                                                          withBlock:^(PNAccessRightsCollection *collection,
+                                                                      PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param clientsAuthorizationKeys List of \a NSString instances which specify list of client for which access rights 
+                                 should be changed.
+ @param channel                  \b PNChannel instance which is used to specify channel on which client's access rights
+                                 should be changed.
+ @param accessRights             Bit field which allow to specify set of options. Bit options specified in 
+                                 \c PNAccessRights
+ @param accessPeriodDuration     Duration in minutes during which provided access rights should be applied on channel 
+                                 level.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
++ (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys onChannel:(PNChannel *)channel
+                                  to:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter channel(s) level access rights.
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ [PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                     subscribeKey:@"demo" secretKey:@"my-secret-key"]];
+ [PubNub connect];
+ [PubNub changeAccessRightsForClients:@[@"spectator", @"visitor"] onChannel:[PNChannel channelWithName:@"iosdev"]
+                                   to:PNReadAccessRight forPeriod:10
+          withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+      if (error == nil) {
+
+          // PubNub client successfully changed access rights for 'user' access level.
+      }
+      else {
+
+          // PubNub client did fail to revoke access rights from 'user' access level.
+          //
+          // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+          // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human  readable 
+          // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+          // access level for which change has been requested.
+      }
+ }];
+ [pubNub changeAccessRightsForChannels:[PNChannel channelsWithNames:@"iosdev"] to:PNWriteAccessRight forPeriod:10];
+ @endcode
+ 
+ Code above allow to subscribe and post messages to \a 'iosdev' channel even for \a 'spectator' and \a 'visitor' users.
+ It happens because channel access rights has higher priority against user based access rights.
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addAccessRightsChangeObserver:self 
+                                                          withBlock:^(PNAccessRightsCollection *collection,
+                                                                      PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param clientsAuthorizationKeys List of \a NSString instances which specify list of client for which access rights 
+                                 should be changed.
+ @param channel                  \b PNChannel instance which is used to specify channel on which client's access rights
+                                 should be changed.
+ @param accessRights             Bit field which allow to specify set of options. Bit options specified in 
+                                 \c PNAccessRights
+ @param accessPeriodDuration     Duration in minutes during which provided access rights should be applied on channel 
+                                 level.
+ @param handlerBlock             The block which will be called by \b PubNub client when one of success or error events
+                                 will be received. The block takes two arguments: \c collection -
+                                 \b PNAccessRightsCollection instance which hold set of \b PNAccessRightsInformation 
+                                 instances to describe new \a 'user' access rights; \c error - error which describes 
+                                 what exactly went wrong during access rights change. Always check \a error.code to find
+                                 out what caused error (check PNErrorCodes header file and use 
+                                 \a -localizedDescription / \a -localizedFailureReason and 
+                                 \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
++ (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys onChannel:(PNChannel *)channel
+                                  to:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration
          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
@@ -3091,7 +3770,9 @@
 
  @see \a +grantAllAccessRightsForChannel:forPeriod:
  */
-+ (void)auditAccessRightsForChannel:(PNChannel *)channel;
++ (void)auditAccessRightsForChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+auditAccessRightsForChannels:' or '-auditAccessRightsForChannels:' instead. Class "
+                           "method will be removed in future.");
 
 /**
  Audit access rights for \a 'channel' level.
@@ -3205,7 +3886,11 @@
 
  @see \a +grantAllAccessRightsForChannel:forPeriod:
  */
-+ (void)auditAccessRightsForChannel:(PNChannel *)channel withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
++ (void)auditAccessRightsForChannel:(PNChannel *)channel
+        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+auditAccessRightsForChannels:withCompletionHandlingBlock:' or "
+                           "'-auditAccessRightsForChannels:withCompletionHandlingBlock:' instead. Class method will be "
+                           "removed in future.");
 
 /**
  Audit access rights for \a 'user' level.
@@ -3291,7 +3976,9 @@
 
  @see \a +grantAllAccessRightsForChannel:forPeriod:client:
  */
-+ (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey;
++ (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsForChannel:clients:' or '-auditAccessRightsForChannel:clients:' "
+                           "instead. Class method will be removed in future.");
 
 /**
  Audit access rights for \a 'user' level.
@@ -3409,7 +4096,10 @@
  @see \a +grantAllAccessRightsForChannel:forPeriod:client:
  */
 + (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
-        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsForChannel:clients:withCompletionHandlingBlock:' or "
+                           "'-auditAccessRightsForChannel:clients:withCompletionHandlingBlock:' instead. Class method "
+                           "will be removed in future.");
 
 /**
  Audit access rights for \a 'channel' level. \a 'channel' level is mid-layer of access rights tree,
@@ -3897,7 +4587,9 @@
 
  @since 3.6.8
  */
-- (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
+- (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:forPeriod:' with PNReadAccessRight to grant read "
+                           "access right");
 
 /**
  Grant \a 'read' access right on \a 'application' access level which will be valid for specified amount of time.
@@ -4009,7 +4701,9 @@
  @since 3.6.8
  */
 - (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
-                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' with "
+                           "PNReadAccessRight to grant read access right");
 
 /**
  Grant \a 'write' access right on \a 'application' access level which will be valid for specified amount of time.
@@ -4091,7 +4785,9 @@
 
  @since 3.6.8
  */
-- (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
+- (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:forPeriod:' with PNWriteAccessRight to grant write "
+                           "access right");
 
 /**
  Grant \a 'write' access right on \a 'application' access level which will be valid for specified amount of time.
@@ -4203,7 +4899,9 @@
  @since 3.6.8
  */
 - (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
-                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' with "
+                           "PNWriteAccessRight to grant write access right");
 
 /**
  Grant \a 'read'/ \a 'write' access rights on \a 'application' access level which will be valid for specified amount of time.
@@ -4281,7 +4979,9 @@
 
  @since 3.6.8
  */
-- (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration;
+- (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:forPeriod:' with PNAllAccessRights to grant read and"
+                           " write access rights");
 
 /**
  Grant \a 'read'/ \a 'write' access rights on \a 'application' access level which will be valid for specified amount of time.
@@ -4388,7 +5088,9 @@
  @since 3.6.8
  */
 - (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
-                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+                        andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' with "
+                           "PNAllAccessRights to grant read and write access rights");
 
 /**
  Revoke all access rights on whole \a 'application' level.
@@ -4458,7 +5160,9 @@
 
  @since 3.6.8
  */
-- (void)revokeAccessRightsForApplication;
+- (void)revokeAccessRightsForApplication DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:forPeriod:' "
+                                                                  "with PNNoAccessRights to revoke access rights "
+                                                                  "(duration will be ignored)");
 
 /**
  Revoke all access rights on whole \a 'application' level.
@@ -4552,7 +5256,192 @@
  
  @since 3.6.8
  */
-- (void)revokeAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+- (void)revokeAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:forPeriod:andCompletionHandlingBlock:' with "
+                           "PNNoAccessRights to revoke access rights (duration will be ignored)");
+
+/**
+ @brief Alter application level access rights (based on subscription key).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeApplicationAccessRightsTo:PNAllAccessRights forPeriod:10];
+ [pubnub changeAccessRightsForChannels:@[[PNChannel channelWithName:@"iosdev"]] to:PNWriteAccessRight forPeriod:10];
+ @endcode
+
+ Code above configure access rights in a way, which will allow to subscribe and post messages to any channel for \b 10
+ minutes even despite the fact that channel configured only for \a 'write' access rights. It happens because application
+ access rights has higher priority against channel based access rights.
+
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'application' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from application level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'application' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from application level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+
+ @param accessPeriodDuration
+ Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
+ 
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on application 
+                             level.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value
+      (default value is \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter application level access rights (based on subscription key).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeApplicationAccessRightsTo:PNAllAccessRights forPeriod:10
+              andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'application' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from application level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ [pubnub changeAccessRightsForChannels:@[[PNChannel channelWithName:@"iosdev"]] to:PNWriteAccessRight forPeriod:10];
+ @endcode
+
+ Code above configure access rights in a way, which will allow to subscribe and post messages to any channel for \b 10
+ minutes even despite the fact that channel configured only for \a 'write' access rights. It happens because application
+ access rights has higher priority against channel based access rights.
+
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'application' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from application level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'application' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from application level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+
+ @param accessPeriodDuration
+ Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
+ 
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on application 
+                             level.
+ @param handlerBlock         The block which will be called by \b PubNub client when one of success or error events will 
+                             be received. The block takes two arguments: \c collection - \b PNAccessRightsCollection 
+                             instance which hold set of \b PNAccessRightsInformation instances to describe new 
+                             \a 'application' access rights; \c error - error which describes what exactly went wrong
+                             during access rights change. Always check \a error.code to find out what caused error 
+                             (check PNErrorCodes header file and use \a -localizedDescription / 
+                             \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable 
+                             description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value
+      (default value is \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration
+             andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -4637,7 +5526,9 @@
 
  @since 3.6.8
  */
-- (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
+- (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:' with PNReadAccessRight to grant "
+                           "read-only access right.");
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -4750,7 +5641,9 @@
  @since 3.6.8
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNReadAccessRight to grant read-only access right.");
 
 /**
  Grant \a 'read' access right on \a 'user' access level which will be valid for specified amount of time.
@@ -4841,7 +5734,9 @@
  @since 3.6.8
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                                client:(NSString *)clientAuthorizationKey;
+                                client:(NSString *)clientAuthorizationKey
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNReadAccessRight to "
+                           "grant read-only access right.");
 
 /**
  Grant \a 'read' access right on \a 'user' access level which will be valid for specified amount of time. 
@@ -4960,7 +5855,9 @@
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' "
+                           "with PNReadAccessRight to grant read-only access right.");
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -5045,7 +5942,9 @@
 
  @since 3.6.8
  */
-- (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
+- (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:' with PNReadAccessRight to grant "
+                           "read-only access right.");
 
 /**
  Grant \a 'read' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -5158,7 +6057,9 @@
  @since 3.6.8
  */
 - (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNReadAccessRight to grant read-only access right.");
 
 /**
  Grant \a 'read' access right on \a 'user' access level which will be valid for specified amount of time for specific set of cliens authorization keys.
@@ -5249,7 +6150,9 @@
  @since 3.6.8
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                               clients:(NSArray *)clientsAuthorizationKeys;
+                               clients:(NSArray *)clientsAuthorizationKeys
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNReadAccessRight to "
+                           "grant read-only access right.");
 
 /**
  Grant \a 'read' access right on \a 'user' access level which will be valid for specified amount of time for specific set of cliens authorization keys.
@@ -5368,7 +6271,9 @@
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' "
+                           "with PNReadAccessRight to grant read-only access right.");
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -5453,7 +6358,9 @@
 
  @since 3.6.8
  */
-- (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
+- (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:' with "
+                           "PNWriteAccessRight to grant write-only access right.");
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time.
@@ -5566,12 +6473,18 @@
  @since 3.6.8
  */
 - (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-- (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                                 client:(NSString *)clientAuthorizationKey;
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNWriteAccessRight to grant write-only access right.");
 - (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                  client:(NSString *)clientAuthorizationKey
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNWriteAccessRight to "
+                           "grant write-only access right.");
+- (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
+                                 client:(NSString *)clientAuthorizationKey
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' "
+                           "with PNWriteAccessRight to grant write-only access right.");
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -5656,7 +6569,9 @@
 
  @since 3.6.8
  */
-- (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
+- (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:' with "
+                           "PNWriteAccessRight to grant write-only access right.");
 
 /**
  Grant \a 'write' access right on \a 'channel' access level which will be valid for specified amount of time for specific set of channels.
@@ -5769,7 +6684,9 @@
  @since 3.6.8
  */
 - (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
-             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNWriteAccessRight to grant write-only access right.");
 
 /**
  Grant \a 'write' access right on \a 'user' access level which will be valid for specified amount of time.
@@ -5865,7 +6782,9 @@
  @since 3.6.8
  */
 - (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                                clients:(NSArray *)clientsAuthorizationKeys;
+                                clients:(NSArray *)clientsAuthorizationKeys
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNWriteAccessRight to "
+                           "grant write-only access right.");
 
 /**
  Grant \a 'write' access right on \a 'user' access level which will be valid for specified amount of time for specific set of cliens authorization keys.
@@ -5984,26 +6903,46 @@
  */
 - (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' "
+                           "with PNWriteAccessRight to grant write-only access right.");
 
-- (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration;
 - (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:' with PNAllAccessRights to grant and "
+                           "write access rights.");
 - (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                                client:(NSString *)clientAuthorizationKey;
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNAllAccessRights to grant and write access rights.");
 - (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-- (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration;
-- (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
-            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNAllAccessRights to "
+                           "grant and write access rights.");
 - (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
-                               clients:(NSArray *)clientsAuthorizationKeys;
+                                client:(NSString *)clientAuthorizationKey
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' "
+                           "with PNAllAccessRights to grant and write access rights.");
+- (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:' with PNAllAccessRights to grant and "
+                           "write access rights.");
+- (void)grantAllAccessRightsForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
+            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNAllAccessRights to grant and write access rights.");
 - (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
-           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNAllAccessRights to "
+                           "grant and write access rights.");
+- (void)grantAllAccessRightsForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
+                               clients:(NSArray *)clientsAuthorizationKeys
+           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' "
+                           "with PNAllAccessRights to grant and write access rights.");
 
-- (void)revokeAccessRightsForChannel:(PNChannel *)channel;
+- (void)revokeAccessRightsForChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:' with PNNoAccessRights to revoke access "
+                           "rights (duration will be ignored).");
 
 /**
  Revoke all access rights on whole \a 'channel' level.
@@ -6099,8 +7038,13 @@
  @since 3.6.8
  */
 - (void)revokeAccessRightsForChannel:(PNChannel *)channel
-         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-- (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey;
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNNoAccessRights to revoke access rights (duration will be ignored).");
+
+- (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNNoAccessRights to "
+                           "revoke access rights (duration will be ignored).");
 
 /**
  Revoke all access rights on \a 'user' level. Access rights will be revoked for specific user on specific channel.
@@ -6196,8 +7140,12 @@
  @since 3.6.8
  */
 - (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
-         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-- (void)revokeAccessRightsForChannels:(NSArray *)channels;
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' "
+                           "with PNNoAccessRights to revoke access rights (duration will be ignored).");
+- (void)revokeAccessRightsForChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:' with PNNoAccessRights to revoke access "
+                           "rights (duration will be ignored).");
 
 /**
  Revoke all access rights on whole \a 'channel' level. This method allow to revoke access rights for the set of \b
@@ -6295,9 +7243,935 @@
  @since 3.6.8
  */
 - (void)revokeAccessRightsForChannels:(NSArray *)channels
-          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-- (void)revokeAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys;
+          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForChannels:to:forPeriod:withCompletionHandlingBlock:' with "
+                           "PNNoAccessRights to revoke access rights (duration will be ignored).");
 - (void)revokeAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:' with PNNoAccessRights to "
+                           "revoke access rights (duration will be ignored).");
+- (void)revokeAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsForClients:onChannel:to:forPeriod:withCompletionHandlingBlock:' "
+                           "with PNNoAccessRights to revoke access rights (duration will be ignored).");
+
+/**
+ @brief Alter channel(s) level access rights.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForChannels:[PNChannel channelsWithNames:@[@"iosdev", @"androiddev", @"macosdev"]] 
+                                    to:PNWriteAccessRight forPeriod:10];
+ [pubNub grantWriteAccessRightForApplicationAtPeriod:10];
+ @endcode
+ 
+ 
+ Code above configure access rights in a way, which will allow to subscribe and post messages to \a 'iosdev', 
+ \a 'androiddev' and \a 'macosdev' channels for \b 10 minutes even despite the fact that channels configured only for
+ \a 'read' access rights. It happens because application access rights has higher priority against channel based access
+ rights.
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param channels             List of \b PNChannel instances for which access rights should be changed
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on channel level.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForChannels:(NSArray *)channels to:(PNAccessRights)accessRights
+                            forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter channel(s) level access rights.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForChannels:[PNChannel channelsWithNames:@[@"iosdev", @"androiddev", @"macosdev"]] 
+                                    to:PNWriteAccessRight forPeriod:10];
+ [pubNub grantWriteAccessRightForApplicationAtPeriod:10];
+ @endcode
+ 
+ 
+ Code above configure access rights in a way, which will allow to subscribe and post messages to \a 'iosdev', 
+ \a 'androiddev' and \a 'macosdev' channels for \b 10 minutes even despite the fact that channels configured only for
+ \a 'read' access rights. It happens because application access rights has higher priority against channel based access
+ rights.
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param channels             List of \b PNChannel instances for which access rights should be changed
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on channel level.
+ @param handlerBlock         The block which will be called by \b PubNub client when one of success or error events will 
+                             be received. The block takes two arguments: \c collection - \b PNAccessRightsCollection 
+                             instance which hold set of \b PNAccessRightsInformation instances to describe new 
+                             \a 'channel' access rights; \c error - error which describes what exactly went wrong during
+                             access rights change. Always check \a error.code to find out what caused error (check 
+                             PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and
+                             \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForChannels:(NSArray *)channels to:(PNAccessRights)accessRights
+                            forPeriod:(NSInteger)accessPeriodDuration
+          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+
+/**
+ @brief Alter channel(s) level access rights.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForClients:@[@"spectator", @"visitor"] onChannel:[PNChannel channelWithName:@"iosdev"] 
+                                   to:PNReadAccessRight forPeriod:10];
+ [pubNub changeAccessRightsForChannels:[PNChannel channelsWithNames:@"iosdev"] to:PNWriteAccessRight forPeriod:10];
+ @endcode
+ 
+ Code above allow to subscribe and post messages to \a 'iosdev' channel even for \a 'spectator' and \a 'visitor' users.
+ It happens because channel access rights has higher priority against user based access rights.
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param clientsAuthorizationKeys List of \a NSString instances which specify list of client for which access rights 
+                                 should be changed.
+ @param channel                  \b PNChannel instance which is used to specify channel on which client's access rights
+                                 should be changed.
+ @param accessRights             Bit field which allow to specify set of options. Bit options specified in 
+                                 \c PNAccessRights
+ @param accessPeriodDuration     Duration in minutes during which provided access rights should be applied on channel 
+                                 level.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys onChannel:(PNChannel *)channel
+                                  to:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter channel(s) level access rights.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForClients:@[@"spectator", @"visitor"] onChannel:[PNChannel channelWithName:@"iosdev"] 
+                                   to:PNReadAccessRight forPeriod:10
+          withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+      if (error == nil) {
+
+          // PubNub client successfully changed access rights for 'user' access level.
+      }
+      else {
+
+          // PubNub client did fail to revoke access rights from 'user' access level.
+          //
+          // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+          // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human  readable 
+          // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+          // access level for which change has been requested.
+      }
+ }];
+ [pubNub changeAccessRightsForChannels:[PNChannel channelsWithNames:@"iosdev"] to:PNWriteAccessRight forPeriod:10];
+ @endcode
+ 
+ Code above allow to subscribe and post messages to \a 'iosdev' channel even for \a 'spectator' and \a 'visitor' users.
+ It happens because channel access rights has higher priority against user based access rights.
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param clientsAuthorizationKeys List of \a NSString instances which specify list of client for which access rights 
+                                 should be changed.
+ @param channel                  \b PNChannel instance which is used to specify channel on which client's access rights
+                                 should be changed.
+ @param accessRights             Bit field which allow to specify set of options. Bit options specified in 
+                                 \c PNAccessRights
+ @param accessPeriodDuration     Duration in minutes during which provided access rights should be applied on channel 
+                                 level.
+ @param handlerBlock             The block which will be called by \b PubNub client when one of success or error events
+                                 will be received. The block takes two arguments: \c collection -
+                                 \b PNAccessRightsCollection instance which hold set of \b PNAccessRightsInformation 
+                                 instances to describe new \a 'user' access rights; \c error - error which describes 
+                                 what exactly went wrong during access rights change. Always check \a error.code to find
+                                 out what caused error (check PNErrorCodes header file and use 
+                                 \a -localizedDescription / \a -localizedFailureReason and 
+                                 \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys onChannel:(PNChannel *)channel
+                                  to:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+
+/**
+ @brief Alter channel(s) group or namespace(s) level access rights.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForChannelGroupAndNamespaces:@[[PNChannelGroup channelGroupWithName:@"platform" 
+                                                                                   inNamespace:@"develop"],
+                                                          [PNChannelGroupNamespace namespaceWithName:@"developers"]]
+                                                     to:PNReadAccessRight forPeriod:10];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param groupsAndNamespaces  List of \b PNChannelGroup and \b PNChannelGroupNamespace instances for which access rights 
+                             should be changed
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in 
+                             \c PNAccessRights. Only \c PNReadAccessRight or \c PNManagementRight can be used with this
+                             API.
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on channel level.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForChannelGroupAndNamespaces:(NSArray *)groupsAndNamespaces to:(PNAccessRights)accessRights
+                                             forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter channel(s) group or namespace(s) level access rights.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForChannelGroupAndNamespaces:@[[PNChannelGroup channelGroupWithName:@"platform" 
+                                                                                   inNamespace:@"develop"],
+                                                          [PNChannelGroupNamespace namespaceWithName:@"developers"]]
+                                                     to:PNReadAccessRight forPeriod:10
+                            withCompletionHandlingBlock:^(PNAccessRightsCollection *collection,
+                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel group' or 'namespace' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel group' or 'namespace' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'channel group' or 'namespace' access level.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to revoke access rights from 'channel group' or 'namespace' access level.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel group' or 'namespace' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel group' or 'namespace' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param groupsAndNamespaces  List of \b PNChannelGroup and \b PNChannelGroupNamespace instances for which access rights 
+                             should be changed
+ @param accessRights         Bit field which allow to specify set of options. Bit options specified in 
+                             \c PNAccessRights. Only \c PNReadAccessRight or \c PNManagementRight can be used with this
+                             API.
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on channel group
+                             or namespace level.
+ @param handlerBlock         The block which will be called by \b PubNub client when one of success or error events will 
+                             be received. The block takes two arguments: \c collection - \b PNAccessRightsCollection 
+                             instance which hold set of \b PNAccessRightsInformation instances to describe new 
+                             \a 'channel group' or \a 'namespace' access rights; \c error - error which describes what 
+                             exactly went wrong during access rights change. Always check \a error.code to find out what
+                             caused error (check PNErrorCodes header file and use \a -localizedDescription /
+                             \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable 
+                             description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForChannelGroupAndNamespaces:(NSArray *)groupsAndNamespaces to:(PNAccessRights)accessRights
+                                             forPeriod:(NSInteger)accessPeriodDuration
+                           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+
+/**
+ @brief Alter user access rights on channel group.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForClients:@[@"admin"] onChannelGroup:[PNChannelGroup channelGroupWithName:@"platform"
+                                                                                          inNamespace:@"develop"]
+                                   to:PNManagementRight forPeriod:10];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'user' access level on channel group.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to change access rights for 'user' access level on channel group.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'user' access level on channel group.
+     }
+     else {
+
+         // PubNub client did fail to change access rights from 'user' access level on channel group.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param clientsAuthorizationKeys  List of \a NSString instances which specify list of client for which access rights 
+                                  should be changed.
+ @param group                     \b PNChannelGroup instance which is used to specify channel group on which client's 
+                                  access rights should be changed.
+ @param accessRights              Bit field which allow to specify set of options. Bit options specified in
+                                  \c PNAccessRights. Only \c PNReadAccessRight or \c PNManagementRight can be used with 
+                                  this API.
+ @param accessPeriodDuration      Duration in minutes during which provided access rights should be applied on user 
+                                  inside of channel group.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys onChannelGroup:(PNChannelGroup *)group
+                                  to:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter user access rights on channel group.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForClients:@[@"admin"] onChannelGroup:[PNChannelGroup channelGroupWithName:@"platform"
+                                                                                          inNamespace:@"develop"]
+                                   to:PNManagementRight forPeriod:10
+          withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'user' access level on channel group.
+     }
+     else {
+
+         // PubNub client did fail to change access rights for 'user' access level on channel group.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'user' access level on channel group.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to change access rights for 'user' access level on channel group.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'user' access level on channel group.
+     }
+     else {
+
+         // PubNub client did fail to change access rights from 'user' access level on channel group.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param clientsAuthorizationKeys  List of \a NSString instances which specify list of client for which access rights 
+                                  should be changed.
+ @param group                     \b PNChannelGroup instance which is used to specify channel group on which client's 
+                                  access rights should be changed.
+ @param accessRights              Bit field which allow to specify set of options. Bit options specified in
+                                  \c PNAccessRights. Only \c PNReadAccessRight or \c PNManagementRight can be used with 
+                                  this API.
+ @param accessPeriodDuration      Duration in minutes during which provided access rights should be applied on user 
+                                  inside of channel group.
+ @param handlerBlock              The block which will be called by \b PubNub client when one of success or error events 
+                                  will be received. The block takes two arguments: 
+                                  \c collection - \b PNAccessRightsCollection instance which hold set of 
+                                  \b PNAccessRightsInformation instances to describe new \a 'user' access rights on 
+                                  channel group; \c error - error which describes what exactly went wrong during  access 
+                                  rights change. Always check \a error.code to find out what caused error (check
+                                  PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason
+                                  and \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys onChannelGroup:(PNChannelGroup *)group
+                                  to:(PNAccessRights)accessRights forPeriod:(NSInteger)accessPeriodDuration
+         withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+
+/**
+ @brief Alter user access rights on channel group or all namespace(s).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForClients:@[@"admin"] 
+              onChannelGroupNamespace:[PNChannelGroupNamespace namespaceWithName:@"developers"]
+                                   to:PNManagementRight forPeriod:10];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'user' access level on channel group or all namespace(s).
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to change access rights for 'user' access level on channel group or all namespace(s).
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'user' access level on channel group or all
+         // namespace(s).
+     }
+     else {
+
+         // PubNub client did fail to change access rights from 'user' access level on channel group or all 
+         // namespace(s).
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param clientsAuthorizationKeys  List of \a NSString instances which specify list of client for which access rights 
+                                  should be changed.
+ @param nspace                    \b PNChannelGroupNamespace instance which is used to specify channel group namescpace
+                                  on which client's access rights should be changed. Pass \c nil to apply 
+                                  \c accessRights to all namespaces and channel groups inside of them.
+ @param accessRights              Bit field which allow to specify set of options. Bit options specified in
+                                  \c PNAccessRights. Only \c PNReadAccessRight or \c PNManagementRight can be used with 
+                                  this API.
+ @param accessPeriodDuration      Duration in minutes during which provided access rights should be applied on user 
+                                  inside of channel group namespace.
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys
+             onChannelGroupNamespace:(PNChannelGroupNamespace *)nspace to:(PNAccessRights)accessRights
+                           forPeriod:(NSInteger)accessPeriodDuration;
+
+/**
+ @brief Alter user access rights on channel group or all namespace(s).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub changeAccessRightsForClients:@[@"admin"] 
+              onChannelGroupNamespace:[PNChannelGroupNamespace namespaceWithName:@"developers"]
+                                   to:PNManagementRight forPeriod:10
+          withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'user' access level on channel group or all 
+         // namespace(s).
+     }
+     else {
+
+         // PubNub client did fail to change access rights for 'user' access level on channel group or all namespace(s).
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully changed access rights for 'user' access level on channel group or all namespace(s).
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsChangeDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to change access rights for 'user' access level on channel group or all namespace(s).
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which change has been requested.
+ }
+ @endcode
+
+ There is also way to observe access rights change process from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsChangeObserver:self withBlock:^(PNAccessRightsCollection *collection,
+                                                                          PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'user' access level on channel group or all
+         // namespace(s).
+     }
+     else {
+
+         // PubNub client did fail to change access rights from 'user' access level on channel group or all 
+         // namespace(s).
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
+ @endcode
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
+ 
+ @param clientsAuthorizationKeys  List of \a NSString instances which specify list of client for which access rights 
+                                  should be changed.
+ @param nspace                    \b PNChannelGroupNamespace instance which is used to specify channel group namescpace
+                                  on which client's access rights should be changed. Pass \c nil to apply 
+                                  \c accessRights to all namespaces and channel groups inside of them.
+ @param accessRights              Bit field which allow to specify set of options. Bit options specified in
+                                  \c PNAccessRights. Only \c PNReadAccessRight or \c PNManagementRight can be used with 
+                                  this API.
+ @param accessPeriodDuration      Duration in minutes during which provided access rights should be applied on user 
+                                  inside of channel group namespace.
+ @param handlerBlock              The block which will be called by \b PubNub client when one of success or error events 
+                                  will be received. The block takes two arguments: 
+                                  \c collection - \b PNAccessRightsCollection instance which hold set of 
+                                  \b PNAccessRightsInformation instances to describe new \a 'user' access rights on 
+                                  channel group namespace; \c error - error which describes what exactly went wrong 
+                                  during access rights change. Always check \a error.code to find out what caused error
+                                  (check PNErrorCodes header file and use \a -localizedDescription / 
+                                  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable 
+                                  description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ @note You can pass a value less than \c 0 as \a 'accessPeriodDuration' argument to use default value (default value is 
+       \b 1440 minutes).
+ 
+ @since 3.6.9
+ */
+- (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys
+             onChannelGroupNamespace:(PNChannelGroupNamespace *)nspace to:(PNAccessRights)accessRights
+                           forPeriod:(NSInteger)accessPeriodDuration
          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
 /**
@@ -6535,7 +8409,8 @@
 
  @since 3.6.8
  */
-- (void)auditAccessRightsForChannel:(PNChannel *)channel;
+- (void)auditAccessRightsForChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsForChannels:' instead");
 
 /**
  Audit access rights for \a 'channel' level.
@@ -6637,7 +8512,9 @@
 
  @since 3.6.8
  */
-- (void)auditAccessRightsForChannel:(PNChannel *)channel withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+- (void)auditAccessRightsForChannel:(PNChannel *)channel
+        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsForChannels:withCompletionHandlingBlock:' instead");
 
 /**
  Audit access rights for \a 'user' level.
@@ -6713,7 +8590,8 @@
 
  @since 3.6.8
  */
-- (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey;
+- (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsForChannel:clients:' instead");
 
 /**
  Audit access rights for \a 'user' level.
@@ -6819,7 +8697,8 @@
  @since 3.6.8
  */
 - (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
-        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsForChannel:clients:withCompletionHandlingBlock:' instead");
 
 /**
  Audit access rights for \a 'channel' level. \a 'channel' level is mid-layer of access rights tree,
@@ -7179,6 +9058,525 @@
  */
 - (void)auditAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
         withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+
+/**
+ @brief Audit user access rights on channel group(s) and namespace(s).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub auditAccessRightsForChannelGroupAndNamespaces:@[[PNChannelGroup channelGroupWithName:@"platform" 
+                                                                                  inNamespace:@"develop"],
+                                                         [PNChannelGroupNamespace namespaceWithName:@"developers"]]];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully pulled out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to pull out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which audition has been requested.
+ }
+ @endcode
+
+ There is also way to observe audition process from any place in your application using \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsAuditObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                         PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsAuditDidCompleteNotification, kPNClientAccessRightsAuditDidFailNotification.
+ 
+ @param clientsAuthorizationKeys Array of \a NSString instances each of which represent client authorization key.
+ @param groupsAndNamespaces      List of \b PNChannelGroup and \b PNChannelGroupNamespace instances for which \b PubNub 
+                                 client check rights for specified set of clients (authorization keys).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ 
+ @since 3.6.9
+ */
+- (void)auditAccessRightsForChannelGroupAndNamespaces:(NSArray *)groupsAndNamespaces;
+
+/**
+ @brief Audit user access rights on channel group(s) and namespace(s).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub auditAccessRightsForChannelGroupAndNamespaces:@[[PNChannelGroup channelGroupWithName:@"platform" 
+                                                                                  inNamespace:@"develop"],
+                                                         [PNChannelGroupNamespace namespaceWithName:@"developers"]]
+         withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully pulled out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to pull out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which audition has been requested.
+ }
+ @endcode
+
+ There is also way to observe audition process from any place in your application using \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsAuditObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                         PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsAuditDidCompleteNotification, kPNClientAccessRightsAuditDidFailNotification.
+ 
+ @param clientsAuthorizationKeys Array of \a NSString instances each of which represent client authorization key.
+ @param groupsAndNamespaces      List of \b PNChannelGroup and \b PNChannelGroupNamespace instances for which \b PubNub 
+                                 client check rights for specified set of clients (authorization keys).
+ @param handlerBlock             The block which will be called by \b PubNub client when one of success or error
+                                 events will be received. The block takes two arguments:
+                                 \c collection - \b PNAccessRightsCollection instance which hold set of
+                                 \b PNAccessRightsInformation instances to describe \a 'user' access rights for
+                                 specified set of channel group(s) and namespace(s); \c error - error which describes 
+                                 what exactly went wrong during access rights audition. Always check \a error.code to 
+                                 find out what caused error (check PNErrorCodes header file and use 
+                                 \a -localizedDescription / \a -localizedFailureReason and 
+                                 \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ 
+ @since 3.6.9
+ */
+- (void)auditAccessRightsForChannelGroupAndNamespaces:(NSArray *)groupsAndNamespaces
+                          withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+
+/**
+ @brief Audit user access rights on channel group.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub auditAccessRightsForClients:@[@"admin"] onChannelGroup:[PNChannelGroup channelGroupWithName:@"platform"
+                                                                                         inNamespace:@"develop"]];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully pulled out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to pull out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which audition has been requested.
+ }
+ @endcode
+
+ There is also way to observe audition process from any place in your application using \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsAuditObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                         PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsAuditDidCompleteNotification, kPNClientAccessRightsAuditDidFailNotification.
+ 
+ @param clientsAuthorizationKeys Array of \a NSString instances each of which represent client authorization key.
+ @param group                    \b PNChannelGroup instance for which \b PubNub client check rights for specified set
+                                 of clients (authorization keys).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ 
+ @since 3.6.9
+ */
+- (void)auditAccessRightsForClients:(NSArray *)clientsAuthorizationKeys onChannelGroup:(PNChannelGroup *)group;
+
+/**
+ @brief Audit user access rights on channel group.
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub auditAccessRightsForClients:@[@"admin"] onChannelGroup:[PNChannelGroup channelGroupWithName:@"platform"
+                                                                                         inNamespace:@"develop"]
+         withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully pulled out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to pull out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which audition has been requested.
+ }
+ @endcode
+
+ There is also way to observe audition process from any place in your application using \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsAuditObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                         PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsAuditDidCompleteNotification, kPNClientAccessRightsAuditDidFailNotification.
+ 
+ @param clientsAuthorizationKeys Array of \a NSString instances each of which represent client authorization key.
+ @param group                    \b PNChannelGroup instance for which \b PubNub client check rights for specified set
+                                 of clients (authorization keys).
+ @param handlerBlock             The block which will be called by \b PubNub client when one of success or error
+                                 events will be received. The block takes two arguments:
+                                 \c collection - \b PNAccessRightsCollection instance which hold set of
+                                 \b PNAccessRightsInformation instances to describe \a 'user' access rights for
+                                 specific \c group; \c error - error which describes what exactly went wrong
+                                 during access rights audition. Always check \a error.code to find out what caused
+                                 error (check PNErrorCodes header file and use \a -localizedDescription /
+                                 \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable
+                                 description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ 
+ @since 3.6.9
+ */
+- (void)auditAccessRightsForClients:(NSArray *)clientsAuthorizationKeys onChannelGroup:(PNChannelGroup *)group
+        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+
+/**
+ @brief Audit user access rights on channel group or all namespace(s).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub auditAccessRightsForClients:@[@"admin"] onChannelGroupNamespace:[PNChannelGroupNamespace allNamespaces]];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully pulled out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to pull out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which audition has been requested.
+ }
+ @endcode
+
+ There is also way to observe audition process from any place in your application using \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsAuditObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                         PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsAuditDidCompleteNotification, kPNClientAccessRightsAuditDidFailNotification.
+ 
+ @param clientsAuthorizationKeys Array of \a NSString instances each of which represent client authorization key.
+ @param nspace                   \b PNChannelGroupNamespace instance for which \b PubNub client check rights for 
+                                 specified set of clients (authorization keys).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ 
+ @since 3.6.9
+ */
+- (void)auditAccessRightsForClients:(NSArray *)clientsAuthorizationKeys
+            onChannelGroupNamespace:(PNChannelGroupNamespace *)nspace;
+
+/**
+ @brief Audit user access rights on channel group or all namespace(s).
+ 
+ @code
+ @endcode
+ \b Example:
+
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
+                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+ PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+ [pubNub connect];
+ [pubNub auditAccessRightsForClients:@[@"admin"] onChannelGroupNamespace:[PNChannelGroupNamespace allNamespaces]
+         withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection {
+
+     // PubNub client successfully pulled out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+ }
+
+ - (void)pubnubClient:(PubNub *)client accessRightsAuditDidFailWithError:(PNError *)error {
+
+     // PubNub client did fail to pull out access rights information for specified object (object defined by set
+     // of parameters used for \a 'audit' request.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes access 
+     // level for which audition has been requested.
+ }
+ @endcode
+
+ There is also way to observe audition process from any place in your application using \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addAccessRightsAuditObserver:self withBlock:^(PNAccessRightsCollection *collection, 
+                                                                         PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully pulled out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+     }
+     else {
+
+         // PubNub client did fail to pull out access rights information for specified object (object defined by set
+         // of parameters used for \a 'audit' request.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which audition has been requested.
+     }
+ }];
+
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientAccessRightsAuditDidCompleteNotification, kPNClientAccessRightsAuditDidFailNotification.
+ 
+ @param clientsAuthorizationKeys Array of \a NSString instances each of which represent client authorization key.
+ @param nspace                   \b PNChannelGroupNamespace instance for which \b PubNub client check rights for 
+                                 specified set of clients (authorization keys).
+ @param handlerBlock             The block which will be called by \b PubNub client when one of success or error
+                                 events will be received. The block takes two arguments:
+                                 \c collection - \b PNAccessRightsCollection instance which hold set of
+                                 \b PNAccessRightsInformation instances to describe \a 'user' access rights for
+                                 specific \c namespace; \c error - error which describes what exactly went wrong
+                                 during access rights audition. Always check \a error.code to find out what caused
+                                 error (check PNErrorCodes header file and use \a -localizedDescription /
+                                 \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable
+                                 description for error).
+ 
+ @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
+ @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
+ 
+ @since 3.6.9
+ */
+- (void)auditAccessRightsForClients:(NSArray *)clientsAuthorizationKeys
+            onChannelGroupNamespace:(PNChannelGroupNamespace *)nspace
+        withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+
 
 #pragma mark -
 

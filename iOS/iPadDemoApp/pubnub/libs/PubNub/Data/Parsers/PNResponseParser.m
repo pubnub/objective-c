@@ -7,14 +7,20 @@
  */
 
 #import "PNResponseParser.h"
-#import "PNAccessRightsResponseParser+Protected.h"
+#import "PNChannelGroupNamespaceRemoveResponseParser.h"
 #import "PNPushNotificationsEnabledChannelsParser.h"
+#import "PNAccessRightsResponseParser+Protected.h"
+#import "PNChannelGroupNamespacesResponseParser.h"
+#import "PNChannelGroupRemoveResponseParser.h"
 #import "PNClientStateUpdateResponseParser.h"
+#import "PNChannelsForGroupResponseParser.h"
 #import "PNActionResponseParser+Protected.h"
 #import "PNChannelHistoryParser+Protected.h"
+#import "PNGroupChannelsListChangeParser.h"
 #import "PNOperationStatusResponseParser.h"
 #import "PNErrorResponseParser+Protected.h"
 #import "PNChannelEventsResponseParser.h"
+#import "PNChannelGroupsResponseParser.h"
 #import "PNClientStateResponseParser.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNTimeTokenResponseParser.h"
@@ -88,13 +94,17 @@
         }
     }
 
-    Class parserClass = [self classForResponse:response];
+    Class parserClass = nil;
+    if (![response isErrorResponse]){
+        
+        [self classForResponse:response];
+    }
 
     // Looks like server provided response which doesn't conform to standards required for concrete packet processing.
     if (!parserClass) {
 
         parserClass = [PNErrorResponseParser class];
-        response = nil;
+//        response = nil;
     }
 
 
@@ -150,6 +160,37 @@
     else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.stateUpdateCallback]) {
 
         parserClass = [PNClientStateUpdateResponseParser class];
+    }
+    // Check whether result is result for "Channel Groups" request or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelGroupsRequestCallback]) {
+        
+        parserClass = [PNChannelGroupsResponseParser class];
+    }
+    // Check whether result is result for "Channel Group namespaces" request or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelGroupNamespacesRequestCallback]) {
+        
+        parserClass = [PNChannelGroupNamespacesResponseParser class];
+    }
+    // Check whether result is result for "Channel Group namespace removal" request or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelGroupNamespaceRemoveCallback]) {
+        
+        parserClass = [PNChannelGroupNamespaceRemoveResponseParser class];
+    }
+    // Check whether result is result for "Channel Group removal" request or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelGroupRemoveCallback]) {
+        
+        parserClass = [PNChannelGroupRemoveResponseParser class];
+    }
+    // Check whether result is result for "Channels list for Group" request or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelsForGroupRequestCallback]) {
+        
+        parserClass = [PNChannelsForGroupResponseParser class];
+    }
+    // Check whether result is result for "Channels list modification for Group" or not.
+    else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelGroupChannelsAddCallback] ||
+             [response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelGroupChannelsRemoveCallback]) {
+        
+        parserClass = [PNGroupChannelsListChangeParser class];
     }
     // Check whether result is result for "Here now" request execution or not.
     else if ([response.callbackMethod isEqualToString:PNServiceResponseCallbacks.channelParticipantsCallback]) {

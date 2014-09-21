@@ -177,7 +177,9 @@
  
  @see +subscribeOnChannel:withCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel;
++ (void)subscribeOnChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannelsAndGroups:' or '-subscribeOnChannelsAndGroups:' instead. Class "
+                           "methods will be deprecated in future.");
 
 /**
  Subscribe client to one more channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on which
@@ -287,7 +289,11 @@
  
  @sse +subscribeOnChannel:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void)   subscribeOnChannel:(PNChannel *)channel
+  withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannelsAndGroups:withCompletionHandlingBlock:' or "
+                           "'-subscribeOnChannelsAndGroups:withCompletionHandlingBlock:' instead. Class methods will be"
+                           " deprecated in future.");
 
 /**
  Subscribe client to one more channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -384,7 +390,10 @@
  
  @see +subscribeOnChannel:withCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState;
++ (void)subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannelsAndGroups:withClientState:' or "
+                           "'-subscribeOnChannelsAndGroups:withClientState:' instead. Class methods will be deprecated "
+                           "in future.");
 
 /**
  Subscribe client to one more channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on which
@@ -507,8 +516,11 @@
  
  @sse +subscribeOnChannel:
  */
-+ (void) subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void)  subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannelsAndGroups:withClientState:andCompletionHandlingBlock:' or "
+                           "'-subscribeOnChannelsAndGroups:withClientState:andCompletionHandlingBlock:' instead. Class "
+                           "methods will be deprecated in future.");
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence to channels on which
@@ -589,7 +601,9 @@
  
  @see +subscribeOnChannels:withCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels;
++ (void)subscribeOnChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannelsAndGroups:' or '-subscribeOnChannelsAndGroups:' instead. Class "
+                           "methods will be deprecated in future.");
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels
@@ -702,7 +716,198 @@
  
  @see +subscribeOnChannels:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void)  subscribeOnChannels:(NSArray *)channels
+  withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannelsAndGroups:withCompletionHandlingBlock:' or "
+                           "'-subscribeOnChannelsAndGroups:withCompletionHandlingBlock:' instead. Class methods will be"
+                           " deprecated in future.");
+
+/**
+ Subscribe client to the set of new channels and channel groups. This method will trigger presence event by
+ sending \a 'leave' presence event to channels on which client already connected and then re-subscribe generating
+ \a 'join' presence event.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub subscribeOnChannelsAndGroups:@[[PNChannel channelWithName:@"iosdev"],
+                                        [PNChannelGroup channelGroupWithName:@"ios" inNamespace:@"users"]]];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client subscribed on specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+ 
+     // PubNub client did fail to subscribe on requested set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub client 
+     // was unable to subscribe.
+ }
+ @endcode
+ 
+ There is also way to observe subscription process state from any place in your application using  
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:self
+ withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             // client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessWillRestoreState:
+         
+             // PubNub client is about to restore subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessRestoredState:
+         
+             // PubNub client completed subscription restore process.
+             break;
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
+ kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
+ 
+ @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
+ 
+ @since <#new feature release version#>
+ */
++ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups;
+
+/**
+ Subscribe client to the set of new channels and channel groups. This method will trigger presence event by 
+ sending \a 'leave' presence event to channels on which client already connected and then re-subscribe generating 
+ \a 'join' presence event.
+ 
+ @code
+ @endcode
+ This method extends \a +subscribeOnChannelsAndGroups: and allow to specify subscription process state change handler 
+ block.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub subscribeOnChannelsAndGroups:@[[PNChannel channelWithName:@"iosdev"],
+                                        [PNChannelGroup channelGroupWithName:@"ios" inNamespace:@"users"]]
+ withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance
+             // Update user interface to let user know that something went wrong and do something to recover from this 
+             // state.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             //client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         default:
+             break;
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client subscribed on specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+ 
+     // PubNub client did fail to subscribe on requested set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub client 
+     // was unable to subscribe.
+ }
+ @endcode
+ 
+ There is also way to observe subscription process state from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:self
+ withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             // client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessWillRestoreState:
+ 
+             // PubNub client is about to restore subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessRestoredState:
+ 
+             // PubNub client completed subscription restore process.
+             break;
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
+ kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
+ 
+ @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
+ @param handlerBlock      The block which will be called by PubNub client as soon as subscription process state will 
+                          change. The block takes three arguments: \c state - is \b PNSubscriptionProcessState 
+                          enum field which describes current subscription state; \c channels - array of channels for 
+                          which subscription process changed state; \c error - error because of which subscription 
+                          failed. Always check \a error.code to find out what caused error (check PNErrorCodes header 
+                          file and use \a -localizedDescription / \a -localizedFailureReason and 
+                          \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @since <#new feature release version#>
+ */
++ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups
+         withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence to channels on which
@@ -799,7 +1004,10 @@
  
  @see +subscribeOnChannels:withCompletionHandlingBlock:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState;
++ (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
+   DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannelsAndGroups:withClientState:' or "
+                            "'-subscribeOnChannelsAndGroups:withClientState:' instead. Class methods will be deprecated"
+                            " in future.");
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels
@@ -924,8 +1132,209 @@
  
  @see +subscribeOnChannels:
  */
-+ (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void) subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+subscribeOnChannelsAndGroups:withClientState:andCompletionHandlingBlock:' or "
+                           "'-subscribeOnChannelsAndGroups:withClientState:andCompletionHandlingBlock:' instead. Class "
+                           "methods will be deprecated in future.");
+
+/**
+ Subscribe client to the set of new channels and channel groups. This method will trigger presence event by
+ sending \a 'leave' presence event to channels on which client already connected and then re-subscribe generating
+ \a 'join' presence event.
+ 
+ @code
+ @endcode
+ This method extends \a +subscribeOnChannelsAndGroups: and allow to specify client specific state.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub subscribeOnChannelsAndGroups:@[[PNChannel channelWithName:@"iosdev"],
+                                        [PNChannelGroup channelGroupWithName:@"ios" inNamespace:@"users"]]
+                      withClientState:@{@"iosdev": @{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}, 
+                                        @"users:ios": @{@"type": @"developer", @"fullAccess": @(NO)}}];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client subscribed on specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+ 
+     // PubNub client did fail to subscribe on requested set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub client 
+     // was unable to subscribe.
+ }
+ @endcode
+ 
+ There is also way to observe subscription process state from any place in your application using  
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:self
+ withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             // client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessWillRestoreState:
+         
+             // PubNub client is about to restore subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessRestoredState:
+         
+             // PubNub client completed subscription restore process.
+             break;
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
+ kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
+ 
+ @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
+ @param clientState       \b NSDictionary instance with list of parameters which should be bound to the client.
+ 
+ @since <#new feature release version#>
+ */
++ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withClientState:(NSDictionary *)clientState;
+
+/**
+ Subscribe client to the set of new channels and channel groups. This method will trigger presence event by 
+ sending \a 'leave' presence event to channels on which client already connected and then re-subscribe generating 
+ \a 'join' presence event.
+ 
+ @code
+ @endcode
+ This method extends \a +subscribeOnChannelsAndGroups:withClientState: and allow to specify subscription process 
+ state change handler block.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub subscribeOnChannelsAndGroups:@[[PNChannel channelWithName:@"iosdev"],
+                                        [PNChannelGroup channelGroupWithName:@"ios" inNamespace:@"users"]]
+                      withClientState:@{@"iosdev": @{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}, 
+                                        @"users:ios": @{@"type": @"developer", @"fullAccess": @(NO)}}
+           andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, 
+                                        PNError *subscriptionError) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance
+             // Update user interface to let user know that something went wrong and do something to recover from this 
+             // state.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             //client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         default:
+             break;
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client subscribed on specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+ 
+     // PubNub client did fail to subscribe on requested set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub client 
+     // was unable to subscribe.
+ }
+ @endcode
+ 
+ There is also way to observe subscription process state from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addClientChannelSubscriptionStateObserver:self
+ withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             // client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessWillRestoreState:
+ 
+             // PubNub client is about to restore subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessRestoredState:
+ 
+             // PubNub client completed subscription restore process.
+             break;
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
+ kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
+ 
+ @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
+ @param clientState       \b NSDictionary instance with list of parameters which should be bound to the client.
+ @param handlerBlock      The block which will be called by PubNub client as soon as subscription process state will 
+                          change. The block takes three arguments: \c state - is \b PNSubscriptionProcessState 
+                          enum field which describes current subscription state; \c channels - array of channels for 
+                          which subscription process changed state; \c error - error because of which subscription 
+                          failed. Always check \a error.code to find out what caused error (check PNErrorCodes header 
+                          file and use \a -localizedDescription / \a -localizedFailureReason and 
+                          \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @since <#new feature release version#>
+ */
++ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withClientState:(NSDictionary *)clientState
+          andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 /**
  Unsubscribe client from one channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -993,7 +1402,9 @@
  
  @see +unsubscribeFromChannel:withCompletionHandlingBlock:
  */
-+ (void)unsubscribeFromChannel:(PNChannel *)channel;
++ (void)unsubscribeFromChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+unsubscribeFromChannelsAndGroups:' or '-unsubscribeFromChannelsAndGroups:' instead. "
+                           "Class method will be removed in future.");
 
 /**
  Unsubscribe client from one channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -1092,7 +1503,11 @@
  
  @see +unsubscribeFromChannel:
  */
-+ (void)unsubscribeFromChannel:(PNChannel *)channel withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
++ (void)unsubscribeFromChannel:(PNChannel *)channel
+   withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+unsubscribeFromChannelsAndGroups:withCompletionHandlingBlock:' or "
+                           "'-unsubscribeFromChannelsAndGroups:withCompletionHandlingBlock:' instead. Class methods "
+                           "will be deprecated in future.");
 
 /**
  Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -1165,7 +1580,9 @@
  
  @see +unsubscribeFromChannels:withCompletionHandlingBlock:
  */
-+ (void)unsubscribeFromChannels:(NSArray *)channels;
++ (void)unsubscribeFromChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+unsubscribeFromChannelsAndGroups:' or '-unsubscribeFromChannelsAndGroups:' instead. "
+                           "Class method will be removed in future.");
 
 /**
  Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -1249,7 +1666,166 @@
  
  @see +unsubscribeFromChannels:
  */
-+ (void)unsubscribeFromChannels:(NSArray *)channels withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
++ (void)unsubscribeFromChannels:(NSArray *)channels
+    withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '+unsubscribeFromChannelsAndGroups:withCompletionHandlingBlock:' or "
+                           "'-unsubscribeFromChannelsAndGroups:withCompletionHandlingBlock:' instead. Class methods "
+                           "will be deprecated in future.");
+
+/**
+ Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' 
+ presence event to channels on which client already subscribed and then re-subscribe generating \a 'join' presence 
+ event on the rest of channels.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub subscribeFromChannelsAndGroups:@[[PNChannel channelsWithName:@"iosdev"]]];
+ [PubNub sendMessage:@"PubNub welcomes iOS developers" toChannel:[PNChannel channelWithName:@"iosdev"]];
+ [PubNub unsubscribeFromChannelsAndGroups:[PNChannel channelsWithNames:@[@"iosdev", @"macosdev"]]];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client successfully unsubscribed from specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
+ 
+     // PubNub client did fail to unsubscribe from provided set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances from which PubNub 
+     // client was unable to unsubscribe.
+ }
+ @endcode
+ 
+ There is also way to observe unsubscription process state from any place in your application using  \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addClientChannelUnsubscriptionObserver:self
+ withCallbackBlock:^(NSArray *channels, PNError *error) {
+ 
+     if (error == nil) {
+     
+         // PubNub client successfully unsubscribed from specified channels.
+     }
+     else {
+     
+         // PubNub did fail to unsubscribed from specified channels and reason can be found in error instance.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains array of PNChannel instances from which PubNub 
+         // client was unable to unsubscribe.
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientUnsubscriptionDidCompleteNotification, kPNClientUnsubscriptionDidFailNotification.
+ 
+ @param channels List of \b PNChannel and \b PNChannelGroup instances from which client should unsubscribe.
+ 
+ @since <#new feature release version#>
+ */
++ (void)unsubscribeFromChannelsAndGroups:(NSArray *)channelsAndGroups;
+
+/**
+ Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' 
+ presence event to channels on which client already subscribed and then re-subscribe generating \a 'join' presence
+ event on the rest of channels.
+ 
+ @code
+ @endcode
+ This method extends \a +unsubscribeFromChannelsAndGroups: and allow to specify unsubscription process state change 
+ handler block.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ [PubNub setConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [PubNub connect];
+ [PubNub subscribeFromChannelsAndGroups:@[[PNChannel channelsWithName:@"iosdev"]]];
+ [PubNub sendMessage:@"PubNub welcomes iOS developers" toChannel:[PNChannel channelWithName:@"iosdev"]];
+ [PubNub unsubscribeFromChannelsAndGroups:[PNChannel channelsWithNames:@[@"iosdev", @"macosdev"]]
+ withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
+ 
+     if (error == nil) {
+     
+         // PubNub client successfully unsubscribed from specified channels.
+     }
+     else {
+     
+         // PubNub did fail to unsubscribed from specified channels and reason can be found in error instance.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains array of PNChannel instances from which PubNub 
+         // client was unable to unsubscribe.
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client successfully unsubscribed from specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
+ 
+     // PubNub client did fail to unsubscribe from provided set of channels (they are in 'error.associatedObject') 
+     // of 'error'.
+ }
+ @endcode
+ 
+ There is also way to observe unsubscription process state from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [[PNObservationCenter defaultCenter] addClientChannelUnsubscriptionObserver:self
+ withCallbackBlock:^(NSArray *channels, PNError *error) {
+
+     if (error == nil) {
+     
+         // PubNub client successfully unsubscribed from specified channels.
+     }
+     else {
+     
+         // PubNub did fail to unsubscribed from specified channels and reason can be found in error instance.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains array of PNChannel instances from which PubNub 
+         // client was unable to unsubscribe.
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientUnsubscriptionDidCompleteNotification, kPNClientUnsubscriptionDidFailNotification.
+ 
+ @param channels     Array of \b PNChannel and \b PNChannelGroup instances from which client should unsubscribe.
+ @param handlerBlock The block which will be called by PubNub client as soon as unsubscription process state will 
+                     change. The block takes two arguments: \c channels - array of \b PNChannel instances from which 
+                     client unsubscribe; \c error - error because of which unsubscription failed. Always check 
+                     \a error.code to find out what caused error (check PNErrorCodes header file and use 
+                     \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get 
+                     human readable description for error).
+ 
+ @since <#new feature release version#>
+ */
++ (void)unsubscribeFromChannelsAndGroups:(NSArray *)channelsAndGroups
+             withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
 
 
 #pragma mark - Instance methods
@@ -1419,7 +1995,8 @@
  
  @see -subscribeOnChannel:withCompletionHandlingBlock:
  */
-- (void)subscribeOnChannel:(PNChannel *)channel;
+- (void)subscribeOnChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-subscribeOnChannelsAndGroups:' instead.");
 
 /**
  Subscribe client to one more channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on which
@@ -1530,7 +2107,8 @@
  @sse +subscribeOnChannel:
  */
 - (void)  subscribeOnChannel:(PNChannel *)channel
- withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+ withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
+ DEPRECATED_MSG_ATTRIBUTE(" Use '-subscribeOnChannelsAndGroups:withCompletionHandlingBlock:' instead.");
 
 /**
  Subscribe client to one more channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -1627,7 +2205,8 @@
  
  @see -subscribeOnChannel:withCompletionHandlingBlock:
  */
-- (void)subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState;
+- (void)subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-subscribeOnChannelsAndGroups:withClientState:' instead.");
 
 /**
  Subscribe client to one more channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on which
@@ -1750,8 +2329,9 @@
  
  @sse -subscribeOnChannel:
  */
-- (void) subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+- (void)  subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-subscribeOnChannelsAndGroups:withClientState:andCompletionHandlingBlock:' instead.");
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence to channels on which
@@ -1832,7 +2412,8 @@
  
  @see -subscribeOnChannels:withCompletionHandlingBlock:
  */
-- (void)subscribeOnChannels:(NSArray *)channels;
+- (void)subscribeOnChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-subscribeOnChannelsAndGroups:' instead.");
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels
@@ -1945,8 +2526,196 @@
  
  @see -subscribeOnChannels:
  */
-- (void) subscribeOnChannels:(NSArray *)channels
- withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+- (void)  subscribeOnChannels:(NSArray *)channels
+  withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-subscribeOnChannelsAndGroups:withCompletionHandlingBlock:' instead.");
+
+/**
+ Subscribe client to the set of new channels and channel groups. This method will trigger presence event by
+ sending \a 'leave' presence event to channels on which client already connected and then re-subscribe generating
+ \a 'join' presence event.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [pubNub connect];
+ [pubNub subscribeOnChannelsAndGroups:@[[PNChannel channelWithName:@"iosdev"],
+                                        [PNChannelGroup channelGroupWithName:@"ios" inNamespace:@"users"]]];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client subscribed on specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+ 
+     // PubNub client did fail to subscribe on requested set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub client 
+     // was unable to subscribe.
+ }
+ @endcode
+ 
+ There is also way to observe subscription process state from any place in your application using  
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addClientChannelSubscriptionStateObserver:self
+ withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             // client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessWillRestoreState:
+         
+             // PubNub client is about to restore subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessRestoredState:
+         
+             // PubNub client completed subscription restore process.
+             break;
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
+ kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
+ 
+ @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
+ 
+ @since <#new feature release version#>
+ */
+- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups;
+
+/**
+ Subscribe client to the set of new channels and channel groups. This method will trigger presence event by 
+ sending \a 'leave' presence event to channels on which client already connected and then re-subscribe generating 
+ \a 'join' presence event.
+ 
+ @code
+ @endcode
+ This method extends \a -subscribeOnChannelsAndGroups: and allow to specify subscription process state change handler
+ block.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [pubNub connect];
+ [pubNub subscribeOnChannelsAndGroups:@[[PNChannel channelWithName:@"iosdev"],
+                                        [PNChannelGroup channelGroupWithName:@"ios" inNamespace:@"users"]]
+ withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance
+             // Update user interface to let user know that something went wrong and do something to recover from this 
+             // state.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             //client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         default:
+             break;
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client subscribed on specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+ 
+     // PubNub client did fail to subscribe on requested set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub client 
+     // was unable to subscribe.
+ }
+ @endcode
+ 
+ There is also way to observe subscription process state from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addClientChannelSubscriptionStateObserver:self 
+ withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             // client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessWillRestoreState:
+ 
+             // PubNub client is about to restore subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessRestoredState:
+ 
+             // PubNub client completed subscription restore process.
+             break;
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
+ kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
+ 
+ @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
+ @param handlerBlock      The block which will be called by PubNub client as soon as subscription process state will 
+                          change. The block takes three arguments: \c state - is \b PNSubscriptionProcessState 
+                          enum field which describes current subscription state; \c channels - array of channels for 
+                          which subscription process changed state; \c error - error because of which subscription 
+                          failed. Always check \a error.code to find out what caused error (check PNErrorCodes header 
+                          file and use \a -localizedDescription / \a -localizedFailureReason and 
+                          \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @since <#new feature release version#>
+ */
+- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups
+         withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence to channels on which
@@ -2043,7 +2812,8 @@
  
  @see -subscribeOnChannels:withCompletionHandlingBlock:
  */
-- (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState;
+- (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-subscribeOnChannelsAndGroups:withClientState:' instead.");
 
 /**
  Subscribe client to the set of new channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels
@@ -2168,8 +2938,207 @@
  
  @see -subscribeOnChannels:
  */
-- (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
- andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+- (void) subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-subscribeOnChannelsAndGroups:withClientState:andCompletionHandlingBlock:' instead.");
+
+/**
+ Subscribe client to the set of new channels and channel groups. This method will trigger presence event by
+ sending \a 'leave' presence event to channels on which client already connected and then re-subscribe generating
+ \a 'join' presence event.
+ 
+ @code
+ @endcode
+ This method extends \a -subscribeOnChannelsAndGroups: and allow to specify client specific state.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [pubNub connect];
+ [pubNub subscribeOnChannelsAndGroups:@[[PNChannel channelWithName:@"iosdev"],
+                                        [PNChannelGroup channelGroupWithName:@"ios" inNamespace:@"users"]]
+                      withClientState:@{@"iosdev": @{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}, 
+                                        @"users:ios": @{@"type": @"developer", @"fullAccess": @(NO)}}];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client subscribed on specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+ 
+     // PubNub client did fail to subscribe on requested set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub client 
+     // was unable to subscribe.
+ }
+ @endcode
+ 
+ There is also way to observe subscription process state from any place in your application using  
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addClientChannelSubscriptionStateObserver:self
+ withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             // client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessWillRestoreState:
+         
+             // PubNub client is about to restore subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessRestoredState:
+         
+             // PubNub client completed subscription restore process.
+             break;
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
+ kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
+ 
+ @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
+ @param clientState       \b NSDictionary instance with list of parameters which should be bound to the client.
+ 
+ @since <#new feature release version#>
+ */
+- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withClientState:(NSDictionary *)clientState;
+
+/**
+ Subscribe client to the set of new channels and channel groups. This method will trigger presence event by 
+ sending \a 'leave' presence event to channels on which client already connected and then re-subscribe generating 
+ \a 'join' presence event.
+ 
+ @code
+ @endcode
+ This method extends \a -subscribeOnChannelsAndGroups:withClientState: and allow to specify subscription process
+ state change handler block.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [pubNub connect];
+ [pubNub subscribeOnChannelsAndGroups:@[[PNChannel channelWithName:@"iosdev"],
+                                        [PNChannelGroup channelGroupWithName:@"ios" inNamespace:@"users"]]
+                      withClientState:@{@"iosdev": @{@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}, 
+                                        @"users:ios": @{@"type": @"developer", @"fullAccess": @(NO)}}
+           andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, 
+                                        PNError *subscriptionError) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance
+             // Update user interface to let user know that something went wrong and do something to recover from this 
+             // state.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             //client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         default:
+             break;
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client subscribed on specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+ 
+     // PubNub client did fail to subscribe on requested set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub client 
+     // was unable to subscribe.
+ }
+ @endcode
+ 
+ There is also way to observe subscription process state from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addClientChannelSubscriptionStateObserver:self
+ withCallbackBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+ 
+     switch (state) {
+         case PNSubscriptionProcessNotSubscribedState:
+         
+             // There should be a reason because of which subscription failed and it can be found in 'error' instance.
+             //
+             // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+             // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+             // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub 
+             // client was unable to subscribe.
+             break;
+         case PNSubscriptionProcessSubscribedState:
+         
+             // PubNub client completed subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessWillRestoreState:
+ 
+             // PubNub client is about to restore subscription on specified set of channels.
+             break;
+         case PNSubscriptionProcessRestoredState:
+ 
+             // PubNub client completed subscription restore process.
+             break;
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
+ kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
+ 
+ @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
+ @param clientState       \b NSDictionary instance with list of parameters which should be bound to the client.
+ @param handlerBlock      The block which will be called by PubNub client as soon as subscription process state will 
+                          change. The block takes three arguments: \c state - is \b PNSubscriptionProcessState 
+                          enum field which describes current subscription state; \c channels - array of channels for 
+                          which subscription process changed state; \c error - error because of which subscription 
+                          failed. Always check \a error.code to find out what caused error (check PNErrorCodes header 
+                          file and use \a -localizedDescription / \a -localizedFailureReason and 
+                          \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @since <#new feature release version#>
+ */
+- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withClientState:(NSDictionary *)clientState
+          andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 /**
  Unsubscribe client from one channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -2237,7 +3206,8 @@
  
  @see -unsubscribeFromChannel:withCompletionHandlingBlock:
  */
-- (void)unsubscribeFromChannel:(PNChannel *)channel;
+- (void)unsubscribeFromChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-unsubscribeFromChannelsAndGroups:' instead.");
 
 /**
  Unsubscribe client from one channel. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -2337,7 +3307,8 @@
  @see -unsubscribeFromChannel:
  */
 - (void)unsubscribeFromChannel:(PNChannel *)channel
-   withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
+   withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-unsubscribeFromChannelsAndGroups:withCompletionHandlingBlock:' instead.");
 
 /**
  Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -2410,7 +3381,8 @@
  
  @see -unsubscribeFromChannels:withCompletionHandlingBlock:
  */
-- (void)unsubscribeFromChannels:(NSArray *)channels;
+- (void)unsubscribeFromChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-unsubscribeFromChannelsAndGroups:' instead.");
 
 /**
  Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' presence event to channels on
@@ -2495,7 +3467,163 @@
  @see -unsubscribeFromChannels:
  */
 - (void)unsubscribeFromChannels:(NSArray *)channels
-    withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
+    withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-unsubscribeFromChannelsAndGroups:withCompletionHandlingBlock:' instead.");
+
+/**
+ Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' 
+ presence event to channels on which client already subscribed and then re-subscribe generating \a 'join' presence 
+ event on the rest of channels.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [pubNub connect];
+ [pubNub subscribeFromChannelsAndGroups:@[[PNChannel channelsWithName:@"iosdev"]]];
+ [pubNub sendMessage:@"PubNub welcomes iOS developers" toChannel:[PNChannel channelWithName:@"iosdev"]];
+ [pubNub unsubscribeFromChannelsAndGroups:[PNChannel channelsWithNames:@[@"iosdev", @"macosdev"]]];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client successfully unsubscribed from specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
+ 
+     // PubNub client did fail to unsubscribe from provided set of channels.
+     //
+     // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+     // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+     // description for error). 'error.associatedObject' contains array of PNChannel instances from which PubNub 
+     // client was unable to unsubscribe.
+ }
+ @endcode
+ 
+ There is also way to observe unsubscription process state from any place in your application using  \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addClientChannelUnsubscriptionObserver:self
+ withCallbackBlock:^(NSArray *channels, PNError *error) {
+ 
+     if (error == nil) {
+     
+         // PubNub client successfully unsubscribed from specified channels.
+     }
+     else {
+     
+         // PubNub did fail to unsubscribed from specified channels and reason can be found in error instance.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains array of PNChannel instances from which PubNub 
+         // client was unable to unsubscribe.
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientUnsubscriptionDidCompleteNotification, kPNClientUnsubscriptionDidFailNotification.
+ 
+ @param channels List of \b PNChannel and \b PNChannelGroup instances from which client should unsubscribe.
+ 
+ @since <#new feature release version#>
+ */
+- (void)unsubscribeFromChannelsAndGroups:(NSArray *)channelsAndGroups;
+
+/**
+ Unsubscribe client from set of channels. By default this method will trigger presence event by sending \a 'leave' 
+ presence event to channels on which client already subscribed and then re-subscribe generating \a 'join' presence
+ event on the rest of channels.
+ 
+ @code
+ @endcode
+ This method extends \a -unsubscribeFromChannelsAndGroups: and allow to specify unsubscription process state change
+ handler block.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+ [pubNub connect];
+ [pubNub subscribeFromChannelsAndGroups:@[[PNChannel channelsWithName:@"iosdev"]]];
+ [pubNub sendMessage:@"PubNub welcomes iOS developers" toChannel:[PNChannel channelWithName:@"iosdev"]];
+ [pubNub unsubscribeFromChannelsAndGroups:[PNChannel channelsWithNames:@[@"iosdev", @"macosdev"]]
+ withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
+ 
+     if (error == nil) {
+     
+         // PubNub client successfully unsubscribed from specified channels.
+     }
+     else {
+     
+         // PubNub did fail to unsubscribed from specified channels and reason can be found in error instance.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains array of PNChannel instances from which PubNub 
+         // client was unable to unsubscribe.
+     }
+ }];
+ @endcode
+ 
+ And handle it with delegates:
+ @code
+ - (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannelsAndGroups:(NSArray *)channels {
+ 
+     // PubNub client successfully unsubscribed from specified set of channels.
+ }
+ 
+ - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
+ 
+     // PubNub client did fail to unsubscribe from provided set of channels (they are in 'error.associatedObject') 
+     // of 'error'.
+ }
+ @endcode
+ 
+ There is also way to observe unsubscription process state from any place in your application using 
+ \b PNObservationCenter:
+ @code
+ [pubNub.observationCenter addClientChannelUnsubscriptionObserver:self
+ withCallbackBlock:^(NSArray *channels, PNError *error) {
+
+     if (error == nil) {
+     
+         // PubNub client successfully unsubscribed from specified channels.
+     }
+     else {
+     
+         // PubNub did fail to unsubscribed from specified channels and reason can be found in error instance.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains array of PNChannel instances from which PubNub 
+         // client was unable to unsubscribe.
+     }
+ }];
+ @endcode
+ 
+ Also observation can be done using \b NSNotificationCenter to observe this notifications: 
+ kPNClientUnsubscriptionDidCompleteNotification, kPNClientUnsubscriptionDidFailNotification.
+ 
+ @param channels     Array of \b PNChannel and \b PNChannelGroup instances from which client should unsubscribe.
+ @param handlerBlock The block which will be called by PubNub client as soon as unsubscription process state will 
+                     change. The block takes two arguments: \c channels - array of \b PNChannel instances from which 
+                     client unsubscribe; \c error - error because of which unsubscription failed. Always check 
+                     \a error.code to find out what caused error (check PNErrorCodes header file and use 
+                     \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get 
+                     human readable description for error).
+ 
+ @since <#new feature release version#>
+ */
+- (void)unsubscribeFromChannelsAndGroups:(NSArray *)channelsAndGroups
+             withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
 
 #pragma mark -
 

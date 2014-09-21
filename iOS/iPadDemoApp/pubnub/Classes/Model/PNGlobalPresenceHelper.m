@@ -63,33 +63,41 @@
 - (void)fetchPresenceInformationWithBlock:(PNClientParticipantsHandlingBlock)handlerBlock {
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    PNClientParticipantsHandlingBlock requestHandler = ^(NSArray *clients, PNChannel *channel, PNError *requestError) {
+    PNClientParticipantsHandlingBlock requestHandler = ^(PNHereNow *presenceInformation, NSArray *channels, PNError *requestError) {
         
-        weakSelf.numberOfParticipants = [clients count];
-        [clients enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
+        __block NSUInteger totalParticipantsCount = 0;
+        NSArray *channelsWithPresenceData = [presenceInformation channels];
+        [channelsWithPresenceData enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
             
-            if (client.channel && ![self.fetchedChannels containsObject:client.channel]) {
+            totalParticipantsCount += [presenceInformation participantsCountForChannel:channel];
+            NSArray *clients = [presenceInformation participantsForChannel:channel];
+            [clients enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
                 
-                [self.fetchedChannels addObject:client.channel];
-            }
-            
-            if (client.channel.name) {
+                if (client.channel && ![self.fetchedChannels containsObject:client.channel]) {
+                    
+                    [self.fetchedChannels addObject:client.channel];
+                }
                 
-                if (![self.mappedParticipants valueForKey:client.channel.name]) {
+                if (client.channel.name) {
                     
-                    [self.mappedParticipants setValue:[NSMutableArray array] forKey:client.channel.name];
+                    if (![self.mappedParticipants valueForKey:client.channel.name]) {
+                        
+                        [self.mappedParticipants setValue:[NSMutableArray array] forKey:client.channel.name];
+                    }
+                    if (![[self.mappedParticipants valueForKey:client.channel.name] containsObject:client]) {
+                        
+                        [[self.mappedParticipants valueForKey:client.channel.name] addObject:client];
+                    }
                 }
-                if (![[self.mappedParticipants valueForKey:client.channel.name] containsObject:client]) {
-                    
-                    [[self.mappedParticipants valueForKey:client.channel.name] addObject:client];
-                }
-            }
+            }];
         }];
+        weakSelf.numberOfParticipants = totalParticipantsCount;
+        
         
         [self.fetchedChannels sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
         if (handlerBlock) {
             
-            handlerBlock(clients, channel, requestError);
+            handlerBlock(presenceInformation, channels, requestError);
         }
     };
     [PubNub requestParticipantsListWithClientIdentifiers:self.shouldFetchParticipantNames clientState:self.shouldFetchParticipantState

@@ -13,6 +13,7 @@
 
 #import "PNObservationCenter+Protected.h"
 #import "PNMessagesHistory+Protected.h"
+#import "PNChannelGroupChange.h"
 #import "NSObject+PNAdditions.h"
 #import "PNHereNow+Protected.h"
 #import "PNError+Protected.h"
@@ -44,6 +45,13 @@ struct PNObservationEventsStruct {
     __unsafe_unretained NSString *clientConnectionStateChange;
     __unsafe_unretained NSString *clientMetadataRetrieval;
     __unsafe_unretained NSString *clientMetadataUpdate;
+    __unsafe_unretained NSString *clientChannelGroupsRequest;
+    __unsafe_unretained NSString *clientChannelGroupNamespacesRequest;
+    __unsafe_unretained NSString *clientChannelGroupNamespaceRemoval;
+    __unsafe_unretained NSString *clientChannelGroupRemoval;
+    __unsafe_unretained NSString *clientChannelsForGroupRequest;
+    __unsafe_unretained NSString *clientChannelsAdditionToGroup;
+    __unsafe_unretained NSString *clientChannelsRemovalFromGroup;
     __unsafe_unretained NSString *clientSubscriptionOnChannels;
     __unsafe_unretained NSString *clientUnsubscribeFromChannels;
     __unsafe_unretained NSString *clientPresenceEnableOnChannels;
@@ -74,6 +82,13 @@ static struct PNObservationEventsStruct PNObservationEvents = {
     .clientConnectionStateChange = @"clientConnectionStateChangeEvent",
     .clientMetadataRetrieval = @"clientMetadataRetrieveEvent",
     .clientMetadataUpdate = @"clientMedataUpdateEvent",
+    .clientChannelGroupsRequest = @"clientChannelGroupsRequest",
+    .clientChannelGroupNamespacesRequest = @"clientChannelGroupNamespacesRequest",
+    .clientChannelGroupNamespaceRemoval = @"clientChannelGroupNamespaceRemoval",
+    .clientChannelGroupRemoval = @"clientChannelGroupRemoval",
+    .clientChannelsForGroupRequest = @"clientChannelsForGroupRequest",
+    .clientChannelsAdditionToGroup = @"clientChannelsAdditionToGroup",
+    .clientChannelsRemovalFromGroup = @"clientChannelsRemovalFromGroup",
     .clientTimeTokenReceivingComplete = @"clientReceivingTimeTokenEvent",
     .clientSubscriptionOnChannels = @"clientSubscribtionOnChannelsEvent",
     .clientUnsubscribeFromChannels = @"clientUnsubscribeFromChannelsEvent",
@@ -148,6 +163,12 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 - (void)handleClientMetadataRetrieveProcess:(NSNotification *)notification;
 - (void)handleClientMetadataUpdateProcess:(NSNotification *)notification;
 - (void)handleClientSubscriptionProcess:(NSNotification *)notification;
+- (void)handleClientChannelGroupsRequestProcess:(NSNotification *)notification;
+- (void)handleClientChannelGroupNamespacesRequestProcess:(NSNotification *)notification;
+- (void)handleClientChannelGroupNamespacesRemovalProcess:(NSNotification *)notification;
+- (void)handleClientChannelGroupRemovalProcess:(NSNotification *)notification;
+- (void)handleClientChannelsForGroupRequestProcess:(NSNotification *)notification;
+- (void)handleClientGroupChannelsListModificationProcess:(NSNotification *)notification;
 - (void)handleClientUnsubscriptionProcess:(NSNotification *)notification;
 - (void)handleClientPresenceObservationEnablingProcess:(NSNotification *)notification;
 - (void)handleClientPresenceObservationDisablingProcess:(NSNotification *)notification;
@@ -246,6 +267,35 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         [notificationCenter addObserver:self selector:@selector(handleClientMetadataUpdateProcess:)
                                    name:kPNClientStateUpdateDidFailWithErrorNotification object:self.defaultObserver];
         
+        // Handle channel registry events
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupsRequestProcess:)
+                                   name:kPNClientChannelGroupsRequestCompleteNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupsRequestProcess:)
+                                   name:kPNClientChannelGroupsRequestDidFailWithErrorNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupNamespacesRequestProcess:)
+                                   name:kPNClientChannelGroupNamespacesRequestCompleteNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupNamespacesRequestProcess:)
+                                   name:kPNClientChannelGroupNamespacesRequestDidFailWithErrorNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupNamespacesRemovalProcess:)
+                                   name:kPNClientChannelGroupNamespaceRemovalCompleteNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupNamespacesRemovalProcess:)
+                                   name:kPNClientChannelGroupNamespaceRemovalDidFailWithErrorNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupRemovalProcess:)
+                                   name:kPNClientChannelGroupRemovalCompleteNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupRemovalProcess:)
+                                   name:kPNClientChannelGroupRemovalDidFailWithErrorNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelsForGroupRequestProcess:)
+                                   name:kPNClientChannelsForGroupRequestCompleteNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientChannelsForGroupRequestProcess:)
+                                   name:kPNClientChannelsForGroupRequestDidFailWithErrorNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientGroupChannelsListModificationProcess:)
+                                   name:kPNClientGroupChannelsAdditionCompleteNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientGroupChannelsListModificationProcess:)
+                                   name:kPNClientGroupChannelsAdditionDidFailWithErrorNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientGroupChannelsListModificationProcess:)
+                                   name:kPNClientGroupChannelsRemovalCompleteNotification object:self.defaultObserver];
+        [notificationCenter addObserver:self selector:@selector(handleClientGroupChannelsListModificationProcess:)
+                                   name:kPNClientGroupChannelsRemovalDidFailWithErrorNotification object:self.defaultObserver];
         
         // Handle subscription events
         [notificationCenter addObserver:self selector:@selector(handleClientSubscriptionProcess:)
@@ -533,6 +583,171 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 - (void)removeClientAsStateUpdateObserver {
 
     [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:YES];
+}
+
+
+#pragma mark - Client channel groups observation
+
+- (void)addClientAsChannelGroupsRequestObserverWithCallbackBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock {
+    
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupsRequest oneTimeEvent:YES
+            withBlock:callbackBlock];
+}
+
+- (void)removeClientAsChannelGroupsRequestObserver {
+    
+    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupsRequest oneTimeEvent:YES];
+}
+
+- (void)addChannelGroupsRequestObserver:(id)observer
+                      withCallbackBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock {
+    
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupsRequest oneTimeEvent:NO
+            withBlock:callbackBlock];
+}
+
+- (void)removeChannelGroupsRequestObserver:(id)observer {
+    
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupsRequest oneTimeEvent:NO];
+}
+
+- (void)addClientAsChannelGroupNamespacesRequestObserverWithCallbackBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock {
+    
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:YES
+            withBlock:callbackBlock];
+}
+
+- (void)removeClientAsChannelGroupNamespacesRequestObserver {
+    
+    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:YES];
+}
+
+- (void)addChannelGroupNamespacesRequestObserver:(id)observer
+                               withCallbackBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock {
+    
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:NO
+            withBlock:callbackBlock];
+}
+
+- (void)removeChannelGroupNamespacesRequestObserver:(id)observer {
+    
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:NO];
+}
+
+- (void)addClientAsChannelGroupNamespaceRemovalObserverWithCallbackBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock {
+    
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:YES
+            withBlock:callbackBlock];
+}
+
+- (void)removeClientAsChannelGroupNamespaceRemovalObserver {
+    
+    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:YES];
+}
+
+- (void)addChannelGroupNamespaceRemovalObserver:(id)observer
+                              withCallbackBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock {
+    
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:NO
+            withBlock:callbackBlock];
+}
+
+- (void)removeChannelGroupNamespaceRemovalObserver:(id)observer {
+    
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:NO];
+}
+
+- (void)addClientAsChannelGroupRemovalObserverWithCallbackBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock {
+    
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupRemoval oneTimeEvent:YES
+            withBlock:callbackBlock];
+}
+
+- (void)removeClientAsChannelGroupRemovalObserver {
+    
+    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupRemoval oneTimeEvent:YES];
+}
+
+- (void)addChannelGroupRemovalObserver:(id)observer
+                     withCallbackBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock {
+    
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupRemoval oneTimeEvent:NO
+            withBlock:callbackBlock];
+    
+}
+
+- (void)removeChannelGroupRemovalObserver:(id)observer {
+    
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupRemoval oneTimeEvent:NO];
+}
+
+- (void)addClientAsChannelsForGroupRequestObserverWithCallbackBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock {
+    
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:YES
+            withBlock:callbackBlock];
+}
+
+- (void)removeClientAsChannelsForGroupRequestObserver {
+    
+    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:YES];
+}
+
+- (void)addChannelsForGroupRequestObserver:(id)observer
+                         withCallbackBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock {
+    
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:NO
+            withBlock:callbackBlock];
+}
+
+- (void)removeChannelsForGroupRequestObserver:(id)observer {
+    
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:NO];
+}
+
+- (void)addClientAsChannelsAdditionToGroupObserverWithCallbackBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock {
+    
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:YES
+            withBlock:callbackBlock];
+}
+
+- (void)removeClientAsChannelsAdditionToGroupObserver {
+    
+    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:YES];
+}
+
+- (void)addChannelsAdditionToGroupObserver:(id)observer
+                         withCallbackBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock {
+    
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:NO
+            withBlock:callbackBlock];
+}
+
+- (void)removeChannelsAdditionToGroupObserver:(id)observer {
+    
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:NO];
+}
+
+- (void)addClientAsChannelsRemovalFromGroupObserverWithCallbackBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock {
+    
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:YES
+            withBlock:callbackBlock];
+}
+
+- (void)removeClientAsChannelsRemovalFromGroupObserver {
+    
+    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:YES];
+}
+
+- (void)addChannelsRemovalFromGroupObserver:(id)observer
+                          withCallbackBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock {
+    
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:NO
+            withBlock:callbackBlock];
+}
+
+- (void)removeChannelsRemovalFromGroupObserver:(id)observer {
+    
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:NO];
 }
 
 
@@ -1061,6 +1276,249 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     });
 }
 
+- (void)handleClientChannelGroupsRequestProcess:(NSNotification *)notification {
+    
+    NSArray *groups = nil;
+    NSString *namespaceName = nil;
+    PNError *error = nil;
+    
+    // Check whether arrived notification that channel groups retrieved or not
+    if ([notification.name isEqualToString:kPNClientChannelGroupsRequestCompleteNotification]) {
+        
+        if ([notification.userInfo isKindOfClass:[NSDictionary class]]) {
+            
+            namespaceName = [[(NSDictionary *)notification.userInfo allKeys] lastObject];
+            if (namespaceName) {
+                
+                groups = [(NSDictionary *)notification.userInfo valueForKey:namespaceName];
+            }
+        }
+        else {
+            
+            groups = (NSArray *)notification.userInfo;
+        }
+    }
+    else {
+        
+        error = (PNError *)notification.userInfo;
+        namespaceName = error.associatedObject;
+    }
+    
+    // Retrieving list of observers (including one time and persistent observers)
+    NSArray *observers = [self observersForEvent:PNObservationEvents.clientChannelGroupsRequest];
+    
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupsRequest];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
+                                                BOOL *observerDataEnumeratorStop) {
+            
+            // Call handling blocks
+            PNClientChannelGroupsRequestHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
+            if (block) {
+                
+                block(namespaceName, groups, error);
+            }
+        }];
+    });
+}
+
+- (void)handleClientChannelGroupNamespacesRequestProcess:(NSNotification *)notification {
+    
+    NSArray *namespaces = nil;
+    PNError *error = nil;
+    
+    // Check whether arrived notification that channel group namespaces retrieved or not
+    if ([notification.name isEqualToString:kPNClientChannelGroupNamespacesRequestCompleteNotification]) {
+        
+        namespaces = (NSArray *)notification.userInfo;
+    }
+    else {
+        
+        error = (PNError *)notification.userInfo;
+    }
+    
+    // Retrieving list of observers (including one time and persistent observers)
+    NSArray *observers = [self observersForEvent:PNObservationEvents.clientChannelGroupNamespacesRequest];
+    
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupNamespacesRequest];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
+                                                BOOL *observerDataEnumeratorStop) {
+            
+            // Call handling blocks
+            PNClientChannelGroupNamespacesRequestHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
+            if (block) {
+                
+                block(namespaces, error);
+            }
+        }];
+    });
+}
+
+- (void)handleClientChannelGroupNamespacesRemovalProcess:(NSNotification *)notification {
+    
+    NSString *namespace = nil;
+    PNError *error = nil;
+    
+    // Check whether arrived notification that channel group namespace removed or not
+    if ([notification.name isEqualToString:kPNClientChannelGroupNamespaceRemovalCompleteNotification]) {
+        
+        namespace = (NSString *)notification.userInfo;
+    }
+    else {
+        
+        error = (PNError *)notification.userInfo;
+        namespace = error.associatedObject;
+    }
+    
+    // Retrieving list of observers (including one time and persistent observers)
+    NSArray *observers = [self observersForEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval];
+    
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
+                                                BOOL *observerDataEnumeratorStop) {
+            
+            // Call handling blocks
+            PNClientChannelGroupNamespaceRemoveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
+            if (block) {
+                
+                block(namespace, error);
+            }
+        }];
+    });
+}
+
+- (void)handleClientChannelGroupRemovalProcess:(NSNotification *)notification {
+    
+    PNChannelGroup *group = nil;
+    PNError *error = nil;
+    
+    // Check whether arrived notification that channel group removed or not
+    if ([notification.name isEqualToString:kPNClientChannelGroupRemovalCompleteNotification]) {
+        
+        group = (PNChannelGroup *)notification.userInfo;
+    }
+    else {
+        
+        error = (PNError *)notification.userInfo;
+        group = error.associatedObject;
+    }
+    
+    // Retrieving list of observers (including one time and persistent observers)
+    NSArray *observers = [self observersForEvent:PNObservationEvents.clientChannelGroupRemoval];
+    
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupRemoval];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
+                                                BOOL *observerDataEnumeratorStop) {
+            
+            // Call handling blocks
+            PNClientChannelGroupRemoveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
+            if (block) {
+                
+                block(group, error);
+            }
+        }];
+    });
+}
+
+- (void)handleClientChannelsForGroupRequestProcess:(NSNotification *)notification {
+    
+    PNChannelGroup *group = nil;
+    PNError *error = nil;
+    
+    // Check whether arrived notification that channels list for group retrieved or not
+    if ([notification.name isEqualToString:kPNClientChannelsForGroupRequestCompleteNotification]) {
+        
+        group = (PNChannelGroup *)notification.userInfo;
+    }
+    else {
+        
+        error = (PNError *)notification.userInfo;
+        group = (PNChannelGroup *)error.associatedObject;
+    }
+    
+    // Retrieving list of observers (including one time and persistent observers)
+    NSArray *observers = [self observersForEvent:PNObservationEvents.clientChannelsForGroupRequest];
+    
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelsForGroupRequest];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
+                                                BOOL *observerDataEnumeratorStop) {
+            
+            // Call handling blocks
+            PNClientChannelsForGroupRequestHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
+            if (block) {
+                
+                block(group, error);
+            }
+        }];
+    });
+}
+
+- (void)handleClientGroupChannelsListModificationProcess:(NSNotification *)notification {
+    
+    PNChannelGroupChange *change = nil;
+    BOOL addingChannels = YES;
+    PNError *error = nil;
+    
+    NSString *eventName = PNObservationEvents.clientChannelsAdditionToGroup;
+    if ([notification.name isEqualToString:kPNClientGroupChannelsRemovalCompleteNotification] ||
+        [notification.name isEqualToString:kPNClientGroupChannelsRemovalDidFailWithErrorNotification]) {
+        
+        addingChannels = NO;
+        eventName = PNObservationEvents.clientChannelsRemovalFromGroup;
+    }
+    if ([notification.name isEqualToString:kPNClientGroupChannelsAdditionCompleteNotification] ||
+        [notification.name isEqualToString:kPNClientGroupChannelsRemovalCompleteNotification]) {
+        
+        change = (PNChannelGroupChange *)notification.userInfo;
+    }
+    else {
+        
+        error = (PNError *)notification.userInfo;
+        change = error.associatedObject;
+    }
+    
+    
+    // Retrieving list of observers (including one time and persistent observers)
+    NSArray *observers = [self observersForEvent:eventName];
+    
+    // Clean one time observers for specific event
+    [self removeOneTimeObserversForEvent:eventName];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData, NSUInteger observerDataIdx,
+                                                BOOL *observerDataEnumeratorStop) {
+            
+            // Receive reference on handling block
+            id block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
+            if (block) {
+                
+                if (addingChannels) {
+                    
+                    ((PNClientChannelsAdditionToGroupHandlingBlock)block)(change.group, change.channels, error);
+                }
+                else {
+                    
+                    ((PNClientChannelsRemovalFromGroupHandlingBlock)block)(change.group, change.channels, error);
+                }
+            }
+        }];
+    });
+}
+
 - (void)handleClientSubscriptionProcess:(NSNotification *)notification {
 
     NSArray *channels = nil;
@@ -1264,7 +1722,8 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     BOOL isEnablingPushNotifications = YES;
     NSString *eventName = PNObservationEvents.clientPushNotificationEnabling;
-    if ([notification.name isEqualToString:kPNClientPushNotificationDisableDidCompleteNotification]) {
+    if ([notification.name isEqualToString:kPNClientPushNotificationDisableDidCompleteNotification] ||
+        [notification.name isEqualToString:kPNClientPushNotificationDisableDidFailNotification]) {
 
         isEnablingPushNotifications = NO;
         eventName = PNObservationEvents.clientPushNotificationDisabling;
@@ -1570,17 +2029,17 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Retrieve reference on participants object
     PNHereNow *participants = nil;
-    PNChannel *channel = nil;
+    NSArray *channels = nil;
     PNError *error = nil;
     if ([notification.name isEqualToString:kPNClientDidReceiveParticipantsListNotification]) {
 
         participants = (PNHereNow *)notification.userInfo;
-        channel = ([participants.channel isKindOfClass:[NSArray class]] ? [(NSArray *)participants.channel lastObject] : participants.channel);
+        channels = [participants channels];
     }
     else {
 
         error = (PNError *)notification.userInfo;
-        channel = ([error.associatedObject isKindOfClass:[NSArray class]] ? [(NSArray *)error.associatedObject lastObject] : error.associatedObject);
+        channels = error.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
@@ -1597,7 +2056,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
             PNClientParticipantsHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
             if (block) {
 
-                block(participants.participants, channel, error);
+                block(participants, channels, error);
             }
         }];
     });
@@ -1750,7 +2209,24 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     [notificationCenter removeObserver:self name:kPNClientStateRetrieveDidFailWithErrorNotification object:_defaultObserver];
     [notificationCenter removeObserver:self name:kPNClientDidUpdateClientStateNotification object:_defaultObserver];
     [notificationCenter removeObserver:self name:kPNClientStateUpdateDidFailWithErrorNotification object:_defaultObserver];
-
+    
+    [notificationCenter removeObserver:self name:kPNClientChannelGroupsRequestCompleteNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientChannelGroupsRequestDidFailWithErrorNotification object:_defaultObserver];
+    
+    
+    [notificationCenter removeObserver:self name:kPNClientChannelGroupNamespacesRequestCompleteNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientChannelGroupNamespacesRequestDidFailWithErrorNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientChannelGroupNamespaceRemovalCompleteNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientChannelGroupNamespaceRemovalDidFailWithErrorNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientChannelGroupRemovalCompleteNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientChannelGroupRemovalDidFailWithErrorNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientChannelsForGroupRequestCompleteNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientChannelsForGroupRequestDidFailWithErrorNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientGroupChannelsAdditionCompleteNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientGroupChannelsAdditionDidFailWithErrorNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientGroupChannelsRemovalCompleteNotification object:_defaultObserver];
+    [notificationCenter removeObserver:self name:kPNClientGroupChannelsRemovalDidFailWithErrorNotification object:_defaultObserver];
+    
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteNotification object:_defaultObserver];
     [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification
                                 object:_defaultObserver];

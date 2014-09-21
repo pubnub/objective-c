@@ -201,6 +201,11 @@
     }
 }
 
+- (void)replaceAssociatedObject:(id)object {
+    
+    _associatedObject = object;
+}
+
 - (NSString *)localizedDescription {
     
     NSString *errorDescription = self.errorMessage;

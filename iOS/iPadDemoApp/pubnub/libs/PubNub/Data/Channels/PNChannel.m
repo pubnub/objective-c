@@ -50,6 +50,7 @@ static dispatch_queue_t _privateQueue = NULL;
 @property (nonatomic, strong) PNDate *presenceUpdateDate;
 @property (nonatomic, assign) NSUInteger participantsCount;
 @property (nonatomic, strong) NSMutableDictionary *participantsList;
+@property (nonatomic, assign, getter = isChannelGroup) BOOL channelGroup;
 @property (nonatomic, assign, getter = shouldObservePresence) BOOL observePresence;
 @property (nonatomic, assign, getter = isAbleToResetTimeToken) BOOL ableToResetTimeToken;
 @property (nonatomic, assign, getter = isLinkedWithPresenceObservationChannel)BOOL linkedWithPresenceObservationChannel;
@@ -288,34 +289,8 @@ static dispatch_queue_t _privateQueue = NULL;
             event.client.channel = self;
             [self.participantsList setValue:event.client forKey:event.client.identifier];
         }
-        // Check whether number of persons changed in channel or not
-        else if (event.type == PNPresenceEventChanged) {
-
-            // Check whether 'anonymous' (or 'unknown') person is joined to the channel
-            // (calculated basing on previous number of participants)
-            if ([self.participantsList count] < event.occupancy) {
-
-
-                [self.participantsList setValue:[PNClient anonymousClientForChannel:self] forKey:[PNHelper UUID]];
-            }
-            // Check whether 'anonymous' (or 'unknown') person leaved channel
-            // (calculated basing on previous number of participants)
-            else if ([self.participantsList count] > event.occupancy) {
-
-                NSSet *keysForUnknownClients = [self.participantsList keysOfEntriesPassingTest:^BOOL(NSString *clientStoreKey, PNClient *client,
-                                                                                     BOOL *clientKeysEnumeratorStop) {
-
-                        return [client isAnonymous];
-                }];
-
-                if ([keysForUnknownClients count]) {
-
-                    [self.participantsList removeObjectForKey:[keysForUnknownClients anyObject]];
-                }
-            }
-        }
         // Looks like someone leaved or was kicked by timeout
-        else {
+        else if (event.type == PNPresenceEventLeave || event.type == PNPresenceEventTimeout){
 
             [self.participantsList removeObjectForKey:event.client.identifier];
         }
@@ -324,15 +299,14 @@ static dispatch_queue_t _privateQueue = NULL;
     }];
 }
 
-- (void)updateWithParticipantsList:(PNHereNow *)hereNow {
+- (void)updateWithParticipantsList:(NSArray *)participants andCount:(NSUInteger)participantsCount {
     
     [PNChannel pn_dispatchAsynchronouslyOnQueue:_privateQueue block:^{
 
         self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
-        self.participantsCount = hereNow.participantsCount;
+        self.participantsCount = participantsCount;
         self.participantsList = [NSMutableDictionary dictionary];
-        [hereNow.participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx,
-                                                           BOOL *clientEnumeratorStop) {
+        [participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
 
             NSString *clientStoreIdentifier = client.identifier;
             if ([client isAnonymous]) {

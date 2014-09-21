@@ -92,19 +92,19 @@
 /**
  * Sent to the delegate when client successfully subscribed on specified set of channels
  */
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didSubscribeOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didSubscribeOnChannelsAndGroups:(NSArray *)channels
                sequenced:(BOOL)isSequenced withClientState:(NSDictionary *)clientState;
 
 /**
  * Sent to the delegate when client is about to launch subscription restore process
  */
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannelsAndGroups:(NSArray *)channels
                sequenced:(BOOL)isSequenced;
 
 /**
  * Sent to the delegate when client successfully restored subscription on previous set of channels
  */
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannelsAndGroups:(NSArray *)channels
                sequenced:(BOOL)isSequenced;
 
 /**

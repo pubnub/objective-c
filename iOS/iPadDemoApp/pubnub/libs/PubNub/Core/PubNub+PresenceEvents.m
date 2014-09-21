@@ -575,7 +575,7 @@
     if (event.type == PNPresenceEventStateChanged && [event.client.identifier isEqualToString:self.clientIdentifier]) {
         
         [self.cache purgeStateForChannel:event.client.channel];
-        [self.cache storeClientState:event.client.data forChannel:event.client.channel];
+        [self.cache storeClientState:[event.client stateForChannel:event.client.channel] forChannel:event.client.channel];
     }
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{

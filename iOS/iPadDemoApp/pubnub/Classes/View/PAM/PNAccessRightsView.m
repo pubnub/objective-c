@@ -155,6 +155,11 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             
             view = [self viewFromNibForApplicationGrant];
             break;
+        case PNChannelGroupAccessRightsLevel:
+            
+            // TODO: ADD INTERFACE
+            view = nil;
+            break;
         case PNChannelAccessRightsLevel:
             
             view = [self viewFromNibForChannelGrant];
@@ -474,7 +479,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (void)updateLayoutForAccessRightsInformation:(PNAccessRightsInformation *)information {
     
-    // TODO: Update helper state
     self.accessRightsHelper.accessRightsApplicationDuration = information.accessPeriodDuration;
     self.accessRightsHelper.allowRead = [information hasReadRight];
     self.accessRightsHelper.allowWrite = [information hasWriteRight];

@@ -70,21 +70,35 @@
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
         
-    PNClientParticipantsHandlingBlock presenceHandlingBlock = ^(NSArray *participants, PNChannel *channel, PNError *requestError) {
+    PNClientParticipantsHandlingBlock presenceHandlingBlock = ^(PNHereNow *presenceInformation, NSArray *channels, PNError *requestError) {
         
         if (!requestError) {
             
-            weakSelf.fetchedData = participants;
+            NSMutableArray *participants = [NSMutableArray array];
+            @autoreleasepool {
+                
+                [[presenceInformation channels] enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
+                                                                             BOOL *channelEnumeratorStop) {
+                    
+                    NSArray *channelParticipants = [presenceInformation participantsForChannel:channel];
+                    if ([channelParticipants count]) {
+                        
+                        [participants addObjectsFromArray:channelParticipants];
+                    }
+                }];
+            }
+            
+            weakSelf.fetchedData = [participants copy];
         }
         
         if (handlerBlock) {
             
-            ((PNClientParticipantsHandlingBlock)handlerBlock)(participants, channel, requestError);
+            ((PNClientParticipantsHandlingBlock)handlerBlock)(presenceInformation, channels, requestError);
         }
     };
         
-    [PubNub requestParticipantsListForChannel:self.channel clientIdentifiersRequired:self.shouldFetchIdentifiers
-                                  clientState:self.shouldFetchState withCompletionBlock:presenceHandlingBlock];
+    [PubNub requestParticipantsListForChannelsAndGroups:@[self.channel] clientIdentifiersRequired:self.shouldFetchIdentifiers
+                                            clientState:self.shouldFetchState withCompletionBlock:presenceHandlingBlock];
 }
 
 - (NSArray *)data {

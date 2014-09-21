@@ -129,7 +129,7 @@
            
            if (!requestError) {
                
-               self.state = client.data;
+               self.state = [client stateForChannel:client.channel];
            }
            if (handlerBlock) {
                
