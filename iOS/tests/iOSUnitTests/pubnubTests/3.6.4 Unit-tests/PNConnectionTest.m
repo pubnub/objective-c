@@ -42,6 +42,14 @@ static UInt32 const kPNOriginSSLConnectionPort = 443;
 
 @end
 
+@interface PNConnectionTest ()
+
+<
+PNConnectionDelegate
+>
+
+@end
+
 @implementation PNConnectionTest
 
 - (void)setUp
@@ -64,13 +72,14 @@ static UInt32 const kPNOriginSSLConnectionPort = 443;
 #pragma mark - States tests
 
 - (void)testConnectionWithIdentifier {
-    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
+    PNConnection *connection = [PNConnection connectionWithConfiguration:[PNConfiguration defaultConfiguration] andIdentifier:@"MyTestIdentifier"];
     
     STAssertNotNil(connection, @"Couldn't create connection with identifier");
 }
 
 - (void)testConnect {
-    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
+    PNConnection *connection = [PNConnection connectionWithConfiguration:[PNConfiguration defaultConfiguration] andIdentifier:@"MyTestIdentifier"];
+
     id mockConnection = [OCMockObject partialMockForObject:connection];
     
     [[mockConnection expect] isConnected];
@@ -143,8 +152,7 @@ static UInt32 const kPNOriginSSLConnectionPort = 443;
 }
 
 - (void)testDisconnectConnection {
-    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
-    
+    PNConnection *connection = [PNConnection connectionWithConfiguration:[PNConfiguration defaultConfiguration] andIdentifier:@"MyTestIdentifier"];
     id mockConnenction = [OCMockObject partialMockForObject:connection];
     
     [[mockConnenction expect] disconnectByInternalRequest];
@@ -157,7 +165,7 @@ static UInt32 const kPNOriginSSLConnectionPort = 443;
 #pragma mark - Configuration tests
 
 - (void)testConfigureReadStream {
-    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
+    PNConnection *connection = [PNConnection connectionWithConfiguration:[PNConfiguration defaultConfiguration] andIdentifier:@"MyTestIdentifier"];
     
     id mockConnenction = [OCMockObject partialMockForObject:connection];
     
@@ -177,7 +185,8 @@ static UInt32 const kPNOriginSSLConnectionPort = 443;
 }
 
 - (void)testSystemProxySettings {
-    PNConnection *connection = [PNConnection connectionWithIdentifier:@"MyTestIdentifier"];
+    PNConnection *connection = [PNConnection connectionWithConfiguration:[PNConfiguration defaultConfiguration] andIdentifier:@"MyTestIdentifier"];
+
     [PubNub setConfiguration:[self configuration]];
     
     id mockConnenction = [OCMockObject partialMockForObject:connection];
