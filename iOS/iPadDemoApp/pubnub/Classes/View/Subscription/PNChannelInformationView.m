@@ -169,7 +169,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         PNChannel *channel = ([self.channelHelper canCreateChannel] ? [PNChannel channelWithName:self.channelHelper.channelName] : nil);
         participantsCount = (unsigned int)(channel ? channel.participantsCount : 0);
     }
-    self.channelParticipantsCount.text = [NSString stringWithFormat:@"%d", participantsCount];
+    self.channelParticipantsCount.text = [NSString stringWithFormat:@"%lu", (unsigned long)participantsCount];
     
     [self.saveButton setTitle:(self.shouldAllowEditing ? @"channelInformationSaveButtonTitle" : @"channelInformationCreateButtonTitle")
                      forState:UIControlStateNormal];
