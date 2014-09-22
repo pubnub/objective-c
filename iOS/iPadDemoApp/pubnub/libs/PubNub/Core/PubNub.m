@@ -2441,21 +2441,19 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (BOOL)connectionChannelCanConnect:(PNConnectionChannel *)channel {
+- (void)connectionChannel:(PNConnectionChannel *)channel checkCanConnect:(void(^)(BOOL))checkCompletionBlock {
     
     [self pn_dispatchSynchronouslyBlock:^{
         
         // Help reachability instance update it's state our of schedule
         [self.reachability refreshReachabilityState];
+        
+        checkCompletionBlock([self.reachability isServiceAvailable]);
     }];
-    
-    
-    return [self.reachability isServiceAvailable];
 }
 
-- (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel {
+- (void)connectionChannel:(PNConnectionChannel *)channel checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock {
     
-    __block BOOL shouldRestoreConnection = NO;
     [self pn_dispatchSynchronouslyBlock:^{
         
         // Help reachability instance update it's state our of schedule
@@ -2469,13 +2467,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
         // Ensure that there is connection available as well as permission to connect
         shouldRestoreConnection = (shouldRestoreConnection && [self.reachability isServiceAvailable] && !isSimulatingReachability);
+        
+        checkCompletionBlock(shouldRestoreConnection);
     }];
-    
-    
-    return shouldRestoreConnection;
 }
 
-- (BOOL)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation {
+- (void)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation checkCompletionBlock:(void(^)(BOOL))checkCompletionBlock; {
     
     if (shouldUpdateInformation) {
         
@@ -2483,11 +2480,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
             // Help reachability instance update it's state our of schedule
             [self.reachability refreshReachabilityState];
+            
+            checkCompletionBlock([self.reachability isServiceAvailable]);
         }];
     }
-    
-    
-    return [self.reachability isServiceAvailable];
+    else {
+        
+        checkCompletionBlock([self.reachability isServiceAvailable]);
+    }
 }
 
 
