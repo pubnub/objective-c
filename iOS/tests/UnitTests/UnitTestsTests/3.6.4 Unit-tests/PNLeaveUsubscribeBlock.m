@@ -101,7 +101,7 @@
         switch (state) {
             case PNSubscriptionProcessSubscribedState:
             {
-                NSLog(@"channels: %d", (int)[channels count]);
+                NSLog(@"Subscribed channel: %d", (int)[channels count]);
                 
                 dispatch_group_leave(resGroup);
             }
@@ -115,18 +115,17 @@
     [GCDWrapper waitGroup:resGroup];
     
     // Here we need to break leave request
-    __block SwizzleReceipt *receipt = [Swizzler swizzleSelector:@selector(connection: didReceiveResponse:) forInstancesOfClass:[PNMessagingChannel class]
-                                                      withBlock:^(id self, SEL sel){
-                                                          [Swizzler unswizzleFromReceipt:receipt];
-                                                      }];
-    
-    
-    
-    
+//    __block SwizzleReceipt *receipt = [Swizzler swizzleSelector:@selector(connection: didReceiveResponse:) forInstancesOfClass:[PNMessagingChannel class]
+//                                                      withBlock:^(id self, SEL sel){
+//                                                          [Swizzler unswizzleFromReceipt:receipt];
+//                                                      }];
+//
     dispatch_group_enter(resGroup);
     
     [PubNub unsubscribeFromChannel:channels[1]
        withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
+           
+           NSLog(@"Channels: %@", channels);
            dispatch_group_leave(resGroup);
        }];
     
@@ -134,7 +133,7 @@
     
     channels = [PubNub subscribedChannels];
     
-    XCTAssertTrue([channels count] == 2, @"Subscribed on channels: %d", [channels count]);
+    XCTAssertTrue([channels count] == 2, @"Subscribed on channels: %lu", (unsigned long)[channels count]);
 }
 
 @end

@@ -6,14 +6,23 @@
 //  Copyright (c) 2013 Micro-B. All rights reserved.
 //
 
-#import "PNMessageHistoryRequestTest.h"
+#import <XCTest/XCTest.h>
 #import "PNMessageHistoryRequest.h"
 #import "PNMessageHistoryRequest+Protected.h"
 
 #import "PNDate.h"
 #import "PNChannel.h"
 
+@interface PNMessageHistoryRequestTest : XCTestCase <PNDelegate> {
+	dispatch_group_t _resGroup;
+}
+
+@end
+
 @interface PNMessageHistoryRequest ()
+
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration
+                 clientIdentifier:(NSString *)clientIdentifier;
 
 @property (nonatomic, strong) PNChannel *channel;
 
@@ -30,39 +39,14 @@
 
 -(void)setUp {
 	[super setUp];
-	[PubNub resetClient];
 }
 
 - (void)tearDown {
-	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
 }
 
 #pragma mark - States tests
 
-
-/*
-- (void)testInitForChannelMock {
-    id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
-    
-    id mockStartDate = [OCMockObject mockForClass:[PNDate class]];
-    
-    id mockEndDate = [OCMockObject mockForClass:[PNDate class]];
-    
-    id mockRequest = [OCMockObject partialMockForObject:[PNMessageHistoryRequest alloc]];
-    
-    [[mockRequest expect] setChannel:mockChannel];
-    [[mockRequest expect] setStartDate:mockStartDate];
-    [[mockRequest expect] setEndDate:mockEndDate];
-    
-    PNMessageHistoryRequest *request = [mockRequest initForChannel: mockChannel from: mockStartDate to: mockEndDate limit:0 reverseHistory: NO includingTimeToken: NO];
-    
-    XCTAssertNotNil(request, @"Cannot initialize request");
-    
-    [mockRequest verify];
-}
- */
-///////////////////////////////////////////////////////////////////////////////////////////////////
 -(void)testInitForChannel {
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];
 	PNDate *from = [PNDate dateWithToken: @(123)];
@@ -84,15 +68,23 @@
 }
 
 -(void)testResourcePath {
-	PNConfiguration *conf = [PNConfiguration configurationWithPublishKey: @"publish" subscribeKey: @"demo" secretKey: @"secret" authorizationKey: @"auth"];
-	[PubNub setConfiguration: conf];
+	PNConfiguration *conf = [PNConfiguration configurationWithPublishKey: @"publish" subscribeKey:@"demo" secretKey:@"secret" authorizationKey:@"auth"];
+	[PubNub setConfiguration:conf];
 
-	PNChannel *channel = [PNChannel channelWithName: @"channel"];
-	PNDate *from = [PNDate dateWithToken: @(123)];
-	PNDate *to = [PNDate dateWithToken: @(124)];
-	PNMessageHistoryRequest *requst = [[PNMessageHistoryRequest alloc] initForChannel: channel from: from to: to limit: 111 reverseHistory: YES includingTimeToken: YES];
-	NSString *resourcePath = [requst resourcePath];
-	NSLog(@"res %@", resourcePath);
+	PNChannel *channel = [PNChannel channelWithName:@"channel"];
+	PNDate *from = [PNDate dateWithToken:@(123)];
+	PNDate *to = [PNDate dateWithToken:@(124)];
+    
+	PNMessageHistoryRequest *request = [[PNMessageHistoryRequest alloc] initForChannel:channel
+                                                                                 from:from
+                                                                                   to:to
+                                                                                limit:111
+                                                                       reverseHistory:YES
+                                                                   includingTimeToken:YES];
+    [request finalizeWithConfiguration:conf
+                      clientIdentifier:@"1"];
+	NSString *resourcePath = [request resourcePath];
+    
 	XCTAssertTrue( [resourcePath rangeOfString: @"/v2/history/sub-key/demo/channel/channel?callback=h_"].location == 0, @"");
 	XCTAssertTrue( [resourcePath rangeOfString: @"&start=123&end=124&count=111&reverse=true&include_token=true"].location != NSNotFound, @"");
 }

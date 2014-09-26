@@ -69,7 +69,7 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
     
     configuration.presenceHeartbeatTimeout = kTestPresenceHeartbeatTimeout;
     
-	[PubNub setConfiguration: configuration];
+	[PubNub setConfiguration:configuration];
 
     dispatch_group_enter(_resGroup);
 
@@ -84,7 +84,9 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
                              dispatch_group_leave(_resGroup);
     }];
 
-    [GCDWrapper waitGroup:_resGroup];
+    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:30]) {
+        XCTFail(@"Timeout received");
+    }
     
     dispatch_group_enter(_resGroup);
     
@@ -93,7 +95,9 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
         dispatch_group_leave(_resGroup);
 	}];
     
-    [GCDWrapper waitGroup:_resGroup];
+    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:30]) {
+        XCTFail(@"Timeout received");
+    }
     
 	BOOL isConnect = [[PubNub sharedInstance] isConnected];
 	XCTAssertTrue( isConnect, @"not connected");
@@ -107,11 +111,14 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
     
 	[PubNub subscribeOnChannels: @[[PNChannel channelWithName: @"zzz" shouldObservePresence: YES shouldUpdatePresenceObservingFlag: YES]]
 		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+            
+            NSLog(@"channels: %@", channels);
             dispatch_group_leave(_resGroup);
 	 }];
 
-    [GCDWrapper waitGroup:_resGroup
-               withTimout:kTestTimout];
+    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:kTestTimout]) {
+        XCTFail(@"Timeout received");
+    }
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
@@ -120,14 +127,11 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
     
     PNPresenceEvent *event = (PNPresenceEvent *)notification.userInfo;
     
-	if( event.client.identifier == nil ) {
-        
         if (event.type == PNPresenceEventJoin) {
             dispatch_group_leave(_resGroup);
         } else if (event.type == PNPresenceEventTimeout) {
             dispatch_group_leave(_resGroup);
         }
-    }
 }
 
 @end

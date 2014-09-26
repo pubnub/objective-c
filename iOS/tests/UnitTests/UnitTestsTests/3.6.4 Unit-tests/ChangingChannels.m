@@ -44,7 +44,9 @@
 	[super tearDown];
 }
 
-- (void)test10Connect {
+#pragma mark - Tests
+
+- (void)testConnect {
 	[PubNub disconnect];
 
     [PubNub setDelegate:self];
@@ -67,53 +69,65 @@
                             dispatch_group_leave(resGroup);
                          }];
     
-    [GCDWrapper waitGroup:resGroup];
+    if ([GCDWrapper isGroup:resGroup timeoutFiredValue:30]) {
+        XCTFail(@"Timeout.");
+    }
 
 	BOOL isConnect = [[PubNub sharedInstance] isConnected];
 	XCTAssertTrue( isConnect, @"not connected");
 
-	[self t20SubscribeOnChannelsByTurns];
+	[self subscribeToNumberOfChannels:2];
 }
 
--(void)t20SubscribeOnChannelsByTurns {
+-(void)subscribeToNumberOfChannels:(NSUInteger)amountOfChannels {
     
     dispatch_group_t resGroup = dispatch_group_create();
     
-	for( int i = 0; i<90; i++ ) {
+	for(int i = 0; i < amountOfChannels; i++) {
         
 		NSString *channelName = [NSString stringWithFormat: @"%@ %d", [NSDate date], i];
-		NSArray *arr = [PNChannel channelsWithNames: @[channelName]];
-		NSDate *start = [NSDate date];
+		NSArray *channels = [PNChannel channelsWithNames:@[channelName]];
         
 		NSLog(@"Start subscribe to channel %@", channelName);
         
         dispatch_group_enter(resGroup);
         
-		[PubNub subscribeOnChannels: arr
+        // subscription time cannot be more than subscriptionRequestTimeout
+        
+        NSDate *startDate = [NSDate date];
+        
+		[PubNub subscribeOnChannels:channels
 		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 		 {
-			 NSTimeInterval interval = -[start timeIntervalSinceNow];
-			 NSLog(@"subscribed %f, %@, %@", interval, channels, subscriptionError);
-			 XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+             NSDate *finishDate = [NSDate date];
+             
+			 NSTimeInterval interval = [finishDate timeIntervalSinceDate:startDate];
+			 NSLog(@"Subscribed %f, %@, %@", interval, channels, subscriptionError);
+             
+			 XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
 			 if( subscriptionError == nil ) {
+                 
 				 XCTAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
+                 
 				 BOOL isSubscribed = NO;
-				 for( int j=0; j<channels.count; j++ ) {
-					 if( [[channels[j] name] isEqualToString: channelName] == YES ) {
+				 for( int j = 0; j < channels.count; j++ ) {
+					 if ( [[channels[j] name] isEqualToString:channelName] == YES ) {
 						 isSubscribed = YES;
 						 break;
 					 }
 				 }
-				 XCTAssertTrue( isSubscribed == YES, @"Channel no subecribed");
+                 
+				 XCTAssertTrue( isSubscribed == YES, @"Channel is not subscribed");
 			 }
              
              dispatch_group_leave(resGroup);
 		 }];
-        
-		XCTAssertTrue(![GCDWrapper isGroup:resGroup
-                        timeoutFiredValue:[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"timout fired.");
 	}
+    
+    if ([GCDWrapper isGroup:resGroup timeoutFiredValue:120]) {
+        XCTFail(@"Timeout fired.");
+    }
 }
 
 @end

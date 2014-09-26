@@ -474,7 +474,6 @@
 		96CB6A4F19D19A6B0093D64E /* PNLeaveRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLeaveRequestTest.h; sourceTree = "<group>"; };
 		96CB6A5019D19A6B0093D64E /* PNLeaveRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLeaveRequestTest.m; sourceTree = "<group>"; };
 		96CB6A5119D19A6B0093D64E /* PNLeaveUsubscribeBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLeaveUsubscribeBlock.m; sourceTree = "<group>"; };
-		96CB6A5219D19A6B0093D64E /* PNMessageHistoryRequestTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessageHistoryRequestTest.h; sourceTree = "<group>"; };
 		96CB6A5319D19A6B0093D64E /* PNMessageHistoryRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessageHistoryRequestTest.m; sourceTree = "<group>"; };
 		96CB6A5419D19A6B0093D64E /* PNMessagesHistoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessagesHistoryTest.m; sourceTree = "<group>"; };
 		96CB6A5519D19A6B0093D64E /* PNMessageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessageTest.m; sourceTree = "<group>"; };
@@ -1051,7 +1050,6 @@
 				96CB6A4F19D19A6B0093D64E /* PNLeaveRequestTest.h */,
 				96CB6A5019D19A6B0093D64E /* PNLeaveRequestTest.m */,
 				96CB6A5119D19A6B0093D64E /* PNLeaveUsubscribeBlock.m */,
-				96CB6A5219D19A6B0093D64E /* PNMessageHistoryRequestTest.h */,
 				96CB6A5319D19A6B0093D64E /* PNMessageHistoryRequestTest.m */,
 				96CB6A5419D19A6B0093D64E /* PNMessagesHistoryTest.m */,
 				96CB6A5519D19A6B0093D64E /* PNMessageTest.m */,
@@ -1574,6 +1572,7 @@
 				96CB66F419CFE75D0093D64E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		96CB66F519CFE75D0093D64E /* Build configuration list for PBXNativeTarget "UnitTestsTests" */ = {
 			isa = XCConfigurationList;
@@ -1582,6 +1581,7 @@
 				96CB66F719CFE75D0093D64E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
