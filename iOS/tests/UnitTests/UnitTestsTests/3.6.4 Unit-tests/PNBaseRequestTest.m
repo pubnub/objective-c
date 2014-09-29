@@ -45,6 +45,9 @@
 - (void)testTimeout {
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
     
+    [baseRequest finalizeWithConfiguration:[PNConfiguration defaultConfiguration]
+                          clientIdentifier:@"clientIdentifier"];
+    
     XCTAssertTrue([PubNub sharedInstance].configuration.nonSubscriptionRequestTimeout == [baseRequest timeout], @"Default value of timeout should be qual nonSubscriptionRequestTimeout");
 }
 
@@ -84,17 +87,29 @@
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
 	PNConfiguration *conf = [PNConfiguration configurationWithPublishKey:@"publish" subscribeKey: @"subscr" secretKey: @"secret" authorizationKey: @"auth"];
 	[[PubNub sharedInstance] setConfiguration: conf];
+    
+    [baseRequest finalizeWithConfiguration:conf
+                          clientIdentifier:@"clientIdentifier"];
+    
 	XCTAssertTrue( [[baseRequest authorizationField] isEqualToString: @"auth=auth"]==YES, @"" );
 
 	conf = [PNConfiguration configurationWithPublishKey:@"publish" subscribeKey: @"subscr" secretKey: @"secret"];
 	[[PubNub sharedInstance] setConfiguration: conf];
+    
+    [baseRequest finalizeWithConfiguration:conf
+                          clientIdentifier:@"clientIdentifier"];
+    
 	XCTAssertTrue( [baseRequest authorizationField] == nil, @"" );
 }
 
 -(void)testRequestPath {
 	PNConfiguration *conf = [PNConfiguration configurationForOrigin: @"origin" publishKey:@"publish" subscribeKey: @"subscr" secretKey: @"secret"];
 	[[PubNub sharedInstance] setConfiguration: conf];
+    
     PNBaseRequest *baseRequest = [[PNBaseRequest alloc] init];
+    
+    [baseRequest finalizeWithConfiguration:conf
+                          clientIdentifier:@"clientIdentifier"];
 	XCTAssertTrue( [[baseRequest requestPath] isEqualToString: @"http://origin/"], @"");
 }
 

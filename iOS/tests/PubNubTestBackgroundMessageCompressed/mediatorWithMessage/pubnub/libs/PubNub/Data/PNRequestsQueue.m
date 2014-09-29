@@ -244,11 +244,15 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
         // Check whether request issuer allow to remove completed request from queue or should leave it there and
         // lock queue with it
-        if ([self.delegate shouldRequestsQueue:self removeCompletedRequest:processedRequest]) {
+        [self.delegate shouldRequestsQueue:self removeCompletedRequest:processedRequest
+                           checkCompletion:^(BOOL shouldRemove) {
 
-            // Find processed request by identifier to remove it from requests queue
-            [self removeRequest:[self dequeRequestWithIdentifier:requestIdentifier]];
-        }
+                               if (shouldRemove) {
+
+                                   // Find processed request by identifier to remove it from requests queue
+                                   [self removeRequest:[self dequeRequestWithIdentifier:requestIdentifier]];
+                               }
+                           }];
     }
 }
 

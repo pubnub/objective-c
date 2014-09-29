@@ -32,18 +32,15 @@
 @end
 
 
-
 @interface PNOperationStatusResponseParserTest : XCTestCase
 
 @end
-
 
 
 @implementation PNOperationStatusResponseParserTest
 
 -(void)tearDown {
     [super tearDown];
-	[NSThread sleepForTimeInterval:0.1];
 }
 
 -(void)testInit {
@@ -64,15 +61,9 @@
 	response.response = @[@(123), @"status"];
 
 	parser = [[PNOperationStatusResponseParser alloc] initWithResponse: response];
+    
 	XCTAssertTrue( [(PNOperationStatus*)[parser parsedData] timeToken] == nil, @"");
 	XCTAssertTrue( [[parser operationStatus] error]  == nil, @"");
 }
 
 @end
-
-
-
-
-
-
-

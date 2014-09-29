@@ -91,14 +91,14 @@
  * impossible at this moment because of some reasons (no internet connection)
  * This method is called periodically by intervals defined in connection class.
  */
-- (BOOL)connectionChannelCanConnect:(PNConnectionChannel *)channel;
+- (void)connectionChannel:(PNConnectionChannel *)channel checkCanConnect:(void(^)(BOOL))checkCompletionBlock;
 
 /**
  * Sent to the delegate each timer when connection channel want to ensure on whether it should resume it's operation
  * or not (after it was disconnected).
  * This method is called periodically by intervals defined in connection class.
  */
-- (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel;
+- (void)connectionChannel:(PNConnectionChannel *)channel checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock;
 
 /**
  Retrieve client identifier provided or generated for user by \b PubNub client.
@@ -115,7 +115,7 @@
  
  @return \c YES in case if \b PubNub and network reachable.
  */
-- (BOOL)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation;
+- (void)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation checkCompletionBlock:(void(^)(BOOL))checkCompletionBlock;
 
 #pragma mark -
 

@@ -5,8 +5,7 @@
 //  Created by Vadim Osovets on 5/3/13.
 //  Copyright (c) 2013 Micro-B. All rights reserved.
 //
-
-#import "PNReachabilityTest.h"
+#import <XCTest/XCTest.h>
 #import "PNReachability.h"
 #import "PubNub+Protected.h"
 
@@ -20,6 +19,16 @@
 
 @end
 
+@interface PubNub ()
+
+- (BOOL)shouldKeepTimeTokenOnChannelsListChange;
+
+@end
+
+@interface PNReachabilityTest : XCTestCase
+
+@end
+
 @implementation PNReachabilityTest {
     PNReachability *_reachability;
 }
@@ -28,7 +37,6 @@
 {
     [super setUp];
     
-    NSLog(@"setUp: %@", self.name);
     // Set-up code here.
     _reachability = [PNReachability serviceReachability];
     
@@ -79,30 +87,6 @@
     [mockReachability startServiceReachabilityMonitoring];
     
     [mockReachability verify];
-}
-
-#pragma mark - Interaction tests
-
-- (void)testStartStopServiceReachabilityMonitoring {
-    /*
-     Test scenario:
-     - create stubs for PubNub and configuration
-     - start reachability monitoring
-     - expected available service
-     */
-    
-    // mock PubNub and PNConfiguration for this test
-    id mockPubNub = [OCMockObject mockForClass:[PubNub class]];
-    id mockConfig = [OCMockObject mockForClass:[PNConfiguration class]];
-    
-    [[[mockPubNub stub] andReturn:mockConfig] configuration];
-    [[[mockConfig stub] andReturn:@"127.0.0.1"] origin];
-    
-    [[PubNub sharedInstance] setConfiguration:mockConfig];
-    
-    [_reachability startServiceReachabilityMonitoring];
-    XCTAssertTrue([_reachability isServiceAvailable], @"Service reachability is not available");
-    [_reachability stopServiceReachabilityMonitoring];
 }
 
 @end

@@ -5,10 +5,9 @@
 //  Created by Vadim Osovets on 5/5/13.
 //  Copyright (c) 2013 Micro-B. All rights reserved.
 //
+#import <XCTest/XCTest.h>
 
-#import "PNServiceChannelTest.h"
 #import "PNServiceChannel.h"
-
 #import "PNMessage.h"
 #import "PNChannel.h"
 #import "PNMessagePostRequest.h"
@@ -17,10 +16,10 @@
 
 #import <OCMock/OCMock.h>
 
-@interface PNServiceChannelTest ()
 
-<PNDelegate,
-PNConnectionChannelDelegate>
+@interface PNServiceChannelTest : XCTestCase
+
+<PNDelegate,PNConnectionChannelDelegate>
 
 @end
 
@@ -115,5 +114,40 @@ PNConnectionChannelDelegate>
      storeInHistory:NO];
     [mockChannel verify];
 }
-
+- (void)connectionChannelConfigurationDidFail:(PNConnectionChannel *)channel{
+}
+- (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host{
+}
+- (void)connectionChannel:(PNConnectionChannel *)channel didReconnectToHost:(NSString *)host{
+}
+- (void)connectionChannel:(PNConnectionChannel *)channel connectionDidFailToOrigin:(NSString *)host
+withError:(PNError *)error{
+}
+- (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel{
+}
+- (void)connectionChannelDidSuspend:(PNConnectionChannel *)channel{
+}
+- (void)connectionChannelWillResume:(PNConnectionChannel *)channel{
+}
+- (void)connectionChannelDidResume:(PNConnectionChannel *)channel requireWarmUp:(BOOL)isWarmingUpRequired{
+}
+- (BOOL)connectionChannelCanConnect:(PNConnectionChannel *)channel{
+    return YES;
+}
+- (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel{
+    return YES;
+}
+- (void)connectionChannelConfigurationDidFail11:(PNConnectionChannel *)channel{
+}
+- (NSString *)clientIdentifier{
+    return @"rr";
+}
+- (BOOL)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation{
+    return YES;
+}
+- (void)connectionChannel:(PNConnectionChannel *)channel didDisconnectFromOrigin:(NSString *)host{
+}
+- (void)connectionChannel:(PNConnectionChannel *)channel willDisconnectFromOrigin:(NSString *)host
+               withError:(PNError *)error{
+}
 @end

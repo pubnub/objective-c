@@ -15,9 +15,11 @@
 
 @interface PNMessage (test)
 
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage error:(PNError **)error;
++ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+                  storeInHistory:(BOOL)shouldStoreInHistory error:(PNError **)error;
 + (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate;
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
+
 @property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
 
 @end
@@ -36,19 +38,20 @@
 -(void)testMessageWithObject {
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];
 	PNError *error = nil;
-	PNMessage *message = [PNMessage messageWithObject:@"object" forChannel: channel compressed: YES error: &error];
-
+    
+    PNMessage *message = [PNMessage messageWithObject:@"object" forChannel:channel compressed:YES storeInHistory:YES error:&error];
+   
 	XCTAssertTrue( message != nil, @"");
 	XCTAssertTrue( error == nil, @"");
 	XCTAssertTrue( message.channel == channel, @"");
 	XCTAssertTrue( [message.message isEqualToString: [PNJSONSerialization stringFromJSONObject: @"object"]], @"");
 	XCTAssertTrue( message.compressMessage == YES, @"");
 
-	message = [PNMessage messageWithObject:@"object" forChannel: nil compressed: YES error: &error];
+    message = [PNMessage messageWithObject:@"object" forChannel:nil compressed:YES storeInHistory:NO error:&error];
 	XCTAssertTrue( message == nil, @"");
 	XCTAssertTrue( error.code == kPNMessageHasNoChannelError, @"");
 
-	message = [PNMessage messageWithObject: nil forChannel: channel compressed: YES error: &error];
+    message = [PNMessage messageWithObject:nil forChannel:channel compressed:YES storeInHistory:YES error:&error];
 	XCTAssertTrue( message == nil, @"");
 	XCTAssertTrue( error.code == kPNMessageHasNoContentError, @"");
 }
@@ -72,14 +75,12 @@
 
 -(void)testInitWithObject {
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];
-	PNMessage *message = [[PNMessage alloc] initWithObject: @"message" forChannel: channel compressed: YES];
-	XCTAssertTrue( message != nil, @"");
+    PNMessage *message = [[PNMessage alloc] initWithObject:@"message" forChannel:channel compressed:YES storeInHistory:YES];
+    
+    XCTAssertTrue( message != nil, @"");
 	XCTAssertTrue( message.channel == channel, @"");
 	XCTAssertTrue( [message.message isEqualToString: [PNJSONSerialization stringFromJSONObject: @"message"]], @"");
 	XCTAssertTrue( message.compressMessage == YES, @"");
 }
 
 @end
-
-
-

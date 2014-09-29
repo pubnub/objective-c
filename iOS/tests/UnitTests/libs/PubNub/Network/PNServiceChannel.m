@@ -150,7 +150,7 @@
                     
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestFailed, (self.name ? self.name : self),
                                  (parsedData ? parsedData : [NSNull null])];
                     }];
                     
@@ -175,7 +175,7 @@
                     
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.clientStateAuditRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed, (self.name ? self.name : self),
                                  (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
                     }];
                     
@@ -201,7 +201,7 @@
                     
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestFailed, (self.name ? self.name : self),
                                  (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
                     }];
                     
@@ -227,7 +227,7 @@
                         
                         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                             
-                            return @[PNLoggerSymbols.connectionChannel.service.messageSendRequeXCTFailed, (self.name ? self.name : self),
+                            return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestFailed, (self.name ? self.name : self),
                                      (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
                         }];
                         
@@ -277,7 +277,7 @@
                     
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.historyRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.historyRequestFailed, (self.name ? self.name : self),
                                  (historyRequest.channel ? historyRequest.channel : [NSNull null]),
                                  (historyRequest.startDate ? historyRequest.startDate : [NSNull null]),
                                  (historyRequest.endDate ? historyRequest.endDate : [NSNull null]), @(historyRequest.limit),
@@ -313,7 +313,7 @@
                     
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.participantsListRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestFailed, (self.name ? self.name : self),
                                  (channel ? channel : [NSNull null]), @(hereNowRequest.isClientIdentifiersRequired),
                                  @(hereNowRequest.shouldFetchClientState), (parsedData ? parsedData : [NSNull null])];
                     }];
@@ -341,7 +341,7 @@
                     
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestFailed, (self.name ? self.name : self),
                                  (identifier ? identifier : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
                     
@@ -374,11 +374,11 @@
                 else {
                     
                     logLevel = PNLogCommunicationChannelLayerErrorLevel;
-                    symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequeXCTFailed;
+                    symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestFailed;
                     selector = @selector(serviceChannel:didFailPushNotificationEnableForChannels:withError:);
                     if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
                         
-                        symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequeXCTFailed;
+                        symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestFailed;
                         selector = @selector(serviceChannel:didFailPushNotificationDisableForChannels:withError:);
                     }
                     
@@ -425,7 +425,7 @@
                     
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestFailed, (self.name ? self.name : self),
                                  (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
                     
@@ -452,7 +452,7 @@
                     
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestFailed, (self.name ? self.name : self),
                                  (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
                     
@@ -482,7 +482,7 @@
                     ((PNError *)parsedData).associatedObject = options;
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestFailed, (self.name ? self.name : self),
                                  (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
                                  (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
                                  (parsedData ? parsedData : [NSNull null])];
@@ -513,7 +513,7 @@
                     ((PNError *)parsedData).associatedObject = options;
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequeXCTFailed, (self.name ? self.name : self),
+                        return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestFailed, (self.name ? self.name : self),
                                  (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
                                  (options.channels ? options.channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
@@ -554,7 +554,7 @@
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestFailed, (self.name ? self.name : self),
                     (error ? error : [NSNull null])];
         }];
 
@@ -573,11 +573,11 @@
             error.associatedObject = client;
         }
 
-        NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateAuditRequeXCTFailed;
+        NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed;
         SEL errorSelector = @selector(serviceChannel:clientStateReceiveDidFailWithError:);
         if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
-            symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequeXCTFailed;
+            symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestFailed;
             errorSelector = @selector(serviceChannel:clientStateUpdateDidFailWithError:);
         }
 
@@ -599,7 +599,7 @@
             // Retrieve reference on message which has been sent
             PNMessage *message = ((PNMessagePostRequest *)request).message;
 
-            return @[PNLoggerSymbols.connectionChannel.service.messageSendRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.messageSendRequestFailed, (self.name ? self.name : self),
                      (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null]),
                      (error ? error : [NSNull null])];
         }];
@@ -631,7 +631,7 @@
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connectionChannel.service.historyRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.historyRequestFailed, (self.name ? self.name : self),
                      (historyRequest.channel ? historyRequest.channel : [NSNull null]),
                      (historyRequest.startDate ? historyRequest.startDate : [NSNull null]),
                      (historyRequest.endDate ? historyRequest.endDate : [NSNull null]), @(historyRequest.limit),
@@ -655,7 +655,7 @@
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connectionChannel.service.participantsListRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.participantsListRequestFailed, (self.name ? self.name : self),
                      (hereNowRequest.channel ? hereNowRequest.channel : [NSNull null]),
                      @(hereNowRequest.isClientIdentifiersRequired), @(hereNowRequest.shouldFetchClientState),
                      (error ? error : [NSNull null])];
@@ -670,7 +670,7 @@
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.participantChannelsListRequestFailed, (self.name ? self.name : self),
                      (((PNWhereNowRequest *)request).identifier ? ((PNWhereNowRequest *)request).identifier : [NSNull null]),
                      (error ? error : [NSNull null])];
         }];
@@ -693,7 +693,7 @@
 
             [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequeXCTFailed, (self.name ? self.name : self),
+                return @[PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestFailed, (self.name ? self.name : self),
                          (error.associatedObject ? error.associatedObject : [NSNull null]), (channels ? channels : [NSNull null]),
                          (error ? error : [NSNull null])];
             }];
@@ -704,7 +704,7 @@
 
             [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequeXCTFailed, (self.name ? self.name : self),
+                return @[PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestFailed, (self.name ? self.name : self),
                          (error.associatedObject ? error.associatedObject : [NSNull null]), (channels ? channels : [NSNull null]),
                          (error ? error : [NSNull null])];
             }];
@@ -719,7 +719,7 @@
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestFailed, (self.name ? self.name : self),
                     (devicePushToken ? devicePushToken : [NSNull null]), (error ? error : [NSNull null])];
         }];
         
@@ -736,7 +736,7 @@
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestFailed, (self.name ? self.name : self),
                     (devicePushToken ? devicePushToken : [NSNull null]), (error ? error : [NSNull null])];
         }];
         
@@ -757,7 +757,7 @@
         }
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestFailed, (self.name ? self.name : self),
                      (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
                      (options.channels ? options.channels : [NSNull null]), @(options.rights), @(options.accessPeriodDuration),
                      (error ? error : [NSNull null])];
@@ -776,7 +776,7 @@
         }
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequeXCTFailed, (self.name ? self.name : self),
+            return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestFailed, (self.name ? self.name : self),
                      (options.clientsAuthorizationKeys ? options.clientsAuthorizationKeys : [NSNull null]),
                      (options.channels ? options.channels : [NSNull null]), (error ? error : [NSNull null])];
         }];
@@ -1023,11 +1023,14 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
     [self destroyRequest:request];
 
     // Check whether connection available or not
-    if ([self isConnected] && [self.delegate isPubNubServiceAvailable:YES]) {
-
-        // Asking to schedule next request
-        [self scheduleNextRequest];
-    }
+    [self.delegate isPubNubServiceAvailable:YES checkCompletionBlock:^(BOOL available) {
+        
+        if ([self isConnected] && available) {
+            
+            // Asking to schedule next request
+            [self scheduleNextRequest];
+        }
+    }];
 }
 
 
@@ -1130,10 +1133,13 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
 
     // Check whether connection available or not
-    if ([self isConnected] && [self.delegate isPubNubServiceAvailable:NO]) {
-
-        [self scheduleNextRequest];
-    }
+    [self.delegate isPubNubServiceAvailable:NO checkCompletionBlock:^(BOOL available) {
+        
+        if ([self isConnected] && available) {
+            
+            [self scheduleNextRequest];
+        }
+    }];
 }
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
@@ -1155,19 +1161,22 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
     [super requestsQueue:queue didCancelRequest:request];
 }
 
-- (BOOL)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request {
+- (void)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request
+            checkCompletion:(void(^)(BOOL))checkCompletionBlock {
 
-    BOOL shouldRemoveRequest = YES;
+    [self pn_dispatchAsynchronouslyBlock:^{
 
-    // Check whether leave request has been sent to PubNub
-    // services or not
-    if ([self isWaitingRequestCompletion:request.shortIdentifier]) {
+        BOOL shouldRemoveRequest = YES;
 
-        shouldRemoveRequest = NO;
-    }
+        // Check whether leave request has been sent to PubNub
+        // services or not
+        if ([self isWaitingRequestCompletion:request.shortIdentifier]) {
 
+            shouldRemoveRequest = NO;
+        }
 
-    return shouldRemoveRequest;
+        checkCompletionBlock(shouldRemoveRequest);
+    }];
 }
 
 #pragma mark -

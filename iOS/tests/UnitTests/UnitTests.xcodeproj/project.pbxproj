@@ -483,10 +483,8 @@
 		96CB6A5919D19A6B0093D64E /* PNOperationStatusResponseParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNOperationStatusResponseParserTest.m; sourceTree = "<group>"; };
 		96CB6A5A19D19A6B0093D64E /* PNPresenceEventTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPresenceEventTest.m; sourceTree = "<group>"; };
 		96CB6A5B19D19A6B0093D64E /* PNPushNotificationsEnabledChannelsParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPushNotificationsEnabledChannelsParserTest.m; sourceTree = "<group>"; };
-		96CB6A5C19D19A6B0093D64E /* PNReachabilityTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNReachabilityTest.h; sourceTree = "<group>"; };
 		96CB6A5D19D19A6B0093D64E /* PNReachabilityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNReachabilityTest.m; sourceTree = "<group>"; };
 		96CB6A5E19D19A6B0093D64E /* PNResponseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponseTest.m; sourceTree = "<group>"; };
-		96CB6A5F19D19A6B0093D64E /* PNServiceChannelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNServiceChannelTest.h; sourceTree = "<group>"; };
 		96CB6A6019D19A6B0093D64E /* PNServiceChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNServiceChannelTest.m; sourceTree = "<group>"; };
 		96CB6A6119D19A6B0093D64E /* PNSubscribeUnsubscribeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNSubscribeUnsubscribeTest.h; sourceTree = "<group>"; };
 		96CB6A6219D19A6B0093D64E /* PNSubscribeUnsubscribeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeUnsubscribeTest.m; sourceTree = "<group>"; };
@@ -1059,10 +1057,8 @@
 				96CB6A5919D19A6B0093D64E /* PNOperationStatusResponseParserTest.m */,
 				96CB6A5A19D19A6B0093D64E /* PNPresenceEventTest.m */,
 				96CB6A5B19D19A6B0093D64E /* PNPushNotificationsEnabledChannelsParserTest.m */,
-				96CB6A5C19D19A6B0093D64E /* PNReachabilityTest.h */,
 				96CB6A5D19D19A6B0093D64E /* PNReachabilityTest.m */,
 				96CB6A5E19D19A6B0093D64E /* PNResponseTest.m */,
-				96CB6A5F19D19A6B0093D64E /* PNServiceChannelTest.h */,
 				96CB6A6019D19A6B0093D64E /* PNServiceChannelTest.m */,
 				96CB6A6119D19A6B0093D64E /* PNSubscribeUnsubscribeTest.h */,
 				96CB6A6219D19A6B0093D64E /* PNSubscribeUnsubscribeTest.m */,
