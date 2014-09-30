@@ -19,7 +19,10 @@
 
 @interface PNServiceChannelTest : XCTestCase
 
-<PNDelegate,PNConnectionChannelDelegate>
+<
+PNDelegate,
+PNConnectionChannelDelegate
+>
 
 @end
 
@@ -114,6 +117,9 @@
      storeInHistory:NO];
     [mockChannel verify];
 }
+
+#pragma mark - PNConnectionDelegates
+
 - (void)connectionChannelConfigurationDidFail:(PNConnectionChannel *)channel{
 }
 - (void)connectionChannel:(PNConnectionChannel *)channel didConnectToHost:(NSString *)host{
@@ -150,4 +156,9 @@ withError:(PNError *)error{
 - (void)connectionChannel:(PNConnectionChannel *)channel willDisconnectFromOrigin:(NSString *)host
                withError:(PNError *)error{
 }
+
+- (void)connectionChannel:(PNConnectionChannel *)channel checkCanConnect:(void (^)(BOOL))checkCompletionBlock {
+    
+}
+
 @end
