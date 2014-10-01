@@ -1,5 +1,7 @@
-MacOS Cocoa PubNub 3.5 Real-time Cloud Push API
+MacOS Cocoa PubNub Real-time Cloud Push API
 ===============================================
+
+## Changelog and README available on our iOS page [main documentation](../iOS)
 
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
