@@ -27,7 +27,7 @@
 }
 
 -(void)resetConnection {
-	[PubNub resetClient];
+//	[PubNub resetClient];
     
     dispatch_group_t resetGroup = dispatch_group_create();
     

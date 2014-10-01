@@ -435,6 +435,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 }
 
 + (void)resetClient {
+    
+    if (!_sharedInstance) {
+        return;
+    }
 
     [PNLogger logGeneralMessageFrom:_sharedInstance withParametersFromBlock:^NSArray *{
 

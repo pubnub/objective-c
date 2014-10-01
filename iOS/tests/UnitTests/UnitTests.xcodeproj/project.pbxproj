@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A252F519DB3EB600C4CFCC /* PubNubTest.m */; };
 		96CB66CA19CFE75D0093D64E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CB66C919CFE75D0093D64E /* Foundation.framework */; };
 		96CB66CC19CFE75D0093D64E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CB66CB19CFE75D0093D64E /* CoreGraphics.framework */; };
 		96CB66CE19CFE75D0093D64E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CB66CD19CFE75D0093D64E /* UIKit.framework */; };
@@ -175,6 +176,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		96A252F519DB3EB600C4CFCC /* PubNubTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNubTest.m; sourceTree = "<group>"; };
 		96CB66C619CFE75D0093D64E /* UnitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96CB66C919CFE75D0093D64E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		96CB66CB19CFE75D0093D64E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -528,6 +530,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		96A252F419DB3EA000C4CFCC /* 3.6.8 Instance version */ = {
+			isa = PBXGroup;
+			children = (
+				96A252F519DB3EB600C4CFCC /* PubNubTest.m */,
+			);
+			path = "3.6.8 Instance version";
+			sourceTree = "<group>";
+		};
 		96CB66BD19CFE75D0093D64E = {
 			isa = PBXGroup;
 			children = (
@@ -588,6 +598,7 @@
 		96CB66E819CFE75D0093D64E /* UnitTestsTests */ = {
 			isa = PBXGroup;
 			children = (
+				96A252F419DB3EA000C4CFCC /* 3.6.8 Instance version */,
 				96CB6A2A19D19A6B0093D64E /* 3.6.4 Unit-tests */,
 				96CB6A6919D19A6B0093D64E /* 3.6.5 Functional tests */,
 				96CB6A6C19D19A6B0093D64E /* 3.6.7 Regression tests */,
@@ -1310,6 +1321,7 @@
 				96CB6A7619D19A6B0093D64E /* PAMTestError.m in Sources */,
 				96CB6A9419D19A6B0093D64E /* PNPresenceEventTest.m in Sources */,
 				96CB6A8419D19A6B0093D64E /* PNCryptoHelperTest.m in Sources */,
+				96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */,
 				96CB6A8019D19A6B0093D64E /* PNChannelPresenceTest.m in Sources */,
 				96CB6A9819D19A6B0093D64E /* PNServiceChannelTest.m in Sources */,
 				96CB6A9E19D19A6B0093D64E /* W_ChaosTest.m in Sources */,
