@@ -65,6 +65,8 @@ PNDelegate
     NSString *const kStubConf2 = @"pubsub.com.origin2";
     NSString *const kStubConf3 = @"subkey3";
     
+    PNConfiguration *configuration1 = [PNConfiguration defaultConfiguration];
+    
     PNConfiguration *configuration2 = [PNConfiguration configurationForOrigin:kStubConf2
                                                                    publishKey:kStubConf2 subscribeKey:kStubConf2 secretKey:kStubConf2];
     
@@ -72,18 +74,19 @@ PNDelegate
                                                                    publishKey:kStubConf3 subscribeKey:kStubConf3 secretKey:kStubConf3];
 ;
     
-    [PubNub setClientIdentifier:kIdentifier1];
-    PubNub *pubNub2 = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:nil];
-    [pubNub2 setClientIdentifier:kIdentifier2];
+    [PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration]
+                       andDelegate:self];
+    PubNub *pubNub2 = [PubNub clientWithConfiguration:configuration2
+                                          andDelegate:nil];
     
-    PubNub *pubNub3 = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
-    [pubNub3 setClientIdentifier:kIdentifier3];
+    PubNub *pubNub3 = [PubNub clientWithConfiguration:configuration3
+                                          andDelegate:self];
     
     // check different identifiers
     
-    XCTAssertEqualObjects([PubNub clientIdentifier], kIdentifier1, @"Client identifiers inconsistent.");
-    XCTAssertEqualObjects([pubNub2 clientIdentifier], kIdentifier2, @"Client identifiers inconsistent.");
-    XCTAssertEqualObjects([pubNub3 clientIdentifier], kIdentifier3, @"Client identifiers inconsistent.");
+    XCTAssertEqualObjects([PubNub configuration], configuration1, @"Client identifiers inconsistent.");
+    XCTAssertEqualObjects([pubNub2 configuration], configuration2, @"Client identifiers inconsistent.");
+    XCTAssertEqualObjects([pubNub3 configuration], configuration3, @"Client identifiers inconsistent.");
 }
 
 - (void)testDelegates {
