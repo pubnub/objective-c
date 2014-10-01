@@ -60,7 +60,7 @@ PNDelegate
  Check that changes in clients configuration doesn't affect any other instance of PubNub.
  */
 
-- (void)testConnect {
+- (void)testConfigurations {
     
     NSString *const kStubConf2 = @"pubsub.com.origin2";
     NSString *const kStubConf3 = @"subkey3";
@@ -74,7 +74,7 @@ PNDelegate
                                                                    publishKey:kStubConf3 subscribeKey:kStubConf3 secretKey:kStubConf3];
 ;
     
-    [PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration]
+    [PubNub setupWithConfiguration:configuration1
                        andDelegate:self];
     PubNub *pubNub2 = [PubNub clientWithConfiguration:configuration2
                                           andDelegate:nil];
@@ -89,8 +89,29 @@ PNDelegate
     XCTAssertEqualObjects([pubNub3 configuration], configuration3, @"Client identifiers inconsistent.");
 }
 
-- (void)testDelegates {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+/**
+ Check that connect/disconnect one client doesn't affect other clients.
+ */
+
+- (void)t1estConnects {
+    
+    PNConfiguration *configuration1 = [PNConfiguration defaultConfiguration];
+    PNConfiguration *configuration2 = [PNConfiguration defaultConfiguration];
+    PNConfiguration *configuration3 = [PNConfiguration defaultConfiguration];
+    
+    [PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration]
+                       andDelegate:self];
+    PubNub *pubNub2 = [PubNub clientWithConfiguration:configuration2
+                                          andDelegate:nil];
+    
+    PubNub *pubNub3 = [PubNub clientWithConfiguration:configuration3
+                                          andDelegate:self];
+    
+    // check different identifiers
+    
+    XCTAssertEqualObjects([PubNub configuration], configuration1, @"Client identifiers inconsistent.");
+    XCTAssertEqualObjects([pubNub2 configuration], configuration2, @"Client identifiers inconsistent.");
+    XCTAssertEqualObjects([pubNub3 configuration], configuration3, @"Client identifiers inconsistent.");
 }
 
 @end

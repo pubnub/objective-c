@@ -27,7 +27,7 @@
     static NSString * const kTestPNPublishKey = @"pub-c-12b1444d-4535-4c42-a003-d509cc071e09";
     static NSString * const kTestPNSubscriptionKey = @"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe";
     static NSString * const kTestPNSecretKey = @"sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz";
-    static NSString * const kTestPNCipherKey = nil;
+    static NSString * const kTestPNCipherKey = @"1234234213432142341234";
     static NSString * const kTestPNAuthorizationKey = nil;
 
 #endif

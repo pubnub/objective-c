@@ -23,6 +23,12 @@
 @implementation PNCryptoTest
 
 -(void)test10updateWithConfiguration {
+    
+    PNConfiguration *testConfiguration = [PNConfiguration configurationForOrigin:kTestPNOriginHost
+                                                                      publishKey:kTestPNPublishKey
+                                                                    subscribeKey:kTestPNSubscriptionKey secretKey:kTestPNSecretKey];
+    testConfiguration.cipherKey = kTestPNCipherKey;
+    
 	configurations = [NSMutableArray array];
     PNConfiguration *configuration = nil;
 	strings = [NSMutableArray array];
@@ -101,22 +107,24 @@
 	BOOL res;
     
 	for( int i=0; i<configurations.count; i++ ) {
-        PNCryptoHelper *result = [PNCryptoHelper helperWithConfiguration:[PNConfiguration defaultConfiguration] error:&helperInitializationError];
+        PNCryptoHelper *result = [PNCryptoHelper helperWithConfiguration:testConfiguration error:&helperInitializationError];
         
 		XCTAssertTrue( result, @"result can be NO");
 		XCTAssertNil( helperInitializationError, @"helperInitializationError %@", helperInitializationError);
 
 		for( int j=0; j<strings.count; j++ ) {
+            
 			PNError *processingError = nil;
 			NSString *encodeString = [result encryptedStringFromString: strings[j] error: &processingError];
+            
 			XCTAssertNil( processingError, @"processingError %@", processingError);
 			XCTAssertFalse( [strings[j] isEqual: encodeString], @"strings must be not equal");
 			processingError = nil;
-			NSString *decodeString = [result decryptedStringFromString: encodeString error: &processingError];
+            
+			NSString *decodeString = [result decryptedStringFromString:encodeString
+                                                                 error:&processingError];
 			XCTAssertNil( processingError, @"processingError %@", processingError);
 			XCTAssertEqualObjects( strings[j], decodeString, @"strings not equal");
-
-
             
 			NSString *encrypt = [PubNub AESEncrypt: strings[j] error: &processingError];
 //			if( encrypt.length > 3 && [[encrypt substringToIndex:1] isEqualToString: @"\""] )
