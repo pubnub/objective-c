@@ -556,8 +556,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [PNDispatchHelper retain:privateQueue];
         [self pn_setPrivateDispatchQueue:privateQueue];
 
-        self.clientConfiguration = configuration;
-        [self setDelegate:delegate];
         self.state = PNPubNubClientStateCreated;
         self.cache = [PNCache new];
         self.pendingInvocations = [NSMutableArray array];
@@ -826,6 +824,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 }
             }
         };
+        if (configuration) {
+            
+            [self setupWithConfiguration:configuration andDelegate:delegate];
+        }
         
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{

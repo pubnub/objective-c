@@ -149,7 +149,6 @@ PNDelegate
 
 - (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
     if ([client isEqual:_pubNub3]) {
-        XCTFail(@"Cannot connect to origin with third instance.");
         dispatch_group_leave(_resGroup);
     }
 }
@@ -157,6 +156,7 @@ PNDelegate
 - (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
     if ([client isEqual:_pubNub3]) {
         dispatch_group_leave(_resGroup);
+        XCTFail(@"Cannot connect to origin with third instance.");
     }
 }
 
