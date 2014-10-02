@@ -166,9 +166,21 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             
             shortDescription = @"channelPresenceFailureShortDescription";
             
+            PNChannel *channel = nil;
+            switch (requestError.code) {
+                case kPNAPIUnauthorizedAccessError:
+                case kPNAPIAccessForbiddenError:
+                case kPNAPINotAvailableOrNotEnabledError:
+                    
+                    channel = [requestError.associatedObject lastObject];
+                    break;
+                    
+                default:
+                    channel = requestError.associatedObject;
+                    break;
+            }
             detailedDescription = [NSString stringWithFormat:[@"channelPresenceFailureDetailedDescription" localized],
-                                   ((PNChannel *)requestError.associatedObject).name,
-                                   requestError.localizedFailureReason];
+                                   channel.name, requestError.localizedFailureReason];
         }
         
         PNAlertView *alertView = [PNAlertView viewWithTitle:@"channelPresenceAlertViewTitle" type:type
