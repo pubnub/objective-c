@@ -191,6 +191,17 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 
 #pragma mark - Misc methods
+
+/**
+ @brief Transport layer initialization if required
+ 
+ @discussion Connection initialization required before usage. In case if there is no previous connection instance, it 
+ will be created with current channel configuration.
+ 
+ @since 3.6.8
+ */
+- (void)prepareConnectionIfRequired;
+
 - (BOOL)isConnecting;
 
 /**
@@ -282,7 +293,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             // completion notifications, so we simulate it
             [self connection:self.connection didConnectToHost:self.configuration.origin];
         };
-
+        
 
         // Check whether connection already connected but channel internal state is out of sync
         if (([self.connection isConnected] && ![self isConnected])) {
@@ -304,6 +315,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
             [PNBitwiseHelper clear:&_state];
             [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting, BITS_LIST_TERMINATOR];
+            [self prepareConnectionIfRequired];
             [self.connection connect];
         }
         // Check whether channel already connected or not
@@ -903,20 +915,16 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     return requests;
 }
 
-/**
- Create lazily create connection instance (useful in cased when it was necessary to destroy connection and there
- was no time to create new one.
- */
-- (PNConnection *)connection {
-
+- (void)prepareConnectionIfRequired {
+    
     [self pn_dispatchSynchronouslyBlock:^{
-
+        
         if (_connection == nil) {
-
+            
             _connection = [PNConnection connectionWithConfiguration:self.configuration andIdentifier:self.name];
-
+            
             [_connection pn_dispatchSynchronouslyBlock:^{
-
+                
                 _connection.delegate = self;
                 _connection.dataSource = self.requestsQueue;
             }];
@@ -929,9 +937,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             }];
         }
     }];
-
-
-    return _connection;
 }
 
 
@@ -1086,7 +1091,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
         }
         [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelReconnect];
-
+        
+        [self prepareConnectionIfRequired];
         [self.connection reconnect];
     }];
 }

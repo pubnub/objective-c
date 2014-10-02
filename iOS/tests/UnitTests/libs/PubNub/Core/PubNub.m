@@ -53,12 +53,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"fix-pt79258624";
+static NSString * const kPNCodebaseBranch = @"fix-pt79862904";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"1d605f3637d1f7cb4d49ea82ac5899ab4112f296";
+static NSString * const kPNCodeCommitIdentifier = @"f32ed5e8fe6ca2c0eaae730cbd4d1e244b7d6043";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -435,10 +435,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 }
 
 + (void)resetClient {
-    
-    if (!_sharedInstance) {
-        return;
-    }
 
     [PNLogger logGeneralMessageFrom:_sharedInstance withParametersFromBlock:^NSArray *{
 

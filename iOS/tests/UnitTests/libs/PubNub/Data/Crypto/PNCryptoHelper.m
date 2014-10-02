@@ -137,7 +137,7 @@ typedef enum _PNCryptorType {
     
     PNCryptoHelper *helper = [self new];
     [helper updateWithConfiguration:configuration withError:error];
-    if (*error != nil) {
+    if (error != nil) {
         
         helper = nil;
     }
