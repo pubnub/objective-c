@@ -17,7 +17,7 @@
 
     #import "GCDWrapper.h"
 
-    static NSUInteger const kTestTestTimout = 60;
+    static NSUInteger const kTestTestTimout = 30;
 
     // Stores reference on host URL which is used to access PubNub services during testing
     static NSString * const kTestPNOriginHost = @"pubsub.pubnub.com";

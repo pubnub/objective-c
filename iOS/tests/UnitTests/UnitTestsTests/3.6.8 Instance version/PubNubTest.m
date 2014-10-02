@@ -16,7 +16,12 @@ PNDelegate
 
 @end
 
-@implementation PubNubTest
+@implementation PubNubTest {
+    dispatch_group_t _resGroup;
+    
+    PubNub *_pubNub2;
+    PubNub *_pubNub3;
+}
 
 - (void)setUp
 {
@@ -93,25 +98,66 @@ PNDelegate
  Check that connect/disconnect one client doesn't affect other clients.
  */
 
-- (void)t1estConnects {
+- (void)testConnects {
     
     PNConfiguration *configuration1 = [PNConfiguration defaultConfiguration];
     PNConfiguration *configuration2 = [PNConfiguration defaultConfiguration];
     PNConfiguration *configuration3 = [PNConfiguration defaultConfiguration];
     
-    [PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration]
+    [PubNub setupWithConfiguration:configuration1
                        andDelegate:self];
-    PubNub *pubNub2 = [PubNub clientWithConfiguration:configuration2
-                                          andDelegate:nil];
     
-    PubNub *pubNub3 = [PubNub clientWithConfiguration:configuration3
+    _pubNub2 = [PubNub clientWithConfiguration:configuration2
                                           andDelegate:self];
     
-    // check different identifiers
+//    _pubNub2 = [[PubNub alloc] initWithConfiguration:configuration2 andDelegate:self];
+    [_pubNub2 setupWithConfiguration:configuration2 andDelegate:self];
     
-    XCTAssertEqualObjects([PubNub configuration], configuration1, @"Client identifiers inconsistent.");
-    XCTAssertEqualObjects([pubNub2 configuration], configuration2, @"Client identifiers inconsistent.");
-    XCTAssertEqualObjects([pubNub3 configuration], configuration3, @"Client identifiers inconsistent.");
+    _pubNub3 = [PubNub clientWithConfiguration:configuration3
+                                          andDelegate:self];
+    
+    _resGroup = dispatch_group_create();
+    
+    dispatch_group_enter(_resGroup);
+    dispatch_group_enter(_resGroup);
+    dispatch_group_enter(_resGroup);
+    
+    // try to connect all of them
+    [PubNub connectWithSuccessBlock:^(NSString *status) {
+        dispatch_group_leave(_resGroup);
+    } errorBlock:^(PNError *error) {
+        dispatch_group_leave(_resGroup);
+        
+        XCTFail(@"Cannot connect service(singletone based): %@", error);
+    }];
+    
+    [_pubNub2 connectWithSuccessBlock:^(NSString *status) {
+        dispatch_group_leave(_resGroup);
+    } errorBlock:^(PNError *error) {
+        dispatch_group_leave(_resGroup);
+        XCTFail(@"Cannot connect singletone instance.");
+    }];
+    
+    [_pubNub3 connect];
+    
+    if([GCDWrapper isGroup:_resGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout fired.");
+    };
+}
+
+#pragma mark - PNDelegate
+
+- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
+    if ([client isEqual:_pubNub3]) {
+        XCTFail(@"Cannot connect to origin with third instance.");
+        dispatch_group_leave(_resGroup);
+    }
+}
+
+- (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
+    if ([client isEqual:_pubNub3]) {
+        dispatch_group_leave(_resGroup);
+    }
 }
 
 @end
