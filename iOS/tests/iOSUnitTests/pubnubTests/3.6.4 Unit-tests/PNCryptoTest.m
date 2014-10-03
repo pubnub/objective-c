@@ -10,6 +10,7 @@
 #import "PNJSONSerialization.h"
 #import "PNConfiguration.h"
 #import "PNCryptoHelper.h"
+#import "PubNub+Cipher.h"
 
 @interface PNCryptoTest () {
 	NSMutableArray *configurations;
@@ -97,23 +98,26 @@
 	[configurations addObject: configuration];
 ////
     PNError *helperInitializationError = nil;
-	BOOL result;
+	BOOL res;
+    
 	for( int i=0; i<configurations.count; i++ ) {
-		result = [[PNCryptoHelper sharedInstance] updateWithConfiguration:configurations[i] withError:&helperInitializationError];
+        PNCryptoHelper *result = [PNCryptoHelper helperWithConfiguration:[PNConfiguration defaultConfiguration] error:&helperInitializationError];
+        
 		STAssertTrue( result, @"result can be NO");
 		STAssertNil( helperInitializationError, @"helperInitializationError %@", helperInitializationError);
 
 		for( int j=0; j<strings.count; j++ ) {
 			PNError *processingError = nil;
-			NSString *encodeString = [[PNCryptoHelper sharedInstance] encryptedStringFromString: strings[j] error: &processingError];
+			NSString *encodeString = [result encryptedStringFromString: strings[j] error: &processingError];
 			STAssertNil( processingError, @"processingError %@", processingError);
 			STAssertFalse( [strings[j] isEqual: encodeString], @"strings must be not equal");
 			processingError = nil;
-			NSString *decodeString = [[PNCryptoHelper sharedInstance] decryptedStringFromString: encodeString error: &processingError];
+			NSString *decodeString = [result decryptedStringFromString: encodeString error: &processingError];
 			STAssertNil( processingError, @"processingError %@", processingError);
 			STAssertEqualObjects( strings[j], decodeString, @"strings not equal");
 
 
+            
 			NSString *encrypt = [PubNub AESEncrypt: strings[j] error: &processingError];
 //			if( encrypt.length > 3 && [[encrypt substringToIndex:1] isEqualToString: @"\""] )
 //				encrypt = [encrypt substringWithRange: NSMakeRange(1, encrypt.length-2)];
@@ -148,8 +152,8 @@
 			STAssertNil( processingError, @"processingError %@", processingError);
 			NSData *data	   = [NSKeyedArchiver archivedDataWithRootObject:objects[j]];
 			NSData *dataDecode = [NSKeyedArchiver archivedDataWithRootObject:decodeObject];
-			result = [objects[j] isEqual: decodeObject];
-			if( result == NO ) {
+			res = [objects[j] isEqual:decodeObject];
+			if( res == NO ) {
 				NSLog(@"isEtalonDictionary Fail \n%@\n%@", data, dataDecode );
 				NSLog(@"isEtalonDictionary Fail \n%@\n%@", objects[j], decodeObject );
 			}
@@ -160,12 +164,15 @@
 //			if( encrypt.length > 3 && [[encrypt substringToIndex:1] isEqualToString: @"\""] )
 //				encrypt = [encrypt substringWithRange: NSMakeRange(1, encrypt.length-2)];
 			NSLog(@"encrypt %@", encrypt);
+            
 			STAssertTrue( encrypt.length > 0 , @"encrypt empty");
 			STAssertNil( processingError, @"AESEncrypt error", processingError);
 
 			processingError = nil;
-			id decrypt = [PubNub AESDecrypt: encrypt error: &processingError];
-			result = [objects[j] isEqual: decrypt];
+            id decrypt = [PubNub AESDecrypt:encrypt
+                                      error:&processingError];
+            
+			res = [objects[j] isEqual:decrypt];
 			if( result == NO ) {
 				NSLog(@"AESEncrypt != AESDecrypt (objects) \n%@\n%@", objects[j], decrypt );
 			}
@@ -180,7 +187,7 @@
 											   subscribeKey:@"enigma"
 												  secretKey:nil
 												  cipherKey:nil];
-	result = [[PNCryptoHelper sharedInstance] updateWithConfiguration:configuration withError:&helperInitializationError];
+    PNCryptoHelper *result = [PNCryptoHelper helperWithConfiguration:[PNConfiguration defaultConfiguration] error:&helperInitializationError];
 	STAssertFalse( result, @"result can be YES");
 	STAssertNotNil( helperInitializationError, @"helperInitializationError %@", helperInitializationError);
 }

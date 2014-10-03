@@ -1391,11 +1391,14 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
     [self destroyRequest:request];
 
     // Check whether connection available or not
-    if ([self isConnected] && [self.delegate isPubNubServiceAvailable:YES]) {
-
-        // Asking to schedule next request
-        [self scheduleNextRequest];
-    }
+    [self.delegate isPubNubServiceAvailable:YES checkCompletionBlock:^(BOOL available) {
+        
+        if ([self isConnected] && available) {
+            
+            // Asking to schedule next request
+            [self scheduleNextRequest];
+        }
+    }];
 }
 
 
@@ -1498,10 +1501,13 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
 
     // Check whether connection available or not
-    if ([self isConnected] && [self.delegate isPubNubServiceAvailable:NO]) {
-
-        [self scheduleNextRequest];
-    }
+    [self.delegate isPubNubServiceAvailable:NO checkCompletionBlock:^(BOOL available) {
+        
+        if ([self isConnected] && available) {
+            
+            [self scheduleNextRequest];
+        }
+    }];
 }
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
@@ -1523,19 +1529,22 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
     [super requestsQueue:queue didCancelRequest:request];
 }
 
-- (BOOL)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request {
+- (void)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request
+            checkCompletion:(void(^)(BOOL))checkCompletionBlock {
 
-    BOOL shouldRemoveRequest = YES;
+    [self pn_dispatchAsynchronouslyBlock:^{
 
-    // Check whether leave request has been sent to PubNub
-    // services or not
-    if ([self isWaitingRequestCompletion:request.shortIdentifier]) {
+        BOOL shouldRemoveRequest = YES;
 
-        shouldRemoveRequest = NO;
-    }
+        // Check whether leave request has been sent to PubNub
+        // services or not
+        if ([self isWaitingRequestCompletion:request.shortIdentifier]) {
 
+            shouldRemoveRequest = NO;
+        }
 
-    return shouldRemoveRequest;
+        checkCompletionBlock(shouldRemoveRequest);
+    }];
 }
 
 #pragma mark -

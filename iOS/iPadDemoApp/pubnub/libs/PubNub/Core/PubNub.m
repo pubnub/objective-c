@@ -53,12 +53,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"feature-pt73751928";
+static NSString * const kPNCodebaseBranch = @"fix-pt79862904";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"1b09eed32d5ee5738b5347cdb003663711998fcd";
+static NSString * const kPNCodeCommitIdentifier = @"f32ed5e8fe6ca2c0eaae730cbd4d1e244b7d6043";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -556,8 +556,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [PNDispatchHelper retain:privateQueue];
         [self pn_setPrivateDispatchQueue:privateQueue];
 
-        self.clientConfiguration = configuration;
-        [self setDelegate:delegate];
         self.state = PNPubNubClientStateCreated;
         self.cache = [PNCache new];
         self.pendingInvocations = [NSMutableArray array];
@@ -826,6 +824,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 }
             }
         };
+        if (configuration) {
+            
+            [self setupWithConfiguration:configuration andDelegate:delegate];
+        }
         
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -2447,21 +2449,19 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (BOOL)connectionChannelCanConnect:(PNConnectionChannel *)channel {
+- (void)connectionChannel:(PNConnectionChannel *)channel checkCanConnect:(void(^)(BOOL))checkCompletionBlock {
     
     [self pn_dispatchSynchronouslyBlock:^{
         
         // Help reachability instance update it's state our of schedule
         [self.reachability refreshReachabilityState];
+        
+        checkCompletionBlock([self.reachability isServiceAvailable]);
     }];
-    
-    
-    return [self.reachability isServiceAvailable];
 }
 
-- (BOOL)connectionChannelShouldRestoreConnection:(PNConnectionChannel *)channel {
+- (void)connectionChannel:(PNConnectionChannel *)channel checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock {
     
-    __block BOOL shouldRestoreConnection = NO;
     [self pn_dispatchSynchronouslyBlock:^{
         
         // Help reachability instance update it's state our of schedule
@@ -2475,13 +2475,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
         // Ensure that there is connection available as well as permission to connect
         shouldRestoreConnection = (shouldRestoreConnection && [self.reachability isServiceAvailable] && !isSimulatingReachability);
+        
+        checkCompletionBlock(shouldRestoreConnection);
     }];
-    
-    
-    return shouldRestoreConnection;
 }
 
-- (BOOL)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation {
+- (void)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation checkCompletionBlock:(void(^)(BOOL))checkCompletionBlock; {
     
     if (shouldUpdateInformation) {
         
@@ -2489,11 +2488,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
             // Help reachability instance update it's state our of schedule
             [self.reachability refreshReachabilityState];
+            
+            checkCompletionBlock([self.reachability isServiceAvailable]);
         }];
     }
-    
-    
-    return [self.reachability isServiceAvailable];
+    else {
+        
+        checkCompletionBlock([self.reachability isServiceAvailable]);
+    }
 }
 
 

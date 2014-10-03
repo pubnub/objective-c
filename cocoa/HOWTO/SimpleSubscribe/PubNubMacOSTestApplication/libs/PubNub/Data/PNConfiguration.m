@@ -264,14 +264,32 @@
 }
 
 - (BOOL)isEqual:(PNConfiguration *)configuration {
-
+    
     BOOL isEqual = configuration != nil;
-    isEqual = (isEqual ? [self.origin isEqualToString:configuration.origin] : isEqual);
-    isEqual = (isEqual ? [self.publishKey isEqualToString:configuration.publishKey] : isEqual);
-    isEqual = (isEqual ? [self.subscriptionKey isEqualToString:configuration.subscriptionKey] : isEqual);
-    isEqual = (isEqual ? [self.secretKey isEqualToString:configuration.secretKey] : isEqual);
-    isEqual = (isEqual ? [self.cipherKey isEqualToString:configuration.cipherKey] : isEqual);
-    isEqual = (isEqual ? [self.authorizationKey isEqualToString:configuration.authorizationKey] : isEqual);
+    if (isEqual && (self.origin || configuration.origin)) {
+        
+        isEqual = [self.origin isEqualToString:configuration.origin];
+    }
+    if (isEqual && (self.publishKey || configuration.publishKey)) {
+        
+        isEqual = [self.publishKey isEqualToString:configuration.publishKey];
+    }
+    if (isEqual && (self.subscriptionKey || configuration.subscriptionKey)) {
+        
+        isEqual = [self.subscriptionKey isEqualToString:configuration.subscriptionKey];
+    }
+    if (isEqual && (self.secretKey || configuration.secretKey)) {
+        
+        isEqual = [self.secretKey isEqualToString:configuration.secretKey];
+    }
+    if (isEqual && (self.cipherKey || configuration.cipherKey)) {
+        
+        isEqual = [self.cipherKey isEqualToString:configuration.cipherKey];
+    }
+    if (isEqual && (self.authorizationKey || configuration.authorizationKey)) {
+        
+        isEqual = [self.authorizationKey isEqualToString:configuration.authorizationKey];
+    }
     isEqual = (isEqual ? (self.presenceHeartbeatTimeout == configuration.presenceHeartbeatTimeout) : isEqual);
     isEqual = (isEqual ? (self.presenceHeartbeatInterval == configuration.presenceHeartbeatInterval) : isEqual);
     isEqual = (isEqual ? (self.nonSubscriptionRequestTimeout == configuration.nonSubscriptionRequestTimeout) : isEqual);
@@ -284,8 +302,8 @@
     isEqual = (isEqual ? (self.shouldUseSecureConnection == configuration.shouldUseSecureConnection) : isEqual);
     isEqual = (isEqual ? (self.shouldAutoReconnectClient == configuration.shouldAutoReconnectClient) : isEqual);
     isEqual = (isEqual ? (self.shouldAcceptCompressedResponse == configuration.shouldAcceptCompressedResponse) : isEqual);
-
-
+    
+    
     return isEqual;
 }
 

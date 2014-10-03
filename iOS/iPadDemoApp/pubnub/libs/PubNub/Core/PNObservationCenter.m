@@ -222,13 +222,12 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 + (void)resetCenter {
     
-    [[self defaultCenter].oneTimeObservers pn_dispatchSynchronouslyBlock:^{
+    [[self defaultCenter] pn_dispatchSynchronouslyBlock:^{
         
         // Resetting one time observers (they bound to PubNub client instance)
         [[self defaultCenter].oneTimeObservers removeAllObjects];
     }];
 }
-
 
 #pragma mark - Instance methods
 

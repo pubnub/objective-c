@@ -1801,11 +1801,14 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     [self destroyRequest:request];
     
     // Check whether connection available or not
-    if ([self isConnected] && [self.delegate isPubNubServiceAvailable:YES]) {
+    [self.delegate isPubNubServiceAvailable:YES checkCompletionBlock:^(BOOL available) {
         
-        // Asking to schedule next request
-        [self scheduleNextRequest];
-    }
+        if ([self isConnected] && available) {
+            
+            // Asking to schedule next request
+            [self scheduleNextRequest];
+        }
+    }];
 }
 
 - (void)handleIdleTimer:(NSTimer *)timer {
@@ -2569,10 +2572,13 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         
         
         // Check whether connection available or not
-        if ([self isConnected] && [self.delegate isPubNubServiceAvailable:NO]) {
+        [self.delegate isPubNubServiceAvailable:NO checkCompletionBlock:^(BOOL available) {
             
-            [self scheduleNextRequest];
-        }
+            if ([self isConnected] && available) {
+                
+                [self scheduleNextRequest];
+            }
+        }];
     }];
 }
 
@@ -2584,37 +2590,43 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 (request ? request : [NSNull null]), @(self.messagingState)];
     }];
 
-    if ([request isKindOfClass:[PNSubscribeRequest class]]) {
+    [self.delegate isPubNubServiceAvailable:YES checkCompletionBlock:^(BOOL available) {
         
-        [self pn_dispatchAsynchronouslyBlock:^{
-        
-            [PNBitwiseHelper removeFrom:&_messagingState bits:PNMessagingChannelSubscriptionTimeTokenRetrieve,
-             PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR];
-        }];
-    }
-    else if ([request isKindOfClass:[PNLeaveRequest class]]) {
-        
-        if ([self.delegate isPubNubServiceAvailable:YES]) {
+        if ([request isKindOfClass:[PNSubscribeRequest class]]) {
             
-            request.processing = YES;
+            [self pn_dispatchAsynchronouslyBlock:^{
+                
+                [PNBitwiseHelper removeFrom:&_messagingState bits:PNMessagingChannelSubscriptionTimeTokenRetrieve,
+                 PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR];
+            }];
         }
-    }
-    
-    
-    // Forward to the super class
-    [super requestsQueue:queue didCancelRequest:request];
+        else if ([request isKindOfClass:[PNLeaveRequest class]]) {
+            
+            if (available) {
+                
+                request.processing = YES;
+            }
+        }
+        
+        // Forward to the super class
+        [super requestsQueue:queue didCancelRequest:request];
+    }];
 }
 
-- (BOOL)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request {
-    
-    BOOL shouldRemove = YES;
-    
-    if ([self isWaitingRequestCompletion:request.shortIdentifier] || [request isKindOfClass:[PNLeaveRequest class]]) {
-        
-        shouldRemove = NO;
-    }
-    
-    return shouldRemove;
+- (void)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request
+            checkCompletion:(void(^)(BOOL))checkCompletionBlock {
+
+    [self pn_dispatchAsynchronouslyBlock:^{
+
+        BOOL shouldRemove = YES;
+
+        if ([self isWaitingRequestCompletion:request.shortIdentifier] || [request isKindOfClass:[PNLeaveRequest class]]) {
+
+            shouldRemove = NO;
+        }
+
+        checkCompletionBlock(shouldRemove);
+    }];
 }
 
 

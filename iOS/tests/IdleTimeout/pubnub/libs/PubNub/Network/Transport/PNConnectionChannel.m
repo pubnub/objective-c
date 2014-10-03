@@ -191,6 +191,17 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 
 #pragma mark - Misc methods
+
+/**
+ @brief Transport layer initialization if required
+ 
+ @discussion Connection initialization required before usage. In case if there is no previous connection instance, it 
+ will be created with current channel configuration.
+ 
+ @since 3.6.8
+ */
+- (void)prepareConnectionIfRequired;
+
 - (BOOL)isConnecting;
 
 /**
@@ -282,7 +293,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             // completion notifications, so we simulate it
             [self connection:self.connection didConnectToHost:self.configuration.origin];
         };
-
+        
 
         // Check whether connection already connected but channel internal state is out of sync
         if (([self.connection isConnected] && ![self isConnected])) {
@@ -304,6 +315,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
             [PNBitwiseHelper clear:&_state];
             [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting, BITS_LIST_TERMINATOR];
+            [self prepareConnectionIfRequired];
             [self.connection connect];
         }
         // Check whether channel already connected or not
@@ -903,20 +915,16 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     return requests;
 }
 
-/**
- Create lazily create connection instance (useful in cased when it was necessary to destroy connection and there
- was no time to create new one.
- */
-- (PNConnection *)connection {
-
+- (void)prepareConnectionIfRequired {
+    
     [self pn_dispatchSynchronouslyBlock:^{
-
+        
         if (_connection == nil) {
-
+            
             _connection = [PNConnection connectionWithConfiguration:self.configuration andIdentifier:self.name];
-
+            
             [_connection pn_dispatchSynchronouslyBlock:^{
-
+                
                 _connection.delegate = self;
                 _connection.dataSource = self.requestsQueue;
             }];
@@ -929,9 +937,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             }];
         }
     }];
-
-
-    return _connection;
 }
 
 
@@ -1086,7 +1091,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
         }
         [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelReconnect];
-
+        
+        [self prepareConnectionIfRequired];
         [self.connection reconnect];
     }];
 }
@@ -1341,14 +1347,14 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     }];
 }
 
-- (BOOL)connectionCanConnect:(PNConnection *)connection {
+- (void)connection:(PNConnection *)connection checkCanConnect:(void(^)(BOOL))checkCompletionBlock; {
 
-    return [self.delegate connectionChannelCanConnect:self];
+    [self.delegate connectionChannel:self checkCanConnect:checkCompletionBlock];
 }
 
-- (BOOL)connectionShouldRestoreConnection:(PNConnection *)connection {
+- (void)connection:(PNConnection *)connection checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock; {
 
-    return [self.delegate connectionChannelShouldRestoreConnection:self];
+    [self.delegate connectionChannel:self checkShouldRestoreConnection:checkCompletionBlock];
 }
 
 - (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName {
@@ -1493,28 +1499,32 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
 
-        if ([self.storedRequestsList count]) {
-
-            PNError *errorForRequests = nil;
-            if ([self.delegate isPubNubServiceAvailable:NO]) {
-
-                errorForRequests = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+        
+        [self.delegate isPubNubServiceAvailable:NO checkCompletionBlock:^(BOOL available) {
+            
+            if ([self.storedRequestsList count]) {
+                
+                PNError *errorForRequests = nil;
+                if (available) {
+                    
+                    errorForRequests = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+                }
+                [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList]
+                                      withError:errorForRequests];
             }
-            [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList]
-                                  withError:errorForRequests];
-        }
-
-
-        if (isExpected) {
-
-            [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.disconnectedBecauseOfError, (self.name ? self.name : self),
-                        @(self.state)];
-            }];
-
-            [self.delegate connectionChannel:self willDisconnectFromOrigin:host withError:error];
-        }
+            
+            
+            if (isExpected) {
+                
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.connectionChannel.disconnectedBecauseOfError, (self.name ? self.name : self),
+                             @(self.state)];
+                }];
+                
+                [self.delegate connectionChannel:self willDisconnectFromOrigin:host withError:error];
+            }
+        }];
     }];
 }
 
@@ -1540,27 +1550,30 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
 
-        if ([self.storedRequestsList count]) {
-
-            PNError *error = nil;
-            if ([self.delegate isPubNubServiceAvailable:NO]) {
-
-                error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+        [self.delegate isPubNubServiceAvailable:NO checkCompletionBlock:^(BOOL available) {
+            
+            if ([self.storedRequestsList count]) {
+                
+                PNError *error = nil;
+                if (available) {
+                    
+                    error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+                }
+                [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList] withError:error];
             }
-            [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList] withError:error];
-        }
-
-
-        if (isExpected) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.disconnected, (self.name ? self.name : self),
-                        @(self.state)];
-            }];
-
-            [self.delegate connectionChannel:self didDisconnectFromOrigin:hostName];
-        }
+            
+            
+            if (isExpected) {
+                
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.connectionChannel.disconnected, (self.name ? self.name : self),
+                             @(self.state)];
+                }];
+                
+                [self.delegate connectionChannel:self didDisconnectFromOrigin:hostName];
+            }
+        }];
     }];
 }
 
@@ -1808,13 +1821,16 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     request.processed = NO;
 
     // Check whether connection available or not
-    if ([self isConnected] && [self.delegate isPubNubServiceAvailable:YES]) {
-
-        // Increase request retry count
-        [request increaseRetryCount];
-    }
-
-    [self stopTimeoutTimerForRequest:request];
+    [self.delegate isPubNubServiceAvailable:YES checkCompletionBlock:^(BOOL available) {
+        
+        if ([self isConnected] && available) {
+            
+            // Increase request retry count
+            [request increaseRetryCount];
+        }
+        
+        [self stopTimeoutTimerForRequest:request];
+    }];
 }
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
@@ -1827,9 +1843,10 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     [self stopTimeoutTimerForRequest:request];
 }
 
-- (BOOL)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request {
+- (void)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request
+            checkCompletion:(void(^)(BOOL))checkCompletionBlock {
 
-    return YES;
+    checkCompletionBlock(YES);
 }
 
 
