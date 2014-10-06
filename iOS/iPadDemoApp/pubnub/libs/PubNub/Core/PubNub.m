@@ -58,7 +58,7 @@ static NSString * const kPNCodebaseBranch = @"pt78591658";
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"a0b68bf7189146099e5e15606ae77eaa59de3a22";
+static NSString * const kPNCodeCommitIdentifier = @"c0391cdc42df673426690345d355efb9635b8cea";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
