@@ -1110,9 +1110,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         void(^subscribeBlock)(void) = ^{
                             
                             weakSelf.asyncLockingOperationInProgress = NO;
-                            [self subscribeOnChannelsAndGroups:allChannels withCatchUp:shouldCatchup clientState:nil
-                                    andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
-                                                                 PNError *subscribeError) {
+                            [self subscribeOn:allChannels withCatchUp:shouldCatchup clientState:nil
+                   andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
+                                                PNError *subscribeError) {
                                
                                if (subscribeError == nil) {
                                    

@@ -52,6 +52,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 #pragma mark - Handler methods
 
 - (IBAction)handleChannelAddButtonTap:(id)sender;
+- (IBAction)handleChannelGroupsAddButtonTap:(id)sender;
 - (IBAction)handleSubscribeButtonTap:(id)sender;
 - (IBAction)handleCloseButtonTap:(id)sender;
 
@@ -105,15 +106,18 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
+- (IBAction)handleChannelGroupsAddButtonTap:(id)sender {
+    
+}
+
 - (IBAction)handleSubscribeButtonTap:(id)sender {
     
     PNAlertView *progressAlertView = [PNAlertView viewForProcessProgress];
     [progressAlertView show];
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    [PubNub subscribeOnChannelsAndGroups:[self.subscribeHelper channelsForSubscription]
-                         withClientState:[self.subscribeHelper channelsState]
-              andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+    [PubNub subscribeOn:[self.subscribeHelper channelsForSubscription] withClientState:[self.subscribeHelper channelsState]
+andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
          
          if (state == PNSubscriptionProcessSubscribedState || subscriptionError) {
              

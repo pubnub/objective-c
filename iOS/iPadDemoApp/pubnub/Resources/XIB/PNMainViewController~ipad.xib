@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PNMainViewController">
@@ -251,7 +251,7 @@
                                     <color key="value" red="0.29411764709999999" green="0.2901960784" blue="0.2901960784" alpha="1" colorSpace="calibratedRGB"/>
                                 </userDefinedRuntimeAttribute>
                                 <userDefinedRuntimeAttribute type="string" keyPath="itemsStructure">
-                                    <mutableString key="value">[{"title":"Presence","items":[{"title":"Global","action":"globalParticipantsList:"},{"title":"Channel","action":"channelParticipantsList:"},{"title":"Client","action":"clientChannelsList:"}]},{"title":"History","items":[{"title":"Full","action":"fetchFullHistory:"},{"title":"Period","action":"fetchHistory:"}]},{"title":"Access Rights","items":[{"title":"Grant","items":[{"title":"Application","action":"grantApplicationAccessRights:"},{"title":"Channel","action":"grantChannelAccessRights:"},{"title":"User","action":"grantUserAccessRights:"}]},{"title":"Revoke","items":[{"title":"Application","action":"revokeApplicationAccessRights:"},{"title":"Channel","action":"revokeChannelAccessRights:"},{"title":"User","action":"revokeUserAccessRights:"}]},{"title":"Audit","items":[{"title":"Application","action":"auditApplicationAccessRights:"},{"title":"Channel","action":"auditChannelAccessRights:"},{"title":"User","action":"auditUserAccessRights:"}]}]},{"title":"Push Notifications","items":[{"title":"For Channel","items":[{"title":"Enable","action":"enablePushNotifications:"},{"title":"Disable","action":"disablePushNotifications:"}]},{"title":"Remove all","action":"removePushNotifications:"},{"title":"Audit","action":"auditPushNotifications:"}]}]</mutableString>
+                                    <mutableString key="value">[{"title":"Presence","items":[{"title":"Global","action":"globalParticipantsList:"},{"title":"Channel","action":"channelParticipantsList:"},{"title":"Channel Group","action":"channelGroupParticipantsList:"},{"title":"Client","action":"clientChannelsList:"}]},{"title":"History","items":[{"title":"Full","action":"fetchFullHistory:"},{"title":"Period","action":"fetchHistory:"}]},{"title":"Access Rights","items":[{"title":"Grant","items":[{"title":"Application","action":"grantApplicationAccessRights:"},{"title":"Channel","action":"grantChannelAccessRights:"},{"title":"User","action":"grantUserAccessRights:"}]},{"title":"Revoke","items":[{"title":"Application","action":"revokeApplicationAccessRights:"},{"title":"Channel","action":"revokeChannelAccessRights:"},{"title":"User","action":"revokeUserAccessRights:"}]},{"title":"Audit","items":[{"title":"Application","action":"auditApplicationAccessRights:"},{"title":"Channel","action":"auditChannelAccessRights:"},{"title":"User","action":"auditUserAccessRights:"}]}]},{"title":"Push Notifications","items":[{"title":"For Channel","items":[{"title":"Enable","action":"enablePushNotifications:"},{"title":"Disable","action":"disablePushNotifications:"}]},{"title":"Remove all","action":"removePushNotifications:"},{"title":"Audit","action":"auditPushNotifications:"}]}]</mutableString>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                             <connections>
@@ -411,8 +411,12 @@
                 </view>
             </subviews>
             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
         </view>
     </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
 </document>

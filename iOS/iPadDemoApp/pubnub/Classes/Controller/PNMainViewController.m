@@ -9,6 +9,7 @@
 #import "PNMainViewController.h"
 #import "PNPushNotificationStateChangeView.h"
 #import "PNPushNotificationsAuditView.h"
+#import "PNChannelGroupPresenceView.h"
 #import "PNPresenceObservationView.h"
 #import "PNAccessRightsView.h"
 #import "NSString+PNLocalization.h"
@@ -233,6 +234,12 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     
     PNChannelPresenceView *channelPresence = [PNChannelPresenceView viewFromNib];
     [channelPresence showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+}
+
+- (void)channelGroupParticipantsList:(id)sender {
+    
+    PNChannelGroupPresenceView *channelGroupPresence = [PNChannelGroupPresenceView viewFromNib];
+    [channelGroupPresence showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
 - (void)clientChannelsList:(id)sender {

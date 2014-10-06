@@ -97,14 +97,13 @@
     Class parserClass = nil;
     if (![response isErrorResponse]){
         
-        [self classForResponse:response];
+        parserClass = [self classForResponse:response];
     }
 
     // Looks like server provided response which doesn't conform to standards required for concrete packet processing.
     if (!parserClass) {
 
         parserClass = [PNErrorResponseParser class];
-//        response = nil;
     }
 
 

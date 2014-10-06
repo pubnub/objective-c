@@ -65,7 +65,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully enabled presence on specified set of channels.
  }
@@ -131,7 +131,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully enabled presence on specified set of channels.
  }
@@ -190,7 +190,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully enabled presence on specified set of channels.
  }
@@ -257,7 +257,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully enabled presence on specified set of channels.
  }
@@ -312,7 +312,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully disabled presence on specified set of channels.
  }
@@ -375,7 +375,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully disabled presence on specified set of channels.
  }
@@ -430,7 +430,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully disabled presence on specified set of channels.
  }
@@ -493,7 +493,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully disabled presence on specified set of channels.
  }
@@ -587,7 +587,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully enabled presence on specified set of channels.
  }
@@ -653,7 +653,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully enabled presence on specified set of channels.
  }
@@ -712,7 +712,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully enabled presence on specified set of channels.
  }
@@ -779,7 +779,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully enabled presence on specified set of channels.
  }
@@ -834,7 +834,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully disabled presence on specified set of channels.
  }
@@ -897,7 +897,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully disabled presence on specified set of channels.
  }
@@ -952,7 +952,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully disabled presence on specified set of channels.
  }
@@ -1015,7 +1015,7 @@
  
  And handle it with delegates:
  @code
- - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+ - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
  
      // PubNub client successfully disabled presence on specified set of channels.
  }

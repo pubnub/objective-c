@@ -36,22 +36,23 @@
  @note Postpone can be because of few cases: \b PubNub client is in connecting or initial connection state; another 
  request which has been issued earlier didn't completed yet.
  
- @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on which client should subscribe.
- @param shouldCatchUp     If set to \c YES client will use last time token to catchup on previous messages on channels 
-                          at which client subscribed at this moment.
- @param clientState       Reference on \a NSDictionary which hold information which should be bound to the client 
-                          during his subscription session to target channels.
- @param handlerBlock      Handler block which is called by \b PubNub client when subscription process state changes. 
-                          Block pass three arguments: \c state - one of \b PNSubscriptionProcessState fields; 
-                          \c channels - list of \b PNChannel instances for which subscription process changes state; 
-                          \c subscriptionError - \b PNError instance which hold information about why subscription 
-                          process failed. Always check \a error.code to find out what caused error (check PNErrorCodes 
-                          header file and use \a -localizedDescription / \a -localizedFailureReason and 
-                          \a -localizedRecoverySuggestion to get human readable description for error).
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
+                       client should subscribe.
+ @param shouldCatchUp  If set to \c YES client will use last time token to catchup on previous messages on channels at 
+                       which client subscribed at this moment.
+ @param clientState    Reference on \a NSDictionary which hold information which should be bound to the client during
+                       his subscription session to target channels.
+ @param handlerBlock   Handler block which is called by \b PubNub client when subscription process state changes.
+                       Block pass three arguments: \c state - one of \b PNSubscriptionProcessState fields;
+                       \c channels - list of \b PNChannel instances for which subscription process changes state;
+                       \c subscriptionError - \b PNError instance which hold information about why subscription process
+                       failed. Always check \a error.code to find out what caused error (check PNErrorCodes header file
+                       and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
+                       to get human readable description for error).
  */
-- (void)postponeSubscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withCatchUp:(BOOL)shouldCatchUp
-                                 clientState:(NSDictionary *)clientState
-                  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+- (void)postponeSubscribeOn:(NSArray *)channelObjects withCatchUp:(BOOL)shouldCatchUp
+                clientState:(NSDictionary *)clientState
+ andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 /**
  Postpone unsubscription user request so it will be executed in future.
@@ -59,15 +60,16 @@
  @note Postpone can be because of few cases: \b PubNub client is in connecting or initial connection state; another 
  request which has been issued earlier didn't completed yet.
  
- @param channels     List of \b PNChannel and \b PNChannelGroup instances from which client should unsubscribe.
- @param handlerBlock Handler block which is called by \b PubNub client when unsubscription process state changes. 
-                     Block pass two arguments: \c channels - list of \b PNChannel instances for which unsubscription 
-                     process changes state; \c subscriptionError - \b PNError instance which hold information about why
-                     unsubscription process failed. Always check \a error.code to find out what caused error (check 
-                     PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and 
-                     \a -localizedRecoverySuggestion to get human readable description for error).
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
+                       client should subscribe.
+ @param handlerBlock   Handler block which is called by \b PubNub client when unsubscription process state changes.
+                       Block pass two arguments: \c channels - list of \b PNChannel instances for which unsubscription
+                       process changes state; \c subscriptionError - \b PNError instance which hold information about 
+                       why unsubscription process failed. Always check \a error.code to find out what caused error 
+                       (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and
+                       \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)postponeUnsubscribeFromChannelsAndGroups:(NSArray *)channelsAndGroups
+- (void)postponeUnsubscribeFromChannelsAndGroups:(NSArray *)channelObjects
                      withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
 
 
@@ -165,38 +167,38 @@
 + (void) subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
-    [self subscribeOnChannelsAndGroups:channels withClientState:clientState andCompletionHandlingBlock:handlerBlock];
+    [self subscribeOn:channels withClientState:clientState andCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups {
++ (void)subscribeOn:(NSArray *)channelObjects {
     
-    [self subscribeOnChannelsAndGroups:channelsAndGroups withCompletionHandlingBlock:nil];
+    [self subscribeOn:channelObjects withCompletionHandlingBlock:nil];
 }
 
-+ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups
-         withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
++ (void)          subscribeOn:(NSArray *)channelObjects
+  withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
-    [self subscribeOnChannelsAndGroups:channelsAndGroups withClientState:nil andCompletionHandlingBlock:handlerBlock];
+    [self subscribeOn:channelObjects withClientState:nil andCompletionHandlingBlock:handlerBlock];
 }
 
-+ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withClientState:(NSDictionary *)clientState {
++ (void)subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState {
     
-    [self subscribeOnChannelsAndGroups:channelsAndGroups withClientState:clientState andCompletionHandlingBlock:nil];
+    [self subscribeOn:channelObjects withClientState:clientState andCompletionHandlingBlock:nil];
 }
 
-+ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withClientState:(NSDictionary *)clientState
-          andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
++ (void)         subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
-    [self subscribeOnChannelsAndGroups:channelsAndGroups withCatchUp:NO clientState:clientState
+    [self subscribeOn:channelObjects withCatchUp:NO clientState:clientState
+andCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)         subscribeOn:(NSArray *)channelObjects withCatchUp:(BOOL)shouldCatchUp
+                 clientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
+    
+    [[self sharedInstance] subscribeOn:channelObjects withCatchUp:shouldCatchUp clientState:clientState
             andCompletionHandlingBlock:handlerBlock];
-}
-
-+ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withCatchUp:(BOOL)shouldCatchUp
-                         clientState:(NSDictionary *)clientState
-          andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
-    
-    [[self sharedInstance] subscribeOnChannelsAndGroups:channelsAndGroups withCatchUp:shouldCatchUp
-                                            clientState:clientState andCompletionHandlingBlock:handlerBlock];
 }
 
 + (void)unsubscribeFromChannel:(PNChannel *)channel {
@@ -293,39 +295,39 @@
 - (void)subscribeOnChannels:(NSArray *)channels withClientState:(NSDictionary *)clientState
  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
-    [self subscribeOnChannelsAndGroups:channels withClientState:clientState andCompletionHandlingBlock:handlerBlock];
+    [self subscribeOn:channels withClientState:clientState andCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups {
+- (void)subscribeOn:(NSArray *)channelObjects {
     
-    [self subscribeOnChannelsAndGroups:channelsAndGroups withCompletionHandlingBlock:nil];
+    [self subscribeOn:channelObjects withCompletionHandlingBlock:nil];
 }
 
-- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups
-         withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
+- (void)          subscribeOn:(NSArray *)channelObjects
+  withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
-    [self subscribeOnChannelsAndGroups:channelsAndGroups withClientState:nil andCompletionHandlingBlock:handlerBlock];
+    [self subscribeOn:channelObjects withClientState:nil andCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withClientState:(NSDictionary *)clientState {
+- (void)subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState {
     
-    [self subscribeOnChannelsAndGroups:channelsAndGroups withClientState:clientState andCompletionHandlingBlock:nil];
+    [self subscribeOn:channelObjects withClientState:clientState andCompletionHandlingBlock:nil];
 }
 
-- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withClientState:(NSDictionary *)clientState
-          andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
+- (void)         subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
-    [self subscribeOnChannelsAndGroups:channelsAndGroups withCatchUp:NO clientState:clientState
-            andCompletionHandlingBlock:handlerBlock];
+    [self subscribeOn:channelObjects withCatchUp:NO clientState:clientState
+andCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withCatchUp:(BOOL)shouldCatchUp
-                         clientState:(NSDictionary *)clientState
-          andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
+- (void)         subscribeOn:(NSArray *)channelObjects withCatchUp:(BOOL)shouldCatchUp
+                 clientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.subscribeAttempt, (channelsAndGroups ? channelsAndGroups : [NSNull null]),
+        return @[PNLoggerSymbols.api.subscribeAttempt, (channelObjects ? channelObjects : [NSNull null]),
                  @(shouldCatchUp), [self humanReadableStateFrom:self.state]];
     }];
     
@@ -355,7 +357,7 @@
                 }
                 
                 
-                [self.messagingChannel subscribeOnChannels:channelsAndGroups withCatchUp:shouldCatchUp
+                [self.messagingChannel subscribeOnChannels:channelObjects withCatchUp:shouldCatchUp
                                             andClientState:clientState];
             }
             // Looks like client can't send request because of some reasons
@@ -367,7 +369,7 @@
                 }];
                 
                 PNError *subscriptionError = [PNError errorWithCode:statusCode];
-                subscriptionError.associatedObject = channelsAndGroups;
+                subscriptionError.associatedObject = channelObjects;
                 
                 [self notifyDelegateAboutSubscriptionFailWithError:subscriptionError
                                           completeLockingOperation:YES];
@@ -375,7 +377,7 @@
                 
                 if (handlerBlock) {
                     
-                    handlerBlock(PNSubscriptionProcessNotSubscribedState, channelsAndGroups, subscriptionError);
+                    handlerBlock(PNSubscriptionProcessNotSubscribedState, channelObjects, subscriptionError);
                 }
             }
         }];
@@ -388,19 +390,19 @@
                             [self humanReadableStateFrom:self.state]];
                }];
                
-               [self postponeSubscribeOnChannelsAndGroups:channelsAndGroups withCatchUp:shouldCatchUp
-                                              clientState:clientState andCompletionHandlingBlock:handlerBlock];
+               [self postponeSubscribeOn:channelObjects withCatchUp:shouldCatchUp clientState:clientState
+              andCompletionHandlingBlock:handlerBlock];
            }];
 }
 
-- (void)postponeSubscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withCatchUp:(BOOL)shouldCatchUp
-                                 clientState:(NSDictionary *)clientState
-                  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
+- (void) postponeSubscribeOn:(NSArray *)channelObjects withCatchUp:(BOOL)shouldCatchUp
+                 clientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
     PNClientChannelSubscriptionHandlerBlock handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
-    [self postponeSelector:@selector(subscribeOnChannelsAndGroups:withCatchUp:clientState:andCompletionHandlingBlock:)
+    [self postponeSelector:@selector(subscribeOn:withCatchUp:clientState:andCompletionHandlingBlock:)
                  forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:channelsAndGroups], @(shouldCatchUp),
+            withParameters:@[[PNHelper nilifyIfNotSet:channelObjects], @(shouldCatchUp),
                              [PNHelper nilifyIfNotSet:clientState], [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:NO];
 }
@@ -578,11 +580,11 @@
             #pragma clang diagnostic pop
             
             // Notify delegate that client is about to restore subscription on previously subscribed channels
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:willRestoreSubscriptionOnChannelsAndGroups:)]) {
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:willRestoreSubscriptionOn:)]) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                 
-                    [self.clientDelegate performSelector:@selector(pubnubClient:willRestoreSubscriptionOnChannelsAndGroups:)
+                    [self.clientDelegate performSelector:@selector(pubnubClient:willRestoreSubscriptionOn:)
                                               withObject:self withObject:channels];
                 });
             }
@@ -671,7 +673,7 @@
     }];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOnChannelsAndGroups:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced withClientState:(NSDictionary *)clientState {
     
     [self pn_dispatchSynchronouslyBlock:^{
@@ -682,11 +684,11 @@
     void(^handlingBlock)(void) = ^{
         
         // Storing new data for channels.
-        [self.cache storeClientState:clientState forChannels:channels];
+        [self.cache storeClientState:clientState forChannels:channelObjects];
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            return @[PNLoggerSymbols.api.didSubscribe, (channels? channels : [NSNull null]),
+            return @[PNLoggerSymbols.api.didSubscribe, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
         
@@ -704,32 +706,34 @@
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
                             [self.clientDelegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
-                                                      withObject:self withObject:channels];
+                                                      withObject:self withObject:channelObjects];
                         });
                     }
                     #pragma clang diagnostic pop
                     
                     // Check whether delegate can handle subscription on channel or not
-                    if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannelsAndGroups:)]) {
+                    if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didSubscribeOn:)]) {
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                         
-                            [self.clientDelegate performSelector:@selector(pubnubClient:didSubscribeOnChannelsAndGroups:)
-                                                      withObject:self withObject:channels];
+                            [self.clientDelegate performSelector:@selector(pubnubClient:didSubscribeOn:)
+                                                      withObject:self withObject:channelObjects];
                         });
                     }
                     
-                    [self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channels];
+                    [self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channelObjects];
                 }
                 else {
                     
                     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                         
                         return @[PNLoggerSymbols.api.didSubscribeDuringClientIdentifierChange,
-                                 (channels? channels : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                                 (channelObjects ? channelObjects : [NSNull null]),
+                                 [self humanReadableStateFrom:self.state]];
                     }];
                     
-                    [self sendNotification:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification withObject:channels];
+                    [self sendNotification:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification
+                                withObject:channelObjects];
                 }
             }];
 		}
@@ -747,12 +751,12 @@
     [self launchHeartbeatTimer];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOnChannelsAndGroups:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willRestoreSubscription, (channels? channels : [NSNull null]),
+        return @[PNLoggerSymbols.api.willRestoreSubscription, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
     
@@ -764,10 +768,10 @@
         }
     }];
     
-    [self notifyDelegateAboutResubscribeWillStartOnChannels:channels];
+    [self notifyDelegateAboutResubscribeWillStartOnChannels:channelObjects];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOnChannelsAndGroups:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     [self pn_dispatchSynchronouslyBlock:^{
@@ -779,7 +783,7 @@
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            return @[PNLoggerSymbols.api.restoredSubscription, (channels ? channels : [NSNull null]),
+            return @[PNLoggerSymbols.api.restoredSubscription, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
         
@@ -793,22 +797,22 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     [self.clientDelegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)
-                                              withObject:self withObject:channels];
+                                              withObject:self withObject:channelObjects];
                 });
             }
             #pragma clang diagnostic pop
             
             // Check whether delegate can handle subscription restore on channels or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannelsAndGroups:)]) {
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOn:)]) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                 
-                    [self.clientDelegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannelsAndGroups:)
-                                              withObject:self withObject:channels];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOn:)
+                                              withObject:self withObject:channelObjects];
                 });
             }
             
-            [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channels];
+            [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channelObjects];
         }
     };
     
@@ -824,21 +828,21 @@
     [self launchHeartbeatTimer];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didFailSubscribeOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)channel didFailSubscribeOn:(NSArray *)channelObjects
                withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
-    error.associatedObject = channels;
+    error.associatedObject = channelObjects;
     [self notifyDelegateAboutSubscriptionFailWithError:error completeLockingOperation:!isSequenced];
     
     [self launchHeartbeatTimer];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willUnsubscribeFromChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willUnsubscribeFrom:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willUnsubscribe, (channels ? channels : [NSNull null]),
+        return @[PNLoggerSymbols.api.willUnsubscribe, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
     
@@ -851,17 +855,17 @@
     }];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFromChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFrom:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     void(^handlerBlock)(void) = ^{
         
         // Removing cached data for channels set.
-        [self.cache purgeStateForChannels:channels];
+        [self.cache purgeStateForChannels:channelObjects];
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            return @[PNLoggerSymbols.api.didUnsubscribe, (channels ? channels : [NSNull null]),
+            return @[PNLoggerSymbols.api.didUnsubscribe, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
         
@@ -879,29 +883,29 @@
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
                             [self.clientDelegate performSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)
-                                                      withObject:self withObject:channels];
+                                                      withObject:self withObject:channelObjects];
                         });
                     }
                     #pragma clang diagnostic pop
                     
                     // Check whether delegate can handle unsubscription event or not
-                    if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannelsAndGroups:)]) {
+                    if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didUnsubscribeFrom:)]) {
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                         
-                            [self.clientDelegate performSelector:@selector(pubnubClient:didUnsubscribeOnChannelsAndGroups:)
-                                                      withObject:self withObject:channels];
+                            [self.clientDelegate performSelector:@selector(pubnubClient:didUnsubscribeFrom:)
+                                                      withObject:self withObject:channelObjects];
                         });
                     }
                     
-                    [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channels];
+                    [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channelObjects];
                 }
                 else {
                     
                     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                         
                         return @[PNLoggerSymbols.api.didUnsubscribeDuringClientIdentifierChange,
-                                 (channels ? channels : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                                 (channelObjects ? channelObjects : [NSNull null]), [self humanReadableStateFrom:self.state]];
                     }];
                     
                     [self sendNotification:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification withObject:self];
@@ -922,10 +926,10 @@
     [self launchHeartbeatTimer];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didFailUnsubscribeOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)channel didFailUnsubscribeFrom:(NSArray *)channelObjects
                withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
-    error.associatedObject = channels;
+    error.associatedObject = channelObjects;
     [self notifyDelegateAboutUnsubscriptionFailWithError:error completeLockingOperation:!isSequenced];
     
     [self launchHeartbeatTimer];

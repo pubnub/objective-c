@@ -485,7 +485,7 @@
                 if (![parsedData isKindOfClass:[PNError class]]) {
                     
                     PNHereNow *presenceInformation = (PNHereNow *)parsedData;
-                    NSArray *channelsWithData = [PNChannel channelsWithNames:[presenceInformation channels]];
+                    NSArray *channelsWithData = [presenceInformation channels];
                     
                     [channelsWithData enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
                                                                    BOOL *channelEnumeratorStop) {
@@ -1173,19 +1173,17 @@
 
 #pragma mark - PAM manipulation methods
 
-- (void)changeAccessRightsForChannels:(NSArray *)channels accessRights:(PNAccessRights)accessRights
-                                                     authorizationKeys:(NSArray *)authorizationKeys
-                                                             forPeriod:(NSInteger)accessPeriod {
+- (void)changeAccessRightsFor:(NSArray *)channelObjects accessRights:(PNAccessRights)accessRights
+            authorizationKeys:(NSArray *)authorizationKeys onPeriod:(NSInteger)accessPeriod {
 
-    [self scheduleRequest:[PNChangeAccessRightsRequest changeAccessRightsRequestForChannels:channels
-                                                                               accessRights:accessRights
-                                                                                    clients:authorizationKeys
-                                                                                  forPeriod:accessPeriod]
+    [self scheduleRequest:[PNChangeAccessRightsRequest changeAccessRightsRequestForChannels:channelObjects
+                                                        accessRights:accessRights clients:authorizationKeys
+                                                           forPeriod:accessPeriod]
   shouldObserveProcessing:YES];
 }
-- (void)auditAccessRightsForChannels:(NSArray *)channels clients:(NSArray *)clientsAuthorizationKeys {
+- (void)auditAccessRightsFor:(NSArray *)channelObjects clients:(NSArray *)clientsAuthorizationKeys {
 
-    [self scheduleRequest:[PNAccessRightsAuditRequest accessRightsAuditRequestForChannels:channels
+    [self scheduleRequest:[PNAccessRightsAuditRequest accessRightsAuditRequestForChannels:channelObjects
                                                                                andClients:clientsAuthorizationKeys]
   shouldObserveProcessing:YES];
 }

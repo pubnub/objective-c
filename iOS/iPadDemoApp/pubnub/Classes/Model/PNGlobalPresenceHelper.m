@@ -80,13 +80,15 @@
                 
                 if (client.channel.name) {
                     
-                    if (![self.mappedParticipants valueForKey:client.channel.name]) {
+                    NSMutableArray *participants = [self.mappedParticipants valueForKey:client.channel.name];
+                    if (!participants) {
                         
-                        [self.mappedParticipants setValue:[NSMutableArray array] forKey:client.channel.name];
+                        participants = [NSMutableArray array];
+                        [self.mappedParticipants setValue:participants forKey:client.channel.name];
                     }
-                    if (![[self.mappedParticipants valueForKey:client.channel.name] containsObject:client]) {
+                    if (![participants containsObject:client]) {
                         
-                        [[self.mappedParticipants valueForKey:client.channel.name] addObject:client];
+                        [participants addObject:client];
                     }
                 }
             }];

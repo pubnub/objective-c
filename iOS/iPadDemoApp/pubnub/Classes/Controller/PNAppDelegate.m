@@ -298,19 +298,19 @@
           ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
 }
 
-- (void)pubnubClient:(PubNub *)client didSubscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups {
+- (void)pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully subscribed on channels: %@", channelsAndGroups);
+    NSLog(@"PubNub client successfully subscribed on channels: %@", channelObjects);
 }
 
-- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannelsAndGroups:(NSArray *)channelsAndGroups {
+- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client resuming subscription on: %@", channelsAndGroups);
+    NSLog(@"PubNub client resuming subscription on: %@", channelObjects);
 }
 
-- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannelsAndGroups:(NSArray *)channelsAndGroups {
+- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully restored subscription on channels: %@", channelsAndGroups);
+    NSLog(@"PubNub client successfully restored subscription on channels: %@", channelObjects);
 }
 
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
@@ -318,9 +318,9 @@
     NSLog(@"PubNub client failed to subscribe because of error: %@", error);
 }
 
-- (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups {
+- (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully unsubscribed from channels: %@", channelsAndGroups);
+    NSLog(@"PubNub client successfully unsubscribed from channels: %@", channelObjects);
 }
 
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
@@ -328,9 +328,9 @@
     NSLog(@"PubNub client failed to unsubscribe because of error: %@", error);
 }
 
-- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully enabled presence observation on channels: %@", channels);
+    NSLog(@"PubNub client successfully enabled presence observation on channels: %@", channelObjects);
 }
 
 - (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error {
@@ -338,9 +338,9 @@
     NSLog(@"PubNub client failed to enable presence observation because of error: %@", error);
 }
 
-- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully disabled presence observation on channels: %@", channels);
+    NSLog(@"PubNub client successfully disabled presence observation on channels: %@", channelObjects);
 }
 
 - (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error {

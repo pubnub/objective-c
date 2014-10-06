@@ -29,9 +29,9 @@
                           header file and use \a -localizedDescription / \a -localizedFailureReason and 
                           \a -localizedRecoverySuggestion to get human readable description for error).
  */
-+ (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withCatchUp:(BOOL)shouldCatchUp
-                         clientState:(NSDictionary *)clientState
-          andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
++ (void)         subscribeOn:(NSArray *)channelsAndGroups withCatchUp:(BOOL)shouldCatchUp
+                 clientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 
 #pragma mark - Instance methods
@@ -53,9 +53,9 @@
                           header file and use \a -localizedDescription / \a -localizedFailureReason and 
                           \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)subscribeOnChannelsAndGroups:(NSArray *)channelsAndGroups withCatchUp:(BOOL)shouldCatchUp
-                         clientState:(NSDictionary *)clientState
-          andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
+- (void)         subscribeOn:(NSArray *)channelsAndGroups withCatchUp:(BOOL)shouldCatchUp
+                 clientState:(NSDictionary *)clientState
+  andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 
 
 #pragma mark - Misc methods

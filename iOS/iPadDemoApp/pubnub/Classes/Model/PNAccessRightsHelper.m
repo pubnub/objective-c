@@ -194,12 +194,12 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                 break;
             case PNAccessRightsHelperChannelMode:
                 
-                [PubNub auditAccessRightsForChannels:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
+                [PubNub auditAccessRightsFor:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
                 break;
             case PNAccessRightsHelperUserMode:
                 
-                [PubNub auditAccessRightsForChannel:[PNChannel channelWithName:self.channelName]
-                                            clients:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
+                [PubNub auditAccessRightsFor:[PNChannel channelWithName:self.channelName]
+                                     clients:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
                 break;
                 
             default:
@@ -233,13 +233,12 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                         rights = PNReadAccessRight;
                     }
                     
-                    [PubNub changeApplicationAccessRightsTo:rights
-                                                  forPeriod:self.accessRightsApplicationDuration
+                    [PubNub changeApplicationAccessRightsTo:rights onPeriod:self.accessRightsApplicationDuration
                                  andCompletionHandlingBlock:requestHandlerBlock];
                 }
                 else {
                     
-                    [PubNub changeApplicationAccessRightsTo:PNNoAccessRights forPeriod:0
+                    [PubNub changeApplicationAccessRightsTo:PNNoAccessRights onPeriod:0
                                  andCompletionHandlingBlock:requestHandlerBlock];
                 }
                 break;
@@ -256,14 +255,14 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                         
                         rights = PNReadAccessRight;
                     }
-                    [PubNub changeAccessRightsForChannels:self.dataManipulation to:rights
-                                                forPeriod:self.accessRightsApplicationDuration
-                              withCompletionHandlingBlock:requestHandlerBlock];
+                    [PubNub changeAccessRightsFor:self.dataManipulation to:rights
+                                         onPeriod:self.accessRightsApplicationDuration
+                      withCompletionHandlingBlock:requestHandlerBlock];
                 }
                 else {
                     
-                    [PubNub changeAccessRightsForChannels:self.dataManipulation to:PNNoAccessRights forPeriod:0
-                              withCompletionHandlingBlock:requestHandlerBlock];
+                    [PubNub changeAccessRightsFor:self.dataManipulation to:PNNoAccessRights onPeriod:0
+                      withCompletionHandlingBlock:requestHandlerBlock];
                 }
                 break;
             case PNAccessRightsHelperUserMode:
@@ -281,15 +280,15 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                     }
                     
                     [PubNub changeAccessRightsForClients:self.dataManipulation
-                                               onChannel:[PNChannel channelWithName:self.channelName]
-                                                      to:rights forPeriod:self.accessRightsApplicationDuration
+                                                  object:[PNChannel channelWithName:self.channelName]
+                                                      to:rights onPeriod:self.accessRightsApplicationDuration
                              withCompletionHandlingBlock:requestHandlerBlock];
                 }
                 else {
                     
                     [PubNub changeAccessRightsForClients:self.dataManipulation
-                                               onChannel:[PNChannel channelWithName:self.channelName]
-                                                      to:PNNoAccessRights forPeriod:self.accessRightsApplicationDuration
+                                                  object:[PNChannel channelWithName:self.channelName]
+                                                      to:PNNoAccessRights onPeriod:self.accessRightsApplicationDuration
                              withCompletionHandlingBlock:requestHandlerBlock];
                 }
                 break;

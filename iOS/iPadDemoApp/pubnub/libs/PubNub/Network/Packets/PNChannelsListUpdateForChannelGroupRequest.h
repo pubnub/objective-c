@@ -32,7 +32,8 @@
  
  @return Ready to use \b PNChannelsListUpdateForChannelGroupRequest request.
  */
-+ (PNChannelsListUpdateForChannelGroupRequest *)channelsListAddition:(NSArray *)channels forChannelGroup:(PNChannelGroup *)group;
++ (PNChannelsListUpdateForChannelGroupRequest *)channelsListAddition:(NSArray *)channels
+                                                     forChannelGroup:(PNChannelGroup *)group;
 
 /**
  Construct request for channels list removal inside channel group.

@@ -437,12 +437,12 @@
 
 #pragma mark - Message channel delegate methods
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willEnablePresenceObservationOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willEnablePresenceObservationOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willEnablePresenceObservation, (channels ? channels : [NSNull null]),
+        return @[PNLoggerSymbols.api.willEnablePresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
     
@@ -455,30 +455,30 @@
     }];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     void(^handlerBlock)(void) = ^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            return @[PNLoggerSymbols.api.enabledPresenceObservation, (channels ? channels : [NSNull null]),
+            return @[PNLoggerSymbols.api.enabledPresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
         
         if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
             
             // Check whether delegate can handle new message arrival or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)]) {
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOn:)]) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                 
-                    [self.clientDelegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)
-                                              withObject:self withObject:channels];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOn:)
+                                              withObject:self withObject:channelObjects];
                 });
             }
             
-            [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channels];
+            [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channelObjects];
         }
     };
     
@@ -492,19 +492,19 @@
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceEnablingOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceEnablingOn:(NSArray *)channelObjects
                withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
-    error.associatedObject = channels;
+    error.associatedObject = channelObjects;
     [self notifyDelegateAboutPresenceEnablingFailWithError:error completeLockingOperation:!isSequenced];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willDisablePresenceObservationOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willDisablePresenceObservationOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willDisablePresenceObservation, (channels ? channels : [NSNull null]),
+        return @[PNLoggerSymbols.api.willDisablePresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
     
@@ -517,30 +517,30 @@
     }];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     void(^handlerBlock)(void) = ^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            return @[PNLoggerSymbols.api.disabledPresenceObservation, (channels ? channels : [NSNull null]),
+            return @[PNLoggerSymbols.api.disabledPresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
         
         if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
             
             // Check whether delegate can handle new message arrival or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)]) {
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOn:)]) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                 
-                    [self.clientDelegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)
-                                              withObject:self withObject:channels];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOn:)
+                                              withObject:self withObject:channelObjects];
                 });
             }
             
-            [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channels];
+            [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channelObjects];
         }
     };
     
@@ -554,10 +554,10 @@
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceDisablingOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceDisablingOn:(NSArray *)channelObjects
                withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
-    error.associatedObject = channels;
+    error.associatedObject = channelObjects;
     [self notifyDelegateAboutPresenceDisablingFailWithError:error completeLockingOperation:!isSequenced];
 }
 
