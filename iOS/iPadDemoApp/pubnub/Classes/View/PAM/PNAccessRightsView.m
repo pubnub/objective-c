@@ -9,9 +9,9 @@
 #import "PNAccessRightsView.h"
 #import "PNAccessRightsInformationCell.h"
 #import "PNClientIdentifierAddDelegate.h"
-#import "PNChannelInformationDelegate.h"
+#import "PNObjectInformationDelegate.h"
 #import "PNClientIdentifierAddView.h"
-#import "PNChannelInformationView.h"
+#import "PNObjectInformationView.h"
 #import "NSString+PNLocalization.h"
 #import "PNAccessRightsHelper.h"
 #import "NSObject+PNAddition.h"
@@ -32,7 +32,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 @interface PNAccessRightsView () <UITableViewDelegate, UITableViewDataSource, UIPickerViewDataSource,
                                   UIPickerViewDelegate, UIPopoverControllerDelegate, UITextFieldDelegate,
-                                  PNChannelInformationDelegate, PNClientIdentifierAddDelegate>
+                                  PNObjectInformationDelegate, PNClientIdentifierAddDelegate>
 
 
 #pragma mark - Properties
@@ -525,7 +525,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     
     if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {
         
-        PNChannelInformationView *information = [PNChannelInformationView viewFromNib];
+        PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
         information.delegate = self;
         information.allowEditing = YES;
         [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
@@ -681,12 +681,12 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Channel information delegate methods
 
-- (void)channelInformation:(PNChannelInformationView *)informationView didEndEditingChanne:(PNChannel *)channel
-                 withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
+- (void)objectInformation:(PNObjectInformationView *)informationView didEndEditing:(id <PNChannelProtocol>)object
+                withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
     
     [informationView dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
     
-    [self.accessRightsHelper addObject:channel];
+    [self.accessRightsHelper addObject:object];
     [self updateLayout];
 }
 

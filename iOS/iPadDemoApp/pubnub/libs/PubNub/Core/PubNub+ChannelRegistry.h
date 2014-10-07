@@ -792,7 +792,6 @@
  @code
  PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
  [pubNub connect];
- [pubNub requestChannelsForGroup:[PNChannelGroup channelGroupWithName:@"users"]];
  [pubNub requestChannelsForGroup:[PNChannelGroup channelGroupWithName:@"users" inNamespace:@"admin"] 
      withCompletionHandlingBlock:^(PNChannelGroup *group, PNError *error) {
  

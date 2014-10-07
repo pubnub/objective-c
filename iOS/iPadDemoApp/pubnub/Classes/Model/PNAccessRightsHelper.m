@@ -102,13 +102,13 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     
     if (self.operationMode == PNAccessRightsHelperChannelMode) {
         
-        self.existingData = [NSMutableArray arrayWithArray:[PubNub subscribedChannels]];
+        self.existingData = [NSMutableArray arrayWithArray:[PubNub subscribedObjectsList]];
     }
     else {
         
         self.existingData = [NSMutableArray array];
     }
-    self.activeChannels = [PubNub subscribedChannels];
+    self.activeChannels = [PubNub subscribedObjectsList];
     self.userProvidedChannels = [NSMutableArray array];
     self.dataManipulation = [NSMutableArray array];
 }

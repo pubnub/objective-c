@@ -87,7 +87,7 @@ static PNDataManager *_sharedInstance = nil;
 
                     if (state == PNSubscriptionProcessSubscribedState || state == PNSubscriptionProcessRestoredState) {
 
-                        NSArray *unsortedList = [PubNub subscribedChannels];
+                        NSArray *unsortedList = [PubNub subscribedObjectsList];
                         NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                         weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
                     }
@@ -96,7 +96,7 @@ static PNDataManager *_sharedInstance = nil;
         [[PNObservationCenter defaultCenter] addClientChannelUnsubscriptionObserver:weakSelf
                                                                   withCallbackBlock:^(NSArray *channels,
                                                                                       PNError *error) {
-                  NSArray *unsortedList = [PubNub subscribedChannels];
+                  NSArray *unsortedList = [PubNub subscribedObjectsList];
                   NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                   weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
               }];

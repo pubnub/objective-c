@@ -621,7 +621,7 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
         
         [self.channelsTableView reloadData];
         
-        if ([[PubNub subscribedChannels] count]) {
+        if ([[PubNub subscribedObjectsList] count]) {
             
             PNChannel *currentChannel = [[PNDataManager sharedInstance] currentChannel];
             
@@ -799,8 +799,8 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
             
             [PNDataManager sharedInstance].currentChannel = nil;
         }
-        
-        [PubNub unsubscribeFromChannelsAndGroups:@[channel]];
+
+        [PubNub unsubscribeFrom:@[channel]];
     }
 }
 

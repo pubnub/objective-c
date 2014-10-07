@@ -57,6 +57,15 @@
 + (void)purgeChannelsCache;
 
 /**
+ @brief Remove specified object from local cache.
+ 
+ @param channel Reference on data feed object which should be removed from cache.
+ 
+ @since <#version number#>
+ */
++ (void)removeChannelFromCache:(PNChannel *)channel;
+
+/**
  * Retrieve reference on channel by it's name and update presence observing settings by request
  */
 + (id)            channelWithName:(NSString *)channelName

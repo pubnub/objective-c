@@ -24,17 +24,22 @@
  
  @note In case if requested only number of participants, this array will be \c nil.
  */
-@property (nonatomic, readonly, strong) NSArray *participants DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use '-participantsForChannel:' to retrieve participants list");
+@property (nonatomic, readonly, strong) NSArray *participants
+DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use '-participantsForChannel:' to retrieve participants list");
 
 /**
  Stores how much participants have been found subscribed on concrete channel.
  */
-@property (nonatomic, readonly, assign) unsigned long participantsCount DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use '-participantsCountForChannel:' to retrieve participants count");
+@property (nonatomic, readonly, assign) unsigned long participantsCount
+DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use '-participantsCountForChannel:' to retrieve participants "
+                         "count");
 
 /**
  Stores reference on channel inside of which \b PubNub client searched for participants (clients).
  */
-@property (nonatomic, readonly, strong) PNChannel *channel DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use 'channels' property to retrieve list of channels with participants information");
+@property (nonatomic, readonly, strong) PNChannel *channel
+DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use 'channels' property to retrieve list of channels with "
+                         "participants information");
 
 
 #pragma mark - Instance methods

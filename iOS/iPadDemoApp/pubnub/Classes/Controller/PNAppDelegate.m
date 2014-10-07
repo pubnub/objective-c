@@ -394,16 +394,16 @@
     NSLog(@"PubNub client failed to download history for %@ because of error: %@", channel, error);
 }
 
-- (void)  pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
-  forChannelsAndGroups:(NSArray *)channelsAndGroups {
+- (void)pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
+                                                  forObjects:(NSArray *)channelObjects {
     
-    NSLog(@"PubNub client received participants list for channels and groups %@: %@", channelsAndGroups, presenceInformation);
+    NSLog(@"PubNub client received participants list for channels and groups %@: %@", channelObjects, presenceInformation);
 }
 
-- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannelsAndGroups:(NSArray *)channelsAndGroups
+- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadFor:(NSArray *)channelObjects
            withError:(PNError *)error {
     
-    NSLog(@"PubNub client failed to download participants list for channels %@ because of error: %@", channelsAndGroups, error);
+    NSLog(@"PubNub client failed to download participants list for channels %@ because of error: %@", channelObjects, error);
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantChannelsList:(NSArray *)participantChannelsList
@@ -434,9 +434,9 @@
     NSNumber *shouldRestoreSubscriptionFromLastTimeToken = @(NO);
     NSString *lastTimeToken = @"0";
 
-    if ([[PubNub subscribedChannels] count] > 0) {
+    if ([[PubNub subscribedObjectsList] count] > 0) {
 
-        lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
+        lastTimeToken = [[[PubNub subscribedObjectsList] lastObject] updateTimeToken];
     }
 
     NSLog(@"PubNub client should restore subscription from last time token? %@ (last time token: %@)",

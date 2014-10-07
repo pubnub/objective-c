@@ -18,7 +18,7 @@
 
 - (NSArray *)channels {
     
-    return [PubNub subscribedChannels];
+    return [PubNub subscribedObjectsList];
 }
 
 - (void)fetchHistoryWithBlock:(PNClientHistoryLoadHandlingBlock)handlerBlock {

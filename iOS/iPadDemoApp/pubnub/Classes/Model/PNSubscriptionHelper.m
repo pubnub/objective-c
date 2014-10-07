@@ -57,7 +57,7 @@
 
 - (void)addChannel:(PNChannel *)channel withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObservePresence {
     
-    if (channel && ![PubNub isSubscribedOnChannel:channel]) {
+    if (channel && ![PubNub isSubscribedOn:channel]) {
         
         if (![self.channels containsObject:channel]) {
             

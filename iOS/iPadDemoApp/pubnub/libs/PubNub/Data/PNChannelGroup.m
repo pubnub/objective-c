@@ -69,7 +69,16 @@
         channelName = @":";
     }
     
-    PNChannelGroup *channel = (PNChannelGroup *)[super channelWithName:channelName shouldObservePresence:observePresence];
+    id <PNChannelProtocol> (^channelCreateBlock)(void) = ^{
+        
+        return [self channelWithName:channelName shouldObservePresence:observePresence];
+    };
+    PNChannelGroup *channel = channelCreateBlock();
+    if (![channel isKindOfClass:self]) {
+        
+        [self removeChannelFromCache:channel];
+        channel = channelCreateBlock();
+    }
     channel.channelGroup = YES;
     channel.groupName = name;
     channel.nspace = nspace;

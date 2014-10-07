@@ -7,9 +7,9 @@
 //
 
 #import "PNPresenceObservationView.h"
-#import "PNChannelInformationDelegate.h"
+#import "PNObjectInformationDelegate.h"
 #import "PNPresenceObservationHelper.h"
-#import "PNChannelInformationView.h"
+#import "PNObjectInformationView.h"
 #import "NSString+PNLocalization.h"
 #import "NSObject+PNAddition.h"
 #import "UIView+PNAddition.h"
@@ -26,7 +26,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Private interface declaration
 
-@interface PNPresenceObservationView () <PNChannelInformationDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
+@interface PNPresenceObservationView () <PNObjectInformationDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 
 #pragma mark - Properties
@@ -153,7 +153,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (IBAction)handleChannelAddButtonTap:(id)sender {
     
-    PNChannelInformationView *information = [PNChannelInformationView viewFromNib];
+    PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
     information.delegate = self;
     [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
@@ -218,14 +218,14 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Channel information delegate methods
 
-- (void)channelInformation:(PNChannelInformationView *)informationView didEndEditingChanne:(PNChannel *)channel
+- (void)objectInformation:(PNObjectInformationView *)informationView didEndEditing:(id <PNChannelProtocol>)object
                  withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
     
     [informationView dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
     
-    if (![self.presenceStateHelper willChangePresenceStateForChanne:channel]) {
+    if (![self.presenceStateHelper willChangePresenceStateForChanne:object]) {
         
-        [self.presenceStateHelper addChannel:channel];
+        [self.presenceStateHelper addChannel:object];
         
         [self.channelsList reloadData];
         [self updateLayout];

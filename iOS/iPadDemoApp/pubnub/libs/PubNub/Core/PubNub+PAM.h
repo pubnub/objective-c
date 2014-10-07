@@ -7708,7 +7708,23 @@
  PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
  [pubNub connect];
  [pubNub changeAccessRightsFor:[PNChannel channelsWithNames:@[@"iosdev", @"androiddev", @"macosdev"]]
-                            to:PNReadAccessRight onPeriod:10];
+                            to:PNReadAccessRight onPeriod:10
+   withCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
+
+     if (error == nil) {
+
+         // PubNub client successfully changed access rights for 'channel' access level.
+     }
+     else {
+
+         // PubNub client did fail to revoke access rights from 'channel' access level.
+         //
+         // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use 
+         // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable 
+         // description for error). 'error.associatedObject' contains PNAccessRightOptions instance which describes 
+         // access level for which change has been requested.
+     }
+ }];
  [pubNub changeApplicationAccessRightsTo:PNWriteAccessRight onPeriod:10];
  @endcode
  

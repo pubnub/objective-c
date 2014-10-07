@@ -140,7 +140,6 @@ static dispatch_queue_t _privateQueue = NULL;
     [PNChannel pn_dispatchSynchronouslyOnQueue:_privateQueue block:^{
         
         channel = [[self channelsCache] valueForKey:channelName];
-        
         if (channel == nil && [channelName length] > 0) {
             
             channel = [[self alloc] initWithName:channelName];
@@ -171,6 +170,17 @@ static dispatch_queue_t _privateQueue = NULL;
         if([_channelsCache count] > 0) {
             
             [_channelsCache removeAllObjects];
+        }
+    }];
+}
+
++ (void)removeChannelFromCache:(PNChannel *)channel {
+    
+    [PNChannel pn_dispatchAsynchronouslyOnQueue:_privateQueue block:^{
+        
+        if([_channelsCache count] > 0 && channel) {
+            
+            [_channelsCache removeObjectForKey:channel.name];
         }
     }];
 }

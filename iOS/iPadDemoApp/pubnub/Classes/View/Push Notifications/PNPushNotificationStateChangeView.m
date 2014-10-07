@@ -7,8 +7,8 @@
 //
 
 #import "PNPushNotificationStateChangeView.h"
-#import "PNChannelInformationDelegate.h"
-#import "PNChannelInformationView.h"
+#import "PNObjectInformationDelegate.h"
+#import "PNObjectInformationView.h"
 #import "PNPushNotificationHelper.h"
 #import "NSString+PNLocalization.h"
 #import "NSObject+PNAddition.h"
@@ -27,7 +27,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Private interface declaration
 
-@interface PNPushNotificationStateChangeView () <UITableViewDelegate, UITableViewDataSource, PNChannelInformationDelegate>
+@interface PNPushNotificationStateChangeView () <UITableViewDelegate, UITableViewDataSource, PNObjectInformationDelegate>
 
 
 #pragma mark - Properties
@@ -178,7 +178,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (IBAction)handleAddChannelButtonTap:(id)sender {
     
-    PNChannelInformationView *information = [PNChannelInformationView viewFromNib];
+    PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
     information.delegate = self;
     information.allowEditing = YES;
     [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
@@ -249,12 +249,13 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - PNChannel information delegate methods
 
-- (void)channelInformation:(PNChannelInformationView *)informationView didEndEditingChanne:(PNChannel *)channel withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
+- (void)objectInformation:(PNObjectInformationView *)informationView didEndEditing:(id <PNChannelProtocol>)object
+                withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
     
     [informationView dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
-    [self.notificationHelper addChannel:channel];
+    [self.notificationHelper addChannel:object];
     
-    if ([self.notificationHelper willChangePushNotificationStateForChanne:channel]) {
+    if ([self.notificationHelper willChangePushNotificationStateForChanne:object]) {
         
         [self updateLayout];
         [self.channelsList reloadData];
@@ -262,7 +263,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     else if (self.isEnablingPushNotifications) {
         
         NSString *detailedDescription = [NSString stringWithFormat:[@"pushNotificationEnableSuccessAlertViewDetailedDescription" localized],
-                                         channel.name];
+                                         object.name];
         
         PNAlertView *alert = [PNAlertView viewWithTitle:@"pushNotificationEnableAlertViewTitle" type:PNAlertSuccess
                                            shortMessage:@"pushNotificationEnableSuccessAlertViewShortDescription"

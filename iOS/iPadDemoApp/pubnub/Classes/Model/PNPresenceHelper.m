@@ -96,9 +96,9 @@
             ((PNClientParticipantsHandlingBlock)handlerBlock)(presenceInformation, channels, requestError);
         }
     };
-        
-    [PubNub requestParticipantsListForChannelsAndGroups:@[self.channel] clientIdentifiersRequired:self.shouldFetchIdentifiers
-                                            clientState:self.shouldFetchState withCompletionBlock:presenceHandlingBlock];
+
+    [PubNub requestParticipantsListFor:@[self.channel] clientIdentifiersRequired:self.shouldFetchIdentifiers
+                           clientState:self.shouldFetchState withCompletionBlock:presenceHandlingBlock];
 }
 
 - (NSArray *)data {

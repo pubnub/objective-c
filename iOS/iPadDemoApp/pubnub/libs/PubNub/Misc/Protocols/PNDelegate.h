@@ -225,9 +225,6 @@
  */
 - (void)pubnubClient:(PubNub *)client channelsRemovalFromGroupDidFailWithError:(PNError *)error;
 
-
-
-
 /**
  Called on delegate when client successfully retrieved list of group namespaces.
  
@@ -235,7 +232,7 @@
  \b PubNub instance which triggered event.
  
  @param namespaces
- List of \a NSString iinstances with names of namespaces which has been registered with subscription current key
+ List of \a NSString instances with names of namespaces which has been registered with subscription current key
  
  @param group
  Reference on \b PNChannelGroup instance which describes target channel group and namespace.
@@ -298,7 +295,6 @@
  \b PNChannelGroup which describe group which client tried to remove.
  */
 - (void)pubnubClient:(PubNub *)client channelGroupRemovalDidFailWithError:(PNError *)error;
-
 
 /**
  * Called on delegate when client successfully subscribed to specified
@@ -365,7 +361,7 @@
 /**
  @brief Subscription failure callback.
  
- @discussion Called on \b PubNub delegate when subscription proccess is impossible and failed with error.
+ @discussion Called on \b PubNub delegate when subscription process is impossible and failed with error.
  
  @param client \b PubNub instance which called callback.
  @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
@@ -438,7 +434,7 @@
 /**
  @brief Presence observation enabling failure callback.
  
- @discussion Called on \b PubNub delegate when presence enabling is imspossible and failed with error.
+ @discussion Called on \b PubNub delegate when presence enabling is impossible and failed with error.
  
  @param client \b PubNub instance which called callback.
  @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
@@ -658,14 +654,14 @@
  */
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList
           forChannel:(PNChannel *)channel
-  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didReceiveParticipants:forChannelsAndGroups:' instead.");
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didReceiveParticipants:forObjects:' instead.");
 
 /**
  * Called on delegate when client failed to download participants list
  */
 - (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel
            withError:(PNError *)error
-  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didFailParticipantsListDownloadForChannelsAndGroups:withError:'"
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didFailParticipantsListDownloadFor:withError:'"
                            " instead.");
 
 /**
@@ -673,31 +669,33 @@
  
  @discussion \b PubNub client completed participants list download for list of channels and channel groups.
  
- @since <#new feature release version#>
- 
  @param client               \b PubNub instance which triggered this event.
- @param presenceInformation  Reference on \b PNHereNow instance which is able to provide information for every channel on which
- it has presence data.
- @param channelsAndGroups    List of \b PNChannel and \b PNChannelGroup instances on for which \b PubNub client should retrieve information about participants.
+ @param presenceInformation  Reference on \b PNHereNow instance which is able to provide information for every channel
+                             on which it has presence data.
+ @param channelObjects       List of \b PNChannel and \b PNChannelGroup instances on for which \b PubNub client should
+                             retrieve information about participants.
+
+ @since <#new feature release version#>
  */
-- (void)  pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
-  forChannelsAndGroups:(NSArray *)channelsAndGroups;
+- (void)pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
+                                                  forObjects:(NSArray *)channelObjects;
 /**
  @brief Participants list download failed.
  
  @discussion \b PubNub client did fail to download list of \b PNClient for set of channels and channel groups.
  
- @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
- \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
- 
- @since <#new feature release version#>
- 
  @param client            \b PubNub instance which triggered this event.
- @param channelsAndGroups List of \b PNChannel and \b PNChannelGroup instances on for which \b PubNub client should retrieve information about participants.
- @param error             \b PNError instance which holds information about when wrong and why request failed. \a 'error.associatedObject'
- contains reference on \b PNAccessRightOptions instance which will allow to review and identify what options \b PubNub client tried to apply.
+ @param channelObjects    List of \b PNChannel and \b PNChannelGroup instances on for which \b PubNub client should
+                          retrieve information about participants.
+ @param error             \b PNError instance which holds information about when wrong and why request failed.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use
+ \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable
+ description for error).
+
+ @since <#new feature release version#>
  */
-- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannelsAndGroups:(NSArray *)channelsAndGroups
+- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadFor:(NSArray *)channelObjects
            withError:(PNError *)error;
 
 /**

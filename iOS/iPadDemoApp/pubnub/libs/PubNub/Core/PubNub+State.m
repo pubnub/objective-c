@@ -37,7 +37,8 @@
  @discussion Retrieve client's information stored within channel or channel group.
 
  @param clientIdentifier        Client identifier for which \b PubNub client should retrieve state.
- @param channelObject           \b PNChannel or \b PNChannelGroup instance from which client's state should be retrieved
+ @param object                  Object (which conforms to \b PNChannelProtocol data feed object protocol) for which
+                                client's state should be pulled out.
  @param isMethodCallRescheduled In case if value set to \c YES it will mean that method call has been rescheduled and
                                 probably there is no handler block which client should use for observation notification.
  @param handlerBlock            The block which will be called by \b PubNub client as soon as client state retrieval
@@ -49,7 +50,7 @@
 
 @since 3.6.9
 */
-- (void)   requestClientState:(NSString *)clientIdentifier forChannelOrGroup:(id)channelObject
+- (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
        reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
 
@@ -60,7 +61,8 @@
  another request which has been issued earlier didn't completed yet.
  
  @param clientIdentifier        Client identifier for which \b PubNub client should retrieve state.
- @param channelObject           \b PNChannel or \b PNChannelGroup instance from which client's state should be retrieved
+ @param object                  Object (which conforms to \b PNChannelProtocol data feed object protocol) for which 
+                                client's state should be pulled out.
  @param isMethodCallRescheduled In case if value set to \c YES it will mean that method call has been rescheduled and
                                 probably there is no handler block which client should use for observation notification.
  @param handlerBlock            The block which will be called by \b PubNub client as soon as client state retrieval
@@ -72,7 +74,7 @@
  
  @since 3.6.9
  */
-- (void)postponeRequestClientState:(NSString *)clientIdentifier forChannelOrGroup:(id)channelObject
+- (void)postponeRequestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
             reschedulingMethodCall:(BOOL)isMethodCallRescheduled witCompletionHandlingBlock:(id)handlerBlock;
 
 /**
@@ -105,7 +107,8 @@
  
  @param clientIdentifier        Client identifier for which \b PubNub client should bound state.
  @param clientState             \b NSDictionary instance with list of parameters which should be bound to the client.
- @param channelObject           \b PNChannel or \b PNChannelGroup instance for which client's state should be bound.
+ @param object                  Object (which conforms to \b PNChannelProtocol data feed object protocol) for which client's
+                                state should be bound.
  @param isMethodCallRescheduled In case if value set to \c YES it will mean that method call has been rescheduled and 
                                 probably there is no handler block which client should use for observation notification.
  @param handlerBlock            The block which will be called by \b PubNub client as soon as client state update 
@@ -118,7 +121,7 @@
  @since 3.6.9
  */
 - (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-            forChannelOrGroup:(id)channelObject reschedulingMethodCall:(BOOL)isMethodCallRescheduled
+                    forObject:(id <PNChannelProtocol>)object reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock;
 
 /**
@@ -129,8 +132,8 @@
  
  @param clientIdentifier        Client's identifier for which state information should be updated.
  @param clientState             \a NSDictionary instance which hold information which should be changed
- @param channelObject           \b PNChannel or \b PNChannelGroup instance of the channel or group for which \b PubNub
-                                network should bind state information for specified client's identifier.
+ @param object                  Object (which conforms to \b PNChannelProtocol data feed object protocol) for which client's
+                                state should be bound.
  @param isMethodCallRescheduled In case if value set to \c YES it will mean that method call has been rescheduled and 
                                 probably there is no handler block which client should use for observation notification.
  @param handlerBlock            Handler block which is called by \b PubNub client when client's state update process 
@@ -144,7 +147,7 @@
  @since 3.6.9
  */
 - (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-                forChannelOrGroup:(id)channelObject reschedulingMethodCall:(BOOL)isMethodCallRescheduled
+                        forObject:(id <PNChannelProtocol>)object reschedulingMethodCall:(BOOL)isMethodCallRescheduled
       withCompletionHandlingBlock:(id)handlerBlock;
 
 
@@ -194,8 +197,19 @@
 
 + (void)   requestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
+    
+    [self requestClientState:clientIdentifier forObject:channel withCompletionHandlingBlock:handlerBlock];
+}
 
-    [[self sharedInstance] requestClientState:clientIdentifier forChannel:channel
++ (void)requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object {
+    
+    [self requestClientState:clientIdentifier forObject:object withCompletionHandlingBlock:nil];
+}
+
++ (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
+  withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
+    
+    [[self sharedInstance] requestClientState:clientIdentifier forObject:object
                   withCompletionHandlingBlock:handlerBlock];
 }
 
@@ -208,8 +222,22 @@
 + (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                    forChannel:(PNChannel *)channel
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
+    
+    [self updateClientState:clientIdentifier state:clientState forObject:channel
+withCompletionHandlingBlock:handlerBlock];
+}
 
-    [[self sharedInstance] updateClientState:clientIdentifier state:clientState forChannel:channel
++ (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+                forObject:(id <PNChannelProtocol>)object {
+    
+    [self updateClientState:clientIdentifier state:clientState forObject:object withCompletionHandlingBlock:nil];
+}
+
++ (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+                    forObject:(id <PNChannelProtocol>)object
+  withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock{
+    
+    [[self sharedInstance] updateClientState:clientIdentifier state:clientState forObject:object
                  withCompletionHandlingBlock:handlerBlock];
 }
 
@@ -218,36 +246,35 @@
 
 - (void)requestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel {
     
-    [self requestClientState:clientIdentifier forChannel:channel withCompletionHandlingBlock:nil];
+    [self requestClientState:clientIdentifier forObject:channel withCompletionHandlingBlock:nil];
 }
 
 - (void)   requestClientState:(NSString *)clientIdentifier forChannel:(PNChannel *)channel
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
-
-    [self requestClientState:clientIdentifier forChannelOrGroup:channel reschedulingMethodCall:NO
- withCompletionHandlingBlock:handlerBlock];
-}
-
-- (void)requestClientState:(NSString *)clientIdentifier forChannelGroup:(PNChannelGroup *)group {
     
-    [self requestClientState:clientIdentifier forChannelGroup:group withCompletionHandlingBlock:nil];
+    [self requestClientState:clientIdentifier forObject:channel withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)   requestClientState:(NSString *)clientIdentifier forChannelGroup:(PNChannelGroup *)group
+- (void)requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object {
+    
+    [self requestClientState:clientIdentifier forObject:object withCompletionHandlingBlock:nil];
+}
+
+- (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
     
-    [self requestClientState:clientIdentifier forChannelOrGroup:group reschedulingMethodCall:NO
+    [self requestClientState:clientIdentifier forObject:object reschedulingMethodCall:NO
  withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)   requestClientState:(NSString *)clientIdentifier forChannelOrGroup:(id)channelObject
+- (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
        reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
         return @[PNLoggerSymbols.api.clientStateAuditAttempt, (clientIdentifier ? clientIdentifier : [NSNull null]),
-                (channelObject ? channelObject : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                (object ? (id)object : [NSNull null]), [self humanReadableStateFrom:self.state]];
     }];
 
     [self performAsyncLockingBlock:^{
@@ -274,7 +301,7 @@
                 }
                 
                 PNClientStateRequest *request = [PNClientStateRequest clientStateRequestForIdentifier:clientIdentifier
-                                                                                           andChannel:channelObject];
+                                                                                           andChannel:object];
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
             // Looks like client can't send request because of some reasons
@@ -284,11 +311,11 @@
                     
                     return @[PNLoggerSymbols.api.clientStateAuditionImpossible,
                              (clientIdentifier ? clientIdentifier : [NSNull null]),
-                             (channelObject ? channelObject : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                             (object ? (id)object : [NSNull null]), [self humanReadableStateFrom:self.state]];
                 }];
                 
                 PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = [PNClient clientForIdentifier:clientIdentifier channel:channelObject
+                requestError.associatedObject = [PNClient clientForIdentifier:clientIdentifier channel:object
                                                                       andData:nil];;
                 
                 [self notifyDelegateAboutStateRetrievalDidFailWithError:requestError];
@@ -308,17 +335,17 @@
                    return @[PNLoggerSymbols.api.postponeClientStateAudit, [self humanReadableStateFrom:self.state]];
                }];
 
-               [self postponeRequestClientState:clientIdentifier forChannelOrGroup:channelObject
+               [self postponeRequestClientState:clientIdentifier forObject:object
                          reschedulingMethodCall:isMethodCallRescheduled witCompletionHandlingBlock:handlerBlock];
            }];
 }
 
-- (void)postponeRequestClientState:(NSString *)clientIdentifier forChannelOrGroup:(id)channelObject
+- (void)postponeRequestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
             reschedulingMethodCall:(BOOL)isMethodCallRescheduled witCompletionHandlingBlock:(id)handlerBlock {
     
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
-    [self postponeSelector:@selector(requestClientState:forChannelOrGroup:reschedulingMethodCall:withCompletionHandlingBlock:) forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:channelObject],
+    [self postponeSelector:@selector(requestClientState:forObject:reschedulingMethodCall:withCompletionHandlingBlock:) forObject:self
+            withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:object],
                              @(isMethodCallRescheduled), [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:isMethodCallRescheduled];
 }
@@ -328,35 +355,36 @@
     [self updateClientState:clientIdentifier state:clientState forChannel:channel withCompletionHandlingBlock:nil];
 }
 
-- (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState forChannel:(PNChannel *)channel
+- (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+                   forChannel:(PNChannel *)channel
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
-
-    [self updateClientState:clientIdentifier state:clientState forChannelOrGroup:channel reschedulingMethodCall:NO
+    
+    [self updateClientState:clientIdentifier state:clientState forObject:channel
 withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-          forChannelGroup:(PNChannelGroup *)group {
+                 forObject:(id <PNChannelProtocol>)object {
     
-    [self updateClientState:clientIdentifier state:clientState forChannelGroup:group withCompletionHandlingBlock:nil];
+    [self updateClientState:clientIdentifier state:clientState forObject:object withCompletionHandlingBlock:nil];
 }
 
-- (void)   updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-             forChannelGroup:(PNChannelGroup *)group
- withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
+- (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+                    forObject:(id <PNChannelProtocol>)object
+  withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
     
-    [self updateClientState:clientIdentifier state:clientState forChannelOrGroup:group reschedulingMethodCall:NO
+    [self updateClientState:clientIdentifier state:clientState forObject:object reschedulingMethodCall:NO
 withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-            forChannelOrGroup:(id)channelObject reschedulingMethodCall:(BOOL)isMethodCallRescheduled
+                    forObject:(id <PNChannelProtocol>)object reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
         return @[PNLoggerSymbols.api.clientStateChangeAttempt, (clientIdentifier ? clientIdentifier : [NSNull null]),
-                (channelObject ? channelObject : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                (object ? (id)object : [NSNull null]), [self humanReadableStateFrom:self.state]];
     }];
 
     [self performAsyncLockingBlock:^{
@@ -368,7 +396,7 @@ withCompletionHandlingBlock:handlerBlock];
                 [self.observationCenter removeClientAsStateUpdateObserver];
             }
             
-            NSDictionary *mergedClientState = @{((PNChannel *)channelObject).name: clientState};
+            NSDictionary *mergedClientState = @{object.name: clientState};
             
             // Only in case if client update it's own state, we can append cached data to it.
             if ([clientIdentifier isEqualToString:self.clientIdentifier]) {
@@ -379,10 +407,10 @@ withCompletionHandlingBlock:handlerBlock];
             // Check whether client is able to send request or not
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0 && mergedClientState && (![mergedClientState pn_isValidState] ||
-                                                         ![[self subscribedChannels] containsObject:channelObject])) {
+                                                         ![[self subscribedObjectsList] containsObject:object])) {
                 
                 statusCode = kPNInvalidStatePayloadError;
-                if (![[self subscribedChannels] containsObject:channelObject]) {
+                if (![[self subscribedObjectsList] containsObject:object]) {
                     
                     statusCode = kPNCantUpdateStateForNotSubscribedChannelsError;
                 }
@@ -400,9 +428,9 @@ withCompletionHandlingBlock:handlerBlock];
                     [self.observationCenter addClientAsStateUpdateObserverWithBlock:handlerBlock];
                 }
                 
-                mergedClientState = [mergedClientState valueForKeyPath:((PNChannel *)channelObject).name];
+                mergedClientState = [mergedClientState valueForKeyPath:object.name];
                 PNClientStateUpdateRequest *request = [PNClientStateUpdateRequest clientStateUpdateRequestWithIdentifier:clientIdentifier
-                                                                                                                 channel:channelObject
+                                                                                                                 channel:object
                                                                                                           andClientState:mergedClientState];
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
@@ -416,7 +444,7 @@ withCompletionHandlingBlock:handlerBlock];
                 }];
                 
                 PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = [PNClient clientForIdentifier:clientIdentifier channel:channelObject
+                requestError.associatedObject = [PNClient clientForIdentifier:clientIdentifier channel:object
                                                                       andData:clientState];
                 
                 [self notifyDelegateAboutStateUpdateDidFailWithError:requestError];
@@ -436,18 +464,19 @@ withCompletionHandlingBlock:handlerBlock];
                    return @[PNLoggerSymbols.api.postponeClientStateChange, [self humanReadableStateFrom:self.state]];
                }];
 
-               [self postponeUpdateClientState:clientIdentifier state:clientState forChannelOrGroup:channelObject
+               [self postponeUpdateClientState:clientIdentifier state:clientState forObject:object
                         reschedulingMethodCall:isMethodCallRescheduled withCompletionHandlingBlock:handlerBlock];
            }];
 }
 
-- (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState forChannelOrGroup:(id)channelObject
+- (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+                        forObject:(id <PNChannelProtocol>)object
            reschedulingMethodCall:(BOOL)isMethodCallRescheduled withCompletionHandlingBlock:(id)handlerBlock {
     
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:@selector(updateClientState:state:forChannelOrGroup:reschedulingMethodCall:withCompletionHandlingBlock:) forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:clientState],
-                             [PNHelper nilifyIfNotSet:channelObject], @(isMethodCallRescheduled), [PNHelper nilifyIfNotSet:handlerBlockCopy]]
+                             [PNHelper nilifyIfNotSet:object], @(isMethodCallRescheduled), [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:isMethodCallRescheduled];
 }
 
@@ -564,7 +593,7 @@ withCompletionHandlingBlock:handlerBlock];
                 return @[PNLoggerSymbols.api.rescheduleClientStateAudit, [self humanReadableStateFrom:self.state]];
             }];
             
-            [self requestClientState:clientInformation.identifier forChannelOrGroup:clientInformation.channel
+            [self requestClientState:clientInformation.identifier forObject:clientInformation.channel
               reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
         }];
     }
@@ -625,7 +654,7 @@ withCompletionHandlingBlock:handlerBlock];
             
             [self updateClientState:clientInformation.identifier
                               state:[clientInformation stateForChannel:clientInformation.channel]
-                  forChannelOrGroup:clientInformation.channel
+                  forObject:clientInformation.channel
              reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
         }];
     }

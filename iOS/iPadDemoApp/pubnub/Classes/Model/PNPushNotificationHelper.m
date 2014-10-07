@@ -74,7 +74,7 @@
     self.existingChannels = [NSMutableArray array];
     if (self.isEnablingPushNotifications) {
         
-        NSArray *subscribedChannels = [PubNub subscribedChannels];
+        NSArray *subscribedChannels = [PubNub subscribedObjectsList];
         [subscribedChannels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
                                                          BOOL *channelEnumeratorStop) {
             

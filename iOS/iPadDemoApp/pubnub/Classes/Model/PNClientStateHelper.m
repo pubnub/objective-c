@@ -22,7 +22,7 @@
 /**
  Stores whether malformed client state has been provided or not.
  */
-@property (nonatomic, assign, getter = isValidChannelStateProvided) BOOL validChannelStateProvided;
+@property (nonatomic, assign, getter = isValidObjectStateProvided) BOOL validObjectStateProvided;
 
 #pragma mark -
 
@@ -42,7 +42,7 @@
     // Forward method call to the super class
     [super awakeFromNib];
     
-    self.validChannelStateProvided = YES;
+    self.validObjectStateProvided = YES;
 }
 
 - (void)setState:(id)state {
@@ -60,18 +60,18 @@
                                                                             options:(NSJSONReadingOptions)0 error:&serializationError];
             if (!serializationError && stateDictionary) {
                 
-                self.validChannelStateProvided = YES;
+                self.validObjectStateProvided = YES;
                 _state = [stateDictionary count] ? stateDictionary : nil;
             }
             else {
                 
-                self.validChannelStateProvided = NO;
+                self.validObjectStateProvided = NO;
             }
         }
         else {
             
             _state = nil;
-            self.validChannelStateProvided = YES;
+            self.validObjectStateProvided = YES;
         }
     }
 }
@@ -86,8 +86,8 @@
     BOOL isChannelStateValid = YES;
     if (self.channelName) {
         
-        // Checking whether user provided suitable channel state data or not.
-        if (self.isValidChannelStateProvided) {
+        // Checking whether user provided suitable object state data or not.
+        if (self.isValidObjectStateProvided) {
             
             // Checking whether user provided some data or not
             if ([self.state count]) {
@@ -111,7 +111,7 @@
 
 - (NSArray *)existingChannels {
     
-    return [PubNub subscribedChannels];
+    return [PubNub subscribedObjectsList];
 }
 
 - (void)performRequestWithBlock:(void(^)(PNClient *, PNError *))handlerBlock {
@@ -119,12 +119,12 @@
     PNChannel *channel = [PNChannel channelWithName:self.channelName];
     if (self.isStateEditingAllowed) {
         
-        [PubNub updateClientState:self.clientIdentifier state:self.state forChannel:channel
+        [PubNub updateClientState:self.clientIdentifier state:self.state forObject:channel
       withCompletionHandlingBlock:handlerBlock];
     }
     else {
         
-        [PubNub requestClientState:self.clientIdentifier forChannel:channel
+        [PubNub requestClientState:self.clientIdentifier forObject:channel
        withCompletionHandlingBlock:^(PNClient *client, PNError *requestError) {
            
            if (!requestError) {
@@ -141,7 +141,7 @@
 
 - (void)resetWarnings {
     
-    self.validChannelStateProvided = YES;
+    self.validObjectStateProvided = YES;
 }
 
 #pragma mark -
