@@ -579,7 +579,7 @@ NSArray *channels = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"w
 
 ### Channel groups representation  
 
-The client uses the [__PNChannelGroup__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroup.h) instance to identify the set of channels inside of group and namespace. This object can be used within subscribe and PAM manipulation API. Also using [Presence State API](#presence-state-data---setting-and-changing-it)  to set or get state for all channels which is registered under concrete channel group.
+The client uses the [__PNChannelGroup__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroup.h) instance to identify the set of channels inside of group and namespace. This object can be used within subscribe and PAM manipulation API. Also using [Presence State API](#presence-state-data---setting-and-changing-it) to set or get state for all channels which is registered under concrete channel group.
 
 The [__PNChannelGroup__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroup.h) interface provides methods for group instantiation (instance is only created if it doesn't already exist):  
 ```objc
@@ -605,6 +605,16 @@ For example, to receive a reference on a list of channel instances:
 ```objc
 PNChannelGroup *group = [PNChannelGroup channelGroupWithName:@"development"  
                                                  inNamespace:@"news-feed"];
+```
+
+### Channel group namespace representation  
+
+The client uses the [__PNChannelGroupNamespace__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroupNamespace.h) instance to identify namespace inside of which channel group registered. This object can be used PAM manipulation API.
+
+The [__PNChannelGroupNamespace__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroupNamespace.h) interface provides methods for namespace instantiation (instance is only created if it doesn't already exist):  
+```objc
++ (PNChannelGroupNamespace *)allNamespaces;
++ (PNChannelGroupNamespace *)namespaceWithName:(NSString *)name;
 ```
 
 ### Presence information representation
