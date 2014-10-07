@@ -610,7 +610,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     
                     weakSelf.connectOnServiceReachability = YES;
                     [weakSelf handleConnectionErrorOnNetworkFailure];
-                    weakSelf.asyncLockingOperationInProgress = YES;
+                    weakSelf.asyncLockingOperationInProgress = NO;
                 }
             }
             else {
@@ -1459,7 +1459,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                             postponeConnectionTillNetworkCheck = YES;
                             
                             [self handleConnectionErrorOnNetworkFailureWithError:nil];
-                            self.asyncLockingOperationInProgress = YES;
+                            self.asyncLockingOperationInProgress = NO;
                             
                             if (![self.observationCenter isSubscribedOnClientStateChange:self]) {
                                 
@@ -3468,6 +3468,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         }];
 
         [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+        if (error.code != kPNClientTriedConnectWhileConnectedError) {
+            
+            [self flushPostponedMethods:YES];
+        }
     }
                                 shouldStartNext:shouldStartNextPostponedOperation];
 }
