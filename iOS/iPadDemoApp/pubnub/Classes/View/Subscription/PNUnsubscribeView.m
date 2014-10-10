@@ -10,7 +10,7 @@
 #import "NSString+PNLocalization.h"
 #import "PNUnsubscribeHelper.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
 
@@ -147,14 +147,14 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *unsubscriptionCellIdentifier = @"unsubscribeCellIdentifier";
-    PNChannelCell *cell = [tableView dequeueReusableCellWithIdentifier:unsubscriptionCellIdentifier];
+    PNObjectCell *cell = [tableView dequeueReusableCellWithIdentifier:unsubscriptionCellIdentifier];
     if (!cell) {
         
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:unsubscriptionCellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:unsubscriptionCellIdentifier];
         cell.showBadge = NO;
     }
     PNChannel *channel = [[self.unsubscribeHelper channelsForUnsubscription] objectAtIndex:indexPath.row];
-    [cell updateForChannel:channel];
+    [cell updateForObject:channel];
     if ([self.unsubscribeHelper willUnsubscribeFromChannel:channel]) {
         
         cell.accessoryType = UITableViewCellAccessoryCheckmark;

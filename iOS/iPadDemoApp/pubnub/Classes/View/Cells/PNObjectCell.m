@@ -6,7 +6,7 @@
 //
 //
 
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNNumberBadgeView.h"
 #import "PNDataManager.h"
 #import "PNChannel.h"
@@ -14,7 +14,7 @@
 
 #pragma mark Private methods declaration
 
-@interface PNChannelCell ()
+@interface PNObjectCell ()
 
 
 #pragma mark - Instance methods
@@ -37,7 +37,7 @@
 
 #pragma mark - Public interface methods
 
-@implementation PNChannelCell
+@implementation PNObjectCell
 
 
 #pragma mark - Instance methods
@@ -94,9 +94,9 @@
     }
 }
 
-- (void)updateForChannel:(PNChannel *)channel {
+- (void)updateForObject:(id <PNChannelProtocol>)object {
 
-    NSUInteger eventsCount = [[PNDataManager sharedInstance] numberOfEventsForChannel:channel];
+    NSUInteger eventsCount = [[PNDataManager sharedInstance] numberOfEventsForChannel:object];
     if (eventsCount > 0 && self.shouldShowBadge) {
         
         [((PNNumberBadgeView *)self.accessoryView) updateIntegerBadgeValueTo:eventsCount];
@@ -106,7 +106,15 @@
         [((PNNumberBadgeView *)self.accessoryView) updateIntegerBadgeValueTo:0];
     }
     
-    self.textLabel.text = channel.name;
+    if ([object isKindOfClass:[PNChannelGroup class]]) {
+        
+        self.textLabel.text = [NSString stringWithFormat:@"%@ (CG)",
+                               object.name];
+    }
+    else {
+        
+        self.textLabel.text = object.name;
+    }
 }
 
 #pragma mark -

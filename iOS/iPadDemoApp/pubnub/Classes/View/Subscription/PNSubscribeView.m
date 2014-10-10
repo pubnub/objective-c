@@ -13,7 +13,7 @@
 #import "PNSubscriptionHelper.h"
 #import "UIScreen+PNAddition.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
 
@@ -207,13 +207,13 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *cellIdentifier = @"channelCellIdentifier";
-    PNChannelCell *cell = (PNChannelCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    PNObjectCell *cell = (PNObjectCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
         
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.showBadge = NO;
     }
-    [cell updateForChannel:[[self.subscribeHelper channelsForSubscription] objectAtIndex:indexPath.row]];
+    [cell updateForObject:[[self.subscribeHelper channelsForSubscription] objectAtIndex:indexPath.row]];
     
     
     return cell;

@@ -208,18 +208,22 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     self.fetchParticipantsListButton.enabled = [self.channelHelper canCreateObject];
     self.fetchClientStateButton.enabled = [self.channelHelper canCreateObject];
     
-    NSUInteger participantsCount = 0;
-    if (![self isUserInputActive]) {
+    if (!self.isChannelGroupInformation) {
         
-        PNChannel *channel = ([self.channelHelper canCreateObject] ? [PNChannel channelWithName:self.channelHelper.objectName] : nil);
-        participantsCount = (unsigned int)(channel ? channel.participantsCount : 0);
+        NSUInteger participantsCount = 0;
+        if (![self isUserInputActive]) {
+            
+            PNChannel *channel = ([self.channelHelper canCreateObject] ? [PNChannel channelWithName:self.channelHelper.objectName] : nil);
+            participantsCount = (unsigned int)(channel ? channel.participantsCount : 0);
+        }
+        self.channelParticipantsCount.text = [NSString stringWithFormat:@"%lu", (unsigned long)participantsCount];
     }
-    self.channelParticipantsCount.text = [NSString stringWithFormat:@"%lu", (unsigned long)participantsCount];
     
     [self.saveButton setTitle:(self.shouldAllowEditing ? @"channelInformationSaveButtonTitle" : @"channelInformationCreateButtonTitle")
                      forState:UIControlStateNormal];
-    self.saveButton.enabled = [self.channelHelper isObjectInformationChanged] || [self.channelHelper canCreateObject];
+    self.saveButton.enabled = ([self.channelHelper isObjectInformationChanged] || [self.channelHelper canCreateObject]);
     self.objectName.text = self.channelHelper.objectName;
+    self.objectNamespace.text = self.channelHelper.objectNamespace;
     if (self.channelHelper.shouldObservePresence != self.presenceObservationSwitch.isOn) {
         
         [self.presenceObservationSwitch setOn:self.channelHelper.shouldObservePresence animated:YES];
@@ -256,12 +260,10 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         __block __pn_desired_weak __typeof(self) weakSelf = self;
         void(^completeEditingBlock)(void) = ^{
             
-            PNChannel *targetChannel = [PNChannel channelWithName:weakSelf.channelHelper.objectName
-                                            shouldObservePresence:weakSelf.channelHelper.shouldObservePresence];
-            
-            if ([self.delegate respondsToSelector:@selector(channelInformation:didEndEditingChanne:withState:andPresenceObservation:)]) {
+            if ([self.delegate respondsToSelector:@selector(objectInformation:didEndEditing:withState:andPresenceObservation:)]) {
                 
-                [self.delegate objectInformation:weakSelf didEndEditing:targetChannel withState:weakSelf.channelHelper.state
+                [self.delegate objectInformation:weakSelf didEndEditing:weakSelf.channelHelper.object
+                                       withState:weakSelf.channelHelper.state
                           andPresenceObservation:weakSelf.channelHelper.shouldObservePresence];
             }
         };
@@ -277,7 +279,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                     [progressAlertView show];
                     
                     [PubNub updateClientState:[PubNub clientIdentifier] state:self.channelHelper.state
-                                    forObject:[PNChannel channelWithName:self.channelHelper.objectName]
+                                    forObject:weakSelf.channelHelper.object
                   withCompletionHandlingBlock:^(PNClient *client, PNError *stateUpdateError) {
                       
                                       [progressAlertView dismissWithAnimation:YES];
@@ -286,12 +288,13 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                                       NSString *title = @"stateUpdateAlertViewTitle";
                                       NSString *shortDescription = @"stateUpdateSuccessAlertViewShortDescription";
                                       NSString *detailedDescription = [NSString stringWithFormat:[@"stateUpdateSuccessAlertViewDetailedDescription" localized],
-                                                                       client.identifier, client.channel.name];
+                                                                       client.identifier,
+                                                                       (client.channel.name ? client.channel.name : client.group.name)];
                                       if (stateUpdateError) {
                                           
                                           shortDescription = @"stateUpdateFailureAlertViewShortDescription";
                                           detailedDescription = [NSString stringWithFormat:[@"stateUpdateSuccessAlertViewDetailedDescription" localized],
-                                                                 [PubNub clientIdentifier], weakSelf.channelHelper.objectName,
+                                                                 [PubNub clientIdentifier], (client.channel.name ? client.channel.name : client.group.name),
                                                                  stateUpdateError.localizedFailureReason];
                                       }
                                       
@@ -350,15 +353,15 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                     [alert show];
                 };
                 
-                PNChannel *channel = [PNChannel channelWithName:self.channelHelper.objectName];
+                id object = weakSelf.channelHelper.object;
                 if (self.channelHelper.shouldObservePresence) {
                     
-                    [PubNub enablePresenceObservationFor:(channel ? @[channel] : nil)
+                    [PubNub enablePresenceObservationFor:(object ? @[object] : nil)
                              withCompletionHandlingBlock:handlerBlock];
                 }
                 else {
                     
-                    [PubNub disablePresenceObservationFor:(channel ? @[channel] : nil)
+                    [PubNub disablePresenceObservationFor:(object ? @[object] : nil)
                               withCompletionHandlingBlock:handlerBlock];
                 }
             }
@@ -397,7 +400,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     if ([self.channelHelper canCreateObject]) {
         
         PNChannelPresenceView *channelPresence = [PNChannelPresenceView viewFromNib];
-        [channelPresence configureForChannel:[PNChannel channelWithName:self.channelHelper.objectName]];
+        [channelPresence configureForObject:self.channelHelper.object];
         [channelPresence showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
     }
 }
@@ -409,7 +412,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [progressAlertView show];
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    [PubNub requestClientState:[PubNub clientIdentifier] forObject:[PNChannel channelWithName:self.channelHelper.objectName]
+    [PubNub requestClientState:[PubNub clientIdentifier] forObject:self.channelHelper.object
    withCompletionHandlingBlock:^(PNClient *client, PNError *channelStateRequestError) {
        
        [progressAlertView dismissWithAnimation:YES];
@@ -424,13 +427,13 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
            [weakSelf updateLayout];
            
            detailedDescription = [NSString stringWithFormat:[@"stateRetrieveSuccessAlertViewDetailedDescription" localized],
-                                  [PubNub clientIdentifier], [PNChannel channelWithName:weakSelf.channelHelper.objectName]];
+                                  [PubNub clientIdentifier], weakSelf.channelHelper.object];
        }
        else {
            
            shortDescription = @"stateRetrieveFailureAlertViewShortDescription";
            detailedDescription = [NSString stringWithFormat:[@"stateRetrieveFailureAlertViewDetailedDescription" localized],
-                                  [PubNub clientIdentifier], [PNChannel channelWithName:weakSelf.channelHelper.objectName],
+                                  [PubNub clientIdentifier], weakSelf.channelHelper.object,
                                   channelStateRequestError.localizedFailureReason];
        }
        

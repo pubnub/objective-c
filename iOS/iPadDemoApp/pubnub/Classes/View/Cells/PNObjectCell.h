@@ -13,7 +13,7 @@
 
 #pragma mark - Public interface declaration
 
-@interface PNChannelCell : UITableViewCell
+@interface PNObjectCell : UITableViewCell
 
 
 #pragma mark - Properties
@@ -27,9 +27,9 @@
 #pragma mark - Instance methods
 
 /**
- * Update cell layout to show data for specified channel
+ * Update cell layout to show data for specified object
  */
-- (void)updateForChannel:(PNChannel *)channel;
+- (void)updateForObject:(id <PNChannelProtocol>)object;
 
 #pragma mark -
 

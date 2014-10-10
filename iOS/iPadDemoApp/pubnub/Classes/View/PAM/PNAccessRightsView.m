@@ -16,7 +16,7 @@
 #import "PNAccessRightsHelper.h"
 #import "NSObject+PNAddition.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNTableView.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
@@ -831,8 +831,8 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             
             if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode || [tableView isEqual:self.channelsList]) {
                 
-                cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:targetCellIdentifier];
-                ((PNChannelCell *)cell).showBadge = NO;
+                cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:targetCellIdentifier];
+                ((PNObjectCell *)cell).showBadge = NO;
             }
             else {
                     
@@ -855,20 +855,20 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         if ([targetCellIdentifier isEqualToString:channelCellIdentifier]) {
             
             PNChannel *channel = [[self.accessRightsHelper channels] objectAtIndex:indexPath.row];
-            [(PNChannelCell *)cell updateForChannel:channel];
+            [(PNObjectCell *)cell updateForObject:channel];
         }
         else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {
             
             PNChannel *channel = [[self.accessRightsHelper userData] objectAtIndex:indexPath.row];
-            [(PNChannelCell *)cell updateForChannel:channel];
+            [(PNObjectCell *)cell updateForObject:channel];
             
             if ([self.accessRightsHelper willManipulateWith:channel]) {
                 
-                ((PNChannelCell *)cell).accessoryType = UITableViewCellAccessoryCheckmark;
+                ((PNObjectCell *)cell).accessoryType = UITableViewCellAccessoryCheckmark;
             }
             else {
                 
-                ((PNChannelCell *)cell).accessoryType = UITableViewCellAccessoryNone;
+                ((PNObjectCell *)cell).accessoryType = UITableViewCellAccessoryNone;
             }
         }
         else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperUserMode) {

@@ -14,16 +14,35 @@
 @interface PNPresenceHelper : NSObject
 
 
+#pragma mark - Properties
+
+/**
+ Stores reference on currently selected channel.
+ */
+@property (nonatomic, strong) PNChannel *currentChannel;
+
+/**
+ Stors how many people subscribed to the channels using current subscription key.
+ */
+@property (nonatomic, readonly, assign) NSUInteger numberOfParticipants;
+
+
 #pragma mark - Instance methods
 
 /**
  Instruct helper with base information which can be used for further actions.
  
- @param channel
- \b PNChannel or \b NSString instance for which in future presence information can be pulled out (it can be \c nil).
+ @param objectName
+ \b NSString instance for which in future presence information can be pulled out (it can be \c nil).
+ 
+ @param objectNamespace
+ Namespace inside of which channel group is storted (in case if request configured for channel group)
  
  @param identifier
  String which represent identifier for client, for which data should be pulled from concrete channel.
+ 
+ @param isChannelGroup
+ Whether request should be done for channel group or not
  
  @param shouldFetchIdentifiers
  In case if presence should be processed globally for channel, \c YES value will force return identifiers for participants
@@ -32,8 +51,23 @@
  @param shouldFetchState
  Work together with \b shouldFetchIdentifiers property (when set to \c YES) and allow to retrieve client state information.
  */
-- (void)configureForChannel:(id)channel clientIdentifier:(NSString *)identifier
-           fetchIdentifiers:(BOOL)shouldFetchIdentifiers fetchState:(BOOL)shouldFetchState;
+- (void)configureForObject:(NSString *)objectName namespace:(NSString *)objectNamespace
+          clientIdentifier:(NSString *)identifier channelGroup:(BOOL)isChannelGroup
+          fetchIdentifiers:(BOOL)shouldFetchIdentifiers fetchState:(BOOL)shouldFetchState;
+
+/**
+ List of active channels which has been received from \b PubNub service.
+ 
+ @return List of \b PNChannel instances.
+ */
+- (NSArray *)channels;
+
+/**
+ List of participants for currently selected channel.
+ 
+ @return List of \b PNClient instances.
+ */
+- (NSArray *)participants;
 
 /**
  Execute presence event basing on provided data from \c -configureForChannel:clientIdentifier:fetchIdentifiers:fetchState:
@@ -45,9 +79,9 @@
 - (void)fetchPresenceInformationWithBlock:(PNClientParticipantsHandlingBlock)handlerBlock;
 
 /**
- Retrun reference on data which has been received using presence API endpoint (it can be list of participants or channels).
+ Clean up all cached information.
  */
-- (NSArray *)data;
+- (void)reset;
 
 #pragma mark -
 

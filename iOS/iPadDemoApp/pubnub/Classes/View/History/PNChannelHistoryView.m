@@ -12,7 +12,7 @@
 #import "UIView+PNAddition.h"
 #import "PNHistoryHelper.h"
 #import "PNConsoleView.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
 
@@ -564,14 +564,14 @@ typedef enum _PNHistoryMode {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *channelCellIdentifier = @"channelCellIdentifier";
-    PNChannelCell *cell = [tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
+    PNObjectCell *cell = [tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
     if (!cell) {
         
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
         cell.showBadge = NO;
     }
     PNChannel *channel = [[self.historyHelper channels] objectAtIndex:indexPath.row];
-    [cell updateForChannel:channel];
+    [cell updateForObject:channel];
     
     
     return cell;

@@ -258,6 +258,14 @@
     return shouldHandleByDefault;
 }
 
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
+    
+    [textView resignFirstResponder];
+    
+    
+    return YES;
+}
+
 - (void)textViewDidEndEditing:(UITextView *)textView {
     
     if (textView.text.length > 0) {

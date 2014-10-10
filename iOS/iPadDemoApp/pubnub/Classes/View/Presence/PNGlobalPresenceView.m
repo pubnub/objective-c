@@ -12,7 +12,7 @@
 #import "PNClientStateView.h"
 #import "UIView+PNAddition.h"
 #import "PNParticipantCell.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
 
@@ -193,33 +193,33 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     static NSString *channelCellIdentifier = @"channelCellIdentifier";
     static NSString *participantCellIdentifier = @"participantCellIdentifier";
     NSString *targetCellIdentifier = channelCellIdentifier;
-    Class cellClass = [PNChannelCell class];
+    Class cellClass = [PNObjectCell class];
     if ([tableView isEqual:self.participantsList]) {
         
         targetCellIdentifier = participantCellIdentifier;
         cellClass = [PNParticipantCell class];
     }
     
-    id cell = [tableView dequeueReusableCellWithIdentifier:nil];
+    id cell = [tableView dequeueReusableCellWithIdentifier:targetCellIdentifier];
     if (!cell) {
         
         cell = [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:targetCellIdentifier];
         if ([targetCellIdentifier isEqualToString:channelCellIdentifier]) {
             
-            ((PNChannelCell *)cell).showBadge = NO;
+            ((PNObjectCell *)cell).showBadge = NO;
         }
     }
     if ([targetCellIdentifier isEqualToString:channelCellIdentifier]) {
         
         PNChannel *channel = [[self.presenceHelper channels] objectAtIndex:indexPath.row];
-        [(PNChannelCell *)cell updateForChannel:channel];
+        [(PNObjectCell *)cell updateForObject:channel];
         if ([channel isEqual:self.presenceHelper.currentChannel]) {
             
-            ((PNChannelCell *)cell).accessoryType = UITableViewCellAccessoryCheckmark;
+            ((PNObjectCell *)cell).accessoryType = UITableViewCellAccessoryCheckmark;
         }
         else {
             
-            ((PNChannelCell *)cell).accessoryType = UITableViewCellAccessoryNone;
+            ((PNObjectCell *)cell).accessoryType = UITableViewCellAccessoryNone;
         }
     }
     else {

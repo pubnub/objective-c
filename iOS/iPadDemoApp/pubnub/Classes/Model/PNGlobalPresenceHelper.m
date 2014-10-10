@@ -65,26 +65,23 @@
     __block __pn_desired_weak __typeof(self) weakSelf = self;
     PNClientParticipantsHandlingBlock requestHandler = ^(PNHereNow *presenceInformation, NSArray *channels, PNError *requestError) {
         
+        NSMutableArray *channelsWithPresenceData = [[presenceInformation channels] mutableCopy];
+        
         __block NSUInteger totalParticipantsCount = 0;
-        NSArray *channelsWithPresenceData = [presenceInformation channels];
-        [channelsWithPresenceData enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+        [channelsWithPresenceData enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
+                                                               BOOL *channelEnumeratorStop) {
             
             totalParticipantsCount += [presenceInformation participantsCountForChannel:channel];
             NSArray *clients = [presenceInformation participantsForChannel:channel];
             [clients enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
                 
-                if (client.channel && ![self.fetchedChannels containsObject:client.channel]) {
-                    
-                    [self.fetchedChannels addObject:client.channel];
-                }
-                
                 if (client.channel.name) {
                     
-                    NSMutableArray *participants = [self.mappedParticipants valueForKey:client.channel.name];
+                    NSMutableArray *participants = [weakSelf.mappedParticipants valueForKey:client.channel.name];
                     if (!participants) {
                         
                         participants = [NSMutableArray array];
-                        [self.mappedParticipants setValue:participants forKey:client.channel.name];
+                        [weakSelf.mappedParticipants setValue:participants forKey:client.channel.name];
                     }
                     if (![participants containsObject:client]) {
                         
@@ -96,13 +93,15 @@
         weakSelf.numberOfParticipants = totalParticipantsCount;
         
         
-        [self.fetchedChannels sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
+        [channelsWithPresenceData sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
+        weakSelf.fetchedChannels = [channelsWithPresenceData copy];
         if (handlerBlock) {
             
             handlerBlock(presenceInformation, channels, requestError);
         }
     };
-    [PubNub requestParticipantsListWithClientIdentifiers:self.shouldFetchParticipantNames clientState:self.shouldFetchParticipantState
+    [PubNub requestParticipantsListWithClientIdentifiers:self.shouldFetchParticipantNames
+                                             clientState:self.shouldFetchParticipantState
                                       andCompletionBlock:requestHandler];
 }
 

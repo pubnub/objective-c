@@ -1368,8 +1368,8 @@ Using this API you will be able to organize set of channels into groups and subs
 
 There is API to manage channel group and namespaces:
 ```objc
-- (void)requestChannelGroups;
-- (void)requestChannelGroupsWithCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;
+- (void)requestDefaultChannelGroups;
+- (void)requestDefaultChannelGroupsWithCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;
 - (void)requestChannelGroupsForNamespace:(NSString *)nspace;
 - (void)requestChannelGroupsForNamespace:(NSString *)nspace
              withCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;

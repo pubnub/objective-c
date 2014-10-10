@@ -9,7 +9,6 @@
 #import "PNMainViewController.h"
 #import "PNPushNotificationStateChangeView.h"
 #import "PNPushNotificationsAuditView.h"
-#import "PNChannelGroupPresenceView.h"
 #import "PNPresenceObservationView.h"
 #import "PNAccessRightsView.h"
 #import "NSString+PNLocalization.h"
@@ -24,7 +23,7 @@
 #import "PNClientStateView.h"
 #import "PNInformationView.h"
 #import "PNSubscribeView.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNConsoleView.h"
 #import "PNDataManager.h"
 #import "PNAlertView.h"
@@ -238,7 +237,7 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
 
 - (void)channelGroupParticipantsList:(id)sender {
     
-    PNChannelGroupPresenceView *channelGroupPresence = [PNChannelGroupPresenceView viewFromNib];
+    PNChannelPresenceView *channelGroupPresence = [PNChannelPresenceView viewFromNibForChannelGroup];
     [channelGroupPresence showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
@@ -272,6 +271,10 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
+- (void)grantChannelGroupAccessRights:(id)sender {
+    
+}
+
 - (void)grantUserAccessRights:(id)sender {
     
     PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForUserGrant];
@@ -290,6 +293,10 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
+- (void)revokeChannelGroupAccessRights:(id)sender {
+    
+}
+
 - (void)revokeUserAccessRights:(id)sender {
     
     PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForUserRevoke];
@@ -306,6 +313,10 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     
     PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForChannelAudit];
     [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+}
+
+- (void)auditChannelGroupAccessRights:(id)sender {
+    
 }
 
 - (void)auditUserAccessRights:(id)sender {
@@ -658,9 +669,9 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     
     NSArray *channels = [[PNDataManager sharedInstance] subscribedChannelsList];
     NSArray *visibleCells = [self.channelsTableView visibleCells];
-    [visibleCells enumerateObjectsUsingBlock:^(PNChannelCell *cell, NSUInteger cellIdx, BOOL *cellsEnumeratorStop) {
+    [visibleCells enumerateObjectsUsingBlock:^(PNObjectCell *cell, NSUInteger cellIdx, BOOL *cellsEnumeratorStop) {
         
-        [cell updateForChannel:[channels objectAtIndex:cellIdx]];
+        [cell updateForObject:[channels objectAtIndex:cellIdx]];
     }];
 }
 
@@ -770,15 +781,15 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *channelCellIdentifier = @"channelCell";
-    PNChannelCell *cell = (PNChannelCell *)[tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
+    PNObjectCell *cell = (PNObjectCell *)[tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
     
     if(!cell) {
         
         // Create new cell instance copy
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
     }
     PNChannel *channel = [[PNDataManager sharedInstance].subscribedChannelsList objectAtIndex:indexPath.row];
-    [(PNChannelCell *)cell updateForChannel:channel];
+    [(PNObjectCell *)cell updateForObject:channel];
     ((UITableViewCell *)cell).selected = [channel.name isEqualToString:[[PNDataManager sharedInstance] currentChannel].name];
     
     
