@@ -28,7 +28,13 @@ struct PNAccessLevelsStruct {
 
     // Used to identify application wide access level.
     __unsafe_unretained NSString *application;
-
+    
+    // Used to identify channel-group wide access level.
+    __unsafe_unretained NSString *channelGroup;
+    
+    // Used to identify user in channel-group access level.
+    __unsafe_unretained NSString *userInChannelGroup;
+    
     // Used to identify channel wide access level.
     __unsafe_unretained NSString *channel;
 
@@ -39,6 +45,8 @@ struct PNAccessLevelsStruct {
 struct PNAccessLevelsStruct PNAccessLevels = {
 
     .application = @"subkey",
+    .channelGroup = @"channel-group",
+    .userInChannelGroup = @"channel-group+auth",
     .channel = @"channel",
     .user = @"user"
 };
@@ -64,12 +72,32 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 - (id)initWithResponse:(PNResponse *)response;
 
 /**
- Parse \a 'channel' access rights information from provided dictionary.
+ Parse \a 'channel group' access rights information from provided dictionary.
+ 
+ @param channelInformationDictionary
+ \a NSDictionary instance which hold information from server about access rights configuration for channel group(s).
+ */
+- (void)parseChannelGroupAccessInformationFromDictionary:(NSDictionary *)channelInformationDictionary;
 
+/**
+ Parse \a 'channel' access rights information from provided dictionary.
+ 
  @param channelInformationDictionary
  \a NSDictionary instance which hold information from server about access rights configuration for channel(s).
  */
 - (void)parseChannelAccessInformationFromDictionary:(NSDictionary *)channelInformationDictionary;
+
+/**
+ @brief Parse channels from different sources (simple chanels list of channel groups).
+ 
+ @param channelTypeHolderKey         Key can be one of: \c channel-groups or \c channels
+ @param channelInformationDictionary \a NSDictionary instance which hold information from server about access rights 
+                                     configuration for channel(s) or channel group is stored.
+ 
+ @since <#version number#>
+ */
+- (void)         parseChannelType:(NSString *)channelTypeHolderKey
+  accessInformationFromDictionary:(NSDictionary *)channelInformationDictionary;
 
 /**
  Parse \a 'user' access rights information from provided dictionary.
@@ -238,8 +266,12 @@ struct PNAccessLevelsStruct PNAccessLevels = {
                 [self parseChannelAccessInformationFromDictionary:accessInformation];
             }
         }
+        else if (accessLevel == PNChannelGroupAccessRightsLevel) {
+            
+            [self parseChannelGroupAccessInformationFromDictionary:accessInformation];
+        }
         else if (accessLevel == PNChannelAccessRightsLevel) {
-
+            
             [self parseChannelAccessInformationFromDictionary:accessInformation];
         }
         else {
@@ -252,18 +284,33 @@ struct PNAccessLevelsStruct PNAccessLevels = {
     return self;
 }
 
-- (void)parseChannelAccessInformationFromDictionary:(NSDictionary *)channelInformationDictionary {
+- (void)parseChannelGroupAccessInformationFromDictionary:(NSDictionary *)channelInformationDictionary {
+    
+    [self parseChannelType:kPNAccessChannelGroupsKey accessInformationFromDictionary:channelInformationDictionary];
+}
 
+- (void)parseChannelAccessInformationFromDictionary:(NSDictionary *)channelInformationDictionary {
+    
+    [self parseChannelType:kPNAccessChannelsKey accessInformationFromDictionary:channelInformationDictionary];
+}
+
+- (void)         parseChannelType:(NSString *)channelTypeHolderKey
+  accessInformationFromDictionary:(NSDictionary *)channelInformationDictionary {
+    
+    // Stores reference on actual access rights
+    PNAccessRightsLevel level = ([channelTypeHolderKey isEqualToString:kPNAccessChannelsKey] ?
+                                 PNChannelAccessRightsLevel : PNChannelGroupAccessRightsLevel);
+    
     // Fetch access rights period (time during which they will be valid)
     __block NSUInteger accessPeriod = [[channelInformationDictionary valueForKeyPath:kPNAccessRightsPeriodKey] unsignedIntegerValue];
-
+    
     // Fetch granted access rights.
     __block PNAccessRights accessRights = PNUnknownAccessRights;
-
-    NSDictionary *channelsInformation = [channelInformationDictionary valueForKeyPath:kPNAccessChannelsKey];
+    
+    NSDictionary *channelsInformation = [channelInformationDictionary valueForKeyPath:channelTypeHolderKey];
     [channelsInformation enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelInformation,
                                                              BOOL *channelInformationEnumeratorStop) {
-
+        
         PNChannel *channel = [PNChannel channelWithName:[channelName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
         // Fetch access period.
@@ -271,19 +318,19 @@ struct PNAccessLevelsStruct PNAccessLevels = {
             
             accessPeriod = [[channelInformation valueForKey:kPNAccessRightsPeriodKey] unsignedIntegerValue];
         }
-
+        
         // Fetch granted access rights.
         accessRights = [self accessRightsFromDictionary:channelInformation];
-
-
-        [self.information storeChannelAccessRightsInformation:[PNAccessRightsInformation accessRightsInformationForLevel:PNChannelAccessRightsLevel
-                                                                        rights:accessRights applicationKey:self.information.applicationKey
-                                                                    forChannel:channel client:nil accessPeriod:accessPeriod]];
-
+        
+        
+        [self.information storeChannelAccessRightsInformation:[PNAccessRightsInformation accessRightsInformationForLevel:level
+                                                                                                                  rights:accessRights applicationKey:self.information.applicationKey
+                                                                                                              forChannel:channel client:nil accessPeriod:accessPeriod]];
+        
         // Checking whether \a 'channel' level access rights has been changes as well or not.
         if ([channelInformation valueForKeyPath:kPNAccessChannelsAuthorizationKey] != nil &&
             [(NSDictionary *)[channelInformation valueForKeyPath:kPNAccessChannelsAuthorizationKey] count]) {
-
+            
             NSDictionary *clients = (NSDictionary *)[channelInformation valueForKeyPath:kPNAccessChannelsAuthorizationKey];
             [clients enumerateKeysAndObjectsUsingBlock:^(NSString *clientAuthorizationKey,
                                                          NSDictionary *clientAccessInformation,
@@ -291,14 +338,14 @@ struct PNAccessLevelsStruct PNAccessLevels = {
                 
                 // Fetch access period.
                 accessPeriod = [[clientAccessInformation valueForKey:kPNAccessRightsPeriodKey] unsignedIntegerValue];
-
+                
                 // Fetch granted access rights.
                 accessRights = [self accessRightsFromDictionary:clientAccessInformation];
-
+                
                 [self.information storeClientAccessRightsInformation:[PNAccessRightsInformation accessRightsInformationForLevel:PNUserAccessRightsLevel
-                                                                                                rights:accessRights applicationKey:self.information.applicationKey
-                                                                                            forChannel:channel client:clientAuthorizationKey
-                                                                                          accessPeriod:accessPeriod]
+                                                                                                                         rights:accessRights applicationKey:self.information.applicationKey
+                                                                                                                     forChannel:channel client:clientAuthorizationKey
+                                                                                                                   accessPeriod:accessPeriod]
                                                           forChannel:channel];
             }];
         }
@@ -349,12 +396,17 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 
     PNAccessRightsLevel level = PNApplicationAccessRightsLevel;
 
-    if ([stringifiedAccessLevel isEqualToString:PNAccessLevels.channel]) {
+    if ([stringifiedAccessLevel isEqualToString:PNAccessLevels.channelGroup]) {
 
+        level = PNChannelGroupAccessRightsLevel;
+    }
+    else if ([stringifiedAccessLevel isEqualToString:PNAccessLevels.channel]) {
+        
         level = PNChannelAccessRightsLevel;
     }
-    else if ([stringifiedAccessLevel isEqualToString:PNAccessLevels.user]) {
-
+    else if ([stringifiedAccessLevel isEqualToString:PNAccessLevels.user] ||
+             [stringifiedAccessLevel isEqualToString:PNAccessLevels.userInChannelGroup]) {
+        
         level = PNUserAccessRightsLevel;
     }
 
@@ -368,18 +420,25 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 
     NSNumber *readRightState = [accessRightsInformation objectForKey:kPNReadAccessRightStateKey];
     NSNumber *writeRightState = [accessRightsInformation objectForKey:kPNWriteAccessRightStateKey];
+    NSNumber *manageRightState = [accessRightsInformation objectForKey:kPNManagementAccessRightStateKey];
 
     if (readRightState != nil && [readRightState intValue] != 0) {
         
         [PNBitwiseHelper addTo:&accessRights bit:PNReadAccessRight];
     }
-
+    
     if (writeRightState != nil && [writeRightState intValue] != 0) {
         
         [PNBitwiseHelper addTo:&accessRights bit:PNWriteAccessRight];
     }
+    
+    if (manageRightState != nil && [manageRightState intValue] != 0) {
+        
+        [PNBitwiseHelper addTo:&accessRights bit:PNManagementRight];
+    }
 
-    if ([PNBitwiseHelper is:accessRights containsBits:PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR]) {
+    if ([PNBitwiseHelper is:accessRights containsBits:PNReadAccessRight, PNWriteAccessRight,
+                                                      PNManagementRight, BITS_LIST_TERMINATOR]) {
 
         [PNBitwiseHelper removeFrom:&accessRights bit:PNNoAccessRights];
     }

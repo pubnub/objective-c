@@ -27,40 +27,40 @@
 #pragma mark - Instance methods
 
 /**
- Postpone presence observation enabling user request so it will be executed in future.
+ @brief Postpone presence observation enabling user request so it will be executed in future.
  
- @note Postpone can be because of few cases: \b PubNub client is in connecting or initial connection state; another request
- which has been issued earlier didn't completed yet.
+ @discussion Postpone can be because of few cases: \b PubNub client is in connecting or initial connection state;
+ another request which has been issued earlier didn't completed yet.
  
- @param channels
- List of \b PNChannel instances on which client should enable presence events observation.
- 
- @param handlerBlock
- Handler block which is called by \b PubNub client when presence enabling process state changes. Block pass two arguments:
- \c channels - List of \b PNChannel instances for which presence enabling process changed state;
- \c error - \b PNError instance which hold information about why presence enabling process failed. Always
- check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
- \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) like
+                       \b PNChannel or \b PNChannelGroup for which \b PubNub client should enable presence events
+                       observation.
+ @param handlerBlock   The block which will be called by \b PubNub client as soon as presence enabling state will
+                       change. The block takes two arguments: \c channels - array of \b PNChannel instances for which
+                       presence enabling state changed; \c error - describes what exactly went wrong (check error code
+                       and compare it with \b PNErrorCodes ).
+
+ @since 3.6.8
  */
-- (void)postponeEnablePresenceObservationForChannels:(NSArray *)channels withCompletionHandlingBlock:(id)handlerBlock;
+- (void)postponeEnablePresenceObservationFor:(NSArray *)channelObjects withCompletionHandlingBlock:(id)handlerBlock;
 
 /**
- Postpone presence observation disabling user request so it will be executed in future.
+ @brief Postpone presence observation disabling user request so it will be executed in future.
  
- @note Postpone can be because of few cases: \b PubNub client is in connecting or initial connection state; another request
- which has been issued earlier didn't completed yet.
- 
- @param channels
- List of \b PNChannel instances on which client should disable presence events observation.
- 
- @param handlerBlock
- Handler block which is called by \b PubNub client when presence disabling process state changes. Block pass two arguments:
- \c channels - List of \b PNChannel instances for which presence disabling process changed state;
- \c error - \b PNError instance which hold information about why presence disabling process failed. Always
- check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
- \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ @discussion Postpone can be because of few cases: \b PubNub client is in connecting or initial connection state;
+ another request which has been issued earlier didn't completed yet.
+
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) like
+                       \b PNChannel or \b PNChannelGroup for which \b PubNub client should disable presence events
+                       observation.
+ @param handlerBlock   Handler block which is called by \b PubNub client when presence disabling process state changes.
+                       Block pass two arguments: \c channels - List of \b PNChannel instances for which presence
+                       disabling process changed state; \c error - \b PNError instance which hold information about why
+                       presence disabling process failed. Always check \a error.code to find out what caused error
+                       (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and
+                       \a -localizedRecoverySuggestion to get human readable description for error).
  */
-- (void)postponeDisablePresenceObservationForChannels:(NSArray *)channels withCompletionHandlingBlock:(id)handlerBlock;
+- (void)postponeDisablePresenceObservationFor:(NSArray *)channelObjects withCompletionHandlingBlock:(id)handlerBlock;
 
 
 #pragma mark - Misc methods
@@ -115,6 +115,11 @@
     return [[self sharedInstance] isPresenceObservationEnabledForChannel:channel];
 }
 
++ (BOOL)isPresenceObservationEnabledFor:(id <PNChannelProtocol>)object {
+
+    return [[self sharedInstance] isPresenceObservationEnabledFor:object];
+}
+
 + (void)enablePresenceObservationForChannel:(PNChannel *)channel {
     
     [self enablePresenceObservationForChannel:channel withCompletionHandlingBlock:nil];
@@ -123,7 +128,7 @@
 + (void)enablePresenceObservationForChannel:(PNChannel *)channel
                 withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
     
-    [self enablePresenceObservationForChannels:@[channel] withCompletionHandlingBlock:handlerBlock];
+    [self enablePresenceObservationForChannels:(channel ? @[channel] : nil) withCompletionHandlingBlock:handlerBlock];
 }
 
 + (void)enablePresenceObservationForChannels:(NSArray *)channels {
@@ -133,8 +138,19 @@
 
 + (void)enablePresenceObservationForChannels:(NSArray *)channels
                  withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
-    
-    [[self sharedInstance] enablePresenceObservationForChannels:channels withCompletionHandlingBlock:handlerBlock];
+
+    [self enablePresenceObservationFor:channels withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)enablePresenceObservationFor:(NSArray *)channelObjects {
+
+    [self enablePresenceObservationFor:channelObjects withCompletionHandlingBlock:nil];
+}
+
++ (void)enablePresenceObservationFor:(NSArray *)channelObjects
+         withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
+
+    [[self sharedInstance] enablePresenceObservationFor:channelObjects withCompletionHandlingBlock:handlerBlock];
 }
 
 + (void)disablePresenceObservationForChannel:(PNChannel *)channel {
@@ -155,25 +171,41 @@
 
 + (void)disablePresenceObservationForChannels:(NSArray *)channels
                   withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
-    
-    [[self sharedInstance] disablePresenceObservationForChannels:channels withCompletionHandlingBlock:handlerBlock];
+
+    [self disablePresenceObservationFor:channels withCompletionHandlingBlock:handlerBlock];
+}
+
++ (void)disablePresenceObservationFor:(NSArray *)channelObjects {
+
+    [self disablePresenceObservationFor:channelObjects withCompletionHandlingBlock:nil];
+}
+
++ (void)disablePresenceObservationFor:(NSArray *)channelObjects
+          withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
+
+    [[self sharedInstance] disablePresenceObservationFor:channelObjects withCompletionHandlingBlock:handlerBlock];
 }
 
 
 #pragma mark - Instance methods
 
 - (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel {
-    
+
+    return [self isPresenceObservationEnabledFor:channel];
+}
+
+- (BOOL)isPresenceObservationEnabledFor:(id <PNChannelProtocol>)object {
+
     BOOL observingPresence = NO;
-    
+
     // Ensure that PubNub client currently connected to
     // remote PubNub services
     if ([self isConnected]) {
-        
-        observingPresence = [self.messagingChannel isPresenceObservationEnabledForChannel:channel];
+
+        observingPresence = [self.messagingChannel isPresenceObservationEnabledForChannel:object];
     }
-    
-    
+
+
     return observingPresence;
 }
 
@@ -196,58 +228,69 @@
 - (void)enablePresenceObservationForChannels:(NSArray *)channels
                  withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
 
+    [self enablePresenceObservationFor:channels withCompletionHandlingBlock:handlerBlock];
+}
+
+- (void)enablePresenceObservationFor:(NSArray *)channelObjects {
+
+    [self enablePresenceObservationFor:channelObjects withCompletionHandlingBlock:nil];
+}
+
+- (void)enablePresenceObservationFor:(NSArray *)channelObjects
+         withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
+
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return @[PNLoggerSymbols.api.presenceObservationEnableAttempt, (channels ? channels : [NSNull null]),
+        return @[PNLoggerSymbols.api.presenceObservationEnableAttempt, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
 
     [self performAsyncLockingBlock:^{
-        
+
         [self pn_dispatchAsynchronouslyBlock:^{
-            
+
             [self.observationCenter removeClientAsPresenceEnabling];
             [self.observationCenter removeClientAsPresenceDisabling];
-            
+
             // Check whether client is able to send request or not
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
-                
+
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
+
                     return @[PNLoggerSymbols.api.enablingPresenceObservation, [self humanReadableStateFrom:self.state]];
                 }];
-                
+
                 if (handlerBlock != nil) {
-                    
+
                     [self.observationCenter addClientAsPresenceEnablingObserverWithBlock:handlerBlock];
                 }
-                
+
                 // Enumerate over the list of channels and mark that it should observe for presence
-                [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
-                    
+                [channelObjects enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+
                     channel.observePresence = YES;
                     channel.linkedWithPresenceObservationChannel = NO;
                 }];
-                
-                [self.messagingChannel enablePresenceObservationForChannels:channels];
+
+                [self.messagingChannel enablePresenceObservationForChannels:channelObjects];
             }
             else {
-                
+
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
+
                     return @[PNLoggerSymbols.api.presenceObservationEnableImpossible, [self humanReadableStateFrom:self.state]];
                 }];
-                
+
                 PNError *presenceEnableError = [PNError errorWithCode:statusCode];
-                presenceEnableError.associatedObject = channels;
-                
-                
+                presenceEnableError.associatedObject = channelObjects;
+
+
                 [self notifyDelegateAboutPresenceEnablingFailWithError:presenceEnableError completeLockingOperation:YES];
-                
+
                 if (handlerBlock != nil) {
-                    
-                    handlerBlock(channels, presenceEnableError);
+
+                    handlerBlock(channelObjects, presenceEnableError);
                 }
             }
         }];
@@ -260,15 +303,15 @@
                    return @[PNLoggerSymbols.api.postponePresenceObservationEnable, [self humanReadableStateFrom:self.state]];
                }];
 
-               [self postponeEnablePresenceObservationForChannels:channels withCompletionHandlingBlock:handlerBlock];
+               [self postponeEnablePresenceObservationFor:channelObjects withCompletionHandlingBlock:handlerBlock];
            }];
 }
 
-- (void)postponeEnablePresenceObservationForChannels:(NSArray *)channels withCompletionHandlingBlock:(id)handlerBlock {
-    
+- (void)postponeEnablePresenceObservationFor:(NSArray *)channelObjects withCompletionHandlingBlock:(id)handlerBlock {
+
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
-    [self postponeSelector:@selector(enablePresenceObservationForChannels:withCompletionHandlingBlock:) forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:channels], [PNHelper nilifyIfNotSet:handlerBlockCopy]] outOfOrder:NO];
+    [self postponeSelector:@selector(enablePresenceObservationFor:withCompletionHandlingBlock:) forObject:self
+            withParameters:@[[PNHelper nilifyIfNotSet:channelObjects], [PNHelper nilifyIfNotSet:handlerBlockCopy]] outOfOrder:NO];
 }
 
 - (void)disablePresenceObservationForChannel:(PNChannel *)channel {
@@ -289,76 +332,87 @@
 
 - (void)disablePresenceObservationForChannels:(NSArray *)channels
                   withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
-    
+
+    [self disablePresenceObservationFor:channels withCompletionHandlingBlock:handlerBlock];
+}
+
+- (void)disablePresenceObservationFor:(NSArray *)channelObjects {
+
+    [self disablePresenceObservationFor:channelObjects withCompletionHandlingBlock:nil];
+}
+
+- (void)disablePresenceObservationFor:(NSArray *)channelObjects
+          withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
+
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-        
-        return @[PNLoggerSymbols.api.presenceObservationDisableAttempt, (channels ? channels : [NSNull null]),
-                 [self humanReadableStateFrom:self.state]];
+
+        return @[PNLoggerSymbols.api.presenceObservationDisableAttempt, (channelObjects ? channelObjects : [NSNull null]),
+                [self humanReadableStateFrom:self.state]];
     }];
-    
+
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-        
-            [self.observationCenter removeClientAsPresenceEnabling];
-            [self.observationCenter removeClientAsPresenceDisabling];
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.disablingPresenceObservation, [self humanReadableStateFrom:self.state]];
+
+                [self pn_dispatchAsynchronouslyBlock:^{
+
+                    [self.observationCenter removeClientAsPresenceEnabling];
+                    [self.observationCenter removeClientAsPresenceDisabling];
+
+                    // Check whether client is able to send request or not
+                    NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+                    if (statusCode == 0) {
+
+                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.api.disablingPresenceObservation, [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        if (handlerBlock != nil) {
+
+                            [self.observationCenter addClientAsPresenceDisablingObserverWithBlock:handlerBlock];
+                        }
+
+                        [self.messagingChannel disablePresenceObservationForChannels:channelObjects];
+                    }
+                    else {
+
+                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.api.presenceObservationDisableImpossible,
+                                    [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        PNError *presencedisableError = [PNError errorWithCode:statusCode];
+                        presencedisableError.associatedObject = channelObjects;
+
+
+                        [self notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError
+                                                       completeLockingOperation:YES];
+
+                        if (handlerBlock != nil) {
+
+                            handlerBlock(channelObjects, presencedisableError);
+                        }
+                    }
                 }];
-                
-                if (handlerBlock != nil) {
-                    
-                    [self.observationCenter addClientAsPresenceDisablingObserverWithBlock:handlerBlock];
-                }
-                
-                [self.messagingChannel disablePresenceObservationForChannels:channels];
             }
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.presenceObservationDisableImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *presencedisableError = [PNError errorWithCode:statusCode];
-                presencedisableError.associatedObject = channels;
-                
-                
-                [self notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError
-                                               completeLockingOperation:YES];
-                
-                if (handlerBlock != nil) {
-                    
-                    handlerBlock(channels, presencedisableError);
-                }
-            }
-        }];
-    }
            postponedExecutionBlock:^{
-               
+
                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                   
+
                    return @[PNLoggerSymbols.api.postponePresenceObservationDisable,
-                            [self humanReadableStateFrom:self.state]];
+                           [self humanReadableStateFrom:self.state]];
                }];
 
-               [self postponeDisablePresenceObservationForChannels:channels withCompletionHandlingBlock:handlerBlock];
+               [self postponeDisablePresenceObservationFor:channelObjects withCompletionHandlingBlock:handlerBlock];
            }];
 }
 
-- (void)postponeDisablePresenceObservationForChannels:(NSArray *)channels
-                          withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
+- (void)postponeDisablePresenceObservationFor:(NSArray *)channelObjects
+                  withCompletionHandlingBlock:(id)handlerBlock {
     
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
-    [self postponeSelector:@selector(disablePresenceObservationForChannels:withCompletionHandlingBlock:) forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:channels], [PNHelper nilifyIfNotSet:handlerBlockCopy]] outOfOrder:NO];
+    [self postponeSelector:@selector(disablePresenceObservationFor:withCompletionHandlingBlock:) forObject:self
+            withParameters:@[[PNHelper nilifyIfNotSet:channelObjects], [PNHelper nilifyIfNotSet:handlerBlockCopy]] outOfOrder:NO];
 }
 
 
@@ -437,12 +491,12 @@
 
 #pragma mark - Message channel delegate methods
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willEnablePresenceObservationOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willEnablePresenceObservationOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willEnablePresenceObservation, (channels ? channels : [NSNull null]),
+        return @[PNLoggerSymbols.api.willEnablePresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
     
@@ -455,30 +509,30 @@
     }];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didEnablePresenceObservationOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     void(^handlerBlock)(void) = ^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            return @[PNLoggerSymbols.api.enabledPresenceObservation, (channels ? channels : [NSNull null]),
+            return @[PNLoggerSymbols.api.enabledPresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
         
         if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
             
             // Check whether delegate can handle new message arrival or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)]) {
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOn:)]) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                 
-                    [self.clientDelegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOnChannels:)
-                                              withObject:self withObject:channels];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOn:)
+                                              withObject:self withObject:channelObjects];
                 });
             }
             
-            [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channels];
+            [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channelObjects];
         }
     };
     
@@ -492,19 +546,19 @@
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceEnablingOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceEnablingOn:(NSArray *)channelObjects
                withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
-    error.associatedObject = channels;
+    error.associatedObject = channelObjects;
     [self notifyDelegateAboutPresenceEnablingFailWithError:error completeLockingOperation:!isSequenced];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willDisablePresenceObservationOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willDisablePresenceObservationOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willDisablePresenceObservation, (channels ? channels : [NSNull null]),
+        return @[PNLoggerSymbols.api.willDisablePresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
     
@@ -517,30 +571,30 @@
     }];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didDisablePresenceObservationOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
     
     void(^handlerBlock)(void) = ^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            return @[PNLoggerSymbols.api.disabledPresenceObservation, (channels ? channels : [NSNull null]),
+            return @[PNLoggerSymbols.api.disabledPresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
         
         if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
             
             // Check whether delegate can handle new message arrival or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)]) {
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOn:)]) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                 
-                    [self.clientDelegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOnChannels:)
-                                              withObject:self withObject:channels];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOn:)
+                                              withObject:self withObject:channelObjects];
                 });
             }
             
-            [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channels];
+            [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channelObjects];
         }
     };
     
@@ -554,10 +608,10 @@
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceDisablingOnChannels:(NSArray *)channels
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didFailPresenceDisablingOn:(NSArray *)channelObjects
                withError:(PNError *)error sequenced:(BOOL)isSequenced {
     
-    error.associatedObject = channels;
+    error.associatedObject = channelObjects;
     [self notifyDelegateAboutPresenceDisablingFailWithError:error completeLockingOperation:!isSequenced];
 }
 
@@ -568,14 +622,6 @@
     if (channel) {
         
         [channel updateWithEvent:event];
-    }
-    
-    // In case if there is no error and client identifier is the same as this one, client will store retrieved state
-    // in cache (useful if someone from outside changed state for this client).
-    if (event.type == PNPresenceEventStateChanged && [event.client.identifier isEqualToString:self.clientIdentifier]) {
-        
-        [self.cache purgeStateForChannel:event.client.channel];
-        [self.cache storeClientState:event.client.data forChannel:event.client.channel];
     }
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{

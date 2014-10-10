@@ -513,6 +513,38 @@
 				<string>LATENCY METER REQUEST CANCELED</string>
 				<key>0202036</key>
 				<string>DID SEND MESSAGE REQUEST</string>
+				<key>0202037</key>
+				<string>CHANNEL GROUPS FROM %@ NAMESPACE
+%@</string>
+				<key>0202038</key>
+				<string>CHANNEL GROUPS REQUEST FROM %@ NAMESPACE FAILED WITH ERROR: %@</string>
+				<key>0202039</key>
+				<string>CHANNELS FOR THE %@ GROUP
+%@</string>
+				<key>0202040</key>
+				<string>CHANNELS FOR THE %@ GROUP REQUEST FAILED WITH ERROR: %@</string>
+				<key>0202041</key>
+				<string>CHANNELS ADDED TO THE %@ GROUP
+%@</string>
+				<key>0202042</key>
+				<string>CHANNELS ADDITION:%@\nTO THE %@ GROUP FAILED WITH ERROR: %@</string>
+				<key>0202043</key>
+				<string>CHANNELS REMOVED FROM THE %@ GROUP
+%@</string>
+				<key>0202044</key>
+				<string>CHANNELS REMOVAL:%@\nFROM THE %@ GROUP FAILED WITH ERROR: %@</string>
+				<key>0202045</key>
+				<string>DID RECEIVE CHANNEL GROUP NAMESPACES: %@</string>
+				<key>0202046</key>
+				<string>CHANNEL GROUP NAMESPACES REQUEST DID FAIL WITH ERROR: %@</string>
+				<key>0202047</key>
+				<string>DID REMOVE CHANNEL GROUP NAMESPACE: %@</string>
+				<key>0202048</key>
+				<string>CHANNEL GROUP %@ NAMESPACE REMOVAL DID FAIL WITH ERROR: %@</string>
+				<key>0202049</key>
+				<string>DID REMOVE %@ CHANNEL GROUP</string>
+				<key>0202050</key>
+				<string>%@ CHANNEL GROUP REMOVAL DID FAIL WITH ERROR: %@</string>
 			</dict>
 		</dict>
 		<key>03</key>
@@ -1136,6 +1168,104 @@
 </string>
 			<key>0900239</key>
 			<string>INSTANCE USE OBSERVER INSTANCE AT %@, REACHABILITY INSTANCE AT %@, CRYPTO HELPER INSTANCE AT %@, MESSAGING CHANNEL INSTANCE AT %@, SERVICE CHANNEL INSTANCE AT %@ </string>
+			<key>0900240</key>
+			<string>TRYING TO RETRIEVE CHANNEL GROUPS FOR: %@ (STATE: %@)</string>
+			<key>0900241</key>
+			<string>RETRIEVE CHANNEL GROUPS (STATE: %@)</string>
+			<key>0900242</key>
+			<string>CAN&apos;T REQUEST CHANNEL GROUPS (STATE: %@)</string>
+			<key>0900243</key>
+			<string>POSTPONE CHANNEL GROUPS REQUEST (STATE: %@)</string>
+			<key>0900244</key>
+			<string>CHANNEL GROUPS RECEIVED (STATE: %@)</string>
+			<key>0900245</key>
+			<string>RESCHEDULE CHANNEL GROUPS REQUEST (STATE: %@)</string>
+			<key>0900246</key>
+			<string>FAILED TO RETRIEVE CHANNEL GROUPS BECAUSE OF ERROR (STATE: %@)</string>
+			<key>0900247</key>
+			<string>TRYING TO RETRIEVE CHANNELS FOR GROUP: %@ (STATE: %@)</string>
+			<key>0900248</key>
+			<string>RETRIEVE CHANNELS FOR GROUP (STATE: %@)</string>
+			<key>0900249</key>
+			<string>CAN&apos;T REQUEST CHANNELS FOR GROUP (STATE: %@)</string>
+			<key>0900250</key>
+			<string>POSTPONE CHANNELS FOR GROUP REQUEST (STATE: %@)</string>
+			<key>0900251</key>
+			<string>CHANNELS FOR GROUP RECEIVED (STATE: %@)</string>
+			<key>0900252</key>
+			<string>RESCHEDULE CHANNELS FOR GROUP REQUEST (STATE: %@)</string>
+			<key>0900253</key>
+			<string>FAILED TO RETRIEVE CHANNELS FOR GROUP BECAUSE OF ERROR (STATE: %@)</string>
+			<key>0900254</key>
+			<string>TRYING TO ADD CHANNELS: %@\nTO THE GROUP: %@ (STATE: %@)</string>
+			<key>0900255</key>
+			<string>ADD CHANNELS TO THE GROUP (STATE: %@)</string>
+			<key>0900256</key>
+			<string>CAN&apos;T ADD CHANNELS TO THE GROUP (STATE: %@)</string>
+			<key>0900257</key>
+			<string>POSTPONE CHANNELS ADDITION TO THE GROUP (STATE: %@)</string>
+			<key>0900258</key>
+			<string>CHANNELS ADDED TO THE GROUP (STATE: %@)</string>
+			<key>0900259</key>
+			<string>RESCHEDULE CHANNELS ADDITION TO THE GROUP (STATE: %@)</string>
+			<key>0900260</key>
+			<string>FAILED TO ADD CHANNELS TO THE GROUP BECAUSE OF ERROR (STATE: %@)</string>
+			<key>0900261</key>
+			<string>TRYING TO REMOVE CHANNELS: %@\nFROM THE GROUP: %@ (STATE: %@)</string>
+			<key>0900262</key>
+			<string>REMOVE CHANNELS FROM THE GROUP (STATE: %@)</string>
+			<key>0900263</key>
+			<string>CAN&apos;T REMOVE CHANNELS FROM THE GROUP (STATE: %@)</string>
+			<key>0900264</key>
+			<string>POSTPONE CHANNELS REMOVAL FROM THE GROUP (STATE: %@)</string>
+			<key>0900265</key>
+			<string>CHANNELS REMOVED FROM THE GROUP RECEIVED (STATE: %@)</string>
+			<key>0900266</key>
+			<string>RESCHEDULE CHANNELS REMOVAL FROM THE GROUP (STATE: %@)</string>
+			<key>0900267</key>
+			<string>FAILED TO REMOVE CHANNELS FROM THE GROUP BECAUSE OF ERROR (STATE: %@)</string>
+			<key>0900268</key>
+			<string>TRYING TO RETRIEVE CHANNEL GROUP NAMESPACES (STATE: %@)</string>
+			<key>0900269</key>
+			<string>RETRIEVE NAMESPACES FOR CHANNEL GROUP (STATE: %@)</string>
+			<key>0900270</key>
+			<string>CAN&apos;T CHANNEL GROUP NAMESPACES (STATE: %@)</string>
+			<key>0900271</key>
+			<string>POSTPONE CHANNEL GROUP NAMESPACES RETRIEVAL (STATE: %@)</string>
+			<key>0900272</key>
+			<string>RETRIEVED CHANNEL GROUP NAMESPACES (STATE: %@)</string>
+			<key>0900273</key>
+			<string>RESCHEDULE CHANNEL GROUP NAMESPACES RETRIEVAL (STATE: %@)</string>
+			<key>0900274</key>
+			<string>FAILED TO RETRIEVE CHANNEL GROUP NAMESPACES BECAUSE OF ERROR (STATE: %@)</string>
+			<key>0900275</key>
+			<string>TRYING TO REMOVE CHANNEL GROUP %@ NAMESPACE (STATE: %@)</string>
+			<key>0900276</key>
+			<string>REMOVE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
+			<key>0900277</key>
+			<string>CAN&apos;T REMOVE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
+			<key>0900278</key>
+			<string>POSTPONE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
+			<key>0900279</key>
+			<string>CHANNEL GROUP NAMESPACE REMOVED (STATE: %@)</string>
+			<key>0900280</key>
+			<string>RESCHEDULE CHANNEL GROUP NAMESPACE REMOVAL (STATE: %@)</string>
+			<key>0900281</key>
+			<string>FAILED TO REMOVE CHANNEL GROUP NAMESPACE BECAUSE OF ERROR (STATE: %@)</string>
+			<key>0900282</key>
+			<string>TRYING TO REMOVE %@ CHANNEL GROUP (STATE: %@)</string>
+			<key>0900283</key>
+			<string>REMOVE CHANNEL GROUP (STATE: %@)</string>
+			<key>0900284</key>
+			<string>CAN&apos;T REMOVE CHANNEL GROUP (STATE: %@)</string>
+			<key>0900285</key>
+			<string>POSTPONE CHANNEL GROUP (STATE: %@)</string>
+			<key>0900286</key>
+			<string>CHANNEL GROUP REMOVED (STATE: %@)</string>
+			<key>0900287</key>
+			<string>RESCHEDULE CHANNEL GROUP REMOVAL (STATE: %@)</string>
+			<key>0900288</key>
+			<string>FAILED TO REMOVE CHANNEL GROUP BECAUSE OF ERROR (STATE: %@)</string>
 		</dict>
 		<key>10</key>
 		<dict>

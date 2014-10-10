@@ -79,6 +79,11 @@
     return [PNBitwiseHelper is:self.rights strictly:YES containsBits:PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR];
 }
 
+- (BOOL)hasManagementRight {
+    
+    return [PNBitwiseHelper is:self.rights containsBit:PNManagementRight];
+}
+
 - (BOOL)isAllRightsRevoked {
 
     return ![self hasAllRights];
@@ -90,8 +95,12 @@
                                                     NSStringFromClass([self class]), self];
 
     NSString *level = @"application";
-    if (self.level == PNChannelAccessRightsLevel) {
+    if (self.level == PNChannelGroupAccessRightsLevel) {
 
+        level = @"channel-group";
+    }
+    else if (self.level == PNChannelAccessRightsLevel) {
+        
         level = @"channel";
     }
     else if (self.level == PNUserAccessRightsLevel) {
@@ -109,12 +118,21 @@
             rights = ([rights length] > 0) ? [rights stringByAppendingString:@" / write"] : @"write";
         }
     }
+    if ([self hasManagementRight]) {
+        
+        rights = ([rights length] > 0) ? [rights stringByAppendingString:@" / management"] : @"management";
+    }
+    
     [description appendFormat:@" rights: %@;", rights];
 
     [description appendFormat:@" application: %@;", PNObfuscateString(self.subscriptionKey)];
 
-    if (self.level == PNChannelAccessRightsLevel) {
+    if (self.level == PNChannelGroupAccessRightsLevel) {
 
+        [description appendFormat:@" channel-group: %@;", self.channel];
+    }
+    else if (self.level == PNChannelAccessRightsLevel) {
+        
         [description appendFormat:@" channel: %@;", self.channel];
     }
     else if (self.level == PNUserAccessRightsLevel) {
@@ -132,7 +150,11 @@
 - (NSString *)logDescription {
     
     NSString *level = @"application";
-    if (self.level == PNChannelAccessRightsLevel) {
+    if (self.level == PNChannelGroupAccessRightsLevel) {
+        
+        level = @"channel-group";
+    }
+    else if (self.level == PNChannelAccessRightsLevel) {
         
         level = @"channel";
     }

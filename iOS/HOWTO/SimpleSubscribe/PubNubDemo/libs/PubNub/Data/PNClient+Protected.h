@@ -17,8 +17,30 @@
 #pragma mark - Properties
 
 @property (nonatomic, strong) PNChannel *channel;
+@property (nonatomic, strong) PNChannelGroup *group;
 @property (nonatomic, copy) NSString *identifier;
 @property (nonatomic, strong) NSDictionary *data;
+
+/**
+ @brief Stores reference on list for which there is client's state data avaialable.
+ 
+ @since 3.6.9
+ */
+@property (nonatomic, strong) NSMutableArray *channelsWithState;
+
+/**
+ @brief Stores reference on client's state across multiple channels (or single)
+ 
+ @since 3.6.9
+ */
+@property (nonatomic, strong) NSMutableDictionary *clientData;
+
+/**
+ @brief Stores reference on on client's state data which doesn't have link to channel.
+ 
+ @since 3.6.9
+ */
+@property (nonatomic, strong) NSDictionary *unboundData;
 
 
 #pragma mark - Class methods
@@ -70,11 +92,23 @@
  \b PNChannel instance which describe where this client reside at this moment / or leaved.
 
  @param data
- \b NSDictionary instance which hold applied to the client during subscription.
+ \b NSDictionary instance which hold applied to the client during subscription or state fetch request.
 
  @return \b PNClient instance.
  */
 - (id)initWithIdentifier:(NSString *)identifier channel:(PNChannel *)channel andData:(NSDictionary *)data;
+
+/**
+ @brief Bind client's data to channel.
+ 
+ @discussion State will be stored in linkage to specified channel.
+ 
+ @param data    \b NSDictionary instance which hold applied to the client during subscription or state fetch request.
+ @param channel \b PNChannel name will be used to create linkage between state information and channel.
+ 
+ @since 3.6.9
+ */
+- (void)addClientData:(NSDictionary *)data forChannel:(PNChannel *)channel;
 
 #pragma mark -
 

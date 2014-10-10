@@ -27,72 +27,67 @@
 #pragma mark - Instance methods
 
 /**
- Final designated method which allow to channels participant information depending on provided set of parameters.
+ @brief Request list of participants for specified set of channels.
 
- @param channel
- \b PNChannel instance on for which \b PubNub client should retrieve information about participants.
+ @param channelObjects              List of objects (which conforms to \b PNChannelProtocol data feed object protocol)
+                                    like \b PNChannel and \b PNChannelGroup for which \b PubNub client should retrieve
+                                    information about participants.
+ @param isClientIdentifiersRequired Whether or not \b PubNub client should fetch list of client identifiers or only
+                                    number of them will be returned by server.
+ @param shouldFetchClientState      Whether or not \b PubNub client should fetch additional information which has been
+                                    added to the client during subscription or specific API endpoints.
+ @param isMethodCallRescheduled     In case if value set to \c YES it will mean that method call has been rescheduled
+                                    and probably there is no handler block which client should use for observation
+                                    notification.
+ @param handleBlock                 The block which will be called by \b PubNub client as soon as participants list
+                                    request operation will be completed. The block takes three arguments:
+                                    \c clients - array of \b PNClient instances which represent client which is
+                                    subscribed on target channel (if \a 'isClientIdentifiersRequired' is set to \c NO
+                                    than all objects will have \c kPNAnonymousParticipantIdentifier value);
+                                    \c channel - is \b PNChannel instance for which \b PubNub client received
+                                    participants list; \c error - describes what exactly went wrong (check error code
+                                    and compare it with \b PNErrorCodes ).
 
- @param isClientIdentifiersRequired
- Whether or not \b PubNub client should fetch list of client identifiers or only number of them will be returned by
- server.
+ @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the group, but for
+ channels which is registered under it.
 
- @param shouldFetchClientState
- Whether or not \b PubNub client should fetch additional information which has been added to the client during
- subscription or specific API endpoints.
-
- @param shouldFetchClientState
- Whether or not \b PubNub client should fetch additional information which has been added to the client during
- subscription or specific API endpoints.
-
- @param handleBlock
- The block which will be called by \b PubNub client as soon as participants list request operation will be completed.
- The block takes three arguments:
- \c clients - array of \b PNClient instances which represent client which is subscribed on target channel (if
- \a 'isClientIdentifiersRequired' is set to \c NO than all objects will have \c kPNAnonymousParticipantIdentifier value);
- \c channel - is \b PNChannel instance for which \b PubNub client received participants list; \c error - describes what
- exactly went wrong (check error code and compare it with \b PNErrorCodes ).
-
- @note If \a 'isClientIdentifiersRequired' is set to \c NO then value of \a 'shouldFetchClientState' will be
- ignored and returned result array will contain list of \b PNClient instances with names set to \a 'unknown'.
-
- @since 3.6.0
+ @since 3.6.8
  */
-- (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
-                              clientState:(BOOL)shouldFetchClientState reschedulingMethodCall:(BOOL)isMethodCallRescheduled
-                      withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
+- (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                       clientState:(BOOL)shouldFetchClientState reschedulingMethodCall:(BOOL)isMethodCallRescheduled
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
 /**
- Postpone participants list user request so it will be executed in future.
+ @brief Postpone participants list user request so it will be executed in future.
 
- @note Postpone can be because of few cases: \b PubNub client is in connecting or initial connection state; another request
- which has been issued earlier didn't completed yet.
+ @discussion Postpone can be because of few cases: \b PubNub client is in connecting or initial connection state;
+ another request which has been issued earlier didn't completed yet.
+ 
+ @param channelObjects              List of objects (which conforms to \b PNChannelProtocol data feed object protocol)
+                                    like \b PNChannel and \b PNChannelGroup for which \b PubNub client should retrieve
+                                    information about participants.
+ @param isClientIdentifiersRequired Whether or not \b PubNub client should fetch list of client identifiers or only
+                                    number of them will be returned by server.
+ @param shouldFetchClientState      Whether or not \b PubNub client should fetch additional information which has been
+                                    added to the client during subscription or specific API endpoints.
+ @param isMethodCallRescheduled     In case if value set to \c YES it will mean that method call has been rescheduled
+                                    and probably there is no handler block which client should use for observation
+                                    notification.
+ @param handleBlock                 The block which will be called by \b PubNub client as soon as participants list
+                                    request operation will be completed. The block takes three arguments:
+                                    \c clients - array of \b PNClient instances which represent client which is
+                                    subscribed on target channel (if \a 'isClientIdentifiersRequired' is set to \c NO
+                                    than all objects will have \c kPNAnonymousParticipantIdentifier value);
+                                    \c channel - is \b PNChannel instance for which \b PubNub client received
+                                    participants list; \c error - describes what exactly went wrong (check error code
+                                    and compare it with \b PNErrorCodes ).
 
- @param channel
- \b PNChannel instance on for which \b PubNub client should retrieve information about participants.
-
- @param isClientIdentifiersRequired
- Whether or not \b PubNub client should fetch list of client identifiers or only number of them will be returned by
- server.
-
- @param shouldFetchClientState
- Whether or not \b PubNub client should fetch additional information which has been added to the client during
- subscription or specific API endpoints.
-
- @param isMethodCallRescheduled
- In case if value set to \c YES it will mean that method call has been rescheduled and probably there is no handler
- block which client should use for observation notification.
-
- @param handleBlock
- The block which will be called by \b PubNub client as soon as participants list request operation will be completed.
- The block takes three arguments:
- \c clients - array of \b PNClient instances which represent client which is subscribed on target channel (if
- \a 'isClientIdentifiersRequired' is set to \c NO than all objects will have \c kPNAnonymousParticipantIdentifier value);
- \c channel - is \b PNChannel instance for which \b PubNub client received participants list; \c error - describes what
- exactly went wrong (check error code and compare it with \b PNErrorCodes ).
+ @since 3.6.8
  */
-- (void)postponeRequestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersLRequired:(BOOL)isClientIdentifiersRequired
-                                      clientState:(BOOL)shouldFetchClientState reschedulingMethodCall:(BOOL)isMethodCallRescheduled
-                              withCompletionBlock:(id)handleBlock;
+- (void)postponeRequestParticipantsListFor:(NSArray *)channelObjects
+                 clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired clientState:(BOOL)shouldFetchClientState
+                    reschedulingMethodCall:(BOOL)isMethodCallRescheduled
+                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
 /**
  Final designated method which allow to participant channels information depending on provided set of parameters.
@@ -187,19 +182,17 @@
                                     andCompletionBlock:handleBlock];
 }
 
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
-                                         clientState:(BOOL)shouldFetchClientState {
++ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired clientState:(BOOL)shouldFetchClientState {
     
     [self requestParticipantsListWithClientIdentifiers:isClientIdentifiersRequired clientState:shouldFetchClientState
                                     andCompletionBlock:nil];
 }
 
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
-                                         clientState:(BOOL)shouldFetchClientState
++ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired clientState:(BOOL)shouldFetchClientState
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
-    
-    [self requestParticipantsListForChannel:nil clientIdentifiersRequired:isClientIdentifiersRequired
-                                clientState:shouldFetchClientState withCompletionBlock:handleBlock];
+
+    [self requestParticipantsListFor:nil clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:shouldFetchClientState withCompletionBlock:handleBlock];
 }
 
 + (void)requestParticipantsListForChannel:(PNChannel *)channel {
@@ -208,23 +201,45 @@
 }
 
 + (void)requestParticipantsListForChannel:(PNChannel *)channel withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
-    
-    [self requestParticipantsListForChannel:channel clientIdentifiersRequired:YES withCompletionBlock:handleBlock];
+
+    [self requestParticipantsListFor:(channel ? @[channel] : nil) withCompletionBlock:handleBlock];
 }
 
-+ (void)requestParticipantsListForChannel:(PNChannel *)channel
-                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired {
++ (void)requestParticipantsListFor:(NSArray *)channelObjects {
+
+    [self requestParticipantsListFor:channelObjects withCompletionBlock:nil];
+}
+
++ (void)requestParticipantsListFor:(NSArray *)channelObjects
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:YES withCompletionBlock:handleBlock];
+}
+
++ (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired {
     
     [self requestParticipantsListForChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired
                         withCompletionBlock:nil];
 }
 
-+ (void)requestParticipantsListForChannel:(PNChannel *)channel
-                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
++ (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
-    
-    [self requestParticipantsListForChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired
-                                clientState:NO withCompletionBlock:handleBlock];
+
+    [self requestParticipantsListFor:(channel ? @[channel] : nil) clientIdentifiersRequired:isClientIdentifiersRequired
+                 withCompletionBlock:handleBlock];
+}
+
++ (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:isClientIdentifiersRequired
+                 withCompletionBlock:nil];
+}
+
++ (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:NO withCompletionBlock:handleBlock];
 }
 
 + (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
@@ -237,9 +252,24 @@
 + (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                               clientState:(BOOL)shouldFetchClientState
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
-    
-    [[self sharedInstance] requestParticipantsListForChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired
-                                                 clientState:shouldFetchClientState withCompletionBlock:handleBlock];
+
+    [self requestParticipantsListFor:(channel ? @[channel] : nil) clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:shouldFetchClientState withCompletionBlock:handleBlock];
+}
+
++ (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                       clientState:(BOOL)shouldFetchClientState {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:shouldFetchClientState withCompletionBlock:nil];
+}
+
++ (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                       clientState:(BOOL)shouldFetchClientState
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+
+    [[self sharedInstance] requestParticipantsListFor:channelObjects clientIdentifiersRequired:isClientIdentifiersRequired
+                                          clientState:shouldFetchClientState withCompletionBlock:handleBlock];
 }
 
 + (void)requestParticipantChannelsList:(NSString *)clientIdentifier {
@@ -288,9 +318,9 @@
 - (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                          clientState:(BOOL)shouldFetchClientState
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
-    
-    [self requestParticipantsListForChannel:nil clientIdentifiersRequired:isClientIdentifiersRequired
-                                clientState:shouldFetchClientState withCompletionBlock:handleBlock];
+
+    [self requestParticipantsListFor:nil clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:shouldFetchClientState withCompletionBlock:handleBlock];
 }
 
 - (void)requestParticipantsListForChannel:(PNChannel *)channel {
@@ -299,23 +329,45 @@
 }
 
 - (void)requestParticipantsListForChannel:(PNChannel *)channel withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
-    
-    [self requestParticipantsListForChannel:channel clientIdentifiersRequired:YES withCompletionBlock:handleBlock];
+
+    [self requestParticipantsListFor:(channel ? @[channel] : nil) withCompletionBlock:handleBlock];
 }
 
-- (void)requestParticipantsListForChannel:(PNChannel *)channel
-                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired {
+- (void)requestParticipantsListFor:(NSArray *)channelObjects {
+
+    [self requestParticipantsListFor:channelObjects withCompletionBlock:nil];
+}
+
+- (void)requestParticipantsListFor:(NSArray *)channelObjects
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:YES withCompletionBlock:handleBlock];
+}
+
+- (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired {
     
     [self requestParticipantsListForChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired
                         withCompletionBlock:nil];
 }
 
-- (void)requestParticipantsListForChannel:(PNChannel *)channel
-                clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+- (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
-    
-    [self requestParticipantsListForChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired
-                                clientState:NO withCompletionBlock:handleBlock];
+
+    [self requestParticipantsListFor:(channel ? @[channel] : nil) clientIdentifiersRequired:isClientIdentifiersRequired
+                 withCompletionBlock:handleBlock];
+}
+
+- (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:isClientIdentifiersRequired
+                 withCompletionBlock:nil];
+}
+
+- (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:NO withCompletionBlock:handleBlock];
 }
 
 - (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
@@ -328,20 +380,35 @@
 - (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                               clientState:(BOOL)shouldFetchClientState withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
 
-    [self requestParticipantsListForChannel:channel clientIdentifiersRequired:isClientIdentifiersRequired
-                                clientState:shouldFetchClientState reschedulingMethodCall:NO withCompletionBlock:handleBlock];
+    [self requestParticipantsListFor:(channel ? @[channel] : nil) clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:shouldFetchClientState withCompletionBlock:handleBlock];
 }
 
-- (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
-                              clientState:(BOOL)shouldFetchClientState reschedulingMethodCall:(BOOL)isMethodCallRescheduled
-                      withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+- (void)requestParticipantsList:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                    clientState:(BOOL)shouldFetchClientState {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:shouldFetchClientState withCompletionBlock:nil];
+}
+
+- (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                       clientState:(BOOL)shouldFetchClientState
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+
+    [self requestParticipantsListFor:channelObjects clientIdentifiersRequired:isClientIdentifiersRequired
+                         clientState:shouldFetchClientState reschedulingMethodCall:NO withCompletionBlock:handleBlock];
+}
+
+- (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                       clientState:(BOOL)shouldFetchClientState reschedulingMethodCall:(BOOL)isMethodCallRescheduled
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock; {
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-        return @[PNLoggerSymbols.api.participantsListRequestAttempt, (channel ? channel : [NSNull null]),
+        
+        return @[PNLoggerSymbols.api.participantsListRequestAttempt, (channelObjects ? channelObjects : [NSNull null]),
                  @(isClientIdentifiersRequired), [self humanReadableStateFrom:self.state]];
     }];
-
+    
     [self performAsyncLockingBlock:^{
         
         [self pn_dispatchAsynchronouslyBlock:^{
@@ -365,9 +432,9 @@
                     [self.observationCenter addClientAsParticipantsListDownloadObserverWithBlock:handleBlock];
                 }
                 
-                PNHereNowRequest *request = [PNHereNowRequest whoNowRequestForChannel:channel
-                                                            clientIdentifiersRequired:isClientIdentifiersRequired
-                                                                          clientState:shouldFetchClientState];
+                PNHereNowRequest *request = [PNHereNowRequest whoNowRequestForChannels:channelObjects
+                                                             clientIdentifiersRequired:isClientIdentifiersRequired
+                                                                           clientState:shouldFetchClientState];
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
             // Looks like client can't send request because of some reasons
@@ -380,40 +447,43 @@
                 }];
                 
                 PNError *sendingError = [PNError errorWithCode:statusCode];
-                sendingError.associatedObject = channel;
+                sendingError.associatedObject = channelObjects;
                 
                 [self notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
                 
                 if (handleBlock && !isMethodCallRescheduled) {
                     
-                    handleBlock(nil, channel, sendingError);
+                    handleBlock(nil, channelObjects, sendingError);
                 }
             }
         }];
     }
            postponedExecutionBlock:^{
-
+               
                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
+                   
                    return @[PNLoggerSymbols.api.postponeParticipantsListRequest,
                             [self humanReadableStateFrom:self.state]];
                }];
 
-               [self postponeRequestParticipantsListForChannel:channel clientIdentifiersLRequired:isClientIdentifiersRequired
-                                                   clientState:shouldFetchClientState reschedulingMethodCall:isMethodCallRescheduled
-                                           withCompletionBlock:handleBlock];
+               [self postponeRequestParticipantsListFor:channelObjects
+                              clientIdentifiersRequired:isClientIdentifiersRequired
+                                            clientState:shouldFetchClientState
+                                 reschedulingMethodCall:isMethodCallRescheduled
+                                    withCompletionBlock:handleBlock];
            }];
 }
 
-- (void)postponeRequestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersLRequired:(BOOL)isClientIdentifiersRequired
-                                      clientState:(BOOL)shouldFetchClientState reschedulingMethodCall:(BOOL)isMethodCallRescheduled
-                              withCompletionBlock:(id)handleBlock {
+- (void)postponeRequestParticipantsListFor:(NSArray *)channelObjects
+                 clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired clientState:(BOOL)shouldFetchClientState
+                    reschedulingMethodCall:(BOOL)isMethodCallRescheduled
+                       withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
     
-    SEL targetSelector = @selector(requestParticipantsListForChannel:clientIdentifiersRequired:clientState:reschedulingMethodCall:withCompletionBlock:);
+    SEL targetSelector = @selector(requestParticipantsListFor:clientIdentifiersRequired:clientState:reschedulingMethodCall:withCompletionBlock:);
     id handleBlockCopy = (handleBlock ? [handleBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:channel], @(isClientIdentifiersRequired), @(shouldFetchClientState),
-                             @(isMethodCallRescheduled), [PNHelper nilifyIfNotSet:handleBlockCopy]]
+            withParameters:@[[PNHelper nilifyIfNotSet:channelObjects], @(isClientIdentifiersRequired),
+                             @(shouldFetchClientState), @(isMethodCallRescheduled), [PNHelper nilifyIfNotSet:handleBlockCopy]]
                 outOfOrder:isMethodCallRescheduled];
 }
 
@@ -519,12 +589,25 @@
             return @[PNLoggerSymbols.api.participantsListDownloadFailed, [self humanReadableStateFrom:self.state]];
         }];
         
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         // Check whether delegate us able to handle participants list download error or not
         if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didFailParticipantsListDownloadForChannel:withError:)]) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
             
                 [self.clientDelegate pubnubClient:self didFailParticipantsListDownloadForChannel:error.associatedObject
+                                        withError:error];
+            });
+        }
+        #pragma clang diagnostic pop
+        
+        // Check whether delegate us able to handle participants list download error or not
+        if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didFailParticipantsListDownloadFor:withError:)]) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+                [self.clientDelegate pubnubClient:self didFailParticipantsListDownloadFor:error.associatedObject
                                         withError:error];
             });
         }
@@ -572,6 +655,8 @@
         
         if ([self shouldChannelNotifyAboutEvent:serviceChannel]) {
             
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wdeprecated-declarations"
             // Check whether delegate can response on participants list download event or not
             if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsList:forChannel:)]) {
                 
@@ -581,6 +666,17 @@
                                            forChannel:participants.channel];
                 });
             }
+            #pragma clang diagnostic pop
+            
+            // Check whether delegate can response on participants list download event or not
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveParticipants:forObjects:)]) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+
+                    [self.clientDelegate pubnubClient:self didReceiveParticipants:participants
+                                           forObjects:[participants channels]];
+                });
+            }
             
             [self sendNotification:kPNClientDidReceiveParticipantsListNotification withObject:participants];
         }
@@ -588,12 +684,12 @@
                                 shouldStartNext:YES];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantsListLoadForChannel:(PNChannel *)channel
+- (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantsListLoadForChannels:(NSArray *)channels
              withError:(PNError *)error {
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = channel;
+        error.associatedObject = channels;
         [self notifyDelegateAboutParticipantsListDownloadFailedWithError:error];
     }
     else {
@@ -606,12 +702,11 @@
             }];
             
             NSDictionary *options = (NSDictionary *)error.associatedObject;
-            [self requestParticipantsListForChannel:channel clientIdentifiersRequired:[[options valueForKey:@"clientIdentifiersRequired"] boolValue]
-                                        clientState:[[options valueForKey:@"fetchClientState"] boolValue]
-                             reschedulingMethodCall:YES withCompletionBlock:nil];
+            [self requestParticipantsListFor:channels clientIdentifiersRequired:[[options valueForKey:@"clientIdentifiersRequired"] boolValue]
+                                 clientState:[[options valueForKey:@"fetchClientState"] boolValue]
+                      reschedulingMethodCall:YES withCompletionBlock:nil];
         }];
     }
-    
 }
 
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantChannelsList:(PNWhereNow *)participantChannels {
@@ -664,6 +759,5 @@
 }
 
 #pragma mark -
-
 
 @end

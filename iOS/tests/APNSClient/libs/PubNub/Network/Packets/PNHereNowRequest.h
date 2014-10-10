@@ -23,14 +23,14 @@
 
 #pragma mark Class methods
 
-+ (PNHereNowRequest *)whoNowRequestForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
-                                  clientState:(BOOL)shouldFetchClientState;
++ (PNHereNowRequest *)whoNowRequestForChannels:(NSArray *)channels clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+                                   clientState:(BOOL)shouldFetchClientState;
 
 
 #pragma mark - Instance methods
 
-- (id)initWithChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
-          clientState:(BOOL)shouldFetchClientState;
+- (id)initWithChannels:(NSArray *)channels clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
+           clientState:(BOOL)shouldFetchClientState;
 
 #pragma mark -
 

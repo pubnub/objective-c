@@ -130,13 +130,17 @@
     if ([self.accessRightOptions.channels count] > 0) {
 
         NSString *channel = [[self.accessRightOptions.channels lastObject] name];
+        BOOL isChannelGroupProvided = ((PNChannel *)[self.accessRightOptions.channels lastObject]).isChannelGroup;
         if ([self.accessRightOptions.channels count] > 1) {
 
             channel = [[self.accessRightOptions.channels valueForKey:@"name"] componentsJoinedByString:@","];
         }
-        [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel pn_percentEscapedString]]];
+        [parameters addObject:[NSString stringWithFormat:@"%@=%@",
+                               (!isChannelGroupProvided ? @"channel" : @"channel-group"), [channel pn_percentEscapedString]]];
     }
-
+    
+    [parameters addObject:[NSString stringWithFormat:@"m=%@",
+                           [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNManagementRight] ? @"1" : @"0"]];
     [parameters addObject:[NSString stringWithFormat:@"pnsdk=%@", [self clientInformationField]]];
     [parameters addObject:[NSString stringWithFormat:@"r=%@",
                            [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNReadAccessRight] ? @"1" : @"0"]];
@@ -181,22 +185,26 @@
     }
 
     NSString *channel = [[self.accessRightOptions.channels lastObject] name];
+    BOOL isChannelGroupProvided = ((PNChannel *)[self.accessRightOptions.channels lastObject]).isChannelGroup;
     if ([self.accessRightOptions.channels count] > 1) {
 
         channel = [[self.accessRightOptions.channels valueForKey:@"name"] componentsJoinedByString:@","];
     }
 
 
-    return [NSString stringWithFormat:@"/v1/auth/grant/sub-key/%@?%@callback=%@_%@%@&pnsdk=%@&%@&timestamp=%lu&ttl=%lu&signature"
+    return [NSString stringWithFormat:@"/v1/auth/grant/sub-key/%@?%@callback=%@_%@%@&%@&pnsdk=%@&%@&timestamp=%lu&ttl=%lu&signature"
                                        "=%@&%@", [self.subscriptionKey pn_percentEscapedString],
-                    (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey pn_percentEscapedString]] : @""),
-                    [self callbackMethodName], self.shortIdentifier,
-                    (channel ? [NSString stringWithFormat:@"&channel=%@", [channel pn_percentEscapedString]] : @""),
-                    [self clientInformationField], [NSString stringWithFormat:@"r=%@", [PNBitwiseHelper is:self.accessRightOptions.rights
-                                                                                               containsBit:PNReadAccessRight] ? @"1" : @"0"],
-                    (unsigned long)[self requestTimestamp], (unsigned long)self.accessRightOptions.accessPeriodDuration,
-                    [self PAMSignature], [NSString stringWithFormat:@"w=%@",
-                    [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNWriteAccessRight] ? @"1" : @"0"]];
+            (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey pn_percentEscapedString]] : @""),
+            [self callbackMethodName], self.shortIdentifier,
+            (channel ? [NSString stringWithFormat:@"&%@=%@", (!isChannelGroupProvided ? @"channel" : @"channel-group"),
+                        [channel pn_percentEscapedString]] : @""),
+            [NSString stringWithFormat:@"m=%@", [PNBitwiseHelper is:self.accessRightOptions.rights
+                                                        containsBit:PNManagementRight] ? @"1" : @"0"],
+            [self clientInformationField], [NSString stringWithFormat:@"r=%@", [PNBitwiseHelper is:self.accessRightOptions.rights
+                                                                                       containsBit:PNReadAccessRight] ? @"1" : @"0"],
+            (unsigned long)[self requestTimestamp], (unsigned long)self.accessRightOptions.accessPeriodDuration,
+            [self PAMSignature], [NSString stringWithFormat:@"w=%@",
+                                  [PNBitwiseHelper is:self.accessRightOptions.rights containsBit:PNWriteAccessRight] ? @"1" : @"0"]];
 }
 
 - (NSString *)debugResourcePath {

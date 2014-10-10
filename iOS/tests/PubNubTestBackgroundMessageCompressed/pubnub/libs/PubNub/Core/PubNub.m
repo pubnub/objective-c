@@ -53,12 +53,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"fix-pt79862904";
+static NSString * const kPNCodebaseBranch = @"pt78591658";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"f32ed5e8fe6ca2c0eaae730cbd4d1e244b7d6043";
+static NSString * const kPNCodeCommitIdentifier = @"c0391cdc42df673426690345d355efb9635b8cea";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -610,7 +610,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     
                     weakSelf.connectOnServiceReachability = YES;
                     [weakSelf handleConnectionErrorOnNetworkFailure];
-                    weakSelf.asyncLockingOperationInProgress = YES;
+                    weakSelf.asyncLockingOperationInProgress = NO;
                 }
             }
             else {
@@ -1110,9 +1110,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         void(^subscribeBlock)(void) = ^{
                             
                             weakSelf.asyncLockingOperationInProgress = NO;
-                            [self subscribeOnChannels:allChannels withCatchUp:shouldCatchup clientState:nil
-                           andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
-                                                        PNError *subscribeError) {
+                            [self subscribeOn:allChannels withCatchUp:shouldCatchup clientState:nil
+                   andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
+                                                PNError *subscribeError) {
                                
                                if (subscribeError == nil) {
                                    
@@ -1137,30 +1137,30 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         void(^unsubscribeBlock)(void) = ^{
                             
                             weakSelf.asyncLockingOperationInProgress = NO;
-                            [self unsubscribeFromChannels:allChannels
-                              withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
-                                  
-                                  if (leaveError == nil) {
-                                      
-                                      // Check whether user identifier was provided by user or not
-                                      if (identifier == nil) {
-                                          
-                                          // Change user identifier before connect to the PubNub services
-                                          weakSelf.uniqueClientIdentifier = [PNHelper UUID];
-                                      }
-                                      else {
-                                          
-                                          weakSelf.uniqueClientIdentifier = identifier;
-                                      }
-                                      
-                                      resubscribeRetryCount = 0;
-                                      subscribeBlock();
-                                  }
-                                  else {
-                                      
-                                      retryUnsubscription(leaveError);
-                                  }
-                              }];
+                            [self unsubscribeFrom:allChannels
+                      withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+
+                          if (leaveError == nil) {
+
+                              // Check whether user identifier was provided by user or not
+                              if (identifier == nil) {
+
+                                  // Change user identifier before connect to the PubNub services
+                                  weakSelf.uniqueClientIdentifier = [PNHelper UUID];
+                              }
+                              else {
+
+                                  weakSelf.uniqueClientIdentifier = identifier;
+                              }
+
+                              resubscribeRetryCount = 0;
+                              subscribeBlock();
+                          }
+                          else {
+
+                              retryUnsubscription(leaveError);
+                          }
+                      }];
                         };
                         
                         retryUnsubscription = ^(PNError *error){
@@ -1459,7 +1459,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                             postponeConnectionTillNetworkCheck = YES;
                             
                             [self handleConnectionErrorOnNetworkFailureWithError:nil];
-                            self.asyncLockingOperationInProgress = YES;
+                            self.asyncLockingOperationInProgress = NO;
                             
                             if (![self.observationCenter isSubscribedOnClientStateChange:self]) {
                                 
@@ -1691,7 +1691,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 // Empty connection pool after connection will be closed
                 [self.messagingChannel disconnectOnInternalRequest];
                 [self.serviceChannel disconnectOnInternalRequest];
-                [[self subscribedChannels] makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
+                [[self subscribedObjectsList] makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
                 
                 connectionsTerminationBlock(YES);
                 
@@ -1888,6 +1888,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [request isKindOfClass:[PNTimeTokenRequest class]] ||
         [request isKindOfClass:[PNClientStateRequest class]] ||
         [request isKindOfClass:[PNClientStateUpdateRequest class]] ||
+        [request isKindOfClass:[PNChannelGroupsRequest class]] ||
+        [request isKindOfClass:[PNChannelGroupNamespacesRequest class]] ||
+        [request isKindOfClass:[PNChannelGroupNamespaceRemoveRequest class]] ||
+        [request isKindOfClass:[PNChannelGroupRemoveRequest class]] ||
+        [request isKindOfClass:[PNChannelsForGroupRequest class]] ||
+        [request isKindOfClass:[PNChannelsListUpdateForChannelGroupRequest class]] ||
         [request isKindOfClass:[PNMessageHistoryRequest class]] ||
         [request isKindOfClass:[PNHereNowRequest class]] ||
         [request isKindOfClass:[PNWhereNowRequest class]] ||
@@ -2501,13 +2507,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
         // Checking whether we are still connected and there is some channels for which we can create this heartbeat
         // request.
-        if ([self isConnected] && ![self isResuming] && [[self subscribedChannels] count] &&
+        if ([self isConnected] && ![self isResuming] && [[self subscribedObjectsList] count] &&
             self.clientConfiguration.presenceHeartbeatTimeout > 0.0f) {
             
             // Prepare and send request w/o observation (it mean that any response for request will be ignored
-            NSArray *channels = [self subscribedChannels];
+            NSArray *channels = [self subscribedObjectsList];
             [self sendRequest:[PNHeartbeatRequest heartbeatRequestForChannels:channels
-                                                              withClientState:[self.cache stateForChannels:channels]]
+                                                              withClientState:[self.cache state]]
       shouldObserveProcessing:NO];
         }
     }];
@@ -3197,7 +3203,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
         [self stopHeartbeatTimer];
     
-        if ([self isConnected] && ![self isResuming] && [[self subscribedChannels] count] &&
+        if ([self isConnected] && ![self isResuming] && [[self subscribedObjectsList] count] &&
             self.clientConfiguration.presenceHeartbeatTimeout > 0.0f) {
             
             self.heartbeatTimer = [NSTimer timerWithTimeInterval:self.clientConfiguration.presenceHeartbeatInterval target:self
@@ -3462,6 +3468,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         }];
 
         [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+        if (error.code != kPNClientTriedConnectWhileConnectedError) {
+            
+            [self flushPostponedMethods:YES];
+        }
     }
                                 shouldStartNext:shouldStartNextPostponedOperation];
 }

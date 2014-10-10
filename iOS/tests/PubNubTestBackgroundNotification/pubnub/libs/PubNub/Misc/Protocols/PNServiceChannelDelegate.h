@@ -14,7 +14,7 @@
 
 #pragma mark Class forward
 
-@class PNAccessRightsCollection, PNServiceChannel, PNMessagesHistory, PNWhereNow, PNResponse, PNHereNow, PNClient;
+@class PNAccessRightsCollection, PNChannelGroupChange, PNServiceChannel, PNMessagesHistory, PNWhereNow, PNResponse, PNHereNow, PNClient;
 
 
 @protocol PNServiceChannelDelegate<NSObject>
@@ -73,6 +73,182 @@
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
 - (void)serviceChannel:(PNServiceChannel *)channel clientStateUpdateDidFailWithError:(PNError *)error;
+
+/**
+ Sent to the delegate when \b PubNub client successfully retrieved channel groups.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param channelGroups
+ List of \b PNChannelGroup instances
+ 
+ @param nspace
+ Reference on namespace from which \b PubNub fetched channel groups.
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannelGroups:(NSArray *)channelGroups
+          forNamespace:(NSString *)nspace;
+
+/**
+ Sent to the delegate when \b PubNub client did fail to fetch channel groups.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param nspace
+ Reference on namespace from which \b PubNub fetched channel groups.
+ 
+ @param error
+ \b PNError instance which holds information about what went wrong and why request failed.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel channelGroupsRequestForNamespace:(NSString *)nspace
+      didFailWithError:(PNError *)error;
+
+/**
+ Sent to the delegate when \b PubNub client successfully retrieved channels list for group.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param channels
+ List of \b PNChannel instance
+ 
+ @param group
+ Reference on \b PNChannelGroup instance which describe end point from this channels should be pulled out.
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannels:(NSArray *)channels forGroup:(PNChannelGroup *)group;
+
+/**
+ Sent to the delegate when \b PubNub client did fail to fetch channels list for group.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param group
+ Reference on \b PNChannelGroup instance which describe end point from this channels should be pulled out.
+ 
+ @param error
+ \b PNError instance which holds information about what went wrong and why request failed.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel channelsForGroupRequest:(PNChannelGroup *)group
+      didFailWithError:(PNError *)error;
+
+/**
+ Sent to the delegate when \b PubNub client successfully changed channels list for group.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param change
+ Reference on \b PNChannelGroupChange instance which describe options for group channels list change.
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didChangeGroupChannels:(PNChannelGroupChange *)change;
+
+/**
+ Sent to the delegate when \b PubNub client did fail to change channels list to group.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param change
+ Reference on \b PNChannelGroupChange instance which describe options for group channels list change.
+ 
+ @param error
+ \b PNError instance which holds information about what went wrong and why request failed.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel groupChannelsChange:(PNChannelGroupChange *)change
+      didFailWithError:(PNError *)error;
+
+/**
+ Sent to the delegate when \b PubNub client successfully received channel group namespaces.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param namespaces
+ List of \a NSString iinstances with names of namespaces which has been registered with subscription current key
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannelGroupNamespaces:(NSArray *)namespaces;
+
+/**
+ Sent to the delegate when \b PubNub client did fail to retrieve list of namespaces for channel groups.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param error
+ \b PNError instance which holds information about what went wrong and why request failed.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel channelGroupNamespacesRequestDidFailWithError:(PNError *)error;
+
+/**
+ Sent to the delegate when \b PubNub client successfully removed namespace along with channel groups and channels registered in it.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param nspace
+ Namespace name which has been removed from channels registry.
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didRemoveNamespace:(NSString *)nspace;
+
+/**
+ Sent to the delegate when \b PubNub client did fail to remove channel group namespace removal.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param nspace
+ Reference on namespace which should be removed along with all channel group and channels registered in it.
+ 
+ @param error
+ \b PNError instance which holds information about what went wrong and why request failed.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel namespace:(NSString *)nspace removalDidFailWithError:(PNError *)error;
+
+/**
+ Sent to the delegate when \b PubNub client successfully removed channel groups along with channels registered in it.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param group
+ \b PNChannelGroup instance which describes target channel group which has been removed.
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel didRemoveChannelGroup:(PNChannelGroup *)group;
+
+/**
+ Sent to the delegate when \b PubNub client did fail to remove channel group along with channels registered in it.
+ 
+ @param channel
+ Communication channel over which request has been sent and processed response from \b PubNub services.
+ 
+ @param group
+ Reference on \b PNChannelGroup which should be removed along with channels registered in it.
+ 
+ @param error
+ \b PNError instance which holds information about what went wrong and why request failed.\c associatedObject contains reference on
+ \b PNChannelGroup which describe group which client tried to remove.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+- (void)serviceChannel:(PNServiceChannel *)channel channelGroup:(PNChannelGroup *)group removalDidFailWithError:(PNError *)error;
 
 /**
  Sent to the delegate when \b PubNub client successfully changed access rights.
@@ -231,14 +407,14 @@ didReceiveNetworkLatency:(double)latency
              withError:(PNError *)error;
 
 /**
- * Sent to the delegate when PubNub service responded on participants list request.
+ Sent to the delegate when PubNub service responded on participants information request.
  */
 - (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveParticipantsList:(PNHereNow *)participants;
 
 /**
- * Sent to the delegate when PubNub service failed to retrieve participants list for specified channel
+ Sent to the delegate when PubNub service failed to retrieve participants information for specified channels list
  */
-- (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantsListLoadForChannel:(PNChannel *)channel
+- (void)serviceChannel:(PNServiceChannel *)serviceChannel didFailParticipantsListLoadForChannels:(NSArray *)channels
              withError:(PNError *)error;
 
 /**

@@ -7,6 +7,7 @@
 //
 
 #import "PNAccessRightOptions+Protected.h"
+#import "PNChannel+Protected.h"
 #import "PNPrivateImports.h"
 #import "PNHelper.h"
 
@@ -47,6 +48,10 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
         if ([channels count]) {
 
             self.level = PNChannelAccessRightsLevel;
+            if (((PNChannel *)[channels lastObject]).isChannelGroup) {
+                
+                self.level = PNChannelGroupAccessRightsLevel;
+            }
             if ([clientsAuthorizationKeys count]) {
 
                 self.level = PNUserAccessRightsLevel;
@@ -56,7 +61,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
         }
 
         self.accessPeriodDuration = accessPeriodDuration >= 0 ? accessPeriodDuration : kPNDefaulfAccessPeriodDuration;
-        if (self.rights == PNUnknownAccessRights) {
+        if (self.rights == PNUnknownAccessRights || self.rights == PNNoAccessRights) {
 
             self.accessPeriodDuration = 0;
         }

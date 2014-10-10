@@ -231,7 +231,7 @@
 + (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
-    return [[self sharedInstance] sendMessage:message toChannel:channel compressed:shouldStoreInHistory
+    return [[self sharedInstance] sendMessage:message toChannel:channel compressed:shouldCompressMessage
                                storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 

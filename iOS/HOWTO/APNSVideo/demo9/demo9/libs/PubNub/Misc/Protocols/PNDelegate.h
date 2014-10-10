@@ -14,8 +14,7 @@
 
 #pragma mark Class forward
 
-@class PNPresenceEvent, PNMessage, PubNub, PNError, PNDate, PNAccessRightsCollection;
-@class PNClient;
+@class PNAccessRightsCollection, PNPresenceEvent, PNChannelGroup, PNMessage, PNClient, PubNub, PNError, PNDate;
 
 
 @protocol PNDelegate <NSObject>
@@ -125,28 +124,250 @@
 - (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error;
 
 /**
+ Called on delegate when client successfully received list of channel groups which has been created earlier.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param groups
+ List of \b PNChannelGroup instances each of them represent concrete channel group
+ 
+ @param nspace
+ Reference on namespace identifier inside of which \b PubNub searched for groups
+ */
+- (void)pubnubClient:(PubNub *)client didReceiveChannelGroups:(NSArray *)groups forNamespace:(NSString *)nspace;
+
+/**
+ Called on delegate when \b PubNub client did fail to retrieve list of channel groups.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param error
+ \b PNError instance which describe what exactly went wrong. \c associatedObject contains reference on namespace name for which
+ request has been done (it can be \c nil in case if request has been done for application wide).
+ */
+- (void)pubnubClient:(PubNub *)client channelGroupsRequestDidFailWithError:(PNError *)error;
+
+/**
+ Called on delegate when client successfully received list of channels for concrete group.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param group
+ Reference on \b PNChannelGroup instance which describes target channel group and namespace. Check \c channels property
+ for list of \b PNChannel instances.
+ */
+- (void)pubnubClient:(PubNub *)client didReceiveChannelsForGroup:(PNChannelGroup *)group;
+
+/**
+ Called on delegate when \b PubNub client did fail to retrieve list of channels for channel group.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param error
+ \b PNError instance which describe what exactly went wrong. \c associatedObject contains reference on 
+ \b PNChannelGroup instance for which request has been done.
+ */
+- (void)pubnubClient:(PubNub *)client channelsForGroupRequestDidFailWithError:(PNError *)error;
+
+/**
+ Called on delegate when client successfully added list of channels to the group.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param channels
+ List of \b PNChannel instance which has been added to the group.
+ 
+ @param group
+ Reference on \b PNChannelGroup instance which describes target channel group and namespace.
+ */
+- (void)pubnubClient:(PubNub *)client didAddChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group;
+
+/**
+ Called on delegate when \b PubNub client did fail to add list of channels to the group.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param error
+ \b PNError instance which describe what exactly went wrong. \c associatedObject contains reference on
+ \b PNChannelGroupChange instance for which describe change details.
+ */
+- (void)pubnubClient:(PubNub *)client channelsAdditionToGroupDidFailWithError:(PNError *)error;
+
+/**
+ Called on delegate when client successfully removed list of channels from the group.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param channels
+ List of \b PNChannel instance which has been removed from the group.
+ 
+ @param group
+ Reference on \b PNChannelGroup instance which describes target channel group and namespace.
+ */
+- (void)pubnubClient:(PubNub *)client didRemoveChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group;
+
+/**
+ Called on delegate when \b PubNub client did fail to remove list of channels from the group.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param error
+ \b PNError instance which describe what exactly went wrong. \c associatedObject contains reference on
+ \b PNChannelGroupChange instance for which describe change details.
+ */
+- (void)pubnubClient:(PubNub *)client channelsRemovalFromGroupDidFailWithError:(PNError *)error;
+
+/**
+ Called on delegate when client successfully retrieved list of group namespaces.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param namespaces
+ List of \a NSString instances with names of namespaces which has been registered with subscription current key
+ 
+ @param group
+ Reference on \b PNChannelGroup instance which describes target channel group and namespace.
+ */
+- (void)pubnubClient:(PubNub *)client didReceiveChannelGroupNamespaces:(NSArray *)namespaces;
+
+/**
+ Called on delegate when \b PubNub client did fail to fetch list of group namespaces.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param error
+ \b PNError instance which describe what exactly went wrong.
+ */
+- (void)pubnubClient:(PubNub *)client channelGroupNamespacesRequestDidFailWithError:(PNError *)error;
+
+/**
+ Called on delegate when client successfully removed specified namespace along with channel groups registered in it.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param nspace
+ Namespace name which has been removed from channels registry.
+ */
+- (void)pubnubClient:(PubNub *)client didRemoveNamespace:(NSString *)nspace;
+
+/**
+ Called on delegate when \b PubNub client did fail to remove specified namespace along with all channel groups registered in it.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param error
+ \b PNError instance which describe what exactly went wrong. \c associatedObject contains reference on
+ namespace name which client tried to remove.
+ */
+- (void)pubnubClient:(PubNub *)client namespaceRemovalDidFailWithError:(PNError *)error;
+
+/**
+ Called on delegate when client successfully removed specified channel group along with all channels registered in it.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param group
+ \b PNChannelGroup instance which describes target channel group which has been removed.
+ */
+- (void)pubnubClient:(PubNub *)client didRemoveChannelGroup:(PNChannelGroup *)group;
+
+/**
+ Called on delegate when \b PubNub client did fail to remove specified channel group along with all channels registered in it.
+ 
+ @param client
+ \b PubNub instance which triggered event.
+ 
+ @param error
+ \b PNError instance which describe what exactly went wrong. \c associatedObject contains reference on
+ \b PNChannelGroup which describe group which client tried to remove.
+ */
+- (void)pubnubClient:(PubNub *)client channelGroupRemovalDidFailWithError:(PNError *)error;
+
+/**
  * Called on delegate when client successfully subscribed to specified
  * set of channels
  */
-- (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels;
+- (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didSubscribeOn:' instead.");
+
+/**
+ @brief Subscription completion callback.
+ 
+ @discussion Called on \b PubNub client delegate when subscription process completed for set of channel and channel 
+ groups.
+ 
+ @param client            \b PubNub instance which called callback.
+ @param channelObjects    List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which
+                          client subscribed.
+ 
+ @since <#version number#>
+ */
+- (void)pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects;
 
 /**
  * Called on delegate when client is about to init resubscribe on
  * previous set of channels
  */
-- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels;
+- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:willRestoreSubscriptionOn:' instead.");
+
+/**
+ @brief Subscription restore process start callback.
+ 
+ @discussion Called on \b PubNub delegate in case if configuration allow to restore subscription in case of network 
+ failure.
+ 
+ @param client         \b PubNub instance which called callback.
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which
+                       client try to restore subscription.
+ 
+ @since <#version number#>
+ */
+- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOn:(NSArray *)channelObjects;
 
 /**
  * Called on delegate when client successfully restored subscription on
  * previous set of channels
  */
-- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels;
+- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didRestoreSubscriptionOn:' instead.");
 
 /**
- * Called on delegate when some kind of error occurred during 
- * subscription creation
- * error - returned error will contain information about channel
- *         on which this error occurred and possible reason of error
+ @brief Subscription restore process completion callback.
+ 
+ @discussion Called on \b PubNub delegate after successful subscription restore on network connection restore.
+ 
+ @param client         \b PubNub instance which called callback.
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
+                       client did restore subscription.
+ 
+ @since <#version number#>
+ */
+- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOn:(NSArray *)channelObjects;
+
+/**
+ @brief Subscription failure callback.
+ 
+ @discussion Called on \b PubNub delegate when subscription process is impossible and failed with error.
+ 
+ @param client \b PubNub instance which called callback.
+ @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
+               \b PNChannelProtocol data feed object protocol) on which client did fail to subscribe.
+ 
+ @since <#version number#>
  */
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(PNError *)error;
 
@@ -154,7 +375,21 @@
  * Called on delegate when client successfully unsubscribed from specified
  * set of channels
  */
-- (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannels:(NSArray *)channels;
+- (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didUnsubscribeFrom:' instead.");
+
+/**
+ @brief Unsubscription completion callback.
+ 
+ @discussion Called on \b PubNub delegate when client were able to unsubscribe from set of channels and groups.
+ 
+ @param client         \b PubNub instance which called callback.
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) from which 
+                       client did unsubscribe.
+ 
+ @since <#version number#>
+ */
+- (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects;
 
 /**
  * Called on delegate when some kind of error occurred during
@@ -162,19 +397,50 @@
  * error - returned error will contain information about channel
  *         on which this error occurred and possible reason of error
  */
+/**
+ @brief Unsubscription failure callback.
+ 
+ @discussion Called on \b PubNub delegate when unsubscription process is impossible and failed with error.
+ 
+ @param client \b PubNub instance which called callback.
+ @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
+               \b PNChannelProtocol data feed object protocol) from which client did fail to unsubscribe.
+ 
+ @since <#version number#>
+ */
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error;
 
 /**
  * Called on delegate when client successfully enabled presence observation on
  * set of channels
  */
-- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels;
+- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didEnablePresenceObservationOn:' instead.");
 
 /**
- * Called on delegate when some kind of error occurred during
- * presence observation enabling
- * error - returned error will contain information about channel
- *         on which this error occurred and possible reason of error
+ @brief Presence observation enabling completion callback.
+ 
+ @discussion Called on delegate when \b PubNub client successfully enabled presence observation on set of channel 
+ objects.
+ 
+ @param client         \b PubNub instance which called callback.
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
+                       \b PubNub client enabled presence observation.
+ 
+ @since <#version number#>
+ */
+- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects;
+
+/**
+ @brief Presence observation enabling failure callback.
+ 
+ @discussion Called on \b PubNub delegate when presence enabling is impossible and failed with error.
+ 
+ @param client \b PubNub instance which called callback.
+ @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
+               \b PNChannelProtocol data feed object protocol) for which client did fail to enable presence observation.
+ 
+ @since <#version number#>
  */
 - (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error;
 
@@ -182,13 +448,39 @@
  * Called on delegate when client successfully disabled presence observation on
  * set of channels
  */
-- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels;
+- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didDisablePresenceObservationOn:' instead.");
+
+/**
+ @brief Presence observation disabling completion callback.
+ 
+ @discussion Called on delegate when \b PubNub client successfully disabled presence observation on set of channel
+ objects.
+ 
+ @param client         \b PubNub instance which called callback.
+ @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
+                       \b PubNub client disabled presence observation.
+ 
+ @since <#version number#>
+ */
+- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects;
 
 /**
  * Called on delegate when some kind of error occurred during
  * presence observation disabling
  * error - returned error will contain information about channel
  *         on which this error occurred and possible reason of error
+ */
+/**
+ @brief Presence observation disabling failure callback.
+ 
+ @discussion Called on \b PubNub delegate when presence disabling is impossible and failed with error.
+ 
+ @param client \b PubNub instance which called callback.
+ @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
+               \b PNChannelProtocol data feed object protocol) for which client did fail to disable presence observation.
+ 
+ @since <#version number#>
  */
 - (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error;
 
@@ -351,15 +643,59 @@
 - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error;
 
 /**
- * Called on delegate when client retrieved participants list for specific channel
+ Called on delegate when client retrieved participants list for specific channel.
+ 
+ @param participantsList
+ In case if \c channel field not \a nil, then request has been done for only one channel and this list stores reference on \b PNClient
+ objects. In case if \c channel is \a nil, this variable stores reference on list of \b PNHereNow instances.
+ 
+ @param channel
+ Reference on \b PNChannel instance if participants request has been done for single channel.
  */
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList
-          forChannel:(PNChannel *)channel;
+          forChannel:(PNChannel *)channel
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didReceiveParticipants:forObjects:' instead.");
 
 /**
  * Called on delegate when client failed to download participants list
  */
 - (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel
+           withError:(PNError *)error
+  DEPRECATED_MSG_ATTRIBUTE(" Use '-pubnubClient:didFailParticipantsListDownloadFor:withError:'"
+                           " instead.");
+
+/**
+ @brief Received list of participants.
+ 
+ @discussion \b PubNub client completed participants list download for list of channels and channel groups.
+ 
+ @param client               \b PubNub instance which triggered this event.
+ @param presenceInformation  Reference on \b PNHereNow instance which is able to provide information for every channel
+                             on which it has presence data.
+ @param channelObjects       List of \b PNChannel and \b PNChannelGroup instances on for which \b PubNub client should
+                             retrieve information about participants.
+
+ @since <#new feature release version#>
+ */
+- (void)pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
+                                                  forObjects:(NSArray *)channelObjects;
+/**
+ @brief Participants list download failed.
+ 
+ @discussion \b PubNub client did fail to download list of \b PNClient for set of channels and channel groups.
+ 
+ @param client            \b PubNub instance which triggered this event.
+ @param channelObjects    List of \b PNChannel and \b PNChannelGroup instances on for which \b PubNub client should
+                          retrieve information about participants.
+ @param error             \b PNError instance which holds information about when wrong and why request failed.
+
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use
+ \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable
+ description for error).
+
+ @since <#new feature release version#>
+ */
+- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadFor:(NSArray *)channelObjects
            withError:(PNError *)error;
 
 /**
