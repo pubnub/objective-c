@@ -552,6 +552,7 @@
 		handleClientHereNowProcess = NO;
 		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 		//		PNLog(PNLogGeneralLevel, nil, @"pnChannels[i] %@", pnChannels[i]);
+        
 		[PubNub requestParticipantsListForChannel:pnChannels[i]
 							  withCompletionBlock:^(NSArray *udids, PNChannel *channel, PNError *error)
 		 {

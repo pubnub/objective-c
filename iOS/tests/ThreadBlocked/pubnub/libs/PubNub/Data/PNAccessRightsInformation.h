@@ -63,17 +63,33 @@
 
 /**
  Check access rights bit mask and return whether \a 'write' access permission is granted or not.
-
+ 
  @return \c YES if \b PNWriteAccessRight bit is set in \a 'rights' property.
  */
 - (BOOL)hasWriteRight;
 
 /**
  Check access rights bit mask and return whether \a 'write' access permission is granted or not.
+ 
+ @discussion This check doesn't include \a 'management' access rights
 
  @return \c YES if both \b PNReadAccessRight and \b PNWriteAccessRight bits are set in \a 'rights' property.
  */
 - (BOOL)hasAllRights;
+
+/**
+ Check access rights bit mask and return whether \a 'write' access permission is granted or not.
+ 
+ @return \c YES if \b PNManagementAccessRight bit is set in \a 'rights' property.
+ */
+/**
+ @brief Rights bit field check for management ability.
+ 
+ @return \c YES in case if there is rights management rights.
+ 
+ @since <#version number#>
+ */
+- (BOOL)hasManagementRight;
 
 /**
  Check whether all rights has been revoked or not.

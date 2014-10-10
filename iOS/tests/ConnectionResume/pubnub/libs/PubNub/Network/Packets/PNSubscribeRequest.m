@@ -263,14 +263,31 @@
         state = [NSString stringWithFormat:@"&state=%@",
                                            [[PNJSONSerialization stringFromJSONObject:self.state] pn_percentEscapedString]];
     }
-    return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@&pnsdk=%@",
-                                      [self.subscriptionKey pn_percentEscapedString],
-                                      [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
-                                      [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-                                      heartbeatValue, state,
-                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
-                                      [self clientInformationField]];
+    
+    NSArray *channelsList = [self channels];
+    NSString *channelsListParameter = nil;
+    NSString *groupsListParameter = nil;
+    if ([channelsList count]) {
+        
+        NSArray *channels = [channelsList filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.isChannelGroup = NO"]];
+        NSArray *groups = [channelsList filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.isChannelGroup = YES"]];
+        if ([channels count]) {
+            
+            channelsListParameter = [[channels valueForKey:@"escapedName"] componentsJoinedByString:@","];
+        }
+        if ([groups count]) {
+            
+            groupsListParameter = [[groups valueForKey:@"escapedName"] componentsJoinedByString:@","];
+        }
+    }
+    
+    return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@%@&pnsdk=%@",
+            [self.subscriptionKey pn_percentEscapedString], (channelsListParameter ? channelsListParameter : @","),
+            [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
+            [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], heartbeatValue,
+            state, (groupsListParameter ? [NSString stringWithFormat:@"&channel-group=%@", groupsListParameter] : @""),
+            ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+            [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {

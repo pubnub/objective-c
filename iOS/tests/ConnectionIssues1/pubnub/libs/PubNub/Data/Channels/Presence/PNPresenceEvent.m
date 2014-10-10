@@ -13,8 +13,8 @@
 
 
 #import "PNPresenceEvent+Protected.h"
+#import "PNChannel+Protected.h"
 #import "PNClient+Protected.h"
-#import "PNChannel.h"
 #import "PNClient.h"
 #import "PNDate.h"
 
@@ -38,6 +38,7 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     .timestamp = @"timestamp",
     .uuid = @"uuid",
     .data = @"data",
+    .channel = @"channel",
     .occupancy = @"occupancy"
 };
 

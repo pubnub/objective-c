@@ -80,6 +80,47 @@
 - (void)removeClientAsStateUpdateObserver;
 
 
+#pragma mark - Client channel groups observation
+
+/**
+ Add/remove observer which would like to know when PubNub client will receive channel groups.
+ */
+- (void)addClientAsChannelGroupsRequestObserverWithCallbackBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock;
+- (void)removeClientAsChannelGroupsRequestObserver;
+
+/**
+ Add/remove observer which would like to know when PubNub client will receive channel group namespaces.
+ */
+- (void)addClientAsChannelGroupNamespacesRequestObserverWithCallbackBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock;
+- (void)removeClientAsChannelGroupNamespacesRequestObserver;
+
+/**
+ Add/remove observer which would like to know when PubNub client will remove namespace.
+ */
+- (void)addClientAsChannelGroupNamespaceRemovalObserverWithCallbackBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock;
+- (void)removeClientAsChannelGroupNamespaceRemovalObserver;
+
+/**
+ Add/remove observer which would like to know when PubNub client will remove channel group.
+ */
+- (void)addClientAsChannelGroupRemovalObserverWithCallbackBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock;
+- (void)removeClientAsChannelGroupRemovalObserver;
+
+/**
+ Add/remove observer which would like to know when PubNub client will receive channels for concrete channel group.
+ */
+- (void)addClientAsChannelsForGroupRequestObserverWithCallbackBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock;
+- (void)removeClientAsChannelsForGroupRequestObserver;
+
+/**
+ Add/remove observer which would like to know when PubNub client will modify channels list for concrete channel group.
+ */
+- (void)addClientAsChannelsAdditionToGroupObserverWithCallbackBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock;
+- (void)removeClientAsChannelsAdditionToGroupObserver;
+- (void)addClientAsChannelsRemovalFromGroupObserverWithCallbackBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock;
+- (void)removeClientAsChannelsRemovalFromGroupObserver;
+
+
 #pragma mark - Channels subscribe/leave observers
 
 /**

@@ -33,6 +33,10 @@
 #import "PNErrorCodes.h"
 #import "PNStructures.h"
 
+#import "PNChannelGroupNamespace.h"
+#import "PNChannelGroupChange.h"
+#import "PNChannelGroup.h"
+#import "PNHereNow.h"
 #import "PNMessage.h"
 #import "PNChannel.h"
 #import "PNClient.h"
@@ -41,6 +45,7 @@
 #import "PNError.h"
 #import "PNDate.h"
 
+#import "PubNub+ChannelRegistry.h"
 #import "PubNub+PresenceEvents.h"
 #import "PubNub+Subscription.h"
 #import "PubNub+Messaging.h"

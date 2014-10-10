@@ -3213,7 +3213,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Check whether we are tried to establish connection and some error occurred there
             if ([self isConnecting]) {
 
-                shouldCloseConnection = [PNBitwiseHelper is:self.state containsBit:PNByUserRequest];
+                shouldCloseConnection = (shouldCloseConnection && ![self canRetryConnection] ? YES : shouldCloseConnection);
                 if (!shouldCloseConnection) {
                     
                     [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR];

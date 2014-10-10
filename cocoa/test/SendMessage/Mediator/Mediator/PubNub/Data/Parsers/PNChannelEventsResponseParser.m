@@ -35,6 +35,16 @@ static NSUInteger const kPNResponseEventsListElementIndex = 0;
 static NSUInteger const kPNResponseChannelsListElementIndex = 2;
 
 /**
+ @brief Stores reference on index under which channels detalization is stored
+ 
+ @discussion In case if under \c kPNResponseChannelsListElementIndex stored list of channel groups, under this index
+ will be stored list of actual channels from channel group at which event fired.
+ 
+ @since 3.6.9
+ */
+static NSUInteger const kPNResponseChannelsDetailsListElementIndex = 3;
+
+/**
  Stores reference on time token element index in response for events.
  */
 static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
@@ -138,37 +148,51 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
             channels = [[responseData objectAtIndex:kPNResponseChannelsListElementIndex]
                     componentsSeparatedByString:@","];
         }
+        
+        // Retrieve list of channel details
+        NSArray *channelDetails = nil;
+        if ([responseData count] > kPNResponseChannelsDetailsListElementIndex) {
+            
+            channelDetails = [[responseData objectAtIndex:kPNResponseChannelsDetailsListElementIndex]
+                              componentsSeparatedByString:@","];
+        }
 
         if ([events count] > 0) {
 
             NSMutableArray *eventObjects = [NSMutableArray arrayWithCapacity:[events count]];
             [events enumerateObjectsUsingBlock:^(id event, NSUInteger eventIdx, BOOL *eventEnumeratorStop) {
 
-                PNChannel *channel = nil;
-                if ([channels count] > 0) {
-
+                PNChannel* (^channelExtractBlock)(NSString *) = ^(NSString *channelName) {
+                    
                     // Retrieve reference on channel on which event is occurred
-                    channel = [PNChannel channelWithName:[channels objectAtIndex:eventIdx]];
-
-                    // Checking whether event occurred on presence observing channel
-                    // or no and retrieve reference on original channel
+                    PNChannel *channel = [PNChannel channelWithName:channelName];
+                    
+                    // Checking whether event occurred on presence observing channel or no and retrieve reference on
+                    // original channel
                     if ([channel isPresenceObserver]) {
-
+                        
                         channel = [(PNChannelPresence *)channel observedChannel];
                     }
-                }
+                    
+                    return channel;
+                };
+                
+                PNChannel *channel = ([channels count] ? channelExtractBlock([channels objectAtIndex:eventIdx]): nil);
+                PNChannel *detailedChannel = ([channelDetails count] ? channelExtractBlock([channelDetails objectAtIndex:eventIdx]): nil);
 
                 id eventObject = nil;
 
                 // Checking whether event presence event or not
                 if ([event isKindOfClass:[NSDictionary class]] && [PNPresenceEvent isPresenceEventObject:event]) {
-
+                    
                     eventObject = [PNPresenceEvent presenceEventForResponse:event];
-                    ((PNPresenceEvent *)eventObject).channel = channel;
+                    ((PNPresenceEvent *)eventObject).channel = (detailedChannel ? detailedChannel : channel);
                 }
                 else {
 
-                    eventObject = [PNMessage messageFromServiceResponse:event onChannel:channel atDate:eventDate];
+                    eventObject = [PNMessage messageFromServiceResponse:event
+                                                              onChannel:(detailedChannel ? detailedChannel : channel)
+                                                                 atDate:eventDate];
                 }
 
                 [eventObjects addObject:eventObject];

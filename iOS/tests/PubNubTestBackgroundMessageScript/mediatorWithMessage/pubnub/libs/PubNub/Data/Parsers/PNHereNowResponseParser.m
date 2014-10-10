@@ -9,9 +9,9 @@
 #import "PNHereNowResponseParser.h"
 #import "PNHereNowResponseParser+Protected.h"
 #import "PNHereNow+Protected.h"
+#import "PNChannel+Protected.h"
 #import "PNClient+Protected.h"
 #import "PNResponse.h"
-#import "PNChannel.h"
 
 
 // ARC check
@@ -110,37 +110,45 @@
 
         self.hereNow = [PNHereNow new];
         NSDictionary *channels = [responseData objectForKey:kPNResponseChannelsKey];
-        if (!channels) {
+        
+        // If there is no "channels" node in response, then probably this is response for single channel requested
+        // by user (we must ensure that there is only one channel in request)
+        if (!channels && [(NSArray *)response.additionalData count] == 1) {
 
-            PNChannel *channel = (PNChannel *)response.additionalData;
-            if (channel.name.length) {
+            // Retrieve reference on channel for which request has been made
+            PNChannel *channel = [(NSArray *)response.additionalData lastObject];
+            
+            // Ensure that channel doesn't represent list channels via channel group feature
+            if (channel && !channel.isChannelGroup) {
                 
-                NSArray *participants = [responseData objectForKey:kPNResponseUUIDKey];
-                channels = @{channel.name: @{kPNResponseUUIDKey: (participants ? participants : @[]),
-                                             kPNResponseOccupancyKey: [responseData objectForKey:kPNResponseOccupancyKey]
-                                             }};
+                NSArray *participantsList = [responseData objectForKey:kPNResponseUUIDKey];
+                NSUInteger participantsCount = 0;
+                if ([responseData objectForKey:kPNResponseOccupancyKey]) {
+                    
+                    participantsCount = [[responseData objectForKey:kPNResponseOccupancyKey] unsignedIntegerValue];
+                }
+                
+                channels = @{channel.name:@{kPNResponseUUIDKey:(participantsList ? participantsList : @[]),
+                                            kPNResponseOccupancyKey: @(participantsCount)}};
             }
         }
-        NSMutableArray *participants = [NSMutableArray array];
         [channels enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelParticipantsInformation,
                                                       BOOL *channelNamesEnumeratorStop) {
 
-            NSMutableArray *participantsInChannel = [[self clientsFromData:[channelParticipantsInformation objectForKey:kPNResponseUUIDKey]
-                                                                forChannel:[PNChannel channelWithName:channelName]] mutableCopy];
-
-            NSUInteger participantsCount = [[channelParticipantsInformation objectForKey:kPNResponseOccupancyKey] unsignedIntValue];
-            NSUInteger differenceInParticipantsCount = participantsCount - [participantsInChannel count];
-            if (differenceInParticipantsCount > 0) {
-
-                for (int i = 0; i < differenceInParticipantsCount; i++) {
-
-                    [participantsInChannel addObject:[PNClient anonymousClientForChannel:[PNChannel channelWithName:channelName]]];
-                }
+            @autoreleasepool {
+                
+                PNChannel *targetChannel = [PNChannel channelWithName:channelName];
+                NSUInteger participantsCount = [[channelParticipantsInformation objectForKey:kPNResponseOccupancyKey] unsignedIntValue];
+                NSArray *participantsInChannel = [self clientsFromData:[channelParticipantsInformation objectForKey:kPNResponseUUIDKey]
+                                                            forChannel:targetChannel];
+                [participantsInChannel enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
+                    
+                    [self.hereNow addParticipant:client forChannel:targetChannel];
+                }];
+                
+                [self.hereNow setParticipantsCount:MAX([participantsInChannel count], participantsCount) forChannel:targetChannel];
             }
-            [participants addObjectsFromArray:participantsInChannel];
         }];
-        self.hereNow.participants = [NSArray arrayWithArray:participants];
-        self.hereNow.participantsCount = [participants count];
     }
 
 
@@ -183,19 +191,15 @@
 
         clientIdentifier = clientInformation;
     }
-
+    
 
     return [PNClient clientForIdentifier:clientIdentifier channel:channel andData:state];
 }
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <participants: %@, participants count: %lu, channel: %@>",
-                    NSStringFromClass([self class]),
-                    self,
-                    self.hereNow.participants,
-                    self.hereNow.participantsCount,
-                    self.hereNow.channel];
+    return [NSString stringWithFormat:@"%@ (%p): <presence information: %@>", NSStringFromClass([self class]), self,
+            self.hereNow];
 }
 
 #pragma mark -

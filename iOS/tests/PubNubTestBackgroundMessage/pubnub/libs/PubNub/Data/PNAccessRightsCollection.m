@@ -161,7 +161,7 @@
 
         if (options.level != PNUserAccessRightsLevel) {
 
-            [self storeChannelAccessRightsInformation:[PNAccessRightsInformation accessRightsInformationForLevel:PNChannelAccessRightsLevel
+            [self storeChannelAccessRightsInformation:[PNAccessRightsInformation accessRightsInformationForLevel:options.level
                                                                 rights:PNNoAccessRights applicationKey:self.applicationKey
                                                             forChannel:channel client:nil accessPeriod:options.accessPeriodDuration]];
         }

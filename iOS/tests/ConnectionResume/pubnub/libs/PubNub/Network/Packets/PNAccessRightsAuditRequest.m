@@ -11,6 +11,7 @@
 #import "PNAccessRightOptions+Protected.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
+#import "PNChannel+Protected.h"
 #import "NSString+PNAddition.h"
 #import "PNConfiguration.h"
 #import "PNHelper.h"
@@ -119,11 +120,13 @@
     if ([self.accessRightOptions.channels count] > 0) {
 
         NSString *channel = [[self.accessRightOptions.channels lastObject] name];
+        BOOL isChannelGroupProvided = ((PNChannel *)[self.accessRightOptions.channels lastObject]).isChannelGroup;
         if ([self.accessRightOptions.channels count] > 1) {
 
             channel = [[self.accessRightOptions.channels valueForKey:@"name"] componentsJoinedByString:@","];
         }
-        [parameters addObject:[NSString stringWithFormat:@"channel=%@", [channel pn_percentEscapedString]]];
+        [parameters addObject:[NSString stringWithFormat:@"%@=%@", (!isChannelGroupProvided ? @"channel" : @"channel-group"),
+                               [channel pn_percentEscapedString]]];
     }
     
     [parameters addObject:[NSString stringWithFormat:@"pnsdk=%@", [self clientInformationField]]];
@@ -165,6 +168,7 @@
     }
 
     NSString *channel = [[self.accessRightOptions.channels lastObject] name];
+    BOOL isChannelGroupProvided = ((PNChannel *)[self.accessRightOptions.channels lastObject]).isChannelGroup;
     if ([self.accessRightOptions.channels count] > 1) {
 
         channel = [[self.accessRightOptions.channels valueForKey:@"name"] componentsJoinedByString:@","];
@@ -172,11 +176,12 @@
 
 
     return [NSString stringWithFormat:@"/v1/auth/audit/sub-key/%@?%@callback=%@_%@%@&pnsdk=%@&timestamp=%lu&signature=%@",
-                    [self.subscriptionKey pn_percentEscapedString],
-                    (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey pn_percentEscapedString]] : @""),
-                    [self callbackMethodName], self.shortIdentifier,
-                    (channel ? [NSString stringWithFormat:@"&channel=%@", [channel pn_percentEscapedString]] : @""),
-                    [self clientInformationField], (unsigned long)[self requestTimestamp], [self PAMSignature]];
+            [self.subscriptionKey pn_percentEscapedString],
+            (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey pn_percentEscapedString]] : @""),
+            [self callbackMethodName], self.shortIdentifier,
+            (channel ? [NSString stringWithFormat:@"&%@=%@", (!isChannelGroupProvided ? @"channel" : @"channel-group"),
+                       [channel pn_percentEscapedString]] : @""),
+            [self clientInformationField], (unsigned long)[self requestTimestamp], [self PAMSignature]];
 }
 
 - (NSString *)debugResourcePath {

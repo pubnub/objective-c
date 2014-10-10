@@ -102,15 +102,30 @@
     // Compose filtering predicate to retrieve list of channels which are not presence observing channels
     NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"isPresenceObserver = NO"];
     NSArray *channelsToLeave = [self.channels filteredArrayUsingPredicate:filterPredicate];
+    NSString *channelsListParameter = nil;
+    NSString *groupsListParameter = nil;
+    if ([channelsToLeave count]) {
+        
+        NSArray *channels = [channelsToLeave filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.isChannelGroup = NO"]];
+        NSArray *groups = [channelsToLeave filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.isChannelGroup = YES"]];
+        if ([channels count]) {
+            
+            channelsListParameter = [[channels valueForKey:@"escapedName"] componentsJoinedByString:@","];
+        }
+        if ([groups count]) {
+            
+            groupsListParameter = [[groups valueForKey:@"escapedName"] componentsJoinedByString:@","];
+        }
+    }
 
 
-    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@&pnsdk=%@",
-                                      [self.subscriptionKey pn_percentEscapedString],
-                                      [[channelsToLeave valueForKey:@"escapedName"] componentsJoinedByString:@","],
-                                      [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-                                      [self callbackMethodName], self.shortIdentifier,
-                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
-                                      [self clientInformationField]];
+    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@%@&pnsdk=%@",
+            [self.subscriptionKey pn_percentEscapedString], (channelsListParameter ? channelsListParameter : @","),
+            [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+            [self callbackMethodName], self.shortIdentifier,
+            (groupsListParameter ? [NSString stringWithFormat:@"&channel-group=%@", groupsListParameter] : @""),
+            ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+            [self clientInformationField]];
 }
 
 - (NSString *)debugResourcePath {
