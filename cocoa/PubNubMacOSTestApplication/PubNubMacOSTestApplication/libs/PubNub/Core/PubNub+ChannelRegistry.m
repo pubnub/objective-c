@@ -401,12 +401,12 @@
 
 #pragma mark - Channel groups request
 
-- (void)requestChannelGroups {
-    
-    [self requestChannelGroupsWithCompletionHandlingBlock:nil];
+- (void)requestDefaultChannelGroups {
+
+    [self requestDefaultChannelGroupsWithCompletionHandlingBlock:nil];
 }
 
-- (void)requestChannelGroupsWithCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock {
+- (void)requestDefaultChannelGroupsWithCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock {
     
     [self requestChannelGroupsForNamespace:nil withCompletionHandlingBlock:handlerBlock];
 }

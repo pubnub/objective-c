@@ -18,7 +18,6 @@
 @end
 
 @interface PNChannelPresenceTest : XCTestCase {
-//	PNChannelPresence *presence;
 	NSString *name;
 	NSString *namePresence;
 }
@@ -29,6 +28,7 @@
 
 -(void)setUp {
     [super setUp];
+    
 	name = @"channel1";
 	namePresence = @"channel1-pnpres";
 }

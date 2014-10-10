@@ -25,7 +25,7 @@
  @code
  PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
  [pubNub connect];
- [pubNub requestChannelGroups];
+ [pubNub requestDefaultChannelGroups];
  @endcode
  
  And handle it with delegates:
@@ -72,14 +72,14 @@
  
  @since 3.6.8
  */
-- (void)requestChannelGroups;
+- (void)requestDefaultChannelGroups;
 
 /**
  Retrieve list of channel groups which has been registered for all application users (identifier by subscription key).
  
  @code
  @endcode
- This method extends \a -requestChannelGroups and allow to specify groups request process state change handler block.
+ This method extends \a -requestDefaultChannelGroups and allow to specify groups request process state change handler block.
  
  @code
  @endcode
@@ -88,7 +88,7 @@
  @code
  PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
  [pubNub connect];
- [pubNub requestChannelGroupsWithCompletionHandlingBlock:^(NSString *nspace, NSArray *groups, PNError *error) {
+ [pubNub requestDefaultChannelGroupsWithCompletionHandlingBlock:^(NSString *nspace, NSArray *groups, PNError *error) {
  
      if (!error) {
      
@@ -156,14 +156,14 @@
  
  @since 3.6.8
  */
-- (void)requestChannelGroupsWithCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;
+- (void)requestDefaultChannelGroupsWithCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;
 
 /**
  Retrieve list of channel groups which has been registered for all application users (identifier by subscription key).
  
  @code
  @endcode
- This method extends \a -requestChannelGroups and allow to specify concrete namespace from which channel groups should be retrieved.
+ This method extends \a -requestDefaultChannelGroups and allow to specify concrete namespace from which channel groups should be retrieved.
  
  @code
  @endcode

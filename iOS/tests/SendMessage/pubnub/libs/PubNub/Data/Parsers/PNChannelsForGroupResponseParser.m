@@ -6,24 +6,9 @@
 //  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
-#import "PNChannelsForGroupResponseParser.h"
+#import "PNChannelsForGroupResponseParser+Protected.h"
 #import "PNChannelGroup+Protected.h"
 #import "PNResponse+Protected.h"
-
-
-#pragma mark Private interface declaration
-
-@interface PNChannelsForGroupResponseParser ()
-
-
-#pragma mark - Properties
-
-@property (nonatomic, strong) NSArray *channels;
-
-#pragma mark -
-
-
-@end
 
 
 #pragma mark - Public interface implementation
@@ -44,10 +29,10 @@
 + (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
     
     // Checking base requirement about payload data type.
-    BOOL conforms = [response.response isKindOfClass:[NSArray class]];
+    BOOL conforms = [response.response isKindOfClass:[NSDictionary class]];
     
     
-    return conforms;
+    return (conforms ? [[response.response valueForKey:kPNResponseChanelsKey] isKindOfClass:[NSArray class]] : conforms);
 }
 
 
@@ -58,7 +43,7 @@
     // Check whether initialization successful or not
     if ((self = [super init])) {
         
-        self.channels = ([response.response count] ? [PNChannel channelsWithNames:response.response] : @[]);
+        self.channels = [response.response valueForKey:kPNResponseChanelsKey];
     }
     
     
