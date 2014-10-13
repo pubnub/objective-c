@@ -20,6 +20,7 @@ static NSString *kSecretKey = @"mySecret";
     dispatch_group_t _resGroup3;
     dispatch_group_t _resGroup4;
     dispatch_group_t _resGroup5;
+    dispatch_group_t _resGroup6;
     
     NSString *_namespaceName;
     NSString *_groupName;
@@ -51,7 +52,7 @@ static NSString *kSecretKey = @"mySecret";
                                        inNamespace:_namespaceName
                              shouldObservePresence:NO];
     
-    _channels = [PNChannel channelsWithNames:@[@"iko1", @"iko2"]];
+    _channels = [PNChannel channelsWithNames:@[@"test_ios_channel_1", @"test_ios_channel_2"]];
 }
 
 - (void)tearDown {
@@ -116,11 +117,15 @@ static NSString *kSecretKey = @"mySecret";
     _resGroup3 = NULL;
 }
 
-#warning will be updated before release 3.6.8.
-
-- (void)testRequestChannelGroups {
+- (void)testRequestDefaultChannelGroups {
         
     _resGroup4 = dispatch_group_create();
+    
+    _group1 = [PNChannelGroup channelGroupWithName:_groupName
+                                       inNamespace:nil
+                             shouldObservePresence:NO];
+    
+    _channels = [PNChannel channelsWithNames:@[@"test_ios_channel_1", @"test_ios_channel_2"]];
     
     // add test channels to group
     [_pubNub addChannels:_channels toGroup:_group1];
@@ -128,7 +133,7 @@ static NSString *kSecretKey = @"mySecret";
     // 3.2.2 Request list of all groups
     dispatch_group_enter(_resGroup4);
     
-    [_pubNub requestChannelGroups];
+    [_pubNub requestDefaultChannelGroups];
     
     if ([GCDWrapper isGroup:_resGroup4 timeoutFiredValue:5]) {
         XCTFail(@"Timeout fired. Didn't receive list of channel groups with delegates");
@@ -159,15 +164,22 @@ static NSString *kSecretKey = @"mySecret";
 }
 
 // 4. Remove channels, group, namespace with delegate
-- (void)t1estRemoveChannelGroups {
+- (void)testRemoveChannelGroups {
+    
+    _resGroup6 = dispatch_group_create();
     
     // 4.1 Remove channels from group (have to started delegate method)
-    _channels = [PNChannel channelsWithNames:@[@"iko1", @"iko2"]];
+    _channels = [PNChannel channelsWithNames:@[@"test_channel_ios1", @"test_channel_ios2"]];
     
-    dispatch_group_enter(_resGroup3);
-    [_pubNub removeChannels:_channels fromGroup:_group1];
-    if ([GCDWrapper isGroup:_resGroup3 timeoutFiredValue:5]) {
+    dispatch_group_enter(_resGroup6);
+    
+    [_pubNub removeChannels:_channels
+                  fromGroup:_group1];
+    
+    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:5]) {
         XCTFail(@"!!! Timeout fired. Didn't receive delegates call about remove channels from group");
+        dispatch_group_leave(_resGroup6);
+        return;
     }
     
 //    // 4.2 Remove group with delegate (have to started delegate method)
@@ -178,11 +190,15 @@ static NSString *kSecretKey = @"mySecret";
 //    }
 
     // 4.3 Remove namespace with delegate (have to started delegate method)
-    dispatch_group_enter(_resGroup3);
+    dispatch_group_enter(_resGroup6);
+    
     [_pubNub removeChannelGroupNamespace:_namespaceName];
-    if ([GCDWrapper isGroup:_resGroup3 timeoutFiredValue:5]) {
+    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:5]) {
         XCTFail(@"!!! Timeout fired. Didn't receive delegates call about remove nameSpace");
+        dispatch_group_leave(_resGroup6);
     }
+    
+    _resGroup6 = NULL;
 }
 
 #pragma mark - PubNub Delegate
@@ -312,22 +328,25 @@ static NSString *kSecretKey = @"mySecret";
 // _3.3.1 Request channels for group (did) ???
 - (void)pubnubClient:(PubNub *)client didReceiveChannelsForGroup:(PNChannelGroup *)group {
     
-    
-    for(NSArray *channel in group.channels){
-        NSLog(@"!!! Did resive channel: %@ in group: %@", channel, group.name);
+    if (_resGroup1 != NULL) {
+        dispatch_group_leave(_resGroup1);
     }
     
-    NSLog(@"!!! Did resive channels for group: %@", group.name);
-    dispatch_group_leave(_resGroup1);
+    if (_resGroup5 != NULL) {
+        dispatch_group_leave(_resGroup5);
+    }
 }
 
 // _3.3.2 Request channels for group
 - (void)pubnubClient:(PubNub *)client channelsForGroupRequestDidFailWithError:(PNError *)error {
-    if (error) {
+    
+    if (_resGroup1 != NULL) {
         XCTFail(@"PubNub client did fail to receive channels for group: %@", error);
+        dispatch_group_leave(_resGroup1);
     }
     
     if (_resGroup5 != NULL) {
+        XCTFail(@"PubNub client did fail to receive channels for group: %@", error);
         dispatch_group_leave(_resGroup5);
     }
 }
@@ -336,10 +355,14 @@ static NSString *kSecretKey = @"mySecret";
 
 // _4.1.1 Remove channels from group (did)
 - (void)pubnubClient:(PubNub *)client didRemoveChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group {
-    for(NSArray *channel in channels){
-        NSLog(@"!!! Did remove channel: %@ from group: %@", channel, group);
+    
+    if (_resGroup6 != NULL) {
+        dispatch_group_leave(_resGroup6);
     }
-    dispatch_group_leave(_resGroup1);
+    
+    if (_resGroup1 != NULL) {
+        dispatch_group_leave(_resGroup1);
+    }
 }
 
 // _4.1.2 Remove channels from group (fail)
@@ -367,16 +390,28 @@ static NSString *kSecretKey = @"mySecret";
 
 // 4.3.1 Remove namespace (did)
 - (void)pubnubClient:(PubNub *)client didRemoveNamespace:(NSString *)nspace {
-    NSLog(@"!!! Did remove namespace: %@", nspace);
-    dispatch_group_leave(_resGroup1);
+    
+    if (_resGroup1 != NULL) {
+        dispatch_group_leave(_resGroup1);
+    }
+    
+    if (_resGroup6 != NULL) {
+        dispatch_group_leave(_resGroup6);
+    }
 }
 
 // 4.3.2 Remove namespace (fail)
 - (void)pubnubClient:(PubNub *)client namespaceRemovalDidFailWithError:(PNError *)error {
-    if (error) {
-        XCTFail(@"!!! PubNub client did fail to remove namespace: %@", error);
+    
+    if (_resGroup1 != NULL) {
+        XCTFail(@"PubNub client did fail to remove namespace: %@", error);
+        dispatch_group_leave(_resGroup1);
     }
-    dispatch_group_leave(_resGroup1);
+    
+    if (_resGroup6 != NULL) {
+        XCTFail(@"PubNub client did fail to remove namespace: %@", error);
+        dispatch_group_leave(_resGroup6);
+    }
 }
 
 @end

@@ -157,25 +157,28 @@ static NSString *kSecretKey = @"mySecret";
         }
 }
 
-#warning Knowing issue - will be fixed before 3.6.8 release
-
 // 2.3 Request list of all groups with block ???
-- (void)testRequestChannelGroups {
-    
-    [_pubNub addChannels:_channels toGroup:_group1];
-    sleep(5);
+- (void)testRequestDefaultChannelGroups {
     
     _resGroup4 = dispatch_group_create();
     dispatch_group_enter(_resGroup4);
-
-    [_pubNub requestChannelGroupsWithCompletionHandlingBlock:^(NSString *nameSpace, NSArray *groups, PNError *error) {
+    
+    _group1 = [PNChannelGroup channelGroupWithName:_groupName
+                                       inNamespace:nil
+                             shouldObservePresence:NO];
+    
+    _channels = [PNChannel channelsWithNames:@[@"test_ios_channel_1", @"test_ios_channel_2"]];
+    
+    [_pubNub addChannels:_channels toGroup:_group1];
+    
+    [_pubNub requestDefaultChannelGroupsWithCompletionHandlingBlock:^(NSString *nameSpace, NSArray *groups, PNError *error) {
         if (_resGroup4 != NULL) {
             
             if (error == nil) {
                 BOOL res = NO;
                 
-                for (NSArray *group in groups) {
-                    if ([group isEqual:_group1]) {
+                for (PNChannelGroup *group in groups) {
+                    if ([group.name isEqualToString:_group1.name]) {
                         res = YES;
                         break;
                     }
@@ -185,33 +188,46 @@ static NSString *kSecretKey = @"mySecret";
                     XCTFail(@"Cannot find test group.");
                 }
             } else {
-                XCTFail(@"PubNub client did fail to receive groups from the namespace");
+                XCTFail(@"PubNub client did fail to receive groups from the namespace: %@", error);
             }
             
             dispatch_group_leave(_resGroup4);
         }
     }];
     
-    if ([GCDWrapper isGroup:_resGroup4 timeoutFiredValue:5]) {
+    if ([GCDWrapper isGroup:_resGroup4 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive list of all groups with completion block");
+        dispatch_group_leave(_resGroup4);
     }
+    
+    _resGroup4 = NULL;
 }
-
 
 // 2.4 Request list of channels for group with block ???
 - (void)testRequestChannelsForGroup {
-
-    [_pubNub addChannels:_channels toGroup:_group1];
     
     _resGroup5 = dispatch_group_create();
     dispatch_group_enter(_resGroup5);
 
+    [_pubNub addChannels:_channels toGroup:_group1];
+    
     [_pubNub requestChannelsForGroup:_group1 withCompletionHandlingBlock:^(PNChannelGroup *group, PNError *error) {
         if (_resGroup5 != NULL) {
             
             if (error == nil) {
                 XCTAssert([group isEqual:_group1], @"Received group is wrong: %@ <> %@", group, _group1);
-                XCTAssert([group.channels isEqual:_channels], @"Received array channels is wrong: %@ <> %@", group.channels, _channels);
+                
+                NSUInteger equalChannelsCounter = 0;
+                for (NSString *channelName in group.channels) {
+                    for (PNChannel *channel in _channels) {
+                        if ([channelName isEqualToString:channel.name]) {
+                            equalChannelsCounter += 1;
+                        }
+                    }
+                }
+                
+                XCTAssert(equalChannelsCounter == [_channels count], @"Cannot find all channels here.");
+                
             } else {
                 XCTFail(@"PubNub client did fail to receive channels from the group: %@", error);
             }
