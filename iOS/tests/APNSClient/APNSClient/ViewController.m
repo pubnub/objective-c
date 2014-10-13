@@ -97,9 +97,9 @@
                                                                           format:NSPropertyListXMLFormat_v1_0 options:NSProprietaryStringEncoding error:NULL];
                 
                 NSString *message = [NSString stringWithFormat:@"%@", data];
-//                message = @"afdsfsdafsdfsdfasdfsdfsdafsadfsadfsdfsdf\
-//                afsdfsdfsdfsdfsfasfafdsfsdafsadfsdfsdfsadfsadfsadfsadf\
-//                afsadfsdafsdfsdfasfsafsadfsafsadfsfsfsfsdfsdfsadfasdfs";
+                message = @"afdsfsdafsdfsdfasdfsdfsdafsadfsadfsdfsdf\
+                afsdfsdfsdfsdfsfasfafdsfsdafsadfsdfsdfsadfsadfsadfsadf\
+                afsadfsdafsdfsdfasfsafsadfsafsadfsfsfsfsdfsdfsadfasdfs";
                 
 //                NSLog(@"Data size: %luKb", (unsigned long)[data length]/1024);
                 NSLog(@"Data size: %luKb", (unsigned long)[message lengthOfBytesUsingEncoding:NSUTF8StringEncoding]/1024);
@@ -139,6 +139,11 @@
     }];
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self withBlock:^(PNMessage *message) {
         NSLog(@"OBSERVER: Channel: %@, Message: %@", message.channel.name, message.message);
+        
+        [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"APNS in channel: %@", message.channel.name] message:message.message
+                                  delegate:nil cancelButtonTitle:@"Ok"
+                          otherButtonTitles:nil] show];
+        
     }];
     
     // #7 Add an observer to catch when push notifications are enabled. (optional)
