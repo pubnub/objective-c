@@ -45,6 +45,11 @@
 #pragma mark - Instance methods
 
 /**
+ Update main button parameters.
+ */
+- (void)update;
+
+/**
  Allow to highlight button after user touched it (in other case button will look like deselected).
  */
 - (void)highlight;

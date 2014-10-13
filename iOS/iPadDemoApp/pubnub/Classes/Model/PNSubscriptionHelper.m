@@ -108,8 +108,9 @@
 
 - (void)reset {
     
+    [self.states removeAllObjects];
     [self.channels removeAllObjects];
-    [self.channels removeAllObjects];
+    [self.presenceObservation removeAllObjects];
 }
 
 #pragma mark -

@@ -106,10 +106,10 @@
         [((PNNumberBadgeView *)self.accessoryView) updateIntegerBadgeValueTo:0];
     }
     
-    if ([object isKindOfClass:[PNChannelGroup class]]) {
+    if ([object isKindOfClass:[PNChannelGroup class]] || [object isKindOfClass:[PNChannelGroupNamespace class]]) {
         
-        self.textLabel.text = [NSString stringWithFormat:@"%@ (CG)",
-                               object.name];
+        self.textLabel.text = [NSString stringWithFormat:@"%@ %@",
+                               object.name, ([object isKindOfClass:[PNChannelGroupNamespace class]] ? @"(NS)" : @"(CG)")];
     }
     else {
         

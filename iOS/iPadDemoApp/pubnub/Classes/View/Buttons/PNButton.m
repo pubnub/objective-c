@@ -18,13 +18,7 @@
 
 #pragma mark - Instance methods
 
-/**
- Update main button parameters.
- */
-- (void)update;
-
 - (void)makeHighlighted;
-
 
 #pragma mark -
 

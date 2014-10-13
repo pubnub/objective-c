@@ -18,6 +18,7 @@
 #import "NSObject+PNAdditions.h"
 #import "PNServiceChannel.h"
 #import "PubNub+Protected.h"
+#import "PNNotifications.h"
 #import "PNHelper.h"
 
 #import "PNLogger+Protected.h"
