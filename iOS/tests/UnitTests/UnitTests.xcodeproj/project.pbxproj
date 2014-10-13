@@ -73,6 +73,8 @@
 		96CB6AA019D19A6B0093D64E /* PubNubInvocationStorageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A6B19D19A6B0093D64E /* PubNubInvocationStorageTest.m */; };
 		96CB6AA119D19A6B0093D64E /* PNConfigurationChangeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A6D19D19A6B0093D64E /* PNConfigurationChangeTest.m */; };
 		96CB6AA519D19BAD0093D64E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CB6AA419D19BAD0093D64E /* XCTest.framework */; };
+		96E0446719EC064500A4C18A /* ChannelGroupPAMTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E0446619EC064500A4C18A /* ChannelGroupPAMTest.m */; };
+		96E0446919EC3A1B00A4C18A /* ChannelGroupSubscriptionInstanceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E0446819EC3A1B00A4C18A /* ChannelGroupSubscriptionInstanceTest.m */; };
 		96E9B30B19E8380500362A9D /* ChannelGroupSubscriptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E9B30A19E8380500362A9D /* ChannelGroupSubscriptionTest.m */; };
 		A519BB2C19E2DA4D0095FD54 /* PNObservationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = A519BA1619E2DA4C0095FD54 /* PNObservationCenter.m */; };
 		A519BB2D19E2DA4D0095FD54 /* PubNub+APNS.m in Sources */ = {isa = PBXBuildFile; fileRef = A519BA1819E2DA4C0095FD54 /* PubNub+APNS.m */; };
@@ -288,6 +290,8 @@
 		96CB6A6B19D19A6B0093D64E /* PubNubInvocationStorageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNubInvocationStorageTest.m; sourceTree = "<group>"; };
 		96CB6A6D19D19A6B0093D64E /* PNConfigurationChangeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConfigurationChangeTest.m; sourceTree = "<group>"; };
 		96CB6AA419D19BAD0093D64E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		96E0446619EC064500A4C18A /* ChannelGroupPAMTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelGroupPAMTest.m; sourceTree = "<group>"; };
+		96E0446819EC3A1B00A4C18A /* ChannelGroupSubscriptionInstanceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelGroupSubscriptionInstanceTest.m; sourceTree = "<group>"; };
 		96E9B30A19E8380500362A9D /* ChannelGroupSubscriptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelGroupSubscriptionTest.m; sourceTree = "<group>"; };
 		A519BA1419E2DA4C0095FD54 /* PNObservationCenter+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNObservationCenter+Protected.h"; sourceTree = "<group>"; };
 		A519BA1519E2DA4C0095FD54 /* PNObservationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObservationCenter.h; sourceTree = "<group>"; };
@@ -1202,9 +1206,11 @@
 		A519BB9219E2DA8A0095FD54 /* 3.6.8 Channel Group tests */ = {
 			isa = PBXGroup;
 			children = (
+				96E0446819EC3A1B00A4C18A /* ChannelGroupSubscriptionInstanceTest.m */,
 				A519BB9319E2DAAD0095FD54 /* ChannelGroupTest.m */,
 				A5C8E81E19E66B3700673238 /* ChannelGroupBlockTest.m */,
 				96E9B30A19E8380500362A9D /* ChannelGroupSubscriptionTest.m */,
+				96E0446619EC064500A4C18A /* ChannelGroupPAMTest.m */,
 			);
 			path = "3.6.8 Channel Group tests";
 			sourceTree = "<group>";
@@ -1449,6 +1455,7 @@
 				96CB6A8419D19A6B0093D64E /* PNCryptoHelperTest.m in Sources */,
 				96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */,
 				96CB6A8019D19A6B0093D64E /* PNChannelPresenceTest.m in Sources */,
+				96E0446919EC3A1B00A4C18A /* ChannelGroupSubscriptionInstanceTest.m in Sources */,
 				96CB6A9819D19A6B0093D64E /* PNServiceChannelTest.m in Sources */,
 				96CB6A9119D19A6B0093D64E /* PNMessagingChannelTest.m in Sources */,
 				96CB6A7419D19A6B0093D64E /* NSString+PNAdditionTest.m in Sources */,
@@ -1456,6 +1463,7 @@
 				96CB6A9F19D19A6B0093D64E /* HugeCompressedMessageTest.m in Sources */,
 				96CB6A9719D19A6B0093D64E /* PNResponseTest.m in Sources */,
 				96CB6A7719D19A6B0093D64E /* PNAccessRightOptionsTest.m in Sources */,
+				96E0446719EC064500A4C18A /* ChannelGroupPAMTest.m in Sources */,
 				96CB6A8819D19A6B0093D64E /* PNErrorTest.m in Sources */,
 				96CB6A0919D01F210093D64E /* GCDWrapper.m in Sources */,
 				96CB6A9019D19A6B0093D64E /* PNMessageTest.m in Sources */,

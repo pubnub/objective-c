@@ -597,7 +597,7 @@
 
 - (void)removeChannelGroupNamespace:(NSString *)nspace withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock {
     
-    [self removeChannelGroupNamespace:nspace reschedulingMethodCall:NO withCompletionHandlingBlock:nil];
+    [self removeChannelGroupNamespace:nspace reschedulingMethodCall:NO withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)removeChannelGroupNamespace:(NSString *)nspace reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -684,7 +684,7 @@
 
 - (void)removeChannelGroup:(PNChannelGroup *)group withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock {
     
-    [self removeChannelGroup:group reschedulingMethodCall:NO withCompletionHandlingBlock:nil];
+    [self removeChannelGroup:group reschedulingMethodCall:NO withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)   removeChannelGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
