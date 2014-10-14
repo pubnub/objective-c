@@ -13,6 +13,7 @@
 #import "PNAccessRightsView.h"
 #import "NSString+PNLocalization.h"
 #import "PNConfigurationDelegate.h"
+#import "PNChannelRegistryView.h"
 #import "PNChannelPresenceView.h"
 #import "PNGlobalPresenceView.h"
 #import "PNClientChannelsView.h"
@@ -223,106 +224,169 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
 
 #pragma mark - Handler methods
 
+- (void)addChannelGroupChannels:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupChannelsAdd] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                          animated:YES];
+}
+
+- (void)removeChannelGroupChannels:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupChannelsRemove] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                             animated:YES];
+}
+
+- (void)fetchChannelGroupChannels:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupChannelsAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                            animated:YES];
+}
+
+- (void)removeChannelGroup:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupRemove] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                     animated:YES];
+}
+
+- (void)fetchChannelGroups:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                    animated:YES];
+}
+
+- (void)removeChannelGroupNamespace:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForNamespaceRemove] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                  animated:YES];
+}
+
+- (void)fetchChannelGroupNamespaces:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForNamespaceAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                 animated:YES];
+}
+
 - (void)globalParticipantsList:(id)sender {
     
-    PNGlobalPresenceView *globalPresenceView = [PNGlobalPresenceView viewFromNib];
-    [globalPresenceView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNGlobalPresenceView viewFromNib] showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
 - (void)channelParticipantsList:(id)sender {
     
-    PNChannelPresenceView *channelPresence = [PNChannelPresenceView viewFromNib];
-    [channelPresence showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNChannelPresenceView viewFromNib] showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
 - (void)channelGroupParticipantsList:(id)sender {
     
-    PNChannelPresenceView *channelGroupPresence = [PNChannelPresenceView viewFromNibForChannelGroup];
-    [channelGroupPresence showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNChannelPresenceView viewFromNibForChannelGroup] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                               animated:YES];
 }
 
 - (void)clientChannelsList:(id)sender {
     
-    PNClientChannelsView *clientChannels = [PNClientChannelsView viewFromNib];
-    [clientChannels showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNClientChannelsView viewFromNib] showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
 - (void)fetchFullHistory:(id)sender {
     
-    PNChannelHistoryView *historyView = [PNChannelHistoryView viewFromNibForFullChannelHistory];
-    [historyView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNChannelHistoryView viewFromNibForFullChannelHistory] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                    animated:YES];
 }
 
 - (void)fetchHistory:(id)sender {
     
-    PNChannelHistoryView *historyView = [PNChannelHistoryView viewFromNibForChannelHistory];
-    [historyView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNChannelHistoryView viewFromNibForChannelHistory] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                animated:YES];
 }
 
 - (void)grantApplicationAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForApplicationGrant];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForApplicationGrant] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                animated:YES];
 }
 
 - (void)grantChannelAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForChannelGrant];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelGrant] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                            animated:YES];
 }
 
 - (void)grantChannelGroupAccessRights:(id)sender {
     
+    [[PNAccessRightsView viewFromNibForChannelGroupGrant] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                 animated:YES];
 }
 
-- (void)grantUserAccessRights:(id)sender {
+- (void)grantUserAccessRightsOnChannel:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForUserGrant];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForUserGrantOnChannel] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                  animated:YES];
+}
+
+- (void)grantUserAccessRightsOnChannelGroup:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserGrantOnChannelGroup] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                       animated:YES];
 }
 
 - (void)revokeApplicationAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForApplicationRevoke];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForApplicationRevoke] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                 animated:YES];
 }
 
 - (void)revokeChannelAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForChannelRevoke];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelRevoke] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                             animated:YES];
 }
 
 - (void)revokeChannelGroupAccessRights:(id)sender {
     
+    [[PNAccessRightsView viewFromNibForChannelGroupRevoke] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                  animated:YES];
 }
 
-- (void)revokeUserAccessRights:(id)sender {
+- (void)revokeUserAccessRightsOnChannel:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForUserRevoke];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForUserRevokeOnChannel] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                   animated:YES];
+}
+
+- (void)revokeUserAccessRightsOnChannelGroup:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserRevokeOnChannelGroup] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                        animated:YES];
 }
 
 - (void)auditApplicationAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForApplicationAudit];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForApplicationAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                animated:YES];
 }
 
 - (void)auditChannelAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForChannelAudit];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                            animated:YES];
 }
 
 - (void)auditChannelGroupAccessRights:(id)sender {
     
+    [[PNAccessRightsView viewFromNibForChannelGroupAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                 animated:YES];
 }
 
-- (void)auditUserAccessRights:(id)sender {
+- (void)auditUserAccessRightsOnChannel:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForUserAudit];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForUserAuditOnChannel] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                  animated:YES];
+}
+
+- (void)auditUserAccessRightsOnChannelGroup:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserAuditOnChannelGroup] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                       animated:YES];
 }
 
 - (void)enablePushNotifications:(id)sender {

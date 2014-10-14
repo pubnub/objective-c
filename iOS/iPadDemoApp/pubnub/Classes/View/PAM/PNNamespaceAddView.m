@@ -1,12 +1,12 @@
 //
-//  PNClientIdentifierAddView.m
+//  PNNamespaceAddView.m
 //  pubnub
 //
-//  Created by Sergey Mamontov on 4/7/14.
+//  Created by Sergey Mamontov on 10/12/14.
 //  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
-#import "PNClientIdentifierAddView.h"
+#import "PNNamespaceAddView.h"
 #import "NSString+PNAddition.h"
 #import "UIView+PNAddition.h"
 #import "PNButton.h"
@@ -20,7 +20,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Private interface delcaration
 
-@interface PNClientIdentifierAddView () <UITextFieldDelegate>
+@interface PNNamespaceAddView () <UITextFieldDelegate>
 
 
 #pragma mark - Properties
@@ -33,7 +33,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 /**
  Stores reference on text field which allow user to input new identifier.
  */
-@property (nonatomic, pn_desired_weak) IBOutlet UITextField *clientIdentifierTextField;
+@property (nonatomic, pn_desired_weak) IBOutlet UITextField *namespaceNameTextField;
 
 
 #pragma mark - Instance methods
@@ -54,7 +54,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Public interface implementation
 
-@implementation PNClientIdentifierAddView
+@implementation PNNamespaceAddView
 
 
 #pragma mark - Instance methods
@@ -79,7 +79,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (void)updateLayout {
     
-    self.addButton.enabled = (self.clientIdentifierTextField.text && ![self.clientIdentifierTextField.text pn_isEmpty]);
+    self.addButton.enabled = (self.namespaceNameTextField.text && ![self.namespaceNameTextField.text pn_isEmpty]);
 }
 
 
@@ -87,7 +87,8 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (IBAction)handleAddButtonTap:(id)sender {
     
-    [self.delegate identifierView:self didEndClientIdentifierInput:self.clientIdentifierTextField.text];
+    [self.delegate namespaceView:self
+            didEndNamespaceInput:[PNChannelGroupNamespace namespaceWithName:self.namespaceNameTextField.text]];
 }
 
 - (IBAction)handleCloseButtonTap:(id)sender {
@@ -98,7 +99,8 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - UITextField delegate methods
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+- (BOOL)  textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
+  replacementString:(NSString *)string {
     
     [self updateLayout];
     

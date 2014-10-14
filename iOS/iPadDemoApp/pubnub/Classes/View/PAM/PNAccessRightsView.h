@@ -22,7 +22,7 @@
  @param information
  Stores reference on instance which represent access rights target and mode.
  */
-+ (instancetype)viewFrromNibForAccessRightsInformation:(PNAccessRightsInformation *)information;
++ (instancetype)viewFromNibForAccessRightsInformation:(PNAccessRightsInformation *)information;
 
 /**
  Retrieve reference on initialized view which is suitable application access rights audition.
@@ -67,25 +67,67 @@
 + (instancetype)viewFromNibForChannelRevoke;
 
 /**
+ Retrieve reference on initialized view which is suitable channel group / namespace access rights audition.
+ 
+ @return Configured and ready to use view.
+ */
++ (instancetype)viewFromNibForChannelGroupAudit;
+
+/**
+ Retrieve reference on initialized view which is suitable channel group / namespace access rights change.
+ 
+ @return Configured and ready to use view.
+ */
++ (instancetype)viewFromNibForChannelGroupGrant;
+
+/**
+ Retrieve reference on initialized view which is suitable channel group / namespace access rights revoke.
+ 
+ @return Configured and ready to use view.
+ */
++ (instancetype)viewFromNibForChannelGroupRevoke;
+
+/**
  Retrieve reference on initialized view which is suitable user access rights audition.
  
  @return Configured and ready to use view.
  */
-+ (instancetype)viewFromNibForUserAudit;
++ (instancetype)viewFromNibForUserAuditOnChannel;
 
 /**
  Retrieve reference on initialized view which is suitable user access rights change.
  
  @return Configured and ready to use view.
  */
-+ (instancetype)viewFromNibForUserGrant;
++ (instancetype)viewFromNibForUserGrantOnChannel;
 
 /**
  Retrieve reference on initialized view which is suitable user access rights revoke.
  
  @return Configured and ready to use view.
  */
-+ (instancetype)viewFromNibForUserRevoke;
++ (instancetype)viewFromNibForUserRevokeOnChannel;
+
+/**
+ Retrieve reference on initialized view which is suitable user access rights audition.
+ 
+ @return Configured and ready to use view.
+ */
++ (instancetype)viewFromNibForUserAuditOnChannelGroup;
+
+/**
+ Retrieve reference on initialized view which is suitable user access rights change.
+ 
+ @return Configured and ready to use view.
+ */
++ (instancetype)viewFromNibForUserGrantOnChannelGroup;
+
+/**
+ Retrieve reference on initialized view which is suitable user access rights revoke.
+ 
+ @return Configured and ready to use view.
+ */
++ (instancetype)viewFromNibForUserRevokeOnChannelGroup;
 
 #pragma mark -
 
