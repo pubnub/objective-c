@@ -9,7 +9,12 @@
 #import "PNBaseRequest.h"
 
 
-#pragma mark Public interface declaration
+#pragma mark Class forward
+
+@class PNChannelGroup;
+
+
+#pragma mark - Public interface declaration
 
 @interface PNChannelGroupRemoveRequest : PNBaseRequest
 

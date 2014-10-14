@@ -87,7 +87,7 @@
                           changed.
  @param accessPeriod      Duration in minutes during which provided access rights should be active for provided objects.
  
- @since <#version number#>
+ @since 3.6.8
  */
 - (void)changeAccessRightsFor:(NSArray *)channelObjects accessRights:(PNAccessRights)accessRights
             authorizationKeys:(NSArray *)authorizationKeys onPeriod:(NSInteger)accessPeriod;

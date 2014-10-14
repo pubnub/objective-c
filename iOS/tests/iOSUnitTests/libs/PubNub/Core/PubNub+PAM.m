@@ -1010,8 +1010,8 @@
 - (void) auditAccessRightsFor:(NSArray *)channelObjects
   withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
     
-    [self auditAccessRightsForObjects:channelObjects clients:nil reschedulingMethodCall:NO
-          withCompletionHandlingBlock:handlerBlock];
+    [self auditAccessRightsFor:channelObjects clients:nil reschedulingMethodCall:NO
+   withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)auditAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys {
@@ -1033,13 +1033,13 @@
 - (void)auditAccessRightsFor:(id <PNChannelProtocol>)object clients:(NSArray *)clientsAuthorizationKeys
  withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
     
-    [self auditAccessRightsForObjects:(object ? @[object] : nil) clients:clientsAuthorizationKeys
-               reschedulingMethodCall:NO withCompletionHandlingBlock:handlerBlock];
+    [self auditAccessRightsFor:(object ? @[object] : nil) clients:clientsAuthorizationKeys reschedulingMethodCall:NO
+   withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)auditAccessRightsForObjects:(NSArray *)channelObjects clients:(NSArray *)clientsAuthorizationKeys
-              reschedulingMethodCall:(BOOL)isMethodCallRescheduled
-         withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+- (void)auditAccessRightsFor:(NSArray *)channelObjects clients:(NSArray *)clientsAuthorizationKeys
+      reschedulingMethodCall:(BOOL)isMethodCallRescheduled
+ withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
@@ -1114,16 +1114,15 @@
                    return @[PNLoggerSymbols.api.postponeAccessRightsAudit, [self humanReadableStateFrom:self.state]];
                }];
 
-               [self postponeAuditAccessRightsForObjects:channelObjects clients:clientsAuthorizationKeys
-                                   reschedulingMethodCall:isMethodCallRescheduled
-                              withCompletionHandlingBlock:handlerBlock];
+               [self postponeAuditAccessRightsFor:channelObjects clients:clientsAuthorizationKeys
+                           reschedulingMethodCall:isMethodCallRescheduled withCompletionHandlingBlock:handlerBlock];
            }];
 }
 
-- (void)postponeAuditAccessRightsForObjects:(NSArray *)channelObjects clients:(NSArray *)clientsAuthorizationKeys
-                     reschedulingMethodCall:(BOOL)isMethodCallRescheduled withCompletionHandlingBlock:(id)handlerBlock {
+- (void)postponeAuditAccessRightsFor:(NSArray *)channelObjects clients:(NSArray *)clientsAuthorizationKeys
+              reschedulingMethodCall:(BOOL)isMethodCallRescheduled withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL selector = @selector(auditAccessRightsForObjects:clients:reschedulingMethodCall:withCompletionHandlingBlock:);
+    SEL selector = @selector(auditAccessRightsFor:clients:reschedulingMethodCall:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:selector forObject:self
             withParameters:@[channelObjects, clientsAuthorizationKeys, @(isMethodCallRescheduled),
@@ -1283,8 +1282,8 @@
                 return @[PNLoggerSymbols.api.rescheduleAccessRightsAudit, [self humanReadableStateFrom:self.state]];
             }];
 
-            [self auditAccessRightsForObjects:rightsInformation.channels clients:rightsInformation.clientsAuthorizationKeys
-                       reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
+            [self auditAccessRightsFor:rightsInformation.channels clients:rightsInformation.clientsAuthorizationKeys
+                reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
         }];
     }
 }

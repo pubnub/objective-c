@@ -14,7 +14,7 @@
 /**
  @brief Reference on key under which list of channel group channels is stored
  
- @since <#version number#>
+ @since 3.6.8
  */
 static NSString * const kPNResponseChanelsKey = @"channels";
 

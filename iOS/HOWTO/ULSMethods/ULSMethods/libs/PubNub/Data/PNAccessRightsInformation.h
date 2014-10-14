@@ -7,6 +7,7 @@
 //
 
 #import "PNStructures.h"
+#import "PNChannelProtocol.h"
 
 
 #pragma mark Public interface declaration
@@ -37,7 +38,15 @@
 
  @note This property will be set only if \a level is set to: \a PNChannelAccessRightsLevel or \a PNUserAccessRightsLevel.
  */
-@property (nonatomic, readonly, strong) PNChannel *channel;
+@property (nonatomic, readonly, strong) PNChannel *channel DEPRECATED_MSG_ATTRIBUTE(" Use 'object' property instead");
+
+/**
+ Stores reference on data feed object for which access rights has been granted or retrieved.
+ 
+ @note This property will be set only if \a level is set to: \a PNChannelAccessRightsLevel, 
+ \a PNChannelGroupAccessRightsLevel or \a PNUserAccessRightsLevel.
+ */
+@property (nonatomic, readonly, strong) id <PNChannelProtocol> object;
 
 /**
  Stores reference on authorization key for which access rights has been granted or retrieved.
@@ -87,7 +96,7 @@
  
  @return \c YES in case if there is rights management rights.
  
- @since <#version number#>
+ @since 3.6.8
  */
 - (BOOL)hasManagementRight;
 

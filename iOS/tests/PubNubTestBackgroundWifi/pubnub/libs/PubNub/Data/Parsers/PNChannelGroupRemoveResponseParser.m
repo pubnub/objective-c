@@ -8,6 +8,7 @@
 
 #import "PNChannelGroupRemoveResponseParser.h"
 #import "PNResponse+Protected.h"
+#import "PNChannelGroup.h"
 
 
 #pragma mark Private interfacePNChannelGroupNamespaceRemoveResponseParserdeclaration

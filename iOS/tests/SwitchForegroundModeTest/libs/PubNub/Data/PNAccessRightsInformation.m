@@ -55,7 +55,7 @@
         self.level = level;
         self.rights = rights;
         self.subscriptionKey = subscriptionKey;
-        self.channel = channel;
+        self.object = channel;
         self.authorizationKey = clientAuthorizationKey;
         self.accessPeriodDuration = accessPeriodDuration;
     }
@@ -129,16 +129,16 @@
 
     if (self.level == PNChannelGroupAccessRightsLevel) {
 
-        [description appendFormat:@" channel-group: %@;", self.channel];
+        [description appendFormat:@" channel-group: %@;", self.object];
     }
     else if (self.level == PNChannelAccessRightsLevel) {
         
-        [description appendFormat:@" channel: %@;", self.channel];
+        [description appendFormat:@" channel: %@;", self.object];
     }
     else if (self.level == PNUserAccessRightsLevel) {
 
         [description appendFormat:@" user: %@;", self.authorizationKey];
-        [description appendFormat:@" channel: %@;", self.channel];
+        [description appendFormat:@" channel: %@;", self.object];
     }
 
     [description appendFormat:@" access period duration: %lu>", (unsigned long)self.accessPeriodDuration];
@@ -168,7 +168,7 @@
         
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wundeclared-selector"
-        [logDescription appendFormat:@"|%@", (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null])];
+        [logDescription appendFormat:@"|%@", (self.object ? [self.object performSelector:@selector(logDescription)] : [NSNull null])];
         #pragma clang diagnostic pop
     }
     else if (self.level == PNUserAccessRightsLevel) {
@@ -176,7 +176,7 @@
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wundeclared-selector"
         [logDescription appendFormat:@"|%@|%@", self.authorizationKey,
-         (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null])];
+         (self.object ? [self.object performSelector:@selector(logDescription)] : [NSNull null])];
         #pragma clang diagnostic pop
     }
     [logDescription appendString:@">"];

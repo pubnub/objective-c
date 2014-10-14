@@ -25,7 +25,7 @@
  
  @param object Object with which stored data should be replaced.
  
- @since <#version number#>
+ @since 3.6.8
  */
 - (void)replaceAssociatedObject:(id)object;
 

@@ -10,7 +10,10 @@
 #import "PNChannelGroupChange+Protected.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
+#import "NSString+PNAddition.h"
+#import "PNConfiguration.h"
 #import "PNChannelGroup.h"
+#import "PNMacro.h"
 
 
 #pragma mark Structures

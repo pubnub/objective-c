@@ -7,6 +7,7 @@
  */
 
 #import "PNHereNow+Protected.h"
+#import "PNChannel.h"
 
 
 // ARC check

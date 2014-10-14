@@ -474,7 +474,7 @@ withCompletionHandlingBlock:handlerBlock];
            reschedulingMethodCall:(BOOL)isMethodCallRescheduled withCompletionHandlingBlock:(id)handlerBlock {
     
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
-    [self postponeSelector:@selector(updateClientState:state:forChannelOrGroup:reschedulingMethodCall:withCompletionHandlingBlock:) forObject:self
+    [self postponeSelector:@selector(updateClientState:state:forObject:reschedulingMethodCall:withCompletionHandlingBlock:) forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier], [PNHelper nilifyIfNotSet:clientState],
                              [PNHelper nilifyIfNotSet:object], @(isMethodCallRescheduled), [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:isMethodCallRescheduled];

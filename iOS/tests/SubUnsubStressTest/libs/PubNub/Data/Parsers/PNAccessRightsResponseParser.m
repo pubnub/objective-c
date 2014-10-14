@@ -94,7 +94,7 @@ struct PNAccessLevelsStruct PNAccessLevels = {
  @param channelInformationDictionary \a NSDictionary instance which hold information from server about access rights 
                                      configuration for channel(s) or channel group is stored.
  
- @since <#version number#>
+ @since 3.6.8
  */
 - (void)         parseChannelType:(NSString *)channelTypeHolderKey
   accessInformationFromDictionary:(NSDictionary *)channelInformationDictionary;

@@ -73,7 +73,7 @@ static NSInteger const kPNRestrictedCharacterInChannelNameError = 117;
  @brief PubNub service reported that developer tried to subscribe on channel group which doesn't have any registered
  channels in it.
  
- @since <#version number#>
+ @since 3.6.8
  */
 static NSInteger const kPNEmptyChannelGroupError = 118;
 

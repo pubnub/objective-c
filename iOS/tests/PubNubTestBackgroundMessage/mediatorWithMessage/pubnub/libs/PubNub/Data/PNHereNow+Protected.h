@@ -9,6 +9,11 @@
 #import "PNHereNow.h"
 
 
+#pragma mark Class forward
+
+@class PNChannel, PNClient;
+
+
 #pragma mark - Private interface methods
 
 @interface PNHereNow ()
