@@ -3,7 +3,7 @@
 
 #pragma mark Class forward
 
-@class PNChannel;
+@class PNChannelGroup, PNChannel;
 
 
 /**

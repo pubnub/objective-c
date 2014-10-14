@@ -1,4 +1,5 @@
 #import "PubNub.h"
+#import "PNChannelProtocol.h"
 
 /**
  Base class extension which provide methods for state manipulation.
@@ -63,7 +64,7 @@
  @param object           Object (which conforms to \b PNChannelProtocol data feed object protocol) for which client's
                          state should be pulled out.
  
- @since <#version number#>
+ @since 3.6.8
  */
 + (void)requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object;
 
@@ -84,7 +85,7 @@
                          store state previously bounded to the client at specified channel; \c error - describes what 
                          exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since <#version number#>
+ @since 3.6.8
  */
 + (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
@@ -163,7 +164,7 @@
  PubNub service will remove specified key from client's state at specified object.
  @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
  
- @since <#version number#>
+ @since 3.6.8
  */
 + (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                 forObject:(id <PNChannelProtocol>)object;
@@ -185,7 +186,7 @@
  PubNub service will remove specified key from client's state at specified channel.
  @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
  
- @since <#version number#>
+ @since 3.6.8
  */
 + (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                     forObject:(id <PNChannelProtocol>)object
@@ -242,7 +243,7 @@
  @param object           Object (which conforms to \b PNChannelProtocol data feed object protocol) for which client's
                          state should be pulled out.
  
- @since <#version number#>
+ @since 3.6.8
  */
 - (void)requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object;
 
@@ -263,7 +264,7 @@
                          store state previously bounded to the client at specified channel; \c error - describes what 
                          exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since <#version number#>
+ @since 3.6.8
  */
 - (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
@@ -337,7 +338,7 @@
  PubNub service will remove specified key from client's state at specified object.
  @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
  
- @since <#version number#>
+ @since 3.6.8
  */
 - (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                 forObject:(id <PNChannelProtocol>)object;
@@ -359,7 +360,7 @@
  PubNub service will remove specified key from client's state at specified channel.
  @warning Client state shouldn't contain any nesting and values should be one of: int, float or string.
  
- @since <#version number#>
+ @since 3.6.8
  */
 - (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                     forObject:(id <PNChannelProtocol>)object

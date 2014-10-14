@@ -130,10 +130,12 @@
         }
     }
     // Check whether error caused by channel group operations or not
-    else if ([errorMessage rangeOfString:@"Channel group" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+    else if ([errorMessage rangeOfString:@"Missing" options:NSCaseInsensitiveSearch].location != NSNotFound ||
+             [errorMessage rangeOfString:@"Channel group" options:NSCaseInsensitiveSearch].location != NSNotFound) {
         
         // Check whether group is empty or not
-        if ([errorMessage rangeOfString:@"empty" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+        if ([errorMessage rangeOfString:@"empty" options:NSCaseInsensitiveSearch].location != NSNotFound ||
+            [errorMessage rangeOfString:@"channel" options:NSCaseInsensitiveSearch].location != NSNotFound) {
             
             errorCode = kPNEmptyChannelGroupError;
         }

@@ -1,4 +1,5 @@
 #import "PubNub.h"
+#import "PNChannelProtocol.h"
 
 /**
  Base class extension which provide methods for access rights manipulation.

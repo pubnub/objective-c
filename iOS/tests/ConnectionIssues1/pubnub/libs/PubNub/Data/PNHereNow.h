@@ -50,7 +50,7 @@ DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use 'channels' property to 
  @discussion This list if filled by channels from server response. So, if there is no presence information for requested
  channel or channel group, then this array won't contain requested channel.
  
- @since <#new feature release version#>
+ @since 3.6.8
  
  @return List of \b PNChannel instances for which data has been retrieved.
  */
@@ -62,7 +62,7 @@ DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use 'channels' property to 
  @param channel
  \b PNChannel instance for which participants list should be retrieved from fetched data.
  
- @since <#new feature release version#>
+ @since 3.6.8
  
  @return \c nil in case if there is no subscriber (or \c channel wasn't part of fetch request) on target \c channel or 
  request has been made to retrieve number of participants.
@@ -75,7 +75,7 @@ DEPRECATED_MSG_ATTRIBUTE(" This property deprecated. Use 'channels' property to 
  @param channel
  \b PNChannel instance for which participants count should be retrieved from fetched data.
  
- @since <#new feature release version#>
+ @since 3.6.8
  
  @return \b 0 in case if there is no subscribers (or \c channel wasn't part of fetch request) on target \c channel.
  */

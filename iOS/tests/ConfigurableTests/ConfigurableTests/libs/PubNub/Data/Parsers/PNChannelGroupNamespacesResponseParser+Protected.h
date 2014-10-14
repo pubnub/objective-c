@@ -14,14 +14,14 @@
 /**
  @brief Reference on key under which application subscription key should be stored
  
- @since <#version number#>
+ @since 3.6.8
  */
 static NSString * const kPNResponseSubscriptionKey = @"sub_key";
 
 /**
  @brief Reference on key under which stored list of namespaces registered under application subscription key.
  
- @since <#version number#>
+ @since 3.6.8
  */
 static NSString * const kPNResponseNamespacesKey = @"namespaces";
 

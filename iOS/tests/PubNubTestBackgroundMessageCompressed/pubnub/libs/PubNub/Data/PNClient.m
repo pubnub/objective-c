@@ -8,6 +8,7 @@
 
 #import "PNClient+Protected.h"
 #import "PNChannel+Protected.h"
+#import "PNChannelGroup.h"
 #import "PNConstants.h"
 
 

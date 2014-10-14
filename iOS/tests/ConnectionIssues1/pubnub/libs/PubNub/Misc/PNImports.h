@@ -35,6 +35,7 @@
 
 #import "PNChannelGroupNamespace.h"
 #import "PNChannelGroupChange.h"
+#import "PNChannelProtocol.h"
 #import "PNChannelGroup.h"
 #import "PNHereNow.h"
 #import "PNMessage.h"

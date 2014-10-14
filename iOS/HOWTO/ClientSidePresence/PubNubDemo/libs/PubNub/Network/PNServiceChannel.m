@@ -28,6 +28,7 @@
 #import "NSInvocation+PNAdditions.h"
 #import "PNServiceChannelDelegate.h"
 #import "PNConnection+Protected.h"
+#import "PNChannelGroupChange.h"
 #import "NSObject+PNAdditions.h"
 #import "PNResponse+Protected.h"
 #import "PNMessage+Protected.h"
@@ -378,7 +379,7 @@
                                                                 PNLoggerSymbols.connectionChannel.service.channelsRemovalFromGroupRequestCompleted);
                     [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[symbol, (self.name ? self.name : self), (change.group ? change.group : [NSNull null]),
+                        return @[symbol, (self.name ? self.name : self), (change.group ? change.group : (id)[NSNull null]),
                                  (change.channels ? change.channels : [NSNull null])];
                     }];
                     
@@ -392,7 +393,7 @@
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
                         return @[symbol, (self.name ? self.name : self), (change.channels ? change.channels : [NSNull null]),
-                                 (change.group ? change.group : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
+                                 (change.group ? change.group : (id)[NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
                     
                     [self.serviceDelegate serviceChannel:self groupChannelsChange:change didFailWithError:parsedData];
@@ -879,7 +880,7 @@
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
             
             return @[symbol, (self.name ? self.name : self), (change.channels ? change.channels : [NSNull null]),
-                     (change.group ? change.group : [NSNull null]), (error ? error : [NSNull null])];
+                     (change.group ? change.group : (id)[NSNull null]), (error ? error : [NSNull null])];
         }];
         
         [self.serviceDelegate serviceChannel:self groupChannelsChange:change didFailWithError:error];

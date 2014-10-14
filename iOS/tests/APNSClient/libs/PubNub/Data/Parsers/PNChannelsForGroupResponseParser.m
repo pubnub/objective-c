@@ -43,7 +43,7 @@
     // Check whether initialization successful or not
     if ((self = [super init])) {
         
-        self.channels = [response.response valueForKey:kPNResponseChanelsKey];
+        self.channels = [PNChannel channelsWithNames:[response.response valueForKey:kPNResponseChanelsKey]];
     }
     
     

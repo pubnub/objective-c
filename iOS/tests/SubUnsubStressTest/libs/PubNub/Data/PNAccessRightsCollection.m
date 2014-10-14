@@ -137,9 +137,9 @@
 
     [self populateAccessRightsFrom:[self accessRightsInformationForApplication] to:information];
 
-    if (![self.channelsAccessRightsInformation objectForKey:information.channel.name]) {
+    if (![self.channelsAccessRightsInformation objectForKey:information.object.name]) {
 
-        [self.channelsAccessRightsInformation setValue:information forKey:information.channel.name];
+        [self.channelsAccessRightsInformation setValue:information forKey:information.object.name];
     }
 }
 

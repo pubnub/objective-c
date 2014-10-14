@@ -1,5 +1,11 @@
 #import <Foundation/Foundation.h>
 
+
+#pragma mark Class forward
+
+@class PNDate;
+
+
 /**
  @brief Data feed object requirements.
  
@@ -7,7 +13,7 @@
  remote objects for data feed.
  
  @author Sergey Mamontov
- @since <#new feature release version#>
+ @since 3.6.8
  @copyright © 2009-2014 PubNub, Inc.
  */
 @protocol PNChannelProtocol <NSObject>
@@ -22,14 +28,14 @@
 /**
  @brief Name for remote data feed object.
  
- @since <#version number#>
+ @since 3.6.8
  */
 @property (nonatomic, readonly, copy) NSString *name;
 
 /**
  @brief Last data feed update time token.
  
- @since <#version number#>
+ @since 3.6.8
  */
 @property (nonatomic, readonly, copy) NSString *updateTimeToken;
 
@@ -41,7 +47,7 @@
 /**
  @brief Date when presence information has been updated.
  
- @since <#version number#>
+ @since 3.6.8
  */
 @property (nonatomic, readonly, strong) PNDate *presenceUpdateDate;
 
@@ -50,7 +56,7 @@
  
  @discussion This value filled with data from presence API usage and from presence update events from feed.
  
- @since <#version number#>
+ @since 3.6.8
  */
 @property (nonatomic, readonly, assign) NSUInteger participantsCount;
 
@@ -60,7 +66,7 @@
  @discussion Each \b PNClient instance represent single subscriber on feed. But number of subscribers and value stored
  in \c participantsCount may be different.
  
- @since <#version number#>
+ @since 3.6.8
  */
 @property (nonatomic, readonly) NSArray *participants;
 

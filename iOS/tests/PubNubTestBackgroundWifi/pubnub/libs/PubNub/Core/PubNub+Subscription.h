@@ -1,4 +1,5 @@
 #import "PubNub.h"
+#import "PNChannelProtocol.h"
 
 /**
  Base class extension which provide methods for subscription manipulation.
@@ -878,7 +879,7 @@
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
                        client should subscribe.
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 + (void)subscribeOn:(NSArray *)channelObjects;
 
@@ -988,7 +989,7 @@ withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channel
                        \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get 
                        human readable description for error).
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 + (void)          subscribeOn:(NSArray *)channelObjects
   withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
@@ -1301,7 +1302,7 @@ withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channel
                        client should subscribe.
  @param clientState    \b NSDictionary instance with list of parameters which should be bound to the client.
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 + (void)subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState;
 
@@ -1415,7 +1416,7 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
                        \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get 
                        human readable description for error).
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 + (void)         subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
@@ -1818,7 +1819,7 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) from which
                        client should unsubscribe.
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 + (void)unsubscribeFrom:(NSArray *)channelObjects;
 
@@ -1911,7 +1912,7 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
                        \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
                        human readable description for error).
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 + (void)    unsubscribeFrom:(NSArray *)channelObjects
 withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
@@ -2771,7 +2772,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
                        client should subscribe.
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 - (void)subscribeOn:(NSArray *)channelObjects;
 
@@ -2881,7 +2882,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                        \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
                        human readable description for error).
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 - (void)          subscribeOn:(NSArray *)channelsAndGroups
   withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
@@ -3191,7 +3192,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                        client should subscribe.
  @param clientState    \b NSDictionary instance with list of parameters which should be bound to the client.
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 - (void)subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState;
 
@@ -3305,7 +3306,7 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
                        \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
                        human readable description for error).
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 - (void)         subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
@@ -3702,7 +3703,7 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) from which
                        client should unsubscribe.
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 - (void)unsubscribeFrom:(NSArray *)channelObjects;
 
@@ -3795,7 +3796,7 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
                        \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
                        human readable description for error).
  
- @since <#new feature release version#>
+ @since 3.6.8
  */
 - (void)    unsubscribeFrom:(NSArray *)channelObjects
 withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;

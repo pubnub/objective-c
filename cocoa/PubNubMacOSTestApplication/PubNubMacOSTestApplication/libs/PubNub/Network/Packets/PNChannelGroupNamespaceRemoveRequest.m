@@ -9,6 +9,9 @@
 #import "PNChannelGroupNamespaceRemoveRequest+Protected.h"
 #import "PNServiceResponseCallbacks.h"
 #import "PNBaseRequest+Protected.h"
+#import "NSString+PNAddition.h"
+#import "PNConfiguration.h"
+#import "PNMacro.h"
 
 
 #pragma mark Public interface implementation

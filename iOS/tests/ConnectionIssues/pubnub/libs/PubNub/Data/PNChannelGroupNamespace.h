@@ -18,7 +18,7 @@
  
  @return Initialized and ready to use instance.
  
- @since <#version number#>
+ @since 3.6.8
  */
 + (PNChannelGroupNamespace *)allNamespaces;
 

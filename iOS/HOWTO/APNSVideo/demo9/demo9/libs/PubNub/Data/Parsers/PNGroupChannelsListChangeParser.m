@@ -8,6 +8,7 @@
 
 #import "PNGroupChannelsListChangeParser.h"
 #import "PNResponse+Protected.h"
+#import "PNChannelGroupChange.h"
 
 
 #pragma mark Private interface declaration

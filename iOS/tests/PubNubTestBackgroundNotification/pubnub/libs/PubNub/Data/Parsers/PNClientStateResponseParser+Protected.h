@@ -9,7 +9,12 @@
 #import "PNClientStateResponseParser.h"
 
 
-#pragma mark Static
+#pragma mark Class forward
+
+@class PNClient;
+
+
+#pragma mark - Static
 
 /**
  @brief Reference on key under which stored client's state for each channel of channel group

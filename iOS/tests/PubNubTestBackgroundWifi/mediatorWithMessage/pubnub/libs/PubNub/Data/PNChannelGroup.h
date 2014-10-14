@@ -56,7 +56,7 @@
  
  @return Reference on ready to use \b PNChannelGroup instance with specified behaviour as for presence events.
  
- @since <#version number#>
+ @since 3.6.8
  */
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name shouldObservePresence:(BOOL)observePresence;
 
@@ -86,7 +86,7 @@
  
  @return Reference on ready to use \b PNChannelGroup instance with specified behaviour as for presence events.
  
- @since <#version number#>
+ @since 3.6.8
  */
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace
                    shouldObservePresence:(BOOL)observePresence;
