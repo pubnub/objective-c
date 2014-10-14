@@ -245,7 +245,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                     break;
             }
             detailedDescription = [NSString stringWithFormat:[@"channelPresenceFailureDetailedDescription" localized],
-                                   channel.name, requestError.localizedFailureReason];
+                                   [channels valueForKey:@"name"], requestError.localizedFailureReason];
         }
         
         PNAlertView *alertView = [PNAlertView viewWithTitle:@"channelPresenceAlertViewTitle" type:type

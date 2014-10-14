@@ -481,7 +481,9 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     PNAlertView *progressAlertView = [PNAlertView viewForProcessProgress];
     [progressAlertView show];
     
+    NSArray *objectForManipulation = [[self.registryHelper representationData] copy];
     __block __pn_desired_weak __typeof(self) weakSelf = self;
+    
     [self.registryHelper performDataModifyRequestWithBlock:^(NSError *requestError) {
         
         [progressAlertView dismissWithAnimation:YES];
@@ -543,7 +545,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             
             PNChannelGroup *group = [PNChannelGroup channelGroupWithName:weakSelf.registryHelper.channelGroupName
                                                              inNamespace:weakSelf.registryHelper.namespaceName];
-            NSString *objects = [[[weakSelf.registryHelper representationData] valueForKey:@"name"] componentsJoinedByString:@","];
+            NSString *objects = [[objectForManipulation valueForKey:@"name"] componentsJoinedByString:@","];
             if (!requestError) {
                 
                 detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group];

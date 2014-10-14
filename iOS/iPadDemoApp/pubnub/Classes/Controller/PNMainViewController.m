@@ -751,19 +751,24 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     
     BOOL isSubscribed = [[PNDataManager sharedInstance].subscribedChannelsList count] > 0;
     BOOL isChannelSelected = [PNDataManager sharedInstance].currentChannel != nil;
+    BOOL isChannelGroupSelected = (isChannelSelected && [[PNDataManager sharedInstance].currentChannel isKindOfClass:[PNChannelGroup class]]);
     BOOL isEmptyMessage = message == nil || [message pn_isEmpty];
     
     if (!isChannelSelected) {
         
         self.messageInputField.placeholder = @"Select channel on right side to be able send messages.";
     }
+    else if (isChannelGroupSelected) {
+        
+        self.messageInputField.placeholder = @"Messages can't be sent into channel group.";
+    }
     else {
         
         self.messageInputField.placeholder = nil;
     }
     
-    self.sendButton.enabled = isSubscribed && !isEmptyMessage && isChannelSelected;
-    self.messageInputField.enabled = isSubscribed && isChannelSelected;
+    self.sendButton.enabled = isSubscribed && !isEmptyMessage && isChannelSelected && !isChannelGroupSelected;
+    self.messageInputField.enabled = isSubscribed && isChannelSelected && !isChannelGroupSelected;
 }
 
 
