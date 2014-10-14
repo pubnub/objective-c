@@ -134,7 +134,6 @@
 		799C3C2A18F468EA002BC638 /* NSInvocation+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 799C3BAB18F468EA002BC638 /* NSInvocation+PNAdditions.m */; };
 		799C3C2B18F468EA002BC638 /* NSMutableArray+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 799C3BAD18F468EA002BC638 /* NSMutableArray+PNAdditions.m */; };
 		799C3C2C18F468EA002BC638 /* NSString+PNAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 799C3BAF18F468EA002BC638 /* NSString+PNAddition.m */; };
-		799C3C2D18F468EA002BC638 /* UIApplication+PNAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 799C3BB118F468EA002BC638 /* UIApplication+PNAdditions.m */; };
 		799C3C2E18F468EA002BC638 /* PNAccessRightsAuditRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 799C3BC818F468EA002BC638 /* PNAccessRightsAuditRequest.m */; };
 		799C3C2F18F468EA002BC638 /* PNBaseRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 799C3BCB18F468EA002BC638 /* PNBaseRequest.m */; };
 		799C3C3018F468EA002BC638 /* PNChangeAccessRightsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 799C3BCD18F468EA002BC638 /* PNChangeAccessRightsRequest.m */; };
@@ -498,8 +497,6 @@
 		799C3BAD18F468EA002BC638 /* NSMutableArray+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+PNAdditions.m"; sourceTree = "<group>"; };
 		799C3BAE18F468EA002BC638 /* NSString+PNAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+PNAddition.h"; sourceTree = "<group>"; };
 		799C3BAF18F468EA002BC638 /* NSString+PNAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PNAddition.m"; sourceTree = "<group>"; };
-		799C3BB018F468EA002BC638 /* UIApplication+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+PNAdditions.h"; sourceTree = "<group>"; };
-		799C3BB118F468EA002BC638 /* UIApplication+PNAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+PNAdditions.m"; sourceTree = "<group>"; };
 		799C3BB218F468EA002BC638 /* PNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConstants.h; sourceTree = "<group>"; };
 		799C3BB318F468EA002BC638 /* PNDefaultConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDefaultConfiguration.h; sourceTree = "<group>"; };
 		799C3BB418F468EA002BC638 /* PNErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNErrorCodes.h; sourceTree = "<group>"; };
@@ -1123,8 +1120,6 @@
 				799C3BAF18F468EA002BC638 /* NSString+PNAddition.m */,
 				790FB8FF19AF401C00BAD65E /* NSError+PNAdditions.h */,
 				790FB90019AF401C00BAD65E /* NSError+PNAdditions.m */,
-				799C3BB018F468EA002BC638 /* UIApplication+PNAdditions.h */,
-				799C3BB118F468EA002BC638 /* UIApplication+PNAdditions.m */,
 				DD71B0B6C3959519C07613B1 /* NSObject+PNAdditions.h */,
 				DD71B3DB1EE25E3F733A8511 /* NSObject+PNAdditions.m */,
 			);
@@ -1798,7 +1793,6 @@
 				79765F3718E6DCB10058CE47 /* PNClientStateHelper.m in Sources */,
 				79D8A49618EAB197004A4A4F /* PNPresenceObservationHelper.m in Sources */,
 				799C3C3718F468EA002BC638 /* PNMessageHistoryRequest.m in Sources */,
-				799C3C2D18F468EA002BC638 /* UIApplication+PNAdditions.m in Sources */,
 				799C3C2718F468EA002BC638 /* NSData+PNAdditions.m in Sources */,
 				799C3B3318F45E6C002BC638 /* PNInformationView.m in Sources */,
 				799C3C3418F468EA002BC638 /* PNHereNowRequest.m in Sources */,

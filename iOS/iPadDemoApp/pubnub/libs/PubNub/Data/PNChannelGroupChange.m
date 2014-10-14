@@ -7,6 +7,7 @@
 //
 
 #import "PNChannelGroupChange+Protected.h"
+#import "PNChannelGroup.h"
 
 
 #pragma mark Public interface implementation

@@ -7,6 +7,7 @@
 //
 
 #import "PNOperationStatus+Protected.h"
+#import "PNError.h"
 
 
 // ARC check
