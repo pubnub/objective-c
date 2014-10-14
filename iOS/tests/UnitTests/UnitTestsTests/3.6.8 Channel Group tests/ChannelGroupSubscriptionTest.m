@@ -27,6 +27,9 @@ PNDelegate
     dispatch_group_t _resGroup5;
     dispatch_group_t _resGroup6;
     
+    dispatch_group_t _resGroup7;
+    dispatch_group_t _resGroup8;
+    
     NSString *_namespaceName;
     NSArray *_channels;
     PNChannelGroup *_group;
@@ -119,12 +122,14 @@ PNDelegate
 }
 
 // Test 2
-- (void)testSubscribeOnWithCompletionBlockInstance {
+- (void)t1estSubscribeOnWithCompletionBlockInstance {
     _resGroup2 = dispatch_group_create();
+    
+    NSArray *channels = [PNChannel channelsWithNames:@[@"test_ios_4", @"test_ios_5", @"test_ios_6"]];
     
     // 1. Add channels to group
     dispatch_group_enter(_resGroup2);
-    [[PubNub sharedInstance] addChannels:_channels toGroup:_group];
+    [[PubNub sharedInstance] addChannels:channels toGroup:_group];
     
     if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
@@ -156,13 +161,50 @@ PNDelegate
     _resGroup2 = NULL;
 }
 
-// Test 3
+- (void)testSimultaneousSubscription {
+    _resGroup7 = dispatch_group_create();
+    
+    NSArray *channels1 = [PNChannel channelsWithNames:@[@"test_sim_1", @"test_sim_2", @"test_sim_3"]];
+    NSArray *channels2 = [PNChannel channelsWithNames:@[@"test_ios_4", @"test_ios_5", @"test_ios_6"]];
+    
+    // 1. Add channels to group
+    dispatch_group_enter(_resGroup7);
+    
+    [[PubNub sharedInstance] addChannels:channels1 toGroup:_group];
+    
+    if ([GCDWrapper isGroup:_resGroup7 timeoutFiredValue:10]) {
+        XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
+        dispatch_group_leave(_resGroup7);
+        _resGroup7 = NULL;
+        return;
+    }
+    
+    _resGroup7 = NULL;
+    
+    _resGroup8 = dispatch_group_create();
+    dispatch_group_enter(_resGroup8);
+    [[PubNub sharedInstance] addChannels:channels2 toGroup:_group];
+    
+    if ([GCDWrapper isGroup:_resGroup8 timeoutFiredValue:10]) {
+        XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
+        dispatch_group_leave(_resGroup8);
+        _resGroup8 = NULL;
+        return;
+    }
+
+    _resGroup7 = NULL;
+    _resGroup8 = NULL;
+}
+
+#warning Failed due to: timeout fired for addChannels.
 - (void)t1estSubscribeWithClientStateInstance {
     _resGroup3 = dispatch_group_create();
     
+    NSArray *channels = [PNChannel channelsWithNames:@[@"test_ios_7", @"test_ios_8", @"test_ios_9"]];
+    
     // 1. Add channels to group
     dispatch_group_enter(_resGroup3);
-    [[PubNub sharedInstance] addChannels:_channels toGroup:_group];
+    [[PubNub sharedInstance] addChannels:channels toGroup:_group];
     
     if ([GCDWrapper isGroup:_resGroup3 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
@@ -340,6 +382,14 @@ PNDelegate
         dispatch_group_leave(_resGroup6);
     }
     
+    if (_resGroup7 != NULL) {
+        dispatch_group_leave(_resGroup7);
+    }
+    
+    if (_resGroup8 != NULL) {
+        dispatch_group_leave(_resGroup8);
+    }
+    
     for(NSArray *channel in channels){
         NSLog(@"!!! Did receive channel: %@ in group: %@", channel, group);
     }
@@ -351,7 +401,7 @@ PNDelegate
         dispatch_group_leave(_resGroup1);
     }
     if (_resGroup2 != NULL) {
-        dispatch_group_leave(_resGroup1);
+        dispatch_group_leave(_resGroup2);
     }
     if (_resGroup3 != NULL) {
         dispatch_group_leave(_resGroup3);
@@ -365,6 +415,15 @@ PNDelegate
     if (_resGroup6 != NULL) {
         dispatch_group_leave(_resGroup6);
     }
+    
+    if (_resGroup7 != NULL) {
+        dispatch_group_leave(_resGroup7);
+    }
+    
+    if (_resGroup8 != NULL) {
+        dispatch_group_leave(_resGroup8);
+    }
+    
     if (error) {
         XCTFail(@"PubNub client did fail to add channels from the group: %@", error);
     }
@@ -400,6 +459,16 @@ PNDelegate
     if (_resGroup6) {
         XCTFail(@"Did fail during test 6: %@", error);
         dispatch_group_leave(_resGroup6);
+    }
+    
+    if (_resGroup7) {
+        XCTFail(@"Did fail during test 7: %@", error);
+        dispatch_group_leave(_resGroup7);
+    }
+    
+    if (_resGroup8) {
+        XCTFail(@"Did fail during test 8: %@", error);
+        dispatch_group_leave(_resGroup8);
     }
     
 }
