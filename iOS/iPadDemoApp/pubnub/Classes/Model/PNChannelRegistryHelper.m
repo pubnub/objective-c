@@ -157,12 +157,15 @@
         
         [[PubNub sharedInstance] removeChannelGroupNamespace:self.namespaceName
                                  withCompletionHandlingBlock:^(NSString *namespaceName, PNError *requestError) {
-                                     
-             PNChannelGroupNamespace *namespaceObject = [PNChannelGroupNamespace namespaceWithName:namespaceName];
-             NSMutableArray *mutableFetchedData = [self.fetchedData mutableCopy];
-             [mutableFetchedData removeObject:namespaceObject];
-             weakSelf.fetchedData = [mutableFetchedData copy];
-             weakSelf.namespaceName = nil;
+
+             if (!requestError) {
+                 
+                 PNChannelGroupNamespace *namespaceObject = [PNChannelGroupNamespace namespaceWithName:namespaceName];
+                 NSMutableArray *mutableFetchedData = [self.fetchedData mutableCopy];
+                 [mutableFetchedData removeObject:namespaceObject];
+                 weakSelf.fetchedData = [mutableFetchedData copy];
+                 weakSelf.namespaceName = nil;
+             }
              
              if (handlerBlock) {
                  
@@ -176,10 +179,13 @@
         [[PubNub sharedInstance] removeChannelGroup:group
                         withCompletionHandlingBlock:^(PNChannelGroup *channelGroup, PNError *requestError) {
                             
-            NSMutableArray *mutableFetchedData = [self.fetchedData mutableCopy];
-            [mutableFetchedData removeObject:channelGroup];
-            weakSelf.fetchedData = [mutableFetchedData copy];
-            weakSelf.channelGroupName = nil;
+            if (!requestError) {
+                
+                NSMutableArray *mutableFetchedData = [self.fetchedData mutableCopy];
+                [mutableFetchedData removeObject:channelGroup];
+                weakSelf.fetchedData = [mutableFetchedData copy];
+                weakSelf.channelGroupName = nil;
+            }
             
             if (handlerBlock) {
                 
@@ -193,9 +199,10 @@
         PNChannelGroup *group = [PNChannelGroup channelGroupWithName:self.channelGroupName inNamespace:self.namespaceName];
         void(^responseProcessingBlock)(NSArray *, PNError *) = ^(NSArray *channels, PNError *requestError) {
             
-            NSMutableArray *mutableFetchedData = [self.dataForManipulation mutableCopy];
-            [mutableFetchedData removeObjectsInArray:channels];
-            weakSelf.dataForManipulation = [mutableFetchedData copy];
+            if (!requestError) {
+                
+                [weakSelf.dataForManipulation removeObjectsInArray:channels];
+            }
             
             if (handlerBlock) {
                 

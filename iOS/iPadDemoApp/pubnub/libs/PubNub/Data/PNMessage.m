@@ -123,7 +123,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
 + (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate {
     
-    return [self messageFromServiceResponse:messageBody onChannel:channel channelGroup:nil atDate:messageBody];
+    return [self messageFromServiceResponse:messageBody onChannel:channel channelGroup:nil atDate:messagePostDate];
 }
 
 + (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel
@@ -203,7 +203,8 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     return self;
 }
 
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory {
+- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+      storeInHistory:(BOOL)shouldStoreInHistory {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
