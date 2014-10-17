@@ -255,6 +255,24 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
 @end
 
 
+#pragma mark - UIApplication replacement helper declaration
+
+@interface PNApplicationHelper : NSObject
+
+
+#pragma mark - Class methods
+
+/**
+ * Will check application Property List file to fetch whether application can run in background or not
+ */
++ (BOOL)pn_canRunInBackground;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Helper public interface declaration
 
 @interface PNHelper : NSObject

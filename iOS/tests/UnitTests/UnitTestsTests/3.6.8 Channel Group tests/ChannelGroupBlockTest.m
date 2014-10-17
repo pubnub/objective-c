@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-static NSString *kOrigin = @"dara24.devbuild.pubnub.com";
+static NSString *kOrigin = @"pubsub-emea.pubnub.com";
 static NSString *kPublishKey = @"demo";
 static NSString *kSubscribeKey = @"demo";
 static NSString *kSecretKey = @"mySecret";

@@ -104,7 +104,7 @@
     #pragma clang diagnostic ignored "-Wundeclared-selector"
     return [NSString stringWithFormat:@"<%@|%@|%@>", (self.groupName ? self.groupName : [NSNull null]),
             (self.nspace ? self.nspace : [NSNull null]),
-            (self.channels ? [self.channels performSelector:@selector(logDescription)] : [NSNull null])];
+            ([self.channels count] ? [self.channels performSelector:@selector(logDescription)] : [NSNull null])];
     #pragma clang diagnostic pop
 }
 

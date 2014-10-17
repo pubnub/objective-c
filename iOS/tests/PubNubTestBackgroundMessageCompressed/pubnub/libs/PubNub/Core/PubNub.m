@@ -22,7 +22,7 @@
 #import "PNConnectionChannel+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-    #import "UIApplication+PNAdditions.h"
+    #import <UIKit/UIKit.h>
 #else
     #import <AppKit/AppKit.h>
 #endif
@@ -3485,7 +3485,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (BOOL)canRunInBackground {
     
-    __block BOOL canRunInBackground = [UIApplication pn_canRunInBackground];
+    __block BOOL canRunInBackground = [PNApplicationHelper pn_canRunInBackground];
     
     if ([self.clientDelegate respondsToSelector:@selector(shouldRunClientInBackground)]) {
         

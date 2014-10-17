@@ -189,9 +189,18 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
                     ((PNPresenceEvent *)eventObject).channel = (detailedChannel ? detailedChannel : channel);
                 }
                 else {
+                    
+                    PNChannelGroup *group = nil;
+                    PNChannel *targetChannel = (detailedChannel ? detailedChannel : channel);
+                    if (detailedChannel && channel) {
+                        
+                        if (channel.isChannelGroup) {
+                            
+                            group = (PNChannelGroup *)channel;
+                        }
+                    }
 
-                    eventObject = [PNMessage messageFromServiceResponse:event
-                                                              onChannel:(detailedChannel ? detailedChannel : channel)
+                    eventObject = [PNMessage messageFromServiceResponse:event onChannel:targetChannel channelGroup:group
                                                                  atDate:eventDate];
                 }
 

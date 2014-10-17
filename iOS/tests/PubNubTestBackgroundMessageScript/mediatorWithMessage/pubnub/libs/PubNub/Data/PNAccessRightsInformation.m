@@ -138,7 +138,7 @@
     else if (self.level == PNUserAccessRightsLevel) {
 
         [description appendFormat:@" user: %@;", self.authorizationKey];
-        [description appendFormat:@" channel: %@;", self.object];
+        [description appendFormat:@" object: %@;", self.object];
     }
 
     [description appendFormat:@" access period duration: %lu>", (unsigned long)self.accessPeriodDuration];
@@ -164,7 +164,7 @@
     }
     NSMutableString *logDescription = [NSMutableString stringWithFormat:@"<%@|%@|%@|%lu", level, PNObfuscateString(self.subscriptionKey),
                                        @(self.rights), (unsigned long)self.accessPeriodDuration];
-    if (self.level == PNChannelAccessRightsLevel) {
+    if (self.level == PNChannelGroupAccessRightsLevel || self.level == PNChannelAccessRightsLevel) {
         
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wundeclared-selector"

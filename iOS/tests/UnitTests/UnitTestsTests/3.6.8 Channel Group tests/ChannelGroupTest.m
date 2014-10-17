@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-static NSString *kOriginPath = @"dara24.devbuild.pubnub.com";
+static NSString *kOriginPath = @"pubsub-emea.pubnub.com";
 static NSString *kPublishKey = @"demo";
 static NSString *kSubscribeKey = @"demo";
 static NSString *kSecretKey = @"mySecret";
@@ -39,10 +39,13 @@ static NSString *kSecretKey = @"mySecret";
     
     [PubNub disconnect];
     
-    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kOriginPath
-                                                                           publishKey:kPublishKey
-                                                                         subscribeKey:kSubscribeKey
-                                                                            secretKey:nil] andDelegate:self];
+    PNConfiguration *config = [PNConfiguration configurationForOrigin:kOriginPath
+                                                           publishKey:kPublishKey
+                                                         subscribeKey:kSubscribeKey
+                                                            secretKey:nil];
+    [config setUseSecureConnection:YES];
+    
+    _pubNub = [PubNub clientWithConfiguration:config andDelegate:self];
     [_pubNub connect];
     
     _namespaceName = @"namespace_test";

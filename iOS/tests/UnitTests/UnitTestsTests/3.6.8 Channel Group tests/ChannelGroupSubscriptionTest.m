@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 
-static NSString *kOriginPath = @"dara24.devbuild.pubnub.com";
+static NSString *kOriginPath = @"pubsub-emea.pubnub.com";
 static NSString *kPublishKey = @"demo";
 static NSString *kSubscribeKey = @"demo";
 static NSString *kSecretKey = @"mySecret";

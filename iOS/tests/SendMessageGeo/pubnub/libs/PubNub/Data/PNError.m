@@ -133,8 +133,13 @@
     else if ([errorMessage rangeOfString:@"Missing" options:NSCaseInsensitiveSearch].location != NSNotFound ||
              [errorMessage rangeOfString:@"Channel group" options:NSCaseInsensitiveSearch].location != NSNotFound) {
         
+        // Check whether group exceeded number of channels in it or not
+        if ([errorMessage rangeOfString:@"size exceeded" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+            
+            errorCode = kPNEmptyChannelGroupSizeExceededError;
+        }
         // Check whether group is empty or not
-        if ([errorMessage rangeOfString:@"empty" options:NSCaseInsensitiveSearch].location != NSNotFound ||
+        else if ([errorMessage rangeOfString:@"empty" options:NSCaseInsensitiveSearch].location != NSNotFound ||
             [errorMessage rangeOfString:@"channel" options:NSCaseInsensitiveSearch].location != NSNotFound) {
             
             errorCode = kPNEmptyChannelGroupError;
@@ -280,6 +285,7 @@
             case kPNInvalidSubscribeOrPublishKeyError:
             case kPNRestrictedCharacterInChannelGroupNamespaceNameError:
             case kPNRestrictedCharacterInChannelGroupNameError:
+            case kPNEmptyChannelGroupSizeExceededError:
             case kPNEmptyChannelGroupError:
 
                 errorDescription = @"PubNub service can't process request";
@@ -435,6 +441,10 @@
         case kPNInvalidSubscribeOrPublishKeyError:
 
             failureReason = @"Looks like either the subscribe or publish key is wrong";
+            break;
+        case kPNEmptyChannelGroupSizeExceededError:
+            
+            failureReason = @"Looks like there is too much channels in target group.";
             break;
         case kPNEmptyChannelGroupError:
             
@@ -628,6 +638,11 @@
 
             fixSuggestion = @"Review the request and ensure that the correct keys are referenced.";
             break;
+        case kPNEmptyChannelGroupSizeExceededError:
+            
+            fixSuggestion = @"There is a limit on maximum number of channels which can be added to the group. Try "
+                             "to remove unused channels or create and use another channel group.";
+            break;
         case kPNEmptyChannelGroupError:
             
             fixSuggestion = @"Try to add some channels to channel group before accessing it with other API";
@@ -760,12 +775,8 @@
 - (NSString *)description {
 
     return [NSString stringWithFormat:@"Domain=%@; Code=%ld; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\";"
-                                              " Associated object=%@",
-                                      self.domain,
-                                      (long)self.code,
-                                      [self localizedDescription],
-                                      [self localizedFailureReason],
-                                      [self localizedRecoverySuggestion],
+                                      " Associated object=%@", self.domain, (long)self.code, [self localizedDescription],
+                                      [self localizedFailureReason], [self localizedRecoverySuggestion],
                                       self.associatedObject];
 }
 

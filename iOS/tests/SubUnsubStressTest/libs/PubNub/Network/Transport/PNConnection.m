@@ -621,12 +621,21 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                              (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
                              (status ? status : [NSNull null]), @(connection.state)];
                 }];
-
+                
+                CFReadStreamRef retainedStream = (CFReadStreamRef)CFRetain(stream);
                 [connection pn_dispatchAsynchronouslyBlock:^{
 
                     [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef{
+                        
+                        CFErrorRef cfError = NULL;
+                        if (retainedStream) {
+                            
+                            cfError = CFReadStreamCopyError(retainedStream);
+                        }
+                        CFRelease(retainedStream);
+                        
 
-                        return CFReadStreamCopyError(stream);
+                        return cfError;
                     }];
                 }];
             }
@@ -714,11 +723,20 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                              (status ? status : [NSNull null]), @(connection.state)];
                 }];
 
+                CFWriteStreamRef retainedStream = (CFWriteStreamRef)CFRetain(stream);
                 [connection pn_dispatchAsynchronouslyBlock:^{
 
                     [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef{
+                        
+                        CFErrorRef cfError = NULL;
+                        if (retainedStream) {
+                            
+                            cfError = CFWriteStreamCopyError(retainedStream);
+                        }
+                        CFRelease(retainedStream);
+                        
 
-                        return CFWriteStreamCopyError(stream);
+                        return cfError;
                     }];
                 }];
             }
@@ -1066,7 +1084,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             // Create stream pair on socket which is connected to specified remote host
             CFStreamCreatePairWithSocketToHost(CFAllocatorGetDefault(), (__bridge CFStringRef)(self.configuration.origin),
                                                targetPort, &_socketReadStream, &_socketWriteStream);
-
             [self configureReadStream:_socketReadStream];
             [self configureWriteStream:_socketWriteStream];
 
@@ -2991,7 +3008,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     // Sending error copy request to another thread to make sure that it won't block
     // run-loop (it looks like in case if stream has been reset, CFReadStreamCopyError blocks code execution
     // and may take significant amount of time to return controll back).
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async([self pn_privateQueue], ^{
         
         // There is corner case because of which Apple's C API may block run-loop of the thread on which it has been
         // called for very long period. In normal situation error fetching doesn't take more than few milliseconds.

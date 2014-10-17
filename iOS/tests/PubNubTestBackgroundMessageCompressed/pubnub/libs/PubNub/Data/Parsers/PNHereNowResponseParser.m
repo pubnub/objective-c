@@ -49,8 +49,6 @@
         conforms = (channels ? [channels isKindOfClass:[NSDictionary class]] : conforms);
         if (!channels) {
 
-            id channel = response.additionalData;
-            conforms = (channel ? [channel isKindOfClass:[PNChannel class]] : conforms);
             id identifiers = [responseData objectForKey:kPNResponseUUIDKey];
             id occupancyCount = [responseData objectForKey:kPNResponseOccupancyKey];
             conforms = ((conforms && identifiers) ? [identifiers isKindOfClass:[NSArray class]] : conforms);

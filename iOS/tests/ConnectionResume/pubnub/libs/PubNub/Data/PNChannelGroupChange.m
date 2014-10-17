@@ -7,6 +7,7 @@
 //
 
 #import "PNChannelGroupChange+Protected.h"
+#import "PNChannelGroup.h"
 
 
 #pragma mark Public interface implementation
@@ -35,6 +36,17 @@
     }
     
     return self;
+}
+
+- (NSString *)logDescription {
+    
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
+    return [NSString stringWithFormat:@"<%@|%@|%@>",
+            (self.group ? [self.group performSelector:@selector(logDescription)] : [NSNull null]),
+            (self.channels ? [self.channels performSelector:@selector(logDescription)] : [NSNull null]),
+            @(self.addingChannels)];
+    #pragma clang diagnostic pop
 }
 
 #pragma mark -

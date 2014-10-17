@@ -214,6 +214,43 @@
 @end
 
 
+#pragma mark - UIApplication replacement helper declaration
+
+@implementation PNApplicationHelper : NSObject
+
+
+#pragma mark - Class methods
+
++ (BOOL)pn_canRunInBackground {
+    
+    static BOOL canRunInBackground;
+    static dispatch_once_t dispatchOnceToken;
+    dispatch_once(&dispatchOnceToken, ^{
+        
+        // Retrieve application information Property List
+        NSDictionary *applicationInformation = [[NSBundle mainBundle] infoDictionary];
+        
+        if ([applicationInformation objectForKey:@"UIBackgroundModes"]) {
+            
+            NSArray *backgroundModes = [applicationInformation valueForKey:@"UIBackgroundModes"];
+            NSArray *suitableModes = @[@"audio", @"location", @"voip", @"bluetooth-central", @"bluetooth-peripheral"];
+            [backgroundModes enumerateObjectsUsingBlock:^(id mode, NSUInteger modeIdx, BOOL *modeEnumeratorStop) {
+                
+                canRunInBackground = [suitableModes containsObject:mode];
+                *modeEnumeratorStop = canRunInBackground;
+            }];
+        }
+    });
+    
+    
+    return canRunInBackground;
+}
+
+#pragma mark -
+
+
+@end
+
 
 #pragma mark - Helper private interface declaration
 
