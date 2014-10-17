@@ -19,15 +19,19 @@
 - (CGRect)applicationFrameForCurrentOrientation {
     
     CGRect frame = [self applicationFrame];
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if (UIInterfaceOrientationIsLandscape(orientation)) {
+    NSString *systemVersion = [UIDevice currentDevice].systemVersion;
+    if ([[[systemVersion componentsSeparatedByString:@"."] objectAtIndex:0] integerValue] < 8) {
         
-        frame = (CGRect){(CGPoint){.x = frame.origin.y, .y = frame.origin.x},
-                         (CGSize){.width = frame.size.height, .height = frame.size.width}};
-        
-        if (orientation == UIInterfaceOrientationLandscapeRight && frame.origin.y == 0.0f) {
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsLandscape(orientation)) {
             
-            frame.origin.y = [[UIApplication sharedApplication] statusBarFrame].size.width;
+            frame = (CGRect){(CGPoint){.x = frame.origin.y, .y = frame.origin.x},
+                             (CGSize){.width = frame.size.height, .height = frame.size.width}};
+            
+            if (orientation == UIInterfaceOrientationLandscapeRight && frame.origin.y == 0.0f) {
+                
+                frame.origin.y = [[UIApplication sharedApplication] statusBarFrame].size.width;
+            }
         }
     }
     
@@ -38,25 +42,29 @@
 - (CGRect)normalizedForCurrentOrientationFrame:(CGRect)frame {
     
     CGRect targetFrame = frame;
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if (UIInterfaceOrientationIsLandscape(orientation)) {
+    NSString *systemVersion = [UIDevice currentDevice].systemVersion;
+    if ([[[systemVersion componentsSeparatedByString:@"."] objectAtIndex:0] integerValue] < 8) {
         
-        targetFrame.size = (CGSize){.width = frame.size.height, .height = frame.size.width};
-        if (orientation == UIInterfaceOrientationLandscapeRight && frame.origin.y == 0.0f) {
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsLandscape(orientation)) {
             
-            if (frame.origin.x == 0.0f) {
+            targetFrame.size = (CGSize){.width = frame.size.height, .height = frame.size.width};
+            if (orientation == UIInterfaceOrientationLandscapeRight && frame.origin.y == 0.0f) {
                 
-                CGRect applicationFrame = [self applicationFrameForCurrentOrientation];
-                targetFrame.origin = (CGPoint){.y = (applicationFrame.origin.y + applicationFrame.size.height - targetFrame.size.height)};
+                if (frame.origin.x == 0.0f) {
+                    
+                    CGRect applicationFrame = [self applicationFrameForCurrentOrientation];
+                    targetFrame.origin = (CGPoint){.y = (applicationFrame.origin.y + applicationFrame.size.height - targetFrame.size.height)};
+                }
+                else {
+                    
+                    targetFrame.origin = (CGPoint){.x = frame.origin.y, .y = frame.origin.x};
+                }
             }
             else {
                 
                 targetFrame.origin = (CGPoint){.x = frame.origin.y, .y = frame.origin.x};
             }
-        }
-        else {
-            
-            targetFrame.origin = (CGPoint){.x = frame.origin.y, .y = frame.origin.x};
         }
     }
     

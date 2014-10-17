@@ -1372,6 +1372,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         
         error = (PNError *)notification.userInfo;
         namespace = error.associatedObject;
+        if ([namespace isKindOfClass:[NSArray class]]) {
+            
+            namespace = [(NSArray *)namespace lastObject];
+        }
     }
     
     // Retrieving list of observers (including one time and persistent observers)
@@ -1408,6 +1412,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         
         error = (PNError *)notification.userInfo;
         group = error.associatedObject;
+        if ([group isKindOfClass:[NSArray class]]) {
+            
+            group = [(NSArray *)group lastObject];
+        }
     }
     
     // Retrieving list of observers (including one time and persistent observers)
@@ -1444,6 +1452,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         
         error = (PNError *)notification.userInfo;
         group = (PNChannelGroup *)error.associatedObject;
+        if ([group isKindOfClass:[NSArray class]]) {
+            
+            group = [(NSArray *)group lastObject];
+        }
     }
     
     // Retrieving list of observers (including one time and persistent observers)
