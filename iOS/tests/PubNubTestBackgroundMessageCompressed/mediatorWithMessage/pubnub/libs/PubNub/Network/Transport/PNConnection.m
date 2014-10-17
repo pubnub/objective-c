@@ -3425,7 +3425,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         // Configure security settings
         _streamSecuritySettings = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 6, NULL, NULL);
-        CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLLevel, kCFStreamSocketSecurityLevelSSLv3);
+        CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
         CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLPeerName, kCFNull);
         if (self.sslConfigurationLevel == PNConnectionSSLConfigurationStrict) {
 
