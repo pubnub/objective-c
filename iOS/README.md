@@ -49,7 +49,7 @@ By far the easiest, quickest way to add PubNub.
 +   Add the following to your project's Podfile:
 
 ```
-pod 'PubNub', ‘3.6.7’
+pod 'PubNub', ‘3.6.8’
 ```
 
 +   Run
