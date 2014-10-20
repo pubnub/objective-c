@@ -253,7 +253,6 @@
         clientIdentifier = nil;
     }
     
-    
     if (![[PubNub clientIdentifier] isEqualToString:clientIdentifier]) {
         
         [PubNub setClientIdentifier:clientIdentifier];

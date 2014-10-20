@@ -445,7 +445,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
                // Clean up query (if request has been stored in it)
                [self destroyRequest:request];
-
+                                           
                // Send request back into queue with higher priority among other requests
                [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
                     launchProcessing:NO];
@@ -1996,13 +1996,13 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 }
 
 - (void)connection:(PNConnection *)connection didReconnectToHost:(NSString *)hostName {
-
+    
     self.restoringSubscriptionOnResume = [PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
     [PNBitwiseHelper removeFrom:&_messagingState bits:PNMessagingChannelSubscriptionTimeTokenRetrieve,
      PNMessagingChannelSubscriptionWaitingForEvents, PNMessagingChannelRestoringConnectionTerminatedByServer,
      PNMessagingChannelRestoringSubscription, PNMessagingChannelResubscribeOnTimeOut, BITS_LIST_TERMINATOR];
+    
     if (self.isRestoringSubscriptionOnResume) {
-
         [PNBitwiseHelper addTo:&_messagingState bit:PNMessagingChannelRestoringSubscription];
     }
     
@@ -2049,8 +2049,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     self.restoringSubscriptionOnResume = [PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
     [PNBitwiseHelper clear:&_messagingState];
+    
     if (self.isRestoringSubscriptionOnResume) {
-
         [PNBitwiseHelper addTo:&_messagingState bit:PNMessagingChannelRestoringSubscription];
     }
     
