@@ -4,7 +4,7 @@
  Base class extension which provide methods for history fetching.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.6.9
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PubNub (History)

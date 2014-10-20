@@ -40,7 +40,7 @@
  
  @return Configured and ready to use channel group information view.
  
- @since 3.6.8
+ @since 3.6.9
  */
 + (instancetype)viewFromNibForChannelGroup;
 

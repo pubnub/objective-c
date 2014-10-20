@@ -34,7 +34,7 @@
 /**
  @brief Reference on field which will hold channel namespace name and allow to change it (in case if not subscribed on it).
  
- @since 3.6.8
+ @since 3.6.9
  */
 @property (nonatomic, pn_desired_weak) IBOutlet UITextField *objectNamespaceField;
 

@@ -1,7 +1,7 @@
 /**
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.6.9
  @copyright © 2009-14 PubNub Inc.
  
  */
@@ -51,7 +51,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the group, but for
  channels which is registered under it.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                        clientState:(BOOL)shouldFetchClientState reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -82,7 +82,7 @@
                                     participants list; \c error - describes what exactly went wrong (check error code
                                     and compare it with \b PNErrorCodes ).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)postponeRequestParticipantsListFor:(NSArray *)channelObjects
                  clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired clientState:(BOOL)shouldFetchClientState

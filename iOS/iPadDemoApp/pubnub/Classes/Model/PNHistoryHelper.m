@@ -9,6 +9,36 @@
 #import "PNHistoryHelper.h"
 
 
+#pragma mark Private interface declaration
+
+@interface PNHistoryHelper ()
+
+
+#pragma mark - Properties
+
+/**
+ @brief Stores reference on list of filtered channels on which channel subscribed at this moment.
+ 
+ @since 3.6.9
+ */
+@property (nonatomic,  strong) NSArray *activeChannels;
+
+
+#pragma mark - Instance methods
+
+/**
+ @brief Initialize all required data which is required by helper.
+ 
+ @since 3.6.9
+ */
+- (void)prepareData;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark Public interface implementation
 
 @implementation PNHistoryHelper
@@ -16,9 +46,35 @@
 
 #pragma mark - Instance methods
 
+- (void)awakeFromNib {
+    
+    // Forward to the super class
+    [super awakeFromNib];
+    
+    [self prepareData];
+}
+
+- (void)prepareData {
+    
+    NSMutableArray *filteredChannels = [[PubNub subscribedObjectsList] mutableCopy];
+    
+    [[filteredChannels copy] enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
+                                                          BOOL *objectENumeratorStop) {
+        
+        BOOL isChannelGroup = ([object isKindOfClass:[PNChannelGroupNamespace class]] ||
+                               [object isKindOfClass:[PNChannelGroup class]]);
+        if (isChannelGroup) {
+            
+            [(NSMutableArray *)filteredChannels removeObject:object];
+        }
+    }];
+    
+    self.activeChannels = [filteredChannels copy];
+}
+
 - (NSArray *)channels {
     
-    return [PubNub subscribedObjectsList];
+    return self.activeChannels;
 }
 
 - (void)fetchHistoryWithBlock:(PNClientHistoryLoadHandlingBlock)handlerBlock {

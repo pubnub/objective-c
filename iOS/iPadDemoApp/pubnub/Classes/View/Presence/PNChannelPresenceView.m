@@ -47,7 +47,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
  @brief Reference on field which will hold channel group namespace name and allow to change it (in case if not 
  subscribed on it).
  
- @since 3.6.8
+ @since 3.6.9
  */
 @property (nonatomic, pn_desired_weak) IBOutlet UITextField *objectNamespaceTextField;
 
@@ -90,7 +90,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 /**
  @brief Stores whether view has been loaded for channel group presence information and change
  
- @since 3.6.8
+ @since 3.6.9
  */
 @property (nonatomic, assign, getter = isChannelGroupPresenceInformation) BOOL channelGroupPresenceInformation;
 

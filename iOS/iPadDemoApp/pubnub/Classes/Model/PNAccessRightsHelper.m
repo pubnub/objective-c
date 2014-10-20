@@ -105,28 +105,24 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     
     NSArray *(^activeChannelsFilterBlock)(BOOL) = ^(BOOL onlyChannelGroups) {
         
-        id filteredChannels = [PubNub subscribedObjectsList];
+        NSMutableArray *filteredChannels = [[PubNub subscribedObjectsList] mutableCopy];
         
-        if (onlyChannelGroups) {
+        [[filteredChannels copy] enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
+                                                              BOOL *objectENumeratorStop) {
             
-            filteredChannels = [filteredChannels mutableCopy];
-            [[filteredChannels copy] enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
-                                                                  BOOL *objectENumeratorStop) {
+            BOOL isChannelGroup = ([object isKindOfClass:[PNChannelGroupNamespace class]] ||
+                                   [object isKindOfClass:[PNChannelGroup class]]);
+            if ((!isChannelGroup && onlyChannelGroups) || (isChannelGroup && !onlyChannelGroups)) {
                 
-                if (![object isKindOfClass:[PNChannelGroupNamespace class]] &&
-                    ![object isKindOfClass:[PNChannelGroup class]]) {
-                    
-                    [(NSMutableArray *)filteredChannels removeObject:object];
-                }
-            }];
-        }
-        
+                [filteredChannels removeObject:object];
+            }
+        }];
         
         return filteredChannels;
     };
     if (self.operationMode == PNAccessRightsHelperChannelMode) {
         
-        self.existingData = [NSMutableArray arrayWithArray:[PubNub subscribedObjectsList]];
+        self.existingData = [NSMutableArray arrayWithArray:activeChannelsFilterBlock(NO)];
     }
     else if (self.operationMode == PNAccessRightsHelperChannelGroupMode) {
         
@@ -136,7 +132,8 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
         
         self.existingData = [NSMutableArray array];
     }
-    self.activeChannels = activeChannelsFilterBlock(self.operationMode == PNAccessRightsHelperChannelGroupMode);
+    self.activeChannels = activeChannelsFilterBlock((self.operationMode == PNAccessRightsHelperChannelGroupMode) ||
+                                                    (self.operationMode == PNAccessRightsHelperUserOnChannelGroupMode));
     self.userProvidedChannels = [NSMutableArray array];
     self.dataManipulation = [NSMutableArray array];
 }
@@ -336,7 +333,6 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
 - (void)buildDataTreeForCollection:(PNAccessRightsCollection *)collection {
     
     if (collection) {
-        
         
         NSMutableArray *dataTree = [NSMutableArray array];
         

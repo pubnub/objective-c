@@ -19,21 +19,21 @@
 /**
 @brief Reference on object name which will be used to construct instance based representation.
 
-@since 3.6.8
+@since 3.6.9
 */
 @property (nonatomic, strong) NSString *objectName;
 
 /**
  @brief Reference on object namespace which will be used to construct instance based representation.
  
- @since 3.6.8
+ @since 3.6.9
  */
 @property (nonatomic, strong) NSString *objectNamespace;
 
 /**
  @brief Stores reference on actual data feed object during information browsing.
  
- @since 3.6.8
+ @since 3.6.9
  */
 @property (nonatomic, strong) id <PNChannelProtocol> object;
 

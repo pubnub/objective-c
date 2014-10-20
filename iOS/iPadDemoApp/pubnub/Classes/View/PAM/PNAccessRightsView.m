@@ -140,7 +140,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
  
  @return Constructed and ready to use instance.
  
- @since 3.6.8
+ @since 3.6.9
  */
 + (instancetype)accessRightsViewWithNameFrom:(SEL)nibNameSelector forMode:(PNAccessRightsHelperMode)mode
                                        audit:(BOOL)willAuditAccessRights revoke:(BOOL)willRevokeAccessRights;

@@ -313,7 +313,7 @@
  @param channelObjects    List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which
                           client subscribed.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects;
 
@@ -334,7 +334,7 @@
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which
                        client try to restore subscription.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOn:(NSArray *)channelObjects;
 
@@ -354,7 +354,7 @@
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
                        client did restore subscription.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOn:(NSArray *)channelObjects;
 
@@ -367,7 +367,7 @@
  @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
                \b PNChannelProtocol data feed object protocol) on which client did fail to subscribe.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(PNError *)error;
 
@@ -387,7 +387,7 @@
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) from which 
                        client did unsubscribe.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects;
 
@@ -406,7 +406,7 @@
  @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
                \b PNChannelProtocol data feed object protocol) from which client did fail to unsubscribe.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error;
 
@@ -427,7 +427,7 @@
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
                        \b PubNub client enabled presence observation.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects;
 
@@ -440,7 +440,7 @@
  @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
                \b PNChannelProtocol data feed object protocol) for which client did fail to enable presence observation.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error;
 
@@ -461,7 +461,7 @@
  @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
                        \b PubNub client disabled presence observation.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects;
 
@@ -480,7 +480,7 @@
  @param error  \b PNError instance inside of \c associatedObject property stored list of objects (which conforms to 
                \b PNChannelProtocol data feed object protocol) for which client did fail to disable presence observation.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error;
 
@@ -675,7 +675,7 @@
  @param channelObjects       List of \b PNChannel and \b PNChannelGroup instances on for which \b PubNub client should
                              retrieve information about participants.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
                                                   forObjects:(NSArray *)channelObjects;
@@ -693,7 +693,7 @@
  \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable
  description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadFor:(NSArray *)channelObjects
            withError:(PNError *)error;

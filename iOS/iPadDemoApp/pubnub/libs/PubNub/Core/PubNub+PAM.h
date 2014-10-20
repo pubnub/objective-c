@@ -5,7 +5,7 @@
  Base class extension which provide methods for access rights manipulation.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.6.9
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PubNub (PAM)
@@ -4945,7 +4945,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'application' access level is granted with \a 'read' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:onPeriod:' with PNReadAccessRight to grant read "
@@ -5058,7 +5058,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -5143,7 +5143,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'application' access level is granted with \a 'write' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:onPeriod:' with PNWriteAccessRight to grant write "
@@ -5256,7 +5256,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantWriteAccessRightForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                          andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -5337,7 +5337,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:onPeriod:' with PNAllAccessRights to grant read and"
@@ -5445,7 +5445,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantAllAccessRightsForApplicationAtPeriod:(NSInteger)accessPeriodDuration
                         andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -5518,7 +5518,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)revokeAccessRightsForApplication
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:onPeriod:' with PNNoAccessRights to revoke access "
@@ -5614,7 +5614,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)revokeAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeApplicationAccessRightsTo:onPeriod:andCompletionHandlingBlock:' with "
@@ -5884,7 +5884,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'channel' access level is granted with \a 'read' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsFor:to:onPeriod:' with PNReadAccessRight to grant read-only access"
@@ -5998,7 +5998,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
            withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -6091,7 +6091,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'user' access level is granted with \a 'read' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
@@ -6211,7 +6211,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 client:(NSString *)clientAuthorizationKey
@@ -6300,7 +6300,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'channel' access level is granted with \a 'read' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsFor:to:onPeriod:' with PNReadAccessRight to grant read-only "
@@ -6414,7 +6414,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -6507,7 +6507,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'user' access level is granted with \a 'read' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
@@ -6627,7 +6627,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantReadAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                clients:(NSArray *)clientsAuthorizationKeys
@@ -6716,7 +6716,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'channel' access level is granted with \a 'write' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsFor:to:onPeriod:' with PNWriteAccessRight to grant write-only "
@@ -6830,7 +6830,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
             withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -6927,7 +6927,7 @@
  @param accessPeriodDuration
  Duration in minutes during which \a 'channel' access level is granted with \a 'write' access rights.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
   DEPRECATED_MSG_ATTRIBUTE(" Use '-changeAccessRightsFor:to:onPeriod:' with PNWriteAccessRight to grant write-only "
@@ -7041,7 +7041,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantWriteAccessRightForChannels:(NSArray *)channels forPeriod:(NSInteger)accessPeriodDuration
              withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -7139,7 +7139,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys
@@ -7259,7 +7259,7 @@
  during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
  and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)grantWriteAccessRightForChannel:(PNChannel *)channel forPeriod:(NSInteger)accessPeriodDuration
                                 clients:(NSArray *)clientsAuthorizationKeys
@@ -7395,7 +7395,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)revokeAccessRightsForChannel:(PNChannel *)channel
          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -7497,7 +7497,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)revokeAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -7600,7 +7600,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)revokeAccessRightsForChannels:(NSArray *)channels
           withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock
@@ -8054,7 +8054,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForApplication;
 
@@ -8149,7 +8149,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
 
@@ -8223,7 +8223,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForChannel:(PNChannel *)channel
   DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsFor:' instead");
@@ -8326,7 +8326,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForChannel:(PNChannel *)channel
         withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock
@@ -8404,7 +8404,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
   DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsFor:clients:' instead");
@@ -8510,7 +8510,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForChannel:(PNChannel *)channel client:(NSString *)clientAuthorizationKey
         withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock
@@ -8586,7 +8586,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForChannels:(NSArray *)channels
   DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsFor:' instead.");
@@ -8763,7 +8763,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForChannels:(NSArray *)channels
          withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock
@@ -8941,7 +8941,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
   DEPRECATED_MSG_ATTRIBUTE(" Use '-auditAccessRightsFor:clients:' instead.");
@@ -9120,7 +9120,7 @@
  @warning As soon as "Access Manager" will be enabled, all \b PubNub clients won't be able to subscribe / publish to
  any channels till the moment, when access rights will be configured.
 
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)auditAccessRightsForChannel:(PNChannel *)channel clients:(NSArray *)clientsAuthorizationKeys
         withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock

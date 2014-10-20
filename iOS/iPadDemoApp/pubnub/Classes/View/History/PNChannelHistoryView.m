@@ -407,9 +407,11 @@ typedef enum _PNHistoryMode {
                 [weakSelf.consoleView setOutputTo:@""];
                 [weakSelf showNewMessages:messages];
             }
-            
-            weakSelf.historyHelper.startDate = (isValidStartDate ? startDate : weakSelf.historyHelper.startDate);
-            weakSelf.historyHelper.endDate = (isValidEndDate ? endDate : weakSelf.historyHelper.endDate);
+            if (self.mode == PNPeriodChannelHistoryMode) {
+                
+                weakSelf.historyHelper.startDate = (isValidStartDate ? startDate : weakSelf.historyHelper.startDate);
+                weakSelf.historyHelper.endDate = (isValidEndDate ? endDate : weakSelf.historyHelper.endDate);
+            }
         }
         else {
             

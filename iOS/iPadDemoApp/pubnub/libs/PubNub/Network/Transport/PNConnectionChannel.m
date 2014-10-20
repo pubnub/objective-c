@@ -198,7 +198,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
  @discussion Connection initialization required before usage. In case if there is no previous connection instance, it 
  will be created with current channel configuration.
  
- @since 3.6.8
+ @since 3.6.9
  */
 - (void)prepareConnectionIfRequired;
 

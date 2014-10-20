@@ -36,7 +36,7 @@
 /**
  @brief Stores reference on channel group with channel for whic message has been received.
  
- @since 3.6.8
+ @since 3.6.9
  */
 @property (nonatomic, readonly, strong) PNChannelGroup *channelGroup;
 
