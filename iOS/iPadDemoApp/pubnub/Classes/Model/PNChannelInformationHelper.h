@@ -17,9 +17,25 @@
 #pragma mark - Properties
 
 /**
- Stores reference on channel name which will be used to create new instance.
+@brief Reference on object name which will be used to construct instance based representation.
+
+@since 3.7.0
+*/
+@property (nonatomic, strong) NSString *objectName;
+
+/**
+ @brief Reference on object namespace which will be used to construct instance based representation.
+ 
+ @since 3.7.0
  */
-@property (nonatomic, strong) NSString *channelName;
+@property (nonatomic, strong) NSString *objectNamespace;
+
+/**
+ @brief Stores reference on actual data feed object during information browsing.
+ 
+ @since 3.7.0
+ */
+@property (nonatomic, strong) id <PNChannelProtocol> object;
 
 /**
  Stores whether channel should observe for presence events or not.
@@ -37,39 +53,39 @@
 #pragma mark - Instance methods
 
 /**
- Allow to check whether valid information has been provided for new channel creation or not.
+ Allow to check whether valid information has been provided for new data feed objecr creation or not.
  
- @return \c YES if provided data can be used to create new channel which can be used in future.
+ @return \c YES if provided data can be used to create new data feed object which can be used in future.
  */
-- (BOOL)canCreateChannel;
+- (BOOL)canCreateObject;
 
 /**
- Allow to check whether presence observation for channel should be changed or not.
+ Allow to check whether presence observation for data feed object should be changed or not.
  
  @return \c YES in case if presence observation has been changed by user.
  */
 - (BOOL)shouldChangePresenceObservationState;
 
 /**
- Allow to check whether channel state information changed and should be updated on server or not.
+ Allow to check whether data feed object state information changed and should be updated on server or not.
  
  @return \c YES if user altered client state or not.
  */
-- (BOOL)shouldChangeChannelState;
+- (BOOL)shouldChangeObjectState;
 
 /**
- Validate state which is provided for channel.
+ Validate state which is provided for object.
  
  @return \c YES if state conforms to all requirements and can be used or not.
  */
-- (BOOL)isChannelStateValid;
+- (BOOL)isObjectStateValid;
 
 /**
- Allow to check whether channel information changed or not.
+ Allow to check whether object information changed or not.
  
- @return \c YES if any information for existing channel changed (presence observation state, state information).
+ @return \c YES if any information for existing object changed (presence observation state, state information).
  */
-- (BOOL)isChannelInformationChanged;
+- (BOOL)isObjectInformationChanged;
 
 /**
  Clean up any warnings which has been set during previous actions.

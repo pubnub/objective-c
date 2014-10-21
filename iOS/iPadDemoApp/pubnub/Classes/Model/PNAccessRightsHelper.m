@@ -7,6 +7,7 @@
 //
 
 #import "PNAccessRightsHelper.h"
+#import "PNChannelProtocol.h"
 
 
 #pragma mark Structures
@@ -23,12 +24,14 @@ struct PNAccessRightsSectionNamesStruct {
     
     __unsafe_unretained NSString *application;
     __unsafe_unretained NSString *channel;
+    __unsafe_unretained NSString *channelGroup;
     __unsafe_unretained NSString *user;
 };
 
 static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     .application = @"Application access rights",
     .channel = @"Channel(s) access rights",
+    .channelGroup = @"Channel group(s) access rights",
     .user = @"User(s) access rights"
 };
 
@@ -100,15 +103,37 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
 
 - (void)prepareData {
     
+    NSArray *(^activeChannelsFilterBlock)(BOOL) = ^(BOOL onlyChannelGroups) {
+        
+        NSMutableArray *filteredChannels = [[PubNub subscribedObjectsList] mutableCopy];
+        
+        [[filteredChannels copy] enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
+                                                              BOOL *objectENumeratorStop) {
+            
+            BOOL isChannelGroup = ([object isKindOfClass:[PNChannelGroupNamespace class]] ||
+                                   [object isKindOfClass:[PNChannelGroup class]]);
+            if ((!isChannelGroup && onlyChannelGroups) || (isChannelGroup && !onlyChannelGroups)) {
+                
+                [filteredChannels removeObject:object];
+            }
+        }];
+        
+        return filteredChannels;
+    };
     if (self.operationMode == PNAccessRightsHelperChannelMode) {
         
-        self.existingData = [NSMutableArray arrayWithArray:[PubNub subscribedChannels]];
+        self.existingData = [NSMutableArray arrayWithArray:activeChannelsFilterBlock(NO)];
+    }
+    else if (self.operationMode == PNAccessRightsHelperChannelGroupMode) {
+        
+        self.existingData = (NSMutableArray *)activeChannelsFilterBlock(YES);
     }
     else {
         
         self.existingData = [NSMutableArray array];
     }
-    self.activeChannels = [PubNub subscribedChannels];
+    self.activeChannels = activeChannelsFilterBlock((self.operationMode == PNAccessRightsHelperChannelGroupMode) ||
+                                                    (self.operationMode == PNAccessRightsHelperUserOnChannelGroupMode));
     self.userProvidedChannels = [NSMutableArray array];
     self.dataManipulation = [NSMutableArray array];
 }
@@ -122,7 +147,9 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     
     if (![self.existingData containsObject:object]) {
         
-        if (![self.userProvidedChannels containsObject:object] && self.operationMode == PNAccessRightsHelperChannelMode) {
+        if (![self.userProvidedChannels containsObject:object] &&
+            (self.operationMode == PNAccessRightsHelperChannelMode ||
+             self.operationMode == PNAccessRightsHelperChannelGroupMode)) {
             
             [self.userProvidedChannels addObject:object];
         }
@@ -138,7 +165,8 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
         [self.userProvidedChannels removeObject:object];
         [self.existingData removeObject:object];
     }
-    if (self.operationMode != PNAccessRightsHelperChannelMode) {
+    if (self.operationMode != PNAccessRightsHelperChannelMode &&
+        self.operationMode != PNAccessRightsHelperChannelGroupMode) {
         
         [self.existingData removeObject:object];
     }
@@ -159,7 +187,8 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     BOOL isAbleToChangeAccessRights = self.operationMode == PNAccessRightsHelperApplicationMode;
     if (!isAbleToChangeAccessRights) {
         
-        if (self.operationMode == PNAccessRightsHelperChannelMode) {
+        if (self.operationMode == PNAccessRightsHelperChannelMode ||
+            self.operationMode == PNAccessRightsHelperChannelGroupMode) {
             
             isAbleToChangeAccessRights  = ([self.dataManipulation count] > 0);
         }
@@ -176,6 +205,15 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
 - (void)performRequestWithBlock:(void(^)(NSError *))handlerBlock {
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
+    id <PNChannelProtocol> object = nil;
+    if (self.operationMode == PNAccessRightsHelperUserOnChannelMode) {
+        
+        object = [PNChannel channelWithName:self.channelName];
+    }
+    else if (self.operationMode == PNAccessRightsHelperUserOnChannelGroupMode){
+        
+        object = [PNChannelGroup channelGroupWithName:self.channelName];
+    }
     if (self.isAuditingAccessRights) {
         
         PNClientChannelAccessRightsAuditBlock requestHandlerBlock = ^(PNAccessRightsCollection *collection, PNError *requestError) {
@@ -193,13 +231,15 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                 [PubNub auditAccessRightsForApplicationWithCompletionHandlingBlock:requestHandlerBlock];
                 break;
             case PNAccessRightsHelperChannelMode:
+            case PNAccessRightsHelperChannelGroupMode:
                 
-                [PubNub auditAccessRightsForChannels:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
+                [PubNub auditAccessRightsFor:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
                 break;
-            case PNAccessRightsHelperUserMode:
-                
-                [PubNub auditAccessRightsForChannel:[PNChannel channelWithName:self.channelName]
-                                            clients:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
+            case PNAccessRightsHelperUserOnChannelMode:
+            case PNAccessRightsHelperUserOnChannelGroupMode:
+                    
+                [PubNub auditAccessRightsFor:object clients:self.dataManipulation
+                 withCompletionHandlingBlock:requestHandlerBlock];
                 break;
                 
             default:
@@ -217,89 +257,48 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
             }
         };
         
-        BOOL isAllAccessRights = self.shouldAllowRead && self.shouldAllowWrite;
+        NSInteger duration = self.accessRightsApplicationDuration;
+        PNAccessRights rights = PNUnknownAccessRights;
+        if (!self.isRevokingAccessRights &&
+            (self.shouldAllowRead || self.shouldAllowWrite || self.shouldAllowManagement)) {
+            
+            if (self.shouldAllowRead) {
+                
+                rights |= PNReadAccessRight;
+            }
+            if (self.shouldAllowWrite) {
+                
+                rights |= PNWriteAccessRight;
+            }
+            if (self.shouldAllowManagement) {
+                
+                rights |= PNManagementRight;
+            }
+        }
+        if (rights == PNUnknownAccessRights) {
+            
+            duration = 0;
+            rights = PNNoAccessRights;
+        }
+        
         switch (self.operationMode) {
+                
             case PNAccessRightsHelperApplicationMode:
                 
-                if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
-                    
-                    if (isAllAccessRights) {
-                        
-                        [PubNub grantAllAccessRightsForApplicationAtPeriod:self.accessRightsApplicationDuration
-                                                andCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                    else if (self.shouldAllowRead) {
-                        
-                        [PubNub grantReadAccessRightForApplicationAtPeriod:self.accessRightsApplicationDuration
-                                                andCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                    else {
-                        
-                        [PubNub grantWriteAccessRightForApplicationAtPeriod:self.accessRightsApplicationDuration
-                                                 andCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                }
-                else {
-                    
-                    [PubNub revokeAccessRightsForApplicationWithCompletionHandlingBlock:requestHandlerBlock];
-                }
+                [PubNub changeApplicationAccessRightsTo:rights onPeriod:duration
+                             andCompletionHandlingBlock:requestHandlerBlock];
                 break;
             case PNAccessRightsHelperChannelMode:
-                
-                if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
-                    
-                    if (isAllAccessRights) {
-                        
-                        [PubNub grantAllAccessRightsForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
-                                    withCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                    else if (self.shouldAllowRead) {
-                        
-                        [PubNub grantReadAccessRightForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
-                                    withCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                    else {
-                        
-                        [PubNub grantWriteAccessRightForChannels:self.dataManipulation forPeriod:self.accessRightsApplicationDuration
-                                     withCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                }
-                else {
-                    
-                    [PubNub revokeAccessRightsForChannels:self.dataManipulation withCompletionHandlingBlock:requestHandlerBlock];
-                }
+            case PNAccessRightsHelperChannelGroupMode:
+
+                [PubNub changeAccessRightsFor:self.dataManipulation to:rights onPeriod:duration
+                  withCompletionHandlingBlock:requestHandlerBlock];
                 break;
-            case PNAccessRightsHelperUserMode:
+            case PNAccessRightsHelperUserOnChannelMode:
+            case PNAccessRightsHelperUserOnChannelGroupMode:
                 
-                if (!self.isRevokingAccessRights && (self.shouldAllowRead || self.shouldAllowWrite)) {
-                    
-                    if (isAllAccessRights) {
-                        
-                        [PubNub grantAllAccessRightsForChannel:[PNChannel channelWithName:self.channelName]
-                                                     forPeriod:self.accessRightsApplicationDuration
-                                                       clients:self.dataManipulation
-                                   withCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                    else if (self.shouldAllowRead) {
-                        
-                        [PubNub grantReadAccessRightForChannel:[PNChannel channelWithName:self.channelName]
-                                                     forPeriod:self.accessRightsApplicationDuration
-                                                       clients:self.dataManipulation
-                                   withCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                    else {
-                        
-                        [PubNub grantWriteAccessRightForChannel:[PNChannel channelWithName:self.channelName]
-                                                      forPeriod:self.accessRightsApplicationDuration
-                                                        clients:self.dataManipulation
-                                    withCompletionHandlingBlock:requestHandlerBlock];
-                    }
-                }
-                else {
-                    
-                    [PubNub revokeAccessRightsForChannel:[PNChannel channelWithName:self.channelName] clients:self.dataManipulation
-                             withCompletionHandlingBlock:requestHandlerBlock];
-                }
+                [PubNub changeAccessRightsForClients:self.dataManipulation object:object to:rights onPeriod:duration
+                         withCompletionHandlingBlock:requestHandlerBlock];
                 break;
                 
             default:
@@ -335,7 +334,6 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     
     if (collection) {
         
-        
         NSMutableArray *dataTree = [NSMutableArray array];
         
         NSArray *channelAccessRightsInformationList = [collection accessRightsInformationForAllChannels];
@@ -366,7 +364,7 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                                              PNAccessRightsDataKeys.entrieShouldIndent: @(NO)
                                              }];
                     
-                    NSArray *clientsForChannel = [collection accessRightsForClientsOnChannel:channelAccessRightsInformation.channel];
+                    NSArray *clientsForChannel = [collection accessRightsForClientsOnChannel:channelAccessRightsInformation.object];
                     [clientsForChannel enumerateObjectsUsingBlock:^(PNAccessRightsInformation *clientAccessRightsInformation,
                                                                     NSUInteger clientAccessRightsInformationIdx,
                                                                     BOOL *clientAccessRightsInformationEnumeratorStop) {
@@ -377,10 +375,16 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                     }];
                     
                 }];
+                
+                NSString *sectionName = PNAccessRightsSectionNames.channel;
+                if (collection.level == PNChannelGroupAccessRightsLevel) {
+                    
+                    sectionName = PNAccessRightsSectionNames.channelGroup;
+                }
                 [dataTree addObject:@{
-                                      PNAccessRightsDataKeys.sectionName: PNAccessRightsSectionNames.channel,
+                                      PNAccessRightsDataKeys.sectionName: sectionName,
                                       PNAccessRightsDataKeys.sectionData: sectionData
-                                      }];
+                                     }];
             }
         }
         else {

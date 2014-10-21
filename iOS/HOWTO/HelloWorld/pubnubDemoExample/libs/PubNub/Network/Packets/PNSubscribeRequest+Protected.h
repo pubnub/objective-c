@@ -33,6 +33,12 @@
  */
 @property (nonatomic, strong) NSDictionary *state;
 
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, assign) NSInteger presenceHeartbeatTimeout;
+@property (nonatomic, copy) NSString *subscriptionKey;
+
 
 #pragma mark - Instance methods
 

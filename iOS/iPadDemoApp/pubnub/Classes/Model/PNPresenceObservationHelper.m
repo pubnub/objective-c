@@ -51,7 +51,7 @@
 
 - (void)prepareData {
     
-    self.existingChannels = ([[PubNub subscribedChannels] count] ? [[PubNub subscribedChannels] mutableCopy] : [NSMutableArray array]);
+    self.existingChannels = ([[PubNub subscribedObjectsList] count] ? [[PubNub subscribedObjectsList] mutableCopy] : [NSMutableArray array]);
     // Don't use this method (private PubNub API)
     NSArray *presenceEnabledChannels = [[PubNub sharedInstance] valueForKeyPath:@"presenceEnabledChannels"];
     
@@ -147,13 +147,13 @@
     };
     if (self.isEnablingPresenceObservation) {
         
-        [PubNub enablePresenceObservationForChannels:self.channelsForPresenceManipulation
-                         withCompletionHandlingBlock:completionHandler];
+        [PubNub enablePresenceObservationFor:self.channelsForPresenceManipulation
+                 withCompletionHandlingBlock:completionHandler];
     }
     else {
         
-        [PubNub disablePresenceObservationForChannels:self.channelsForPresenceManipulation
-                          withCompletionHandlingBlock:completionHandler];
+        [PubNub disablePresenceObservationFor:self.channelsForPresenceManipulation
+                  withCompletionHandlingBlock:completionHandler];
     }
 }
 

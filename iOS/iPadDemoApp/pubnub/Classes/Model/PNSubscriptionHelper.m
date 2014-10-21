@@ -57,7 +57,7 @@
 
 - (void)addChannel:(PNChannel *)channel withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObservePresence {
     
-    if (channel && ![PubNub isSubscribedOnChannel:channel]) {
+    if (channel && ![PubNub isSubscribedOn:channel]) {
         
         if (![self.channels containsObject:channel]) {
             
@@ -108,8 +108,9 @@
 
 - (void)reset {
     
+    [self.states removeAllObjects];
     [self.channels removeAllObjects];
-    [self.channels removeAllObjects];
+    [self.presenceObservation removeAllObjects];
 }
 
 #pragma mark -

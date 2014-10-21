@@ -13,6 +13,7 @@
 #import "PNAccessRightsView.h"
 #import "NSString+PNLocalization.h"
 #import "PNConfigurationDelegate.h"
+#import "PNChannelRegistryView.h"
 #import "PNChannelPresenceView.h"
 #import "PNGlobalPresenceView.h"
 #import "PNClientChannelsView.h"
@@ -23,7 +24,7 @@
 #import "PNClientStateView.h"
 #import "PNInformationView.h"
 #import "PNSubscribeView.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNConsoleView.h"
 #import "PNDataManager.h"
 #import "PNAlertView.h"
@@ -223,88 +224,169 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
 
 #pragma mark - Handler methods
 
+- (void)addChannelGroupChannels:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupChannelsAdd] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                          animated:YES];
+}
+
+- (void)removeChannelGroupChannels:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupChannelsRemove] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                             animated:YES];
+}
+
+- (void)fetchChannelGroupChannels:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupChannelsAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                            animated:YES];
+}
+
+- (void)removeChannelGroup:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupRemove] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                     animated:YES];
+}
+
+- (void)fetchChannelGroups:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForChannelGroupAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                    animated:YES];
+}
+
+- (void)removeChannelGroupNamespace:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForNamespaceRemove] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                  animated:YES];
+}
+
+- (void)fetchChannelGroupNamespaces:(id)sender {
+    
+    [[PNChannelRegistryView viewFromNibForNamespaceAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                 animated:YES];
+}
+
 - (void)globalParticipantsList:(id)sender {
     
-    PNGlobalPresenceView *globalPresenceView = [PNGlobalPresenceView viewFromNib];
-    [globalPresenceView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNGlobalPresenceView viewFromNib] showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
 - (void)channelParticipantsList:(id)sender {
     
-    PNChannelPresenceView *channelPresence = [PNChannelPresenceView viewFromNib];
-    [channelPresence showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNChannelPresenceView viewFromNib] showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+}
+
+- (void)channelGroupParticipantsList:(id)sender {
+    
+    [[PNChannelPresenceView viewFromNibForChannelGroup] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                               animated:YES];
 }
 
 - (void)clientChannelsList:(id)sender {
     
-    PNClientChannelsView *clientChannels = [PNClientChannelsView viewFromNib];
-    [clientChannels showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNClientChannelsView viewFromNib] showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
 }
 
 - (void)fetchFullHistory:(id)sender {
     
-    PNChannelHistoryView *historyView = [PNChannelHistoryView viewFromNibForFullChannelHistory];
-    [historyView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNChannelHistoryView viewFromNibForFullChannelHistory] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                    animated:YES];
 }
 
 - (void)fetchHistory:(id)sender {
     
-    PNChannelHistoryView *historyView = [PNChannelHistoryView viewFromNibForChannelHistory];
-    [historyView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNChannelHistoryView viewFromNibForChannelHistory] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                animated:YES];
 }
 
 - (void)grantApplicationAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForApplicationGrant];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForApplicationGrant] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                animated:YES];
 }
 
 - (void)grantChannelAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForChannelGrant];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelGrant] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                            animated:YES];
 }
 
-- (void)grantUserAccessRights:(id)sender {
+- (void)grantChannelGroupAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForUserGrant];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelGroupGrant] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                 animated:YES];
+}
+
+- (void)grantUserAccessRightsOnChannel:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserGrantOnChannel] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                  animated:YES];
+}
+
+- (void)grantUserAccessRightsOnChannelGroup:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserGrantOnChannelGroup] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                       animated:YES];
 }
 
 - (void)revokeApplicationAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForApplicationRevoke];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForApplicationRevoke] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                 animated:YES];
 }
 
 - (void)revokeChannelAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForChannelRevoke];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelRevoke] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                             animated:YES];
 }
 
-- (void)revokeUserAccessRights:(id)sender {
+- (void)revokeChannelGroupAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForUserRevoke];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelGroupRevoke] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                  animated:YES];
+}
+
+- (void)revokeUserAccessRightsOnChannel:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserRevokeOnChannel] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                   animated:YES];
+}
+
+- (void)revokeUserAccessRightsOnChannelGroup:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserRevokeOnChannelGroup] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                        animated:YES];
 }
 
 - (void)auditApplicationAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForApplicationAudit];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForApplicationAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                animated:YES];
 }
 
 - (void)auditChannelAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForChannelAudit];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                            animated:YES];
 }
 
-- (void)auditUserAccessRights:(id)sender {
+- (void)auditChannelGroupAccessRights:(id)sender {
     
-    PNAccessRightsView *rightsView = [PNAccessRightsView viewFromNibForUserAudit];
-    [rightsView showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    [[PNAccessRightsView viewFromNibForChannelGroupAudit] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                 animated:YES];
+}
+
+- (void)auditUserAccessRightsOnChannel:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserAuditOnChannel] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                  animated:YES];
+}
+
+- (void)auditUserAccessRightsOnChannelGroup:(id)sender {
+    
+    [[PNAccessRightsView viewFromNibForUserAuditOnChannelGroup] showWithOptions:PNViewAnimationOptionTransitionFadeIn
+                                                                       animated:YES];
 }
 
 - (void)enablePushNotifications:(id)sender {
@@ -614,7 +696,7 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
         
         [self.channelsTableView reloadData];
         
-        if ([[PubNub subscribedChannels] count]) {
+        if ([[PubNub subscribedObjectsList] count]) {
             
             PNChannel *currentChannel = [[PNDataManager sharedInstance] currentChannel];
             
@@ -651,9 +733,9 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     
     NSArray *channels = [[PNDataManager sharedInstance] subscribedChannelsList];
     NSArray *visibleCells = [self.channelsTableView visibleCells];
-    [visibleCells enumerateObjectsUsingBlock:^(PNChannelCell *cell, NSUInteger cellIdx, BOOL *cellsEnumeratorStop) {
+    [visibleCells enumerateObjectsUsingBlock:^(PNObjectCell *cell, NSUInteger cellIdx, BOOL *cellsEnumeratorStop) {
         
-        [cell updateForChannel:[channels objectAtIndex:cellIdx]];
+        [cell updateForObject:[channels objectAtIndex:cellIdx]];
     }];
 }
 
@@ -669,19 +751,24 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     
     BOOL isSubscribed = [[PNDataManager sharedInstance].subscribedChannelsList count] > 0;
     BOOL isChannelSelected = [PNDataManager sharedInstance].currentChannel != nil;
+    BOOL isChannelGroupSelected = (isChannelSelected && [[PNDataManager sharedInstance].currentChannel isKindOfClass:[PNChannelGroup class]]);
     BOOL isEmptyMessage = message == nil || [message pn_isEmpty];
     
     if (!isChannelSelected) {
         
         self.messageInputField.placeholder = @"Select channel on right side to be able send messages.";
     }
+    else if (isChannelGroupSelected) {
+        
+        self.messageInputField.placeholder = @"Messages can't be sent into channel group.";
+    }
     else {
         
         self.messageInputField.placeholder = nil;
     }
     
-    self.sendButton.enabled = isSubscribed && !isEmptyMessage && isChannelSelected;
-    self.messageInputField.enabled = isSubscribed && isChannelSelected;
+    self.sendButton.enabled = isSubscribed && !isEmptyMessage && isChannelSelected && !isChannelGroupSelected;
+    self.messageInputField.enabled = isSubscribed && isChannelSelected && !isChannelGroupSelected;
 }
 
 
@@ -763,15 +850,15 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *channelCellIdentifier = @"channelCell";
-    PNChannelCell *cell = (PNChannelCell *)[tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
+    PNObjectCell *cell = (PNObjectCell *)[tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
     
     if(!cell) {
         
         // Create new cell instance copy
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
     }
     PNChannel *channel = [[PNDataManager sharedInstance].subscribedChannelsList objectAtIndex:indexPath.row];
-    [(PNChannelCell *)cell updateForChannel:channel];
+    [(PNObjectCell *)cell updateForObject:channel];
     ((UITableViewCell *)cell).selected = [channel.name isEqualToString:[[PNDataManager sharedInstance] currentChannel].name];
     
     
@@ -792,8 +879,8 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
             
             [PNDataManager sharedInstance].currentChannel = nil;
         }
-        
-        [PubNub unsubscribeFromChannel:channel];
+
+        [PubNub unsubscribeFrom:@[channel]];
     }
 }
 

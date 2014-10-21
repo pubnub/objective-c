@@ -8,6 +8,7 @@
 
 #import "PNChannelInformationHelper.h"
 #import "PNChannelInformationHelperDelegate.h"
+#import "PNChannelGroup.h"
 
 // Don't use this category on your own, because interface can be changed (private).
 #import "NSDictionary+PNAdditions.h"
@@ -26,6 +27,18 @@
 @property (nonatomic, pn_desired_weak) IBOutlet id<PNChannelInformationHelperDelegate> delegate;
 
 /**
+ Stores reference on field which will hold channel name and allow to change it (in case if channel not subscribed on it).
+ */
+@property (nonatomic, pn_desired_weak) IBOutlet UITextField *objectNameField;
+
+/**
+ @brief Reference on field which will hold channel namespace name and allow to change it (in case if not subscribed on it).
+ 
+ @since 3.7.0
+ */
+@property (nonatomic, pn_desired_weak) IBOutlet UITextField *objectNamespaceField;
+
+/**
  Stores reference on original state (assigned at the moment when state set for first time).
  */
 @property (nonatomic, strong) NSDictionary *originalState;
@@ -33,7 +46,7 @@
 /**
  Stores whether malformed client state has been provided or not.
  */
-@property (nonatomic, assign, getter = isValidChannelStateProvided) BOOL validChannelStateProvided;
+@property (nonatomic, assign, getter = isValidObjectStateProvided) BOOL validObjectStateProvided;
 
 
 #pragma mark - Instance methods
@@ -60,7 +73,7 @@
     // Forward method call to the super class
     [super awakeFromNib];
     
-    self.validChannelStateProvided = YES;
+    self.validObjectStateProvided = YES;
 }
 
 - (void)setState:(NSDictionary *)state {
@@ -72,36 +85,71 @@
     }
 }
 
-- (BOOL)canCreateChannel {
+- (id<PNChannelProtocol>)object {
     
-    BOOL canCreateChannel = (self.channelName ? ![self.channelName pn_isEmpty] : NO);
-    if (canCreateChannel && self.state != nil) {
+    id <PNChannelProtocol> object = nil;
+    if (_object) {
         
-        canCreateChannel = [self.state isKindOfClass:[NSDictionary class]];
+        object = _object;
+    }
+    else {
+        
+        if ([self canCreateObject]) {
+            
+            BOOL hasVaildName = self.objectName && ![self.objectName pn_isEmpty];
+            BOOL hasVaildNamespace = self.objectNamespace && ![self.objectNamespace pn_isEmpty];
+            if (self.objectNamespaceField) {
+                
+                if (hasVaildName || hasVaildNamespace) {
+                    
+                    object = [PNChannelGroup channelGroupWithName:self.objectName inNamespace:self.objectNamespace];
+                }
+            }
+            else if(hasVaildName) {
+                
+                object = [PNChannel channelWithName:self.objectName];
+            }
+        }
     }
     
     
-    return canCreateChannel;
+    return object;
+}
+
+- (BOOL)canCreateObject {
+    
+    BOOL canCreateObject = (self.objectName ? ![self.objectName pn_isEmpty] : NO);
+    if (self.objectNamespaceField) {
+        
+        canCreateObject = (!canCreateObject ? (self.objectNamespace ? ![self.objectNamespace pn_isEmpty] : NO) : canCreateObject);
+    }
+    if (canCreateObject && self.state != nil) {
+        
+        canCreateObject = [self.state isKindOfClass:[NSDictionary class]];
+    }
+    
+    
+    return canCreateObject;
 }
 
 - (BOOL)shouldChangePresenceObservationState {
     
     BOOL shouldChangePresenceObservationState = NO;
-    PNChannel *channel = (self.channelName && ![self.channelName pn_isEmpty] ? [PNChannel channelWithName:self.channelName] : nil);
-    if (channel && [PubNub isSubscribedOnChannel:channel]) {
+    id <PNChannelProtocol> object = self.object;
+    if (object && [PubNub isSubscribedOn:object]) {
         
-        shouldChangePresenceObservationState = self.observePresence != [PubNub isPresenceObservationEnabledForChannel:channel];
+        shouldChangePresenceObservationState = self.shouldObservePresence != [PubNub isPresenceObservationEnabledFor:object];
     }
     
     
     return shouldChangePresenceObservationState;
 }
 
-- (BOOL)shouldChangeChannelState {
+- (BOOL)shouldChangeObjectState {
     
     BOOL shouldChangeChannelState = NO;
-    PNChannel *channel = (self.channelName && ![self.channelName pn_isEmpty] ? [PNChannel channelWithName:self.channelName] : nil);
-    if (channel && [PubNub isSubscribedOnChannel:channel]) {
+    id <PNChannelProtocol> object = self.object;
+    if (object && [PubNub isSubscribedOn:object]) {
         
         shouldChangeChannelState = [self.state isEqualToDictionary:self.originalState];
     }
@@ -110,31 +158,31 @@
     return shouldChangeChannelState;
 }
 
-- (BOOL)isChannelStateValid {
+- (BOOL)isObjectStateValid {
     
-    BOOL isChannelStateValid = YES;
-    if (self.channelName) {
+    BOOL isObjectStateValid = YES;
+    if ([self canCreateObject]) {
         
-        // Checking whether user provided suitable channel state data or not.
-        if (self.isValidChannelStateProvided) {
+        // Checking whether user provided suitable object state data or not.
+        if (self.isValidObjectStateProvided) {
             
             // Checking whether user provided some data or not
             if (self.state) {
                 
-                isChannelStateValid = [@{self.channelName : self.state} pn_isValidState];
+                isObjectStateValid = [@{@"" : self.state} pn_isValidState];
             }
         }
         else {
             
-            isChannelStateValid = NO;
+            isObjectStateValid = NO;
         }
     }
     
     
-    return isChannelStateValid;
+    return isObjectStateValid;
 }
 
-- (BOOL)isChannelInformationChanged {
+- (BOOL)isObjectInformationChanged {
     
     BOOL isChannelInformationChanged = [self shouldChangePresenceObservationState];
     if (!isChannelInformationChanged) {
@@ -148,7 +196,7 @@
 
 - (void)resetWarnings {
     
-    self.validChannelStateProvided = YES;
+    self.validObjectStateProvided = YES;
 }
 
 #pragma mark - Handler methods
@@ -164,15 +212,23 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
-    self.channelName = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    [self.delegate channelNameDidChange];
+    if ([textField isEqual:self.objectNameField]) {
+        
+        self.objectName = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    }
+    else {
+        
+        self.objectNamespace = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    }
     
-    return NO;
+    
+    return YES;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
+    [self.delegate channelNameDidChange];
     
     
     return YES;
@@ -202,6 +258,14 @@
     return shouldHandleByDefault;
 }
 
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
+    
+    [textView resignFirstResponder];
+    
+    
+    return YES;
+}
+
 - (void)textViewDidEndEditing:(UITextView *)textView {
     
     if (textView.text.length > 0) {
@@ -211,18 +275,18 @@
                                                               options:(NSJSONReadingOptions)0 error:&serializationError];
         if (!serializationError && state) {
             
-            self.validChannelStateProvided = YES;
+            self.validObjectStateProvided = YES;
             self.state = [state count] ? state : nil;
         }
         else {
             
-            self.validChannelStateProvided = NO;
+            self.validObjectStateProvided = NO;
         }
     }
     else {
         
         self.state = nil;
-        self.validChannelStateProvided = YES;
+        self.validObjectStateProvided = YES;
     }
     
     

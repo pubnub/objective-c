@@ -29,6 +29,8 @@ Pod::Spec.new do |s|
    'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Channels/Presence',
    'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Parsers',
    'PNConstants.h'
+   
+   s.resources = 'iOS/iPadDemoApp/pubnub/libs/PubNub/Resources/*'
 
   s.ios.deployment_target = '5.1'
   s.osx.deployment_target = '10.7'

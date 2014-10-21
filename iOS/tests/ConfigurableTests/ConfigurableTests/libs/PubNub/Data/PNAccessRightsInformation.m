@@ -55,7 +55,7 @@
         self.level = level;
         self.rights = rights;
         self.subscriptionKey = subscriptionKey;
-        self.channel = channel;
+        self.object = channel;
         self.authorizationKey = clientAuthorizationKey;
         self.accessPeriodDuration = accessPeriodDuration;
     }
@@ -79,6 +79,11 @@
     return [PNBitwiseHelper is:self.rights strictly:YES containsBits:PNReadAccessRight, PNWriteAccessRight, BITS_LIST_TERMINATOR];
 }
 
+- (BOOL)hasManagementRight {
+    
+    return [PNBitwiseHelper is:self.rights containsBit:PNManagementRight];
+}
+
 - (BOOL)isAllRightsRevoked {
 
     return ![self hasAllRights];
@@ -90,8 +95,12 @@
                                                     NSStringFromClass([self class]), self];
 
     NSString *level = @"application";
-    if (self.level == PNChannelAccessRightsLevel) {
+    if (self.level == PNChannelGroupAccessRightsLevel) {
 
+        level = @"channel-group";
+    }
+    else if (self.level == PNChannelAccessRightsLevel) {
+        
         level = @"channel";
     }
     else if (self.level == PNUserAccessRightsLevel) {
@@ -109,18 +118,27 @@
             rights = ([rights length] > 0) ? [rights stringByAppendingString:@" / write"] : @"write";
         }
     }
+    if ([self hasManagementRight]) {
+        
+        rights = ([rights length] > 0) ? [rights stringByAppendingString:@" / management"] : @"management";
+    }
+    
     [description appendFormat:@" rights: %@;", rights];
 
     [description appendFormat:@" application: %@;", PNObfuscateString(self.subscriptionKey)];
 
-    if (self.level == PNChannelAccessRightsLevel) {
+    if (self.level == PNChannelGroupAccessRightsLevel) {
 
-        [description appendFormat:@" channel: %@;", self.channel];
+        [description appendFormat:@" channel-group: %@;", self.object];
+    }
+    else if (self.level == PNChannelAccessRightsLevel) {
+        
+        [description appendFormat:@" channel: %@;", self.object];
     }
     else if (self.level == PNUserAccessRightsLevel) {
 
         [description appendFormat:@" user: %@;", self.authorizationKey];
-        [description appendFormat:@" channel: %@;", self.channel];
+        [description appendFormat:@" object: %@;", self.object];
     }
 
     [description appendFormat:@" access period duration: %lu>", (unsigned long)self.accessPeriodDuration];
@@ -132,7 +150,11 @@
 - (NSString *)logDescription {
     
     NSString *level = @"application";
-    if (self.level == PNChannelAccessRightsLevel) {
+    if (self.level == PNChannelGroupAccessRightsLevel) {
+        
+        level = @"channel-group";
+    }
+    else if (self.level == PNChannelAccessRightsLevel) {
         
         level = @"channel";
     }
@@ -142,11 +164,11 @@
     }
     NSMutableString *logDescription = [NSMutableString stringWithFormat:@"<%@|%@|%@|%lu", level, PNObfuscateString(self.subscriptionKey),
                                        @(self.rights), (unsigned long)self.accessPeriodDuration];
-    if (self.level == PNChannelAccessRightsLevel) {
+    if (self.level == PNChannelGroupAccessRightsLevel || self.level == PNChannelAccessRightsLevel) {
         
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wundeclared-selector"
-        [logDescription appendFormat:@"|%@", (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null])];
+        [logDescription appendFormat:@"|%@", (self.object ? [self.object performSelector:@selector(logDescription)] : [NSNull null])];
         #pragma clang diagnostic pop
     }
     else if (self.level == PNUserAccessRightsLevel) {
@@ -154,7 +176,7 @@
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wundeclared-selector"
         [logDescription appendFormat:@"|%@|%@", self.authorizationKey,
-         (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null])];
+         (self.object ? [self.object performSelector:@selector(logDescription)] : [NSNull null])];
         #pragma clang diagnostic pop
     }
     [logDescription appendString:@">"];

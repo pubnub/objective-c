@@ -87,7 +87,7 @@ static PNDataManager *_sharedInstance = nil;
 
                     if (state == PNSubscriptionProcessSubscribedState || state == PNSubscriptionProcessRestoredState) {
 
-                        NSArray *unsortedList = [PubNub subscribedChannels];
+                        NSArray *unsortedList = [PubNub subscribedObjectsList];
                         NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                         weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
                     }
@@ -96,7 +96,7 @@ static PNDataManager *_sharedInstance = nil;
         [[PNObservationCenter defaultCenter] addClientChannelUnsubscriptionObserver:weakSelf
                                                                   withCallbackBlock:^(NSArray *channels,
                                                                                       PNError *error) {
-                  NSArray *unsortedList = [PubNub subscribedChannels];
+                  NSArray *unsortedList = [PubNub subscribedObjectsList];
                   NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                   weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
               }];
@@ -107,25 +107,29 @@ static PNDataManager *_sharedInstance = nil;
                  NSDateFormatter *dateFormatter = [NSDateFormatter new];
                  dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
 
-                 PNChannel *channel = message.channel;
-                 NSString *messages = [weakSelf.messages valueForKey:channel.name];
+                 id <PNChannelProtocol> object = message.channel;
+                 if (message.channelGroup) {
+                     
+                     object = message.channelGroup;
+                 }
+                 NSString *messages = [weakSelf.messages valueForKey:object.name];
                  if (messages == nil) {
 
                      messages = @"";
                  }
-                 messages = [messages stringByAppendingFormat:@"<%@> %@\n",
-                                 [dateFormatter stringFromDate:message.receiveDate.date],
-                                 message.message];
-                 [weakSelf.messages setValue:messages forKey:channel.name];
+                 messages = [messages stringByAppendingFormat:@"<%@>%@ %@\n", [dateFormatter stringFromDate:message.receiveDate.date],
+                             (![object isEqual:message.channel] ? [NSString stringWithFormat:@"<%@>", message.channel.name] : @""),
+                             message.message];
+                 [weakSelf.messages setValue:messages forKey:object.name];
 
 
                  weakSelf.currentChannelChat = [weakSelf.messages valueForKey:weakSelf.currentChannel.name];
 
 
-                 if (![channel isEqual:weakSelf.currentChannel]) {
+                 if (![object isEqual:weakSelf.currentChannel]) {
 
-                     NSNumber *numberOfEvents = [weakSelf.events valueForKey:channel.name];
-                     [weakSelf.events setValue:@([numberOfEvents intValue]+1) forKey:channel.name];
+                     NSNumber *numberOfEvents = [weakSelf.events valueForKey:object.name];
+                     [weakSelf.events setValue:@([numberOfEvents intValue]+1) forKey:object.name];
                  }
              }];
 

@@ -17,13 +17,22 @@
 
 #import <OCMock/OCMock.h>
 
-@implementation PNServiceChannelTest
+@interface PNServiceChannelTest ()
+
+<PNDelegate,
+PNConnectionChannelDelegate>
+
+@end
+
+@implementation PNServiceChannelTest {
+    PNConfiguration *_configuration;
+}
 
 - (void)setUp
 {
     [super setUp];
     
-    NSLog(@"setUp: %@", self.name);
+    _configuration = [PNConfiguration defaultConfiguration];
 }
 
 - (void)tearDown
@@ -41,7 +50,8 @@
       - check service is ready to work
      */
     
-    PNServiceChannel *channel = [PNServiceChannel serviceChannelWithDelegate:nil];
+    PNServiceChannel *channel = [PNServiceChannel serviceChannelWithConfiguration:_configuration andDelegate:self];
+    
     STAssertNotNil(channel, @"Channel is not available");
 }
 
@@ -55,13 +65,14 @@
      - check service is ready to work
      */
     
-    PNServiceChannel *channel = [[PNServiceChannel alloc] initWithType:PNConnectionChannelService andDelegate:nil];
+    PNServiceChannel *channel = [[PNServiceChannel alloc] initWithConfiguration:_configuration type:PNConnectionChannelService andDelegate:self];
+    
     STAssertNotNil(channel, @"Channel is not available");
     
-    channel = [[PNServiceChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:nil];
+    
+    channel = [[PNServiceChannel alloc] initWithConfiguration:_configuration type:PNConnectionChannelMessaging andDelegate:self];
     STAssertNotNil(channel, @"Channel is not available");
 }
-
 
 #pragma mark - Interaction tests
 
@@ -73,11 +84,11 @@
      - expect scheduleRequest method of channel ivoked
     */
     
-    PNServiceChannel *channel = [PNServiceChannel serviceChannelWithDelegate:nil];
+    PNServiceChannel *channel = [PNServiceChannel serviceChannelWithConfiguration:_configuration andDelegate:self];
     
     id mock = [OCMockObject partialMockForObject:channel];
     
-	[[[[mock expect] ignoringNonObjectArgs] andReturn:nil] sendMessage: [OCMArg any] toChannel:[OCMArg any] compressed:NO];
+    [[[[mock expect] ignoringNonObjectArgs] andReturn:nil] sendMessage: [OCMArg any] toChannel:[OCMArg any] compressed:NO storeInHistory:NO];
 
     [mock sendMessage:[PNMessage new]];
     
@@ -91,16 +102,17 @@
      - send a message to specific channel
      - expect scheduleRequest method of channel ivoked
      */
-    PNServiceChannel *channel = [PNServiceChannel serviceChannelWithDelegate:nil];
+    PNServiceChannel *channel = [PNServiceChannel serviceChannelWithConfiguration:_configuration andDelegate:self];
     
     id mockChannel = [OCMockObject partialMockForObject:channel];
     
     [[[mockChannel expect] ignoringNonObjectArgs] sendMessage:[OCMArg any] toChannel:[OCMArg any]
-                                                   compressed:NO];
+                                                   compressed:NO storeInHistory:NO];
     
     [mockChannel sendMessage:[PNMessage new]
                    toChannel:mockChannel
-                  compressed:NO];
+                  compressed:NO
+     storeInHistory:NO];
     [mockChannel verify];
 }
 

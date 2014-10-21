@@ -7,6 +7,7 @@
 //
 
 #import "PNStructures.h"
+#import "PNChannelProtocol.h"
 
 
 #pragma mark Public interface declaration
@@ -37,7 +38,15 @@
 
  @note This property will be set only if \a level is set to: \a PNChannelAccessRightsLevel or \a PNUserAccessRightsLevel.
  */
-@property (nonatomic, readonly, strong) PNChannel *channel;
+@property (nonatomic, readonly, strong) PNChannel *channel DEPRECATED_MSG_ATTRIBUTE(" Use 'object' property instead");
+
+/**
+ Stores reference on data feed object for which access rights has been granted or retrieved.
+ 
+ @note This property will be set only if \a level is set to: \a PNChannelAccessRightsLevel, 
+ \a PNChannelGroupAccessRightsLevel or \a PNUserAccessRightsLevel.
+ */
+@property (nonatomic, readonly, strong) id <PNChannelProtocol> object;
 
 /**
  Stores reference on authorization key for which access rights has been granted or retrieved.
@@ -63,17 +72,33 @@
 
 /**
  Check access rights bit mask and return whether \a 'write' access permission is granted or not.
-
+ 
  @return \c YES if \b PNWriteAccessRight bit is set in \a 'rights' property.
  */
 - (BOOL)hasWriteRight;
 
 /**
  Check access rights bit mask and return whether \a 'write' access permission is granted or not.
+ 
+ @discussion This check doesn't include \a 'management' access rights
 
  @return \c YES if both \b PNReadAccessRight and \b PNWriteAccessRight bits are set in \a 'rights' property.
  */
 - (BOOL)hasAllRights;
+
+/**
+ Check access rights bit mask and return whether \a 'write' access permission is granted or not.
+ 
+ @return \c YES if \b PNManagementAccessRight bit is set in \a 'rights' property.
+ */
+/**
+ @brief Rights bit field check for management ability.
+ 
+ @return \c YES in case if there is rights management rights.
+ 
+ @since 3.6.8
+ */
+- (BOOL)hasManagementRight;
 
 /**
  Check whether all rights has been revoked or not.

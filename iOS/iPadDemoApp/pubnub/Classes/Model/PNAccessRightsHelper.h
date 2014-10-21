@@ -19,7 +19,9 @@ typedef enum _PNAccessRightsHelperMode {
     PNAccessRightsHelperUnknownMode,
     PNAccessRightsHelperApplicationMode,
     PNAccessRightsHelperChannelMode,
-    PNAccessRightsHelperUserMode
+    PNAccessRightsHelperChannelGroupMode,
+    PNAccessRightsHelperUserOnChannelMode,
+    PNAccessRightsHelperUserOnChannelGroupMode
 } PNAccessRightsHelperMode;
 
 struct PNAccessRightsDataKeysStruct {
@@ -60,6 +62,7 @@ extern struct PNAccessRightsDataKeysStruct PNAccessRightsDataKeys;
  */
 @property (nonatomic, assign, getter = shouldAllowRead) BOOL allowRead;
 @property (nonatomic, assign, getter = shouldAllowWrite) BOOL allowWrite;
+@property (nonatomic, assign, getter = shouldAllowManagement) BOOL allowManagement;
 
 /**
  Stores whether request should be processed as access rights audition.

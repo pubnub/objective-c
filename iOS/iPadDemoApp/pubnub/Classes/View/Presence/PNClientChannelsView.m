@@ -11,7 +11,7 @@
 #import "PNClientChannelsHelper.h"
 #import "PNClientStateView.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
 
@@ -175,14 +175,14 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *cellIdentifier = @"channelCellIdentifier";
-    PNChannelCell *cell = (PNChannelCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    PNObjectCell *cell = (PNObjectCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
         
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.showBadge = NO;
     }
     PNChannel *channel = [[self.clientChannelsHelper channels] objectAtIndex:indexPath.row];
-    [cell updateForChannel:channel];
+    [cell updateForObject:channel];
     
     
     return cell;

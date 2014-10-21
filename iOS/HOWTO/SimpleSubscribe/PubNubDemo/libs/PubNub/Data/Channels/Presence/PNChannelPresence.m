@@ -15,6 +15,7 @@
 //
 
 #import "PNChannelPresence+Protected.h"
+#import "PNChannel+Protected.h"
 
 
 // ARC check
@@ -42,9 +43,11 @@
 
         channelName = [channelName stringByAppendingString:kPNPresenceObserverChannelSuffix];
     }
+    PNChannelPresence *presenceChannel = [super channelWithName:channelName shouldObservePresence:NO];
+    presenceChannel.channelGroup = channel.isChannelGroup;
+    
 
-
-    return [super channelWithName:channelName shouldObservePresence:NO];
+    return presenceChannel;
 }
 
 + (PNChannelPresence *)presenceForChannelWithName:(NSString *)channelName {

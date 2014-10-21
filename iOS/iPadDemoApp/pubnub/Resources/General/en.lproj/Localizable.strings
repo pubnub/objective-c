@@ -54,6 +54,44 @@
 "presenceObservationEnableFailureAlertViewDetailedDescription"="PubNub client was unable to enable presence observation on channels:\n%@\nBecause of error:\n%@";
 "presenceObservationDisableFailureAlertViewDetailedDescription"="PubNub client was unable to disable presence on channels:\n%@\nBecause of error:\n%@";
 
+// Channel registry messages
+"channelRegistryGroupRemoveDescription"="This interface allow permanently remove channel group from channel registry. All channels registered in group will be removed. Namespace under which channel registry has been created will remain untouched.";
+"channelRegistryGroupRemoveActionDescription"="Swipe on any channel group to remove it from channel registry.";
+"channelRegistryGroupsAuditDescription"="This interface allow to retrieve list of channel groups which has been created inside of specified namespace. Namespace can be skipped and in this case channel group will be created inside of default namespace. Channel group appear on server only if channels has been added to it using corresponding API.";
+"channelRegistryGroupsAuditActionDescription"="Select any channel group to try fetch list of channels registered in it.";
+"channelRegistryNamespaceRemoveDescription"="This interface allow permanently remove namespace from channel registry. All channel groups which has been created inside namespace will be removed as well as channels registered in them.";
+"channelRegistryNamespaceRemoveActionDescription"="Swipe on any namespace to remove it from channel registry.";
+"channelRegistryNamespacesAuditDescription"="This interface allow to retrieve list of namespaces which has been created earlier during channels addition to channel group. Namespace appear on server only if channel group with channels has been created inside of namespace.";
+"channelRegistryNamespacesAuditActionDescription"="Select any namespace to try fetch list of channel groups for it.";
+"channelRegistryGroupChannelsAddDescription"="This interface allow to add list of channels inside of channel group. Channel group can be specified with out namespace (channel group will refer to default namespace). Channel group will be created if it didn't exist before.";
+"channelRegistryGroupChannelsAddActionDescription"="Swipe to remove added channel from channel group modification operation.";
+"channelRegistryGroupChannelsRemoveDescription"="This interface allow to remove list of channels from channel group. Channel group can be specified with out namespace (channel group will refer to default namespace).";
+"channelRegistryGroupChannelsRemoveActionDescription"="Select channels which you would like to remove from channel registry.";
+"channelRegistryGroupChannelsAuditDescription"="This interface allow to retrieve list of channels which has been registered inside of specified channel group. Channel group can be specified with out namespace (channel group will refer to default namespace).";
+"channelRegistryAuditSuccessAlertViewShortDescription"="Channel registry audition successful.";
+"channelRegistryNamespaceAuditSuccessAlertViewDescription"="PubNub client successfully retrieved list of namespaces";
+"channelRegistryGroupAuditSuccessAlertViewDescription"="PubNub client successfully retrieved list of channel groups for \"%@\" namespace.";
+"channelRegistryGroupChannelsAuditSuccessAlertViewDescription"="PubNub client successfully retrieved list of channels for %@ group.";
+"channelRegistryAuditFailureAlertViewShortDescription"="Channel registry audition did fail.";
+"channelRegistryNamespaceAuditFailureAlertViewDescription"="PubNub client was unable to retrieved list of namespaces because of error:\n%@";
+"channelRegistryGroupAuditFailureAlertViewDescription"="PubNub client was unable to retrieved list of channel groups for \"@\" namespace because of error:\n%@";
+"channelRegistryGroupChannelsAuditFailureAlertViewDescription"="PubNub client was unable to retrieved list of channels for %@ group because of error:\n%@";
+"channelRegistryNamespaceRemoveSuccessAlertViewShortDescription"="Namespace removal successful.";
+"channelRegistryNamespaceRemoveSuccessAlertViewDescription"="PubNub client successfully removed \"%@\" namespace from channel registry.";
+"channelRegistryNamespaceRemoveFailureAlertViewShortDescription"="Namespace removal did fail.";
+"channelRegistryNamespaceRemoveFailureAlertViewDescription"="PubNub client was unable to remove \"%@\" namespace from channel registry because of error:\n%@";
+"channelRegistryAlertViewTitle"="Channel Registry";
+"channelRegistryGroupRemoveSuccessAlertViewShortDescription"="Channel group removal successful.";
+"channelRegistryGroupRemoveSuccessAlertViewDescription"="PubNub client successfully removed %@ group from channel registry.";
+"channelRegistryGroupRemoveFailureAlertViewShortDescription"="Channel group removal did fail.";
+"channelRegistryGroupRemoveFailureAlertViewDescription"="PubNub client was unable to remove %@ group from channel registry because of error:\n%@";
+"channelRegistryGroupChannelListModificationSuccessAlertViewShortDescription"="Channel group modification successful.";
+"channelRegistryGroupChannelsAddSuccessAlertViewShortDescription"="PubNub client successfully added channels:\n%@\n to the group %@.";
+"channelRegistryGroupChannelsRemoveSuccessAlertViewShortDescription"="PubNub client successfully removed channels:\n%@\n from the group %@.";
+"channelRegistryGroupChannelListModificationFailureAlertViewShortDescription"="Channel group modification did fail.";
+"channelRegistryGroupChannelsAddFailureAlertViewShortDescription"="PubNub client was unable to add channels:\n%@\n to the group %@ because of error:\n%@";
+"channelRegistryGroupChannelsRemoveFailureAlertViewShortDescription"="PubNub client was unable to remove channels:\n%@\n from the group %@ because of error:\n%@";
+
 // Channel presence messages
 "channelPresenceAlertViewTitle"="Presence information";
 "channelPresenceSuccessShortDescription"="Channel presence requested.";
@@ -120,18 +158,22 @@
 "accessRightsChangeSuccessAlertViewShortDescription"="Access Rights successfully changed.";
 "accessRightsChangeApplicationSuccessAlertViewShortDescription"="PubNub client successfully changed access rights on application level.";
 "accessRightsChangeChannelSuccessAlertViewShortDescription"="PubNub client successfully changed access rights on channel level for:\n%@.";
+"accessRightsChangeChannelGroupSuccessAlertViewShortDescription"="PubNub client successfully changed access rights on channel group level for:\n%@.";
 "accessRightsChangeUserSuccessAlertViewShortDescription"="PubNub client successfully changed access rights on user level for:\n%@.";
 "accessRightsChangeFailureAlertViewShortDescription"="Access Rights change did fail.";
 "accessRightsChangeApplicationFailureAlertViewShortDescription"="PubNub client was unable to change access rights on application level because of error:\n%@.";
 "accessRightsChangeChannelFailureAlertViewShortDescription"="PubNub client was unable to change access rights on channel level for:\n%@\nBecause of error:\n%@.";
+"accessRightsChangeChannelGroupFailureAlertViewShortDescription"="PubNub client was unable to change access rights on channel group level for:\n%@\nBecause of error:\n%@.";
 "accessRightsChangeUserFailureAlertViewShortDescription"="PubNub client was unable to change access rights on user level for:\n%@\nBecause of error:\n%@.";
 "accessRightsAuditSuccessAlertViewShortDescription"="Access Rights successfully received.";
 "accessRightsAuditApplicationSuccessAlertViewShortDescription"="PubNub client successfully received access rights for application level.";
 "accessRightsAuditChannelSuccessAlertViewShortDescription"="PubNub client successfully received access rights for channel level:\n%@";
+"accessRightsAuditChannelGroupSuccessAlertViewShortDescription"="PubNub client successfully received access rights for channel group level:\n%@";
 "accessRightsAuditUserSuccessAlertViewShortDescription"="PubNub client successfully received access rights for user level:\n%@";
 "accessRightsAuditFailureAlertViewShortDescription"="Access Rights receive did fail.";
 "accessRightsAuditApplicationFailureAlertViewShortDescription"="PubNub client was unable to receive access rights for application level because of error:\n%@.";
 "accessRightsAuditChannelFailureAlertViewShortDescription"="PubNub client was unable to receive access rights for channel level:\n%@\nBecause of error:\n%@.";
+"accessRightsAuditChannelGroupFailureAlertViewShortDescription"="PubNub client was unable to receive access rights for channel group level:\n%@\nBecause of error:\n%@.";
 "accessRightsAuditUserFailureAlertViewShortDescription"="PubNub client was unable to receive access rights for user level:\n%@\nBecause of error:\n%@.";
 
 // Message sending message
@@ -152,7 +194,7 @@
 "channelInformationCreateButtonTitle"="Create";
 
 /**
- Access rights view textx
+ Access rights view text
  */
 "applicationAccessRightsAudit"="PubNub service provide you ability to manage access rights. Here you can receive access rights configuration for application level.";
 "applicationAccessRightsGrant"="PubNub service provide you ability to manage access rights. Here you can provide application level (top) access rights. Lower layers can't disable positive values, specified for this layer (revoked rights can be rewritten).";
@@ -160,6 +202,12 @@
 "channelAccessRightsAudit"="PubNub service provide you ability to manage access rights. Here you can receive access rights configuration for channel(s) and concrete client by it's authorization key";
 "channelAccessRightsGrant"="PubNub service provide you ability to manage access rights. Here you can provide channel(s) level (middle) access rights. Lower layers can't disable positive values, specified for this layer (revoked rights can be rewritten).";
 "channelAccessRightsRevoke"="PubNub service provide you ability to manage access rights. Here you can revoke all access rights which has been granted on channel(s) level (lower layers will keep their configuration).";
-"userAccessRightsAudit"="PubNub service provide you ability to manage access rights. Here you can receive access rights configuration for concrete user by it's authorization key";
-"userAccessRightsGrant"="PubNub service provide you ability to manage access rights. Here you can provide user level (lower) access rights. User identified by it's authorization key.";
-"userAccessRightsRevoke"="PubNub service provide you ability to manage access rights. Here you can revoke all access rights which has been granted on user level . User identified by it's authorization key.";
+"channelGroupAccessRightsAudit"="PubNub service provide you ability to manage access rights. Here you can receive access rights configuration for channel group(s) and concrete client by it's authorization key";
+"channelGroupAccessRightsGrant"="PubNub service provide you ability to manage access rights. Here you can provide channel group(s) level access rights. Lower layers can't disable positive values, specified for this layer (revoked rights can be rewritten).";
+"channelGroupAccessRightsRevoke"="PubNub service provide you ability to manage access rights. Here you can revoke all access rights which has been granted on channel group(s) level (lower layers will keep their configuration).";
+"userAccessRightsAuditOnChannel"="PubNub service provide you ability to manage access rights. Here you can receive access rights configuration for concrete user by it's authorization key";
+"userAccessRightsGrantOnChannel"="PubNub service provide you ability to manage access rights. Here you can provide user level (lower) access rights. User identified by it's authorization key.";
+"userAccessRightsRevokeOnChannel"="PubNub service provide you ability to manage access rights. Here you can revoke all access rights which has been granted on user level . User identified by it's authorization key.";
+"userAccessRightsAuditOnChannelGroup"="PubNub service provide you ability to manage access rights. Here you can receive access rights configuration for concrete user on channel group or namespace by it's authorization key.";
+"userAccessRightsGrantOnChannelGroup"="PubNub service provide you ability to manage access rights. Here you can provide user level access rights on specified channel group or namespace. User identified by it's authorization key. ";
+"userAccessRightsRevokeOnChannelGroup"="PubNub service provide you ability to manage access rights. Here you can revoke all access rights which has been granted on user level on channel group or namespace. User identified by it's authorization key.";

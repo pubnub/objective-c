@@ -13,7 +13,12 @@
 #import "PNBaseRequest.h"
 
 
-#pragma mark Structures
+#pragma mark Class forward
+
+@class PNConfiguration;
+
+
+#pragma mark - Structures
 
 /**
  This enumerator lists available HTTP methods which can be used for request sending
@@ -37,11 +42,25 @@ typedef NS_OPTIONS(NSInteger , PNRequestHTTPMethod) {
 
 #pragma mark - Properties
 
+// Stores reference on client identifier on the moment of request creation
+@property (nonatomic, copy) NSString *clientIdentifier;
+
 // Stores reference on whether connection should be closed before sending this message or not
 @property (nonatomic, assign, getter = shouldCloseConnection) BOOL closeConnection;
 
 
 #pragma mark - Instance methods
+
+/**
+ Finalize configuration using specified information.
+ 
+ @param configuration
+ Reference on configuration instance which currently used by \b PubNub client.
+ 
+ @param clientIdentifier
+ Reference on client identifier which should be used along with request and identify concrete \b PubNub client user.
+ */
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier;
 
 /**
  Reset request state so it can be reused and scheduled again on connection channel.

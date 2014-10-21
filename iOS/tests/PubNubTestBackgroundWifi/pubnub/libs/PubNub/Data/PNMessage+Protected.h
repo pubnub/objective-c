@@ -107,6 +107,25 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
  */
 + (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate;
 
+/**
+ @brief Construct message instance from \b PubNub service response.
+ 
+ @discussion During subscriptino session servive may deliver different type of events and message is one of the. If 
+ subscribed on channle group (which encloses set of channels into which messages are sent) there will information about
+ at which channel inside of channel group message has been sent.
+ 
+ @param messageBody     Message payload which has been delivered through \b PubNub message delivery service.
+ @param channel         Reference on channel inside of which message has been sent
+ @param group           Reference on channel group which contain channel with message
+ @param messagePostDate Message receive date (server time when it has been registered inside of system)
+ 
+ @return Configured and ready to use \b PNMessage instance.
+ 
+ @since 3.6.8
+ */
++ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel
+                             channelGroup:(PNChannelGroup *)group atDate:(PNDate *)messagePostDate;
+
 
 #pragma mark - Instance methods
 
@@ -114,7 +133,7 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
  * Initialize object instance with text and channel
  */
 - (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
-      storeInHistory:(BOOL)shouldStoreInHistory;;
+      storeInHistory:(BOOL)shouldStoreInHistory;
 - (void)setReceiveDate:(PNDate *)receiveDate;
 
 

@@ -179,25 +179,32 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
 #pragma mark - States tests
 
 - (void)testConnectionChannelWithTypeAndDelegate {
-    PNConnectionChannel *connectionChannel = [PNConnectionChannel connectionChannelWithType:PNConnectionChannelMessaging andDelegate:self];
+    
+    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+    PNConnectionChannel *connectionChannel = [PNConnectionChannel connectionChannelWithConfiguration:configuration type:PNConnectionChannelMessaging andDelegate:self];
+    
     STAssertNotNil(connectionChannel, @"Couldn't create connection with message type and delegate");
     
-    connectionChannel = [PNConnectionChannel connectionChannelWithType:PNConnectionChannelService andDelegate:self];
-    STAssertNotNil(connectionChannel, @"Couldn't create connection with service type and delegate");
+    
+connectionChannel = [PNConnectionChannel connectionChannelWithConfiguration:configuration type:PNConnectionChannelService andDelegate:self];    STAssertNotNil(connectionChannel, @"Couldn't create connection with service type and delegate");
 }
 
 - (void)testInitWithTypeAndDelegate {
-    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+    PNConnectionChannel *connectionChannel = [PNConnectionChannel connectionChannelWithConfiguration:configuration type:PNConnectionChannelMessaging andDelegate:self];
+    
     STAssertNotNil(connectionChannel, @"Couldn't create connection with message type and delegate");
     
-    connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelService andDelegate:self];
+    connectionChannel = [PNConnectionChannel connectionChannelWithConfiguration:configuration type:PNConnectionChannelService andDelegate:self];
+    
     STAssertNotNil(connectionChannel, @"Couldn't create connection with service type and delegate");
 }
 
 #pragma mark - Interaction tests
 
 - (void)testScheduleRequestShouldObserveProcessing {
-    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+    PNConnectionChannel *connectionChannel = [PNConnectionChannel connectionChannelWithConfiguration:configuration type:PNConnectionChannelMessaging andDelegate:self];
     
     id mockChannel = [OCMockObject partialMockForObject:connectionChannel];
     
@@ -216,10 +223,11 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
 
 - (void)testScheduleNextRequestMock {
     // init connection
-    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
-    
+    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+    PNConnectionChannel *connectionChannel = [PNConnectionChannel connectionChannelWithConfiguration:configuration type:PNConnectionChannelMessaging andDelegate:self];
+
     // create mock for private property
-    id mockConnect = [OCMockObject partialMockForObject:[PNConnection connectionWithIdentifier:@"MyTestConnect"]];
+    id mockConnect = [OCMockObject partialMockForObject:[PNConnection connectionWithConfiguration:configuration andIdentifier:@"MyTestConnect"]];
     
     [[mockConnect expect] scheduleNextRequestExecution];
     [connectionChannel setConnection:mockConnect];
@@ -231,10 +239,12 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
 
 - (void)testUnscheduleNextRequest {
     // init connection
-    PNConnectionChannel *connectionChannel = [[PNConnectionChannel alloc] initWithType:PNConnectionChannelMessaging andDelegate:self];
+    
+    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+    PNConnectionChannel *connectionChannel = [PNConnectionChannel connectionChannelWithConfiguration:configuration type:PNConnectionChannelMessaging andDelegate:self];
     
     // create mock for private property
-    id mockConnect = [OCMockObject partialMockForObject:[PNConnection connectionWithIdentifier:@"MyTestConnect"]];
+    id mockConnect = [OCMockObject partialMockForObject:[PNConnection connectionWithConfiguration:configuration andIdentifier:@"MyTestConnect"]];
     
     [[mockConnect expect] unscheduleRequestsExecution];
     [connectionChannel setConnection:mockConnect];

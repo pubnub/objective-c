@@ -52,7 +52,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 @end
 
 
-#pragma mark Public interface implementation
+#pragma mark - Public interface implementation
 
 @implementation PNClientIdentifierAddView
 
@@ -115,5 +115,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 }
 
 #pragma mark -
+
 
 @end

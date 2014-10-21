@@ -7,13 +7,13 @@
 //
 
 #import "PNSubscribeView.h"
-#import "PNChannelInformationDelegate.h"
-#import "PNChannelInformationView.h"
+#import "PNObjectInformationDelegate.h"
+#import "PNObjectInformationView.h"
 #import "NSString+PNLocalization.h"
 #import "PNSubscriptionHelper.h"
 #import "UIScreen+PNAddition.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
 
@@ -26,7 +26,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Private interface declaration
 
-@interface PNSubscribeView () <PNChannelInformationDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface PNSubscribeView () <PNObjectInformationDelegate, UITableViewDelegate, UITableViewDataSource>
 
 
 #pragma mark - Properties
@@ -52,6 +52,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 #pragma mark - Handler methods
 
 - (IBAction)handleChannelAddButtonTap:(id)sender;
+- (IBAction)handleChannelGroupsAddButtonTap:(id)sender;
 - (IBAction)handleSubscribeButtonTap:(id)sender;
 - (IBAction)handleCloseButtonTap:(id)sender;
 
@@ -99,7 +100,15 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (IBAction)handleChannelAddButtonTap:(id)sender {
     
-    PNChannelInformationView *information = [PNChannelInformationView viewFromNib];
+    PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
+    information.delegate = self;
+    information.allowEditing = YES;
+    [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+}
+
+- (IBAction)handleChannelGroupsAddButtonTap:(id)sender {
+    
+    PNObjectInformationView *information = [PNObjectInformationView viewFromNibForChannelGroup];
     information.delegate = self;
     information.allowEditing = YES;
     [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
@@ -111,8 +120,8 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [progressAlertView show];
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    [PubNub subscribeOnChannels:[self.subscribeHelper channelsForSubscription] withClientState:[self.subscribeHelper channelsState]
-     andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+    [PubNub subscribeOn:[self.subscribeHelper channelsForSubscription] withClientState:[self.subscribeHelper channelsState]
+andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
          
          if (state == PNSubscriptionProcessSubscribedState || subscriptionError) {
              
@@ -154,19 +163,19 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Channel information delegate methods
 
-- (void)channelInformation:(PNChannelInformationView *)informationView didEndEditingChanne:(PNChannel *)channel
-                 withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
+- (void)objectInformation:(PNObjectInformationView *)informationView didEndEditing:(id <PNChannelProtocol>)object
+                withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
     
     [informationView dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
-    [self.subscribeHelper addChannel:channel withState:channelState andPresenceObservation:shouldObserverPresence];
+    [self.subscribeHelper addChannel:object withState:channelState andPresenceObservation:shouldObserverPresence];
     
     // CHecking whether provided channel has been added or not.
-    if (![[self.subscribeHelper channelsForSubscription] containsObject:channel]) {
+    if (![[self.subscribeHelper channelsForSubscription] containsObject:object]) {
         
         PNAlertView *alertView = [PNAlertView viewWithTitle:@"subscribeAlertViewTitle" type:PNAlertSuccess
                                                shortMessage:@"subscribeSuccessAlertViewShortDescription"
                                             detailedMessage:[NSString stringWithFormat:[@"subscribeSuccessAlertViewDetailedDescription" localized],
-                                                             channel.name]
+                                                             object.name]
                                           cancelButtonTitle:nil otherButtonTitles:nil
                                       andEventHandlingBlock:^(PNAlertView *view, NSUInteger buttonIndex) {
                                           
@@ -198,13 +207,13 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *cellIdentifier = @"channelCellIdentifier";
-    PNChannelCell *cell = (PNChannelCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    PNObjectCell *cell = (PNObjectCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
         
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.showBadge = NO;
     }
-    [cell updateForChannel:[[self.subscribeHelper channelsForSubscription] objectAtIndex:indexPath.row]];
+    [cell updateForObject:[[self.subscribeHelper channelsForSubscription] objectAtIndex:indexPath.row]];
     
     
     return cell;
@@ -218,9 +227,9 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         
         NSDictionary *channelState = [self.subscribeHelper stateForChannel:channel];
         
-        PNChannelInformationView *information = [PNChannelInformationView viewFromNib];
-        [information configureForChannel:channel withState:channelState
-                  andPresenceObservation:[self.subscribeHelper shouldObserverPresenceForChannel:channel]];
+        PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
+        [information configureForObject:channel withState:channelState
+                 andPresenceObservation:[self.subscribeHelper shouldObserverPresenceForChannel:channel]];
         information.delegate = self;
         information.allowEditing = NO;
         [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];

@@ -60,6 +60,39 @@
 #endif // pn_gcdhelper
 
 
+#pragma mark - Public dispatch objects wrapper declaration
+
+@interface PNDispatchObjectWrapper : NSObject
+
+#pragma mark - Properties
+
+/**
+ Stores reference on dispatch object for which wrapper has been created.
+ */
+@property (nonatomic, readonly, pn_dispatch_property_ownership) dispatch_object_t object;
+
+
+#pragma mark - Class methods
+
+/**
+ Construct object wrapper for provided GCD object. 
+ 
+ @note Ownership will be set to wrapper, so there will be no need additionally retain it.
+ @note Main usage for this wrapper defined by cases, when non-structure object can't be stored.
+ 
+ @param object
+ \a GCD object which should be stored inside wrapper.
+ 
+ @return Reference on wrapper which will store \a GCD object for us.
+ */
++ (PNDispatchObjectWrapper *)wrapperForObject:(dispatch_object_t)object;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Public dispatch objects helper declaration
 
 @interface PNDispatchHelper : NSObject
@@ -215,6 +248,24 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  Masks which should be removed from speified bit field.
  */
 + (void)removeFrom:(unsigned long *)field bits:(unsigned long)bitMask, ...;
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - UIApplication replacement helper declaration
+
+@interface PNApplicationHelper : NSObject
+
+
+#pragma mark - Class methods
+
+/**
+ * Will check application Property List file to fetch whether application can run in background or not
+ */
++ (BOOL)pn_canRunInBackground;
 
 #pragma mark -
 

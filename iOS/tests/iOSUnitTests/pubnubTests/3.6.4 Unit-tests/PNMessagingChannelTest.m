@@ -30,11 +30,27 @@
 
 @end
 
-@implementation PNMessagingChannelTest
+@interface PNMessagingChannelTest ()
+
+<
+PNConnectionChannelDelegate
+>
+
+@end
+
+@implementation PNMessagingChannelTest {
+    PNConfiguration *_configuration;
+}
+
+- (void)setUp
+{
+    [super setUp];
+    
+    _configuration = [PNConfiguration defaultConfiguration];
+}
 
 - (void)tearDown
 {
-	[NSThread sleepForTimeInterval:0.1];
     [super tearDown];
 }
 
@@ -52,14 +68,16 @@
 #pragma mark - States tests
 
 - (void)testMessageChannelWithDelegate {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     
     STAssertNotNil(messageChannel, @"Cannot create messageChannel");
 }
 
 - (void)testSubscribedChannels {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-    
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     
     STAssertTrue([[messageChannel subscribedChannels] count] == 0, @"By default we shouldn't have subscribed channels");
 }
@@ -72,14 +90,16 @@
     [[mockChannel stub] resetUpdateTimeToken];
     [[mockChannel stub] valueForKey:OCMOCK_ANY];
     
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     [messageChannel subscribeOnChannels:@[mockChannel]];
     
     [mockChannel verify];
 }
 
 - (void)testCanResubscribe {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     
     STAssertFalse([messageChannel canResubscribe], @"Cannot subscribe without any channel");
 }
@@ -91,7 +111,9 @@
 //}
 
 - (void)testIsPresenceObservationEnabledForChannel {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
+
     
     id mockChannel = [OCMockObject mockForClass:[PNChannel class]];
     
@@ -106,7 +128,8 @@
 
 - (void)testDisconnectWithReset {
     
-   PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     
@@ -120,7 +143,8 @@
 }
 
 - (void)testSubscribeOnChannelsReject {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
 
 	id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     [mockChannel subscribeOnChannels:@[[self mockChannel]]];
@@ -135,7 +159,8 @@
 }
 
 - (void)testSubscribeOnChannelsExpect {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
 
 	id mockChannel = [OCMockObject partialMockForObject:messageChannel];
 	PNChannel *ch = [PNChannel channelWithName: [NSString stringWithFormat: @"channel %@", [NSDate date]]];
@@ -149,7 +174,8 @@
 }
 
 - (void)testSubscribeOnChannelsWithPresenceEventReject {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     [mockChannel subscribeOnChannels:@[[self mockChannel]] withCatchUp:YES andClientState: nil];
 
@@ -163,7 +189,8 @@
 }
 
 - (void)testSubscribeOnChannelsWithPresenceEventExpect {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
 	PNChannel *ch = [PNChannel channelWithName: [NSString stringWithFormat: @"channel %@", [NSDate date]]];
 
@@ -175,24 +202,9 @@
     [mockChannel verify];
 }
 
-//- (void)testUnsubscribeFromChannels {
-//    // Clear here:
-//    // we have set of subscribed channel only after we receive response from server
-//    // it seems now we don't receive anything, cause we are working outside of PubNub client
-//    // so checking of unsubscribe should be stubbed completely
-//    
-//    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
-//    id mockChannel = [OCMockObject partialMockForObject:messageChannel];
-//    
-//    [[mockChannel expect] leaveSubscribedChannelsByUserRequest:YES];
-//    
-//    [mockChannel unsubscribeFromChannelsWithPresenceEvent:YES];
-//    
-//    [mockChannel verify];
-//}
-
 - (void)testEnablePresenceObservationForChannels {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     
 //    [[mockChannel expect] subscribeOnChannels:OCMOCK_ANY withPresenceEvent:NO];
@@ -204,7 +216,8 @@
 }
 
 - (void)testDisablePresenceObservationForChannels {
-    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithDelegate:nil];
+    PNMessagingChannel *messageChannel = [PNMessagingChannel messageChannelWithConfiguration:_configuration
+                                                                                 andDelegate:self];
     id mockChannel = [OCMockObject partialMockForObject:messageChannel];
     
     [[mockChannel expect] disablePresenceObservationForChannels:OCMOCK_ANY sendRequest:YES];

@@ -17,6 +17,18 @@
 // error is occurred
 @property (nonatomic, strong) id associatedObject;
 
+
+#pragma mark - Instance methods
+
+/**
+ @brief Force associated object change (setter overwritten to protect initial data).
+ 
+ @param object Object with which stored data should be replaced.
+ 
+ @since 3.6.8
+ */
+- (void)replaceAssociatedObject:(id)object;
+
 #pragma mark -
 
 
