@@ -113,7 +113,8 @@ PubNub core code is ARC-compliant.  But since JSONKit (which is 3rd party) perfo
 2. In AppDelegate.m, in application:didFinishLaunchingWithOptions: (right before the return YES line works fine), add setDelegate:
 
 ```objc
-[PubNub setDelegate:self]; 
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub setDelegate:self]; 
 ```
 
 ## Start Coding now with PubNub!
@@ -125,18 +126,19 @@ from [Adding PubNub to your Project](#adding-pubnub-to-your-project):
 In your ViewController.m, add this to viewDidLoad():
 
 ```objc
-[PubNub setConfiguration:[PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" 
-                                                    subscribeKey:@"demo" secretKey:@"mySecret"]];
-[PubNub connect];
+PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
+                                    publishKey:@"demo" subscribeKey:@"demo" secretKey:@"mySecret"];
+PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
+[pubNub connect];
 
 // Define a channel
 PNChannel *channel = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
 
 // Subscribe on the channel
-[PubNub subscribeOnChannel:channel];
+[pubNub subscribeOn:@[channel]];
 
 // Publish on the channel
-[PubNub sendMessage:@"hello from PubNub iOS!" toChannel:channel];
+[pubNub sendMessage:@"hello from PubNub iOS!" toChannel:channel];
 ```
 
 2. In your AppDelegate.m, define a didReceiveMessage delegate method:
@@ -362,7 +364,7 @@ You can use few class methods to intialise and update instance properties:
 PubNub client configuration is then set via:
 
 ```objc
-[PubNub setConfiguration:[PNConfiguration defaultConfiguration]];  
+[pubNub setConfiguration:[PNConfiguration defaultConfiguration]];  
 ```
 
 After this call, your PubNub client will be configured with the default values taken from [__PNDefaultConfiguration.h__](iPadDemoApp/pubnub/libs/PubNub/Misc/PNDefaultConfiguration.h) and is now ready to connect to the PubNub real-time network!
@@ -370,59 +372,63 @@ After this call, your PubNub client will be configured with the default values t
 Other methods which allow you to adjust the client configuration are:  
 
 ```objc
-+ (void)setConfiguration:(PNConfiguration *)configuration;  
-+ (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;  
-+ (void)setDelegate:(id<PNDelegate>)delegate;
-+ (void)setClientIdentifier:(NSString *)identifier;                                    // Change UUID
-+ (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;  // Change UUID with catchup options
+- (void)setConfiguration:(PNConfiguration *)configuration;  
+- (void)setupWithConfiguration:(PNConfiguration *)configuration 
+                   andDelegate:(id<PNDelegate>)delegate;  
+- (void)setDelegate:(id<PNDelegate>)delegate;
+- (void)setClientIdentifier:(NSString *)identifier; // Change UUID
+- (void)setClientIdentifier:(NSString *)identifier  // Change UUID with catchup options
+              shouldCatchup:(BOOL)shouldCatchup;  
 ```
 
-FIrst and the second methods from list above (which update client configuration) may require client reconnection (if client already connected). As soon as all connections will be closed client will reconnect with updated configuration. It is strongly advised change configuration in really rare cases and most of the time provide configuration during PubNub client configuration. Configuration update on connected client will cause additional overhead to reinitialize client with new configuration and connect back to server (time overhead).
+First and the second methods from list above (which update client configuration) may require client reconnection (if client already connected). As soon as all connections will be closed client will reconnect with updated configuration. It is strongly advised change configuration in really rare cases and most of the time provide configuration during PubNub client configuration. Configuration update on connected client will cause additional overhead to reinitialize client with new configuration and connect back to server (time overhead).
 
 Changing the UUID mid-connection requires a "__soft state reset__".  A "__soft state reset__" is when the client sends an explicit `leave` request on any subscribed channels, and then resubscribes with its new UUID.
 
 **NOTE:** If you wish to change the client identifier, then catchup in time where you left-off before you changed client identifier, use:
 ```objc
-[PubNub setClientIdentifier:@"moonlight" shouldCatchup:YES];
+[pubNub setClientIdentifier:@"moonlight" shouldCatchup:YES];
 ```     
 To access the client configuration and state, the following methods are provided:  
 ```objc
-+ (PubNub *)sharedInstance;  
-+ (PNConfiguration *)configuration;
-+ (NSString *)clientIdentifier;  
-+ (NSArray *)subscribedChannels;  
+- (PNConfiguration *)configuration;
+- (NSString *)clientIdentifier;  
+- (NSArray *)subscribedChannels;  
    
-+ (BOOL)isSubscribedOnChannel:(PNChannel *)channel;  
-+ (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel;  
+- (BOOL)isSubscribedOnChannel:(PNChannel *)channel;  
+- (BOOL)isPresenceObservationEnabledForChannel:(PNChannel *)channel;  
 
 - (BOOL)isConnected;  
 ```
 
-Second method from the list above allow to retrieve reference on configuration which is currently used by client. It will return copy of [__PNConfiguration__](iPadDemoApp/pubnub/libs/PubNub/Data/PNConfiguration.h) instance and any changes in it won't take any effect till it explicitly will be set to the client (`+setConfiguration:` or `+setupWithConfiguration:andDelegate:`)
+Second method from the list above allow to retrieve reference on configuration which is currently used by client. It will return copy of [__PNConfiguration__](iPadDemoApp/pubnub/libs/PubNub/Data/PNConfiguration.h) instance and any changes in it won't take any effect till it explicitly will be set to the client (`-setConfiguration:` or `-setupWithConfiguration:andDelegate:`)
 
 
 ### Determining Connection State
 You can easily determine the current PubNub connection state via:
 ```objc
-[[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self
-                                                    withCallbackBlock:^(NSString *origin, BOOL connected, PNError *error) {
+[pubNub.observationCenter addClientConnectionStateObserver:self
+                                         withCallbackBlock:^(NSString *origin, BOOL connected, 
+                                                             PNError *error) {
   if (connectionError) {
 
-    // Handle connection error which occurred during connection or while client was connected. Error also can be sent 
-    // by PubNub client if you tried to connect while already connected 
-    // or just launched connection.
+    // Handle connection error which occurred during connection or while client was connected. 
+    // Error also can be sent by PubNub client if you tried to connect while already connected or 
+    // just launched connection.
     //
-    // Always check error.code to find out what caused error (check PNErrorCodes header file and use -localizedDescription /
-    // -localizedFailureReason and -localizedRecoverySuggestion to get human readable description for error).
+    // Always check error.code to find out what caused error (check PNErrorCodes header file and 
+    // use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get
+    // human readable description for error).
   }
   else if (!isConnected) {
 
     if (error == nil) {
 
-      // Looks like there is no Internet connection at the moment when this method has been called or PubNub client doesn't 
-      // have enough time to validate its availability.
+      // Looks like there is no Internet connection at the moment when this method has been called
+      // or PubNub client doesn't have enough time to validate its availability.
       //
-      // In this case connection will be established automatically as soon as Internet connection will be detected.
+      // In this case connection will be established automatically as soon as Internet connection
+      // will be detected.
     }
     else {
       
@@ -436,7 +442,7 @@ You can easily determine the current PubNub connection state via:
 }];
 ```
 ```objc
-if ([PubNub sharedInstance].isConnected) {
+if ([pubNub isConnected]) {
 
   // We are connected and ready to go.
 }
@@ -466,7 +472,7 @@ To dynamically change the encryption key during runtime, you can run
 
 ```objc
 myConfiguration.cipherKey = @"myCipherKey”;
-[PubNub setConfiguration:myConfiguration];
+[pubNub setConfiguration:myConfiguration];
 ```
 
 To enable backwards compatibility with PubNub iOS 3.3, add this line to your .pch:
@@ -485,16 +491,18 @@ If you wish to manually utilize the encryption logic for your own purposes (decr
 
 ```objc
 /**
- * Cryptographic function which allow to decrypt AES hash stored inside 'base64' string and return object.
+ Cryptographic function which allow to decrypt AES hash stored inside 'base64' string and return
+ object.
  */
-+ (id)AESDecrypt:(id)object;
-+ (id)AESDecrypt:(id)object error:(PNError **)decryptionError;
+- (id)AESDecrypt:(id)object;
+- (id)AESDecrypt:(id)object error:(PNError **)decryptionError;
 
 /**
- * Cryptographic function which allow to encrypt object into 'base64' string using AES and return hash string.
+ Cryptographic function which allow to encrypt object into 'base64' string using AES and return
+ hash string.
  */
-+ (NSString *)AESEncrypt:(id)object;
-+ (NSString *)AESEncrypt:(id)object error:(PNError **)encryptionError;
+- (NSString *)AESEncrypt:(id)object;
+- (NSString *)AESEncrypt:(id)object error:(PNError **)encryptionError;
 ```
 
 
@@ -502,53 +510,52 @@ If you wish to manually utilize the encryption logic for your own purposes (decr
 
 ### Connecting and Disconnecting from the PubNub Network
 
-You can use the callback-less connection methods `+connect` to establish a connection to the remote PubNub service, or the method with state callback blocks `+connectWithSuccessBlock:errorBlock:`.  
+You can use the callback-less connection methods `-connect` to establish a connection to the remote PubNub service, or the method with state callback blocks `-connectWithSuccessBlock:errorBlock:`.  
 
 For example, you can use the provided method in the form that best suits your needs:
 ```objc
 // Configure client (we will use client generated identifier)  
-[PubNub setConfiguration:[PNConfiguration defaultConfiguration]];  
-
-[PubNub connect];
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub connect];
 ```
 
 or
 ```objc
 // Configure client  
-[PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-[PubNub setClientIdentifier:@"test_user"];  
+[pubNub setConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub setClientIdentifier:@"test_user"];  
 
-[PubNub connectWithSuccessBlock:^(NSString *origin) {  
+[pubNub connectWithSuccessBlock:^(NSString *origin) {  
 
-                         // Do something after client connected  
-                     } 
-                      errorBlock:^(PNError *error) {
+       // Do something after client connected  
+   } 
+    errorBlock:^(PNError *error) {
 
-                        if (error == nil) {
+      if (error == nil) {
 
-                          // Looks like there is no Internet connection at the moment when this method has been 
-                          // called or PubNub client doesn't have enough time to validate its availability.
-                          //
-                          // In this case connection will be established automatically as soon as Internet connection 
-                          // will be detected.
-                        }
-                        else {
+        // Looks like there is no Internet connection at the moment when this method has been 
+        // called or PubNub client doesn't have enough time to validate its availability.
+        //
+        // In this case connection will be established automatically as soon as Internet connection
+        // will be detected.
+      }
+      else {
 
-                          // Happened something really bad and PubNub client can't establish connection, so we should 
-                          // update our interface to let user know and do something to recover from this situation.
-                          //
-                          // Error also can be sent by PubNub client if you tried to connect while already connected 
-                          /// or just launched connection.
-                          //
-                          // Always check error.code to find out what caused error (check PNErrorCodes header
-                          // file and use 
-                          // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion
-                          // to get human readable description for error).
-                        }
-                     }];
+        // Happened something really bad and PubNub client can't establish connection, so we should
+        // update our interface to let user know and do something to recover from this situation.
+        //
+        // Error also can be sent by PubNub client if you tried to connect while already connected
+        /// or just launched connection.
+        //
+        // Always check error.code to find out what caused error (check PNErrorCodes header
+        // file and use 
+        // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion
+        // to get human readable description for error).
+      }
+   }];
 ```
                                           
-Disconnecting is as simple as calling `[PubNub disconnect]`.  The client will close the connection and clean up memory.
+Disconnecting is as simple as calling `[pubNub disconnect]`.  The client will close the connection and clean up memory.
 
 ### Channels representation  
 
@@ -574,7 +581,7 @@ The [__PNChannel__](iPadDemoApp/pubnub/libs/PubNub/Data/Channels/PNChannel.h) in
   
 For example, to receive a reference on a list of channel instances:  
 ```objc
-NSArray *channels = [PNChannel channelsWithNames:@[@"iosdev", @"andoirddev", @"wpdev", @"ubuntudev"]];
+NSArray *channels = [PNChannel channelsWithNames:@[@"iosdev",@"andoirddev",@"wpdev",@"ubuntudev"]];
 ```
 
 ### Channel groups representation  
@@ -633,11 +640,11 @@ The [**PNHereNow**](iPadDemoApp/pubnub/libs/PubNub/Data/PNHereNow.h) interface p
 
 The client provides a set of methods which allow you to subscribe to channel(s):  
 ```objc
-+ (void)subscribeOn:(NSArray *)channelObjects; 
-+ (void)          subscribeOn:(NSArray *)channelObjects
+- (void)subscribeOn:(NSArray *)channelObjects; 
+- (void)          subscribeOn:(NSArray *)channelObjects
   withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
-+ (void)subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState;
-+ (void)         subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState
+- (void)subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState;
+- (void)         subscribeOn:(NSArray *)channelObjects withClientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock;
 ```
 `channelObjects` can be any of this objects: [__PNChannel__](iPadDemoApp/pubnub/libs/PubNub/Data/Channels/PNChannel.h) or [__PNChannelGroup__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroup.h).
@@ -665,8 +672,8 @@ Each subscription method has designated methods, to add a presence state informa
 
 PubNub client also provide methods to exam channels on which it is subscribed at this moment:
 ```objc
-+ (NSArray *)subscribedChannels;
-+ (BOOL)isSubscribedOn:(id <PNChannelProtocol>)object;
+- (NSArray *)subscribedChannels;
+- (BOOL)isSubscribedOn:(id <PNChannelProtocol>)object;
 ```
 
 **DEPRECATED** Starting from **3.7.0** this set of methods has been deprecated:
@@ -677,13 +684,17 @@ PubNub client also provide methods to exam channels on which it is subscribed at
 
 Here are some subscribe examples:
 ```objc
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]
+                                     andDelegate:self];
+[pubNub connect];
+
 // Subscribe to channels: "iosdev" and because shouldObservePresence is true,
 // also automatically subscribes to "iosdev-pnpres" (the Presence channel for "iosdev"). 
 // "iosdev-pnpres" will be used by client to observe for presence events on "iosdev" channel.
-[PubNub subscribeOn:@[[PNChannel channelWithName:@"iosdev" shouldObservePresence:YES]]];  
+[pubNub subscribeOn:@[[PNChannel channelWithName:@"iosdev" shouldObservePresence:YES]]];  
 
 // Subscribe on set of channels with subscription state handling block
-[PubNub subscribeOn:@[[PNChannel channelsWithName:@"iosdev" shouldObservePresence:YES]]
+[pubNub subscribeOn:@[[PNChannel channelsWithName:@"iosdev" shouldObservePresence:YES]]
 withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, 
                               PNError *subscriptionError) {  
     
@@ -709,8 +720,12 @@ withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channel
 ```
 Here is an example of how client state information can be provided when it subscribe to the channel:  
 ```objc
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]
+                                     andDelegate:self];
+[pubNub connect];
+
 // Subscribe on set of channels with subscription state handling block
-[PubNub subscribeOn:@[[PNChannel channelsWithName:@"iosdev" shouldObservePresence:YES]]
+[pubNub subscribeOn:@[[PNChannel channelsWithName:@"iosdev" shouldObservePresence:YES]]
     withClientState:@{@"iosdev": {@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}}
 andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels,
                              PNError *subscriptionError) {  
@@ -749,7 +764,7 @@ PNChannelGroup *group = [PNChannelGroup channelGroupWithName:@"development"
 [pubNub addChannels:[PNChannel channelsWithNames:@[@"Objective-C", @"Java"]]
                              toGroup:group];
 
-[PubNub subscribeOn:@[group]
+[pubNub subscribeOn:@[group]
     withClientState:@{group.name: {@"firstName":@"John", @"lastName":@"Appleseed", @"age":@(240)}}
 andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels,
                              PNError *subscriptionError) {  
@@ -778,8 +793,8 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
 
 The client of course also provides a set of methods which allow you to unsubscribe from channels: 
 ```objc
-+ (void)unsubscribeFrom:(NSArray *)channelObjects; 
-+ (void)    unsubscribeFrom:(NSArray *)channelObjects
+- (void)unsubscribeFrom:(NSArray *)channelObjects; 
+- (void)    unsubscribeFrom:(NSArray *)channelObjects
 withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock;
 ```
 `channelObjects` can be any of this objects: [__PNChannel__](iPadDemoApp/pubnub/libs/PubNub/Data/Channels/PNChannel.h) or [__PNChannelGroup__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroup.h).
@@ -799,7 +814,7 @@ As for the unsubscription methods, there are a set of methods which perform unsu
 Lets see how we can use some of this methods to unsubscribe from channel(s):
 ```objc
 // Unsubscribe from set of channels and notify everyone that we are left
-[PubNub unsubscribeFrom:[PNChannel channelsWithNames:@[@"iosdev/networking", @"andoirddev", 
+[pubNub unsubscribeFrom:[PNChannel channelsWithNames:@[@"iosdev/networking", @"andoirddev", 
                                                        @"wpdev", @"ubuntudev"]] 
 withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {  
     
@@ -826,12 +841,12 @@ If you've enabled the Presence feature for your account, then the client can be 
 
 To use the Presence feature in your app, the follow methods are provided:
 ```objc
-+ (BOOL)isPresenceObservationEnabledFor:(id <PNChannelProtocol>)object;
-+ (void)enablePresenceObservationFor:(NSArray *)channelObjects;
-+ (void)enablePresenceObservationFor:(NSArray *)channelObjects
+- (BOOL)isPresenceObservationEnabledFor:(id <PNChannelProtocol>)object;
+- (void)enablePresenceObservationFor:(NSArray *)channelObjects;
+- (void)enablePresenceObservationFor:(NSArray *)channelObjects
          withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock;
-+ (void)disablePresenceObservationFor:(NSArray *)channelObjects;
-+ (void)disablePresenceObservationFor:(NSArray *)channelObjects
+- (void)disablePresenceObservationFor:(NSArray *)channelObjects;
+- (void)disablePresenceObservationFor:(NSArray *)channelObjects
           withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
 ```
 `channelObjects` and `object` can be any of this objects: [__PNChannel__](iPadDemoApp/pubnub/libs/PubNub/Data/Channels/PNChannel.h) or [__PNChannelGroup__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroup.h).
@@ -860,35 +875,35 @@ feature allows you enumerate current channel occupancy information on-demand.
 
 There is a set of methods which provide you access to the presence data:
 ```objc
-+ (void)requestParticipantsList;
-+ (void)requestParticipantsListWithCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired;
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
+- (void)requestParticipantsList;
+- (void)requestParticipantsListWithCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
+- (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired;
+- (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
+- (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                          clientState:(BOOL)shouldFetchClientState;
-+ (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
+- (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                          clientState:(BOOL)shouldFetchClientState
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
-+ (void)requestParticipantsListFor:(NSArray *)channelObjects; 
-+ (void)requestParticipantsListFor:(NSArray *)channelObjects
+- (void)requestParticipantsListFor:(NSArray *)channelObjects; 
+- (void)requestParticipantsListFor:(NSArray *)channelObjects
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
-+ (void)requestParticipantsListFor:(NSArray *)channelObjects 
+- (void)requestParticipantsListFor:(NSArray *)channelObjects 
          clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired;
-+ (void)requestParticipantsListFor:(NSArray *)channelObjects 
+- (void)requestParticipantsListFor:(NSArray *)channelObjects 
          clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
-+ (void)requestParticipantsListFor:(NSArray *)channelObjects
+- (void)requestParticipantsListFor:(NSArray *)channelObjects
          clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                        clientState:(BOOL)shouldFetchClientState;
-+ (void)requestParticipantsListFor:(NSArray *)channelObjects 
+- (void)requestParticipantsListFor:(NSArray *)channelObjects 
          clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                        clientState:(BOOL)shouldFetchClientState
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
-+ (void)requestParticipantChannelsList:(NSString *)clientIdentifier;
-+ (void)requestParticipantChannelsList:(NSString *)clientIdentifier
+- (void)requestParticipantChannelsList:(NSString *)clientIdentifier;
+- (void)requestParticipantChannelsList:(NSString *)clientIdentifier
                    withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
 ```
 `channelObjects` can be any of this objects: [__PNChannel__](iPadDemoApp/pubnub/libs/PubNub/Data/Channels/PNChannel.h) or [__PNChannelGroup__](iPadDemoApp/pubnub/libs/PubNub/Data/PNChannelGroup.h).
@@ -914,7 +929,7 @@ There is a set of methods which provide you access to the presence data:
 
 Example:  
 ```objc
-[PubNub requestParticipantsListFor:@[[PNChannel channelWithName:@"iosdev"]]
+[pubNub requestParticipantsListFor:@[[PNChannel channelWithName:@"iosdev"]]
                withCompletionBlock:^(PNHereNow *presenceInformation, NSArray *channels, 
                                      PNError *error) {
 
@@ -945,14 +960,14 @@ This feature allow to pull out full list of subscribers along with information o
 
 PubNub client provide two methods which allow you receive this information:  
 ```objc
-+ (void)requestParticipantChannelsList:(NSString *)clientIdentifier;
-+ (void)requestParticipantChannelsList:(NSString *)clientIdentifier
+- (void)requestParticipantChannelsList:(NSString *)clientIdentifier;
+- (void)requestParticipantChannelsList:(NSString *)clientIdentifier
                    withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
 ```
 
 Usage is very simple:  
 ```objc
-[PubNub requestParticipantChannelsList:@"admin" 
+[pubNub requestParticipantChannelsList:@"admin" 
                    withCompletionBlock:^(NSString *identifier, NSArray *channels, PNError *error){
     
     if (error == nil) {
@@ -979,12 +994,12 @@ All client information now represented with [**PNClient**](iPadDemoApp/pubnub/li
 
 PubNub client provide endpoints for client's state manipulation. They allow you to get or set / update existing values.  
 ```objc
-+ (void)requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object;
-+ (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
+- (void)requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object;
+- (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
-+ (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+- (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                 forObject:(id <PNChannelProtocol>)object;
-+ (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+- (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                     forObject:(id <PNChannelProtocol>)object
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock;
  ```
@@ -1009,32 +1024,39 @@ This JOIN event will include the state information:
 {"action":"join", "timestamp":1391818344, "data":{"appEvent":"demo app started"}, "uuid":"SimpleSubscribe", "occupancy":3}
 ```
 ```objc
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+
 // Set UUID
-[PubNub setClientIdentifier:@"SimpleSubscribe"];
+[pubNub setClientIdentifier:@"SimpleSubscribe"];
+
+[pubNub connect];
 
 // Set Channel
 PNChannel *myChannel = [PNChannel channelWithName:@"zz" shouldObservePresence:YES];
 
 // Subscribe with State at Join Time
-[PubNub subscribeOn:myChannel withClientState:@{@"appEvent": @"demo app started"}];
+[pubNub subscribeOn:@[myChannel] 
+    withClientState:@{myChannel.name: @{@"appEvent": @"demo app started"}}];
 ```
 
 Same example for channel group:
 ```objc
-[PubNub setClientIdentifier:@"SimpleSubscribe"];
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub setClientIdentifier:@"SimpleSubscribe"];
+[pubNub connect];
 PNChannelGroup *group = [PNChannelGroup channelGroupWithName:@"wwdc"  
                                                  inNamespace:@"events"];
 
 // Subscribe with State at Join Time
-[PubNub subscribeOn:@[group] withClientState:@{group.name: @{@"event": @"started"}];
+[pubNub subscribeOn:@[group] withClientState:@{group.name: @{@"event": @"started"}];
 ```
 
 #### Example: Modify State post-subscribe time
 ```objc
-[PubNub setupWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
-[PubNub setClientIdentifier:@"demouser"];
-[PubNub connect];
-[PubNub subscribeOn:@[[PNChannel channelsWithName:@"iosdev"]]
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] andDelegate:self];
+[pubNub setClientIdentifier:@"demouser"];
+[pubNub connect];
+[pubNub subscribeOn:@[[PNChannel channelsWithName:@"iosdev"]]
   withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels,
                                 PNError *subscriptionError) {
  
@@ -1052,7 +1074,7 @@ PNChannelGroup *group = [PNChannelGroup channelGroupWithName:@"wwdc"
               break;
           case PNSubscriptionProcessSubscribedState:
 
-              [PubNub updateClientState:[PubNub clientIdentifier]
+              [pubNub updateClientState:[pubNub clientIdentifier]
                                   state:@{@"firstName": @"John", @"lastName": @"Appleseed", 
                                           @"age": @(240)}
                               forObject:[array lastObject]
@@ -1089,13 +1111,13 @@ Values in state dictionary should be one of: NSNumber (int, float) or NSString.
 
 You can fetch the current PubNub time token by using the following methods:  
 ```objc
-+ (void)requestServerTimeToken;  
-+ (void)requestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success;
+- (void)requestServerTimeToken;  
+- (void)requestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success;
 ```
     
 Usage is very simple:  
 ```objc
-[PubNub requestServerTimeTokenWithCompletionBlock:^(NSNumber *timeToken, PNError *error) {  
+[pubNub requestServerTimeTokenWithCompletionBlock:^(NSNumber *timeToken, PNError *error) {  
     
     if (error == nil) {
         
@@ -1119,45 +1141,48 @@ If you use some other JSON serialization kit or do it by yourself, ensure that J
 
 You can use the following methods to send messages:  
 ```objc
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel;   
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
+- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel;   
+- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
        withCompletionBlock:(PNClientMessageProcessingBlock)success;  
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
+- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
             storeInHistory:(BOOL)shouldStoreInHistory;  
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;  
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
+- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
                 compressed:(BOOL)shouldCompressMessage;  
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
+- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
                 compressed:(BOOL)shouldCompressMessage 
             storeInHistory:(BOOL)shouldStoreInHistory;  
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
+- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
                 compressed:(BOOL)shouldCompressMessage 
             storeInHistory:(BOOL)shouldStoreInHistory;
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
+- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
                 compressed:(BOOL)shouldCompressMessage 
             storeInHistory:(BOOL)shouldStoreInHistory 
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
-+ (void)sendMessage:(PNMessage *)message;  
-+ (void)sendMessage:(PNMessage *)message withCompletionBlock:(PNClientMessageProcessingBlock)success;  
-+ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory;  
-+ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory 
+- (void)sendMessage:(PNMessage *)message;  
+- (void)sendMessage:(PNMessage *)message withCompletionBlock:(PNClientMessageProcessingBlock)success;  
+- (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory;  
+- (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory 
 withCompletionBlock:(PNClientMessageProcessingBlock)success;
-+ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage;  
-+ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage 
+- (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage;  
+- (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage 
 withCompletionBlock:(PNClientMessageProcessingBlock)success;
-+ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage 
+- (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage 
      storeInHistory:(BOOL)shouldStoreInHistory;  
-+ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage 
+- (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage 
      storeInHistory:(BOOL)shouldStoreInHistory
 withCompletionBlock:(PNClientMessageProcessingBlock)success;
 ```
 
 Methods from first section return reference on [__PNMessage__](iPadDemoApp/pubnub/libs/PubNub/Data/PNMessage.h) instance. If there is a need to re-publish this message for any reason, (for example, the publish request timed-out due to lack of Internet connection), it can be passed back to the last two methods to easily re-publish.
 ```objc
-PNMessage *helloMessage = [PubNub sendMessage:@"Hello PubNub" 
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub connect];
+
+PNMessage *helloMessage = [pubNub sendMessage:@"Hello PubNub" 
                                     toChannel:[PNChannel channelWithName:@"iosdev"]  
                           withCompletionBlock:^(PNMessageState messageSendingState, id data) {  
                                 
@@ -1186,14 +1211,16 @@ PNMessage *helloMessage = [PubNub sendMessage:@"Hello PubNub"
       // which PubNub client was unable to send.
         
       // Retry message sending (but in real world should check error and handle it)  
-      [PubNub sendMessage:helloMessage];  
+      [pubNub sendMessage:helloMessage];  
       break;  
   }  
 }];  
 ```
 Here is example how to send __NSDictionary__:
 ```objc
-[PubNub sendMessage:@{@"message":@"Hello from dictionary object"} 
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub connect];
+[pubNub sendMessage:@{@"message":@"Hello from dictionary object"} 
           toChannel:[PNChannel channelWithName:@"iosdev"];  
 ```
               
@@ -1202,94 +1229,94 @@ Here is example how to send __NSDictionary__:
 
 If you have enabled the history feature for your account, the following methods can be used to fetch message history:  
 ```objc
-+ (void)requestFullHistoryForChannel:(PNChannel *)channel;  
-+ (void)requestFullHistoryForChannel:(PNChannel *)channel 
+- (void)requestFullHistoryForChannel:(PNChannel *)channel;  
+- (void)requestFullHistoryForChannel:(PNChannel *)channel 
                  withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestFullHistoryForChannel:(PNChannel *)channel 
+- (void)requestFullHistoryForChannel:(PNChannel *)channel 
                   includingTimeToken:(BOOL)shouldIncludeTimeToken;
-+ (void)requestFullHistoryForChannel:(PNChannel *)channel 
+- (void)requestFullHistoryForChannel:(PNChannel *)channel 
                   includingTimeToken:(BOOL)shouldIncludeTimeToken
                  withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate;
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
               includingTimeToken:(BOOL)shouldIncludeTimeToken;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
               includingTimeToken:(BOOL)shouldIncludeTimeToken 
               withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate;
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
               includingTimeToken:(BOOL)shouldIncludeTimeToken;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
               includingTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
                            limit:(NSUInteger)limit;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
                            limit:(NSUInteger)limit
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
                            limit:(NSUInteger)limit
               includingTimeToken:(BOOL)shouldIncludeTimeToken;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate
                            limit:(NSUInteger)limit
               includingTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate 
                            limit:(NSUInteger)limit;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate 
                            limit:(NSUInteger)limit
            withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                            limit:(NSUInteger)limit
               includingTimeToken:(BOOL)shouldIncludeTimeToken;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                            limit:(NSUInteger)limit
               includingTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate
                            limit:(NSUInteger)limit 
                   reverseHistory:(BOOL)shouldReverseMessageHistory;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
                            limit:(NSUInteger)limit 
                   reverseHistory:(BOOL)shouldReverseMessageHistory
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory 
               includingTimeToken:(BOOL)shouldIncludeTimeToken;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate 
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory 
               includingTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory;  
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                            limit:(NSUInteger)limit
                   reverseHistory:(BOOL)shouldReverseMessageHistory  
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                            limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
               includingTimeToken:(BOOL)shouldIncludeTimeToken;
-+ (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
+- (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                            limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
               includingTimeToken:(BOOL)shouldIncludeTimeToken
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
@@ -1299,25 +1326,27 @@ The first four methods will receive the full message history for a specified cha
   
 If you set **from** or **to** as nil, that argument will be ignored.  For example:
 ```objc
-[PubNub requestHistoryForChannel:myChannel from:nil to:myEndDate limit:100 reverseHistory:YES];
+[pubNub requestHistoryForChannel:myChannel from:nil to:myEndDate limit:100 reverseHistory:YES];
 ```
 the **start** value will be omitted from the server request. Likewise with:
 ```objc
-[PubNub requestHistoryForChannel:myChannel from:myStartDate to:nil limit:100 reverseHistory:YES];
+[pubNub requestHistoryForChannel:myChannel from:myStartDate to:nil limit:100 reverseHistory:YES];
 ```
 the **end** value will be omitted from the server request. Setting both start and end to nil:
 ```objc
-[PubNub requestHistoryForChannel:myChannel from:nil to:nil limit:100 reverseHistory:YES];
+[pubNub requestHistoryForChannel:myChannel from:nil to:nil limit:100 reverseHistory:YES];
 ```
 
 Will omit both from the server request, thus simply returning the last **[limit]** results from history.
 
 In the following example, we pull history for the `iosdev` channel within the specified time frame,limiting the maximum number of messages returned to 34:
 ```objc
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub connect];
 PNDate *startDate = [PNDate dateWithDate:[NSDate dateWithTimeIntervalSinceNow:(-3600.0f)]];  
 PNDate *endDate = [PNDate dateWithDate:[NSDate date]];  
 int limit = 34;  
-[PubNub requestHistoryForChannel:[PNChannel channelWithName:@"iosdev"] from:startDate to:endDate 
+[pubNub requestHistoryForChannel:[PNChannel channelWithName:@"iosdev"] from:startDate to:endDate 
                            limit:limit reverseHistory:NO 
              withCompletionBlock:^(NSArray *messages, PNChannel *channel, PNDate *startDate, 
                                    PNDate *endDate, PNError *error) {  
@@ -1341,7 +1370,9 @@ int limit = 34;
 
 In the following example, we pull all messages from `iosdev` channel history:
 ```objc
-[PubNub requestFullHistoryForChannel:[PNChannel channelWithName:@"iosdev"] includingTimeToken:YES
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub connect];
+[pubNub requestFullHistoryForChannel:[PNChannel channelWithName:@"iosdev"] includingTimeToken:YES
                  withCompletionBlock:^(NSArray *messages, PNChannel *channel, PNDate *startDate, 
                                        PNDate *endDate, PNError *error) {
 
@@ -1456,8 +1487,8 @@ Here is how we can add channels to the group:
 PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] 
                                      andDelegate:self];
 [pubNub connect];
-[[PubNub sharedInstance] addChannels:[PNChannel channelsWithNames:@[@"Bob", @"Jay"]] 
-                             toGroup:[PNChannelGroup channelGroupWithName:@"users"] 
+[pubNub addChannels:[PNChannel channelsWithNames:@[@"Bob", @"Jay"]] 
+                                         toGroup:[PNChannelGroup channelGroupWithName:@"users"] 
          withCompletionHandlingBlock:^(PNChannelGroup *group, NSArray *channels, PNError *error) {
  
              if (!error) {
@@ -1488,31 +1519,31 @@ Normally, when you publish a message, it stays on the PubNub network, and is onl
 
 To perform this association, use one of the following:
 ```objc
-+ (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
-+ (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken
+- (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
+- (void)enablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken
               andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
-+ (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
-+ (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
+- (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
+- (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
 ```
 To disable this association, use one of the following:
 ```objc
-+ (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
-+ (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken
+- (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken;
+- (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken
                andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
-+ (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
-+ (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
+- (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken;
+- (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                 andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
 ```
 You can remove them all, instead of individually using:
 ```objc
-+ (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+- (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
                          withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
 ```
                          
 And to get an active list (audit) of whats currently associated:
 ```objc
-+ (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
+- (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
                         withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
 ```
 
@@ -1614,32 +1645,32 @@ PubNub provides ability to control who has access and what he can do there. Ther
   
 PubNub client provide large set of methods which allow to specify any aspect of access rights in the way which will keep your code clean and small (a lot of designated methods).
 ```objc
-+ (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights 
+- (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights 
                                onPeriod:(NSInteger)accessPeriodDuration;
-+ (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights 
+- (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights 
                                onPeriod:(NSInteger)accessPeriodDuration
              andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)changeAccessRightsFor:(NSArray *)channelObjects to:(PNAccessRights)accessRights
+- (void)changeAccessRightsFor:(NSArray *)channelObjects to:(PNAccessRights)accessRights
                      onPeriod:(NSInteger)accessPeriodDuration;
-+ (void)changeAccessRightsFor:(NSArray *)channelObjects to:(PNAccessRights)accessRights
+- (void)changeAccessRightsFor:(NSArray *)channelObjects to:(PNAccessRights)accessRights
                      onPeriod:(NSInteger)accessPeriodDuration
   withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-+ (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys 
+- (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys 
                               object:(id <PNChannelProtocol>)object to:(PNAccessRights)accessRights
                             onPeriod:(NSInteger)accessPeriodDuration;
-+ (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys
+- (void)changeAccessRightsForClients:(NSArray *)clientsAuthorizationKeys
                               object:(id <PNChannelProtocol>)object to:(PNAccessRights)accessRights
                             onPeriod:(NSInteger)accessPeriodDuration
          withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
 
-+ (void)auditAccessRightsForApplication;
-+ (void)auditAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
-+ (void)auditAccessRightsFor:(NSArray *)channelObjects;
-+ (void) auditAccessRightsFor:(NSArray *)channelObjects
+- (void)auditAccessRightsForApplication;
+- (void)auditAccessRightsForApplicationWithCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
+- (void)auditAccessRightsFor:(NSArray *)channelObjects;
+- (void) auditAccessRightsFor:(NSArray *)channelObjects
   withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
-+ (void)auditAccessRightsFor:(id <PNChannelProtocol>)object 
+- (void)auditAccessRightsFor:(id <PNChannelProtocol>)object 
                      clients:(NSArray *)clientsAuthorizationKeys;
-+ (void)auditAccessRightsFor:(id <PNChannelProtocol>)object 
+- (void)auditAccessRightsFor:(id <PNChannelProtocol>)object 
                      clients:(NSArray *)clientsAuthorizationKeys
  withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
 ```
@@ -1739,8 +1770,9 @@ PubNub client provide large set of methods which allow to specify any aspect of 
 ```
 Here is a small demo of how this methods can be used:
 ```objc
-PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo"
-                                                             subscribeKey:@"demo" secretKey:@"my-secret-key"];
+PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
+                                      publishKey:@"demo" subscribeKey:@"demo" 
+                                       secretKey:@"my-secret-key"];
 PubNub *pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
 [pubNub connect];
 [pubNub changeAccessRightsForClients:@[@"spectator", @"visitor"] 
@@ -1874,11 +1906,11 @@ Example usage follows:
 ```objc
 - (void)pubnubClient:(PubNub *)client willSuspendWithBlock:(void(^)(void(^)(void(^)(void))))preSuspensionBlock {
 
-    if ([PubNub sharedInstance].isConnected) {
+    if ([client isConnected]) {
         
         preSuspensionBlock(^(void(^completionBlock)(void)){
 
-            [PubNub sendMessage:@"Hello my friend" toChannel:[PNChannel channelWithName:@"boom"]
+            [client sendMessage:@"Hello my friend" toChannel:[PNChannel channelWithName:@"boom"]
             withCompletionBlock:^(PNMessageState state, id data) {
 
                 if (state != PNMessageSending) {
@@ -1886,12 +1918,10 @@ Example usage follows:
                     NSString *message = @"Message has been sent";
                     if (state == PNMessageSendingError) {
 
-                        message = [NSString stringWithFormat:@"Message sending failed with error: %@", ((PNError *)data).localizedFailureReason];
+                        // Handle message sending error
                     }
-                    [PNLogger logGeneralMessageFrom:self message:^NSString *{
 
-                        return message;
-                    }];
+                    // Always call this block as soon as required amount of tasks completed.
                     completionBlock();
                 }
             }];
@@ -2471,9 +2501,9 @@ Example usage follows:
   NSNumber *shouldRestoreSubscriptionFromLastTimeToken = @(NO);
 
   NSString *lastTimeToken = @"0";
-  if ([[PubNub subscribedChannels] count] > 0) {
+  if ([[self.pubNub subscribedChannels] count] > 0) {
 
-    lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
+    lastTimeToken = [[[self.pubNub subscribedChannels] lastObject] updateTimeToken];
   }
   
   PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",
