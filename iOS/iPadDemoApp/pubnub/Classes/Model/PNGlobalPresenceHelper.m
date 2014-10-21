@@ -94,7 +94,7 @@
         
         
         [channelsWithPresenceData sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
-        weakSelf.fetchedChannels = [channelsWithPresenceData copy];
+        weakSelf.fetchedChannels = [channelsWithPresenceData mutableCopy];
         if (handlerBlock) {
             
             handlerBlock(presenceInformation, channels, requestError);
