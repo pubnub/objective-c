@@ -19,7 +19,7 @@
 /**
  @brief Reference on key under which stored client's state for each channel of channel group
  
- @since 3.6.9
+ @since 3.7.0
  */
 static NSString * const kPNResponseChannelsKey = @"channels";
 
@@ -34,7 +34,7 @@ static NSString * const kPNResponseChannelsKey = @"channels";
 /**
  @brief Stores referece on client for which state has been received or updated
  
- @since 3.6.9
+ @since 3.7.0
  */
 @property (nonatomic, strong) PNClient *client;
 
