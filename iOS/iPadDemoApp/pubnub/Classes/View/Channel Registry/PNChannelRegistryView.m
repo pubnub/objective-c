@@ -482,6 +482,8 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [progressAlertView show];
     
     NSArray *objectForManipulation = [[self.registryHelper representationData] copy];
+    NSString *namespaceName = self.registryHelper.namespaceName;
+    NSString *channelGroupName = self.registryHelper.channelGroupName;
     __block __pn_desired_weak __typeof(self) weakSelf = self;
     
     [self.registryHelper performDataModifyRequestWithBlock:^(NSError *requestError) {
@@ -502,13 +504,12 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             
             if (!requestError) {
                 
-                detailedDescription = [NSString stringWithFormat:[detailedDescription localized],
-                                       weakSelf.registryHelper.namespaceName];
+                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], namespaceName];
             }
             else {
                 
-                detailedDescription = [NSString stringWithFormat:[detailedDescription localized],
-                                       weakSelf.registryHelper.namespaceName, requestError];
+                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], namespaceName,
+                                       requestError];
             }
         }
         else if ([weakSelf.registryHelper workingWithChannelGroup]) {
@@ -521,13 +522,12 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             
             if (!requestError) {
                 
-                detailedDescription = [NSString stringWithFormat:[detailedDescription localized],
-                                       weakSelf.registryHelper.channelGroupName];
+                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], channelGroupName];
             }
             else {
                 
-                detailedDescription = [NSString stringWithFormat:[detailedDescription localized],
-                                       weakSelf.registryHelper.channelGroupName, requestError];
+                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], channelGroupName,
+                                       requestError];
             }
         }
         else {
@@ -543,8 +543,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                                        @"channelRegistryGroupChannelsRemoveSuccessAlertViewShortDescription");
             }
             
-            PNChannelGroup *group = [PNChannelGroup channelGroupWithName:weakSelf.registryHelper.channelGroupName
-                                                             inNamespace:weakSelf.registryHelper.namespaceName];
+            PNChannelGroup *group = [PNChannelGroup channelGroupWithName:channelGroupName inNamespace:namespaceName];
             NSString *objects = [[objectForManipulation valueForKey:@"name"] componentsJoinedByString:@","];
             if (!requestError) {
                 
