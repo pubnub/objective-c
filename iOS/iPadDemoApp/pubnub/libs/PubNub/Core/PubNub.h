@@ -70,6 +70,18 @@
  @param configuration
  \b PNConfiguration stores all required parameters to make sure that \b PubNub client will operate as it has been requested.
  
+ @return Initialized and ready to use \b PubNub client instance.
+ 
+ @since 3.7.0
+ */
++ (PubNub *)clientWithConfiguration:(PNConfiguration *)configuration;
+
+/**
+ Create and initialize \b PubNub client with pre-configuration. Provided configuration will be used to complete components configuration.
+ 
+ @param configuration
+ \b PNConfiguration stores all required parameters to make sure that \b PubNub client will operate as it has been requested.
+ 
  @param delegate
  Reference on instance which would like to receive callbacks from \b PubNub client.
  
