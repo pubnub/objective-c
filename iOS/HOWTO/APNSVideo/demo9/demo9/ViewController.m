@@ -33,7 +33,7 @@
     self.pubNub = [PubNub clientWithConfiguration:myConfig andDelegate:appDelegate];
 
     [pubNub connectWithSuccessBlock:^(NSString *origin) {
-        [PubNub subscribeOnChannel:[PNChannel channelWithName:@"apns"]];
+        [PubNub subscribeOn:@[[PNChannel channelWithName:@"apns"]]];
 
         AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
         deviceToken = appDelegate.dToken;

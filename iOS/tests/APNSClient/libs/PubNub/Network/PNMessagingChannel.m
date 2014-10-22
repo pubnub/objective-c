@@ -2161,8 +2161,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         [PNBitwiseHelper removeFrom:&_messagingState bits:PNMessagingChannelSubscriptionTimeTokenRetrieve,
          PNMessagingChannelSubscriptionWaitingForEvents, PNMessagingChannelRestoringConnectionTerminatedByServer,
          PNMessagingChannelRestoringSubscription, PNMessagingChannelResubscribeOnTimeOut, BITS_LIST_TERMINATOR];
+    
         if (self.isRestoringSubscriptionOnResume) {
-
             [PNBitwiseHelper addTo:&_messagingState bit:PNMessagingChannelRestoringSubscription];
         }
         
@@ -2211,8 +2211,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         self.restoringSubscriptionOnResume = [PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
         [PNBitwiseHelper clear:&_messagingState];
+    
         if (self.isRestoringSubscriptionOnResume) {
-
             [PNBitwiseHelper addTo:&_messagingState bit:PNMessagingChannelRestoringSubscription];
         }
         

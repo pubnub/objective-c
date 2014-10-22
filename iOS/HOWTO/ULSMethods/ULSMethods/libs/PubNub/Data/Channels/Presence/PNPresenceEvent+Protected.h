@@ -45,7 +45,7 @@ struct PNPresenceEventDataKeysStruct {
      @brief Stores reference on channel at which event occured (in case if event occured on one of channel group 
      channels)
      
-     @since 3.6.9
+     @since 3.7.0
      */
     __unsafe_unretained NSString *channel;
 

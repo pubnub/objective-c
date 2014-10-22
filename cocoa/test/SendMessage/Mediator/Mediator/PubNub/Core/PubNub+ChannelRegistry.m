@@ -1,7 +1,7 @@
 /**
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-14 PubNub Inc.
  
  */
@@ -50,7 +50,7 @@
  \c namespace - namespace from which channel groups requested; \c groups - list of \b PNChannelGroup describing channel group
  inside of namespace; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelGroupsForNamespace:(NSString *)nspace reschedulingMethodCall:(BOOL)isMethodCallRescheduled
              withCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;
@@ -93,7 +93,7 @@
  \c namespaces - list of namespaces which has been created to store registered channel groups; \c error - describes what
  exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelGroupNamespacesWithReschedulingMethodCall:(BOOL)isMethodCallRescheduled
                                      andCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock;
@@ -114,7 +114,7 @@
  \c namespaces - list of namespaces which has been created to store registered channel groups; \c error - describes what
  exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)postponeChannelGroupNamespacesRequestWithReschedulingMethodCall:(BOOL)isMethodCallRescheduled
                                              andCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock;
@@ -135,7 +135,7 @@
  \c namespace - namespace name which should be removed; \c error - describes what exactly went wrong (check error code
  and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)removeChannelGroupNamespace:(NSString *)nspace reschedulingMethodCall:(BOOL)isMethodCallRescheduled
         withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock;
@@ -158,7 +158,7 @@
  \c namespace - namespace name which should be removed; \c error - describes what exactly went wrong (check error code
  and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)postponeRemoveChannelGroupNamespace:(NSString *)nspace reschedulingMethodCall:(BOOL)isMethodCallRescheduled
                 withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock;
@@ -178,7 +178,7 @@
  \c PNChannelGroup - \b PNChannelGroup which should be removed; \c error - describes what exactly went wrong (check error code
  and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)   removeChannelGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock;
@@ -201,7 +201,7 @@
  \c PNChannelGroup - \b PNChannelGroup which should be removed; \c error - describes what exactly went wrong (check error code
  and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)postponeRemoveChannelGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
        withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock;
@@ -225,7 +225,7 @@
  \c group - \b PNChannelGroup instance which describe group for which channels should be retrieved (it also has property
  with channels list); \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelsForGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
     withCompletionHandlingBlock:(PNClientChannelsForGroupRequestHandlingBlock)handlerBlock;
@@ -246,7 +246,7 @@
  \c group - \b PNChannelGroup instance which describe group for which channels should be retrieved (it also has property
  with channels list); \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)postponeRequestChannelsForGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
             withCompletionHandlingBlock:(PNClientChannelsForGroupRequestHandlingBlock)handlerBlock;
@@ -274,7 +274,7 @@
  of \b PNChannel instance which should be added to the group; \c error - describes what exactly went wrong (check
  error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)          addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock;
@@ -299,7 +299,7 @@
  of \b PNChannel instance which should be added to the group; \c error - describes what exactly went wrong (check
  error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)  postponeAddChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock;
@@ -324,7 +324,7 @@
  of \b PNChannel instance which should be removed from the group; \c error - describes what exactly went wrong (check
  error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)       removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock;
@@ -349,7 +349,7 @@
  of \b PNChannel instance which should be removed from the group; \c error - describes what exactly went wrong (check
  error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)postponeRemoveChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
    withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock;

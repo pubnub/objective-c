@@ -121,7 +121,7 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
  
  @return Configured and ready to use \b PNMessage instance.
  
- @since 3.6.8
+ @since 3.7.0
  */
 + (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel
                              channelGroup:(PNChannelGroup *)group atDate:(PNDate *)messagePostDate;

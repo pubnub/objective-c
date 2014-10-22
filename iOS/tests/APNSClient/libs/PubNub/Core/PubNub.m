@@ -53,12 +53,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"pt78591658";
+static NSString * const kPNCodebaseBranch = @"3.7.0rc";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"c0391cdc42df673426690345d355efb9635b8cea";
+static NSString * const kPNCodeCommitIdentifier = @"240fab7957581f6a936b33b2a2d4b0546f466cc1";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -427,6 +427,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     
     return _sharedInstance;
+}
+
++ (PubNub *)clientWithConfiguration:(PNConfiguration *)configuration {
+    
+    return [self clientWithConfiguration:configuration andDelegate:nil];
 }
 
 + (PubNub *)clientWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
@@ -1863,15 +1868,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (NSString *)clientIdentifier {
     
-    __block NSString *clientIdentifier = nil;
-    [self pn_dispatchSynchronouslyBlock:^{
-        
-        self.userProvidedClientIdentifier = (self.uniqueClientIdentifier != nil);
-        clientIdentifier = self.uniqueClientIdentifier;
-    }];
+    self.userProvidedClientIdentifier = (self.uniqueClientIdentifier != nil);
     
     
-    return clientIdentifier;
+    return self.uniqueClientIdentifier;
 }
 
 

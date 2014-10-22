@@ -4,7 +4,7 @@
  Category used to populate some protected methods to other base class categories and class itself.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PubNub (SubscriptionProtected)

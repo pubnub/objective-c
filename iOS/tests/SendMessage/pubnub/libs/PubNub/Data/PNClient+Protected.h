@@ -24,21 +24,21 @@
 /**
  @brief Stores reference on list for which there is client's state data avaialable.
  
- @since 3.6.9
+ @since 3.7.0
  */
 @property (nonatomic, strong) NSMutableArray *channelsWithState;
 
 /**
  @brief Stores reference on client's state across multiple channels (or single)
  
- @since 3.6.9
+ @since 3.7.0
  */
 @property (nonatomic, strong) NSMutableDictionary *clientData;
 
 /**
  @brief Stores reference on on client's state data which doesn't have link to channel.
  
- @since 3.6.9
+ @since 3.7.0
  */
 @property (nonatomic, strong) NSDictionary *unboundData;
 
@@ -106,7 +106,7 @@
  @param data    \b NSDictionary instance which hold applied to the client during subscription or state fetch request.
  @param channel \b PNChannel name will be used to create linkage between state information and channel.
  
- @since 3.6.9
+ @since 3.7.0
  */
 - (void)addClientData:(NSDictionary *)data forChannel:(PNChannel *)channel;
 

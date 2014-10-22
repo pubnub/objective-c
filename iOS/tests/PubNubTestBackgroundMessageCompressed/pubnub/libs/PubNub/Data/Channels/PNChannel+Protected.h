@@ -61,7 +61,7 @@
  
  @param channel Reference on data feed object which should be removed from cache.
  
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)removeChannelFromCache:(PNChannel *)channel;
 

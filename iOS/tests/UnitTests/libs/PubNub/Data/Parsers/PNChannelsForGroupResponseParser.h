@@ -5,7 +5,7 @@
  list of \b PNChannelGroup instance which represent channel group within channels.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PNChannelsForGroupResponseParser : PNResponseParser

@@ -1,7 +1,7 @@
 /**
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-14 PubNub Inc.
  
  */
@@ -40,7 +40,7 @@
                        presence enabling state changed; \c error - describes what exactly went wrong (check error code
                        and compare it with \b PNErrorCodes ).
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)postponeEnablePresenceObservationFor:(NSArray *)channelObjects withCompletionHandlingBlock:(id)handlerBlock;
 

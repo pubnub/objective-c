@@ -96,7 +96,7 @@
  
  @return \c YES in case if there is rights management rights.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (BOOL)hasManagementRight;
 

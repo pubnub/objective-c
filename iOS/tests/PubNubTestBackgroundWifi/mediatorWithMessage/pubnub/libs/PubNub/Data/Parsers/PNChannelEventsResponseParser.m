@@ -40,7 +40,7 @@ static NSUInteger const kPNResponseChannelsListElementIndex = 2;
  @discussion In case if under \c kPNResponseChannelsListElementIndex stored list of channel groups, under this index
  will be stored list of actual channels from channel group at which event fired.
  
- @since 3.6.9
+ @since 3.7.0
  */
 static NSUInteger const kPNResponseChannelsDetailsListElementIndex = 3;
 

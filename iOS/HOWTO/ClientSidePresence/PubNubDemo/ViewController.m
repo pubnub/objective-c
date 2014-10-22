@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "PNMessage+Protected.h"
+#import "PubNub+Subscription.h"
 
 @interface ViewController ()
 
@@ -61,7 +62,7 @@
 
     occupants = [NSMutableDictionary dictionaryWithCapacity:1000];
     myChannel = [PNChannel channelWithName:@"z" shouldObservePresence:NO];
-    presenceChannel = [PNChannel channelWithName:[myChannel.name stringByAppendingString:@"-presence"] shouldObservePresence:NO];
+    presenceChannel = [PNChannel channelWithName:[myChannel.name stringByAppendingString:@"-presence"] shouldObservePresence:YES];
 
 
     //[uuidView setText:[NSString stringWithFormat:@"%@", [PubNub clientIdentifier]]];
@@ -69,7 +70,7 @@
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
                                                          withBlock:^(PNMessage *message) {
 
-                                                             NSLog(@"Text Length: %i", textView.text.length);
+                                                             NSLog(@"Text Length: %lu", (unsigned long)textView.text.length);
 
                                                              if (textView.text.length > 2000) {
                                                                  [textView setText:@""];
@@ -143,8 +144,8 @@
 
             // then subscribe on channel a
 
-            [PubNub subscribeOnChannel:myChannel];
-            [PubNub enablePresenceObservationForChannel:presenceChannel];
+            [PubNub subscribeOn:@[myChannel]];
+            [PubNub enablePresenceObservationFor:@[presenceChannel]];
 
 //            self.pingPongTimer = [NSTimer scheduledTimerWithTimeInterval:10.0
 //                                                          target:self
@@ -184,14 +185,15 @@
 - (void)presSub:(NSTimer *)aTimer {
     [self sweepOccupants];
     NSLog(@"Ping!");
-    [PubNub subscribeOnChannel:presenceChannel withPresenceEvent:YES];
+    [PubNub subscribeOn:@[presenceChannel]];
     [self performSelector:@selector(presUnsub) withObject:NULL afterDelay:5.0];
 }
 
 - (void)presUnsub{
     [self sweepOccupants];
     NSLog(@"Pong!");
-    [PubNub unsubscribeFromChannel:presenceChannel withPresenceEvent:YES];
+    
+    [PubNub unsubscribeFrom:@[presenceChannel]];
     [self performSelector:@selector(presSub:) withObject:NULL afterDelay:5.0];
 
 }

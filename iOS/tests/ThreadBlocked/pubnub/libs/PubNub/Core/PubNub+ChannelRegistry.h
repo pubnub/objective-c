@@ -5,7 +5,7 @@
  under unique name which will be used during subscription process.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PubNub (ChannelRegistry)
@@ -70,7 +70,7 @@
  Also observation can be done using \b NSNotificationCenter to observe this notifications: kPNClientChannelGroupsRequestCompleteNotification,
  kPNClientChannelGroupsRequestDidFailWithErrorNotification.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestDefaultChannelGroups;
 
@@ -154,7 +154,7 @@
  \c namespace - namespace from which channel groups requested; \c groups - list of \b PNChannelGroup describing channel group
  inside of namespace; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestDefaultChannelGroupsWithCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;
 
@@ -220,7 +220,7 @@
  @param nspace
  Namespace name from which channel groups should be retrieved.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelGroupsForNamespace:(NSString *)nspace;
 
@@ -308,7 +308,7 @@
  \c namespace - namespace from which channel groups requested; \c groups - list of \b PNChannelGroup describing channel group
  inside of namespace; \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelGroupsForNamespace:(NSString *)nspace
              withCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;
@@ -366,7 +366,7 @@
  Also observation can be done using \b NSNotificationCenter to observe this notifications: kPNClientChannelGroupNamespacesRequestCompleteNotification,
  kPNClientChannelGroupNamespacesRequestDidFailWithErrorNotification.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelGroupNamespaces;
 
@@ -430,7 +430,7 @@
  \c namespaces - list of namespaces which has been created to store registered channel groups; \c error - describes what
  exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelGroupNamespacesWithCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock;
 
@@ -489,7 +489,7 @@
  @param nspace
  Reference on namespace name which should be removed along with all channel group and channels registered in it.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)removeChannelGroupNamespace:(NSString *)nspace;
 
@@ -571,7 +571,7 @@
  \c namespace - namespace name which should be removed; \c error - describes what exactly went wrong (check error code 
  and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)removeChannelGroupNamespace:(NSString *)nspace withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock;
 
@@ -629,7 +629,7 @@
  @param group
  \b PNChannelGroup instance which describs channel group which should be deleted by \b PubNub client.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)removeChannelGroup:(PNChannelGroup *)group;
 
@@ -711,7 +711,7 @@
  \c PNChannelGroup - \b PNChannelGroup which should be removed; \c error - describes what exactly went wrong (check error code
  and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)removeChannelGroup:(PNChannelGroup *)group withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock;
 
@@ -774,7 +774,7 @@
  @param group
  Reference on channel group object which hold information about group name and namespace.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelsForGroup:(PNChannelGroup *)group;
 
@@ -858,7 +858,7 @@
  \c group - \b PNChannelGroup instance which describe group for which channels should be retrieved (it also has property 
  with channels list); \c error - describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestChannelsForGroup:(PNChannelGroup *)group
     withCompletionHandlingBlock:(PNClientChannelsForGroupRequestHandlingBlock)handlerBlock;
@@ -925,7 +925,7 @@
  @param group
  Reference on channel group object which hold information about group name and namespace.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group;
 
@@ -1014,7 +1014,7 @@
  of \b PNChannel instance which should be added to the group; \c error - describes what exactly went wrong (check 
  error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)          addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
   withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock;
@@ -1093,7 +1093,7 @@
  @param group
  Reference on channel group object which hold information about group name and namespace.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group;
 
@@ -1182,7 +1182,7 @@
  of \b PNChannel instance which should be removed from the group; \c error - describes what exactly went wrong (check
  error code and compare it with \b PNErrorCodes ).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)       removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
   withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock;

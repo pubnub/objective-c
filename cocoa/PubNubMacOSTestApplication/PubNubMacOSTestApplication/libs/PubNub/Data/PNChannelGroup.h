@@ -6,7 +6,7 @@
  of one created namespaces.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PNChannelGroup : PNChannel
@@ -56,7 +56,7 @@
  
  @return Reference on ready to use \b PNChannelGroup instance with specified behaviour as for presence events.
  
- @since 3.6.8
+ @since 3.7.0
  */
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name shouldObservePresence:(BOOL)observePresence;
 
@@ -86,7 +86,7 @@
  
  @return Reference on ready to use \b PNChannelGroup instance with specified behaviour as for presence events.
  
- @since 3.6.8
+ @since 3.7.0
  */
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace
                    shouldObservePresence:(BOOL)observePresence;

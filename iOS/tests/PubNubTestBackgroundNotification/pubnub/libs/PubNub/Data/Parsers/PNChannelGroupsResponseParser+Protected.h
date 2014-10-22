@@ -14,14 +14,14 @@
 /**
  @brief Reference on key under which target namespace is stored
  
- @since 3.6.9
+ @since 3.7.0
  */
 static NSString * const kPNResponseNamespaceKey = @"namespace";
 
 /**
  @brief Reference on key under which stored list of channel groups registered under target namespace.
  
- @since 3.6.9
+ @since 3.7.0
  */
 static NSString * const kPNResponseChannelGroupsKey = @"groups";
 

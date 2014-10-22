@@ -429,6 +429,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     return _sharedInstance;
 }
 
++ (PubNub *)clientWithConfiguration:(PNConfiguration *)configuration {
+    
+    return [self clientWithConfiguration:configuration andDelegate:nil];
+}
+
 + (PubNub *)clientWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
     
     return [[self alloc] initWithConfiguration:configuration andDelegate:delegate];
@@ -1863,15 +1868,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (NSString *)clientIdentifier {
     
-    __block NSString *clientIdentifier = nil;
-    [self pn_dispatchSynchronouslyBlock:^{
-        
-        self.userProvidedClientIdentifier = (self.uniqueClientIdentifier != nil);
-        clientIdentifier = self.uniqueClientIdentifier;
-    }];
+    self.userProvidedClientIdentifier = (self.uniqueClientIdentifier != nil);
     
     
-    return clientIdentifier;
+    return self.uniqueClientIdentifier;
 }
 
 

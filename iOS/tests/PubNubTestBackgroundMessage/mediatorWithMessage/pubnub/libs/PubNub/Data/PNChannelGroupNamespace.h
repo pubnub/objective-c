@@ -5,7 +5,7 @@
  unique name inside one of created namespace.
  
  @author Sergey Mamontov
- @version 3.6.9
+ @version 3.7.0
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PNChannelGroupNamespace : PNChannelGroup
@@ -18,7 +18,7 @@
  
  @return Initialized and ready to use instance.
  
- @since 3.6.8
+ @since 3.7.0
  */
 + (PNChannelGroupNamespace *)allNamespaces;
 
@@ -29,7 +29,7 @@
  
  @return Initialized and ready to use instance.
  
- @since 3.6.9
+ @since 3.7.0
  */
 + (PNChannelGroupNamespace *)namespaceWithName:(NSString *)name;
 

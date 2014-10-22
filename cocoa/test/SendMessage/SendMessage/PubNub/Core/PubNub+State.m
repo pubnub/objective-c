@@ -1,7 +1,7 @@
 /**
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-14 PubNub Inc.
  
  */
@@ -48,7 +48,7 @@
                                 client at specified channel; \c error - describes what exactly went wrong (check error 
                                 code and compare it with \b PNErrorCodes ).
 
-@since 3.6.9
+@since 3.7.0
 */
 - (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
        reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -72,7 +72,7 @@
                                 client at specified channel; \c error - describes what exactly went wrong (check error 
                                 code and compare it with \b PNErrorCodes ).
  
- @since 3.6.9
+ @since 3.7.0
  */
 - (void)postponeRequestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
             reschedulingMethodCall:(BOOL)isMethodCallRescheduled witCompletionHandlingBlock:(id)handlerBlock;
@@ -118,7 +118,7 @@
                                 found as subscriber; \c error - describes what exactly went wrong (check error code and 
                                 compare it with \b PNErrorCodes ).
  
- @since 3.6.9
+ @since 3.7.0
  */
 - (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                     forObject:(id <PNChannelProtocol>)object reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -144,7 +144,7 @@
                                 PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason 
                                 and \a -localizedRecoverySuggestion to get human readable description for error).
  
- @since 3.6.9
+ @since 3.7.0
  */
 - (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                         forObject:(id <PNChannelProtocol>)object reschedulingMethodCall:(BOOL)isMethodCallRescheduled

@@ -4,7 +4,7 @@
  Base class extension which provide methods for presence information fetching.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PubNub (Presence)
@@ -192,7 +192,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the
  group, but for channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)requestParticipantsListFor:(NSArray *)channelObjects;
 
@@ -218,7 +218,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the group, but for
  channels which is registered under it.
  
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)requestParticipantsListFor:(NSArray *)channelObjects
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
@@ -303,7 +303,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the
  group, but for channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired;
 
@@ -336,7 +336,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the
  group, but for channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
@@ -437,7 +437,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the
  group, but for channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                        clientState:(BOOL)shouldFetchClientState;
@@ -472,7 +472,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the group, but for
  channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                        clientState:(BOOL)shouldFetchClientState
@@ -517,7 +517,7 @@
 /**
  Request list of participants for all channels.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsList;
 
@@ -539,7 +539,7 @@
 
  @note This method by default won't request client's state.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListWithCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
@@ -555,7 +555,7 @@
  Whether or not \b PubNub client should fetch list of client identifiers or only number of them will be returned by
  server.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired;
 
@@ -581,7 +581,7 @@
 
  @note This method by default won't request client's state.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                   andCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
@@ -605,7 +605,7 @@
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then value of \a 'shouldFetchClientState' will be
  ignored and returned result array will contain list of \b PNClient instances with names set to \a 'unknown'.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                          clientState:(BOOL)shouldFetchClientState;
@@ -637,7 +637,7 @@
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then value of \a 'shouldFetchClientState' will be
  ignored and returned result array will contain list of \b PNClient instances with names set to \a 'unknown'.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListWithClientIdentifiers:(BOOL)isClientIdentifiersRequired
                                          clientState:(BOOL)shouldFetchClientState
@@ -690,7 +690,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the
  group, but for channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListFor:(NSArray *)channelObjects;
 
@@ -716,7 +716,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the group, but for
  channels which is registered under it.
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListFor:(NSArray *)channelObjects
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
@@ -738,7 +738,7 @@
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then result array will contain list of \b PNClient
  instances with names set to \a 'unknown'.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListForChannel:(PNChannel *)channel
                 clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
@@ -774,7 +774,7 @@
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then result array will contain list of \b PNClient
  instances with names set to \a 'unknown'.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListForChannel:(PNChannel *)channel
                 clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
@@ -802,7 +802,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the
  group, but for channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired;
 
@@ -835,7 +835,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the
  group, but for channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
@@ -864,7 +864,7 @@
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then value of \a 'shouldFetchClientState' will be
  ignored and returned result array will contain list of \b PNClient instances with names set to \a 'unknown'.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListForChannel:(PNChannel *)channel
                 clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
@@ -903,7 +903,7 @@
  @note If \a 'isClientIdentifiersRequired' is set to \c NO then value of \a 'shouldFetchClientState' will be
  ignored and returned result array will contain list of \b PNClient instances with names set to \a 'unknown'.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListForChannel:(PNChannel *)channel clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                               clientState:(BOOL)shouldFetchClientState
@@ -934,7 +934,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the
  group, but for channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsList:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                     clientState:(BOOL)shouldFetchClientState;
@@ -969,7 +969,7 @@
  @note \b PNChannelGroup instances will be expanded on server and information will be returned not for name of the group, but for
  channels which is registered under it.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantsListFor:(NSArray *)channelObjects clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                        clientState:(BOOL)shouldFetchClientState
@@ -981,7 +981,7 @@
  @param clientIdentifier
  Client identifier for which \b PubNub client should get list of channels in which it reside.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantChannelsList:(NSString *)clientIdentifier;
 
@@ -1003,7 +1003,7 @@
  \c channels - is list of \b PNChannel instances in which \c clientIdentifier has been found as subscriber; \c error -
  describes what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)requestParticipantChannelsList:(NSString *)clientIdentifier
                    withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;

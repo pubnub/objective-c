@@ -5,7 +5,7 @@
  Base class extension which provide methods for presence events observation.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PubNub (PresenceEvents)
@@ -768,7 +768,7 @@
                        \b PNChannel or \b PNChannelGroup for which \b PubNub client should disable presence events
                        observation.
 
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)disablePresenceObservationFor:(NSArray *)channelObjects;
 
@@ -839,7 +839,7 @@
                        (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and
                        \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.7.0
  */
 + (void)disablePresenceObservationFor:(NSArray *)channelObjects
           withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;
@@ -1589,7 +1589,7 @@
                        \b PNChannel or \b PNChannelGroup for which \b PubNub client should disable presence events
                        observation.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)disablePresenceObservationFor:(NSArray *)channelObjects;
 
@@ -1660,7 +1660,7 @@
                        (check PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and
                        \a -localizedRecoverySuggestion to get human readable description for error).
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)disablePresenceObservationFor:(NSArray *)channelObjects
           withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock;

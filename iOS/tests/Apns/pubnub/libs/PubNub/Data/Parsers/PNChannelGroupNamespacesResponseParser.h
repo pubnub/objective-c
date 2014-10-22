@@ -5,7 +5,7 @@
  list of namespaces which is registered under current subscribe key.
  
  @author Sergey Mamontov
- @version 3.6.8
+ @version 3.7.0
  @copyright © 2009-13 PubNub Inc.
  */
 @interface PNChannelGroupNamespacesResponseParser : PNResponseParser
