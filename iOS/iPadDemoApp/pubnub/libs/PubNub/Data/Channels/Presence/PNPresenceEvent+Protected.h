@@ -35,11 +35,19 @@ struct PNPresenceEventDataKeysStruct {
      Stores reference on person who triggered presence event.
      */
     __unsafe_unretained NSString *uuid;
-
+    
     /**
      Stores reference on data which has been appended to the client with specified identifier.
      */
     __unsafe_unretained NSString *data;
+    
+    /**
+     @brief Stores reference on channel at which event occured (in case if event occured on one of channel group 
+     channels)
+     
+     @since 3.7.0
+     */
+    __unsafe_unretained NSString *channel;
 
     /**
      Stores reference on current number of persons on channel in which this event was triggered.

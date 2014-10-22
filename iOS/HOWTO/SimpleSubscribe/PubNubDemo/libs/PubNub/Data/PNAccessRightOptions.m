@@ -7,6 +7,7 @@
 //
 
 #import "PNAccessRightOptions+Protected.h"
+#import "PNChannel+Protected.h"
 #import "PNPrivateImports.h"
 #import "PNHelper.h"
 
@@ -47,6 +48,10 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
         if ([channels count]) {
 
             self.level = PNChannelAccessRightsLevel;
+            if (((PNChannel *)[channels lastObject]).isChannelGroup) {
+                
+                self.level = PNChannelGroupAccessRightsLevel;
+            }
             if ([clientsAuthorizationKeys count]) {
 
                 self.level = PNUserAccessRightsLevel;
@@ -56,7 +61,7 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
         }
 
         self.accessPeriodDuration = accessPeriodDuration >= 0 ? accessPeriodDuration : kPNDefaulfAccessPeriodDuration;
-        if (self.rights == PNUnknownAccessRights) {
+        if (self.rights == PNUnknownAccessRights || self.rights == PNNoAccessRights) {
 
             self.accessPeriodDuration = 0;
         }
@@ -120,6 +125,10 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
 
         [description appendFormat:@" channels: %@;", self.channels];
     }
+    else if (self.level == PNChannelGroupAccessRightsLevel) {
+        
+        [description appendFormat:@" channel-group: %@;", self.channels];
+    }
     else if (self.level == PNUserAccessRightsLevel) {
 
         [description appendFormat:@" users: %@;", self.clientsAuthorizationKeys];
@@ -129,6 +138,45 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
 
 
     return description;
+}
+
+- (NSString *)logDescription {
+    
+    NSString *level = @"application";
+    if (self.level == PNChannelGroupAccessRightsLevel) {
+        
+        level = @"channel-group";
+    }
+    else if (self.level == PNChannelAccessRightsLevel) {
+        
+        level = @"channel";
+    }
+    else if (self.level == PNUserAccessRightsLevel) {
+        
+        level = @"user";
+    }
+    NSMutableString *logDescription = [NSMutableString stringWithFormat:@"<%@|%@|%@|%lu", level, PNObfuscateString(self.applicationKey),
+                                       @(self.rights), (unsigned long)self.accessPeriodDuration];
+    if (self.level == PNChannelGroupAccessRightsLevel || self.level == PNChannelAccessRightsLevel) {
+        
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
+        [logDescription appendFormat:@"|%@", (self.channels ? [self.channels performSelector:@selector(logDescription)] : [NSNull null])];
+        #pragma clang diagnostic pop
+    }
+    else if (self.level == PNUserAccessRightsLevel) {
+        
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
+        [logDescription appendFormat:@"|%@|%@",
+         (self.clientsAuthorizationKeys ? [self.clientsAuthorizationKeys performSelector:@selector(logDescription)] : [NSNull null]),
+         (self.channels ? [self.channels performSelector:@selector(logDescription)] : [NSNull null])];
+        #pragma clang diagnostic pop
+    }
+    [logDescription appendString:@">"];
+    
+    
+    return logDescription;
 }
 
 #pragma mark -

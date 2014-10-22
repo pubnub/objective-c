@@ -6,9 +6,10 @@
 
  */
 
-#import "PNClientStateResponseParser.h"
+#import "PNClientStateResponseParser+Protected.h"
 #import "PNResponse+Protected.h"
 #import "PNClient+Protected.h"
+#import "PNChannel.h"
 
 
 // ARC check
@@ -16,24 +17,6 @@
 #error PubNub client state request response parser must be built with ARC.
 // You can turn on ARC for only PubNub files by adding '-fobjc-arc' to the build phase for each of its files.
 #endif
-
-
-#pragma mark Private interface declaration
-
-@interface PNClientStateResponseParser ()
-
-
-#pragma mark - Properties
-
-/**
- Refrence on \b PNClient instance which will store client information.
- */
-@property (nonatomic, strong) PNClient *client;
-
-#pragma mark -
-
-
-@end
 
 
 #pragma mark - Public interface implementation
@@ -56,6 +39,10 @@
     // Checking base requirement about payload data type.
     BOOL conforms = [response.response isKindOfClass:[NSDictionary class]];
     conforms = (conforms ? (response.additionalData && [response.additionalData isKindOfClass:[PNClient class]]) : conforms);
+    if (conforms && [response.response objectForKey:kPNResponseChannelsKey]) {
+        
+        conforms = [[response.response valueForKey:kPNResponseChannelsKey] isKindOfClass:[NSDictionary class]];
+    }
 
 
     return conforms;
@@ -68,10 +55,23 @@
 
     // Check whether initialization successful or not
     if ((self = [super init])) {
-
+        
+        PNClient *client = response.additionalData;
         NSDictionary *responseData = response.response;
-        self.client = response.additionalData;
-        self.client.data = responseData;
+        if ([responseData objectForKey:kPNResponseChannelsKey]) {
+            
+            responseData = [responseData valueForKey:kPNResponseChannelsKey];
+            [responseData enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *clienOnChannelData,
+                                                              BOOL *channelEnumeratorStop) {
+                
+                [client addClientData:clienOnChannelData forChannel:[PNChannel channelWithName:channelName]];
+            }];
+        }
+        else {
+            
+            [client addClientData:responseData forChannel:client.channel];
+        }
+        self.client = client;
     }
 
 

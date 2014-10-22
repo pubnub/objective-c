@@ -143,11 +143,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         [self.changeUUIDButton setTitle:@"Save" forState:UIControlStateNormal];
         self.clientUUIDImnputTextField.hidden = NO;
         self.clientUUIDLabel.hidden = YES;
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            
-            [self handleCloseButtonTap:nil];
-        });
     }
     else {
         

@@ -124,6 +124,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .proxyConfigurationInformation = @"0100065",
         .proxyConfigurationNotRequired = @"0100066",
         .destroyed = @"0100067",
+        .resourceLinkage = @"0100068",
 
         .stream = {
 
@@ -237,6 +238,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .requestRescheduleImpossible = @"0200042",
         .connectionReset = @"0200043",
         .destroyed = @"0200044",
+        .resourceLinkage = @"0200045",
         .subscribe = {
 
             .leaveAllChannels = @"0201000",
@@ -313,6 +315,20 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
             .latencyMeterRequestSent = @"0202034",
             .latencyMeterRequestSendingCanceled = @"0202035",
             .messagePostRequestSent = @"0202036",
+            .channelGroupsRetrieveRequestCompleted = @"0202037",
+            .channelGroupsRetrieveRequestFailed = @"0202038",
+            .channelsForGroupRetrieveRequestCompleted = @"0202039",
+            .channelsForGroupRetrieveRequestFailed = @"0202040",
+            .channelsAdditionToGroupRequestCompleted = @"0202041",
+            .channelsAdditionToGroupRequestFailed = @"0202042",
+            .channelsRemovalFromGroupRequestCompleted = @"0202043",
+            .channelsRemovalFromGroupRequestFailed = @"0202044",
+            .channelGroupNamespacesRetrievalRequestCompleted = @"0202045",
+            .channelGroupNamespacesRetrievalRequestFailed = @"0202046",
+            .channelGroupNamespaceRemovalRequestCompleted = @"0202047",
+            .channelGroupNamespaceRemovalRequestFailed = @"0202048",
+            .channelGroupRemovalRequestCompleted = @"0202049",
+            .channelGroupRemovalRequestFailed = @"0202050",
         }
     },
     .requests = {
@@ -613,6 +629,57 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .willConnect = @"0900236",
         .clientInformation = @"0900237",
         .configurationInformation = @"0900238",
+        .resourceLinkage = @"0900239",
+        .channelGroupsRequestAttempt = @"0900240",
+        .requestChannelGroups = @"0900241",
+        .channelGroupsRequestImpossible = @"0900242",
+        .postponeChannelGroupsRequest = @"0900243",
+        .channelGroupsRequestCompleted = @"0900244",
+        .rescheduleChannelGroupsRequest = @"0900245",
+        .channelGroupsRequestFailed = @"0900246",
+        .channelsForGroupRequestAttempt = @"0900247",
+        .requestChannelsForGroup = @"0900248",
+        .channelsForGroupRequestImpossible = @"0900249",
+        .postponeChannelsForGroupRequest = @"0900250",
+        .channelsForGroupRequestCompleted = @"0900251",
+        .rescheduleChannelsForGroupRequest = @"0900252",
+        .channelsForGroupRequestFailed = @"0900253",
+        .channelsAdditionToGroupAttempt = @"0900254",
+        .addingChannelsToGroup = @"0900255",
+        .channelsAdditionToGroupImpossible = @"0900256",
+        .postponeChannelsAdditionToGroup = @"0900257",
+        .channelsAdditionToGroupCompleted = @"0900258",
+        .rescheduleChannelsAdditionToGroup = @"0900259",
+        .channelsAdditionToGroupFailed = @"0900260",
+        .channelsRemovalFromGroupAttempt = @"0900261",
+        .removingChannelsFromGroup = @"0900262",
+        .channelsRemovalGroupImpossible = @"0900263",
+        .postponeChannelsRemovalFromGroup = @"0900264",
+        .channelsRemovalFromGroupCompleted = @"0900265",
+        .rescheduleChannelsRemovalFromGroup = @"0900266",
+        .channelsRemovalFromGroupFailed = @"0900267",
+        .channelGroupNamespacesRetrieveAttempt = @"0900268",
+        .retrievingChannelGroupNamespaces = @"0900269",
+        .channelGroupNamespacesRetrieveImpossible = @"0900270",
+        .postponeChannelGroupNamespacesRetrieval = @"0900271",
+        .channelGroupNamespacesRetrievalCompleted = @"0900272",
+        .rescheduleChannelGroupNamespacesRetrieval = @"0900273",
+        .channelGroupNamespacesRetrievalFailed = @"0900274",
+        .channelGroupNamespaceRemovalAttempt = @"0900275",
+        .removingChannelGroupNamespace = @"0900276",
+        .channelGroupNamespaceRemovalImpossible = @"0900277",
+        .postponeChannelGroupNamespaceRemoval = @"0900278",
+        .channelGroupNamespaceRemovalCompleted = @"0900279",
+        .rescheduleChannelGroupNamespaceRemoval = @"0900280",
+        .channelGroupNamespaceRemovalFailed = @"0900281",
+        .channelGroupRemovalAttempt = @"0900282",
+        .removingChannelGroup = @"0900283",
+        .channelGroupRemovalImpossible = @"0900284",
+        .postponeChannelGroupRemoval = @"0900285",
+        .channelGroupRemovalCompleted = @"0900286",
+        .rescheduleChannelGroupRemoval = @"0900287",
+        .channelGroupRemovalFailed = @"0900288",
+        
     },
     .observationCenter = {
         
@@ -840,24 +907,28 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
 + (void)prepare {
 
-    // Retrieve path to the 'Documents' folder
-    NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    [self sharedInstance].dumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerDumpFileName];
-    [self sharedInstance].oldDumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerOldDumpFileName];
-    [self sharedInstance].httpPacketStoreFolderPath = [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
-    [self sharedInstance].maximumDumpFileSize = kPNLoggerMaximumDumpFileSize;
-
-    [[self sharedInstance] prepareForAsynchronousFileProcessing];
-    [[self sharedInstance] prepareSymbols];
-
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:[self sharedInstance].httpPacketStoreFolderPath isDirectory:NULL]) {
-
-        [fileManager createDirectoryAtPath:[self sharedInstance].httpPacketStoreFolderPath withIntermediateDirectories:YES
-                                attributes:nil error:NULL];
-    }
-
-    [[self sharedInstance] applyDefaultConfiguration];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        // Retrieve path to the 'Documents' folder
+        NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        [self sharedInstance].dumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerDumpFileName];
+        [self sharedInstance].oldDumpFilePath = [documentsFolder stringByAppendingPathComponent:kPNLoggerOldDumpFileName];
+        [self sharedInstance].httpPacketStoreFolderPath = [documentsFolder stringByAppendingPathComponent:@"http-response-dump"];
+        [self sharedInstance].maximumDumpFileSize = kPNLoggerMaximumDumpFileSize;
+        
+        [[self sharedInstance] prepareForAsynchronousFileProcessing];
+        [[self sharedInstance] prepareSymbols];
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if (![fileManager fileExistsAtPath:[self sharedInstance].httpPacketStoreFolderPath isDirectory:NULL]) {
+            
+            [fileManager createDirectoryAtPath:[self sharedInstance].httpPacketStoreFolderPath withIntermediateDirectories:YES
+                                    attributes:nil error:NULL];
+        }
+        
+        [[self sharedInstance] applyDefaultConfiguration];
+    });
 }
 
 + (void)logFrom:(id)sender forLevel:(PNLogLevel)level withParametersFromBlock:(NSArray *(^)(void))parametersBlock {
@@ -1049,7 +1120,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                                                                              target:[self sharedInstance]
                                                                            selector:@selector(handleConsoleDumpTimer:)
                                                                            userInfo:nil repeats:YES];
-            [[NSRunLoop currentRunLoop] addTimer:[self sharedInstance].consoleDumpTimer forMode:NSRunLoopCommonModes];
+            [[NSRunLoop mainRunLoop] addTimer:[self sharedInstance].consoleDumpTimer forMode:NSRunLoopCommonModes];
         } else if (![self isDumpingToFile] && [[self sharedInstance].consoleDumpTimer isValid]) {
             
             [[self sharedInstance].consoleDumpTimer invalidate];

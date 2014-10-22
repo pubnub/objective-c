@@ -9,14 +9,16 @@
 #import "PNAccessRightsView.h"
 #import "PNAccessRightsInformationCell.h"
 #import "PNClientIdentifierAddDelegate.h"
-#import "PNChannelInformationDelegate.h"
+#import "PNObjectInformationDelegate.h"
 #import "PNClientIdentifierAddView.h"
-#import "PNChannelInformationView.h"
+#import "PNObjectInformationView.h"
 #import "NSString+PNLocalization.h"
+#import "PNNamespaceAddDelegate.h"
 #import "PNAccessRightsHelper.h"
 #import "NSObject+PNAddition.h"
+#import "PNNamespaceAddView.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNTableView.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
@@ -32,7 +34,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 @interface PNAccessRightsView () <UITableViewDelegate, UITableViewDataSource, UIPickerViewDataSource,
                                   UIPickerViewDelegate, UIPopoverControllerDelegate, UITextFieldDelegate,
-                                  PNChannelInformationDelegate, PNClientIdentifierAddDelegate>
+                                  PNObjectInformationDelegate, PNClientIdentifierAddDelegate, PNNamespaceAddDelegate>
 
 
 #pragma mark - Properties
@@ -51,6 +53,11 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
  Stores reference on action button which can be used by user to modify access rights.
  */
 @property (nonatomic, pn_desired_weak) IBOutlet PNButton *actionButton;
+
+/**
+ Stores reference on namespace addition button for channel group access rights representation.
+ */
+@property (nonatomic, pn_desired_weak) IBOutlet PNButton *addNamespaceButton;
 
 /**
  Stores reference on view which show user provided data.
@@ -83,6 +90,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
  */
 @property (nonatomic, pn_desired_weak) IBOutlet UISwitch *readRightsSwitch;
 @property (nonatomic, pn_desired_weak) IBOutlet UISwitch *writeRightsSwitch;
+@property (nonatomic, pn_desired_weak) IBOutlet UISwitch *manageGroupSwitch;
 
 /**
  Stores reference on text field which will accept name of the channel for which user access rights manipulation should
@@ -116,6 +124,28 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 @property (nonatomic, assign, getter = isLayoutPrepared) BOOL layoutPrepared;
 
 
+#pragma mark - Class methods
+
+/**
+ @brief Retrieve reference on access rights representation view basing on parameters.
+ 
+ @discussion Depending on parameters view can be used to represent application/channe/group or user access rights for
+ audition/change or revoke.
+ 
+ @param nibNameSelector        Selector which should be used inside of nib name method swizzling
+ @param mode                   One of \b PNAccessRightsHelperMode fields which specify whos access rights it should
+                               represent.
+ @param willAuditAccessRights  Whether view presented for access rights audition operation or not
+ @param willRevokeAccessRights Whether view presented for access rights revoke operation or not
+ 
+ @return Constructed and ready to use instance.
+ 
+ @since 3.7.0
+ */
++ (instancetype)accessRightsViewWithNameFrom:(SEL)nibNameSelector forMode:(PNAccessRightsHelperMode)mode
+                                       audit:(BOOL)willAuditAccessRights revoke:(BOOL)willRevokeAccessRights;
+
+
 #pragma mark - Instance methods
 
 - (void)prepareLayout;
@@ -147,7 +177,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Class methods
 
-+ (instancetype)viewFrromNibForAccessRightsInformation:(PNAccessRightsInformation *)information {
++ (instancetype)viewFromNibForAccessRightsInformation:(PNAccessRightsInformation *)information {
     
     PNAccessRightsView *view = nil;
     switch (information.level) {
@@ -155,13 +185,24 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             
             view = [self viewFromNibForApplicationGrant];
             break;
+        case PNChannelGroupAccessRightsLevel:
+            
+            view = [self viewFromNibForChannelGroupGrant];
+            break;
         case PNChannelAccessRightsLevel:
             
             view = [self viewFromNibForChannelGrant];
             break;
         case PNUserAccessRightsLevel:
             
-            view = [self viewFromNibForUserGrant];
+            if ([information.object isKindOfClass:[PNChannelGroup class]]) {
+                
+                view = [self viewFromNibForUserGrantOnChannelGroup];
+            }
+            else {
+                
+                view = [self viewFromNibForUserGrantOnChannel];
+            }
             break;
     }
     [view updateLayoutForAccessRightsInformation:information];
@@ -172,143 +213,105 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 + (instancetype)viewFromNibForApplicationAudit {
     
-    __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForApplication)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperApplicationMode
-                                    forAccessRightsAudition:YES orAccessRightsRevoke:NO];
-                  [view updateLayout];
-              }];
-    
-    
-    return view;
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForApplication)
+                                      forMode:PNAccessRightsHelperApplicationMode audit:YES revoke:NO];
 }
 
 + (instancetype)viewFromNibForApplicationGrant {
-    
-    __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForApplication)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperApplicationMode
-                                    forAccessRightsAudition:NO orAccessRightsRevoke:NO];
-                  [view updateLayout];
-              }];
-    
-    
-    return view;
+
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForApplication)
+                                      forMode:PNAccessRightsHelperApplicationMode audit:NO revoke:NO];
 }
 
 + (instancetype)viewFromNibForApplicationRevoke {
-    
-    __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForApplication)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperApplicationMode
-                                    forAccessRightsAudition:NO orAccessRightsRevoke:YES];
-                  [view updateLayout];
-              }];
-    
-    
-    return view;
+
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForApplication)
+                                      forMode:PNAccessRightsHelperApplicationMode audit:NO revoke:YES];
 }
 
 + (instancetype)viewFromNibForChannelAudit {
     
-    __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForChannel)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperChannelMode
-                                    forAccessRightsAudition:YES orAccessRightsRevoke:NO];
-                  [view updateLayout];
-              }];
-    
-    
-    return view;
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForChannel) forMode:PNAccessRightsHelperChannelMode
+                                        audit:YES revoke:NO];
 }
 
 + (instancetype)viewFromNibForChannelGrant {
-    
-    __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForChannel)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperChannelMode
-                                    forAccessRightsAudition:NO orAccessRightsRevoke:NO];
-                  [view updateLayout];
-              }];
-    
-    
-    return view;
+
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForChannel) forMode:PNAccessRightsHelperChannelMode
+                                        audit:NO revoke:NO];
 }
 
 + (instancetype)viewFromNibForChannelRevoke {
     
-    __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForChannel)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperChannelMode
-                                    forAccessRightsAudition:NO orAccessRightsRevoke:YES];
-                  [view updateLayout];
-              }];
-    
-    
-    return view;
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForChannel) forMode:PNAccessRightsHelperChannelMode
+                                        audit:NO revoke:YES];
 }
 
-+ (instancetype)viewFromNibForUserAudit {
++ (instancetype)viewFromNibForChannelGroupAudit {
     
-    __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForUser)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperUserMode
-                                    forAccessRightsAudition:YES orAccessRightsRevoke:NO];
-                  [view updateLayout];
-              }];
-    
-    
-    return view;
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForChannelGroup)
+                                      forMode:PNAccessRightsHelperChannelGroupMode audit:YES revoke:NO];
 }
 
-+ (instancetype)viewFromNibForUserGrant {
++ (instancetype)viewFromNibForChannelGroupGrant {
     
-    __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForUser)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperUserMode
-                                    forAccessRightsAudition:NO orAccessRightsRevoke:NO];
-                  [view updateLayout];
-              }];
-    
-    
-    return view;
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForChannelGroup)
+                                      forMode:PNAccessRightsHelperChannelGroupMode audit:NO revoke:NO];
 }
 
-+ (instancetype)viewFromNibForUserRevoke {
++ (instancetype)viewFromNibForChannelGroupRevoke {
+    
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForChannelGroup)
+                                      forMode:PNAccessRightsHelperChannelGroupMode audit:NO revoke:YES];
+}
+
++ (instancetype)viewFromNibForUserAuditOnChannel {
+    
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForUserOnChannel)
+                                      forMode:PNAccessRightsHelperUserOnChannelMode audit:YES revoke:NO];
+}
+
++ (instancetype)viewFromNibForUserGrantOnChannel {
+    
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForUserOnChannel)
+                                      forMode:PNAccessRightsHelperUserOnChannelMode audit:NO revoke:NO];
+}
+
++ (instancetype)viewFromNibForUserRevokeOnChannel {
+    
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForUserOnChannel)
+                                      forMode:PNAccessRightsHelperUserOnChannelMode audit:NO revoke:YES];
+}
+
++ (instancetype)viewFromNibForUserAuditOnChannelGroup {
+    
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForUserOnChannelGroup)
+                                      forMode:PNAccessRightsHelperUserOnChannelGroupMode audit:YES revoke:NO];
+}
+
++ (instancetype)viewFromNibForUserGrantOnChannelGroup {
+    
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForUserOnChannelGroup)
+                                      forMode:PNAccessRightsHelperUserOnChannelGroupMode audit:NO revoke:NO];
+}
+
++ (instancetype)viewFromNibForUserRevokeOnChannelGroup {
+    
+    return [self accessRightsViewWithNameFrom:@selector(viewNibNameForUserOnChannelGroup)
+                                      forMode:PNAccessRightsHelperUserOnChannelGroupMode audit:NO revoke:YES];
+}
+
++ (instancetype)accessRightsViewWithNameFrom:(SEL)nibNameSelector forMode:(PNAccessRightsHelperMode)mode
+                                       audit:(BOOL)willAuditAccessRights revoke:(BOOL)willRevokeAccessRights {
     
     __block PNAccessRightsView *view = nil;
-    [self temporarilySwizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForUser)
-              duringBlockExecution:^{
-                  
-                  view = [self viewFromNib];
-                  [view.accessRightsHelper configureForMode:PNAccessRightsHelperUserMode
-                                    forAccessRightsAudition:NO orAccessRightsRevoke:YES];
-                  [view updateLayout];
-              }];
+    [self temporarilySwizzleMethod:@selector(viewNibName) with:nibNameSelector duringBlockExecution:^{
+        
+        view = [self viewFromNib];
+        [view.accessRightsHelper configureForMode:mode forAccessRightsAudition:willAuditAccessRights
+                             orAccessRightsRevoke:willRevokeAccessRights];
+        [view updateLayout];
+    }];
     
     
     return view;
@@ -324,9 +327,19 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     return @"PNChannelAccessRightsView";
 }
 
-+ (NSString *)viewNibNameForUser {
++ (NSString *)viewNibNameForChannelGroup {
     
-    return @"PNUserAccessRightsView";
+    return @"PNChannelGroupAccessRightsView";
+}
+
++ (NSString *)viewNibNameForUserOnChannel {
+    
+    return @"PNUserAccessRightsOnChannelView";
+}
+
++ (NSString *)viewNibNameForUserOnChannelGroup {
+    
+    return @"PNUserAccessRightsOnChannelGroupView";
 }
 
 
@@ -379,15 +392,39 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                 }
             }
             break;
-        case PNAccessRightsHelperUserMode:
+        case PNAccessRightsHelperChannelGroupMode:
             
-            processDescription = @"userAccessRightsAudit";
+            processDescription = @"channelGroupAccessRightsAudit";
             if (![self.accessRightsHelper isAuditingAccessRights]) {
                 
-                processDescription = @"userAccessRightsGrant";
+                processDescription = @"channelGroupAccessRightsGrant";
                 if ([self.accessRightsHelper isRevokingAccessRights]) {
                     
-                    processDescription = @"userAccessRightsRevoke";
+                    processDescription = @"channelGroupAccessRightsRevoke";
+                }
+            }
+            break;
+        case PNAccessRightsHelperUserOnChannelMode:
+            
+            processDescription = @"userAccessRightsAuditOnChannel";
+            if (![self.accessRightsHelper isAuditingAccessRights]) {
+                
+                processDescription = @"userAccessRightsGrantOnChannel";
+                if ([self.accessRightsHelper isRevokingAccessRights]) {
+                    
+                    processDescription = @"userAccessRightsRevokeOnChannel";
+                }
+            }
+            break;
+        case PNAccessRightsHelperUserOnChannelGroupMode:
+            
+            processDescription = @"userAccessRightsAuditOnChannelGroup";
+            if (![self.accessRightsHelper isAuditingAccessRights]) {
+                
+                processDescription = @"userAccessRightsGrantOnChannelGroup";
+                if ([self.accessRightsHelper isRevokingAccessRights]) {
+                    
+                    processDescription = @"userAccessRightsRevokeOnChannelGroup";
                 }
             }
             break;
@@ -458,35 +495,34 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         [self prepareLayout];
     }
     self.actionButton.enabled = [self.accessRightsHelper isAbleToChangeAccessRights];
+    NSString *duration = nil;
     if (self.accessRightsHelper.accessRightsApplicationDuration > 0) {
         
-        self.accessRightsApplicationDuration.text = [NSString stringWithFormat:@"%d", (unsigned int)self.accessRightsHelper.accessRightsApplicationDuration];
+        duration = [NSString stringWithFormat:@"%d", (unsigned int)self.accessRightsHelper.accessRightsApplicationDuration];
     }
-    else {
-        
-        self.accessRightsApplicationDuration.text = nil;
-    }
+    self.accessRightsApplicationDuration.text = duration;
     
     [self.readRightsSwitch setOn:self.accessRightsHelper.shouldAllowRead animated:YES];
     [self.writeRightsSwitch setOn:self.accessRightsHelper.shouldAllowWrite animated:YES];
+    [self.manageGroupSwitch setOn:self.accessRightsHelper.shouldAllowManagement animated:YES];
     [self.userProvidedDataList reloadData];
 }
 
 - (void)updateLayoutForAccessRightsInformation:(PNAccessRightsInformation *)information {
     
-    // TODO: Update helper state
     self.accessRightsHelper.accessRightsApplicationDuration = information.accessPeriodDuration;
     self.accessRightsHelper.allowRead = [information hasReadRight];
     self.accessRightsHelper.allowWrite = [information hasWriteRight];
+    self.accessRightsHelper.allowManagement = [information hasManagementRight];
     if (information.level == PNUserAccessRightsLevel) {
         
         [self.accessRightsHelper addObject:information.authorizationKey];
-        self.accessRightsHelper.channelName = information.channel.name;
-        self.channelNameInputTextField.text = information.channel.name;
+        self.accessRightsHelper.channelName = information.object.name;
+        self.channelNameInputTextField.text = information.object.name;
     }
     else if (information.level == PNChannelAccessRightsLevel) {
         
-        [self.accessRightsHelper addObject:information.channel];
+        [self.accessRightsHelper addObject:information.object];
     }
     
     [self updateLayout];
@@ -521,10 +557,26 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     
     if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {
         
-        PNChannelInformationView *information = [PNChannelInformationView viewFromNib];
+        PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
         information.delegate = self;
         information.allowEditing = YES;
         [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+    }
+    else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelGroupMode) {
+        
+        if (![sender isEqual:self.addNamespaceButton]) {
+            
+            PNObjectInformationView *information = [PNObjectInformationView viewFromNibForChannelGroup];
+            information.delegate = self;
+            information.allowEditing = YES;
+            [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+        }
+        else {
+            
+            PNNamespaceAddView *namespaceNameInput = [PNNamespaceAddView viewFromNib];
+            namespaceNameInput.delegate = self;
+            [namespaceNameInput showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
+        }
     }
     else {
         
@@ -551,6 +603,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         
         self.accessRightsHelper.allowRead = self.readRightsSwitch.isOn;
         self.accessRightsHelper.allowWrite = self.writeRightsSwitch.isOn;
+        self.accessRightsHelper.allowManagement = self.manageGroupSwitch.isOn;
     }
     
     
@@ -595,25 +648,42 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                 }
             }
         }
-        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {
+        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode ||
+                 self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelGroupMode) {
             
             NSString *channelsList = [[[self.accessRightsHelper userData] valueForKey:@"name"] componentsJoinedByString:@", "];
             NSString *localizationKey = @"accessRightsChangeChannelSuccessAlertViewShortDescription";
+            if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelGroupMode) {
+                
+                localizationKey = @"accessRightsChangeChannelGroupSuccessAlertViewShortDescription";
+            }
             
             if (!requestError) {
                 
                 if ([self.accessRightsHelper isAuditingAccessRights]) {
                     
                     localizationKey = @"accessRightsAuditChannelSuccessAlertViewShortDescription";
+                    if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelGroupMode) {
+                        
+                        localizationKey = @"accessRightsAuditChannelGroupSuccessAlertViewShortDescription";
+                    }
                 }
                 detailedDescription = [NSString stringWithFormat:[localizationKey localized], channelsList];
             }
             else {
                 
                 localizationKey = @"accessRightsChangeChannelFailureAlertViewShortDescription";
+                if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelGroupMode) {
+                    
+                    localizationKey = @"accessRightsChangeChannelGroupFailureAlertViewShortDescription";
+                }
                 if ([self.accessRightsHelper isAuditingAccessRights]) {
                     
                     localizationKey = @"accessRightsAuditChannelFailureAlertViewShortDescription";
+                    if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelGroupMode) {
+                        
+                        localizationKey = @"accessRightsAuditChannelGroupFailureAlertViewShortDescription";
+                    }
                 }
                 detailedDescription = [NSString stringWithFormat:[localizationKey localized], channelsList,
                                        requestError.localizedFailureReason];
@@ -675,14 +745,25 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 }
 
 
+#pragma mark - Namespace addition delegate methods
+
+- (void)namespaceView:(PNNamespaceAddView *)view didEndNamespaceInput:(PNChannelGroupNamespace *)nspace {
+    
+    [view dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
+    
+    [self.accessRightsHelper addObject:nspace];
+    [self updateLayout];
+}
+
+
 #pragma mark - Channel information delegate methods
 
-- (void)channelInformation:(PNChannelInformationView *)informationView didEndEditingChanne:(PNChannel *)channel
-                 withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
+- (void)objectInformation:(PNObjectInformationView *)informationView didEndEditing:(id <PNChannelProtocol>)object
+                withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
     
     [informationView dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
     
-    [self.accessRightsHelper addObject:channel];
+    [self.accessRightsHelper addObject:object];
     [self updateLayout];
 }
 
@@ -825,10 +906,12 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         }
         else  {
             
-            if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode || [tableView isEqual:self.channelsList]) {
+            if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode ||
+                self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelGroupMode ||
+                [tableView isEqual:self.channelsList]) {
                 
-                cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:targetCellIdentifier];
-                ((PNChannelCell *)cell).showBadge = NO;
+                cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:targetCellIdentifier];
+                ((PNObjectCell *)cell).showBadge = NO;
             }
             else {
                     
@@ -851,23 +934,25 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         if ([targetCellIdentifier isEqualToString:channelCellIdentifier]) {
             
             PNChannel *channel = [[self.accessRightsHelper channels] objectAtIndex:indexPath.row];
-            [(PNChannelCell *)cell updateForChannel:channel];
+            [(PNObjectCell *)cell updateForObject:channel];
         }
-        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode) {
+        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelMode ||
+                 self.accessRightsHelper.operationMode == PNAccessRightsHelperChannelGroupMode) {
             
             PNChannel *channel = [[self.accessRightsHelper userData] objectAtIndex:indexPath.row];
-            [(PNChannelCell *)cell updateForChannel:channel];
+            [(PNObjectCell *)cell updateForObject:channel];
             
             if ([self.accessRightsHelper willManipulateWith:channel]) {
                 
-                ((PNChannelCell *)cell).accessoryType = UITableViewCellAccessoryCheckmark;
+                ((PNObjectCell *)cell).accessoryType = UITableViewCellAccessoryCheckmark;
             }
             else {
                 
-                ((PNChannelCell *)cell).accessoryType = UITableViewCellAccessoryNone;
+                ((PNObjectCell *)cell).accessoryType = UITableViewCellAccessoryNone;
             }
         }
-        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperUserMode) {
+        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperUserOnChannelMode ||
+                 self.accessRightsHelper.operationMode == PNAccessRightsHelperUserOnChannelGroupMode) {
             
             if (indexPath.row < [[self.accessRightsHelper userData] count]) {
                 
@@ -884,7 +969,9 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCellEditingStyle style = UITableViewCellEditingStyleNone;
-    if ([tableView isEqual:self.userProvidedDataList] && self.accessRightsHelper.operationMode == PNAccessRightsHelperUserMode) {
+    if ([tableView isEqual:self.userProvidedDataList] &&
+        (self.accessRightsHelper.operationMode == PNAccessRightsHelperUserOnChannelMode ||
+         self.accessRightsHelper.operationMode == PNAccessRightsHelperUserOnChannelGroupMode)) {
         
         style = UITableViewCellEditingStyleDelete;
     }
@@ -903,7 +990,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             NSDictionary *data = [[[[self.accessRightsHelper accessRights] objectAtIndex:indexPath.section] valueForKey:PNAccessRightsDataKeys.sectionData]
                                   objectAtIndex:indexPath.row];
             PNAccessRightsInformation *information = [data valueForKey:PNAccessRightsDataKeys.entrieData];
-            PNAccessRightsView *view = [[self class] viewFrromNibForAccessRightsInformation:information];
+            PNAccessRightsView *view = [[self class] viewFromNibForAccessRightsInformation:information];
             [view showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
         }
     }
@@ -923,7 +1010,8 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             }
             [self.userProvidedDataList reloadData];
         }
-        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperUserMode) {
+        else if (self.accessRightsHelper.operationMode == PNAccessRightsHelperUserOnChannelMode ||
+                 self.accessRightsHelper.operationMode == PNAccessRightsHelperUserOnChannelGroupMode) {
             
             PNChannel *channel = [[self.accessRightsHelper channels] objectAtIndex:indexPath.row];
             self.accessRightsHelper.channelName = channel.name;

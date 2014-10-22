@@ -22,6 +22,11 @@
 #pragma mark - Instance methods
 
 /**
+ Check whether user input is active at this moment or not.
+ */
+- (BOOL)isUserInputActive;
+
+/**
  Allow to dismiss keyboard which has been shown during form data input.
  */
 - (void)completeUserInput;

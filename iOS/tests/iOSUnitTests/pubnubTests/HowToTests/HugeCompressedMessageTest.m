@@ -7,7 +7,6 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "SenTestCase+GCD.h"
 
 @interface HugeCompressedMessageTest : SenTestCase
 
@@ -56,7 +55,9 @@
         dispatch_group_leave(_resGroup);
     }];
     
-    [self waitGroup:_resGroup];
+    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:30]) {
+        STFail(@"Cannot connect to pubnub.");
+    }
     
     // create channel
     PNChannel *channel = [PNChannel channelWithName:@"huge_message_channel"];
@@ -71,7 +72,9 @@
        STAssertFalse(state == PNSubscriptionProcessNotSubscribedState, @"%@", subscriptionError.localizedDescription);
    }];
     
-    [self waitGroup:_resGroup];
+    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:30]) {
+        STFail(@"Cannot subscribe to channel.");
+    }
     
     dispatch_group_enter(_resGroup);
     dispatch_group_enter(_resGroup);
@@ -106,22 +109,26 @@
         }
     }];
     
-    [self waitGroup:_resGroup withTimout:30];
+    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:30]) {
+        STFail(@"Cannot send huge message.");
+    }
 }
 
 #pragma mark - PubNub Delegates
 
-- (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message
+- (void)pubnubClient:(PubNub *)client
+  didFailMessageSend:(PNMessage *)message
            withError:(PNError *)error {
     NSLog(@"Fail message send: %@", error);
     
     dispatch_group_leave(_resGroup);
 }
 
-- (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
+- (void)pubnubClient:(PubNub *)client
+      didSendMessage:(PNMessage *)message {
     NSLog(@"Did send message");
+    
     dispatch_group_leave(_resGroup);
 }
-
 
 @end

@@ -7,7 +7,6 @@
 //
 
 #import "PNAppDelegate.h"
-
 #import "PNViewController.h"
 #import "PNMessage+Protected.h"
 #import "PNPresenceEvent.h"

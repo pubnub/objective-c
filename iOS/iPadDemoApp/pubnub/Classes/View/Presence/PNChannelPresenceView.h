@@ -14,15 +14,27 @@
 @interface PNChannelPresenceView : PNInputFormView
 
 
+#pragma mark - Class methods
+
+/**
+ @brief Construct and configure view which can be used to view channel group presence information.
+ 
+ @return Configured and ready to use channel group presence information view.
+ 
+ @since 3.7.0
+ */
++ (instancetype)viewFromNibForChannelGroup;
+
+
 #pragma mark - Instance methods
 
 /**
  Configure view to show information for concrete channel.
  
- @param channel
- \b PNChannel instance which should be used for view configuration.
+ @param object
+ \b PNChannel or \b PNChannelGroup instance which should be used for view configuration.
  */
-- (void)configureForChannel:(PNChannel *)channel;
+- (void)configureForObject:(id <PNChannelProtocol>)object;
 
 #pragma mark -
 

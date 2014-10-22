@@ -38,9 +38,18 @@
 #pragma mark - Class methods
 
 /**
- * Return reference on configured messages communication channel with specified delegate
+ Return reference on configured messages communication channel with specified delegate.
+
+ @param configuration
+ Reference on \b PNConfiguration instance which should be used by connection channel and accompany classes.
+
+ @param delegate
+ Reference on delegate which will accept all general callbacks from underlay connection channel class.
+
+ @return Reference on fully configured and ready to use instance.
  */
-+ (PNMessagingChannel *)messageChannelWithDelegate:(id<PNConnectionChannelDelegate>)delegate;
++ (PNMessagingChannel *)messageChannelWithConfiguration:(PNConfiguration *)configuration
+                                            andDelegate:(id<PNConnectionChannelDelegate>)delegate;
 
 
 #pragma mark - Instance methods

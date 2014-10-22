@@ -7,7 +7,7 @@
 //
 
 #import "PNAppDelegate.h"
-
+#import "PubNub+Subscription.h"
 #import "PNViewController.h"
 #import "PNMessage+Protected.h"
 
@@ -28,8 +28,7 @@
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 
-        [PubNub subscribeOnChannel:[PNChannel channelWithName:@"z"]];
-
+        [PubNub subscribeOn:@[[PNChannel channelWithName:@"z"]]];
     });
 
 

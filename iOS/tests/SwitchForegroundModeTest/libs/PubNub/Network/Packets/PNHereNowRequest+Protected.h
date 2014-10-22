@@ -21,9 +21,10 @@
 
 #pragma mark - Properties
 
-// Stores reference on channel for which participants
-// list will be requested
-@property (nonatomic, readonly, strong) PNChannel *channel;
+/**
+ Stores reference on array of PNChannel and PNChannelGroup for which list of participants has been requested.
+ */
+@property (nonatomic, readonly, strong) NSArray *channels;
 
 /**
  Stores whether request should fetch client identifiers or just get number of participants.
@@ -34,6 +35,11 @@
  Stores whether request should fetch client's state or not.
  */
 @property (nonatomic, readonly, assign, getter = shouldFetchClientState) BOOL fetchClientState;
+
+/**
+ Storing configuration dependant parameters
+ */
+@property (nonatomic, copy) NSString *subscriptionKey;
 
 #pragma mark -
 

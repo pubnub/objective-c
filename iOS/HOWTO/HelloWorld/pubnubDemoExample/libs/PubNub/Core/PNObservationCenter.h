@@ -1,29 +1,22 @@
-//
-//  PNObservationCenter.h
-//  pubnub
-//
-//  Observation center will allow to subscribe
-//  for particular events with handle block
-//  (block will be provided by subscriber)
-//
-//
-//  Created by Sergey Mamontov.
-//
-//
-
 #import <Foundation/Foundation.h>
 #import "PNStructures.h"
 
-
+/**
+ Observation center will allow to subscribe for particular events with handle block (block will be provided by subscriber).
+ 
+ @author Sergey Mamontov
+ @version 3.4.0
+ @copyright © 2009-13 PubNub Inc.
+ */
 @interface PNObservationCenter : NSObject
 
 
-#pragma mark Class methods
+#pragma mark - Class (singleton) methods
 
 /**
- * Returns reference on shared observer center instance
- * which manage all observers and notify them by request
- * or notification.
+ Returns reference on shared observer center instance which manage all observers and notify them by request or notification.
+ 
+ @return \b PNObservationCenter singleton.
  */
 + (PNObservationCenter *)defaultCenter;
 
@@ -73,6 +66,54 @@
  */
 - (void)addClientStateUpdateObserver:(id)observer withBlock:(PNClientStateUpdateHandlingBlock)handleBlock;
 - (void)removeClientStateUpdateObserver:(id)observer;
+
+
+#pragma mark - Client channel groups observation
+
+/**
+ Add/remove observer which would like to know when PubNub client will receive channel groups.
+ */
+- (void)addChannelGroupsRequestObserver:(id)observer
+                      withCallbackBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock;
+- (void)removeChannelGroupsRequestObserver:(id)observer;
+
+/**
+ Add/remove observer which would like to know when PubNub client will receive channel group namespaces.
+ */
+- (void)addChannelGroupNamespacesRequestObserver:(id)observer
+                               withCallbackBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock;
+- (void)removeChannelGroupNamespacesRequestObserver:(id)observer;
+
+/**
+ Add/remove observer which would like to know when PubNub client will remove namespace.
+ */
+- (void)addChannelGroupNamespaceRemovalObserver:(id)observer
+                              withCallbackBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock;
+- (void)removeChannelGroupNamespaceRemovalObserver:(id)observer;
+
+/**
+ Add/remove observer which would like to know when PubNub client will remove channel group.
+ */
+- (void)addChannelGroupRemovalObserver:(id)observer
+                     withCallbackBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock;
+- (void)removeChannelGroupRemovalObserver:(id)observer;
+
+/**
+ Add/remove observer which would like to know when PubNub client will receive channels for concrete channel group.
+ */
+- (void)addChannelsForGroupRequestObserver:(id)observer
+                         withCallbackBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock;
+- (void)removeChannelsForGroupRequestObserver:(id)observer;
+
+/**
+ Add/remove observer which would like to know when PubNub client will modify channels list for concrete channel group.
+ */
+- (void)addChannelsAdditionToGroupObserver:(id)observer
+                         withCallbackBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock;
+- (void)removeChannelsAdditionToGroupObserver:(id)observer;
+- (void)addChannelsRemovalFromGroupObserver:(id)observer
+                         withCallbackBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock;
+- (void)removeChannelsRemovalFromGroupObserver:(id)observer;
 
 
 #pragma mark - Client channels action/event observation

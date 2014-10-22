@@ -97,6 +97,138 @@ static NSString * const kPNClientDidUpdateClientStateNotification = @"PNClientDi
 static NSString * const kPNClientStateUpdateDidFailWithErrorNotification = @"PNClientStateUpdateDidFailWithErrorNotification";
 
 /**
+ Sent when \b PubNub client was able to retrieve channel groups inside namespace or application wide.
+ 
+ \b userInfo contains reference on \b PNChannelGroup instances stored in \a NSArray in case if request has been done for application wide
+ or in \a NSDictionary in case if request for namespace and key under which list of groups is stored will be name of namespace.
+ */
+static NSString * const kPNClientChannelGroupsRequestCompleteNotification = @"PNClientChannelGroupsRequestCompleteNotification";
+
+/**
+ Sent when \b PubNub client did fail to retrieve channel groups inside namespace or application wide.
+ 
+ \b userInfo contains \b PNError instead of \a NSDictionary. Namespace (if specified for request) will be stored inside 
+ \a 'error.associatedObject'.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientChannelGroupsRequestDidFailWithErrorNotification = @"PNClientChannelGroupsRequestDidFailWithErrorNotification";
+
+/**
+ Sent when \b PubNub client was able to retrieve channels list for group.
+ 
+ \b userInfo contains reference on \b PNChannelGroup instance which has channels proerty filled with channels received from server.
+ */
+static NSString * const kPNClientChannelsForGroupRequestCompleteNotification = @"PNClientChannelsForGroupRequestCompleteNotification";
+
+/**
+ Sent when \b PubNub client did fail to retrieve channels list for group.
+ 
+ \b userInfo contains \b PNError instead of \a NSDictionary. \b PNChannelGroup instance will be stored inside
+ \a 'error.associatedObject'.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientChannelsForGroupRequestDidFailWithErrorNotification = @"PNClientChannelsForGroupRequestDidFailWithErrorNotification";
+
+/**
+ Sent when \b PubNub client was able to add set of channels to the group.
+ 
+ \b userInfo contains reference on \b PNChannelGroupChange instance which describe change action.
+ */
+static NSString * const kPNClientGroupChannelsAdditionCompleteNotification = @"PNClientGroupChannelsAdditionCompleteNotification";
+
+/**
+ Sent when \b PubNub client did fail to add channels to the group.
+ 
+ \b userInfo contains \b PNError instead of \a NSDictionary. \b PNChannelGroupChange instance will be stored inside
+ \a 'error.associatedObject'.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientGroupChannelsAdditionDidFailWithErrorNotification = @"PNClientGroupChannelsAdditionDidFailWithErrorNotification";
+
+/**
+ Sent when \b PubNub client was able to add set of channels to the group.
+ 
+ \b userInfo contains reference on \b PNChannelGroupChange instance which describe change action.
+ */
+static NSString * const kPNClientGroupChannelsRemovalCompleteNotification = @"PNClientGroupChannelsRemovalCompleteNotification";
+
+/**
+ Sent when \b PubNub client did fail to remove channels from group.
+ 
+ \b userInfo contains \b PNError instead of \a NSDictionary. \b PNChannelGroupChange instance will be stored inside
+ \a 'error.associatedObject'.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientGroupChannelsRemovalDidFailWithErrorNotification = @"PNClientGroupChannelsRemovalDidFailWithErrorNotification";
+
+
+
+
+
+/**
+ Sent when \b PubNub client was able to receive list of namespaces registered under current subscription key.
+ 
+ \b userInfo contains reference on \a NSArray instance with namespace names.
+ */
+static NSString * const kPNClientChannelGroupNamespacesRequestCompleteNotification = @"PNClientChannelGroupNamespacesRequestCompleteNotification";
+
+/**
+ Sent when \b PubNub client did fail to fetch list of namespaces.
+ 
+ \b userInfo contains \b PNError instead of \a NSDictionary.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientChannelGroupNamespacesRequestDidFailWithErrorNotification = @"PNClientChannelGroupNamespacesRequestDidFailWithErrorNotification";
+
+/**
+ Sent when \b PubNub client was able to remove namespace along with channel groups which has been registered in it.
+ 
+ \b userInfo contains reference on namespace name instead of \a NSDictionary.
+ */
+static NSString * const kPNClientChannelGroupNamespaceRemovalCompleteNotification = @"PNClientChannelGroupNamespaceRemovalCompleteNotification";
+
+/**
+ Sent when \b PubNub client did fail to remove namespace along with channel groups which has been registered in it.
+ 
+ \b userInfo contains \b PNError instead of \a NSDictionary. Namespace name will be stored inside \a 'error.associatedObject'.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientChannelGroupNamespaceRemovalDidFailWithErrorNotification = @"PNClientChannelGroupNamespaceRemovalDidFailWithErrorNotification";
+
+/**
+ Sent when \b PubNub client was able to remove channel group along with all channels registered in it.
+ 
+ \b userInfo contains reference on \b PNChannelGroup instance which describe target group.
+ */
+static NSString * const kPNClientChannelGroupRemovalCompleteNotification = @"PNClientChannelGroupRemovalCompleteNotification";
+
+/**
+ Sent when \b PubNub client did fail to remove channel group along with all channels registered in it.
+ 
+ \b userInfo contains \b PNError instead of \a NSDictionary. \b PNChannelGroup instance will be stored inside
+ \a 'error.associatedObject'.
+ 
+ @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
+ \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
+ */
+static NSString * const kPNClientChannelGroupRemovalDidFailWithErrorNotification = @"PNClientChannelGroupRemovalDidFailWithErrorNotification";
+
+
+
+
+/**
  Sent when \b PubNub client was able to complete subscription on specified set of channels.
 
  \b userInfo contains reference on \a NSArray of \b PNChannel instances on which \b PubNub client was able to subscribe.
@@ -394,16 +526,16 @@ static NSString * const kPNClientHistoryDownloadFailedWithErrorNotification = @"
 /**
  Sent when \b PubNub client did complete participants list retrieval process.
 
- \b userInfo contains \b PNHereNow instead of \a NSDictionary. \b PNHereNow instance contain set of participants UUID
- and channel information (for which this request has been made).
+ \b userInfo contains \b PNHereNow instead of \a NSDictionary. \b PNHereNow instance contain methods which allow to 
+ get list of channels for which information available and get participants list for each of those channels.
  */
 static NSString * const kPNClientDidReceiveParticipantsListNotification = @"PNClientDidReceiveParticipantsListNotification";
 
 /**
  Sent when \b PubNub client did fail to retrieve participants list for specific channel.
 
- \b userInfo contains \b PNError instead of \a NSDictionary. \b PNChannel for which \b PubNub client did fail to
- receive participants list stored inside \a 'error.associatedObject'.
+ \b userInfo contains \b PNError instead of \a NSDictionary. List of \b PNChannel and \b PNChannelGroup for which 
+ \b PubNub client did fail to receive participants list stored inside \a 'error.associatedObject'.
 
  @note Always check \a error.code to find out what caused error (check PNErrorCodes header file and use \a -localizedDescription /
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).

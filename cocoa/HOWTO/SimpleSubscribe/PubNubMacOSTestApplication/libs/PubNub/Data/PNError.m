@@ -82,77 +82,103 @@
     // Check whether error message tell something about presence
     // (this mean that PubNub client tried to use presence API
     // which is not enabled on https://admin.pubnub.com
-    if ([errorMessage rangeOfString:@"Presence"].location != NSNotFound) {
+    if ([errorMessage rangeOfString:@"Presence" options:NSCaseInsensitiveSearch].location != NSNotFound) {
 
         errorCode = kPNPresenceAPINotAvailableError;
     }
     // Check whether error caused by malformed data sent to the PubNub service
-    else if ([errorMessage rangeOfString:@"Invalid"].location != NSNotFound) {
+    else if ([errorMessage rangeOfString:@"Invalid" options:NSCaseInsensitiveSearch].location != NSNotFound) {
 
         // Check whether server reported that wrong JSON format has been sent
         // to it
-        if ([errorMessage rangeOfString:@"JSON"].location != NSNotFound) {
+        if ([errorMessage rangeOfString:@"JSON" options:NSCaseInsensitiveSearch].location != NSNotFound) {
 
             errorCode = kPNInvalidJSONError;
         }
         // Check whether restricted characters has been used in request
-        else if ([errorMessage rangeOfString:@"Character"].location != NSNotFound) {
-
+        else if ([errorMessage rangeOfString:@"Character" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+            
+            // Check whether restricted characters has been used in channel group namespace
+            if ([errorMessage rangeOfString:@"namespace" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                
+                errorCode = kPNRestrictedCharacterInChannelGroupNamespaceNameError;
+            }
+            // Check whether restricted characters has been used in channel group names
+            else if ([errorMessage rangeOfString:@"channel group" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                
+                errorCode = kPNRestrictedCharacterInChannelGroupNameError;
+            }
             // Check whether restricted characters has been used in channel names
-            if ([errorMessage rangeOfString:@"Channel"].location != NSNotFound) {
-
+            else if ([errorMessage rangeOfString:@"Channel" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                
                 errorCode = kPNRestrictedCharacterInChannelNameError;
             }
         }
         // Check whether wrong key was specified for request
-        else if([errorMessage rangeOfString:@"Key"].location != NSNotFound) {
+        else if([errorMessage rangeOfString:@"Key" options:NSCaseInsensitiveSearch].location != NSNotFound) {
 
             errorCode = kPNInvalidSubscribeOrPublishKeyError;
         }
     }
     // Check whether error caused by message content or not
-    else if ([errorMessage rangeOfString:@"Message"].location != NSNotFound) {
+    else if ([errorMessage rangeOfString:@"Message" options:NSCaseInsensitiveSearch].location != NSNotFound) {
 
         // Check whether message is too long or not
-        if ([errorMessage rangeOfString:@"Too Large"].location != NSNotFound) {
+        if ([errorMessage rangeOfString:@"Too Large" options:NSCaseInsensitiveSearch].location != NSNotFound) {
 
             errorCode = kPNTooLongMessageError;
         }
     }
+    // Check whether error caused by channel group operations or not
+    else if ([errorMessage rangeOfString:@"Missing" options:NSCaseInsensitiveSearch].location != NSNotFound ||
+             [errorMessage rangeOfString:@"Channel group" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+        
+        // Check whether group exceeded number of channels in it or not
+        if ([errorMessage rangeOfString:@"size exceeded" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+            
+            errorCode = kPNEmptyChannelGroupSizeExceededError;
+        }
+        // Check whether group is empty or not
+        else if ([errorMessage rangeOfString:@"empty" options:NSCaseInsensitiveSearch].location != NSNotFound ||
+            [errorMessage rangeOfString:@"channel" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+            
+            errorCode = kPNEmptyChannelGroupError;
+        }
+    }
     // Check whether error by issue with push notifications feature on server
-    else if ([errorMessage rangeOfString:@"Push"].location != NSNotFound){
+    else if ([errorMessage rangeOfString:@"Push" options:NSCaseInsensitiveSearch].location != NSNotFound){
 
         // Check whether push notifications is not enabled
-        if ([errorMessage rangeOfString:@"not enabled"].location != NSNotFound) {
+        if ([errorMessage rangeOfString:@"not enabled" options:NSCaseInsensitiveSearch].location != NSNotFound) {
 
             errorCode = kPNPushNotificationsNotEnabledError;
         }
     }
     // Check whether error by issue with push notifications feature on server
-    else if ([errorMessage rangeOfString:@"Forbidden"].location != NSNotFound){
+    else if ([errorMessage rangeOfString:@"Forbidden" options:NSCaseInsensitiveSearch].location != NSNotFound){
         
         errorCode = kPNAPIAccessForbiddenError;
     }
-    else if ([errorMessage rangeOfString:@"Storage"].location != NSNotFound){
+    else if ([errorMessage rangeOfString:@"Storage" options:NSCaseInsensitiveSearch].location != NSNotFound){
         
         // Check whether storage & history is not enabled
-        if ([errorMessage rangeOfString:@"not enabled"].location != NSNotFound) {
+        if ([errorMessage rangeOfString:@"not enabled" options:NSCaseInsensitiveSearch].location != NSNotFound) {
             
             errorCode = kPNStorageNotEnabledError;
         }
     }
-    else if ([errorMessage rangeOfString:@"Signature"].location != NSNotFound){
+    else if ([errorMessage rangeOfString:@"Signature" options:NSCaseInsensitiveSearch].location != NSNotFound){
 
         // Check whether PAM API reported about issue because of signature has been created using wrong secret key.
-        if ([errorMessage rangeOfString:@"Not Match"].location != NSNotFound) {
+        if ([errorMessage rangeOfString:@"Not Match" options:NSCaseInsensitiveSearch].location != NSNotFound) {
 
             errorCode = kPNSecretKeyNotSpecifiedError;
         }
     }
-    else if ([errorMessage rangeOfString:@"API"].location != NSNotFound){
+    else if ([errorMessage rangeOfString:@"API" options:NSCaseInsensitiveSearch].location != NSNotFound){
         
         // Check whether developer used concrete API too much and server decide to postpone
-        if ([errorMessage rangeOfString:@"rate limited"].location != NSNotFound) {
+        if ([errorMessage rangeOfString:@"rate limited" options:NSCaseInsensitiveSearch].location != NSNotFound) {
             
             errorCode = kPNAPIRateExceededError;
         }
@@ -199,6 +225,11 @@
 
         _associatedObject = associatedObject;
     }
+}
+
+- (void)replaceAssociatedObject:(id)object {
+    
+    _associatedObject = object;
 }
 
 - (NSString *)localizedDescription {
@@ -252,6 +283,10 @@
                 errorDescription = @"PubNub service can't process JSON";
                 break;
             case kPNInvalidSubscribeOrPublishKeyError:
+            case kPNRestrictedCharacterInChannelGroupNamespaceNameError:
+            case kPNRestrictedCharacterInChannelGroupNameError:
+            case kPNEmptyChannelGroupSizeExceededError:
+            case kPNEmptyChannelGroupError:
 
                 errorDescription = @"PubNub service can't process request";
                 break;
@@ -407,8 +442,24 @@
 
             failureReason = @"Looks like either the subscribe or publish key is wrong";
             break;
+        case kPNEmptyChannelGroupSizeExceededError:
+            
+            failureReason = @"Looks like there is too much channels in target group.";
+            break;
+        case kPNEmptyChannelGroupError:
+            
+            failureReason = @"Looks like target channel group is empty";
+            break;
+        case kPNRestrictedCharacterInChannelGroupNamespaceNameError:
+            
+            failureReason = @"Looks like there are invalid characters in one of the channel groups namespace name";
+            break;
+        case kPNRestrictedCharacterInChannelGroupNameError:
+            
+            failureReason = @"Looks like there are invalid characters in one of the channel group names";
+            break;
         case kPNRestrictedCharacterInChannelNameError:
-
+            
             failureReason = @"Looks like there are invalid characters in one of the channel names";
             break;
         case kPNAPIUnauthorizedAccessError:
@@ -587,6 +638,23 @@
 
             fixSuggestion = @"Review the request and ensure that the correct keys are referenced.";
             break;
+        case kPNEmptyChannelGroupSizeExceededError:
+            
+            fixSuggestion = @"There is a limit on maximum number of channels which can be added to the group. Try "
+                             "to remove unused channels or create and use another channel group.";
+            break;
+        case kPNEmptyChannelGroupError:
+            
+            fixSuggestion = @"Try to add some channels to channel group before accessing it with other API";
+            break;
+        case kPNRestrictedCharacterInChannelGroupNamespaceNameError:
+            
+            fixSuggestion = @"Ensure that you don't use the colon char (:) in you channel group namespace name.";
+            break;
+        case kPNRestrictedCharacterInChannelGroupNameError:
+            
+            fixSuggestion = @"Ensure that you don't use the colon char (:) in you channel group name.";
+            break;
         case kPNRestrictedCharacterInChannelNameError:
 
             fixSuggestion = @"Ensure that you don't use the comma char (,) in your channel names.";
@@ -707,12 +775,8 @@
 - (NSString *)description {
 
     return [NSString stringWithFormat:@"Domain=%@; Code=%ld; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\";"
-                                              " Associated object=%@",
-                                      self.domain,
-                                      (long)self.code,
-                                      [self localizedDescription],
-                                      [self localizedFailureReason],
-                                      [self localizedRecoverySuggestion],
+                                      " Associated object=%@", self.domain, (long)self.code, [self localizedDescription],
+                                      [self localizedFailureReason], [self localizedRecoverySuggestion],
                                       self.associatedObject];
 }
 
@@ -729,6 +793,8 @@
 
         case kPNPresenceAPINotAvailableError:
         case kPNInvalidJSONError:
+        case kPNRestrictedCharacterInChannelGroupNamespaceNameError:
+        case kPNRestrictedCharacterInChannelGroupNameError:
         case kPNRestrictedCharacterInChannelNameError:
 
                 domain = kPNServiceErrorDomain;

@@ -11,7 +11,7 @@
 #import "NSObject+PNAddition.h"
 #import "PNClientStateHelper.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
 
@@ -356,14 +356,14 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *channelCellIdentifier = @"channelCellIdentifier";
-    PNChannelCell *cell = [tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
+    PNObjectCell *cell = [tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
     if (!cell) {
         
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
         cell.showBadge = NO;
     }
     PNChannel *channel = [[self.stateHelper existingChannels] objectAtIndex:indexPath.row];
-    [cell updateForChannel:channel];
+    [cell updateForObject:channel];
     
     if (self.isStateEditingAllowed) {
         
@@ -386,7 +386,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     PNChannel *channel = [[self.stateHelper existingChannels] objectAtIndex:indexPath.row];
-    PNChannelCell *cell = (PNChannelCell *)[tableView cellForRowAtIndexPath:indexPath];
+    PNObjectCell *cell = (PNObjectCell *)[tableView cellForRowAtIndexPath:indexPath];
     
     if (self.stateHelper.channelName && ![self.stateHelper.channelName isEqualToString:channel.name]) {
         

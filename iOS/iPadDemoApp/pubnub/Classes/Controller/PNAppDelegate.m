@@ -271,8 +271,13 @@
 
 - (void)pubnubClient:(PubNub *)client didReceiveClientState:(PNClient *)remoteClient {
 
-    NSLog(@"PubNub client successfully received state for client %@ on channel %@: %@", remoteClient.identifier,
-          remoteClient.channel, remoteClient.data);
+    NSMutableDictionary *state = [NSMutableDictionary dictionary];
+    [remoteClient.channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
+                                                        BOOL *channelEnumeratoStop) {
+        
+        [state setValue:[remoteClient stateForChannel:channel] forKey:channel.name];
+    }];
+    NSLog(@"PubNub client successfully received state for client %@ on channels: %@", remoteClient.identifier, state);
 }
 
 - (void)pubnubClient:(PubNub *)client clientStateRetrieveDidFailWithError:(PNError *)error {
@@ -284,7 +289,7 @@
 - (void)pubnubClient:(PubNub *)client didUpdateClientState:(PNClient *)remoteClient {
 
     NSLog(@"PubNub client successfully updated state for client %@ at channel %@: %@", remoteClient.identifier,
-          remoteClient.channel, remoteClient.data);
+          remoteClient.channel, [remoteClient stateForChannel:remoteClient.channel]);
 }
 
 - (void)pubnubClient:(PubNub *)client clientStateUpdateDidFailWithError:(PNError *)error {
@@ -293,19 +298,19 @@
           ((PNClient *)error.associatedObject).identifier, ((PNClient *)error.associatedObject).channel, error);
 }
 
-- (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully subscribed on channels: %@", channels);
+    NSLog(@"PubNub client successfully subscribed on channels: %@", channelObjects);
 }
 
-- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client resuming subscription on: %@", channels);
+    NSLog(@"PubNub client resuming subscription on: %@", channelObjects);
 }
 
-- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully restored subscription on channels: %@", channels);
+    NSLog(@"PubNub client successfully restored subscription on channels: %@", channelObjects);
 }
 
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
@@ -313,9 +318,9 @@
     NSLog(@"PubNub client failed to subscribe because of error: %@", error);
 }
 
-- (void)pubnubClient:(PubNub *)client didUnsubscribeOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully unsubscribed from channels: %@", channels);
+    NSLog(@"PubNub client successfully unsubscribed from channels: %@", channelObjects);
 }
 
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
@@ -323,9 +328,9 @@
     NSLog(@"PubNub client failed to unsubscribe because of error: %@", error);
 }
 
-- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully enabled presence observation on channels: %@", channels);
+    NSLog(@"PubNub client successfully enabled presence observation on channels: %@", channelObjects);
 }
 
 - (void)pubnubClient:(PubNub *)client presenceObservationEnablingDidFailWithError:(PNError *)error {
@@ -333,9 +338,9 @@
     NSLog(@"PubNub client failed to enable presence observation because of error: %@", error);
 }
 
-- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects {
 
-    NSLog(@"PubNub client successfully disabled presence observation on channels: %@", channels);
+    NSLog(@"PubNub client successfully disabled presence observation on channels: %@", channelObjects);
 }
 
 - (void)pubnubClient:(PubNub *)client presenceObservationDisablingDidFailWithError:(PNError *)error {
@@ -389,16 +394,16 @@
     NSLog(@"PubNub client failed to download history for %@ because of error: %@", channel, error);
 }
 
-- (void)pubnubClient:(PubNub *)client didReceiveParticipantsList:(NSArray *)participantsList
-          forChannel:(PNChannel *)channel {
-
-    NSLog(@"PubNub client received participants list for channel %@: %@", participantsList, channel);
+- (void)pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
+                                                  forObjects:(NSArray *)channelObjects {
+    
+    NSLog(@"PubNub client received participants list for channels and groups %@: %@", channelObjects, presenceInformation);
 }
 
-- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel
+- (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadFor:(NSArray *)channelObjects
            withError:(PNError *)error {
-
-    NSLog(@"PubNub client failed to download participants list for channel %@ because of error: %@", channel, error);
+    
+    NSLog(@"PubNub client failed to download participants list for channels %@ because of error: %@", channelObjects, error);
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveParticipantChannelsList:(NSArray *)participantChannelsList
@@ -429,9 +434,9 @@
     NSNumber *shouldRestoreSubscriptionFromLastTimeToken = @(NO);
     NSString *lastTimeToken = @"0";
 
-    if ([[PubNub subscribedChannels] count] > 0) {
+    if ([[PubNub subscribedObjectsList] count] > 0) {
 
-        lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
+        lastTimeToken = [[[PubNub subscribedObjectsList] lastObject] updateTimeToken];
     }
 
     NSLog(@"PubNub client should restore subscription from last time token? %@ (last time token: %@)",

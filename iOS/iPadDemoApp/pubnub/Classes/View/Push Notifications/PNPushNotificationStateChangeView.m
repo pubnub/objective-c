@@ -7,13 +7,13 @@
 //
 
 #import "PNPushNotificationStateChangeView.h"
-#import "PNChannelInformationDelegate.h"
-#import "PNChannelInformationView.h"
+#import "PNObjectInformationDelegate.h"
+#import "PNObjectInformationView.h"
 #import "PNPushNotificationHelper.h"
 #import "NSString+PNLocalization.h"
 #import "NSObject+PNAddition.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNTableView.h"
 #import "PNButton.h"
@@ -27,7 +27,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - Private interface declaration
 
-@interface PNPushNotificationStateChangeView () <UITableViewDelegate, UITableViewDataSource, PNChannelInformationDelegate>
+@interface PNPushNotificationStateChangeView () <UITableViewDelegate, UITableViewDataSource, PNObjectInformationDelegate>
 
 
 #pragma mark - Properties
@@ -178,7 +178,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (IBAction)handleAddChannelButtonTap:(id)sender {
     
-    PNChannelInformationView *information = [PNChannelInformationView viewFromNib];
+    PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
     information.delegate = self;
     information.allowEditing = YES;
     [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
@@ -249,12 +249,13 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 #pragma mark - PNChannel information delegate methods
 
-- (void)channelInformation:(PNChannelInformationView *)informationView didEndEditingChanne:(PNChannel *)channel withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
+- (void)objectInformation:(PNObjectInformationView *)informationView didEndEditing:(id <PNChannelProtocol>)object
+                withState:(NSDictionary *)channelState andPresenceObservation:(BOOL)shouldObserverPresence {
     
     [informationView dismissWithOptions:PNViewAnimationOptionTransitionFadeOut animated:YES];
-    [self.notificationHelper addChannel:channel];
+    [self.notificationHelper addChannel:object];
     
-    if ([self.notificationHelper willChangePushNotificationStateForChanne:channel]) {
+    if ([self.notificationHelper willChangePushNotificationStateForChanne:object]) {
         
         [self updateLayout];
         [self.channelsList reloadData];
@@ -262,7 +263,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     else if (self.isEnablingPushNotifications) {
         
         NSString *detailedDescription = [NSString stringWithFormat:[@"pushNotificationEnableSuccessAlertViewDetailedDescription" localized],
-                                         channel.name];
+                                         object.name];
         
         PNAlertView *alert = [PNAlertView viewWithTitle:@"pushNotificationEnableAlertViewTitle" type:PNAlertSuccess
                                            shortMessage:@"pushNotificationEnableSuccessAlertViewShortDescription"
@@ -283,14 +284,14 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *channelCellIdentifier = @"channelCellIdentifier";
-    PNChannelCell *cell = (PNChannelCell *)[tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
+    PNObjectCell *cell = (PNObjectCell *)[tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
     if (!cell) {
         
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
         cell.showBadge = NO;
     }
     PNChannel *channel = [[self.notificationHelper channels] objectAtIndex:indexPath.row];
-    [cell updateForChannel:channel];
+    [cell updateForObject:channel];
     if ([self.notificationHelper willChangePushNotificationStateForChanne:channel]) {
         
         cell.accessoryType = UITableViewCellAccessoryCheckmark;

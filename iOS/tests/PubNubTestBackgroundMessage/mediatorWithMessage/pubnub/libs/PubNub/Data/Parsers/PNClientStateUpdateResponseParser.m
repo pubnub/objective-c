@@ -64,7 +64,7 @@
 
         NSDictionary *responseData = response.response;
         self.client = response.additionalData;
-        self.client.data = responseData;
+        [self.client addClientData:responseData forChannel:self.client.channel];
     }
 
 

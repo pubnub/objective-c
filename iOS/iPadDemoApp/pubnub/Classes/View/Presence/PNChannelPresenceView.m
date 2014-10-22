@@ -8,9 +8,11 @@
 
 #import "PNChannelPresenceView.h"
 #import "NSString+PNLocalization.h"
+#import "NSObject+PNAddition.h"
 #import "UIView+PNAddition.h"
 #import "PNParticipantCell.h"
 #import "PNPresenceHelper.h"
+#import "PNObjectCell.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
 
@@ -39,7 +41,15 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
  Stores reference on text field which allow user to input name of the channel for which presence information should
  be processed.
  */
-@property (nonatomic, pn_desired_weak) IBOutlet UITextField *channelNameTextField;
+@property (nonatomic, pn_desired_weak) IBOutlet UITextField *objectNameTextField;
+
+/**
+ @brief Reference on field which will hold channel group namespace name and allow to change it (in case if not 
+ subscribed on it).
+ 
+ @since 3.7.0
+ */
+@property (nonatomic, pn_desired_weak) IBOutlet UITextField *objectNamespaceTextField;
 
 /**
  Stores reference on label which will show how many people subscribed on channel.
@@ -65,11 +75,24 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 @property (nonatomic, pn_desired_weak) IBOutlet UITableView *participantsList;
 
 /**
+ Stores reference on table which will show list of channels.
+ */
+@property (nonatomic, pn_desired_weak) IBOutlet UITableView *channelsList;
+
+/**
  Stores reference on text view which will show user state for selected participant (if has been provided).
  */
 @property (nonatomic, pn_desired_weak) IBOutlet UITextView *participantState;
 
-@property (nonatomic, strong) NSString *channelName;
+@property (nonatomic, strong) NSString *objectName;
+@property (nonatomic, strong) NSString *objectNamespace;
+
+/**
+ @brief Stores whether view has been loaded for channel group presence information and change
+ 
+ @since 3.7.0
+ */
+@property (nonatomic, assign, getter = isChannelGroupPresenceInformation) BOOL channelGroupPresenceInformation;
 
 
 #pragma mark - Instance methods
@@ -94,6 +117,29 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 @implementation PNChannelPresenceView
 
 
+#pragma mark - Class methods
+
++ (instancetype)viewFromNibForChannelGroup {
+    
+    // Swap method which should provide name for NIB file.
+    [self swizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForChannelGroup)];
+    
+    PNChannelPresenceView *view = [self viewFromNib];
+    view.channelGroupPresenceInformation = YES;
+    
+    // Swap method implementation back to restore original.
+    [self swizzleMethod:@selector(viewNibName) with:@selector(viewNibNameForChannelGroup)];
+    
+    
+    return view;
+}
+
++ (NSString *)viewNibNameForChannelGroup {
+    
+    return @"PNChannelGroupPresenceView";
+}
+
+
 #pragma mark - Instance methods
 
 - (void)awakeFromNib {
@@ -111,8 +157,14 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         
         [self.participantStateSwitch setOn:NO animated:YES];
     }
-    self.requestButton.enabled = [self.channelName length] > 0;
-    self.participantsCountLabel.text = [NSString stringWithFormat:@"%d", (unsigned int)[[self.presenceHelper data] count]];
+    BOOL rquestButtonEnabled = ([self.objectName length] > 0);
+    if (self.isChannelGroupPresenceInformation) {
+        
+        rquestButtonEnabled = ([self.objectName length] > 0 && [self.objectNamespace length] > 0);
+    }
+    self.requestButton.enabled = rquestButtonEnabled;
+    self.participantsCountLabel.text = [NSString stringWithFormat:@"%d",
+                                        (unsigned int)[self.presenceHelper numberOfParticipants]];
 }
 
 - (NSTimeInterval)appearAnimationDuration {
@@ -125,10 +177,15 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     return kPNViewDisappearAnimationDuration;
 }
 
-- (void)configureForChannel:(PNChannel *)channel {
+- (void)configureForObject:(id <PNChannelProtocol>)object {
     
-    self.channelName = channel.name;
-    self.channelNameTextField.text = self.channelName;
+    self.objectName = object.name;
+    self.objectNameTextField.text = self.objectName;
+    if (self.isChannelGroupPresenceInformation) {
+        
+        self.objectNamespace = ((PNChannelGroup *)object).nspace;
+        self.objectNamespaceTextField.text = self.objectNamespace;
+    }
     [self updateLayout];
 }
 
@@ -137,16 +194,21 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (IBAction)handleRequestPaerticipantsButtonTap:(id)sender {
     
+    [self.presenceHelper reset];
+    [self.channelsList reloadData];
+    [self.participantsList reloadData];
     [self completeUserInput];
-    [self.presenceHelper configureForChannel:self.channelName clientIdentifier:nil
-                            fetchIdentifiers:self.participantIdentifiersSwitch.isOn
-                                  fetchState:self.participantStateSwitch.isOn];
+    
+    [self.presenceHelper configureForObject:self.objectName namespace:self.objectNamespace clientIdentifier:nil
+                               channelGroup:self.isChannelGroupPresenceInformation
+                           fetchIdentifiers:self.participantIdentifiersSwitch.isOn
+                                 fetchState:self.participantStateSwitch.isOn];
     
     PNAlertView *progressAlertView = [PNAlertView viewForProcessProgress];
     [progressAlertView show];
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    [self.presenceHelper fetchPresenceInformationWithBlock:^(NSArray *participants, PNChannel *channel, PNError *requestError) {
+    [self.presenceHelper fetchPresenceInformationWithBlock:^(PNHereNow *presenceInformation, NSArray *channels, PNError *requestError) {
         
         [progressAlertView dismissWithAnimation:YES];
         PNAlertType type = (requestError ? PNAlertWarning : PNAlertSuccess);
@@ -155,20 +217,35 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         
         if (!requestError) {
             
-            weakSelf.participantsCountLabel.text = [NSString stringWithFormat:@"%d", (unsigned int)[[weakSelf.presenceHelper data] count]];
             [weakSelf.participantsList reloadData];
+            if (self.isChannelGroupPresenceInformation) {
+                
+                [weakSelf.channelsList reloadData];
+            }
             [weakSelf updateLayout];
             
             detailedDescription = [NSString stringWithFormat:[@"channelPresenceSuccessDetailedDescription" localized],
-                                   channel.name];
+                                   [channels valueForKey:@"name"]];
         }
         else {
             
             shortDescription = @"channelPresenceFailureShortDescription";
             
+            PNChannel *channel = nil;
+            switch (requestError.code) {
+                case kPNAPIUnauthorizedAccessError:
+                case kPNAPIAccessForbiddenError:
+                case kPNAPINotAvailableOrNotEnabledError:
+                    
+                    channel = [requestError.associatedObject lastObject];
+                    break;
+                    
+                default:
+                    channel = requestError.associatedObject;
+                    break;
+            }
             detailedDescription = [NSString stringWithFormat:[@"channelPresenceFailureDetailedDescription" localized],
-                                   ((PNChannel *)requestError.associatedObject).name,
-                                   requestError.localizedFailureReason];
+                                   [channels valueForKey:@"name"], requestError.localizedFailureReason];
         }
         
         PNAlertView *alertView = [PNAlertView viewWithTitle:@"channelPresenceAlertViewTitle" type:type
@@ -194,8 +271,18 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
     NSString *fullString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    self.channelName = [[fullString stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]] stringByReplacingOccurrencesOfString:@" " withString:@""];
+    fullString = [[fullString stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]] stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    if ([textField isEqual:self.objectNameTextField]) {
+        
+        self.objectName = fullString;
+    }
+    else {
+        
+        self.objectNamespace = fullString;
+    }
     [self updateLayout];
+    
     
     return YES;
 }
@@ -213,18 +300,57 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return [[self.presenceHelper data] count];
+    NSInteger numberOfRowsInSection = 0;
+    if ([tableView isEqual:self.participantsList]) {
+        
+        numberOfRowsInSection = [[self.presenceHelper participants] count];
+    }
+    else {
+        
+        numberOfRowsInSection = [[self.presenceHelper channels] count];
+    }
+    
+    return numberOfRowsInSection;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *cellIdentifier = @"participantIdentifier";
-    PNParticipantCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    static NSString *channelCellIdentifier = @"participantIdentifier";
+    static NSString *participantCellIdentifier = @"participantCellIdentifier";
+    NSString *targetCellIdentifier = channelCellIdentifier;
+    Class cellClass = [PNObjectCell class];
+    if ([tableView isEqual:self.participantsList]) {
+        
+        targetCellIdentifier = participantCellIdentifier;
+        cellClass = [PNParticipantCell class];
+    }
+    id cell = [tableView dequeueReusableCellWithIdentifier:targetCellIdentifier];
     if (!cell) {
         
-        cell = [[PNParticipantCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell = [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:targetCellIdentifier];
+        if ([targetCellIdentifier isEqualToString:channelCellIdentifier]) {
+            
+            ((PNObjectCell *)cell).showBadge = NO;
+        }
     }
-    [cell updateForParticipant:[[self.presenceHelper data] objectAtIndex:indexPath.row]];
+    if ([targetCellIdentifier isEqualToString:channelCellIdentifier]) {
+        
+        PNChannel *channel = [[self.presenceHelper channels] objectAtIndex:indexPath.row];
+        [(PNObjectCell *)cell updateForObject:channel];
+        if ([channel isEqual:self.presenceHelper.currentChannel]) {
+            
+            ((PNObjectCell *)cell).accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        else {
+            
+            ((PNObjectCell *)cell).accessoryType = UITableViewCellAccessoryNone;
+        }
+    }
+    else {
+        
+        PNClient *client = [[self.presenceHelper participants] objectAtIndex:indexPath.row];
+        [(PNParticipantCell *)cell updateForParticipant:client];
+    }
     
     
     return cell;
@@ -234,20 +360,41 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    PNClient *client = [[self.presenceHelper data] objectAtIndex:indexPath.row];
-    NSString *state = nil;
-    if (client.data) {
-        
-        NSError *stateSerializationError = nil;
-        NSData *serializedStateData = [NSJSONSerialization dataWithJSONObject:client.data options:NSJSONWritingPrettyPrinted
-                                                                        error:&stateSerializationError];
-        if (!stateSerializationError && serializedStateData) {
-            
-            state = [[NSString alloc] initWithData:serializedStateData encoding:NSUTF8StringEncoding];
-        }
-    }
+    if ([tableView isEqual:self.participantsList]) {
     
-    self.participantState.text = state;
+        PNClient *client = [[self.presenceHelper participants] objectAtIndex:indexPath.row];
+        NSString *state = nil;
+        if ([client stateForChannel:client.channel]) {
+            
+            NSError *stateSerializationError = nil;
+            NSData *serializedStateData = [NSJSONSerialization dataWithJSONObject:[client stateForChannel:client.channel]
+                                                                          options:NSJSONWritingPrettyPrinted
+                                                                            error:&stateSerializationError];
+            if (!stateSerializationError && serializedStateData) {
+                
+                state = [[NSString alloc] initWithData:serializedStateData encoding:NSUTF8StringEncoding];
+            }
+        }
+        
+        self.participantState.text = state;
+    }
+    else {
+        
+        PNChannel *channel = [[self.presenceHelper channels] objectAtIndex:indexPath.row];
+        
+        if ([self.presenceHelper.currentChannel isEqual:channel]) {
+            
+            self.presenceHelper.currentChannel = nil;
+        }
+        else {
+            
+            self.presenceHelper.currentChannel = channel;
+        }
+        
+        [self.channelsList reloadData];
+        [self.participantsList reloadData];
+        [self updateLayout];
+    }
 }
 
 #pragma mark -

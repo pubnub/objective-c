@@ -14,7 +14,7 @@
 @interface PNPresenceObservationView : PNInputFormView
 
 
-#pragma mark - Instance methods
+#pragma mark - Class methods
 
 /**
  Retrieve reference on initialized view which is suitable for channel presence observation enabling.

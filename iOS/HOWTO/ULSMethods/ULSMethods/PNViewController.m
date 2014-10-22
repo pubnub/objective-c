@@ -46,7 +46,7 @@
     [PubNub setConfiguration:myConfig];
 
     [PubNub connect];
-    [PubNub subscribeOnChannel:[PNChannel channelWithName:@"z"]];
+    [PubNub subscribeOn:@[[PNChannel channelWithName:@"z"]]];
 
 //    PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"uls-test.pubnub.co"
 //                                                             publishKey:@"pub-c-a2650a22-deb1-44f5-aa87-1517049411d5"

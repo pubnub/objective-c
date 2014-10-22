@@ -44,7 +44,7 @@
     // Forward method call to the super class
     [super awakeFromNib];
     
-    self.channels = [PubNub subscribedChannels];
+    self.channels = [PubNub subscribedObjectsList];
     self.markedChannels = [NSMutableArray array];
 }
 
@@ -81,16 +81,15 @@
     if ([self.markedChannels count]) {
         
         __block __pn_desired_weak __typeof(self) weakSelf = self;
-        [PubNub unsubscribeFromChannels:self.markedChannels
-            withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
-                
-                weakSelf.channels = [PubNub subscribedChannels];
-                
-                if (handlerBlock) {
-                    
-                    handlerBlock(channels, unsubscribeError);
-                }
-            }];
+        [PubNub unsubscribeFrom:self.markedChannels
+    withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
+
+        weakSelf.channels = [PubNub subscribedObjectsList];
+        if (handlerBlock) {
+
+            handlerBlock(channels, unsubscribeError);
+        }
+    }];
     }
 }
 

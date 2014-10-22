@@ -139,9 +139,9 @@ static struct PNAccessRightsDataKeysStruct PNAccessRightsDataKeys = {
     
     PNAccessRightsInformation *data = [information valueForKey:PNAccessRightsDataKeys.entrieData];
     NSMutableString *labelValue = [NSMutableString stringWithString:data.subscriptionKey];
-    if (data.level == PNChannelAccessRightsLevel) {
+    if (data.level == PNChannelAccessRightsLevel || data.level == PNChannelGroupAccessRightsLevel) {
         
-        [labelValue setString:data.channel.name];
+        [labelValue setString:data.object.name];
     }
     else if (data.level == PNUserAccessRightsLevel) {
         
@@ -178,15 +178,27 @@ static struct PNAccessRightsDataKeysStruct PNAccessRightsDataKeys = {
 
 - (NSString *)stringifiedAccessRights:(PNAccessRightsInformation *)accessRightsInformation {
     
-    NSString *accessRights = [accessRightsInformation hasAllRights] ? @"r+w" : @"none";
-    if (![accessRightsInformation hasAllRights] &&
-        ([accessRightsInformation hasReadRight] || [accessRightsInformation hasWriteRight])) {
+    NSString *accessRights = ([accessRightsInformation hasAllRights] ? @"r+w" : nil);
+    if (!accessRights) {
         
-        accessRights = [accessRightsInformation hasReadRight] ? @"r" : @"w";
+        if ([accessRightsInformation hasReadRight]) {
+            
+            accessRights = @"r";
+        }
+        
+        if ([accessRightsInformation hasWriteRight]) {
+            
+            accessRights = (accessRights ? [accessRights stringByAppendingString:@"+w"] : @"w");
+        }
+        
+        if ([accessRightsInformation hasManagementRight]) {
+            
+            accessRights = (accessRights ? [accessRights stringByAppendingString:@"+m"] : @"m");
+        }
     }
     
     
-    return accessRights;
+    return (accessRights ? accessRights : @"none");
 }
 
 #pragma mark -

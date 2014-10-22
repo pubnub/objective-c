@@ -10,7 +10,7 @@
 #import "PNPushNotificationsAuditionHelper.h"
 #import "NSString+PNLocalization.h"
 #import "UIView+PNAddition.h"
-#import "PNChannelCell.h"
+#import "PNObjectCell.h"
 #import "PNTableView.h"
 #import "PNAlertView.h"
 #import "PNButton.h"
@@ -118,15 +118,15 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *channelCellIdentifier = @"channelCellIdentifier";
-    PNChannelCell *cell = [tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
+    PNObjectCell *cell = [tableView dequeueReusableCellWithIdentifier:channelCellIdentifier];
     if (!cell) {
         
-        cell = [[PNChannelCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
+        cell = [[PNObjectCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:channelCellIdentifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.showBadge = NO;
     }
     PNChannel *channel = [[self.notificationHelper channels] objectAtIndex:indexPath.row];
-    [cell updateForChannel:channel];
+    [cell updateForObject:channel];
     
     
     return cell;

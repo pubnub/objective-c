@@ -15,9 +15,11 @@
 
 @implementation ViewController
 @synthesize deviceToken;
+@synthesize pubNub;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
 
     NSLog(@"Sub key: %@", @"sub-c-e0d8405a-b823-11e2-89ba-02ee2ddab7fe");
     NSLog(@"Pub key: %@", @"pub-c-6d82cd87-cd15-461c-8de6-d0330419f439");
@@ -25,12 +27,13 @@
     NSLog(@"Dev Console URL: %@", @"http://www.pubnub.com/console?channel=apns&pub=pub-c-6d82cd87-cd15-461c-8de6-d0330419f439&sub=sub-c-e0d8405a-b823-11e2-89ba-02ee2ddab7fe");
 
     // Do any additional setup after loading the view, typically from a nib.
+    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
 
     PNConfiguration *myConfig = [PNConfiguration configurationWithPublishKey:@"pub-c-6d82cd87-cd15-461c-8de6-d0330419f439" subscribeKey:@"sub-c-e0d8405a-b823-11e2-89ba-02ee2ddab7fe" secretKey:@"sec-ODgxMDA0NWYtOThkNC00MjgyLWFlOWYtYzdiMGM5NTU2NTlk"];
-    [PubNub setConfiguration:myConfig];
+    self.pubNub = [PubNub clientWithConfiguration:myConfig andDelegate:appDelegate];
 
-    [PubNub connectWithSuccessBlock:^(NSString *origin) {
-        //[PubNub subscribeOnChannel:myChannel];
+    [pubNub connectWithSuccessBlock:^(NSString *origin) {
+        [PubNub subscribeOn:@[[PNChannel channelWithName:@"apns"]]];
 
         AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
         deviceToken = appDelegate.dToken;
@@ -69,34 +72,31 @@
 
 - (IBAction)enablePush:(id)sender {
 
-    [PubNub enablePushNotificationsOnChannel:[PNChannel channelWithName:@"apns"] withDevicePushToken:deviceToken andCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
+    [self.pubNub enablePushNotificationsOnChannel:[PNChannel channelWithName:@"apns"] withDevicePushToken:deviceToken andCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
         [self processChannels:channels withError:error withOp:@"Enable Push" ];
     }];
 }
 
 - (IBAction)disablePush:(id)sender {
-    [PubNub disablePushNotificationsOnChannel:[PNChannel channelWithName:@"apns"] withDevicePushToken:deviceToken andCompletionHandlingBlock:^(NSArray *array, PNError *error) {
+    [self.pubNub disablePushNotificationsOnChannel:[PNChannel channelWithName:@"apns"] withDevicePushToken:deviceToken andCompletionHandlingBlock:^(NSArray *array, PNError *error) {
         [self displayResults:error.description withOpName:@"Disable Push"];
     }];
 }
 
 - (IBAction)disableAllPush:(id)sender {
-    [PubNub removeAllPushNotificationsForDevicePushToken:deviceToken withCompletionHandlingBlock:^(PNError *error) {
+    [self.pubNub removeAllPushNotificationsForDevicePushToken:deviceToken withCompletionHandlingBlock:^(PNError *error) {
         [self displayResults:error.description withOpName:@"Remove All"];
     }];
 }
 
 - (IBAction)auditPush:(id)sender {
-    [PubNub requestPushNotificationEnabledChannelsForDevicePushToken:deviceToken withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
-
-
+    [self.pubNub requestPushNotificationEnabledChannelsForDevicePushToken:deviceToken withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
         [self processChannels:channels withError:error withOp:@"Audit"];
-
     }];
 }
 
 - (IBAction)sendString:(id)sender {
-    [PubNub sendMessage:@"Greetz from APNS" toChannel:[PNChannel channelWithName:@"apns"]];
+    [self.pubNub sendMessage:@"Greetz from APNS" toChannel:[PNChannel channelWithName:@"apns"]];
 }
 
 - (void)processChannels:(NSArray *)channels withError:(PNError *)error withOp:(NSString *)op {

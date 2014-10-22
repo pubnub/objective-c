@@ -43,7 +43,7 @@
 - (void)updateForParticipant:(PNClient *)participant {
     
     self.textLabel.text = participant.identifier;
-    if ([participant.data count]) {
+    if ([[participant stateForChannel:participant.channel] count]) {
         
         [((PNTextBadgeView *)self.accessoryView) updateBadgeValueTo:@"S"];
     }

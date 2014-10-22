@@ -17,6 +17,7 @@
 
 @protocol PNClientIdentifierAddDelegate <NSObject>
 
+
 @required
 
 - (void)identifierView:(PNClientIdentifierAddView *)view didEndClientIdentifierInput:(NSString *)clientIdentifier;
