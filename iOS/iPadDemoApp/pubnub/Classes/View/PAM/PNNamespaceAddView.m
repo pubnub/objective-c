@@ -35,6 +35,13 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
  */
 @property (nonatomic, pn_desired_weak) IBOutlet UITextField *namespaceNameTextField;
 
+/**
+ @brief Reference on resulting namespace name inputed by user.
+ 
+ @since <#version number#>
+ */
+@property (nonatomic, copy) NSString *namespaceName;
+
 
 #pragma mark - Instance methods
 
@@ -79,7 +86,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (void)updateLayout {
     
-    self.addButton.enabled = (self.namespaceNameTextField.text && ![self.namespaceNameTextField.text pn_isEmpty]);
+    self.addButton.enabled = (self.namespaceName && ![self.namespaceName pn_isEmpty]);
 }
 
 
@@ -102,6 +109,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 - (BOOL)  textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
   replacementString:(NSString *)string {
     
+    self.namespaceName = [textField.text stringByReplacingCharactersInRange:range withString:string];
     [self updateLayout];
     
     

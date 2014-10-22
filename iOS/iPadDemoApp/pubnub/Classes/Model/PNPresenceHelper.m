@@ -155,7 +155,7 @@
             
             if (weakSelf.shouldFetchForChannelGroup) {
                 
-                weakSelf.fetchedData = [[presenceInformation channels] copy];
+                weakSelf.fetchedChannels = [[presenceInformation channels] mutableCopy];
                 [weakSelf.fetchedChannels sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name"
                                                                                                ascending:YES]]];
             }
