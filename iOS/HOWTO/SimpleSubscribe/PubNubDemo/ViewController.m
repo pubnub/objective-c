@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "PNMessage+Protected.h"
+#import "PubNub+Protected.h"
 
 @interface ViewController ()
 
@@ -20,23 +21,27 @@
 {
     [super viewDidLoad];
 
-    [PubNub setClientIdentifier:@"SimpleSubscribe"];
     //[uuidView setText:[NSString stringWithFormat:@"%@", [PubNub clientIdentifier]]];
 
-    [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self
-                                                         withBlock:^(PNMessage *message) {
+    PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"  publishKey:@"demo" subscribeKey:@"demo" secretKey:@"demo"];
+    myConfig.presenceHeartbeatTimeout = 5;
+    PubNub *pubNub = [PubNub clientWithConfiguration:myConfig andDelegate:self];
 
-                                                             NSLog(@"Text Length: %i", textView.text.length);
 
-                                                             if (textView.text.length > 2000) {
-                                                                 [textView setText:@""];
-                                                             }
+    [pubNub.observationCenter addMessageReceiveObserver:self
+                                              withBlock:^(PNMessage *message) {
 
-                                                             [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
+                                                  NSLog(@"Text Length: %i", textView.text.length);
 
-                                                         }];
+                                                  if (textView.text.length > 2000) {
+                                                      [textView setText:@""];
+                                                  }
 
-    [[PNObservationCenter defaultCenter] addPresenceEventObserver:self withBlock:^(PNPresenceEvent *event) {
+                                                  [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
+
+                                              }];
+
+    [pubNub.observationCenter addPresenceEventObserver:self withBlock:^(PNPresenceEvent *event) {
 
         NSString *eventString;
         if (event.type == PNPresenceEventJoin) {
@@ -53,47 +58,40 @@
 
         [presenceView setText:[eventString stringByAppendingFormat:@"\n%@\n", presenceView.text]];
 
-
-
     }];
 
 
-    PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"  publishKey:@"demo" subscribeKey:@"demo" secretKey:@"demo"];
+    [pubNub setClientIdentifier:@"SimpleSubscribeInstance"];
 
-    // Set the presence heartbeat to 5s
-    myConfig.presenceHeartbeatTimeout = 5;
+    [pubNub connectWithSuccessBlock:^(NSString *origin) {
 
-    [PubNub setConfiguration:myConfig];
+                PNLog(PNLogGeneralLevel, self, @"{BLOCK} PubNub client connected to: %@", origin);
 
-    [PubNub connectWithSuccessBlock:^(NSString *origin) {
+                // wait 1 second
+                int64_t delayInSeconds = 1.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 
-        PNLog(PNLogGeneralLevel, self, @"{BLOCK} PubNub client connected to: %@", origin);
+                NSMutableDictionary *currentState = [[NSMutableDictionary alloc] init];
+                NSMutableDictionary *zzState = [[NSMutableDictionary alloc] init];
 
-        // wait 1 second
-        int64_t delayInSeconds = 1.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-
-            NSMutableDictionary *currentState = [[NSMutableDictionary alloc] init];
-            NSMutableDictionary *zzState = [[NSMutableDictionary alloc] init];
-
-            // then subscribe on channel zz
-            PNChannel *myChannel = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
+                // then subscribe on channel a
+                PNChannel *myChannel = [PNChannel channelWithName:@"a" shouldObservePresence:YES];
 
 
-            [zzState setObject:@"demo app started" forKey:@"appEvent"];
-            [currentState setObject:zzState forKey:@"a"];
+                [zzState setObject:@"demo app started" forKey:@"appEvent"];
+                [currentState setObject:zzState forKey:@"a"];
 
 
-            [PubNub subscribeOnChannel:myChannel withClientState:currentState];
+                [pubNub subscribeOn:@[myChannel] withClientState:currentState];
 
-            int64_t delayInSeconds = 5.0;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                int64_t delayInSeconds = 5.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 // grab global occupancy list 5s later
-                [PubNub requestParticipantsListWithClientIdentifiers:NO clientState:YES];
+                [pubNub requestParticipantsListWithClientIdentifiers:NO clientState:YES];
 
             });
 
-        }); }
+            }); }
             // In case of error you always can pull out error code and identify what happened and what you can do // additional information is stored inside error's localizedDescription, localizedFailureReason and
             // localizedRecoverySuggestion)
                          errorBlock:^(PNError *connectionError) {

@@ -75,7 +75,7 @@
  
  @return Initialized and ready to use \b PubNub client instance.
  
- @since 3.6.8
+ @since 3.7.0
  */
 + (PubNub *)clientWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;
 
@@ -791,7 +791,7 @@
  @note It is strongly advised change configuration in really rare cases and most of the time provide configuration during \b PubNub client configuration.
  Configuration update on connected client will cause additional overhead to reinitialize client with new configuration and connect back to server (time overhead).
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)setConfiguration:(PNConfiguration *)configuration;
 
@@ -832,7 +832,7 @@
  @note There can be only one \b PubNub client delegate at once. If you need to observe for events from different part of application, you should check
  \b PNObservationCenter and subscribe on events in which you are interested.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;
 
@@ -856,7 +856,7 @@
  @note There can be only one \b PubNub client delegate at once. If you need to observe for events from different part of application, you should check
  \b PNObservationCenter and subscribe on events in which you are interested.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)setDelegate:(id<PNDelegate>)delegate;
 
@@ -884,7 +884,7 @@
  @warning If \b PubNub client was previously connected to the service it will gracefully \a 'leave' channels on which it has been subscribed
  (\a 'leave' presence event will be generated) and subscribe back with new identifier (\a 'join' event will be generated).
  
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)setClientIdentifier:(NSString *)identifier;
 
@@ -918,7 +918,7 @@
  @warning If \b PubNub client was previously connected to the service it will gracefully \a 'leave' channels on which it has been subscribed
  (\a 'leave' presence event will be generated) and subscribe back with new identifier (\a 'join' event will be generated).
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup;
 
@@ -941,7 +941,7 @@
  @note If \b PubNub client has been connected before client identifier change, new value will be available only after
  \b PubNub client will reconnect with new identifier.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (NSString *)clientIdentifier;
 
@@ -1059,7 +1059,7 @@
 
  @warning Connection will fail in case if \b PubNub client not configured.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)connect;
 
@@ -1213,7 +1213,7 @@
 
  @warning Connection will fail in case if \b PubNub client not configured (\a +setConfiguration:).
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)connectWithSuccessBlock:(PNClientConnectionSuccessBlock)success errorBlock:(PNClientConnectionFailureBlock)failure;
 
@@ -1273,7 +1273,7 @@
  
  @note Any further requests after this point, not related to configuration update or connection will end up with error.
 
- @since 3.6.8
+ @since 3.7.0
  */
 - (void)disconnect;
 

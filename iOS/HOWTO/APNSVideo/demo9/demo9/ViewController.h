@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *requestOutpu;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 
+@property PubNub *pubNub;
 @property NSData *deviceToken;
 
 @end
