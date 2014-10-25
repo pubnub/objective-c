@@ -69,7 +69,7 @@
 /**
  Stores reference on dispatch object for which wrapper has been created.
  */
-@property (nonatomic, readonly, pn_dispatch_property_ownership) dispatch_object_t object;
+@property (nonatomic, readonly, pn_dispatch_property_ownership) dispatch_queue_t queue;
 
 
 #pragma mark - Class methods
@@ -85,7 +85,7 @@
  
  @return Reference on wrapper which will store \a GCD object for us.
  */
-+ (PNDispatchObjectWrapper *)wrapperForObject:(dispatch_object_t)object;
++ (PNDispatchObjectWrapper *)wrapperForObject:(dispatch_queue_t)queue;
 
 #pragma mark -
 

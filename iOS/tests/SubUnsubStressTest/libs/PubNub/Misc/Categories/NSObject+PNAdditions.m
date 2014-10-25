@@ -104,10 +104,9 @@
 
 - (dispatch_queue_t)pn_privateQueue {
     
-    dispatch_queue_t privateQueue = (dispatch_queue_t)((PNDispatchObjectWrapper *)objc_getAssociatedObject(self, "privateQueue")).object;
+    dispatch_queue_t queue = ((PNDispatchObjectWrapper *)objc_getAssociatedObject(self, "privateQueue")).queue;
     
-    
-    return (privateQueue ? privateQueue : NULL);
+    return (queue ? queue : NULL);
 }
 
 - (void)pn_setPrivateDispatchQueue:(dispatch_queue_t)queue {
