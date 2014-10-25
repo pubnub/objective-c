@@ -125,7 +125,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
                                                  @"clientChannelsSuccessAlertViewShortDescription");
         NSString *detailedMessage = [NSString stringWithFormat:[@"clientChannelsSuccessAlertViewDetailedDescription" localized],
                                      weakSelf.clientChannelsHelper.clientIdentifier];
-        if (!requestError) {
+        if (requestError) {
             
             detailedMessage = [NSString stringWithFormat:[@"clientChannelsFailureAlertViewDetailedDescription" localized],
                                weakSelf.clientChannelsHelper.clientIdentifier, requestError.localizedFailureReason];

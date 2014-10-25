@@ -2,1126 +2,1124 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>3.6.6,3.6.7,3.6.8,3.7.0</key>
+	<key>01</key>
 	<dict>
-		<key>01</key>
+		<key>name</key>
+		<string>CONNECTION</string>
+		<key>0100000</key>
+		<string>TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@) (STATE: %@)</string>
+		<key>0100001</key>
+		<string>CONNECTING... (STATE: %@)</string>
+		<key>0100002</key>
+		<string>RECONNECTING... (STATE: %@)</string>
+		<key>0100003</key>
+		<string>RESUMING... (STATE: %@)</string>
+		<key>0100004</key>
+		<string>LOOKS LIKE CONNECTION IN INTERMEDIATE STATE AND OUT OF SYNC. FORCIBLY RECONNECTING... (STATE: %@)</string>
+		<key>0100005</key>
+		<string>ALREADY CONNECTING... (STATE: %@)</string>
+		<key>0100006</key>
+		<string>ALREADY CONNECTED. (STATE: %@)</string>
+		<key>0100007</key>
+		<string>TRIED TO CONNECT WHILE DISCONNETING. WAIT FOR DISCONNECTION... (STATE: %@)</string>
+		<key>0100008</key>
+		<string>NOT CONFIGURED YET (STATE: %@)</string>
+		<key>0100009</key>
+		<string>CONNECTION IS IMPOSSIBLE AT THIS MOMENT. WAITING... (STATE: %@)</string>
+		<key>0100010</key>
+		<string>RETRY CONNECTION (%@ / %@) (STATE: %@)</string>
+		<key>0100011</key>
+		<string>TRYING TO RECONNECT... (STATE: %@)</string>
+		<key>0100012</key>
+		<string>RETRY CONNECTION BECAUSE OF INTERNAL SSL ERROR (STATE: %@)</string>
+		<key>0100013</key>
+		<string>RETRY CONNECTION BECAUSE OF TEMPORARY ISSUES WITH SERVER OR SOCKET (STATE: %@)</string>
+		<key>0100014</key>
+		<string>RECONNECT IS IMPOSSIBLE AT THIS MOMENT. WAITING... (STATE: %@)</string>
+		<key>0100015</key>
+		<string>RECONNECT CANCELED. CONNECTION STATE HAS BEEN CHANGED FROM OUTSIDE. (STATE: %@)</string>
+		<key>0100016</key>
+		<string>TRYING TO DISCONNECT... (BY USER REQUEST? %@) (STATE: %@)</string>
+		<key>0100017</key>
+		<string>CONNECTED ON RETRY (STATE: %@)</string>
+		<key>0100018</key>
+		<string>CONNECTED (BY USER REQUEST? %@) (STATE: %@)</string>
+		<key>0100019</key>
+		<string>RECONNECTED (BY USER REQUEST? %@) (STATE: %@)</string>
+		<key>0100020</key>
+		<string>RESUMED (STATE: %@)</string>
+		<key>0100021</key>
+		<string>RECONNECTED AFTER ERROR (STATE: %@)</string>
+		<key>0100022</key>
+		<string>RECONNECTED BECAUSE OF WAKE UP TIMER (STATE: %@)</string>
+		<key>0100023</key>
+		<string>RECONNECTED BECAUSE OF SSL ERROR (STATE: %@)</string>
+		<key>0100024</key>
+		<string>RECONNECTED BECAUSE OF NETWORK FAILURE OR SERVER TEMPORARY ISSUES (STATE: %@)</string>
+		<key>0100025</key>
+		<string>CLOSED ON RECONNECTION REQUEST. RECONNECTING... (STATE: %@)</string>
+		<key>0100026</key>
+		<string>CLOSED ON ERROR. RECONNECTING... (STATE: %@)</string>
+		<key>0100027</key>
+		<string>DISCONNECTED ON RETRY (STATE: %@)</string>
+		<key>0100028</key>
+		<string>CONNECT FROM THE NAME OF THE USER BECAUSE INITIAL CONNECT BEFORE ERROR HAS BEEN DONE BY HIM (STATE: %@)</string>
+		<key>0100029</key>
+		<string>CATCH UP PREVIOUS REQUEST TO CONNECT (STATE: %@)</string>
+		<key>0100030</key>
+		<string>EXPECTED DISCONNECTION. RECONNECTING... (STATE: %@)</string>
+		<key>0100031</key>
+		<string>DISCONNECTED ON CONNECTION RESET. RECONNECTING... (STATE: %@)</string>
+		<key>0100032</key>
+		<string>DISCONNECTED BECAUSE OF WAKE UP TIMER. RECONNECTING... (STATE: %@)</string>
+		<key>0100033</key>
+		<string>DISCONNECTED BECAUSE OF SSL ERROR. RECONNECTING... (STATE: %@)</string>
+		<key>0100034</key>
+		<string>DISCONNECTED BECAUSE OF NETWORK FAILURE OR SERVER TEMPORARY ISSUES. RECONNECTING... (STATE: %@)</string>
+		<key>0100035</key>
+		<string>DISCONNECTED BY USER REQUEST (STATE: %@)</string>
+		<key>0100036</key>
+		<string>DISCONNECTED BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0100037</key>
+		<string>SUSPENDED (STATE: %@)</string>
+		<key>0100038</key>
+		<string>DISCONNECTED (STATE: %@)</string>
+		<key>0100039</key>
+		<string>DISCONNECTED BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0100040</key>
+		<string>NOTIFY DELEGATE ABOUT DISCONNECTION (STATE: %@)</string>
+		<key>0100041</key>
+		<string>UNSCHEDULE REQUEST SENDING (%@) (STATE: %@)</string>
+		<key>0100042</key>
+		<string>HANDLE &apos;TIMEOUT&apos; TIMER EVENT (STATE: %@)</string>
+		<key>0100043</key>
+		<string>HANDLE &apos;WAKE UP&apos; TIMER EVENT (STATE: %@)</string>
+		<key>0100044</key>
+		<string>STILL IN BAD STATE (STATE: %@)</string>
+		<key>0100045</key>
+		<string>HAVE A CHANCE TO FIX ITS STATE (STATE: %@)</string>
+		<key>0100046</key>
+		<string>WAKE UP EVENT CANCELED. CONNECTION STATE HAS BEEN CHANGED FROM OUTSIDE. (STATE: %@)</string>
+		<key>0100047</key>
+		<string>GOT ERROR: %@ (CFNETWORK ERROR CODE: %@ (DOMAIN: %@); CONNECTION SHOULD BE CLOSED? %@) (STATE: %@)</string>
+		<key>0100048</key>
+		<string>SSL ERROR OCCURRED (STATE: %@)</string>
+		<key>0100049</key>
+		<string>IS SECURITY LEVEL REDUCTION ALLOWED? %@ (STATE: %@)</string>
+		<key>0100050</key>
+		<string>IS IT ALLOWED TO DISCARD SECURITY SETTINGS? %@ (STATE: %@)</string>
+		<key>0100051</key>
+		<string>CURRENT SSL CONFIGURATION LEVEL: %@ (STATE: %@)</string>
+		<key>0100052</key>
+		<string>REDUCING SSL REQUIREMENTS (STATE: %@)</string>
+		<key>0100053</key>
+		<string>DISCARD SSL (STATE: %@)</string>
+		<key>0100054</key>
+		<string>INTERNAL SSL ERROR OCCURRED (STATE: %@)</string>
+		<key>0100055</key>
+		<string>SOCKET GENERAL ERROR OCCURRED (STATE: %@)</string>
+		<key>0100056</key>
+		<string>SOCKET GENERAL ERROR BECAUSE OF SERVER ACTIONS (STATE: %@)</string>
+		<key>0100057</key>
+		<string>SOCKET GENERAL ERROR BECAUSE OF TEMPORARY ISSUES WITH SOCKET (STATE: %@)</string>
+		<key>0100058</key>
+		<string>SOCKET ERROR BECAUSE OF INTERNET (STATE: %@)</string>
+		<key>0100059</key>
+		<string>MAYBE UPLINK IS DOWN (STATE: %@)</string>
+		<key>0100060</key>
+		<string>CONNECTION RETRY IS POSSIBLE (STATE: %@)</string>
+		<key>0100061</key>
+		<string>CONNECTION RETRY NOT POSSIBLE (STATE: %@)</string>
+		<key>0100062</key>
+		<string>CLOSING STREAMS BECAUSE OF ERRORS (STATE: %@)</string>
+		<key>0100063</key>
+		<string>CLOSING STREAMS BECAUSE OF ERROR WHILE TRIED TO CONNECT (STATE: %@)</string>
+		<key>0100064</key>
+		<string>FETCHING PROXY CONFIGURATION SETTINGS (STATE: %@)</string>
+		<key>0100065</key>
+		<string>PROXY CONFIGURATION SETTINGS: %@\n (STATE: %@)</string>
+		<key>0100066</key>
+		<string>SOCKET PROXY NOT REQUIRED (STATE: %@)</string>
+		<key>0100067</key>
+		<string>DESTROYED (STATE: %@)</string>
+		<key>0100068</key>
+		<string>INSTANCE USE RESPONSE DESERIALIZER AT %@</string>
+		<key>0110</key>
 		<dict>
-			<key>name</key>
-			<string>CONNECTION</string>
-			<key>0100000</key>
-			<string>TRYING ESTABLISH CONNECTION... (BY USER REQUEST? %@) (STATE: %@)</string>
-			<key>0100001</key>
-			<string>CONNECTING... (STATE: %@)</string>
-			<key>0100002</key>
-			<string>RECONNECTING... (STATE: %@)</string>
-			<key>0100003</key>
-			<string>RESUMING... (STATE: %@)</string>
-			<key>0100004</key>
-			<string>LOOKS LIKE CONNECTION IN INTERMEDIATE STATE AND OUT OF SYNC. FORCIBLY RECONNECTING... (STATE: %@)</string>
-			<key>0100005</key>
-			<string>ALREADY CONNECTING... (STATE: %@)</string>
-			<key>0100006</key>
-			<string>ALREADY CONNECTED. (STATE: %@)</string>
-			<key>0100007</key>
-			<string>TRIED TO CONNECT WHILE DISCONNETING. WAIT FOR DISCONNECTION... (STATE: %@)</string>
-			<key>0100008</key>
-			<string>NOT CONFIGURED YET (STATE: %@)</string>
-			<key>0100009</key>
-			<string>CONNECTION IS IMPOSSIBLE AT THIS MOMENT. WAITING... (STATE: %@)</string>
-			<key>0100010</key>
-			<string>RETRY CONNECTION (%@ / %@) (STATE: %@)</string>
-			<key>0100011</key>
-			<string>TRYING TO RECONNECT... (STATE: %@)</string>
-			<key>0100012</key>
-			<string>RETRY CONNECTION BECAUSE OF INTERNAL SSL ERROR (STATE: %@)</string>
-			<key>0100013</key>
-			<string>RETRY CONNECTION BECAUSE OF TEMPORARY ISSUES WITH SERVER OR SOCKET (STATE: %@)</string>
-			<key>0100014</key>
-			<string>RECONNECT IS IMPOSSIBLE AT THIS MOMENT. WAITING... (STATE: %@)</string>
-			<key>0100015</key>
-			<string>RECONNECT CANCELED. CONNECTION STATE HAS BEEN CHANGED FROM OUTSIDE. (STATE: %@)</string>
-			<key>0100016</key>
-			<string>TRYING TO DISCONNECT... (BY USER REQUEST? %@) (STATE: %@)</string>
-			<key>0100017</key>
-			<string>CONNECTED ON RETRY (STATE: %@)</string>
-			<key>0100018</key>
-			<string>CONNECTED (BY USER REQUEST? %@) (STATE: %@)</string>
-			<key>0100019</key>
-			<string>RECONNECTED (BY USER REQUEST? %@) (STATE: %@)</string>
-			<key>0100020</key>
-			<string>RESUMED (STATE: %@)</string>
-			<key>0100021</key>
-			<string>RECONNECTED AFTER ERROR (STATE: %@)</string>
-			<key>0100022</key>
-			<string>RECONNECTED BECAUSE OF WAKE UP TIMER (STATE: %@)</string>
-			<key>0100023</key>
-			<string>RECONNECTED BECAUSE OF SSL ERROR (STATE: %@)</string>
-			<key>0100024</key>
-			<string>RECONNECTED BECAUSE OF NETWORK FAILURE OR SERVER TEMPORARY ISSUES (STATE: %@)</string>
-			<key>0100025</key>
-			<string>CLOSED ON RECONNECTION REQUEST. RECONNECTING... (STATE: %@)</string>
-			<key>0100026</key>
-			<string>CLOSED ON ERROR. RECONNECTING... (STATE: %@)</string>
-			<key>0100027</key>
-			<string>DISCONNECTED ON RETRY (STATE: %@)</string>
-			<key>0100028</key>
-			<string>CONNECT FROM THE NAME OF THE USER BECAUSE INITIAL CONNECT BEFORE ERROR HAS BEEN DONE BY HIM (STATE: %@)</string>
-			<key>0100029</key>
-			<string>CATCH UP PREVIOUS REQUEST TO CONNECT (STATE: %@)</string>
-			<key>0100030</key>
-			<string>EXPECTED DISCONNECTION. RECONNECTING... (STATE: %@)</string>
-			<key>0100031</key>
-			<string>DISCONNECTED ON CONNECTION RESET. RECONNECTING... (STATE: %@)</string>
-			<key>0100032</key>
-			<string>DISCONNECTED BECAUSE OF WAKE UP TIMER. RECONNECTING... (STATE: %@)</string>
-			<key>0100033</key>
-			<string>DISCONNECTED BECAUSE OF SSL ERROR. RECONNECTING... (STATE: %@)</string>
-			<key>0100034</key>
-			<string>DISCONNECTED BECAUSE OF NETWORK FAILURE OR SERVER TEMPORARY ISSUES. RECONNECTING... (STATE: %@)</string>
-			<key>0100035</key>
-			<string>DISCONNECTED BY USER REQUEST (STATE: %@)</string>
-			<key>0100036</key>
-			<string>DISCONNECTED BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0100037</key>
-			<string>SUSPENDED (STATE: %@)</string>
-			<key>0100038</key>
-			<string>DISCONNECTED (STATE: %@)</string>
-			<key>0100039</key>
-			<string>DISCONNECTED BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0100040</key>
-			<string>NOTIFY DELEGATE ABOUT DISCONNECTION (STATE: %@)</string>
-			<key>0100041</key>
-			<string>UNSCHEDULE REQUEST SENDING (%@) (STATE: %@)</string>
-			<key>0100042</key>
-			<string>HANDLE &apos;TIMEOUT&apos; TIMER EVENT (STATE: %@)</string>
-			<key>0100043</key>
-			<string>HANDLE &apos;WAKE UP&apos; TIMER EVENT (STATE: %@)</string>
-			<key>0100044</key>
-			<string>STILL IN BAD STATE (STATE: %@)</string>
-			<key>0100045</key>
-			<string>HAVE A CHANCE TO FIX ITS STATE (STATE: %@)</string>
-			<key>0100046</key>
-			<string>WAKE UP EVENT CANCELED. CONNECTION STATE HAS BEEN CHANGED FROM OUTSIDE. (STATE: %@)</string>
-			<key>0100047</key>
-			<string>GOT ERROR: %@ (CFNETWORK ERROR CODE: %@ (DOMAIN: %@); CONNECTION SHOULD BE CLOSED? %@) (STATE: %@)</string>
-			<key>0100048</key>
-			<string>SSL ERROR OCCURRED (STATE: %@)</string>
-			<key>0100049</key>
-			<string>IS SECURITY LEVEL REDUCTION ALLOWED? %@ (STATE: %@)</string>
-			<key>0100050</key>
-			<string>IS IT ALLOWED TO DISCARD SECURITY SETTINGS? %@ (STATE: %@)</string>
-			<key>0100051</key>
-			<string>CURRENT SSL CONFIGURATION LEVEL: %@ (STATE: %@)</string>
-			<key>0100052</key>
-			<string>REDUCING SSL REQUIREMENTS (STATE: %@)</string>
-			<key>0100053</key>
-			<string>DISCARD SSL (STATE: %@)</string>
-			<key>0100054</key>
-			<string>INTERNAL SSL ERROR OCCURRED (STATE: %@)</string>
-			<key>0100055</key>
-			<string>SOCKET GENERAL ERROR OCCURRED (STATE: %@)</string>
-			<key>0100056</key>
-			<string>SOCKET GENERAL ERROR BECAUSE OF SERVER ACTIONS (STATE: %@)</string>
-			<key>0100057</key>
-			<string>SOCKET GENERAL ERROR BECAUSE OF TEMPORARY ISSUES WITH SOCKET (STATE: %@)</string>
-			<key>0100058</key>
-			<string>SOCKET ERROR BECAUSE OF INTERNET (STATE: %@)</string>
-			<key>0100059</key>
-			<string>MAYBE UPLINK IS DOWN (STATE: %@)</string>
-			<key>0100060</key>
-			<string>CONNECTION RETRY IS POSSIBLE (STATE: %@)</string>
-			<key>0100061</key>
-			<string>CONNECTION RETRY NOT POSSIBLE (STATE: %@)</string>
-			<key>0100062</key>
-			<string>CLOSING STREAMS BECAUSE OF ERRORS (STATE: %@)</string>
-			<key>0100063</key>
-			<string>CLOSING STREAMS BECAUSE OF ERROR WHILE TRIED TO CONNECT (STATE: %@)</string>
-			<key>0100064</key>
-			<string>FETCHING PROXY CONFIGURATION SETTINGS (STATE: %@)</string>
-			<key>0100065</key>
-			<string>PROXY CONFIGURATION SETTINGS: %@\n (STATE: %@)</string>
-			<key>0100066</key>
-			<string>SOCKET PROXY NOT REQUIRED (STATE: %@)</string>
-			<key>0100067</key>
-			<string>DESTROYED (STATE: %@)</string>
-			<key>0100068</key>
-			<string>INSTANCE USE RESPONSE DESERIALIZER AT %@</string>
-			<key>0110</key>
+			<key>0110000</key>
+			<string>PREPARE READ/WRITE STREAMS (STATE: %@)</string>
+			<key>0110001</key>
+			<string>CONFIGURATION STARTED (STATE: %@)</string>
+			<key>0110002</key>
+			<string>CONFIGURATION FAILED (STATE: %@)</string>
+			<key>0110003</key>
+			<string>CONFIGURATION COMPLETED (STATE: %@)</string>
+			<key>0110004</key>
+			<string>STREAMS ALREADY CONFIGURATED (STATE: %@)</string>
+			<key>0110005</key>
+			<string>STREAMS ALREADY CONFIGURATED AND CONNECTING... (STATE: %@)</string>
+			<key>0110006</key>
+			<string>STREAMS ALREADY CONFIGURATED AND CONNECTED. (STATE: %@)</string>
+			<key>0110007</key>
+			<string>STREAMS ALREADY CONFIGURATED AND RESUMING... (STATE: %@)</string>
+			<key>0110008</key>
+			<string>DESTROYING STREAMS... (STATE: %@)</string>
+			<key>0110009</key>
+			<string>READ AND WRITE STREAMS DESTROYED (STATE: %@)</string>
+			<key>0110010</key>
+			<string>HANDLE STREAM CONNECTION OPENED (STATE: %@)</string>
+			<key>0110011</key>
+			<string>HANDLE STREAM CONNECTION CLOSED (STATE: %@)</string>
+			<key>0110012</key>
+			<string>HANDLE STREAM CONFIGURATION FAILURE (STATE: %@)</string>
+			<key>0110013</key>
+			<string>RETRY CONFIGURATION ATTEMPT... FAILURE (STATE: %@)</string>
+			<key>0110014</key>
+			<string>CONFIGURATION RETRY COUNT EXCEEDED LIMIT. CANCEL. FAILURE (STATE: %@)</string>
+			<key>0111</key>
 			<dict>
-				<key>0110000</key>
-				<string>PREPARE READ/WRITE STREAMS (STATE: %@)</string>
-				<key>0110001</key>
-				<string>CONFIGURATION STARTED (STATE: %@)</string>
-				<key>0110002</key>
+				<key>name</key>
+				<string>READ</string>
+				<key>0111000</key>
+				<string>CONFIGURING... (STATE: %@)</string>
+				<key>0111001</key>
 				<string>CONFIGURATION FAILED (STATE: %@)</string>
-				<key>0110003</key>
+				<key>0111002</key>
 				<string>CONFIGURATION COMPLETED (STATE: %@)</string>
-				<key>0110004</key>
-				<string>STREAMS ALREADY CONFIGURATED (STATE: %@)</string>
-				<key>0110005</key>
-				<string>STREAMS ALREADY CONFIGURATED AND CONNECTING... (STATE: %@)</string>
-				<key>0110006</key>
-				<string>STREAMS ALREADY CONFIGURATED AND CONNECTED. (STATE: %@)</string>
-				<key>0110007</key>
-				<string>STREAMS ALREADY CONFIGURATED AND RESUMING... (STATE: %@)</string>
-				<key>0110008</key>
-				<string>DESTROYING STREAMS... (STATE: %@)</string>
-				<key>0110009</key>
-				<string>READ AND WRITE STREAMS DESTROYED (STATE: %@)</string>
-				<key>0110010</key>
-				<string>HANDLE STREAM CONNECTION OPENED (STATE: %@)</string>
-				<key>0110011</key>
-				<string>HANDLE STREAM CONNECTION CLOSED (STATE: %@)</string>
-				<key>0110012</key>
-				<string>HANDLE STREAM CONFIGURATION FAILURE (STATE: %@)</string>
-				<key>0110013</key>
-				<string>RETRY CONFIGURATION ATTEMPT... FAILURE (STATE: %@)</string>
-				<key>0110014</key>
-				<string>CONFIGURATION RETRY COUNT EXCEEDED LIMIT. CANCEL. FAILURE (STATE: %@)</string>
-				<key>0111</key>
-				<dict>
-					<key>name</key>
-					<string>READ</string>
-					<key>0111000</key>
-					<string>CONFIGURING... (STATE: %@)</string>
-					<key>0111001</key>
-					<string>CONFIGURATION FAILED (STATE: %@)</string>
-					<key>0111002</key>
-					<string>CONFIGURATION COMPLETED (STATE: %@)</string>
-					<key>0111003</key>
-					<string>SCHEDULING OPENING... (STATE: %@)</string>
-					<key>0111004</key>
-					<string>FAILED TO OPEN (STATE: %@)</string>
-					<key>0111005</key>
-					<string>OPEN IS SCHEDULED (STATE: %@)</string>
-					<key>0111006</key>
-					<string>STREAM OPENED (%@)(STATE: %@)</string>
-					<key>0111007</key>
-					<string>DISCONNECTING... (STATE: %@)</string>
-					<key>0111008</key>
-					<string>DESTROYING... (STATE: %@)</string>
-					<key>0111009</key>
-					<string>DESTROYED. (STATE: %@)</string>
-					<key>0111010</key>
-					<string>HAS DATA FOR READ OUT (%@) (STATE: %@)</string>
-					<key>0111011</key>
-					<string>ERROR OCCURRED (%@) (STATE: %@)</string>
-					<key>0111012</key>
-					<string>NOTHING TO READ (%@) (STATE: %@)</string>
-					<key>0111013</key>
-					<string>READING ARRIVED DATA... (STATE: %@)</string>
-					<key>0111014</key>
-					<string>READED %@ BYTES (STATE: %@)</string>
-					<key>0111015</key>
-					<string>DESERIALIZED IS BUSY. WRITTING INTO TEMPORARY STORAGE (STATE: %@)</string>
-					<key>0111016</key>
-					<string>READ ERROR (STATE: %@)</string>
-					<key>0111017</key>
-					<string>PROCESSED RECEIVED DATA AND HAVE {%@} RESPONSES (STATE: %@)</string>
-					<key>0111018</key>
-					<string>THERE IS %@ BYTES IN TEMPORARY BUFFER. PROCESS... (STATE: %@)</string>
-					<key>0111019</key>
-					<string>RAW HTTP RESPONSE: %@\n(STATE: %@)</string>
-				</dict>
-				<key>0112</key>
-				<dict>
-					<key>name</key>
-					<string>WRITE</string>
-					<key>0112000</key>
-					<string>CONFIGURING... (STATE: %@)</string>
-					<key>0112001</key>
-					<string>CONFIGURATION FAILED (STATE: %@)</string>
-					<key>0112002</key>
-					<string>CONFIGURATION COMPLETED (STATE: %@)</string>
-					<key>0112003</key>
-					<string>SCHEDULING OPENING... (STATE: %@)</string>
-					<key>0112004</key>
-					<string>FAILED TO OPEN (STATE: %@)</string>
-					<key>0112005</key>
-					<string>OPEN IS SCHEDULED (STATE: %@)</string>
-					<key>0112006</key>
-					<string>STREAM OPENED (%@) (STATE: %@)</string>
-					<key>0112007</key>
-					<string>DISCONNECTING... (STATE: %@)</string>
-					<key>0112008</key>
-					<string>DESTROYING... (STATE: %@)</string>
-					<key>0112009</key>
-					<string>DESTROYED. (STATE: %@)</string>
-					<key>0112010</key>
-					<string>ALREADY SENDING DATA (STATE: %@)</string>
-					<key>0112011</key>
-					<string>READY TO SEND (%@) (STATE: %@)</string>
-					<key>0112012</key>
-					<string>ERROR OCCURRED (%@) (STATE: %@)</string>
-					<key>0112013</key>
-					<string>MAYBE STREAM IS CLOSED (%@) (STATE: %@)</string>
-					<key>0112014</key>
-					<string>WRITE BUFFER CONTENT (STATE: %@)</string>
-					<key>0112015</key>
-					<string>WRITE ERROR (STATE: %@)</string>
-					<key>0112016</key>
-					<string>WRITTEN WHOLE REQUEST BODY (%@/%@ BYTES) (STATE: %@)</string>
-					<key>0112017</key>
-					<string>WRITTEN PART OF REQUEST BODY (%@/%@ BYTES) (STATE: %@)</string>
-					<key>0112018</key>
-					<string>WRITE CANCELED (STATE: %@)</string>
-					<key>0112019</key>
-					<string>CAN&apos;T PROCESS NEXT REQUEST BECAUSE CONNECTION WILL BE CLOSED SOON (STATE: %@)</string>
-					<key>0112020</key>
-					<string>NOTHING TO WRITE (STATE: %@)</string>
-				</dict>
+				<key>0111003</key>
+				<string>SCHEDULING OPENING... (STATE: %@)</string>
+				<key>0111004</key>
+				<string>FAILED TO OPEN (STATE: %@)</string>
+				<key>0111005</key>
+				<string>OPEN IS SCHEDULED (STATE: %@)</string>
+				<key>0111006</key>
+				<string>STREAM OPENED (%@)(STATE: %@)</string>
+				<key>0111007</key>
+				<string>DISCONNECTING... (STATE: %@)</string>
+				<key>0111008</key>
+				<string>DESTROYING... (STATE: %@)</string>
+				<key>0111009</key>
+				<string>DESTROYED. (STATE: %@)</string>
+				<key>0111010</key>
+				<string>HAS DATA FOR READ OUT (%@) (STATE: %@)</string>
+				<key>0111011</key>
+				<string>ERROR OCCURRED (%@) (STATE: %@)</string>
+				<key>0111012</key>
+				<string>NOTHING TO READ (%@) (STATE: %@)</string>
+				<key>0111013</key>
+				<string>READING ARRIVED DATA... (STATE: %@)</string>
+				<key>0111014</key>
+				<string>READED %@ BYTES (STATE: %@)</string>
+				<key>0111015</key>
+				<string>DESERIALIZED IS BUSY. WRITTING INTO TEMPORARY STORAGE (STATE: %@)</string>
+				<key>0111016</key>
+				<string>READ ERROR (STATE: %@)</string>
+				<key>0111017</key>
+				<string>PROCESSED RECEIVED DATA AND HAVE {%@} RESPONSES (STATE: %@)</string>
+				<key>0111018</key>
+				<string>THERE IS %@ BYTES IN TEMPORARY BUFFER. PROCESS... (STATE: %@)</string>
+				<key>0111019</key>
+				<string>RAW HTTP RESPONSE: %@\n(STATE: %@)</string>
 			</dict>
-		</dict>
-		<key>02</key>
-		<dict>
-			<key>name</key>
-			<string>CHANNEL</string>
-			<key>0200000</key>
-			<string>TRYING TO CONNECT (STATE: %@)</string>
-			<key>0200001</key>
-			<string>OUT OF SYNC WITH CONNECTION. UPDATING... (STATE: %@)</string>
-			<key>0200002</key>
-			<string>CONNECTING... (STATE: %@)</string>
-			<key>0200003</key>
-			<string>TRYING TO DISCONNECT AND NOTIFY ON DISCONNECTION (STATE: %@)</string>
-			<key>0200004</key>
-			<string>TRYING TO DISCONNECT W/O DISCONNECTION NOTIFY (STATE: %@)</string>
-			<key>0200005</key>
-			<string>DISCONNECTED (STATE: %@)</string>
-			<key>0200006</key>
-			<string>OUT OF SYNC WITH DISCONNECTION. UPDATING... (STATE: %@)</string>
-			<key>0200007</key>
-			<string>DISCONNECTING... (STATE: %@)</string>
-			<key>0200008</key>
-			<string>ALREADY DISCONNECTED (STATE: %@)</string>
-			<key>0200009</key>
-			<string>TRYING TO SUSPEND (STATE: %@)</string>
-			<key>0200010</key>
-			<string>OUT OF SYNC WITH SUSPENSION. UPDATING... (STATE: %@)</string>
-			<key>0200011</key>
-			<string>SUSPENDING... (STATE: %@)</string>
-			<key>0200012</key>
-			<string>TRYING TO RESUME (STATE: %@)</string>
-			<key>0200013</key>
-			<string>OUT OF SYNC WITH RESUME. UPDATING... (STATE: %@)</string>
-			<key>0200014</key>
-			<string>RESUMING... (STATE: %@)</string>
-			<key>0200015</key>
-			<string>IGNORE SCHEDULED REQUEST: %@ (STATE: %@)</string>
-			<key>0200016</key>
-			<string>RECONNECTING BY REQUEST... (STATE: %@)</string>
-			<key>0200017</key>
-			<string>CONFIGUIRATION FAILED (STATE: %@)</string>
-			<key>0200018</key>
-			<string>HANDLE CONNECTION HAS BEEN RESET (STATE: %@)</string>
-			<key>0200019</key>
-			<string>HANDLE CONNECTION EVENT (STATE: %@)</string>
-			<key>0200020</key>
-			<string>CONNECTED (STATE: %@)</string>
-			<key>0200021</key>
-			<string>HANDLE SUSPENSION EVENT (STATE: %@)</string>
-			<key>0200022</key>
-			<string>SUSPENDED (STATE: %@)</string>
-			<key>0200023</key>
-			<string>HANDLE RESUME EVENT (STATE: %@)</string>
-			<key>0200024</key>
-			<string>RESUMED (STATE: %@)</string>
-			<key>0200025</key>
-			<string>WILL RESTORE CONNECTION (STATE: %@)</string>
-			<key>0200026</key>
-			<string>HANDLE CONNECTION RESTORE EVENT (STATE: %@)</string>
-			<key>0200027</key>
-			<string>RESTORED CONNECTION (STATE: %@)</string>
-			<key>0200028</key>
-			<string>WILL RESTORE CONNECTION AFTER ERROR (STATE: %@)</string>
-			<key>0200029</key>
-			<string>HANDLE CONNECTION RESTORE AFTER ERROR EVENT (STATE: %@)</string>
-			<key>0200030</key>
-			<string>HANDLE DISCONNECTION ON ERROR EVENT (STATE: %@)</string>
-			<key>0200031</key>
-			<string>DISCONNECTED ON ERROR (STATE: %@)</string>
-			<key>0200032</key>
-			<string>HANDLE DISCONNECTION EVENT (STATE: %@)</string>
-			<key>0200034</key>
-			<string>CONNECTION RESTORED AFTER CLOSING BY SERVER REQUEST... (STATE: %@)</string>
-			<key>0200035</key>
-			<string>CLOSING CONNECTION BY SERVER REQUEST... (STATE: %@)</string>
-			<key>0200036</key>
-			<string>CONNECTION CLOSE BY SERVER REQUEST... (STATE: %@)</string>
-			<key>0200037</key>
-			<string>HANDLE CONNECTION FAILURE EVENT (STATE: %@)</string>
-			<key>0200038</key>
-			<string>CONNECTION FAILED (STATE: %@)</string>
-			<key>0200039</key>
-			<string>RECEIVED MALFORMED RESPONSE: %@ (STATE: %@)</string>
-			<key>0200040</key>
-			<string>RECIEVED RESPONSE: %@ (STATE: %@)</string>
-			<key>0200041</key>
-			<string>RESCHEDULING REQUEST: %@ (STATE: %@)</string>
-			<key>0200042</key>
-			<string>CAN&apos;T RESCHEDULE REQUEST FOR RESPONSE: %@ (STATE: %@)</string>
-			<key>0200043</key>
-			<string>RESETTING CONNECTION INSTANCE: %@ (%@) (STATE: %@)</string>
-			<key>0200044</key>
-			<string>DESTROYED (STATE: %@)</string>
-			<key>0200045</key>
-			<string>INSTANCE USE REQUEST QUEUE AT %@ AND CONNECTION AT %@</string>
-			<key>0201</key>
+			<key>0112</key>
 			<dict>
-				<key>0201000</key>
-				<string>LEAVING ALL CHANNELS... (STATE: %@)</string>
-				<key>0201001</key>
-				<string>LEAVING SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
-				<key>0201002</key>
-				<string>RESTORING SUBSCRIPTION (USE LAST TIME TOKEN? %@) (STATE: %@)</string>
-				<key>0201003</key>
-				<string>RE-SUBSCRIBE ON CONNECTION IDLE TIMER (USE LAST TIME TOKEN? %@) (STATE: %@)</string>
-				<key>0201004</key>
-				<string>UPDATING SUBSCRIPTIONS USING TIME TOKEN FROM LAST RESPONSE... (STATE: %@)</string>
-				<key>0201005</key>
-				<string>SUBSCRIPTION UPDATE CANCELED. WE ALREADY SENT REQUEST (STATE: %@)</string>
-				<key>0201006</key>
-				<string>ENABLING PRESENCE ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
-				<key>0201007</key>
-				<string>ENABLING PRESENCE AND SUBSCRIBING ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
-				<key>0201008</key>
-				<string>ENABLING / DISABLING PRESENCE ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
-				<key>0201009</key>
-				<string>ENABLING / DISABLING PRESENCE AND SUBSCRIBING ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
-				<key>0201010</key>
-				<string>DISABLING PRESENCE ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
-				<key>0201011</key>
-				<string>DISABLING PRESENCE AND SUBSCRIBING ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
-				<key>0201012</key>
-				<string>SUBSCRIBING ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
-				<key>0201013</key>
-				<string>SUBSCRIBED ON SPECIFIC SET OF CHANNELS (ALREADY SUBSCRIBED) (STATE: %@)</string>
-				<key>0201014</key>
-				<string>ENABLED PRESENCE ON SPECIFIC SET OF CHANNELS (ALREADY ENABLED) (STATE: %@)</string>
-				<key>0201015</key>
-				<string>DISABLED PRESENCE ON SPECIFIC SET OF CHANNELS (PRESENCE OBSERVATION NOT ENABLED ON SPECIFIED SET OF CHANNELS) (STATE: %@)</string>
-				<key>0201016</key>
-				<string>SUBSCRIBING ON PREVIOUS CHANNELS... (STATE: %@)</string>
-				<key>0201017</key>
-				<string>LEAVE REQUEST COMPLETED (STATE: %@)</string>
-				<key>0201018</key>
-				<string>PRESENCE &apos;LEAVE&apos; REQUEST ERROR: %@\nCHANNELS: %@\n(STATE: %@)</string>
-				<key>0201019</key>
-				<string>UNSUBSCRIBED FROM CHANNELS: %@\n(STATE: %@)</string>
-				<key>0201020</key>
-				<string>HANDLE EVENT IN RESPONSE ON: %@\nCHANNELS: %@\nRESPONSE: %@\n(STATE: %@)</string>
-				<key>0201021</key>
-				<string>PARSED DATA: %@\n(STATE: %@)</string>
-				<key>0201022</key>
-				<string>SUBSCRIPTION FAILED WITH ERROR: %@\nCHANNELS: %@\n(STATE: %@)</string>
-				<key>0201023</key>
-				<string>PRESENCE ENABLING FAILED WITH ERROR: %@\nCHANNELS: %@\n(STATE: %@)</string>
-				<key>0201024</key>
-				<string>PRESENCE DISABLING FAILED WITH ERROR: %@\nCHANNELS: %@\n(STATE: %@)</string>
-				<key>0201025</key>
-				<string>WILL START REQUEST PROCESSING: %@ (STATE: %@)</string>
-				<key>0201026</key>
-				<string>DID SEND REQUEST: %@ [WAITING FOR COMPLETION? %@] (STATE: %@)</string>
-				<key>0201027</key>
-				<string>RESTORED SUBSCRIPTION ON CHANNELS: %@\n(STATE: %@)</string>
-				<key>0201028</key>
-				<string>SUBSCRIBED ON CHANNELS: %@\n(STATE: %@)</string>
-				<key>0201030</key>
-				<string>PRESENCE ENABLED ON CHANNELS: %@\n(STATE: %@)</string>
-				<key>0201031</key>
-				<string>PRESENCE DISABLED ON CHANNELS: %@\n(STATE: %@)</string>
-				<key>0201032</key>
-				<string>LEAVED CHANNELS: %@\n(STATE: %@)</string>
-				<key>0201033</key>
-				<string>DID FAIL TO SEND REQUEST: %@\nERROR: %@\n(STATE: %@)</string>
-				<key>0201034</key>
-				<string>DID CANCEL REQUEST: %@ (STATE: %@)</string>
-			</dict>
-			<key>0202</key>
-			<dict>
-				<key>0202000</key>
-				<string>LATENCY METER SIGNAL HAS BEEN PROCESSED</string>
-				<key>0202001</key>
-				<string>LATENCY METER SIGNAL PROCESSING DID FAIL WITH ERROR: %@</string>
-				<key>0202002</key>
-				<string>TIME TOKEN MESSAGE HAS BEEN PROCESSED: %@</string>
-				<key>0202003</key>
-				<string>TIME TOKEN MESSAGE PROCESSING DID FAIL WITH ERROR: %@</string>
-				<key>0202004</key>
-				<string>CLIENT STATE DOWNLOADED. CLIENT: %@</string>
-				<key>0202005</key>
-				<string>CLIENT STATE DOWNLOAD FAILED WITH ERROR: %@FOR CLIENT: %@</string>
-				<key>0202006</key>
-				<string>CLIENT STATE UPDATED. CLIENT: %@</string>
-				<key>0202007</key>
-				<string>CLIENT STATE UPDATE FAILED WITH ERROR: %@\nFOR CLIENT: %@</string>
-				<key>0202008</key>
-				<string>MESSAGE: %@\nHAS BEEN SENT TO CHANNEL: %@</string>
-				<key>0202009</key>
-				<string>MESSAGE: %@\nSENDING TO CHANNEL: %@\nFAILED WITH ERROR: %@</string>
-				<key>0202010</key>
-				<string>HISTORY HAS BEEN DOWNLOADED FOR CHANNEL %@ FROM %@ TO %@ WITH LIMIT %@ [SHOULD REVERSE? %@ | SHOULD INCLUDE TIME TOKENS? %@]\nMESSAGES: %@</string>
-				<key>0202011</key>
-				<string>HISTORY DOWNLOAD FAILED FOR CHANNEL %@ FROM %@ TO %@ WITH LIMIT %@ [SHOULD REVERSE? %@ | SHOULD INCLUDE TIME TOKENS? %@]\nBECAUSE OF ERROR: %@</string>
-				<key>0202012</key>
-				<string>PARTICIPANTS LIST FOR CHANNEL %@ DOWNLOADED [SHOULD INCLUDE TOKENS? %@ | SHOULD FETCH CLIENT&apos;s STATE? %@]\nPARTICIPANTS: %@</string>
-				<key>0202013</key>
-				<string>PARTICIPANTS LIST DOWNLOAD FOR %@ FAILED [SHOULD INCLUDE TOKENS? %@ | SHOULD FETCH CLIENT&apos;s STATE? %@]\nBECAUSE OF ERROR: %@</string>
-				<key>0202014</key>
-				<string>PARTICIPANT CHANNELS LIST FOR %@ CLIENT DOWNLOADED. CHANNELS: %@</string>
-				<key>0202015</key>
-				<string>PARTICIPANT CHANNELS LIST DOWNLOAD FOR %@ FAILED\nBECAUSE OF ERROR: %@</string>
-				<key>0202016</key>
-				<string>PUSH NOTIFICATIONS ENABLED FOR %@ TOKEN ON CHANNELS: %@</string>
-				<key>0202017</key>
-				<string>PUSH NOTIFICATIONS ENABLING FAILED FOR %@ TOKEN ON CHANNELS:%@\nBECAUSE OF ERROR: %@</string>
-				<key>0202018</key>
-				<string>PUSH NOTIFICATIONS DISABLED FOR %@ TOKEN ON CHANNELS: %@</string>
-				<key>0202019</key>
-				<string>PUSH NOTIFICATIONS DISABLING FAILED FOR %@ TOKEN ON CHANNELS:%@\nBECAUSE OF ERROR: %@</string>
-				<key>0202020</key>
-				<string>PUSH NOTIFICATIONS REMOVED FOR %@ TOKEN</string>
-				<key>0202021</key>
-				<string>PUSH NOTIFICATIONS REMOVE DID FAIL FOR %@ TOKEN BECAUSE OF ERROR: %@</string>
-				<key>0202022</key>
-				<string>PUSH NOTIFICATION ENABLED CHANNELS LIST RECEIVED FOR %@ TOKEN. CHANNELS: %@</string>
-				<key>0202023</key>
-				<string>PUSH NOTIFICATION ENABLED CHANNELS LIST RECEIVE FAILED FOR %@ TOKEN BECAUSE OF ERROR: %@</string>
-				<key>0202024</key>
-				<string>ACCESS RIGHTS SUCCESSFULLY CHANGED FOR CLIENTS: %@\nCHANNELS: %@\nRIGHTS: %@\nON DURATION: %@</string>
-				<key>0202025</key>
-				<string>ACCESS RIGHTS CHANGE FAILED FOR CLIENTS: %@\nCHANNELS: %@\nRIGHTS: %@\nON DURATION: %@\nBECAUSE OF ERROR: %@</string>
-				<key>0202026</key>
-				<string>ACCESS RIGHTS SUCCESSFULLY AUDITED FOR  CLIENTS: %@\nCHANNELS: %@\nACCESS RIGHTS INFORMATION: %@</string>
-				<key>0202027</key>
-				<string>ACCESS RIGHTS AUDIT FAILED FOR  CLIENTS: %@\nCHANNELS: %@\nBECAUSE OF ERROR: %@</string>
-				<key>0202028</key>
-				<string>PARSED DATA: %@</string>
-				<key>0202029</key>
-				<string>OBSERVED REQUEST COMPLETED: %@</string>
-				<key>0202030</key>
-				<string>WILL START REQUEST PROCESSING: %@</string>
-				<key>0202031</key>
-				<string>DID SEND REQUEST: %@</string>
-				<key>0202032</key>
-				<string>DID FAIL TO SEND REQUEST: %@</string>
-				<key>0202033</key>
-				<string>REQUEST WON&apos;T BE SENT: %@</string>
-				<key>0202034</key>
-				<string>LATENCY METER MESSAGE SENT</string>
-				<key>0202035</key>
-				<string>LATENCY METER REQUEST CANCELED</string>
-				<key>0202036</key>
-				<string>DID SEND MESSAGE REQUEST</string>
-				<key>0202037</key>
-				<string>CHANNEL GROUPS FROM %@ NAMESPACE
-%@</string>
-				<key>0202038</key>
-				<string>CHANNEL GROUPS REQUEST FROM %@ NAMESPACE FAILED WITH ERROR: %@</string>
-				<key>0202039</key>
-				<string>CHANNELS FOR THE %@ GROUP
-%@</string>
-				<key>0202040</key>
-				<string>CHANNELS FOR THE %@ GROUP REQUEST FAILED WITH ERROR: %@</string>
-				<key>0202041</key>
-				<string>CHANNELS ADDED TO THE %@ GROUP
-%@</string>
-				<key>0202042</key>
-				<string>CHANNELS ADDITION:%@\nTO THE %@ GROUP FAILED WITH ERROR: %@</string>
-				<key>0202043</key>
-				<string>CHANNELS REMOVED FROM THE %@ GROUP
-%@</string>
-				<key>0202044</key>
-				<string>CHANNELS REMOVAL:%@\nFROM THE %@ GROUP FAILED WITH ERROR: %@</string>
-				<key>0202045</key>
-				<string>DID RECEIVE CHANNEL GROUP NAMESPACES: %@</string>
-				<key>0202046</key>
-				<string>CHANNEL GROUP NAMESPACES REQUEST DID FAIL WITH ERROR: %@</string>
-				<key>0202047</key>
-				<string>DID REMOVE CHANNEL GROUP NAMESPACE: %@</string>
-				<key>0202048</key>
-				<string>CHANNEL GROUP %@ NAMESPACE REMOVAL DID FAIL WITH ERROR: %@</string>
-				<key>0202049</key>
-				<string>DID REMOVE %@ CHANNEL GROUP</string>
-				<key>0202050</key>
-				<string>%@ CHANNEL GROUP REMOVAL DID FAIL WITH ERROR: %@</string>
+				<key>name</key>
+				<string>WRITE</string>
+				<key>0112000</key>
+				<string>CONFIGURING... (STATE: %@)</string>
+				<key>0112001</key>
+				<string>CONFIGURATION FAILED (STATE: %@)</string>
+				<key>0112002</key>
+				<string>CONFIGURATION COMPLETED (STATE: %@)</string>
+				<key>0112003</key>
+				<string>SCHEDULING OPENING... (STATE: %@)</string>
+				<key>0112004</key>
+				<string>FAILED TO OPEN (STATE: %@)</string>
+				<key>0112005</key>
+				<string>OPEN IS SCHEDULED (STATE: %@)</string>
+				<key>0112006</key>
+				<string>STREAM OPENED (%@) (STATE: %@)</string>
+				<key>0112007</key>
+				<string>DISCONNECTING... (STATE: %@)</string>
+				<key>0112008</key>
+				<string>DESTROYING... (STATE: %@)</string>
+				<key>0112009</key>
+				<string>DESTROYED. (STATE: %@)</string>
+				<key>0112010</key>
+				<string>ALREADY SENDING DATA (STATE: %@)</string>
+				<key>0112011</key>
+				<string>READY TO SEND (%@) (STATE: %@)</string>
+				<key>0112012</key>
+				<string>ERROR OCCURRED (%@) (STATE: %@)</string>
+				<key>0112013</key>
+				<string>MAYBE STREAM IS CLOSED (%@) (STATE: %@)</string>
+				<key>0112014</key>
+				<string>WRITE BUFFER CONTENT (STATE: %@)</string>
+				<key>0112015</key>
+				<string>WRITE ERROR (STATE: %@)</string>
+				<key>0112016</key>
+				<string>WRITTEN WHOLE REQUEST BODY (%@/%@ BYTES) (STATE: %@)</string>
+				<key>0112017</key>
+				<string>WRITTEN PART OF REQUEST BODY (%@/%@ BYTES) (STATE: %@)</string>
+				<key>0112018</key>
+				<string>WRITE CANCELED (STATE: %@)</string>
+				<key>0112019</key>
+				<string>CAN&apos;T PROCESS NEXT REQUEST BECAUSE CONNECTION WILL BE CLOSED SOON (STATE: %@)</string>
+				<key>0112020</key>
+				<string>NOTHING TO WRITE (STATE: %@)</string>
 			</dict>
 		</dict>
-		<key>03</key>
+	</dict>
+	<key>02</key>
+	<dict>
+		<key>name</key>
+		<string>CHANNEL</string>
+		<key>0200000</key>
+		<string>TRYING TO CONNECT (STATE: %@)</string>
+		<key>0200001</key>
+		<string>OUT OF SYNC WITH CONNECTION. UPDATING... (STATE: %@)</string>
+		<key>0200002</key>
+		<string>CONNECTING... (STATE: %@)</string>
+		<key>0200003</key>
+		<string>TRYING TO DISCONNECT AND NOTIFY ON DISCONNECTION (STATE: %@)</string>
+		<key>0200004</key>
+		<string>TRYING TO DISCONNECT W/O DISCONNECTION NOTIFY (STATE: %@)</string>
+		<key>0200005</key>
+		<string>DISCONNECTED (STATE: %@)</string>
+		<key>0200006</key>
+		<string>OUT OF SYNC WITH DISCONNECTION. UPDATING... (STATE: %@)</string>
+		<key>0200007</key>
+		<string>DISCONNECTING... (STATE: %@)</string>
+		<key>0200008</key>
+		<string>ALREADY DISCONNECTED (STATE: %@)</string>
+		<key>0200009</key>
+		<string>TRYING TO SUSPEND (STATE: %@)</string>
+		<key>0200010</key>
+		<string>OUT OF SYNC WITH SUSPENSION. UPDATING... (STATE: %@)</string>
+		<key>0200011</key>
+		<string>SUSPENDING... (STATE: %@)</string>
+		<key>0200012</key>
+		<string>TRYING TO RESUME (STATE: %@)</string>
+		<key>0200013</key>
+		<string>OUT OF SYNC WITH RESUME. UPDATING... (STATE: %@)</string>
+		<key>0200014</key>
+		<string>RESUMING... (STATE: %@)</string>
+		<key>0200015</key>
+		<string>IGNORE SCHEDULED REQUEST: %@ (STATE: %@)</string>
+		<key>0200016</key>
+		<string>RECONNECTING BY REQUEST... (STATE: %@)</string>
+		<key>0200017</key>
+		<string>CONFIGUIRATION FAILED (STATE: %@)</string>
+		<key>0200018</key>
+		<string>HANDLE CONNECTION HAS BEEN RESET (STATE: %@)</string>
+		<key>0200019</key>
+		<string>HANDLE CONNECTION EVENT (STATE: %@)</string>
+		<key>0200020</key>
+		<string>CONNECTED (STATE: %@)</string>
+		<key>0200021</key>
+		<string>HANDLE SUSPENSION EVENT (STATE: %@)</string>
+		<key>0200022</key>
+		<string>SUSPENDED (STATE: %@)</string>
+		<key>0200023</key>
+		<string>HANDLE RESUME EVENT (STATE: %@)</string>
+		<key>0200024</key>
+		<string>RESUMED (STATE: %@)</string>
+		<key>0200025</key>
+		<string>WILL RESTORE CONNECTION (STATE: %@)</string>
+		<key>0200026</key>
+		<string>HANDLE CONNECTION RESTORE EVENT (STATE: %@)</string>
+		<key>0200027</key>
+		<string>RESTORED CONNECTION (STATE: %@)</string>
+		<key>0200028</key>
+		<string>WILL RESTORE CONNECTION AFTER ERROR (STATE: %@)</string>
+		<key>0200029</key>
+		<string>HANDLE CONNECTION RESTORE AFTER ERROR EVENT (STATE: %@)</string>
+		<key>0200030</key>
+		<string>HANDLE DISCONNECTION ON ERROR EVENT (STATE: %@)</string>
+		<key>0200031</key>
+		<string>DISCONNECTED ON ERROR (STATE: %@)</string>
+		<key>0200032</key>
+		<string>HANDLE DISCONNECTION EVENT (STATE: %@)</string>
+		<key>0200034</key>
+		<string>CONNECTION RESTORED AFTER CLOSING BY SERVER REQUEST... (STATE: %@)</string>
+		<key>0200035</key>
+		<string>CLOSING CONNECTION BY SERVER REQUEST... (STATE: %@)</string>
+		<key>0200036</key>
+		<string>CONNECTION CLOSE BY SERVER REQUEST... (STATE: %@)</string>
+		<key>0200037</key>
+		<string>HANDLE CONNECTION FAILURE EVENT (STATE: %@)</string>
+		<key>0200038</key>
+		<string>CONNECTION FAILED (STATE: %@)</string>
+		<key>0200039</key>
+		<string>RECEIVED MALFORMED RESPONSE: %@ (STATE: %@)</string>
+		<key>0200040</key>
+		<string>RECIEVED RESPONSE: %@ (STATE: %@)</string>
+		<key>0200041</key>
+		<string>RESCHEDULING REQUEST: %@ (STATE: %@)</string>
+		<key>0200042</key>
+		<string>CAN&apos;T RESCHEDULE REQUEST FOR RESPONSE: %@ (STATE: %@)</string>
+		<key>0200043</key>
+		<string>RESETTING CONNECTION INSTANCE: %@ (%@) (STATE: %@)</string>
+		<key>0200044</key>
+		<string>DESTROYED (STATE: %@)</string>
+		<key>0200045</key>
+		<string>INSTANCE USE REQUEST QUEUE AT %@ AND CONNECTION AT %@</string>
+		<key>0201</key>
 		<dict>
-			<key>0300000</key>
-			<string>%@ METHOD SHOULD BE RELOADED IN SUBCLASS.</string>
-			<key>0301</key>
-			<dict>
-				<key>0301000</key>
-				<string>MESSAGE ENCRYPTION FAILED WITH ERROR: %@\nUNENCRYPTED MESSAGE WILL BE SENT.</string>
-			</dict>
+			<key>0201000</key>
+			<string>LEAVING ALL CHANNELS... (STATE: %@)</string>
+			<key>0201001</key>
+			<string>LEAVING SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
+			<key>0201002</key>
+			<string>RESTORING SUBSCRIPTION (USE LAST TIME TOKEN? %@) (STATE: %@)</string>
+			<key>0201003</key>
+			<string>RE-SUBSCRIBE ON CONNECTION IDLE TIMER (USE LAST TIME TOKEN? %@) (STATE: %@)</string>
+			<key>0201004</key>
+			<string>UPDATING SUBSCRIPTIONS USING TIME TOKEN FROM LAST RESPONSE... (STATE: %@)</string>
+			<key>0201005</key>
+			<string>SUBSCRIPTION UPDATE CANCELED. WE ALREADY SENT REQUEST (STATE: %@)</string>
+			<key>0201006</key>
+			<string>ENABLING PRESENCE ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
+			<key>0201007</key>
+			<string>ENABLING PRESENCE AND SUBSCRIBING ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
+			<key>0201008</key>
+			<string>ENABLING / DISABLING PRESENCE ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
+			<key>0201009</key>
+			<string>ENABLING / DISABLING PRESENCE AND SUBSCRIBING ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
+			<key>0201010</key>
+			<string>DISABLING PRESENCE ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
+			<key>0201011</key>
+			<string>DISABLING PRESENCE AND SUBSCRIBING ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
+			<key>0201012</key>
+			<string>SUBSCRIBING ON SPECIFIC SET OF CHANNELS... (STATE: %@)</string>
+			<key>0201013</key>
+			<string>SUBSCRIBED ON SPECIFIC SET OF CHANNELS (ALREADY SUBSCRIBED) (STATE: %@)</string>
+			<key>0201014</key>
+			<string>ENABLED PRESENCE ON SPECIFIC SET OF CHANNELS (ALREADY ENABLED) (STATE: %@)</string>
+			<key>0201015</key>
+			<string>DISABLED PRESENCE ON SPECIFIC SET OF CHANNELS (PRESENCE OBSERVATION NOT ENABLED ON SPECIFIED SET OF CHANNELS) (STATE: %@)</string>
+			<key>0201016</key>
+			<string>SUBSCRIBING ON PREVIOUS CHANNELS... (STATE: %@)</string>
+			<key>0201017</key>
+			<string>LEAVE REQUEST COMPLETED (STATE: %@)</string>
+			<key>0201018</key>
+			<string>PRESENCE &apos;LEAVE&apos; REQUEST ERROR: %@\nCHANNELS: %@\n(STATE: %@)</string>
+			<key>0201019</key>
+			<string>UNSUBSCRIBED FROM CHANNELS: %@\n(STATE: %@)</string>
+			<key>0201020</key>
+			<string>HANDLE EVENT IN RESPONSE ON: %@\nCHANNELS: %@\nRESPONSE: %@\n(STATE: %@)</string>
+			<key>0201021</key>
+			<string>PARSED DATA: %@\n(STATE: %@)</string>
+			<key>0201022</key>
+			<string>SUBSCRIPTION FAILED WITH ERROR: %@\nCHANNELS: %@\n(STATE: %@)</string>
+			<key>0201023</key>
+			<string>PRESENCE ENABLING FAILED WITH ERROR: %@\nCHANNELS: %@\n(STATE: %@)</string>
+			<key>0201024</key>
+			<string>PRESENCE DISABLING FAILED WITH ERROR: %@\nCHANNELS: %@\n(STATE: %@)</string>
+			<key>0201025</key>
+			<string>WILL START REQUEST PROCESSING: %@ (STATE: %@)</string>
+			<key>0201026</key>
+			<string>DID SEND REQUEST: %@ [WAITING FOR COMPLETION? %@] (STATE: %@)</string>
+			<key>0201027</key>
+			<string>RESTORED SUBSCRIPTION ON CHANNELS: %@\n(STATE: %@)</string>
+			<key>0201028</key>
+			<string>SUBSCRIBED ON CHANNELS: %@\n(STATE: %@)</string>
+			<key>0201030</key>
+			<string>PRESENCE ENABLED ON CHANNELS: %@\n(STATE: %@)</string>
+			<key>0201031</key>
+			<string>PRESENCE DISABLED ON CHANNELS: %@\n(STATE: %@)</string>
+			<key>0201032</key>
+			<string>LEAVED CHANNELS: %@\n(STATE: %@)</string>
+			<key>0201033</key>
+			<string>DID FAIL TO SEND REQUEST: %@\nERROR: %@\n(STATE: %@)</string>
+			<key>0201034</key>
+			<string>DID CANCEL REQUEST: %@ (STATE: %@)</string>
 		</dict>
-		<key>04</key>
+		<key>0202</key>
 		<dict>
-			<key>0400000</key>
-			<string>PUBNUB SERVICES REACHABILITY FLAGS CHANGED ON CALLBACK: %@ (%@) [CONNECTED? %@]</string>
-			<key>0400001</key>
-			<string>PUBNUB SERVICES REACHABILITY FLAGS CHANGE IGNORED BECAUSE ORIGIN LOOKUP SUPPORT SYSTEM REPORTED DIFFERENT STATE (%@ / %@) [CONNECTED? %@]</string>
-			<key>0400002</key>
-			<string>PUBNUB SERVICES REACHABILITY FLAGS CHANGED DURING SUSPENSION PERIOD (%@) [CONNECTED? %@]</string>
-			<key>0400003</key>
-			<string>START REACHABILITY OBSERVATION</string>
-			<key>0400004</key>
-			<string>RESTART REACHABILITY OBSERVATION</string>
-			<key>0400005</key>
-			<string>REACHABILITY OBSERVATION IMPOSSIBLE W/O ORIGIN</string>
-			<key>0400006</key>
-			<string>STOP REACHABILITY OBSERVATION</string>
-			<key>0400007</key>
-			<string>REACHABILITY OBSEVATION SUSPENDED</string>
-			<key>0400008</key>
-			<string>REACHABILITY OBSEVATION RESUMED</string>
-			<key>0400009</key>
-			<string>LOOKUP FAILED WITH ERROR: %@</string>
-			<key>0400010</key>
-			<string>MALFORMED SERVER RESPONSE</string>
-			<key>0400011</key>
-			<string>LOOKUP GOT RESPONSE WITH UNACCEPTABLE HTTP STATUS CODE (%@)</string>
-			<key>0400012</key>
-			<string>LOOKS LIKE UPLINK FROM &apos;%@&apos; RETURNED BACK.</string>
-			<key>0400013</key>
-			<string>LOOKS LIKE UPLINK FROM &apos;%@&apos; WENT DOWN.</string>
-			<key>0400014</key>
-			<string>LOOKS LIKE UPLINK FROM &apos;%@&apos; STILL DOWN.</string>
-			<key>0400015</key>
-			<string>UPLINK STATE CHANGED DURING SUSPENSION</string>
-			<key>0400016</key>
-			<string>PUBNUB SERVICES REACHABILITY REFRESHING STATE: %@ / %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
-			<key>0400017</key>
-			<string>PUBNUB SERVICES REACHABILITY FORCED TO GENERATE &apos;CHANGE EVENT&apos; [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
-			<key>0400018</key>
-			<string>PUBNUB SERVICES REACHABILITY CHANGED TO: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
-			<key>0400019</key>
-			<string>PUBNUB SERVICES REACHABILITY CHANGED W/O EVENT [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
-			<key>0400020</key>
-			<string>PUBNUB SERVICES REACHABILITY FLAGS CHANGE IGNORED BECAUSE ORIGIN LOOKUP SUPPORT SYSTEM REPORTED DIFFERENT STATE (%@ / %@) [CONNECTED? %@]</string>
-			<key>0400021</key>
-			<string>PUBNUB SERVICES REACHABILITY REPORT NETWORK ADDRESS CHANGED: %@ / %@ [CONNECTED? %@](FLAGS: %@)</string>
-			<key>0400022</key>
-			<string>PUBNUB SERVICES REACHABILITY REPORT WIFI HOTSPOT CHANGED: %@ / %@ [CONNECTED? %@](FLAGS: %@)</string>
-			<key>0400023</key>
-			<string>PUBNUB SERVICES REACHABILITY REPORT INTERFACE CHANGED: %@ / %@ [CONNECTED? %@  | NETWORK ADDRESS: %@](FLAGS: %@)</string>
-			<key>0400024</key>
-			<string>PUBNUB SERVICES REACHABILITY FORCED TO GENERATE &apos;CHANGE EVENT&apos; [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
-			<key>0400025</key>
-			<string>PUBNUB SERVICES REACHABILITY GENERATED &apos;CHANGE EVENT&apos; [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
-			<key>0400026</key>
-			<string>PUBNUB SERVICES REACHABILITY CHANGED TO: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
-			<key>0400027</key>
-			<string>PUBNUB SERVICES REACHABILITY RECEIVED STRANGE STATE: %@. FALLBACK TO THE PREVIOUS: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+			<key>0202000</key>
+			<string>LATENCY METER SIGNAL HAS BEEN PROCESSED</string>
+			<key>0202001</key>
+			<string>LATENCY METER SIGNAL PROCESSING DID FAIL WITH ERROR: %@</string>
+			<key>0202002</key>
+			<string>TIME TOKEN MESSAGE HAS BEEN PROCESSED: %@</string>
+			<key>0202003</key>
+			<string>TIME TOKEN MESSAGE PROCESSING DID FAIL WITH ERROR: %@</string>
+			<key>0202004</key>
+			<string>CLIENT STATE DOWNLOADED. CLIENT: %@</string>
+			<key>0202005</key>
+			<string>CLIENT STATE DOWNLOAD FAILED WITH ERROR: %@FOR CLIENT: %@</string>
+			<key>0202006</key>
+			<string>CLIENT STATE UPDATED. CLIENT: %@</string>
+			<key>0202007</key>
+			<string>CLIENT STATE UPDATE FAILED WITH ERROR: %@\nFOR CLIENT: %@</string>
+			<key>0202008</key>
+			<string>MESSAGE: %@\nHAS BEEN SENT TO CHANNEL: %@</string>
+			<key>0202009</key>
+			<string>MESSAGE: %@\nSENDING TO CHANNEL: %@\nFAILED WITH ERROR: %@</string>
+			<key>0202010</key>
+			<string>HISTORY HAS BEEN DOWNLOADED FOR CHANNEL %@ FROM %@ TO %@ WITH LIMIT %@ [SHOULD REVERSE? %@ | SHOULD INCLUDE TIME TOKENS? %@]\nMESSAGES: %@</string>
+			<key>0202011</key>
+			<string>HISTORY DOWNLOAD FAILED FOR CHANNEL %@ FROM %@ TO %@ WITH LIMIT %@ [SHOULD REVERSE? %@ | SHOULD INCLUDE TIME TOKENS? %@]\nBECAUSE OF ERROR: %@</string>
+			<key>0202012</key>
+			<string>PARTICIPANTS LIST FOR CHANNEL %@ DOWNLOADED [SHOULD INCLUDE TOKENS? %@ | SHOULD FETCH CLIENT&apos;s STATE? %@]\nPARTICIPANTS: %@</string>
+			<key>0202013</key>
+			<string>PARTICIPANTS LIST DOWNLOAD FOR %@ FAILED [SHOULD INCLUDE TOKENS? %@ | SHOULD FETCH CLIENT&apos;s STATE? %@]\nBECAUSE OF ERROR: %@</string>
+			<key>0202014</key>
+			<string>PARTICIPANT CHANNELS LIST FOR %@ CLIENT DOWNLOADED. CHANNELS: %@</string>
+			<key>0202015</key>
+			<string>PARTICIPANT CHANNELS LIST DOWNLOAD FOR %@ FAILED\nBECAUSE OF ERROR: %@</string>
+			<key>0202016</key>
+			<string>PUSH NOTIFICATIONS ENABLED FOR %@ TOKEN ON CHANNELS: %@</string>
+			<key>0202017</key>
+			<string>PUSH NOTIFICATIONS ENABLING FAILED FOR %@ TOKEN ON CHANNELS:%@\nBECAUSE OF ERROR: %@</string>
+			<key>0202018</key>
+			<string>PUSH NOTIFICATIONS DISABLED FOR %@ TOKEN ON CHANNELS: %@</string>
+			<key>0202019</key>
+			<string>PUSH NOTIFICATIONS DISABLING FAILED FOR %@ TOKEN ON CHANNELS:%@\nBECAUSE OF ERROR: %@</string>
+			<key>0202020</key>
+			<string>PUSH NOTIFICATIONS REMOVED FOR %@ TOKEN</string>
+			<key>0202021</key>
+			<string>PUSH NOTIFICATIONS REMOVE DID FAIL FOR %@ TOKEN BECAUSE OF ERROR: %@</string>
+			<key>0202022</key>
+			<string>PUSH NOTIFICATION ENABLED CHANNELS LIST RECEIVED FOR %@ TOKEN. CHANNELS: %@</string>
+			<key>0202023</key>
+			<string>PUSH NOTIFICATION ENABLED CHANNELS LIST RECEIVE FAILED FOR %@ TOKEN BECAUSE OF ERROR: %@</string>
+			<key>0202024</key>
+			<string>ACCESS RIGHTS SUCCESSFULLY CHANGED FOR CLIENTS: %@\nCHANNELS: %@\nRIGHTS: %@\nON DURATION: %@</string>
+			<key>0202025</key>
+			<string>ACCESS RIGHTS CHANGE FAILED FOR CLIENTS: %@\nCHANNELS: %@\nRIGHTS: %@\nON DURATION: %@\nBECAUSE OF ERROR: %@</string>
+			<key>0202026</key>
+			<string>ACCESS RIGHTS SUCCESSFULLY AUDITED FOR  CLIENTS: %@\nCHANNELS: %@\nACCESS RIGHTS INFORMATION: %@</string>
+			<key>0202027</key>
+			<string>ACCESS RIGHTS AUDIT FAILED FOR  CLIENTS: %@\nCHANNELS: %@\nBECAUSE OF ERROR: %@</string>
+			<key>0202028</key>
+			<string>PARSED DATA: %@</string>
+			<key>0202029</key>
+			<string>OBSERVED REQUEST COMPLETED: %@</string>
+			<key>0202030</key>
+			<string>WILL START REQUEST PROCESSING: %@</string>
+			<key>0202031</key>
+			<string>DID SEND REQUEST: %@</string>
+			<key>0202032</key>
+			<string>DID FAIL TO SEND REQUEST: %@</string>
+			<key>0202033</key>
+			<string>REQUEST WON&apos;T BE SENT: %@</string>
+			<key>0202034</key>
+			<string>LATENCY METER MESSAGE SENT</string>
+			<key>0202035</key>
+			<string>LATENCY METER REQUEST CANCELED</string>
+			<key>0202036</key>
+			<string>DID SEND MESSAGE REQUEST</string>
+			<key>0202037</key>
+			<string>CHANNEL GROUPS FROM %@ NAMESPACE
+%@</string>
+			<key>0202038</key>
+			<string>CHANNEL GROUPS REQUEST FROM %@ NAMESPACE FAILED WITH ERROR: %@</string>
+			<key>0202039</key>
+			<string>CHANNELS FOR THE %@ GROUP
+%@</string>
+			<key>0202040</key>
+			<string>CHANNELS FOR THE %@ GROUP REQUEST FAILED WITH ERROR: %@</string>
+			<key>0202041</key>
+			<string>CHANNELS ADDED TO THE %@ GROUP
+%@</string>
+			<key>0202042</key>
+			<string>CHANNELS ADDITION:%@\nTO THE %@ GROUP FAILED WITH ERROR: %@</string>
+			<key>0202043</key>
+			<string>CHANNELS REMOVED FROM THE %@ GROUP
+%@</string>
+			<key>0202044</key>
+			<string>CHANNELS REMOVAL:%@\nFROM THE %@ GROUP FAILED WITH ERROR: %@</string>
+			<key>0202045</key>
+			<string>DID RECEIVE CHANNEL GROUP NAMESPACES: %@</string>
+			<key>0202046</key>
+			<string>CHANNEL GROUP NAMESPACES REQUEST DID FAIL WITH ERROR: %@</string>
+			<key>0202047</key>
+			<string>DID REMOVE CHANNEL GROUP NAMESPACE: %@</string>
+			<key>0202048</key>
+			<string>CHANNEL GROUP %@ NAMESPACE REMOVAL DID FAIL WITH ERROR: %@</string>
+			<key>0202049</key>
+			<string>DID REMOVE %@ CHANNEL GROUP</string>
+			<key>0202050</key>
+			<string>%@ CHANNEL GROUP REMOVAL DID FAIL WITH ERROR: %@</string>
 		</dict>
-		<key>05</key>
+	</dict>
+	<key>03</key>
+	<dict>
+		<key>0300000</key>
+		<string>%@ METHOD SHOULD BE RELOADED IN SUBCLASS.</string>
+		<key>0301</key>
 		<dict>
-			<key>0500000</key>
-			<string>FAILED TO PARSE RESPONSE (%@ BYTES LONG)\nCONTENT: %@</string>
-			<key>0500001</key>
-			<string>RECEIVED STRANGE RESPONSE WITH &apos;%@&apos; STATUS CODE\nCONTENT: %@</string>
-			<key>0500002</key>
-			<string>RAW RESPONSE DATA (STATUS CODE: %@): %@</string>
+			<key>0301000</key>
+			<string>MESSAGE ENCRYPTION FAILED WITH ERROR: %@\nUNENCRYPTED MESSAGE WILL BE SENT.</string>
 		</dict>
-		<key>06</key>
-		<dict>
-			<key>0600000</key>
-			<string>DESTROYED</string>
-		</dict>
-		<key>07</key>
-		<dict>
-			<key>0700000</key>
-			<string>CAN&apos;T CREATE CHANNEL WITH EMPTY NAME</string>
-		</dict>
-		<key>08</key>
-		<dict>
-			<key>0800000</key>
-			<string>JSON STRING IS EMPTY</string>
-			<key>0800001</key>
-			<string>JSON DECODE ERROR: %@</string>
-			<key>0800002</key>
-			<string>FAILED TO DECODE DATA</string>
-		</dict>
-		<key>09</key>
-		<dict>
-			<key>0900000</key>
-			<string>CLIENT RESET.</string>
-			<key>0900001</key>
-			<string>TRYING TO CONNECT W/O SUCCESS AND ERROR BLOCK... (STATE: %@)</string>
-			<key>0900002</key>
-			<string>TRYING TO CONNECT W/ SUCCESS AND/OR ERROR BLOCK... (STATE: %@)</string>
-			<key>0900003</key>
-			<string>PUBNUB CLIENT ALREADY CONNECTED (STATE: %@)</string>
-			<key>0900004</key>
-			<string>PUBNUB CLIENT ALREADY CONNECTING... (STATE: %@)</string>
-			<key>0900005</key>
-			<string>PREPARE COMPONENTS FOR CONNECTION... (STATE: %@)</string>
-			<key>0900006</key>
-			<string>TRYING TO CONNECT W/O CONFIGURATION (STATE: %@)</string>
-			<key>0900007</key>
-			<string>TRIED TO CONNECT WHILE WAS SUSPENDED (LIBRARY DOESN&apos;T HAVE ENOUGH TIME TO RESTORE) (STATE: %@)</string>
-			<key>0900008</key>
-			<string>TRIED TO CONNECT WHILE TRYING TO RESUME AFTER SLEEP (LIBRARY DOESN&apos;T HAVE ENOUGH TIME TO RESTORE) (STATE: %@)</string>
-			<key>0900009</key>
-			<string>REACHABILITY CHECKED (STATE: %@)</string>
-			<key>0900010</key>
-			<string>INTERNET CONNECTION AVAILABLE (STATE: %@)</string>
-			<key>0900011</key>
-			<string>CREATE NEW COMPONNENTS TO POWER UP LIBRARY OPERATION WITH ORIGIN (STATE: %@)</string>
-			<key>0900012</key>
-			<string>PREVIOUS CHANNELS HAS BEEN DESTROYED BECAUSE OF LIBRARY STATE SYNCHRONIZATION ISSUE (STATE: %@)</string>
-			<key>0900013</key>
-			<string>CONNECTION CAN BE INITATED USING EXISTING COMPONENTS (STATE: %@)</string>
-			<key>0900014</key>
-			<string>INTERNET CONNECTION NOT AVAILABLE. LIBRARY WILL CONNECT AS SOON AS CONNECTION BECOME AVAILABLE (STATE: %@)</string>
-			<key>0900015</key>
-			<string>REACHABILITY NOT CHECKED YET. LIBRARY WILL CONTINUE CONNECTION IF REACHABILITY WILL REPORT NETWORK AVAILABILITY (STATE: %@)</string>
-			<key>0900016</key>
-			<string>POSTPONE CONNECTION (STATE: %@)</string>
-			<key>0900017</key>
-			<string>TRYING TO DISCONNECT BY USER REQUEST. (STATE: %@)</string>
-			<key>0900018</key>
-			<string>TRYING TO DISCONNECT BY INTERNAL REQUEST. (STATE: %@)</string>
-			<key>0900019</key>
-			<string>DISCONNECTING... (STATE: %@)</string>
-			<key>0900020</key>
-			<string>DISCONNECTING TO CHANGE CONFIGURATION (STATE: %@)</string>
-			<key>0900021</key>
-			<string>DISCONNECTED (BASICALLY TERMINATED, BECAUSE REQUEST WAS ISSUED BY USER) (STATE: %@)</string>
-			<key>0900022</key>
-			<string>DISCONNECTED FROM %@ (STATE: %@)</string>
-			<key>0900023</key>
-			<string>POSTPONE DISCONNECTION (STATE: %@)</string>
-			<key>0900024</key>
-			<string>TRYING TO DISCONNECT FOR CONFIGURATION CHANGE (STATE: %@)</string>
-			<key>0900025</key>
-			<string>DISCONNECTING FOR CONFIGURATION CHANGE (STATE: %@)</string>
-			<key>0900026</key>
-			<string>POSTPONE DISCONNECTION FOR CONFIGURATION CHANGE (STATE: %@)</string>
-			<key>0900027</key>
-			<string>TRY UPDATE CONFIGURATION (STATE: %@)</string>
-			<key>0900028</key>
-			<string>VALID CONFIGURATION HAS BEEN PROVIDED (STATE: %@)</string>
-			<key>0900029</key>
-			<string>CONFIGURATION UPDATE REQUIRE RECONNECTION (STATE: %@)</string>
-			<key>0900030</key>
-			<string>CONFIGURATION CAN BE APPLIED W/O RECONNECTION (STATE: %@)</string>
-			<key>0900031</key>
-			<string>CONFIGURATION UPDATE IN THE MIDDLE OF CONNECTION SEQUENCE. CLOSE CHANNELS AND RECONNECT. (STATE: %@)</string>
-			<key>0900032</key>
-			<string>IGNORE CONFIGURATION UPDATE. IT IS THE SAME AS WAS SET BEFORE (STATE: %@)</string>
-			<key>0900033</key>
-			<string>TRYING TO UPDATE CLIENT IDENTIFIER (STATE: %@)</string>
-			<key>0900034</key>
-			<string>UPDATE CLIENT IDENTIFIER (STATE: %@)</string>
-			<key>0900035</key>
-			<string>POSTPONE CLIENT IDENTIFIER CHANGE (STATE: %@)</string>
-			<key>0900036</key>
-			<string>IGNORE IDENTIFIER UPDATE. IT IS THE SAME AS WAS SET BEFORE (STATE: %@)</string>
-			<key>0900037</key>
-			<string>TRYING TO REQUEST CLIENT STATE FOR IDENTIFIER %@ ON CHANNEL: %@ (STATE: %@)</string>
-			<key>0900038</key>
-			<string>REQUEST CLIENT STATE (STATE: %@)</string>
-			<key>0900039</key>
-			<string>CAN&apos;T REQUEST CLIENT STATE (STATE: %@)</string>
-			<key>0900040</key>
-			<string>POSTPONE CLIENT STATE REQUEST (STATE: %@)</string>
-			<key>0900041</key>
-			<string>TRYING TO UPDATE CLIENT STATE FOR IDENTIFIER %@ ON CHANNEL %@\nTO: %@ (STATE: %@)</string>
-			<key>0900042</key>
-			<string>UPDATE CLIENT STATE TO: %@ (STATE: %@)</string>
-			<key>0900043</key>
-			<string>CAN&apos;T UPDATE CLIENT STATE  (STATE: %@)</string>
-			<key>0900044</key>
-			<string>POSTPONE CLIENT STATE UPDATE (STATE: %@)</string>
-			<key>0900045</key>
-			<string>TRYING TO SUBSCRIBE ON CHANNELS: %@ (SHOULD CATCH UP? %@) (STATE: %@)</string>
-			<key>0900046</key>
-			<string>SUBSCRIBE ON CHANNELS (STATE: %@)</string>
-			<key>0900047</key>
-			<string>CAN&apos;T SUBSCRIBE ON CHANNELS (STATE: %@)</string>
-			<key>0900048</key>
-			<string>POSTPONE SUBSCRIBE ON CHANNELS (STATE: %@)</string>
-			<key>0900049</key>
-			<string>TRYING TO UNSUBSCRIBE FROM CHANNELS: %@ (STATE: %@)</string>
-			<key>0900050</key>
-			<string>UNSUBSCRIBE FROM CHANNELS (STATE: %@)</string>
-			<key>0900051</key>
-			<string>CAN&apos;T UNSUBSCRIBE FROM CHANNELS (STATE: %@)</string>
-			<key>0900052</key>
-			<string>POSTPONE UNSUBSCRIBE FROM CHANNELS (STATE: %@)</string>
-			<key>0900053</key>
-			<string>TRYING TO ENABLE PUSH NOTIFICATIONS ON CHANNELS: %@ USING: %@ TOKEN (STATE: %@)</string>
-			<key>0900054</key>
-			<string>ENABLE PUSH NOTIFICATIONS (STATE: %@)</string>
-			<key>0900055</key>
-			<string>CAN&apos;T ENABLE PUSH NOTIFICATIONS (STATE: %@)</string>
-			<key>0900056</key>
-			<string>POSTPONE ENABLE PUSH NOTIFICATIONS (STATE: %@)</string>
-			<key>0900057</key>
-			<string>TRYING TO DISABLE PUSH NOTIFICATIONS ON CHANNELS: %@ USING: %@ TOKEN (STATE: %@)</string>
-			<key>0900058</key>
-			<string>DISABLE PUSH NOTIFICATIONS (STATE: %@)</string>
-			<key>0900059</key>
-			<string>CAN&apos;T DISABLE PUSH NOTIFICATIONS (STATE: %@)</string>
-			<key>0900060</key>
-			<string>POSTPONE DISABLE PUSH NOTIFICATIONS (STATE: %@)</string>
-			<key>0900061</key>
-			<string>TRYING TO DISABLE PUSH NOTIFICATIONS FROM ALL CHANNELS FOR %@ TOKEN (STATE: %@)</string>
-			<key>0900062</key>
-			<string>DISABLE PUSH NOTIFICATIONS FROM ALL CHANNELS (STATE: %@)</string>
-			<key>0900063</key>
-			<string>CAN&apos;T DISABLE PUSH NOTIFICATIONS FROM ALL CHANNELS (STATE: %@)</string>
-			<key>0900064</key>
-			<string>POSTPONE PUSH NOTIFICATIONS DISABLE FROM ALL CHANNELS (STATE: %@)</string>
-			<key>0900065</key>
-			<string>TRYING TO FETCH PUSH NOTIFICATION ENABLED CHANNELS FOR %@ TOKEN (STATE: %@)</string>
-			<key>0900066</key>
-			<string>FETCH PUSH NOTIFICATION ENABLED CHANNELS FOR %@ TOKEN (STATE: %@)</string>
-			<key>0900067</key>
-			<string>CAN&apos;T FETCH PUSH NOTIFICATION ENABLED CHANNELS FOR %@ TOKEN (STATE: %@)</string>
-			<key>0900068</key>
-			<string>POSTPONE PUSH NOTIFICATION ENABLED CHANNELS FETCH (STATE: %@)</string>
-			<key>0900069</key>
-			<string>TRYING TO CHANGE ACCESS RIGHTS FOR CHANNELS: %@\nIDENTIFIERS: %@\nRIGHTS: %@\nFOR PERIOD: %@ (STATE: %@)</string>
-			<key>0900070</key>
-			<string>CHANGE ACCESS RIGHTS (STATE: %@)</string>
-			<key>0900071</key>
-			<string>CAN&apos;T CHANGE ACCESS RIGHTS (STATE: %@)</string>
-			<key>0900072</key>
-			<string>POSTPONE ACCESS RIGHTS CHANGE (STATE: %@)</string>
-			<key>0900073</key>
-			<string>TRYING TO AUDIT ACCESS RIGHTS FOR CHANNELS: %@\nIDENTIFIERS: %@ (STATE: %@)</string>
-			<key>0900074</key>
-			<string>ACCESS RIGHTS AUDIT (STATE: %@)</string>
-			<key>0900075</key>
-			<string>CAN&apos;T AUDIT ACCESS RIGHTS (STATE: %@)</string>
-			<key>0900076</key>
-			<string>POSTPONE ACCESS RIGHTS AUDIT (STATE: %@)</string>
-			<key>0900077</key>
-			<string>TRYING TO ENABLE PRESENCE ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900078</key>
-			<string>ENABLING PRESENCE ON CHANNELS (STATE: %@)</string>
-			<key>0900079</key>
-			<string>CAN&apos;T ENABLE PRESENCE ON CHANNELS (STATE: %@)</string>
-			<key>0900080</key>
-			<string>POSTPONE PRESENCE ENABLING ON CHANNELS (STATE: %@)</string>
-			<key>0900081</key>
-			<string>TRYING TO DISABLE PRESENCE ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900082</key>
-			<string>DISABLING PRESENCE ON CHANNELS (STATE: %@)</string>
-			<key>0900083</key>
-			<string>CAN&apos;T DISABLE PRESENCE ON CHANNELS (STATE: %@)</string>
-			<key>0900084</key>
-			<string>POSTPONE PRESENCE DISABLING ON CHANNELS (STATE: %@)</string>
-			<key>0900085</key>
-			<string>TRYING REQUEST SERVER TIME TOKEN (STATE: %@)</string>
-			<key>0900086</key>
-			<string>REQUEST SERVER TIME TOKEN (STATE: %@)</string>
-			<key>0900087</key>
-			<string>CAN&apos;T REQUEST SERVER TIME TOKEN (STATE: %@)</string>
-			<key>0900088</key>
-			<string>POSTPONE SERVER TIME TOKEN REQUEST (STATE: %@)</string>
-			<key>0900089</key>
-			<string>TRYING TO SEND MESSAGE: %@ ON CHANNEL: %@ [SHOULD COMPRESS? %@ | SHOULD STORE? %@] (STATE: %@)</string>
-			<key>0900090</key>
-			<string>SEND MESSAGE (STATE: %@)</string>
-			<key>0900091</key>
-			<string>CAN&apos;T SEND MESSAGE (STATE: %@)</string>
-			<key>0900092</key>
-			<string>POSTPONE MESSAGE SENDING (STATE: %@)</string>
-			<key>0900093</key>
-			<string>TRYING TO REQUEST HISTORY FOR CHANNEL: %@ FROM: %@ TO: %@ WITH LIMIT: %@ [SHOULD TRAVERSE? %@ | SHOULD INCLUDE TIME TOKEN? %@] (STATE: %@)</string>
-			<key>0900094</key>
-			<string>REQUEST HISTORY (STATE: %@)</string>
-			<key>0900095</key>
-			<string>CAN&apos;T REQUEST HISTORY (STATE: %@)</string>
-			<key>0900096</key>
-			<string>POSTPONE HISTORY REQUEST FOR CHANNEL (STATE: %@)</string>
-			<key>0900097</key>
-			<string>TRYING TO REQUEST PARTICIPANTS LIST FOR CHANNEL: %@ [CLIENT IDENTIFIER REQUIRED? %@] (STATE: %@)</string>
-			<key>0900098</key>
-			<string>REQUEST PARTICIPANTS LIST (STATE: %@)</string>
-			<key>0900099</key>
-			<string>CAN&apos;T REQUEST PARTICIPANTS LIST (STATE: %@)</string>
-			<key>0900100</key>
-			<string>POSTPONE PARTICIPANTS LIST REQUEST FOR CHANNEL (STATE: %@)</string>
-			<key>0900101</key>
-			<string>TRYING TO REQUEST PARTICIPANT CHANNELS LIST FOR IDENTIFIER: %@ (STATE: %@)</string>
-			<key>0900102</key>
-			<string>REQUEST PARTICIPANT CHANNELS LIST (STATE: %@)</string>
-			<key>0900103</key>
-			<string>CAN&apos;T REQUEST PARTICIPANT CHANNELS LIST (STATE: %@)</string>
-			<key>0900104</key>
-			<string>POSTPONE PARTICIPANT CHANNELS LIST REQUEST (STATE: %@)</string>
-			<key>0900105</key>
-			<string>MESSAGE DECRYPTION FAILED WITH ERROR: %@ (STATE: %@)</string>
-			<key>0900106</key>
-			<string>MESSAGE ENCRYPTION FAILED WITH ERROR: %@\nUNENCRYPTED MESSAGE WILL BE SENT (STATE: %@)</string>
-			<key>0900107</key>
-			<string>IS NETWORK CONNECTION AVAILABLE? %@ (STATE: %@)</string>
-			<key>0900108</key>
-			<string>CLIENT SHOULD TRY CONNECT ON SERVICE REACHABILITY CHECK (STATE: %@)</string>
-			<key>0900109</key>
-			<string>INTERNET CONNECITON AVAILABLE. TRY TO CONNECT (STATE: %@)</string>
-			<key>0900110</key>
-			<string>INTERNET CONNECITON NOT AVAILABLE. REPORT ERROR (STATE: %@)</string>
-			<key>0900111</key>
-			<string>INTERNET CONNECITON AVAILABLE (STATE: %@)</string>
-			<key>0900112</key>
-			<string>DISCONNECTED ON ERROR (STATE: %@)</string>
-			<key>0900113</key>
-			<string>LIBRARY OUT OF SYNC. CONNECTION STATE IS IMPOSSIBLE IF &apos;NETWORK AVAILABLE&apos; ARRIVE (STATE: %@)</string>
-			<key>0900114</key>
-			<string>SHOULD RESTORE CONNECTION (STATE: %@)</string>
-			<key>0900115</key>
-			<string>SHOULD RESUME CONNECTION (STATE: %@)</string>
-			<key>0900116</key>
-			<string>SHOULD CONNECT (STATE: %@)</string>
-			<key>0900117</key>
-			<string>THERE IS NO SUITABLE ACTION FOR CURRENT SITUATION (STATE: %@)</string>
-			<key>0900118</key>
-			<string>INTERNET CONNECITON NOT AVAILABLE (STATE: %@)</string>
-			<key>0900119</key>
-			<string>CLIENT TRIED TO CONNECT (STATE: %@)</string>
-			<key>0900120</key>
-			<string>DURING CONNECTION CHANNEL DISCONNECTION LIBRARY NOTICED INTERNET CONNECTION AND WAS ABLE TO LAUNCH RESTORE PROCESS (STATE: %@)</string>
-			<key>0900121</key>
-			<string>CLIENT WAS SUSPENDED (STATE: %@)</string>
-			<key>0900122</key>
-			<string>CLIENT WAS CONNECTED (STATE: %@)</string>
-			<key>0900123</key>
-			<string>AUTO CONNECTION TURNED OFF (STATE: %@)</string>
-			<key>0900124</key>
-			<string>CLIENT WILL CONNECT AS SOON AS INTERNET BECOME AVAILABLE (STATE: %@)</string>
-			<key>0900125</key>
-			<string>THERE IS NOTHING THAT LIBRARY CAN DO WHEN NETWORK IS DOWN AND LIBRARY HASN&apos;T CONNECTED TO THE SERVICE (STATE: %@)</string>
-			<key>0900126</key>
-			<string>CHANNEL CONNECTED: %@ (%@) (STATE: %@)</string>
-			<key>0900127</key>
-			<string>BOTH CHANNELS CONNECTED TO THE ORIGIN: %@ (STATE: %@)</string>
-			<key>0900128</key>
-			<string>CHANNEL RECONNECTED: %@ (%@) (STATE: %@)</string>
-			<key>0900129</key>
-			<string>CHANNEL RECONNECTED DURING PUBNUB &apos;CONNECTING&apos; STATE WHICH MEAN THAT SECOND CHANNEL DIDN&apos;T REPORTED YET THAT IT WAS CONNECTED AND %@ (%@) WAS ABLE TO RECOVED AFTER SOME ERROR (STATE: %@)</string>
-			<key>0900130</key>
-			<string>CHANNEL FAILED TO CONNECT: %@ (%@) (STATE: %@)</string>
-			<key>0900131</key>
-			<string>CLIENT FAILED TO CONNECT TO ORIGIN: %@ (STATE: %@)</string>
-			<key>0900132</key>
-			<string>TRYING TO KILL DNS CACHE FOR %@ (STATE: %@)</string>
-			<key>0900133</key>
-			<string>NOTIFY DELEGATE THAT CONNECTION TO %@ CAN&apos;T BE ESTABLISHED (STATE: %@)</string>
-			<key>0900134</key>
-			<string>CHANNEL DISCONNECTED: %@ (%@) (STATE: %@)</string>
-			<key>0900135</key>
-			<string>RELEASED CHANNEL DISCONNECTED: %@ (%@). DON&apos;T HANDLE EVENT (STATE: %@)</string>
-			<key>0900136</key>
-			<string>DISCONNECTING SERVICE CONNECTION CHANNEL: %@ (%@) (STATE: %@)</string>
-			<key>0900137</key>
-			<string>DISCONNECTING MESSAGING CONNECTION CHANNEL: %@ (%@) (STATE: %@)</string>
-			<key>0900138</key>
-			<string>CLIENT DISCONNECTED FROM ORIGIN: %@ (STATE: %@)</string>
-			<key>0900139</key>
-			<string>CLIENT SHOULD RESTORE CONNECTION. REACHABILITY CHECK COMPLETED (STATE: %@)</string>
-			<key>0900140</key>
-			<string>DISCONNECTED BECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900141</key>
-			<string>DESTROY COMPONENTS (STATE: %@)</string>
-			<key>0900142</key>
-			<string>CLIENT ALREADY CONNECTING BACK. DON&apos;T DO ANYTHING (STATE: %@)</string>
-			<key>0900143</key>
-			<string>HANDLE APPLICATION ENTERED BACKGROUND (STATE: %@)</string>
-			<key>0900144</key>
-			<string>APPLICATION CAN&apos;T RUN IN BACKGROUND (STATE: %@)</string>
-			<key>0900145</key>
-			<string>COMPLETED TASKS BEFORE ENETERING BACKGROUND (STATE: %@)</string>
-			<key>0900146</key>
-			<string>SUSPENDING... (STATE: %@)</string>
-			<key>0900147</key>
-			<string>CLIENT TRIED TO CONNECT. TERMINATE CONNECTION AND MARK ERROR (STATE: %@)</string>
-			<key>0900148</key>
-			<string>CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK AS DISCONNECTED (STATE: %@)</string>
-			<key>0900149</key>
-			<string>CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR (STATE: %@)</string>
-			<key>0900150</key>
-			<string>APPLICATION NOT IN BACKGROUND (STATE: %@)</string>
-			<key>0900151</key>
-			<string>CLIENT TRY TO POSTPONE APPLICATION SUSPENSION (STATE: %@)</string>
-			<key>0900152</key>
-			<string>USER DIDN&apos;T CALLED COMPLETION BLOCK IN TIME. FORE BLOCK EXECUTION (STATE: %@)</string>
-			<key>0900153</key>
-			<string>HANDLE APPLICATION ENTERED FOREGROUND (STATE: %@)</string>
-			<key>0900154</key>
-			<string>RESUMING... (STATE: %@)</string>
-			<key>0900155</key>
-			<string>CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SUSPENSION (STATE: %@)</string>
-			<key>0900156</key>
-			<string>CONNECTION WENT DOWN WHILE APPLICATION WAS IN BACKGROUND (STATE: %@)</string>
-			<key>0900157</key>
-			<string>CONNECTION WILL BE RESTORED AS SOON AS INTERNET CONNECTION WILL GO UP (STATE: %@)</string>
-			<key>0900158</key>
-			<string>HANDLE WORKSPACE SLEEP (STATE: %@)</string>
-			<key>0900159</key>
-			<string>SUSPENDING... (STATE: %@)</string>
-			<key>0900160</key>
-			<string>THERE IS NO WAY TO SUSPEND CLIENT (STATE: %@)</string>
-			<key>0900161</key>
-			<string>CLIENT TRIED TO CONNECT. TERMINATE CONNECTION AND MARK ERROR (STATE: %@)</string>
-			<key>0900162</key>
-			<string>CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK AS DISCONNECTED (STATE: %@)</string>
-			<key>0900163</key>
-			<string>CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR (STATE: %@)</string>
-			<key>0900164</key>
-			<string>HANDLE WORKSPACE WAKE (STATE: %@)</string>
-			<key>0900165</key>
-			<string>CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SLEEP (STATE: %@)</string>
-			<key>0900166</key>
-			<string>CONNECTION WENT DOWN WHILE COMPUTER SLEPT (STATE: %@)</string>
-			<key>0900167</key>
-			<string>CRYPTO HELPER INITIALIZATION FAILED BECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900168</key>
-			<string>CONNECTED TO: %@ (STATE: %@)</string>
-			<key>0900169</key>
-			<string>FAILED TO RETRIEVE STATE (STATE: %@)</string>
-			<key>0900170</key>
-			<string>FAILED TO UPDATE STATE (STATE: %@)</string>
-			<key>0900171</key>
-			<string>RESUMING SUBSCRIPTION ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900172</key>
-			<string>FAILED TO SUBSCRIBE ON CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900173</key>
-			<string>FAILED TO SUBSCRIBE DURING CLIENT IDENTIFIER UPDATE ON CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900174</key>
-			<string>FAILED TO UNSUBSCRIBE FROM CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900175</key>
-			<string>FAILED TO UNSUBSCRIBE DURING CLIENT IDENTIFIER UPDATE FROM CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900176</key>
-			<string>FAILED TO ENABLE PRESENCE OBSERVATION ON CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900177</key>
-			<string>FAILED TO DISABLE PRESENCE OBSERVATION ON CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900178</key>
-			<string>FAILED TO ENABLED PUSH NOTIFICATION ON CHANNELS BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900179</key>
-			<string>FAILED TO DISABLE PUSH NOTIFICATIONS ON CHANNELS BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900180</key>
-			<string>FAILED TO REMOVE REMOVE PUSH NOTIFICATIONS FROM ALL CHANNELS FOR BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900181</key>
-			<string>FAILED TO REQUEST PUSH NOTIFICATION ENABLED CHANNELS BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900182</key>
-			<string>FAILED TO CHANGE ACCESS RIGHTS BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900183</key>
-			<string>FAILED TO AUDIT ACCESS RIGHTS BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900184</key>
-			<string>FAILED TO RETRIEVE TIME TOKEN BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900185</key>
-			<string>FAILED TO SEND MESSAGE BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900186</key>
-			<string>FAILED TO DOWNLOAD HISTORY BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900187</key>
-			<string>FAILED TO DOWNLOAD PARTICIPANTS LIST BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900188</key>
-			<string>FAILED TO DOWNLOAD PARTICIPANT CHANNELS LIST BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900189</key>
-			<string>GENERAL ERROR: %@ (STATE: %@)</string>
-			<key>0900190</key>
-			<string>WILL CLOSE CONNECTION BECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900191</key>
-			<string>CLOSED CONNECTION BECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900192</key>
-			<string>CONNECTION FAILED BECAUSE OF ERROR: %@ (STATE: %@)</string>
-			<key>0900193</key>
-			<string>SHOULD CHANNEL %@ (%@) NOTIFY DELEGATE? %@ (STATE: %@)</string>
-			<key>0900194</key>
-			<string>WILL SUBSCRIBE ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900195</key>
-			<string>SUBSCRIBED ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900196</key>
-			<string>SUBSCRIBED ON CHANNELS DURING CLIENT IDENTIFIER UPDATE: %@ (STATE: %@)</string>
-			<key>0900197</key>
-			<string>WILL RESTORE SUBSCRIPTION ON: %@ (STATE: %@)</string>
-			<key>0900198</key>
-			<string>RESTORED SUBSCRIPTION ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900199</key>
-			<string>WILL UNSUBSCRIBE FROM CHANNELS: %@ (STATE: %@)</string>
-			<key>0900200</key>
-			<string>UNSUBSCRIBED FROM CHANNELS: %@ (STATE: %@)</string>
-			<key>0900201</key>
-			<string>UNSUBSCRIBED FROM CHANNELS DURING CLIENT IDENTIFIER UPDATE: %@ (STATE: %@)</string>
-			<key>0900202</key>
-			<string>WILL ENABLE PRESENCE OBSERVATION ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900203</key>
-			<string>DID ENABLE PRESENCE OBSERVATION ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900204</key>
-			<string>WILL DISABLE PRESENCE OBSERVATION ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900205</key>
-			<string>DID DISABLE PRESENCE OBSERVATION ON CHANNELS: %@ (STATE: %@)</string>
-			<key>0900206</key>
-			<string>RECEIVED MESSAGE: %@\nON CHANNEL: %@ (STATE: %@)</string>
-			<key>0900207</key>
-			<string>RECEIVED EVENT: %@\nON CHANNEL: %@ (STATE: %@)</string>
-			<key>0900208</key>
-			<string>CLIENT STATE RETRIEVED (STATE: %@)</string>
-			<key>0900209</key>
-			<string>RESCHEDULE CLIENT STATE AUDIT REQUEST (STATE: %@)</string>
-			<key>0900210</key>
-			<string>CLIENT STATE UPDATED (STATE: %@)</string>
-			<key>0900211</key>
-			<string>RESCHEDULE CLIENT STATE CHANGE REQUEST (STATE: %@)</string>
-			<key>0900212</key>
-			<string>ACCESS RIGHTS CHANGED (STATE: %@)</string>
-			<key>0900213</key>
-			<string>RESCHEDULE ACCESS RIGHTS UPDATE REQUEST (STATE: %@)</string>
-			<key>0900214</key>
-			<string>ACCESS RIGHTS AUDITED (STATE: %@)</string>
-			<key>0900215</key>
-			<string>RESCHEDULE ACCESS RIGHTS AUDIT REQUEST (STATE: %@)</string>
-			<key>0900216</key>
-			<string>RECEIVED TIME TOKEN (STATE: %@)</string>
-			<key>0900217</key>
-			<string>RESCHEDULE TIME TOKEN REQUEST (STATE: %@)</string>
-			<key>0900218</key>
-			<string>ENABLED PUSH NOTIFICATIONS (STATE: %@)</string>
-			<key>0900219</key>
-			<string>RESCHEDULE PUSH NOTIFICATION ENABLE REQUEST (STATE: %@)</string>
-			<key>0900220</key>
-			<string>DISABLED PUSH NOTIFICATIONS (STATE: %@)</string>
-			<key>0900221</key>
-			<string>RESCHEDULE PUSH NOTIFICATION DISABLE REQUEST (STATE: %@)</string>
-			<key>0900222</key>
-			<string>REMOVED PUSH NOTIFICATIONS FROM ALL CHANNELS (STATE: %@)</string>
-			<key>0900223</key>
-			<string>RESCHEDULE PUSH NOTIFICATION REMOVAL REQUEST (STATE: %@)</string>
-			<key>0900224</key>
-			<string>DID RECEIVE PUSH NOTIFICATINO ENABLED CHANNELS (STATE: %@)</string>
-			<key>0900225</key>
-			<string>RESCHEDULE PUSH NOTIFICATION AUDIT REQUEST (STATE: %@)</string>
-			<key>0900226</key>
-			<string>WILL SEND MESSAGE %@\nTO CHANNEL %@ (STATE: %@)</string>
-			<key>0900227</key>
-			<string>DID SEND MESSAGE (STATE: %@)</string>
-			<key>0900228</key>
-			<string>RESCHEDULE MESSAGE SENDING (STATE: %@)</string>
-			<key>0900229</key>
-			<string>DID RECEIVE HISTORY ON CHANNEL (STATE: %@)</string>
-			<key>0900230</key>
-			<string>RESCHEDULE MESSAGES HISTORY REQUEST (STATE: %@)</string>
-			<key>0900231</key>
-			<string>DID RECEIVE PARTICIPANTS LIST (STATE: %@)</string>
-			<key>0900232</key>
-			<string>RESCHEDULE PARTICIPANTS LIST REQUEST (STATE: %@)</string>
-			<key>0900233</key>
-			<string>DID RECEIVE PARTICIPANT CHANNELS LIST (STATE: %@)</string>
-			<key>0900234</key>
-			<string>RESCHEDULE CLIENT&apos;S CHANNELS REQUEST (STATE: %@)</string>
-			<key>0900235</key>
-			<string>DESTROYED</string>
-			<key>0900236</key>
-			<string>WILL CONNECT TO ORIGIN: %@ (STATE: %@)</string>
-			<key>0900237</key>
-			<string>
+	</dict>
+	<key>04</key>
+	<dict>
+		<key>0400000</key>
+		<string>PUBNUB SERVICES REACHABILITY FLAGS CHANGED ON CALLBACK: %@ (%@) [CONNECTED? %@]</string>
+		<key>0400001</key>
+		<string>PUBNUB SERVICES REACHABILITY FLAGS CHANGE IGNORED BECAUSE ORIGIN LOOKUP SUPPORT SYSTEM REPORTED DIFFERENT STATE (%@ / %@) [CONNECTED? %@]</string>
+		<key>0400002</key>
+		<string>PUBNUB SERVICES REACHABILITY FLAGS CHANGED DURING SUSPENSION PERIOD (%@) [CONNECTED? %@]</string>
+		<key>0400003</key>
+		<string>START REACHABILITY OBSERVATION</string>
+		<key>0400004</key>
+		<string>RESTART REACHABILITY OBSERVATION</string>
+		<key>0400005</key>
+		<string>REACHABILITY OBSERVATION IMPOSSIBLE W/O ORIGIN</string>
+		<key>0400006</key>
+		<string>STOP REACHABILITY OBSERVATION</string>
+		<key>0400007</key>
+		<string>REACHABILITY OBSEVATION SUSPENDED</string>
+		<key>0400008</key>
+		<string>REACHABILITY OBSEVATION RESUMED</string>
+		<key>0400009</key>
+		<string>LOOKUP FAILED WITH ERROR: %@</string>
+		<key>0400010</key>
+		<string>MALFORMED SERVER RESPONSE</string>
+		<key>0400011</key>
+		<string>LOOKUP GOT RESPONSE WITH UNACCEPTABLE HTTP STATUS CODE (%@)</string>
+		<key>0400012</key>
+		<string>LOOKS LIKE UPLINK FROM &apos;%@&apos; RETURNED BACK.</string>
+		<key>0400013</key>
+		<string>LOOKS LIKE UPLINK FROM &apos;%@&apos; WENT DOWN.</string>
+		<key>0400014</key>
+		<string>LOOKS LIKE UPLINK FROM &apos;%@&apos; STILL DOWN.</string>
+		<key>0400015</key>
+		<string>UPLINK STATE CHANGED DURING SUSPENSION</string>
+		<key>0400016</key>
+		<string>PUBNUB SERVICES REACHABILITY REFRESHING STATE: %@ / %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+		<key>0400017</key>
+		<string>PUBNUB SERVICES REACHABILITY FORCED TO GENERATE &apos;CHANGE EVENT&apos; [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+		<key>0400018</key>
+		<string>PUBNUB SERVICES REACHABILITY CHANGED TO: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+		<key>0400019</key>
+		<string>PUBNUB SERVICES REACHABILITY CHANGED W/O EVENT [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+		<key>0400020</key>
+		<string>PUBNUB SERVICES REACHABILITY FLAGS CHANGE IGNORED BECAUSE ORIGIN LOOKUP SUPPORT SYSTEM REPORTED DIFFERENT STATE (%@ / %@) [CONNECTED? %@]</string>
+		<key>0400021</key>
+		<string>PUBNUB SERVICES REACHABILITY REPORT NETWORK ADDRESS CHANGED: %@ / %@ [CONNECTED? %@](FLAGS: %@)</string>
+		<key>0400022</key>
+		<string>PUBNUB SERVICES REACHABILITY REPORT WIFI HOTSPOT CHANGED: %@ / %@ [CONNECTED? %@](FLAGS: %@)</string>
+		<key>0400023</key>
+		<string>PUBNUB SERVICES REACHABILITY REPORT INTERFACE CHANGED: %@ / %@ [CONNECTED? %@  | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+		<key>0400024</key>
+		<string>PUBNUB SERVICES REACHABILITY FORCED TO GENERATE &apos;CHANGE EVENT&apos; [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+		<key>0400025</key>
+		<string>PUBNUB SERVICES REACHABILITY GENERATED &apos;CHANGE EVENT&apos; [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+		<key>0400026</key>
+		<string>PUBNUB SERVICES REACHABILITY CHANGED TO: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+		<key>0400027</key>
+		<string>PUBNUB SERVICES REACHABILITY RECEIVED STRANGE STATE: %@. FALLBACK TO THE PREVIOUS: %@ [CONNECTED? %@ | NETWORK ADDRESS: %@](FLAGS: %@)</string>
+	</dict>
+	<key>05</key>
+	<dict>
+		<key>0500000</key>
+		<string>FAILED TO PARSE RESPONSE (%@ BYTES LONG)\nCONTENT: %@</string>
+		<key>0500001</key>
+		<string>RECEIVED STRANGE RESPONSE WITH &apos;%@&apos; STATUS CODE\nCONTENT: %@</string>
+		<key>0500002</key>
+		<string>RAW RESPONSE DATA (STATUS CODE: %@): %@</string>
+	</dict>
+	<key>06</key>
+	<dict>
+		<key>0600000</key>
+		<string>DESTROYED</string>
+	</dict>
+	<key>07</key>
+	<dict>
+		<key>0700000</key>
+		<string>CAN&apos;T CREATE CHANNEL WITH EMPTY NAME</string>
+	</dict>
+	<key>08</key>
+	<dict>
+		<key>0800000</key>
+		<string>JSON STRING IS EMPTY</string>
+		<key>0800001</key>
+		<string>JSON DECODE ERROR: %@</string>
+		<key>0800002</key>
+		<string>FAILED TO DECODE DATA</string>
+	</dict>
+	<key>09</key>
+	<dict>
+		<key>0900000</key>
+		<string>CLIENT RESET.</string>
+		<key>0900001</key>
+		<string>TRYING TO CONNECT W/O SUCCESS AND ERROR BLOCK... (STATE: %@)</string>
+		<key>0900002</key>
+		<string>TRYING TO CONNECT W/ SUCCESS AND/OR ERROR BLOCK... (STATE: %@)</string>
+		<key>0900003</key>
+		<string>PUBNUB CLIENT ALREADY CONNECTED (STATE: %@)</string>
+		<key>0900004</key>
+		<string>PUBNUB CLIENT ALREADY CONNECTING... (STATE: %@)</string>
+		<key>0900005</key>
+		<string>PREPARE COMPONENTS FOR CONNECTION... (STATE: %@)</string>
+		<key>0900006</key>
+		<string>TRYING TO CONNECT W/O CONFIGURATION (STATE: %@)</string>
+		<key>0900007</key>
+		<string>TRIED TO CONNECT WHILE WAS SUSPENDED (LIBRARY DOESN&apos;T HAVE ENOUGH TIME TO RESTORE) (STATE: %@)</string>
+		<key>0900008</key>
+		<string>TRIED TO CONNECT WHILE TRYING TO RESUME AFTER SLEEP (LIBRARY DOESN&apos;T HAVE ENOUGH TIME TO RESTORE) (STATE: %@)</string>
+		<key>0900009</key>
+		<string>REACHABILITY CHECKED (STATE: %@)</string>
+		<key>0900010</key>
+		<string>INTERNET CONNECTION AVAILABLE (STATE: %@)</string>
+		<key>0900011</key>
+		<string>CREATE NEW COMPONNENTS TO POWER UP LIBRARY OPERATION WITH ORIGIN (STATE: %@)</string>
+		<key>0900012</key>
+		<string>PREVIOUS CHANNELS HAS BEEN DESTROYED BECAUSE OF LIBRARY STATE SYNCHRONIZATION ISSUE (STATE: %@)</string>
+		<key>0900013</key>
+		<string>CONNECTION CAN BE INITATED USING EXISTING COMPONENTS (STATE: %@)</string>
+		<key>0900014</key>
+		<string>INTERNET CONNECTION NOT AVAILABLE. LIBRARY WILL CONNECT AS SOON AS CONNECTION BECOME AVAILABLE (STATE: %@)</string>
+		<key>0900015</key>
+		<string>REACHABILITY NOT CHECKED YET. LIBRARY WILL CONTINUE CONNECTION IF REACHABILITY WILL REPORT NETWORK AVAILABILITY (STATE: %@)</string>
+		<key>0900016</key>
+		<string>POSTPONE CONNECTION (STATE: %@)</string>
+		<key>0900017</key>
+		<string>TRYING TO DISCONNECT BY USER REQUEST. (STATE: %@)</string>
+		<key>0900018</key>
+		<string>TRYING TO DISCONNECT BY INTERNAL REQUEST. (STATE: %@)</string>
+		<key>0900019</key>
+		<string>DISCONNECTING... (STATE: %@)</string>
+		<key>0900020</key>
+		<string>DISCONNECTING TO CHANGE CONFIGURATION (STATE: %@)</string>
+		<key>0900021</key>
+		<string>DISCONNECTED (BASICALLY TERMINATED, BECAUSE REQUEST WAS ISSUED BY USER) (STATE: %@)</string>
+		<key>0900022</key>
+		<string>DISCONNECTED FROM %@ (STATE: %@)</string>
+		<key>0900023</key>
+		<string>POSTPONE DISCONNECTION (STATE: %@)</string>
+		<key>0900024</key>
+		<string>TRYING TO DISCONNECT FOR CONFIGURATION CHANGE (STATE: %@)</string>
+		<key>0900025</key>
+		<string>DISCONNECTING FOR CONFIGURATION CHANGE (STATE: %@)</string>
+		<key>0900026</key>
+		<string>POSTPONE DISCONNECTION FOR CONFIGURATION CHANGE (STATE: %@)</string>
+		<key>0900027</key>
+		<string>TRY UPDATE CONFIGURATION (STATE: %@)</string>
+		<key>0900028</key>
+		<string>VALID CONFIGURATION HAS BEEN PROVIDED (STATE: %@)</string>
+		<key>0900029</key>
+		<string>CONFIGURATION UPDATE REQUIRE RECONNECTION (STATE: %@)</string>
+		<key>0900030</key>
+		<string>CONFIGURATION CAN BE APPLIED W/O RECONNECTION (STATE: %@)</string>
+		<key>0900031</key>
+		<string>CONFIGURATION UPDATE IN THE MIDDLE OF CONNECTION SEQUENCE. CLOSE CHANNELS AND RECONNECT. (STATE: %@)</string>
+		<key>0900032</key>
+		<string>IGNORE CONFIGURATION UPDATE. IT IS THE SAME AS WAS SET BEFORE (STATE: %@)</string>
+		<key>0900033</key>
+		<string>TRYING TO UPDATE CLIENT IDENTIFIER (STATE: %@)</string>
+		<key>0900034</key>
+		<string>UPDATE CLIENT IDENTIFIER (STATE: %@)</string>
+		<key>0900035</key>
+		<string>POSTPONE CLIENT IDENTIFIER CHANGE (STATE: %@)</string>
+		<key>0900036</key>
+		<string>IGNORE IDENTIFIER UPDATE. IT IS THE SAME AS WAS SET BEFORE (STATE: %@)</string>
+		<key>0900037</key>
+		<string>TRYING TO REQUEST CLIENT STATE FOR IDENTIFIER %@ ON CHANNEL: %@ (STATE: %@)</string>
+		<key>0900038</key>
+		<string>REQUEST CLIENT STATE (STATE: %@)</string>
+		<key>0900039</key>
+		<string>CAN&apos;T REQUEST CLIENT STATE (STATE: %@)</string>
+		<key>0900040</key>
+		<string>POSTPONE CLIENT STATE REQUEST (STATE: %@)</string>
+		<key>0900041</key>
+		<string>TRYING TO UPDATE CLIENT STATE FOR IDENTIFIER %@ ON CHANNEL %@\nTO: %@ (STATE: %@)</string>
+		<key>0900042</key>
+		<string>UPDATE CLIENT STATE TO: %@ (STATE: %@)</string>
+		<key>0900043</key>
+		<string>CAN&apos;T UPDATE CLIENT STATE  (STATE: %@)</string>
+		<key>0900044</key>
+		<string>POSTPONE CLIENT STATE UPDATE (STATE: %@)</string>
+		<key>0900045</key>
+		<string>TRYING TO SUBSCRIBE ON CHANNELS: %@ (SHOULD CATCH UP? %@) (STATE: %@)</string>
+		<key>0900046</key>
+		<string>SUBSCRIBE ON CHANNELS (STATE: %@)</string>
+		<key>0900047</key>
+		<string>CAN&apos;T SUBSCRIBE ON CHANNELS (STATE: %@)</string>
+		<key>0900048</key>
+		<string>POSTPONE SUBSCRIBE ON CHANNELS (STATE: %@)</string>
+		<key>0900049</key>
+		<string>TRYING TO UNSUBSCRIBE FROM CHANNELS: %@ (STATE: %@)</string>
+		<key>0900050</key>
+		<string>UNSUBSCRIBE FROM CHANNELS (STATE: %@)</string>
+		<key>0900051</key>
+		<string>CAN&apos;T UNSUBSCRIBE FROM CHANNELS (STATE: %@)</string>
+		<key>0900052</key>
+		<string>POSTPONE UNSUBSCRIBE FROM CHANNELS (STATE: %@)</string>
+		<key>0900053</key>
+		<string>TRYING TO ENABLE PUSH NOTIFICATIONS ON CHANNELS: %@ USING: %@ TOKEN (STATE: %@)</string>
+		<key>0900054</key>
+		<string>ENABLE PUSH NOTIFICATIONS (STATE: %@)</string>
+		<key>0900055</key>
+		<string>CAN&apos;T ENABLE PUSH NOTIFICATIONS (STATE: %@)</string>
+		<key>0900056</key>
+		<string>POSTPONE ENABLE PUSH NOTIFICATIONS (STATE: %@)</string>
+		<key>0900057</key>
+		<string>TRYING TO DISABLE PUSH NOTIFICATIONS ON CHANNELS: %@ USING: %@ TOKEN (STATE: %@)</string>
+		<key>0900058</key>
+		<string>DISABLE PUSH NOTIFICATIONS (STATE: %@)</string>
+		<key>0900059</key>
+		<string>CAN&apos;T DISABLE PUSH NOTIFICATIONS (STATE: %@)</string>
+		<key>0900060</key>
+		<string>POSTPONE DISABLE PUSH NOTIFICATIONS (STATE: %@)</string>
+		<key>0900061</key>
+		<string>TRYING TO DISABLE PUSH NOTIFICATIONS FROM ALL CHANNELS FOR %@ TOKEN (STATE: %@)</string>
+		<key>0900062</key>
+		<string>DISABLE PUSH NOTIFICATIONS FROM ALL CHANNELS (STATE: %@)</string>
+		<key>0900063</key>
+		<string>CAN&apos;T DISABLE PUSH NOTIFICATIONS FROM ALL CHANNELS (STATE: %@)</string>
+		<key>0900064</key>
+		<string>POSTPONE PUSH NOTIFICATIONS DISABLE FROM ALL CHANNELS (STATE: %@)</string>
+		<key>0900065</key>
+		<string>TRYING TO FETCH PUSH NOTIFICATION ENABLED CHANNELS FOR %@ TOKEN (STATE: %@)</string>
+		<key>0900066</key>
+		<string>FETCH PUSH NOTIFICATION ENABLED CHANNELS FOR %@ TOKEN (STATE: %@)</string>
+		<key>0900067</key>
+		<string>CAN&apos;T FETCH PUSH NOTIFICATION ENABLED CHANNELS FOR %@ TOKEN (STATE: %@)</string>
+		<key>0900068</key>
+		<string>POSTPONE PUSH NOTIFICATION ENABLED CHANNELS FETCH (STATE: %@)</string>
+		<key>0900069</key>
+		<string>TRYING TO CHANGE ACCESS RIGHTS FOR CHANNELS: %@\nIDENTIFIERS: %@\nRIGHTS: %@\nFOR PERIOD: %@ (STATE: %@)</string>
+		<key>0900070</key>
+		<string>CHANGE ACCESS RIGHTS (STATE: %@)</string>
+		<key>0900071</key>
+		<string>CAN&apos;T CHANGE ACCESS RIGHTS (STATE: %@)</string>
+		<key>0900072</key>
+		<string>POSTPONE ACCESS RIGHTS CHANGE (STATE: %@)</string>
+		<key>0900073</key>
+		<string>TRYING TO AUDIT ACCESS RIGHTS FOR CHANNELS: %@\nIDENTIFIERS: %@ (STATE: %@)</string>
+		<key>0900074</key>
+		<string>ACCESS RIGHTS AUDIT (STATE: %@)</string>
+		<key>0900075</key>
+		<string>CAN&apos;T AUDIT ACCESS RIGHTS (STATE: %@)</string>
+		<key>0900076</key>
+		<string>POSTPONE ACCESS RIGHTS AUDIT (STATE: %@)</string>
+		<key>0900077</key>
+		<string>TRYING TO ENABLE PRESENCE ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900078</key>
+		<string>ENABLING PRESENCE ON CHANNELS (STATE: %@)</string>
+		<key>0900079</key>
+		<string>CAN&apos;T ENABLE PRESENCE ON CHANNELS (STATE: %@)</string>
+		<key>0900080</key>
+		<string>POSTPONE PRESENCE ENABLING ON CHANNELS (STATE: %@)</string>
+		<key>0900081</key>
+		<string>TRYING TO DISABLE PRESENCE ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900082</key>
+		<string>DISABLING PRESENCE ON CHANNELS (STATE: %@)</string>
+		<key>0900083</key>
+		<string>CAN&apos;T DISABLE PRESENCE ON CHANNELS (STATE: %@)</string>
+		<key>0900084</key>
+		<string>POSTPONE PRESENCE DISABLING ON CHANNELS (STATE: %@)</string>
+		<key>0900085</key>
+		<string>TRYING REQUEST SERVER TIME TOKEN (STATE: %@)</string>
+		<key>0900086</key>
+		<string>REQUEST SERVER TIME TOKEN (STATE: %@)</string>
+		<key>0900087</key>
+		<string>CAN&apos;T REQUEST SERVER TIME TOKEN (STATE: %@)</string>
+		<key>0900088</key>
+		<string>POSTPONE SERVER TIME TOKEN REQUEST (STATE: %@)</string>
+		<key>0900089</key>
+		<string>TRYING TO SEND MESSAGE: %@ ON CHANNEL: %@ [SHOULD COMPRESS? %@ | SHOULD STORE? %@] (STATE: %@)</string>
+		<key>0900090</key>
+		<string>SEND MESSAGE (STATE: %@)</string>
+		<key>0900091</key>
+		<string>CAN&apos;T SEND MESSAGE (STATE: %@)</string>
+		<key>0900092</key>
+		<string>POSTPONE MESSAGE SENDING (STATE: %@)</string>
+		<key>0900093</key>
+		<string>TRYING TO REQUEST HISTORY FOR CHANNEL: %@ FROM: %@ TO: %@ WITH LIMIT: %@ [SHOULD TRAVERSE? %@ | SHOULD INCLUDE TIME TOKEN? %@] (STATE: %@)</string>
+		<key>0900094</key>
+		<string>REQUEST HISTORY (STATE: %@)</string>
+		<key>0900095</key>
+		<string>CAN&apos;T REQUEST HISTORY (STATE: %@)</string>
+		<key>0900096</key>
+		<string>POSTPONE HISTORY REQUEST FOR CHANNEL (STATE: %@)</string>
+		<key>0900097</key>
+		<string>TRYING TO REQUEST PARTICIPANTS LIST FOR CHANNEL: %@ [CLIENT IDENTIFIER REQUIRED? %@] (STATE: %@)</string>
+		<key>0900098</key>
+		<string>REQUEST PARTICIPANTS LIST (STATE: %@)</string>
+		<key>0900099</key>
+		<string>CAN&apos;T REQUEST PARTICIPANTS LIST (STATE: %@)</string>
+		<key>0900100</key>
+		<string>POSTPONE PARTICIPANTS LIST REQUEST FOR CHANNEL (STATE: %@)</string>
+		<key>0900101</key>
+		<string>TRYING TO REQUEST PARTICIPANT CHANNELS LIST FOR IDENTIFIER: %@ (STATE: %@)</string>
+		<key>0900102</key>
+		<string>REQUEST PARTICIPANT CHANNELS LIST (STATE: %@)</string>
+		<key>0900103</key>
+		<string>CAN&apos;T REQUEST PARTICIPANT CHANNELS LIST (STATE: %@)</string>
+		<key>0900104</key>
+		<string>POSTPONE PARTICIPANT CHANNELS LIST REQUEST (STATE: %@)</string>
+		<key>0900105</key>
+		<string>MESSAGE DECRYPTION FAILED WITH ERROR: %@ (STATE: %@)</string>
+		<key>0900106</key>
+		<string>MESSAGE ENCRYPTION FAILED WITH ERROR: %@\nUNENCRYPTED MESSAGE WILL BE SENT (STATE: %@)</string>
+		<key>0900107</key>
+		<string>IS NETWORK CONNECTION AVAILABLE? %@ (STATE: %@)</string>
+		<key>0900108</key>
+		<string>CLIENT SHOULD TRY CONNECT ON SERVICE REACHABILITY CHECK (STATE: %@)</string>
+		<key>0900109</key>
+		<string>INTERNET CONNECITON AVAILABLE. TRY TO CONNECT (STATE: %@)</string>
+		<key>0900110</key>
+		<string>INTERNET CONNECITON NOT AVAILABLE. REPORT ERROR (STATE: %@)</string>
+		<key>0900111</key>
+		<string>INTERNET CONNECITON AVAILABLE (STATE: %@)</string>
+		<key>0900112</key>
+		<string>DISCONNECTED ON ERROR (STATE: %@)</string>
+		<key>0900113</key>
+		<string>LIBRARY OUT OF SYNC. CONNECTION STATE IS IMPOSSIBLE IF &apos;NETWORK AVAILABLE&apos; ARRIVE (STATE: %@)</string>
+		<key>0900114</key>
+		<string>SHOULD RESTORE CONNECTION (STATE: %@)</string>
+		<key>0900115</key>
+		<string>SHOULD RESUME CONNECTION (STATE: %@)</string>
+		<key>0900116</key>
+		<string>SHOULD CONNECT (STATE: %@)</string>
+		<key>0900117</key>
+		<string>THERE IS NO SUITABLE ACTION FOR CURRENT SITUATION (STATE: %@)</string>
+		<key>0900118</key>
+		<string>INTERNET CONNECITON NOT AVAILABLE (STATE: %@)</string>
+		<key>0900119</key>
+		<string>CLIENT TRIED TO CONNECT (STATE: %@)</string>
+		<key>0900120</key>
+		<string>DURING CONNECTION CHANNEL DISCONNECTION LIBRARY NOTICED INTERNET CONNECTION AND WAS ABLE TO LAUNCH RESTORE PROCESS (STATE: %@)</string>
+		<key>0900121</key>
+		<string>CLIENT WAS SUSPENDED (STATE: %@)</string>
+		<key>0900122</key>
+		<string>CLIENT WAS CONNECTED (STATE: %@)</string>
+		<key>0900123</key>
+		<string>AUTO CONNECTION TURNED OFF (STATE: %@)</string>
+		<key>0900124</key>
+		<string>CLIENT WILL CONNECT AS SOON AS INTERNET BECOME AVAILABLE (STATE: %@)</string>
+		<key>0900125</key>
+		<string>THERE IS NOTHING THAT LIBRARY CAN DO WHEN NETWORK IS DOWN AND LIBRARY HASN&apos;T CONNECTED TO THE SERVICE (STATE: %@)</string>
+		<key>0900126</key>
+		<string>CHANNEL CONNECTED: %@ (%@) (STATE: %@)</string>
+		<key>0900127</key>
+		<string>BOTH CHANNELS CONNECTED TO THE ORIGIN: %@ (STATE: %@)</string>
+		<key>0900128</key>
+		<string>CHANNEL RECONNECTED: %@ (%@) (STATE: %@)</string>
+		<key>0900129</key>
+		<string>CHANNEL RECONNECTED DURING PUBNUB &apos;CONNECTING&apos; STATE WHICH MEAN THAT SECOND CHANNEL DIDN&apos;T REPORTED YET THAT IT WAS CONNECTED AND %@ (%@) WAS ABLE TO RECOVED AFTER SOME ERROR (STATE: %@)</string>
+		<key>0900130</key>
+		<string>CHANNEL FAILED TO CONNECT: %@ (%@) (STATE: %@)</string>
+		<key>0900131</key>
+		<string>CLIENT FAILED TO CONNECT TO ORIGIN: %@ (STATE: %@)</string>
+		<key>0900132</key>
+		<string>TRYING TO KILL DNS CACHE FOR %@ (STATE: %@)</string>
+		<key>0900133</key>
+		<string>NOTIFY DELEGATE THAT CONNECTION TO %@ CAN&apos;T BE ESTABLISHED (STATE: %@)</string>
+		<key>0900134</key>
+		<string>CHANNEL DISCONNECTED: %@ (%@) (STATE: %@)</string>
+		<key>0900135</key>
+		<string>RELEASED CHANNEL DISCONNECTED: %@ (%@). DON&apos;T HANDLE EVENT (STATE: %@)</string>
+		<key>0900136</key>
+		<string>DISCONNECTING SERVICE CONNECTION CHANNEL: %@ (%@) (STATE: %@)</string>
+		<key>0900137</key>
+		<string>DISCONNECTING MESSAGING CONNECTION CHANNEL: %@ (%@) (STATE: %@)</string>
+		<key>0900138</key>
+		<string>CLIENT DISCONNECTED FROM ORIGIN: %@ (STATE: %@)</string>
+		<key>0900139</key>
+		<string>CLIENT SHOULD RESTORE CONNECTION. REACHABILITY CHECK COMPLETED (STATE: %@)</string>
+		<key>0900140</key>
+		<string>DISCONNECTED BECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900141</key>
+		<string>DESTROY COMPONENTS (STATE: %@)</string>
+		<key>0900142</key>
+		<string>CLIENT ALREADY CONNECTING BACK. DON&apos;T DO ANYTHING (STATE: %@)</string>
+		<key>0900143</key>
+		<string>HANDLE APPLICATION ENTERED BACKGROUND (STATE: %@)</string>
+		<key>0900144</key>
+		<string>APPLICATION CAN&apos;T RUN IN BACKGROUND (STATE: %@)</string>
+		<key>0900145</key>
+		<string>COMPLETED TASKS BEFORE ENETERING BACKGROUND (STATE: %@)</string>
+		<key>0900146</key>
+		<string>SUSPENDING... (STATE: %@)</string>
+		<key>0900147</key>
+		<string>CLIENT TRIED TO CONNECT. TERMINATE CONNECTION AND MARK ERROR (STATE: %@)</string>
+		<key>0900148</key>
+		<string>CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK AS DISCONNECTED (STATE: %@)</string>
+		<key>0900149</key>
+		<string>CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR (STATE: %@)</string>
+		<key>0900150</key>
+		<string>APPLICATION NOT IN BACKGROUND (STATE: %@)</string>
+		<key>0900151</key>
+		<string>CLIENT TRY TO POSTPONE APPLICATION SUSPENSION (STATE: %@)</string>
+		<key>0900152</key>
+		<string>USER DIDN&apos;T CALLED COMPLETION BLOCK IN TIME. FORE BLOCK EXECUTION (STATE: %@)</string>
+		<key>0900153</key>
+		<string>HANDLE APPLICATION ENTERED FOREGROUND (STATE: %@)</string>
+		<key>0900154</key>
+		<string>RESUMING... (STATE: %@)</string>
+		<key>0900155</key>
+		<string>CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SUSPENSION (STATE: %@)</string>
+		<key>0900156</key>
+		<string>CONNECTION WENT DOWN WHILE APPLICATION WAS IN BACKGROUND (STATE: %@)</string>
+		<key>0900157</key>
+		<string>CONNECTION WILL BE RESTORED AS SOON AS INTERNET CONNECTION WILL GO UP (STATE: %@)</string>
+		<key>0900158</key>
+		<string>HANDLE WORKSPACE SLEEP (STATE: %@)</string>
+		<key>0900159</key>
+		<string>SUSPENDING... (STATE: %@)</string>
+		<key>0900160</key>
+		<string>THERE IS NO WAY TO SUSPEND CLIENT (STATE: %@)</string>
+		<key>0900161</key>
+		<string>CLIENT TRIED TO CONNECT. TERMINATE CONNECTION AND MARK ERROR (STATE: %@)</string>
+		<key>0900162</key>
+		<string>CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK AS DISCONNECTED (STATE: %@)</string>
+		<key>0900163</key>
+		<string>CLIENT TRIED TO DISCONNECT. TERMINATE CONNECTION AND MARK ERROR (STATE: %@)</string>
+		<key>0900164</key>
+		<string>HANDLE WORKSPACE WAKE (STATE: %@)</string>
+		<key>0900165</key>
+		<string>CONNECTION WAS TERMINATED BECAUSE OF ERROR BEFORE SLEEP (STATE: %@)</string>
+		<key>0900166</key>
+		<string>CONNECTION WENT DOWN WHILE COMPUTER SLEPT (STATE: %@)</string>
+		<key>0900167</key>
+		<string>CRYPTO HELPER INITIALIZATION FAILED BECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900168</key>
+		<string>CONNECTED TO: %@ (STATE: %@)</string>
+		<key>0900169</key>
+		<string>FAILED TO RETRIEVE STATE (STATE: %@)</string>
+		<key>0900170</key>
+		<string>FAILED TO UPDATE STATE (STATE: %@)</string>
+		<key>0900171</key>
+		<string>RESUMING SUBSCRIPTION ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900172</key>
+		<string>FAILED TO SUBSCRIBE ON CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900173</key>
+		<string>FAILED TO SUBSCRIBE DURING CLIENT IDENTIFIER UPDATE ON CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900174</key>
+		<string>FAILED TO UNSUBSCRIBE FROM CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900175</key>
+		<string>FAILED TO UNSUBSCRIBE DURING CLIENT IDENTIFIER UPDATE FROM CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900176</key>
+		<string>FAILED TO ENABLE PRESENCE OBSERVATION ON CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900177</key>
+		<string>FAILED TO DISABLE PRESENCE OBSERVATION ON CHANNELS %@\nBECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900178</key>
+		<string>FAILED TO ENABLED PUSH NOTIFICATION ON CHANNELS BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900179</key>
+		<string>FAILED TO DISABLE PUSH NOTIFICATIONS ON CHANNELS BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900180</key>
+		<string>FAILED TO REMOVE REMOVE PUSH NOTIFICATIONS FROM ALL CHANNELS FOR BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900181</key>
+		<string>FAILED TO REQUEST PUSH NOTIFICATION ENABLED CHANNELS BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900182</key>
+		<string>FAILED TO CHANGE ACCESS RIGHTS BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900183</key>
+		<string>FAILED TO AUDIT ACCESS RIGHTS BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900184</key>
+		<string>FAILED TO RETRIEVE TIME TOKEN BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900185</key>
+		<string>FAILED TO SEND MESSAGE BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900186</key>
+		<string>FAILED TO DOWNLOAD HISTORY BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900187</key>
+		<string>FAILED TO DOWNLOAD PARTICIPANTS LIST BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900188</key>
+		<string>FAILED TO DOWNLOAD PARTICIPANT CHANNELS LIST BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900189</key>
+		<string>GENERAL ERROR: %@ (STATE: %@)</string>
+		<key>0900190</key>
+		<string>WILL CLOSE CONNECTION BECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900191</key>
+		<string>CLOSED CONNECTION BECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900192</key>
+		<string>CONNECTION FAILED BECAUSE OF ERROR: %@ (STATE: %@)</string>
+		<key>0900193</key>
+		<string>SHOULD CHANNEL %@ (%@) NOTIFY DELEGATE? %@ (STATE: %@)</string>
+		<key>0900194</key>
+		<string>WILL SUBSCRIBE ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900195</key>
+		<string>SUBSCRIBED ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900196</key>
+		<string>SUBSCRIBED ON CHANNELS DURING CLIENT IDENTIFIER UPDATE: %@ (STATE: %@)</string>
+		<key>0900197</key>
+		<string>WILL RESTORE SUBSCRIPTION ON: %@ (STATE: %@)</string>
+		<key>0900198</key>
+		<string>RESTORED SUBSCRIPTION ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900199</key>
+		<string>WILL UNSUBSCRIBE FROM CHANNELS: %@ (STATE: %@)</string>
+		<key>0900200</key>
+		<string>UNSUBSCRIBED FROM CHANNELS: %@ (STATE: %@)</string>
+		<key>0900201</key>
+		<string>UNSUBSCRIBED FROM CHANNELS DURING CLIENT IDENTIFIER UPDATE: %@ (STATE: %@)</string>
+		<key>0900202</key>
+		<string>WILL ENABLE PRESENCE OBSERVATION ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900203</key>
+		<string>DID ENABLE PRESENCE OBSERVATION ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900204</key>
+		<string>WILL DISABLE PRESENCE OBSERVATION ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900205</key>
+		<string>DID DISABLE PRESENCE OBSERVATION ON CHANNELS: %@ (STATE: %@)</string>
+		<key>0900206</key>
+		<string>RECEIVED MESSAGE: %@\nON CHANNEL: %@ (STATE: %@)</string>
+		<key>0900207</key>
+		<string>RECEIVED EVENT: %@\nON CHANNEL: %@ (STATE: %@)</string>
+		<key>0900208</key>
+		<string>CLIENT STATE RETRIEVED (STATE: %@)</string>
+		<key>0900209</key>
+		<string>RESCHEDULE CLIENT STATE AUDIT REQUEST (STATE: %@)</string>
+		<key>0900210</key>
+		<string>CLIENT STATE UPDATED (STATE: %@)</string>
+		<key>0900211</key>
+		<string>RESCHEDULE CLIENT STATE CHANGE REQUEST (STATE: %@)</string>
+		<key>0900212</key>
+		<string>ACCESS RIGHTS CHANGED (STATE: %@)</string>
+		<key>0900213</key>
+		<string>RESCHEDULE ACCESS RIGHTS UPDATE REQUEST (STATE: %@)</string>
+		<key>0900214</key>
+		<string>ACCESS RIGHTS AUDITED (STATE: %@)</string>
+		<key>0900215</key>
+		<string>RESCHEDULE ACCESS RIGHTS AUDIT REQUEST (STATE: %@)</string>
+		<key>0900216</key>
+		<string>RECEIVED TIME TOKEN (STATE: %@)</string>
+		<key>0900217</key>
+		<string>RESCHEDULE TIME TOKEN REQUEST (STATE: %@)</string>
+		<key>0900218</key>
+		<string>ENABLED PUSH NOTIFICATIONS (STATE: %@)</string>
+		<key>0900219</key>
+		<string>RESCHEDULE PUSH NOTIFICATION ENABLE REQUEST (STATE: %@)</string>
+		<key>0900220</key>
+		<string>DISABLED PUSH NOTIFICATIONS (STATE: %@)</string>
+		<key>0900221</key>
+		<string>RESCHEDULE PUSH NOTIFICATION DISABLE REQUEST (STATE: %@)</string>
+		<key>0900222</key>
+		<string>REMOVED PUSH NOTIFICATIONS FROM ALL CHANNELS (STATE: %@)</string>
+		<key>0900223</key>
+		<string>RESCHEDULE PUSH NOTIFICATION REMOVAL REQUEST (STATE: %@)</string>
+		<key>0900224</key>
+		<string>DID RECEIVE PUSH NOTIFICATINO ENABLED CHANNELS (STATE: %@)</string>
+		<key>0900225</key>
+		<string>RESCHEDULE PUSH NOTIFICATION AUDIT REQUEST (STATE: %@)</string>
+		<key>0900226</key>
+		<string>WILL SEND MESSAGE %@\nTO CHANNEL %@ (STATE: %@)</string>
+		<key>0900227</key>
+		<string>DID SEND MESSAGE (STATE: %@)</string>
+		<key>0900228</key>
+		<string>RESCHEDULE MESSAGE SENDING (STATE: %@)</string>
+		<key>0900229</key>
+		<string>DID RECEIVE HISTORY ON CHANNEL (STATE: %@)</string>
+		<key>0900230</key>
+		<string>RESCHEDULE MESSAGES HISTORY REQUEST (STATE: %@)</string>
+		<key>0900231</key>
+		<string>DID RECEIVE PARTICIPANTS LIST (STATE: %@)</string>
+		<key>0900232</key>
+		<string>RESCHEDULE PARTICIPANTS LIST REQUEST (STATE: %@)</string>
+		<key>0900233</key>
+		<string>DID RECEIVE PARTICIPANT CHANNELS LIST (STATE: %@)</string>
+		<key>0900234</key>
+		<string>RESCHEDULE CLIENT&apos;S CHANNELS REQUEST (STATE: %@)</string>
+		<key>0900235</key>
+		<string>DESTROYED</string>
+		<key>0900236</key>
+		<string>WILL CONNECT TO ORIGIN: %@ (STATE: %@)</string>
+		<key>0900237</key>
+		<string>
 
 +--------------------------------------------------------------
 | +--------+          +-+       +-+     +-+          +-+
@@ -1141,8 +1139,8 @@
 +--------------------------------------------------------------
 
 </string>
-			<key>0900238</key>
-			<string>
+		<key>0900238</key>
+		<string>
 
 +-------------------------------------------------------------
 | PubNub configuration information:
@@ -1166,112 +1164,111 @@
 +--------------------------------------------------------------
 
 </string>
-			<key>0900239</key>
-			<string>INSTANCE USE OBSERVER INSTANCE AT %@, REACHABILITY INSTANCE AT %@, CRYPTO HELPER INSTANCE AT %@, MESSAGING CHANNEL INSTANCE AT %@, SERVICE CHANNEL INSTANCE AT %@ </string>
-			<key>0900240</key>
-			<string>TRYING TO RETRIEVE CHANNEL GROUPS FOR: %@ (STATE: %@)</string>
-			<key>0900241</key>
-			<string>RETRIEVE CHANNEL GROUPS (STATE: %@)</string>
-			<key>0900242</key>
-			<string>CAN&apos;T REQUEST CHANNEL GROUPS (STATE: %@)</string>
-			<key>0900243</key>
-			<string>POSTPONE CHANNEL GROUPS REQUEST (STATE: %@)</string>
-			<key>0900244</key>
-			<string>CHANNEL GROUPS RECEIVED (STATE: %@)</string>
-			<key>0900245</key>
-			<string>RESCHEDULE CHANNEL GROUPS REQUEST (STATE: %@)</string>
-			<key>0900246</key>
-			<string>FAILED TO RETRIEVE CHANNEL GROUPS BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900247</key>
-			<string>TRYING TO RETRIEVE CHANNELS FOR GROUP: %@ (STATE: %@)</string>
-			<key>0900248</key>
-			<string>RETRIEVE CHANNELS FOR GROUP (STATE: %@)</string>
-			<key>0900249</key>
-			<string>CAN&apos;T REQUEST CHANNELS FOR GROUP (STATE: %@)</string>
-			<key>0900250</key>
-			<string>POSTPONE CHANNELS FOR GROUP REQUEST (STATE: %@)</string>
-			<key>0900251</key>
-			<string>CHANNELS FOR GROUP RECEIVED (STATE: %@)</string>
-			<key>0900252</key>
-			<string>RESCHEDULE CHANNELS FOR GROUP REQUEST (STATE: %@)</string>
-			<key>0900253</key>
-			<string>FAILED TO RETRIEVE CHANNELS FOR GROUP BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900254</key>
-			<string>TRYING TO ADD CHANNELS: %@\nTO THE GROUP: %@ (STATE: %@)</string>
-			<key>0900255</key>
-			<string>ADD CHANNELS TO THE GROUP (STATE: %@)</string>
-			<key>0900256</key>
-			<string>CAN&apos;T ADD CHANNELS TO THE GROUP (STATE: %@)</string>
-			<key>0900257</key>
-			<string>POSTPONE CHANNELS ADDITION TO THE GROUP (STATE: %@)</string>
-			<key>0900258</key>
-			<string>CHANNELS ADDED TO THE GROUP (STATE: %@)</string>
-			<key>0900259</key>
-			<string>RESCHEDULE CHANNELS ADDITION TO THE GROUP (STATE: %@)</string>
-			<key>0900260</key>
-			<string>FAILED TO ADD CHANNELS TO THE GROUP BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900261</key>
-			<string>TRYING TO REMOVE CHANNELS: %@\nFROM THE GROUP: %@ (STATE: %@)</string>
-			<key>0900262</key>
-			<string>REMOVE CHANNELS FROM THE GROUP (STATE: %@)</string>
-			<key>0900263</key>
-			<string>CAN&apos;T REMOVE CHANNELS FROM THE GROUP (STATE: %@)</string>
-			<key>0900264</key>
-			<string>POSTPONE CHANNELS REMOVAL FROM THE GROUP (STATE: %@)</string>
-			<key>0900265</key>
-			<string>CHANNELS REMOVED FROM THE GROUP RECEIVED (STATE: %@)</string>
-			<key>0900266</key>
-			<string>RESCHEDULE CHANNELS REMOVAL FROM THE GROUP (STATE: %@)</string>
-			<key>0900267</key>
-			<string>FAILED TO REMOVE CHANNELS FROM THE GROUP BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900268</key>
-			<string>TRYING TO RETRIEVE CHANNEL GROUP NAMESPACES (STATE: %@)</string>
-			<key>0900269</key>
-			<string>RETRIEVE NAMESPACES FOR CHANNEL GROUP (STATE: %@)</string>
-			<key>0900270</key>
-			<string>CAN&apos;T CHANNEL GROUP NAMESPACES (STATE: %@)</string>
-			<key>0900271</key>
-			<string>POSTPONE CHANNEL GROUP NAMESPACES RETRIEVAL (STATE: %@)</string>
-			<key>0900272</key>
-			<string>RETRIEVED CHANNEL GROUP NAMESPACES (STATE: %@)</string>
-			<key>0900273</key>
-			<string>RESCHEDULE CHANNEL GROUP NAMESPACES RETRIEVAL (STATE: %@)</string>
-			<key>0900274</key>
-			<string>FAILED TO RETRIEVE CHANNEL GROUP NAMESPACES BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900275</key>
-			<string>TRYING TO REMOVE CHANNEL GROUP %@ NAMESPACE (STATE: %@)</string>
-			<key>0900276</key>
-			<string>REMOVE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
-			<key>0900277</key>
-			<string>CAN&apos;T REMOVE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
-			<key>0900278</key>
-			<string>POSTPONE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
-			<key>0900279</key>
-			<string>CHANNEL GROUP NAMESPACE REMOVED (STATE: %@)</string>
-			<key>0900280</key>
-			<string>RESCHEDULE CHANNEL GROUP NAMESPACE REMOVAL (STATE: %@)</string>
-			<key>0900281</key>
-			<string>FAILED TO REMOVE CHANNEL GROUP NAMESPACE BECAUSE OF ERROR (STATE: %@)</string>
-			<key>0900282</key>
-			<string>TRYING TO REMOVE %@ CHANNEL GROUP (STATE: %@)</string>
-			<key>0900283</key>
-			<string>REMOVE CHANNEL GROUP (STATE: %@)</string>
-			<key>0900284</key>
-			<string>CAN&apos;T REMOVE CHANNEL GROUP (STATE: %@)</string>
-			<key>0900285</key>
-			<string>POSTPONE CHANNEL GROUP (STATE: %@)</string>
-			<key>0900286</key>
-			<string>CHANNEL GROUP REMOVED (STATE: %@)</string>
-			<key>0900287</key>
-			<string>RESCHEDULE CHANNEL GROUP REMOVAL (STATE: %@)</string>
-			<key>0900288</key>
-			<string>FAILED TO REMOVE CHANNEL GROUP BECAUSE OF ERROR (STATE: %@)</string>
-		</dict>
-		<key>10</key>
-		<dict>
-			<key>1000000</key>
-			<string>DESTROYED</string>
-		</dict>
+		<key>0900239</key>
+		<string>INSTANCE USE OBSERVER INSTANCE AT %@, REACHABILITY INSTANCE AT %@, CRYPTO HELPER INSTANCE AT %@, MESSAGING CHANNEL INSTANCE AT %@, SERVICE CHANNEL INSTANCE AT %@ </string>
+		<key>0900240</key>
+		<string>TRYING TO RETRIEVE CHANNEL GROUPS FOR: %@ (STATE: %@)</string>
+		<key>0900241</key>
+		<string>RETRIEVE CHANNEL GROUPS (STATE: %@)</string>
+		<key>0900242</key>
+		<string>CAN&apos;T REQUEST CHANNEL GROUPS (STATE: %@)</string>
+		<key>0900243</key>
+		<string>POSTPONE CHANNEL GROUPS REQUEST (STATE: %@)</string>
+		<key>0900244</key>
+		<string>CHANNEL GROUPS RECEIVED (STATE: %@)</string>
+		<key>0900245</key>
+		<string>RESCHEDULE CHANNEL GROUPS REQUEST (STATE: %@)</string>
+		<key>0900246</key>
+		<string>FAILED TO RETRIEVE CHANNEL GROUPS BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900247</key>
+		<string>TRYING TO RETRIEVE CHANNELS FOR GROUP: %@ (STATE: %@)</string>
+		<key>0900248</key>
+		<string>RETRIEVE CHANNELS FOR GROUP (STATE: %@)</string>
+		<key>0900249</key>
+		<string>CAN&apos;T REQUEST CHANNELS FOR GROUP (STATE: %@)</string>
+		<key>0900250</key>
+		<string>POSTPONE CHANNELS FOR GROUP REQUEST (STATE: %@)</string>
+		<key>0900251</key>
+		<string>CHANNELS FOR GROUP RECEIVED (STATE: %@)</string>
+		<key>0900252</key>
+		<string>RESCHEDULE CHANNELS FOR GROUP REQUEST (STATE: %@)</string>
+		<key>0900253</key>
+		<string>FAILED TO RETRIEVE CHANNELS FOR GROUP BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900254</key>
+		<string>TRYING TO ADD CHANNELS: %@\nTO THE GROUP: %@ (STATE: %@)</string>
+		<key>0900255</key>
+		<string>ADD CHANNELS TO THE GROUP (STATE: %@)</string>
+		<key>0900256</key>
+		<string>CAN&apos;T ADD CHANNELS TO THE GROUP (STATE: %@)</string>
+		<key>0900257</key>
+		<string>POSTPONE CHANNELS ADDITION TO THE GROUP (STATE: %@)</string>
+		<key>0900258</key>
+		<string>CHANNELS ADDED TO THE GROUP (STATE: %@)</string>
+		<key>0900259</key>
+		<string>RESCHEDULE CHANNELS ADDITION TO THE GROUP (STATE: %@)</string>
+		<key>0900260</key>
+		<string>FAILED TO ADD CHANNELS TO THE GROUP BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900261</key>
+		<string>TRYING TO REMOVE CHANNELS: %@\nFROM THE GROUP: %@ (STATE: %@)</string>
+		<key>0900262</key>
+		<string>REMOVE CHANNELS FROM THE GROUP (STATE: %@)</string>
+		<key>0900263</key>
+		<string>CAN&apos;T REMOVE CHANNELS FROM THE GROUP (STATE: %@)</string>
+		<key>0900264</key>
+		<string>POSTPONE CHANNELS REMOVAL FROM THE GROUP (STATE: %@)</string>
+		<key>0900265</key>
+		<string>CHANNELS REMOVED FROM THE GROUP RECEIVED (STATE: %@)</string>
+		<key>0900266</key>
+		<string>RESCHEDULE CHANNELS REMOVAL FROM THE GROUP (STATE: %@)</string>
+		<key>0900267</key>
+		<string>FAILED TO REMOVE CHANNELS FROM THE GROUP BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900268</key>
+		<string>TRYING TO RETRIEVE CHANNEL GROUP NAMESPACES (STATE: %@)</string>
+		<key>0900269</key>
+		<string>RETRIEVE NAMESPACES FOR CHANNEL GROUP (STATE: %@)</string>
+		<key>0900270</key>
+		<string>CAN&apos;T CHANNEL GROUP NAMESPACES (STATE: %@)</string>
+		<key>0900271</key>
+		<string>POSTPONE CHANNEL GROUP NAMESPACES RETRIEVAL (STATE: %@)</string>
+		<key>0900272</key>
+		<string>RETRIEVED CHANNEL GROUP NAMESPACES (STATE: %@)</string>
+		<key>0900273</key>
+		<string>RESCHEDULE CHANNEL GROUP NAMESPACES RETRIEVAL (STATE: %@)</string>
+		<key>0900274</key>
+		<string>FAILED TO RETRIEVE CHANNEL GROUP NAMESPACES BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900275</key>
+		<string>TRYING TO REMOVE CHANNEL GROUP %@ NAMESPACE (STATE: %@)</string>
+		<key>0900276</key>
+		<string>REMOVE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
+		<key>0900277</key>
+		<string>CAN&apos;T REMOVE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
+		<key>0900278</key>
+		<string>POSTPONE CHANNEL GROUP NAMESPACE (STATE: %@)</string>
+		<key>0900279</key>
+		<string>CHANNEL GROUP NAMESPACE REMOVED (STATE: %@)</string>
+		<key>0900280</key>
+		<string>RESCHEDULE CHANNEL GROUP NAMESPACE REMOVAL (STATE: %@)</string>
+		<key>0900281</key>
+		<string>FAILED TO REMOVE CHANNEL GROUP NAMESPACE BECAUSE OF ERROR (STATE: %@)</string>
+		<key>0900282</key>
+		<string>TRYING TO REMOVE %@ CHANNEL GROUP (STATE: %@)</string>
+		<key>0900283</key>
+		<string>REMOVE CHANNEL GROUP (STATE: %@)</string>
+		<key>0900284</key>
+		<string>CAN&apos;T REMOVE CHANNEL GROUP (STATE: %@)</string>
+		<key>0900285</key>
+		<string>POSTPONE CHANNEL GROUP (STATE: %@)</string>
+		<key>0900286</key>
+		<string>CHANNEL GROUP REMOVED (STATE: %@)</string>
+		<key>0900287</key>
+		<string>RESCHEDULE CHANNEL GROUP REMOVAL (STATE: %@)</string>
+		<key>0900288</key>
+		<string>FAILED TO REMOVE CHANNEL GROUP BECAUSE OF ERROR (STATE: %@)</string>
+	</dict>
+	<key>10</key>
+	<dict>
+		<key>1000000</key>
+		<string>DESTROYED</string>
 	</dict>
 </dict>
 </plist>

@@ -18,7 +18,7 @@
 
 #pragma mark - Properties
 
-@property (nonatomic, pn_dispatch_property_ownership) dispatch_object_t object;
+@property (nonatomic, pn_dispatch_property_ownership) dispatch_queue_t queue;
 
 
 #pragma mark - Instance methods
@@ -31,7 +31,7 @@
  
  @return Reference on wrapper which will store \a GCD object for us.
  */
-- (id)initWithObject:(dispatch_object_t)object;
+- (id)initWithGCDObject:(dispatch_queue_t)queue;
 
 #pragma mark -
 
@@ -44,18 +44,18 @@
 
 #pragma mark - Class methods
 
-+ (PNDispatchObjectWrapper *)wrapperForObject:(dispatch_object_t)object {
++ (PNDispatchObjectWrapper *)wrapperForObject:(dispatch_queue_t)queue {
     
-    return (object ? [[self alloc] initWithObject:object] : nil);
+    return (queue ? [[self alloc] initWithGCDObject:queue] : nil);
 }
 
-- (id)initWithObject:(dispatch_object_t)object {
+- (id)initWithGCDObject:(dispatch_queue_t)queue {
     
     // Check whether initializatino has been successful or not
     if ((self = [super init])) {
         
-        self.object = object;
-        [PNDispatchHelper retain:_object];
+        self.queue = queue;
+        [PNDispatchHelper retain:_queue];
     }
     
     
@@ -64,8 +64,8 @@
 
 - (void)dealloc {
     
-    [PNDispatchHelper release:_object];
-    _object = NULL;
+    [PNDispatchHelper release:_queue];
+    _queue = NULL;
 }
 
 #pragma mark -

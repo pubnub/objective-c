@@ -1149,6 +1149,38 @@ You can use the following methods to send messages:
 - (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;  
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+                 toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+                 toChannel:(PNChannel *)channel
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload 
+                 toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload 
+                 toChannel:(PNChannel *)channel
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload 
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload 
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel 
+            storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 - (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
                 compressed:(BOOL)shouldCompressMessage;  
 - (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
@@ -1160,6 +1192,45 @@ You can use the following methods to send messages:
 - (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel 
                 compressed:(BOOL)shouldCompressMessage 
             storeInHistory:(BOOL)shouldStoreInHistory 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+            storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+            storeInHistory:(BOOL)shouldStoreInHistory 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload 
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
+- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload 
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+            storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload 
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage 
+            storeInHistory:(BOOL)shouldStoreInHistory 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel 
+                compressed:(BOOL)shouldCompressMessage;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel 
+                compressed:(BOOL)shouldCompressMessage 
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload 
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel 
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory 
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
 - (void)sendMessage:(PNMessage *)message;  
@@ -1222,6 +1293,18 @@ PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfigu
 [pubNub connect];
 [pubNub sendMessage:@{@"message":@"Hello from dictionary object"} 
           toChannel:[PNChannel channelWithName:@"iosdev"];  
+```
+
+Here is example how to send different messages to: channel, Apple Push Notification and Google cloud notification:  
+```objc
+PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+[pubNub connect];
+[pubNub sendMessage:@{@"data_for_all":@{@"info":@"This is data all non-APNS and non-GCM devices "
+                       "would receive. They would also receive the pn_apns and pn_gcm data."}}
+ applePushNotification:@{@"aps":@{@"alert":@"Your order is ready for pickup!",@"badge":@(1), 
+                         @"payment_info":@{@"credit_card":@(987656789876),@"expiration":@"0108"}}} 
+ googleCloudNotification:@{@"data":@"this is my data only for gcm devices"} 
+               toChannel:[PNChannel channelWithName:@"push-test"]];
 ```
               
 

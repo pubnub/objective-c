@@ -62,6 +62,7 @@
 
 - (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
     
+    [super finalizeWithConfiguration:configuration clientIdentifier:clientIdentifier];
     self.subscriptionKey = configuration.subscriptionKey;
     self.clientIdentifier = clientIdentifier;
 }
