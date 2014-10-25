@@ -1291,68 +1291,47 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
     NSDictionary *symbolsTree = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"PNLoggerSymbols"
                                                                                                            ofType:@"plist"]];
     if (symbolsTree) {
+
+        NSMutableDictionary *flattenedTree = [NSMutableDictionary dictionary];
+        NSMutableDictionary *symbolsSectionName = [NSMutableDictionary dictionary];
         
-        // Pull out list of keys which represent version of the library for which symbols required.
-        NSArray *versionKeys = [symbolsTree allKeys];
-        __block NSString *versionKey;
-        [versionKeys enumerateObjectsUsingBlock:^(NSString *versionsKey, NSUInteger versionsKeyIdx, BOOL *versionsKeyEnumeratorStop) {
+        __block __pn_desired_weak void(^symbolsFlatteningBlockWeak)(NSString *, NSString *, id, BOOL *);
+        void(^symbolsFlatteningBlock)(NSString *, NSString *, id, BOOL *);
+
+        symbolsFlatteningBlockWeak = symbolsFlatteningBlock = ^(NSString *groupCode, NSString *entryCode,
+                                                                id entryContent, BOOL *entryEnumeratorStop){
             
-            if ([versionsKey rangeOfString:kPNLibraryVersion].location != NSNotFound) {
+            if ([entryContent isKindOfClass:[NSString class]]) {
                 
-                versionKey = versionsKey;
+                if ([entryCode isEqualToString:@"name"]) {
+                    
+                    // Storing group name by code
+                    [symbolsSectionName setValue:entryContent forKeyPath:groupCode];
+                }
+                else {
+                    
+                    [flattenedTree setValue:entryContent forKeyPath:entryCode];
+                }
             }
-            *versionsKeyEnumeratorStop = (versionKey != nil);
+            else if ([entryContent isKindOfClass:[NSDictionary class]]) {
+                
+                [entryContent enumerateKeysAndObjectsUsingBlock:^(NSString *subGroupEntryCode, id subEntryContent, BOOL *subEntryEnumeratorStop){
+                    
+                    symbolsFlatteningBlockWeak(entryCode, subGroupEntryCode, subEntryContent, subEntryEnumeratorStop);
+                }];
+            }
+        };
+        [symbolsTree enumerateKeysAndObjectsUsingBlock:^(NSString *groupCode, NSDictionary *groupCodeTable, BOOL *groupCodeEnumeratorStop) {
+            
+            [groupCodeTable enumerateKeysAndObjectsUsingBlock:^(NSString *entryCode, id entryContent, BOOL *entryEnumeratorStop){
+                
+                symbolsFlatteningBlock(groupCode, entryCode, entryContent, entryEnumeratorStop);
+            }];
         }];
         
-        if (versionKey) {
-            
-            // Pull out list of symbols which is suitable for current version.
-            symbolsTree = [symbolsTree valueForKey:versionKey];
-            NSMutableDictionary *flattenedTree = [NSMutableDictionary dictionary];
-            NSMutableDictionary *symbolsSectionName = [NSMutableDictionary dictionary];
-            
-            __block __pn_desired_weak void(^symbolsFlatteningBlockWeak)(NSString *, NSString *, id, BOOL *);
-            void(^symbolsFlatteningBlock)(NSString *, NSString *, id, BOOL *);
-
-            symbolsFlatteningBlockWeak = symbolsFlatteningBlock = ^(NSString *groupCode, NSString *entryCode,
-                                                                    id entryContent, BOOL *entryEnumeratorStop){
-                
-                if ([entryContent isKindOfClass:[NSString class]]) {
-                    
-                    if ([entryCode isEqualToString:@"name"]) {
-                        
-                        // Storing group name by code
-                        [symbolsSectionName setValue:entryContent forKeyPath:groupCode];
-                    }
-                    else {
-                        
-                        [flattenedTree setValue:entryContent forKeyPath:entryCode];
-                    }
-                }
-                else if ([entryContent isKindOfClass:[NSDictionary class]]) {
-                    
-                    [entryContent enumerateKeysAndObjectsUsingBlock:^(NSString *subGroupEntryCode, id subEntryContent, BOOL *subEntryEnumeratorStop){
-                        
-                        symbolsFlatteningBlockWeak(entryCode, subGroupEntryCode, subEntryContent, subEntryEnumeratorStop);
-                    }];
-                }
-            };
-            [symbolsTree enumerateKeysAndObjectsUsingBlock:^(NSString *groupCode, NSDictionary *groupCodeTable, BOOL *groupCodeEnumeratorStop) {
-                
-                [groupCodeTable enumerateKeysAndObjectsUsingBlock:^(NSString *entryCode, id entryContent, BOOL *entryEnumeratorStop){
-                    
-                    symbolsFlatteningBlock(groupCode, entryCode, entryContent, entryEnumeratorStop);
-                }];
-            }];
-            
-            // Storing processed tree with immutable container.
-            self.symbolsTable = [NSDictionary dictionaryWithDictionary:flattenedTree];
-            self.symbolsSectionName = [NSDictionary dictionaryWithDictionary:symbolsSectionName];
-        }
-        else {
-            
-            NSLog(@"{WARNING} SYMBOLS TABLE DOESN'T CONTAIN INFORMATION FOR %@ VERSION", kPNLibraryVersion);
-        }
+        // Storing processed tree with immutable container.
+        self.symbolsTable = [NSDictionary dictionaryWithDictionary:flattenedTree];
+        self.symbolsSectionName = [NSDictionary dictionaryWithDictionary:symbolsSectionName];
     }
     else {
         
