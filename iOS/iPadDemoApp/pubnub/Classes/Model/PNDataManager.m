@@ -96,10 +96,73 @@ static PNDataManager *_sharedInstance = nil;
         [[PNObservationCenter defaultCenter] addClientChannelUnsubscriptionObserver:weakSelf
                                                                   withCallbackBlock:^(NSArray *channels,
                                                                                       PNError *error) {
+                                                                      
+                  [channels enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
+                                                         BOOL *objectEnumeratorStop) {
+                      if ([object isEqual:weakSelf.currentChannel]) {
+                          
+                          self.currentChannelChat = @"";
+                          self.currentChannel = nil;
+                      }
+                      [weakSelf.messages removeObjectForKey:object.name];
+                  }];
                   NSArray *unsortedList = [PubNub subscribedObjectsList];
                   NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                   weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
               }];
+        
+        void(^removeChannelGroupObject)(id, BOOL) = ^(id objectInformation, BOOL matchOnlyNamespace) {
+            
+            NSMutableArray *objectsForRemoval = [NSMutableArray array];
+            [[weakSelf.subscribedChannelsList copy] enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object,
+                                                                                 NSUInteger objectIdx, BOOL *objectEnumeratorStop) {
+                
+                if ([object isKindOfClass:[PNChannelGroup class]]) {
+                    
+                    BOOL isEqualToTargetObject = NO;
+                    if (matchOnlyNamespace) {
+                        
+                        isEqualToTargetObject = [((PNChannelGroup *)object).nspace isEqualToString:objectInformation];
+                    }
+                    else {
+                        
+                        isEqualToTargetObject = [object isEqual:objectInformation];
+                    }
+                    
+                    if (isEqualToTargetObject) {
+                        
+                        if([weakSelf.currentChannel isEqual:object]) {
+                            
+                            weakSelf.currentChannelChat = @"";
+                            weakSelf.currentChannel = nil;
+                        }
+                        [weakSelf.messages removeObjectForKey:object.name];
+                        [objectsForRemoval addObject:object];
+                    }
+                }
+            }];
+            
+            NSPredicate *objectPredicate = [NSPredicate predicateWithFormat:@"NOT (self IN %@)", objectsForRemoval];
+            weakSelf.subscribedChannelsList = [weakSelf.subscribedChannelsList filteredArrayUsingPredicate:objectPredicate];
+        };
+        
+        [[PNObservationCenter defaultCenter] addChannelGroupNamespaceRemovalObserver:weakSelf
+                                                                   withCallbackBlock:^(NSString *namespace, PNError *error) {
+                                                                       
+                                                                       if (!error) {
+                                                                           
+                                                                           removeChannelGroupObject(namespace, YES);
+                                                                       }
+                                                                   }];
+        
+        [[PNObservationCenter defaultCenter] addChannelGroupRemovalObserver:self
+                                                          withCallbackBlock:^(PNChannelGroup *channelGroup, PNError *error) {
+              
+                                                              if (!error) {
+                                                                  
+                                                                  removeChannelGroupObject(channelGroup, NO);
+                                                              }
+                                                          }];
 
         [[PNObservationCenter defaultCenter] addMessageReceiveObserver:weakSelf
                                                              withBlock:^(PNMessage *message) {
@@ -249,6 +312,7 @@ static PNDataManager *_sharedInstance = nil;
     
     self.subscribedChannelsList = @[];
     self.currentChannel = nil;
+    [self.messages removeAllObjects];
 }
 
 - (void)setCurrentChannel:(PNChannel *)currentChannel {

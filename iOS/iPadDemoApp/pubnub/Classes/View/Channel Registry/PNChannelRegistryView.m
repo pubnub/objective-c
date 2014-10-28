@@ -399,6 +399,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (IBAction)handleDataAdditionButtonTap:(id)sender {
     
+    [self completeUserInput];
     PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
     information.delegate = self;
     information.allowEditing = YES;
