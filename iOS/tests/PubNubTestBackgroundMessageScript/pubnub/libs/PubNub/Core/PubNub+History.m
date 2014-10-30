@@ -13,6 +13,8 @@
 #import "PNServiceChannel.h"
 #import "PubNub+Protected.h"
 #import "PNNotifications.h"
+#import "PNCryptoHelper.h"
+#import "PubNub+Cipher.h"
 #import "PNHelper.h"
 #import "PNDate.h"
 
@@ -637,17 +639,40 @@
         
         if ([self shouldChannelNotifyAboutEvent:serviceChannel]) {
             
-            // Check whether delegate can response on history download event or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveMessageHistory:forChannel:startingFrom:to:)]) {
+            dispatch_block_t notifyBlock = ^{
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
+                // Check whether delegate can response on history download event or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveMessageHistory:forChannel:startingFrom:to:)]) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        [self.clientDelegate pubnubClient:self didReceiveMessageHistory:history.messages forChannel:history.channel
+                                             startingFrom:history.startDate to:history.endDate];
+                    });
+                }
                 
-                    [self.clientDelegate pubnubClient:self didReceiveMessageHistory:history.messages forChannel:history.channel
-                                         startingFrom:history.startDate to:history.endDate];
-                });
-            }
+                [self sendNotification:kPNClientDidReceiveMessagesHistoryNotification withObject:history];
+            };
             
-            [self sendNotification:kPNClientDidReceiveMessagesHistoryNotification withObject:history];
+            
+            // In case if cryptor configured and ready to go, message will be decrypted.
+            if (self.cryptoHelper.ready) {
+                
+                [self pn_dispatchAsynchronouslyBlock:^{
+                        
+                    [history.messages enumerateObjectsUsingBlock:^(PNMessage *message, NSUInteger messageIdx,
+                                                                   BOOL *messageEnumeratorStop) {
+                        
+                        message.message = [self AESDecrypt:message.message];
+                    }];
+                }];
+                
+                notifyBlock();
+            }
+            else {
+                
+                notifyBlock();
+            }
         }
     }
                                 shouldStartNext:YES];
