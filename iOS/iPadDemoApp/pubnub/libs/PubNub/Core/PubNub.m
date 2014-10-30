@@ -439,6 +439,35 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     return [[self alloc] initWithConfiguration:configuration andDelegate:delegate];
 }
 
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration {
+    
+    return [self connectingClientWithConfiguration:configuration andSuccessBlock:nil errorBlock:nil];
+}
+
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration
+                              andSuccessBlock:(PNClientConnectionSuccessBlock)success
+                                   errorBlock:(PNClientConnectionFailureBlock)failure {
+    
+    return [self connectingClientWithConfiguration:configuration delegate:nil andSuccessBlock:success errorBlock:failure];
+}
+
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
+    
+    return [self connectingClientWithConfiguration:configuration delegate:delegate andSuccessBlock:nil errorBlock:nil];
+}
+
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration delegate:(id<PNDelegate>)delegate
+                              andSuccessBlock:(PNClientConnectionSuccessBlock)success
+                                   errorBlock:(PNClientConnectionFailureBlock)failure {
+    
+    PubNub *pubNub = [[self alloc] initWithConfiguration:configuration andDelegate:delegate];
+    [pubNub connectWithSuccessBlock:success errorBlock:failure];
+    
+    
+    return pubNub;
+}
+
+
 + (void)resetClient {
 
     [PNLogger logGeneralMessageFrom:_sharedInstance withParametersFromBlock:^NSArray *{
