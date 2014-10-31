@@ -7,6 +7,7 @@
 //
 
 #import "PNConnectionChannel+Reconnect.h"
+#import "PNHelper.h"
 
 @implementation PNConnectionChannel (Reconnect)
 
@@ -59,11 +60,12 @@ void PNBitOn(unsigned long *flag, unsigned long mask) {
 	unsigned long st = [self performSelector: @selector(state)];
     PNBitClear(&st);
     if (isConnected) {
-
+†
         PNBitOn(&st, PNConnectionChannelConnected);
     }
-    PNBitOn(&st, PNConnectionChannelReconnect);
-	[self setState: st];
+//    PNBitOn(&st, PNConnectionChannelReconnect);
+//	[self setState: st];
+    [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelReconnect];
 
     [[self performSelector:@selector(connection)] reconnect];
 	if( NSClassFromString(@"UIApplication") != nil )
