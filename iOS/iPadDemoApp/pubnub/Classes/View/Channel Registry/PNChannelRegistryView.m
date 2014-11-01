@@ -548,11 +548,11 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             NSString *objects = [[objectForManipulation valueForKey:@"name"] componentsJoinedByString:@","];
             if (!requestError) {
                 
-                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group];
+                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group.name];
             }
             else {
                 
-                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group,
+                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group.name,
                                        requestError];
             }
         }

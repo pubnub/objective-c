@@ -117,7 +117,7 @@ static PNDataManager *_sharedInstance = nil;
             [[weakSelf.subscribedChannelsList copy] enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object,
                                                                                  NSUInteger objectIdx, BOOL *objectEnumeratorStop) {
                 
-                if ([object isKindOfClass:[PNChannelGroup class]]) {
+                if (object.isChannelGroup) {
                     
                     BOOL isEqualToTargetObject = NO;
                     if (matchOnlyNamespace) {
