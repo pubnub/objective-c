@@ -14,6 +14,8 @@
 #import "PNConfiguration.h"
 #import "PNCryptoHelper.h"
 
+static NSString *kTestMessage = @"Hello World";
+
 static NSString *kOriginPath = @"pubsub.pubnub.com";
 
 static NSString *kPublishKey = @"demo";
@@ -166,7 +168,7 @@ static NSString *kSecretKey = nil;
     dispatch_group_enter(_resGroup);
     
     // Send message
-    NSString *encryptedMessage = @"Hello World";
+    NSString *encryptedMessage = kTestMessage;
     
     [_firstUserPubNub sendMessage:encryptedMessage
                         toChannel:testChannel
@@ -220,9 +222,16 @@ static NSString *kSecretKey = nil;
     
     if ([client isEqual:_secondUserPubNub]) {
         if (_resGroup != NULL) {
+            
+            if (![kTestMessage isEqualToString:encryptedMessage.message]) {
+                XCTFail(@"Strings are not equal %@ <> %@", kTestMessage, encryptedMessage.message);
+            }
+            
             dispatch_group_leave(_resGroup);
         }
     }
+    
+    
 }
 
 @end

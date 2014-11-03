@@ -127,34 +127,37 @@ typedef NS_OPTIONS(NSInteger , PNAccessRightsLevel) {
 };
 
 
-typedef void (^PNClientConnectionSuccessBlock)(NSString *);
-typedef void (^PNClientConnectionFailureBlock)(PNError *);
-typedef void (^PNClientConnectionStateChangeBlock)(NSString *, BOOL, PNError *);
-typedef void (^PNClientStateRetrieveHandlingBlock)(PNClient *, PNError *);
-typedef void (^PNClientStateUpdateHandlingBlock)(PNClient *, PNError *);
-typedef void (^PNClientChannelGroupsRequestHandlingBlock)(NSString *, NSArray *, PNError *);
-typedef void (^PNClientChannelGroupNamespacesRequestHandlingBlock)(NSArray *, PNError *);
-typedef void (^PNClientChannelGroupNamespaceRemoveHandlingBlock)(NSString *, PNError *);
-typedef void (^PNClientChannelGroupRemoveHandlingBlock)(PNChannelGroup *, PNError *);
-typedef void (^PNClientChannelsForGroupRequestHandlingBlock)(PNChannelGroup *, PNError *);
-typedef void (^PNClientChannelsAdditionToGroupHandlingBlock)(PNChannelGroup *, NSArray *, PNError *);
-typedef void (^PNClientChannelsRemovalFromGroupHandlingBlock)(PNChannelGroup *, NSArray *, PNError *);
-typedef void (^PNClientChannelSubscriptionHandlerBlock)(PNSubscriptionProcessState state, NSArray *, PNError *);
-typedef void (^PNClientChannelUnsubscriptionHandlerBlock)(NSArray *, PNError *);
-typedef void (^PNClientTimeTokenReceivingCompleteBlock)(NSNumber *, PNError *);
-typedef void (^PNClientMessageProcessingBlock)(PNMessageState, id);
-typedef void (^PNClientMessageHandlingBlock)(PNMessage *);
-typedef void (^PNClientHistoryLoadHandlingBlock)(NSArray *, PNChannel *, PNDate *, PNDate *, PNError *);
-typedef void (^PNClientParticipantsHandlingBlock)(PNHereNow *, NSArray *, PNError *);
-typedef void (^PNClientParticipantChannelsHandlingBlock)(NSString *, NSArray *, PNError *);
-typedef void (^PNClientChannelAccessRightsChangeBlock)(PNAccessRightsCollection *, PNError *);
-typedef void (^PNClientChannelAccessRightsAuditBlock)(PNAccessRightsCollection *, PNError *);
-typedef void (^PNClientPresenceEventHandlingBlock)(PNPresenceEvent *);
-typedef void (^PNClientPresenceEnableHandlingBlock)(NSArray *, PNError *);
-typedef void (^PNClientPresenceDisableHandlingBlock)(NSArray *, PNError *);
-typedef void (^PNClientPushNotificationsRemoveHandlingBlock)(PNError *);
-typedef void (^PNClientPushNotificationsEnableHandlingBlock)(NSArray *, PNError *);
-typedef void (^PNClientPushNotificationsDisableHandlingBlock)(NSArray *, PNError *);
-typedef void (^PNClientPushNotificationsEnabledChannelsHandlingBlock)(NSArray *, PNError *);
+typedef void (^PNClientConnectionSuccessBlock)(NSString *origin);
+typedef void (^PNClientConnectionFailureBlock)(PNError *error);
+typedef void (^PNClientConnectionStateChangeBlock)(NSString *origin, BOOL isConnected, PNError *error);
+typedef void (^PNClientStateRetrieveHandlingBlock)(PNClient *client, PNError *error);
+typedef void (^PNClientStateUpdateHandlingBlock)(PNClient *client, PNError *error);
+typedef void (^PNClientChannelGroupsRequestHandlingBlock)(NSString *namespaceName, NSArray *channelGroups, PNError *error);
+typedef void (^PNClientChannelGroupNamespacesRequestHandlingBlock)(NSArray *namespaces, PNError *error);
+typedef void (^PNClientChannelGroupNamespaceRemoveHandlingBlock)(NSString *namespaceName, PNError *error);
+typedef void (^PNClientChannelGroupRemoveHandlingBlock)(PNChannelGroup *channelGroup, PNError *error);
+typedef void (^PNClientChannelsForGroupRequestHandlingBlock)(PNChannelGroup *channelGroup, PNError *error);
+typedef void (^PNClientChannelsAdditionToGroupHandlingBlock)(PNChannelGroup *channelGroup, NSArray *channels,
+                                                             PNError *error);
+typedef void (^PNClientChannelsRemovalFromGroupHandlingBlock)(PNChannelGroup *channelGroup, NSArray *channels,
+                                                              PNError *error);
+typedef void (^PNClientChannelSubscriptionHandlerBlock)(PNSubscriptionProcessState state, NSArray *channels, PNError *error);
+typedef void (^PNClientChannelUnsubscriptionHandlerBlock)(NSArray *channels, PNError *error);
+typedef void (^PNClientTimeTokenReceivingCompleteBlock)(NSNumber *timeToken, PNError *error);
+typedef void (^PNClientMessageProcessingBlock)(PNMessageState state, id data);
+typedef void (^PNClientMessageHandlingBlock)(PNMessage *message);
+typedef void (^PNClientHistoryLoadHandlingBlock)(NSArray *messages, PNChannel *channel, PNDate *startDate, PNDate *endDate,
+                                                 PNError *error);
+typedef void (^PNClientParticipantsHandlingBlock)(PNHereNow *presenceInformation, NSArray *channels, PNError *error);
+typedef void (^PNClientParticipantChannelsHandlingBlock)(NSString *clientIdentifier, NSArray *channels, PNError *error);
+typedef void (^PNClientChannelAccessRightsChangeBlock)(PNAccessRightsCollection *accessRightsCollection, PNError *error);
+typedef void (^PNClientChannelAccessRightsAuditBlock)(PNAccessRightsCollection *accessRightsCollection, PNError *error);
+typedef void (^PNClientPresenceEventHandlingBlock)(PNPresenceEvent *event);
+typedef void (^PNClientPresenceEnableHandlingBlock)(NSArray *channels, PNError *error);
+typedef void (^PNClientPresenceDisableHandlingBlock)(NSArray *channels, PNError *error);
+typedef void (^PNClientPushNotificationsRemoveHandlingBlock)(PNError *error);
+typedef void (^PNClientPushNotificationsEnableHandlingBlock)(NSArray *channels, PNError *error);
+typedef void (^PNClientPushNotificationsDisableHandlingBlock)(NSArray *channels, PNError *error);
+typedef void (^PNClientPushNotificationsEnabledChannelsHandlingBlock)(NSArray *channels, PNError *error);
 
 #endif // PNStructures_h

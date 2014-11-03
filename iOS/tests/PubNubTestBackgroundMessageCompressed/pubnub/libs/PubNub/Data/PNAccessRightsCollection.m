@@ -10,6 +10,8 @@
 #import "PNAccessRightsInformation+Protected.h"
 #import "PNAccessRightsCollection+Protected.h"
 #import "PNAccessRightOptions+Protected.h"
+#import "PNChannelGroupNamespace.h"
+#import "PNChannelGroup.h"
 #import "PNChannel.h"
 #import "PNHelper.h"
 
@@ -61,30 +63,75 @@
 
 - (NSArray *)accessRightsInformationForAllChannels {
 
-    return [self.channelsAccessRightsInformation allValues];
+    NSPredicate *channelsPredicate = [NSPredicate predicateWithFormat:@"self.object.isChannelGroup == NO"];
+    return [[self.channelsAccessRightsInformation allValues] filteredArrayUsingPredicate:channelsPredicate];
+}
+
+- (NSArray *)accessRightsInformationForAllChannelGroups {
+    
+    return [self accessRightsInformationForAllChannelGroupObjectsByClass:[PNChannelGroup class]];
+}
+
+- (NSArray *)accessRightsInformationForAllChannelGroupNamespaces {
+    
+    return [self accessRightsInformationForAllChannelGroupObjectsByClass:[PNChannelGroupNamespace class]];
+}
+
+- (NSArray *)accessRightsInformationForAllChannelGroupObjects {
+    
+    NSPredicate *groupsPredicate = [NSPredicate predicateWithFormat:@"self.object.isChannelGroup == YES"];
+    return [[self.channelsAccessRightsInformation allValues] filteredArrayUsingPredicate:groupsPredicate];
+}
+
+- (NSArray *)accessRightsInformationForAllChannelGroupObjectsByClass:(Class)channelGroupObjectClass {
+    
+    NSMutableArray *groupObjectAccessRights = [[self accessRightsInformationForAllChannelGroupObjects] mutableCopy];
+    [[groupObjectAccessRights copy] enumerateObjectsUsingBlock:^(PNAccessRightsInformation *objectAccessRightsInformation,
+                                                                 NSUInteger objectAccessRightsInformationIdx,
+                                                                 BOOL *objectAccessRightsInformationEnumeratorStop) {
+        
+        if (![objectAccessRightsInformation.object isMemberOfClass:channelGroupObjectClass]) {
+            
+            [groupObjectAccessRights removeObject:objectAccessRightsInformation];
+        }
+    }];
+    
+    
+    return [groupObjectAccessRights copy];
 }
 
 - (PNAccessRightsInformation *)accessRightsInformationForChannel:(PNChannel *)channel {
+    
+    return [self accessRightsInformationFor:channel];
+}
 
-    PNAccessRightsInformation *channelInformation = [self.channelsAccessRightsInformation valueForKey:channel.name];
-
+- (PNAccessRightsInformation *)accessRightsInformationFor:(id<PNChannelProtocol>)object {
+    
+    PNAccessRightsInformation *channelInformation = [self.channelsAccessRightsInformation valueForKey:object.name];
+    
     // Check whether there is no access rights information for specified channel or not.
     if (!channelInformation) {
-
-        channelInformation = [PNAccessRightsInformation accessRightsInformationForLevel:PNChannelAccessRightsLevel
-                                                               rights:PNUnknownAccessRights applicationKey:self.applicationKey
-                                                           forChannel:channel client:nil accessPeriod:0];
-
+        
+        PNAccessRightsLevel level = (object.isChannelGroup ? PNChannelGroupAccessRightsLevel : PNChannelAccessRightsLevel);
+        channelInformation = [PNAccessRightsInformation accessRightsInformationForLevel:level rights:PNUnknownAccessRights
+                                                                         applicationKey:self.applicationKey
+                                                                             forChannel:object client:nil accessPeriod:0];
+        
         [self populateAccessRightsFrom:[self accessRightsInformationForApplication] to:channelInformation];
     }
-
-
+    
+    
     return channelInformation;
 }
 
 - (NSArray *)accessRightsForClientsOnChannel:(PNChannel *)channel {
     
-    NSString *keyPortion = [NSString stringWithFormat:@"%@.", channel.name];
+    return [self accessRightsForClientsOn:channel];
+}
+
+- (NSArray *)accessRightsForClientsOn:(id<PNChannelProtocol>)object {
+    
+    NSString *keyPortion = [NSString stringWithFormat:@"%@.", object.name];
     NSSet *userInformationKeys = [self.clientsAccessRightsInformation keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
         
         return [key rangeOfString:keyPortion].location != NSNotFound;
@@ -121,7 +168,7 @@
                                                                rights:PNUnknownAccessRights applicationKey:self.applicationKey
                                                            forChannel:channel client:clientAuthorizationKey accessPeriod:0];
 
-        [self populateAccessRightsFrom:[self accessRightsInformationForChannel:channel] to:clientInformation];
+        [self populateAccessRightsFrom:[self accessRightsInformationFor:channel] to:clientInformation];
     }
 
 
@@ -146,7 +193,7 @@
 - (void)storeClientAccessRightsInformation:(PNAccessRightsInformation *)information forChannel:(PNChannel *)channel {
 
     NSString *userInformationStoreKey = [NSString stringWithFormat:@"%@.%@", channel.name, information.authorizationKey];
-    [self populateAccessRightsFrom:[self accessRightsInformationForChannel:channel] to:information];
+    [self populateAccessRightsFrom:[self accessRightsInformationFor:channel] to:information];
 
     if (![self.clientsAccessRightsInformation objectForKey:userInformationStoreKey]) {
 
