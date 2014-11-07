@@ -586,9 +586,14 @@ typedef enum _PNHistoryMode {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     PNChannel *channel = [[self.historyHelper channels] objectAtIndex:indexPath.row];
-    self.historyHelper.channelName = channel.name;
-    self.channelNameTextField.text = channel.name;
-    [self updateLayout];
+    if (![self.historyHelper.channelName isEqualToString:channel.name]){
+        
+        self.historyHelper.startDate = nil;
+        self.historyHelper.endDate = nil;
+        self.historyHelper.channelName = channel.name;
+        self.channelNameTextField.text = channel.name;
+        [self updateLayout];
+    }
 }
 
 #pragma mark -
