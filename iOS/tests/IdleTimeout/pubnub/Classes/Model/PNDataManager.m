@@ -78,7 +78,7 @@ static PNDataManager *_sharedInstance = nil;
 
                     if (state == PNSubscriptionProcessSubscribedState || state == PNSubscriptionProcessRestoredState) {
 
-                        NSArray *unsortedList = [PubNub subscribedChannels];
+                        NSArray *unsortedList = [PubNub subscribedObjectsList];
                         NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                         weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
                     }
@@ -87,7 +87,7 @@ static PNDataManager *_sharedInstance = nil;
         [[PNObservationCenter defaultCenter] addClientChannelUnsubscriptionObserver:weakSelf
                                                                   withCallbackBlock:^(NSArray *channels,
                                                                                       PNError *error) {
-                  NSArray *unsortedList = [PubNub subscribedChannels];
+                  NSArray *unsortedList = [PubNub subscribedObjectsList];
                   NSSortDescriptor *nameSorting = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                   weakSelf.subscribedChannelsList = [unsortedList sortedArrayUsingDescriptors:@[nameSorting]];
               }];
@@ -142,7 +142,7 @@ static PNDataManager *_sharedInstance = nil;
                 }
                 eventMessage = [eventMessage stringByAppendingFormat:@"<%@> %@ '%@'\n",
                                                                      [dateFormatter stringFromDate:event.date.date],
-                                                                     event.uuid ? event.uuid : @"unknown",
+                                                                     event.client.identifier ? event.client.identifier : @"unknown",
                                                                      eventType];
                 [weakSelf.messages setValue:eventMessage forKey:channel.name];
 
@@ -244,10 +244,9 @@ static PNDataManager *_sharedInstance = nil;
 
     if (shouldUpdate) {
 
-        [PubNub requestParticipantsListForChannel:_currentChannel];
+        [PubNub requestParticipantsListFor:@[_currentChannel]];
     }
 }
-
 
 #pragma mark -
 

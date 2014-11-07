@@ -19,6 +19,7 @@
 #import "PNError+Protected.h"
 #import "PNNotifications.h"
 #import "PNLoggerSymbols.h"
+#import "PNChannelGroup.h"
 #import "PNWhereNow.h"
 #import "PNChannel.h"
 #import "PNClient.h"

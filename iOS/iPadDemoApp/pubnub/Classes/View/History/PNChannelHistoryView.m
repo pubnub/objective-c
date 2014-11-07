@@ -411,6 +411,8 @@ typedef enum _PNHistoryMode {
                 
                 weakSelf.historyHelper.startDate = (isValidStartDate ? startDate : weakSelf.historyHelper.startDate);
                 weakSelf.historyHelper.endDate = (isValidEndDate ? endDate : weakSelf.historyHelper.endDate);
+                weakSelf.historyHelper.startDate = [PNDate dateWithToken:@([weakSelf.historyHelper.startDate.timeToken unsignedLongLongValue] - 100)];
+                weakSelf.historyHelper.endDate = [PNDate dateWithToken:@([weakSelf.historyHelper.endDate.timeToken unsignedLongLongValue] + 100)];
             }
         }
         else {

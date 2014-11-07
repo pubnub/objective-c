@@ -195,7 +195,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             break;
         case PNUserAccessRightsLevel:
             
-            if ([information.object isKindOfClass:[PNChannelGroup class]]) {
+            if (information.object.isChannelGroup) {
                 
                 view = [self viewFromNibForUserGrantOnChannelGroup];
             }
@@ -520,7 +520,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
         self.accessRightsHelper.channelName = information.object.name;
         self.channelNameInputTextField.text = information.object.name;
     }
-    else if (information.level == PNChannelAccessRightsLevel) {
+    else if (information.level == PNChannelAccessRightsLevel || information.level == PNChannelGroupAccessRightsLevel) {
         
         [self.accessRightsHelper addObject:information.object];
     }

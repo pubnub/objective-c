@@ -75,11 +75,10 @@
     if (self.isEnablingPushNotifications) {
         
         NSArray *subscribedChannels = [PubNub subscribedObjectsList];
-        [subscribedChannels enumerateObjectsUsingBlock:^(id object, NSUInteger objectIdx,
+        [subscribedChannels enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
                                                          BOOL *objectEnumeratorStop) {
-            BOOL isChannelGroup = ([object isKindOfClass:[PNChannelGroupNamespace class]] ||
-                                   [object isKindOfClass:[PNChannelGroup class]]);
-            if (!isChannelGroup && ![self.pushNotificationEnabledChannels containsObject:object]) {
+
+            if (!object.isChannelGroup && ![self.pushNotificationEnabledChannels containsObject:object]) {
                 
                 [self.existingChannels addObject:object];
             }

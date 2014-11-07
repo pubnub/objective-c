@@ -53,15 +53,38 @@
                    shouldObservePresence:(BOOL)observePresence {
     
     NSString *channelName = name;
-    if (channelName && nspace) {
+    if (name && [name rangeOfString:@":"].location != NSNotFound) {
         
-        channelName = [NSString stringWithFormat:@"%@:%@", nspace, channelName];
-    }
-    if (!channelName && nspace) {
-        
-        if (![nspace isEqualToString:@":"]) {
+        if ([name isEqualToString:@":"]) {
             
-            channelName = [nspace stringByAppendingString:@":"];
+            nspace = name;
+            name = nil;
+        }
+        else {
+            
+            NSArray *channelGroupNameComponents = [name componentsSeparatedByString:@":"];
+            channelName = [name stringByReplacingOccurrencesOfString:@":" withString:@""];
+            nspace = ([[channelGroupNameComponents objectAtIndex:0] length] ?
+                      [channelGroupNameComponents objectAtIndex:0] : nil);
+            name = ([[channelGroupNameComponents lastObject] length] ? [channelGroupNameComponents lastObject] : nil);
+            if (!name && nspace) {
+                
+                channelName = [nspace stringByAppendingString:@":"];
+            }
+        }
+    }
+    else {
+        
+        if (channelName && nspace) {
+            
+            channelName = [NSString stringWithFormat:@"%@:%@", nspace, channelName];
+        }
+        if (!channelName && nspace) {
+            
+            if (![nspace isEqualToString:@":"]) {
+                
+                channelName = [nspace stringByAppendingString:@":"];
+            }
         }
     }
     if (!channelName) {
