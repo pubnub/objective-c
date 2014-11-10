@@ -47,7 +47,13 @@ static NSString *kNamespaceSeparatorSymbol = @":";
     for (NSString *groupName in names) {
         PNChannelGroup *group = [PNChannelGroup channelGroupWithName:groupName];
         
-        XCTAssertNotNil(group, @"Group cannot be created: %@", groupName);
+        if ([[groupName componentsSeparatedByString:kNamespaceSeparatorSymbol] count] > 2) {
+            // if groupName has more than 1 separator symbol - we get nil from factory method
+            XCTAssertNil(group, @"Group is created by error: %@", groupName);
+            continue;
+        } else {
+            XCTAssertNotNil(group, @"Group cannot be created: %@", groupName);
+        }
         
         dispatch_group_t testResGroup = dispatch_group_create();
         
@@ -112,7 +118,7 @@ static NSString *kNamespaceSeparatorSymbol = @":";
         } else {
             // try to determine group and namespace:
             NSString *testNamespace = [groupName substringToIndex:range.location];
-            NSString *testGroupName = [groupName substringFromIndex:range.location + 1];
+            NSString *testGroupName = [[groupName componentsSeparatedByString:kNamespaceSeparatorSymbol] lastObject];
             
             // we try to subscribe to group in a namespace
             
@@ -124,10 +130,6 @@ static NSString *kNamespaceSeparatorSymbol = @":";
                     // TODO: check if we really subscribed to it?
                 } else {
                     XCTFail(@"Cannot add channel to group: %@ %@", channelName, groupName);
-                }
-                
-                if ([testNamespace isEqualToString:@"test_test"]) {
-                    NSLog(@"");
                 }
                 
                 dispatch_group_leave(testResGroup);

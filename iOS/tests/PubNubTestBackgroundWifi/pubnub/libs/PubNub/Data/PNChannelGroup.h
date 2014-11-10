@@ -40,7 +40,9 @@
  @param groupName
  Name under which this channel group object is stored inside namespace in \b PubNub cloud.
  
- @return Reference on ready to use \b PNChannelGroup object.
+ @return Reference on ready to use \b PNChannelGroup object or \c nil in case if wrong \c name 
+ (with forbidden characters) or \c nspace (with forbidden characters). Also will return \c nil in
+ case if name will be specified in wrong format (required: "namespace name:group name").
  */
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name;
 
@@ -54,7 +56,9 @@
  @param observePresence Whether \b PubNub client should receive presence events from channels registered in channel or 
                         not
  
- @return Reference on ready to use \b PNChannelGroup instance with specified behaviour as for presence events.
+ @return Reference on ready to use \b PNChannelGroup instance with specified behaviour as for
+ presence events or \c nil in case if wrong \c name (with forbidden characters) or \c nspace (with
+ forbidden characters).
  
  @since 3.7.0
  */
@@ -69,7 +73,8 @@
  @param nspace
  Name of namespace under which this channel group and channels stored.
  
- @return Reference on ready to use \b PNChannelGroup object.
+ @return Reference on ready to use \b PNChannelGroup object or \c nil in case if wrong \c name 
+ (with forbidden characters) or \c nspace (with forbidden characters).
  */
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace;
 
@@ -81,10 +86,12 @@
  
  @param name            Name of channel group in inside of namespace
  @param nspace          Name of namespace under which this channel group and channels stored.
- @param observePresence Whether \b PubNub client should receive presence events from channels registered in channel or
-                        not
+ @param observePresence Whether \b PubNub client should receive presence events from channels
+                        registered in channel or not
  
- @return Reference on ready to use \b PNChannelGroup instance with specified behaviour as for presence events.
+ @return Reference on ready to use \b PNChannelGroup instance with specified behaviour as for 
+ presence events or \c nil in case if wrong \c name (with forbidden characters) or \c nspace (with 
+ forbidden characters).
  
  @since 3.7.0
  */
