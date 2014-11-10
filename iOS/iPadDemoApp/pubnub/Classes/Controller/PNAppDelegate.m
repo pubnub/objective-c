@@ -120,6 +120,14 @@
     }
     
     [self initializePubNubClient];
+    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
+    [PubNub connect];
+    [[PubNub sharedInstance] requestDefaultChannelGroupsWithCompletionHandlingBlock:^(NSString *namespaceName, NSArray *channelGroups, PNError *error) {
+        
+        NSLog(@"NAMESPACE: %@", namespaceName);
+        NSLog(@"GROUPS NAME: %@", [channelGroups valueForKey:@"groupName"]);
+        NSLog(@"GROUPS NAMESPACE NAME: %@", [channelGroups valueForKey:@"nspace"]);
+    }];
     
     #if !TARGET_IPHONE_SIMULATOR
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
