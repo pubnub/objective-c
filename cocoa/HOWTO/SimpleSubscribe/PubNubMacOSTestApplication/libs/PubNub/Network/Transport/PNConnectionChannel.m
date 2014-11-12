@@ -1722,6 +1722,12 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         }];
 
         if (request) {
+            
+            // In case if response arrived with unexpected code, store it for future research.
+            [PNLogger storeUnexpectedHTTPDescription:[request debugResourcePath] packetData:^NSData *{
+                
+                return response.content;
+            }];
 
             if ([request canRetry]) {
                 
