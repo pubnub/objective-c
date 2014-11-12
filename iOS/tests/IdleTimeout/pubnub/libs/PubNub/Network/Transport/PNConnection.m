@@ -1028,87 +1028,84 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         return @[PNLoggerSymbols.connection.stream.prepareForUsage, (self.name ? self.name : self), @(self.state)];
     }];
 
-    __block BOOL streamsPrepared = YES;
-    [self pn_dispatchSynchronouslyBlock:^{
+    BOOL streamsPrepared = YES;
+    // Check whether stream was prepared and configured before
+    if ([PNBitwiseHelper is:self.state strictly:YES containsBit:PNConnectionConfigured]) {
 
-        // Check whether stream was prepared and configured before
-        if ([PNBitwiseHelper is:self.state strictly:YES containsBit:PNConnectionConfigured]) {
+        NSString *symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlier;
+        if ([self isConnecting]) {
 
-            NSString *symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlier;
-            if ([self isConnecting]) {
+            symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndConnecting;
 
-                symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndConnecting;
+        }
+        else if ([self isConnected]) {
 
-            }
-            else if ([self isConnected]) {
+            symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndConnected;
+        }
+        if ([self isResuming]) {
 
-                symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndConnected;
-            }
-            if ([self isResuming]) {
+            symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndResuming;
+        }
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                symbolCode = PNLoggerSymbols.connection.stream.configurationCompletedEarlierAndResuming;
-            }
-            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+            return @[symbolCode, (self.name ? self.name : self), @(self.state)];
+        }];
+    }
+    else {
 
-                return @[symbolCode, (self.name ? self.name : self), @(self.state)];
+        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.connection.stream.configurationStarted, (self.name ? self.name : self), @(self.state)];
+        }];
+
+        // Make sure that streams will be unable to operate (protection in case of state has been interrupted in some
+        // way)
+        [self destroyStreams];
+
+        [PNBitwiseHelper removeFrom:&_state bit:PNConnectionDisconnecting];
+        [PNBitwiseHelper addTo:&_state bit:PNConnectionDisconnected];
+
+
+        // Define connection port which should be used by connection for further usage (depends on current connection
+        // security policy)
+        UInt32 targetPort = kPNOriginConnectionPort;
+        if (self.configuration.shouldUseSecureConnection &&
+            self.sslConfigurationLevel != PNConnectionSSLConfigurationInsecure) {
+
+            targetPort = kPNOriginSSLConnectionPort;
+        }
+
+        // Retrieve connection proxy configuration
+        [self retrieveSystemProxySettings];
+
+
+        // Create stream pair on socket which is connected to specified remote host
+        CFStreamCreatePairWithSocketToHost(CFAllocatorGetDefault(), (__bridge CFStringRef)(self.configuration.origin),
+                                           targetPort, &_socketReadStream, &_socketWriteStream);
+        [self configureReadStream:_socketReadStream];
+        [self configureWriteStream:_socketWriteStream];
+
+        // Check whether at least one of the streams was unable to complete configuration
+        if (![PNBitwiseHelper is:self.state containsBit:PNConnectionConfigured]) {
+
+            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.connection.stream.configurationFailed, (self.name ? self.name : self), @(self.state)];
             }];
+
+            streamsPrepared = NO;
+
+            [self destroyStreams];
+            [self handleStreamSetupError];
         }
         else {
 
             [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.connection.stream.configurationStarted, (self.name ? self.name : self), @(self.state)];
+                return @[PNLoggerSymbols.connection.stream.configurationCompleted, (self.name ? self.name : self), @(self.state)];
             }];
-
-            // Make sure that streams will be unable to operate (protection in case of state has been interrupted in some
-            // way)
-            [self destroyStreams];
-
-            [PNBitwiseHelper removeFrom:&_state bit:PNConnectionDisconnecting];
-            [PNBitwiseHelper addTo:&_state bit:PNConnectionDisconnected];
-
-
-            // Define connection port which should be used by connection for further usage (depends on current connection
-            // security policy)
-            UInt32 targetPort = kPNOriginConnectionPort;
-            if (self.configuration.shouldUseSecureConnection &&
-                self.sslConfigurationLevel != PNConnectionSSLConfigurationInsecure) {
-
-                targetPort = kPNOriginSSLConnectionPort;
-            }
-
-            // Retrieve connection proxy configuration
-            [self retrieveSystemProxySettings];
-
-
-            // Create stream pair on socket which is connected to specified remote host
-            CFStreamCreatePairWithSocketToHost(CFAllocatorGetDefault(), (__bridge CFStringRef)(self.configuration.origin),
-                                               targetPort, &_socketReadStream, &_socketWriteStream);
-            [self configureReadStream:_socketReadStream];
-            [self configureWriteStream:_socketWriteStream];
-
-            // Check whether at least one of the streams was unable to complete configuration
-            if (![PNBitwiseHelper is:self.state containsBit:PNConnectionConfigured]) {
-
-                [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                    return @[PNLoggerSymbols.connection.stream.configurationFailed, (self.name ? self.name : self), @(self.state)];
-                }];
-
-                streamsPrepared = NO;
-
-                [self destroyStreams];
-                [self handleStreamSetupError];
-            }
-            else {
-
-                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.connection.stream.configurationCompleted, (self.name ? self.name : self), @(self.state)];
-                }];
-            }
         }
-    }];
+    }
 
 
     return streamsPrepared;
