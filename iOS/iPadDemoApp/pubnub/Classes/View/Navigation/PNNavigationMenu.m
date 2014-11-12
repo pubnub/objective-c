@@ -415,6 +415,10 @@ static CGFloat const kPNNavigationSubMenuEntryHorizontalMargin = 16.0f;
             
             if (currentItem && button.level <= currentItem.level) {
                 
+                if ([self.subMenuList count] && button.level < [self.subMenuList count]) {
+                    
+                    currentItem = [[self.subMenuList objectAtIndex:button.level] valueForKey:PNNavigationSubMenEntryData.item];
+                }
                 [self closeSubMenuForMenuOption:currentItem];
             }
             

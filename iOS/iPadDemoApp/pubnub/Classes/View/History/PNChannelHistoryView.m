@@ -411,6 +411,8 @@ typedef enum _PNHistoryMode {
                 
                 weakSelf.historyHelper.startDate = (isValidStartDate ? startDate : weakSelf.historyHelper.startDate);
                 weakSelf.historyHelper.endDate = (isValidEndDate ? endDate : weakSelf.historyHelper.endDate);
+                weakSelf.historyHelper.startDate = [PNDate dateWithToken:@([weakSelf.historyHelper.startDate.timeToken unsignedLongLongValue] - 100)];
+                weakSelf.historyHelper.endDate = [PNDate dateWithToken:@([weakSelf.historyHelper.endDate.timeToken unsignedLongLongValue] + 100)];
             }
         }
         else {
@@ -584,9 +586,14 @@ typedef enum _PNHistoryMode {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     PNChannel *channel = [[self.historyHelper channels] objectAtIndex:indexPath.row];
-    self.historyHelper.channelName = channel.name;
-    self.channelNameTextField.text = channel.name;
-    [self updateLayout];
+    if (![self.historyHelper.channelName isEqualToString:channel.name]){
+        
+        self.historyHelper.startDate = nil;
+        self.historyHelper.endDate = nil;
+        self.historyHelper.channelName = channel.name;
+        self.channelNameTextField.text = channel.name;
+        [self updateLayout];
+    }
 }
 
 #pragma mark -

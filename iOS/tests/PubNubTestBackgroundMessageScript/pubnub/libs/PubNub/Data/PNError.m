@@ -131,16 +131,22 @@
     }
     // Check whether error caused by channel group operations or not
     else if ([errorMessage rangeOfString:@"Missing" options:NSCaseInsensitiveSearch].location != NSNotFound ||
-             [errorMessage rangeOfString:@"Channel group" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+             [errorMessage rangeOfString:@"Channel group" options:NSCaseInsensitiveSearch].location != NSNotFound ||
+             [errorMessage rangeOfString:@"Channel Registry" options:NSCaseInsensitiveSearch].location != NSNotFound) {
         
         // Check whether group exceeded number of channels in it or not
         if ([errorMessage rangeOfString:@"size exceeded" options:NSCaseInsensitiveSearch].location != NSNotFound) {
             
             errorCode = kPNEmptyChannelGroupSizeExceededError;
         }
+        // Check whether group enabled or not
+        else if ([errorMessage rangeOfString:@"not enabled" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+            
+            errorCode = kPNChannelGroupNotEnabledError;
+        }
         // Check whether group is empty or not
         else if ([errorMessage rangeOfString:@"empty" options:NSCaseInsensitiveSearch].location != NSNotFound ||
-            [errorMessage rangeOfString:@"channel" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                 [errorMessage rangeOfString:@"channel" options:NSCaseInsensitiveSearch].location != NSNotFound) {
             
             errorCode = kPNEmptyChannelGroupError;
         }
@@ -310,6 +316,10 @@
             case kPNMessageObjectError:
 
                 errorDescription = @"PubNub client can't submit message";
+                break;
+            case kPNChannelGroupNotEnabledError:
+                
+                errorDescription = @"PubNub client can't work with Channel Registry API";
                 break;
             case kPNPushNotificationsNotEnabledError:
 
@@ -505,6 +515,11 @@
         case kPNTooLongMessageError:
 
             failureReason = @"Looks like message is too large and can't be processed";
+            break;
+        case kPNChannelGroupNotEnabledError:
+            
+            failureReason = @"Looks like Channel Registry (stream controller) weren't enabled for this subscribe key. Enable at "
+            "http://admin.pubnub.com and try again";
             break;
         case kPNPushNotificationsNotEnabledError:
 
@@ -704,6 +719,10 @@
 
             fixSuggestion = @"Please visit https://admin.pubnub.com to enable Elastic Message Size if you wish to "
                              "send larger-sized messages.";
+            break;
+        case kPNChannelGroupNotEnabledError:
+            
+            fixSuggestion = @"Please visit https://admin.pubnub.com to enable the Stream Controller (channel registry) feature.";
             break;
         case kPNPushNotificationsNotEnabledError:
 

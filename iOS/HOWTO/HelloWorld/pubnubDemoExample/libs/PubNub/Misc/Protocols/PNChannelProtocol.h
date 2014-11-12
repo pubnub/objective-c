@@ -39,6 +39,11 @@
  */
 @property (nonatomic, readonly, copy) NSString *updateTimeToken;
 
+/**
+ Stores whether channel represents group of channels or not.
+ */
+@property (nonatomic, readonly, getter = isChannelGroup) BOOL channelGroup;
+
 
 ///------------------------------------------------
 /// @name Presence information

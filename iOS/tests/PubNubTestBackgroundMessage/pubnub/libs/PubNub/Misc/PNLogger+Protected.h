@@ -150,6 +150,14 @@
  */
 + (void)storeHTTPPacketData:(NSData *(^)(void))httpPacketBlock;
 
+/**
+ Store data passed through \c httpPacketBlock block into separate file which will represent unexpected HTTP packet.
+ 
+ @param httpPacketBlock
+ Block which is used by logger to receive \b NSData instance which contains all payload which has been received from server.
+ */
++ (void)storeUnexpectedHTTPDescription:(NSString *)packetDescription packetData:(NSData *(^)(void))httpPacketBlock;
+
 #pragma mark -
 
 

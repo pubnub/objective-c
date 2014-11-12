@@ -376,6 +376,12 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                         return @[PNLoggerSymbols.deserializer.unexpectedResponseStatusCode, @(statusCode),
                                 (encodedContent ? encodedContent : [NSNull null])];
                     }];
+                    
+                    // In case if response arrived with unexpected code, store it for future research.
+                    [PNLogger storeUnexpectedHTTPDescription:nil packetData:^NSData *{
+                        
+                        return responseSubdata;
+                    }];
                 }
 
                 // Check whether there provided content is larger than declared by 'Content-Length' or not

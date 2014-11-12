@@ -60,10 +60,8 @@
     
     [[filteredChannels copy] enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
                                                           BOOL *objectENumeratorStop) {
-        
-        BOOL isChannelGroup = ([object isKindOfClass:[PNChannelGroupNamespace class]] ||
-                               [object isKindOfClass:[PNChannelGroup class]]);
-        if (isChannelGroup) {
+
+        if (object.isChannelGroup) {
             
             [(NSMutableArray *)filteredChannels removeObject:object];
         }

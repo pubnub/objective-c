@@ -222,16 +222,24 @@ andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [tableView deselectRowAtIndexPath:[tableView indexPathForSelectedRow] animated:YES];
-    PNChannel *channel = [[self.subscribeHelper channelsForSubscription] objectAtIndex:indexPath.row];
-    if (channel) {
+    id<PNChannelProtocol> object = [[self.subscribeHelper channelsForSubscription] objectAtIndex:indexPath.row];
+    if (object) {
         
-        NSDictionary *channelState = [self.subscribeHelper stateForChannel:channel];
+        NSDictionary *objectState = [self.subscribeHelper stateForChannel:object];
+        PNObjectInformationView *information = nil;
         
-        PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
-        [information configureForObject:channel withState:channelState
-                 andPresenceObservation:[self.subscribeHelper shouldObserverPresenceForChannel:channel]];
+        if (object.isChannelGroup) {
+            
+            information = [PNObjectInformationView viewFromNibForChannelGroup];
+        }
+        else {
+            
+            information = [PNObjectInformationView viewFromNib];
+        }
         information.delegate = self;
         information.allowEditing = NO;
+        [information configureForObject:object withState:objectState
+                 andPresenceObservation:[self.subscribeHelper shouldObserverPresenceForChannel:object]];
         [information showWithOptions:PNViewAnimationOptionTransitionFadeIn animated:YES];
     }
 }

@@ -29,6 +29,12 @@
 #pragma mark - Handler methods
 
 - (void)handleKeyboardFrameChange:(NSNotification *)notification;
+- (void)handleKeyboardWillHide:(NSNotification *)notification;
+
+/**
+ @brief Template methods.
+ */
+- (void)handleUserInputCompleted;
 
 
 #pragma mark - Misc methods
@@ -111,17 +117,29 @@
                      } completion:NULL];
 }
 
+- (void)handleKeyboardWillHide:(NSNotification *)notification {
+    
+    [self handleUserInputCompleted];
+}
+
+- (void)handleUserInputCompleted {
+    
+}
+
 
 #pragma mark - Misc methods
 
 - (void)subscribeOnKeyboardEvents {
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardFrameChange:)
                                                  name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
 - (void)unsubscribeFromKeyboardEvents {
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 

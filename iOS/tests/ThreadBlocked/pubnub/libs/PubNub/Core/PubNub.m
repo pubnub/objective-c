@@ -53,12 +53,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"master";
+static NSString * const kPNCodebaseBranch = @"feature-pt80663324";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"ae4915c457dc340f24e049268c68bfaf62983306";
+static NSString * const kPNCodeCommitIdentifier = @"4ceba6d5eed2d8536393c47316e0f8b9c3f35eb9";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.

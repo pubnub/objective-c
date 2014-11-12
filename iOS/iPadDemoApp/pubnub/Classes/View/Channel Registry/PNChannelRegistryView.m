@@ -399,6 +399,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 - (IBAction)handleDataAdditionButtonTap:(id)sender {
     
+    [self completeUserInput];
     PNObjectInformationView *information = [PNObjectInformationView viewFromNib];
     information.delegate = self;
     information.allowEditing = YES;
@@ -547,11 +548,11 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             NSString *objects = [[objectForManipulation valueForKey:@"name"] componentsJoinedByString:@","];
             if (!requestError) {
                 
-                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group];
+                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group.name];
             }
             else {
                 
-                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group,
+                detailedDescription = [NSString stringWithFormat:[detailedDescription localized], objects, group.name,
                                        requestError];
             }
         }

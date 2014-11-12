@@ -25,6 +25,7 @@ struct PNAccessRightsSectionNamesStruct {
     __unsafe_unretained NSString *application;
     __unsafe_unretained NSString *channel;
     __unsafe_unretained NSString *channelGroup;
+    __unsafe_unretained NSString *channelGroupNamespace;
     __unsafe_unretained NSString *user;
 };
 
@@ -32,6 +33,7 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
     .application = @"Application access rights",
     .channel = @"Channel(s) access rights",
     .channelGroup = @"Channel group(s) access rights",
+    .channelGroupNamespace = @"Channel group namespace(s) access rights",
     .user = @"User(s) access rights"
 };
 
@@ -110,8 +112,7 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
         [[filteredChannels copy] enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
                                                               BOOL *objectENumeratorStop) {
             
-            BOOL isChannelGroup = ([object isKindOfClass:[PNChannelGroupNamespace class]] ||
-                                   [object isKindOfClass:[PNChannelGroup class]]);
+            BOOL isChannelGroup = object.isChannelGroup;
             if ((!isChannelGroup && onlyChannelGroups) || (isChannelGroup && !onlyChannelGroups)) {
                 
                 [filteredChannels removeObject:object];
@@ -337,6 +338,8 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
         NSMutableArray *dataTree = [NSMutableArray array];
         
         NSArray *channelAccessRightsInformationList = [collection accessRightsInformationForAllChannels];
+        NSArray *channelGroupAccessRightsInformationList = [collection accessRightsInformationForAllChannelGroups];
+        NSArray *channelGroupNamespaceAccessRightsInformationList = [collection accessRightsInformationForAllChannelGroupNamespaces];
         NSArray *usersAccessRightsInformation = [collection accessRightsInformationForAllClientAuthorizationKeys];
         if (collection.level == PNApplicationAccessRightsLevel) {
             
@@ -353,21 +356,21 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
         
         if (collection.level != PNUserAccessRightsLevel) {
             
-            if ([channelAccessRightsInformationList count]) {
+            void(^appendSubTreeForDataStreamObjects)(NSString *, NSArray *) = ^(NSString *sectionName, NSArray *objects){
                 
                 NSMutableArray *sectionData = [NSMutableArray array];
-                [channelAccessRightsInformationList enumerateObjectsUsingBlock:^(PNAccessRightsInformation *channelAccessRightsInformation,
-                                                                                 NSUInteger channelAccessRightsInformationIdx,
-                                                                                 BOOL *channelAccessRightsInformationEnumeratorStop) {
+                [objects enumerateObjectsUsingBlock:^(PNAccessRightsInformation *objectAccessRightsInformation,
+                                                      NSUInteger objectAccessRightsInformationIdx,
+                                                      BOOL *objectAccessRightsInformationEnumeratorStop) {
                     [sectionData addObject:@{
-                                             PNAccessRightsDataKeys.entrieData: channelAccessRightsInformation,
+                                             PNAccessRightsDataKeys.entrieData: objectAccessRightsInformation,
                                              PNAccessRightsDataKeys.entrieShouldIndent: @(NO)
                                              }];
                     
-                    NSArray *clientsForChannel = [collection accessRightsForClientsOnChannel:channelAccessRightsInformation.object];
-                    [clientsForChannel enumerateObjectsUsingBlock:^(PNAccessRightsInformation *clientAccessRightsInformation,
-                                                                    NSUInteger clientAccessRightsInformationIdx,
-                                                                    BOOL *clientAccessRightsInformationEnumeratorStop) {
+                    NSArray *clientsForObject = [collection accessRightsForClientsOn:objectAccessRightsInformation.object];
+                    [clientsForObject enumerateObjectsUsingBlock:^(PNAccessRightsInformation *clientAccessRightsInformation,
+                                                                   NSUInteger clientAccessRightsInformationIdx,
+                                                                   BOOL *clientAccessRightsInformationEnumeratorStop) {
                         [sectionData addObject:@{
                                                  PNAccessRightsDataKeys.entrieData: clientAccessRightsInformation,
                                                  PNAccessRightsDataKeys.entrieShouldIndent: @(YES)
@@ -376,15 +379,25 @@ static struct PNAccessRightsSectionNamesStruct PNAccessRightsSectionNames = {
                     
                 }];
                 
-                NSString *sectionName = PNAccessRightsSectionNames.channel;
-                if (collection.level == PNChannelGroupAccessRightsLevel) {
-                    
-                    sectionName = PNAccessRightsSectionNames.channelGroup;
-                }
                 [dataTree addObject:@{
                                       PNAccessRightsDataKeys.sectionName: sectionName,
                                       PNAccessRightsDataKeys.sectionData: sectionData
-                                     }];
+                                      }];
+            };
+            
+            if ([channelAccessRightsInformationList count]) {
+                
+                appendSubTreeForDataStreamObjects(PNAccessRightsSectionNames.channel, channelAccessRightsInformationList);
+            }
+            
+            if ([channelGroupAccessRightsInformationList count]) {
+                
+                appendSubTreeForDataStreamObjects(PNAccessRightsSectionNames.channelGroup, channelGroupAccessRightsInformationList);
+            }
+            
+            if ([channelGroupNamespaceAccessRightsInformationList count]) {
+                
+                appendSubTreeForDataStreamObjects(PNAccessRightsSectionNames.channelGroupNamespace, channelGroupNamespaceAccessRightsInformationList);
             }
         }
         else {
