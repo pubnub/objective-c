@@ -75,6 +75,28 @@
 - (id)initWithApplication:(NSString *)applicationKey andAccessRightsLevel:(PNAccessRightsLevel)level;
 
 /**
+ @brief Filter parsed data and retrieve access rights information for all channel group objects (channel group and
+ namespace)
+ 
+ @return List of \b PNAccessRightsInformation instances each of which describe it's own channel group object access rights.
+ 
+ @since 3.7.3
+ */
+- (NSArray *)accessRightsInformationForAllChannelGroupObjects;
+
+/**
+ @brief Filter parsed data and retrieve access rights information for all channel group objects (channel group and
+ namespace)
+ 
+ @param channelGroupObjectClass Reference on class against which all channel group objects should be filtered.
+ 
+ @return List of \b PNAccessRightsInformation instances each of which describe it's own channel group objects access rights.
+ 
+ @since 3.7.3
+ */
+- (NSArray *)accessRightsInformationForAllChannelGroupObjectsByClass:(Class)channelGroupObjectClass;
+
+/**
  Assign specified information to the \a applicationAccessRightsInformation property.
 
  @param information

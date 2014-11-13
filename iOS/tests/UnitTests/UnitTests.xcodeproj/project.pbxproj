@@ -7,7 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		960063291A027789002063CF /* PNCryptoHistoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960063281A027789002063CF /* PNCryptoHistoryTest.m */; };
+		964F68321A13A876002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 964F682C1A12657C002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m */; };
+		964F68351A13B5D5002AE069 /* testdata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 964F68341A13B5D5002AE069 /* testdata.plist */; };
+		965236821A09126600E6BF32 /* PNChannelGroupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 965236811A09126600E6BF32 /* PNChannelGroupTest.m */; };
+		9688151E1A03FEAE00BB548D /* PNCryptoInstanceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */; };
 		96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A252F519DB3EB600C4CFCC /* PubNubTest.m */; };
+		96A5F8AB1A07D0DF004C92AA /* PNJSONSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5F8AA1A07D0DF004C92AA /* PNJSONSerializationTest.m */; };
 		96CB66CA19CFE75D0093D64E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CB66C919CFE75D0093D64E /* Foundation.framework */; };
 		96CB66CC19CFE75D0093D64E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CB66CB19CFE75D0093D64E /* CoreGraphics.framework */; };
 		96CB66CE19CFE75D0093D64E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CB66CD19CFE75D0093D64E /* UIKit.framework */; };
@@ -193,7 +199,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		960063281A027789002063CF /* PNCryptoHistoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHistoryTest.m; sourceTree = "<group>"; };
+		964F682C1A12657C002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreUnexpectedHTTPDesctiptionTest.m; sourceTree = "<group>"; };
+		964F68341A13B5D5002AE069 /* testdata.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testdata.plist; sourceTree = "<group>"; };
+		965236811A09126600E6BF32 /* PNChannelGroupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupTest.m; sourceTree = "<group>"; };
+		9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoInstanceTest.m; sourceTree = "<group>"; };
 		96A252F519DB3EB600C4CFCC /* PubNubTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNubTest.m; sourceTree = "<group>"; };
+		96A5F8AA1A07D0DF004C92AA /* PNJSONSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNJSONSerializationTest.m; sourceTree = "<group>"; };
 		96CB66C619CFE75D0093D64E /* UnitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96CB66C919CFE75D0093D64E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		96CB66CB19CFE75D0093D64E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -592,12 +604,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		960063271A027770002063CF /* 3.7.2 Regression tests */ = {
+			isa = PBXGroup;
+			children = (
+				9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */,
+				960063281A027789002063CF /* PNCryptoHistoryTest.m */,
+			);
+			path = "3.7.2 Regression tests";
+			sourceTree = "<group>";
+		};
 		96A252F419DB3EA000C4CFCC /* 3.6.8 Instance version */ = {
 			isa = PBXGroup;
 			children = (
 				96A252F519DB3EB600C4CFCC /* PubNubTest.m */,
 			);
 			path = "3.6.8 Instance version";
+			sourceTree = "<group>";
+		};
+		96A5F8A91A07D0DF004C92AA /* 3.7.3 Regression tests */ = {
+			isa = PBXGroup;
+			children = (
+				964F68341A13B5D5002AE069 /* testdata.plist */,
+				96A5F8AA1A07D0DF004C92AA /* PNJSONSerializationTest.m */,
+				965236811A09126600E6BF32 /* PNChannelGroupTest.m */,
+				964F682C1A12657C002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m */,
+			);
+			path = "3.7.3 Regression tests";
 			sourceTree = "<group>";
 		};
 		96CB66BD19CFE75D0093D64E = {
@@ -660,6 +692,8 @@
 		96CB66E819CFE75D0093D64E /* UnitTestsTests */ = {
 			isa = PBXGroup;
 			children = (
+				96A5F8A91A07D0DF004C92AA /* 3.7.3 Regression tests */,
+				960063271A027770002063CF /* 3.7.2 Regression tests */,
 				A519BB9219E2DA8A0095FD54 /* 3.6.8 Channel Group tests */,
 				96A252F419DB3EA000C4CFCC /* 3.6.8 Instance version */,
 				96CB6A2A19D19A6B0093D64E /* 3.6.4 Unit-tests */,
@@ -1301,6 +1335,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				964F68351A13B5D5002AE069 /* testdata.plist in Resources */,
 				96CB66ED19CFE75D0093D64E /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1433,6 +1468,7 @@
 				96CB6A9A19D19A6B0093D64E /* PNTimeTokenResponseParserTest.m in Sources */,
 				96CB6A8D19D19A6B0093D64E /* PNLeaveUsubscribeBlock.m in Sources */,
 				96CB6AA119D19A6B0093D64E /* PNConfigurationChangeTest.m in Sources */,
+				965236821A09126600E6BF32 /* PNChannelGroupTest.m in Sources */,
 				96CB6A9519D19A6B0093D64E /* PNPushNotificationsEnabledChannelsParserTest.m in Sources */,
 				96E9B30B19E8380500362A9D /* ChannelGroupSubscriptionTest.m in Sources */,
 				96CB6A0A19D01F210093D64E /* PNBaseTestCase.m in Sources */,
@@ -1452,6 +1488,7 @@
 				A519BB9419E2DAAD0095FD54 /* ChannelGroupTest.m in Sources */,
 				96CB6A7619D19A6B0093D64E /* PAMTestError.m in Sources */,
 				96CB6A9419D19A6B0093D64E /* PNPresenceEventTest.m in Sources */,
+				96A5F8AB1A07D0DF004C92AA /* PNJSONSerializationTest.m in Sources */,
 				96CB6A8419D19A6B0093D64E /* PNCryptoHelperTest.m in Sources */,
 				96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */,
 				96CB6A8019D19A6B0093D64E /* PNChannelPresenceTest.m in Sources */,
@@ -1471,9 +1508,12 @@
 				96CB6AA019D19A6B0093D64E /* PubNubInvocationStorageTest.m in Sources */,
 				A5C8E81F19E66B3700673238 /* ChannelGroupBlockTest.m in Sources */,
 				96CB6A9B19D19A6B0093D64E /* PNWriteBufferTest.m in Sources */,
+				9688151E1A03FEAE00BB548D /* PNCryptoInstanceTest.m in Sources */,
 				96CB6A8E19D19A6B0093D64E /* PNMessageHistoryRequestTest.m in Sources */,
+				964F68321A13A876002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m in Sources */,
 				96CB6A0B19D01F210093D64E /* PNTestManager.m in Sources */,
 				96CB6A8F19D19A6B0093D64E /* PNMessagesHistoryTest.m in Sources */,
+				960063291A027789002063CF /* PNCryptoHistoryTest.m in Sources */,
 				96CB6A9C19D19A6B0093D64E /* SubscribeLeaveTest.m in Sources */,
 				96CB6A7C19D19A6B0093D64E /* PNBaseRequestTest.m in Sources */,
 				96CB6A7819D19A6B0093D64E /* PNAccessRightsAuditRequestTest.m in Sources */,

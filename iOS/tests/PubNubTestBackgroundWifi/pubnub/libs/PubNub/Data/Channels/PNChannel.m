@@ -19,6 +19,7 @@
 #import "PNPrivateImports.h"
 #import "PNPresenceEvent.h"
 #import "PNLoggerSymbols.h"
+#import "PNChannelGroup.h"
 #import "PNConstants.h"
 #import "PNHelper.h"
 #import "PNDate.h"
@@ -115,6 +116,10 @@ static dispatch_queue_t _privateQueue = NULL;
     if ([PNChannelPresence isPresenceObservingChannelName:channelName]) {
 
         channel = [PNChannelPresence presenceForChannelWithName:channelName];
+    }
+    else if ([channelName rangeOfString:@":"].location != NSNotFound) {
+        
+        channel = [PNChannelGroup channelGroupWithName:channelName];
     }
     else {
 

@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-# PubNub 3.7.0 for iOS 5.1+ (iPhone, iPad, iPod)
+# PubNub 3.7.1 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 
 All requests made by the client are asynchronous, and are handled by:
@@ -2024,7 +2024,7 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client successfully subscribed to channels:%@", channels);
 }
 ```
-**DEPRECATED** Since 3.7.0
+**DEPRECATED** Since **3.7.0**
 #### - (void)pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects;  
 
 This delegate method is called when the client is successfully subscribed call to the channels. 
@@ -2047,7 +2047,7 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client resuming subscription on: %@", channels);
 }
 ```
-**DEPRECATED** Since 3.7.0
+**DEPRECATED** Since **3.7.0**
 #### - (void)pubnubClient:(PubNub *)client willRestoreSubscriptionOn:(NSArray *)channelObjects; 
 
 This delegate method is called when the subscription on the channels is about to be restored after a network disconnect.
@@ -2070,7 +2070,7 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client successfully restored subscription on channels: %@", channels);
 }
 ```
-**DEPRECATED** Since 3.7.0
+**DEPRECATED** Since **3.7.0**
 #### - (void)pubnubClient:(PubNub *)client didRestoreSubscriptionOn:(NSArray *)channelObjects;  
 
 This delegate method is called when the subscription on the channels is successfully restored after a network disconnect.
@@ -2104,7 +2104,7 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client successfully unsubscribed from channels: %@", channels);
 }
 ```
-**DEPRECATED** Since 3.7.0
+**DEPRECATED** Since **3.7.0**
 #### - (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects;  
 
 This delegate method is called if the channels are successfully unsubscribed.
@@ -2138,7 +2138,7 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client successfully enabled presence observation on channels: %@", channels);
 }
 ```
-**DEPRECATED** Since 3.7.0
+**DEPRECATED** Since **3.7.0**
 #### - (void)pubnubClient:(PubNub *)client didEnablePresenceObservationOn:(NSArray *)channelObjects;
 
 This delegate method is called if the presence notifications are successfully enabled.
@@ -2172,7 +2172,7 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client successfully disabled presence observation on channels: %@", channels);
 }
 ```
-**DEPRECATED** Since 3.7.0
+**DEPRECATED** Since **3.7.0**
 #### - (void)pubnubClient:(PubNub *)client didDisablePresenceObservationOn:(NSArray *)channelObjects;
 
 This delegate method is called if the presence notifications are successfully disabled.
@@ -2479,7 +2479,7 @@ Example usage follows:
   PNLog(PNLogGeneralLevel, self, @"PubNub client received participants list for channel %@: %@", participantsList, channel);
 }
 ```
-**DEPRECATED** Since 3.7.0
+**DEPRECATED** Since **3.7.0**
 #### - (void)pubnubClient:(PubNub *)client didReceiveParticipantsLits:(NSArray *)participantsList forObjects:(NSArray *)channelObjects;  
 
 This delegate method is called when the client successfully retrieves the info of other connected users on the channel. "participantsList" will contain list of [PNClient](iPadDemoApp/pubnub/libs/PubNub/Data/PNClient.h) instances. “channelObjects” will contain the value of the PubNub channel.  
