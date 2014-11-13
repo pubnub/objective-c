@@ -203,25 +203,25 @@
 
 - (void)correlateAccessRightsWithOptions:(PNAccessRightOptions *)options {
 
-    [options.channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
-                                                   BOOL *channelEnumeratorStop) {
+    [options.channels enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
+                                                   BOOL *objectEnumeratorStop) {
 
         if (options.level != PNUserAccessRightsLevel) {
 
             [self storeChannelAccessRightsInformation:[PNAccessRightsInformation accessRightsInformationForLevel:options.level
                                                                 rights:PNNoAccessRights applicationKey:self.applicationKey
-                                                            forChannel:channel client:nil accessPeriod:options.accessPeriodDuration]];
+                                                            forChannel:object client:nil accessPeriod:options.accessPeriodDuration]];
         }
 
         [options.clientsAuthorizationKeys enumerateObjectsUsingBlock:^(NSString *clientAuthorizationKey,
-                                                                               NSUInteger clientAuthorizationKeyIdx,
-                                                                               BOOL *clientAuthorizationKeyEnumeratorStop) {
+                                                                       NSUInteger clientAuthorizationKeyIdx,
+                                                                       BOOL *clientAuthorizationKeyEnumeratorStop) {
 
                     [self storeClientAccessRightsInformation:[PNAccessRightsInformation accessRightsInformationForLevel:PNUserAccessRightsLevel
                                                                        rights:PNNoAccessRights applicationKey:self.applicationKey
-                                                                   forChannel:channel client:clientAuthorizationKey
+                                                                   forChannel:object client:clientAuthorizationKey
                                                                  accessPeriod:options.accessPeriodDuration]
-                                                  forChannel:channel];
+                                                  forChannel:object];
                 }];
     }];
     

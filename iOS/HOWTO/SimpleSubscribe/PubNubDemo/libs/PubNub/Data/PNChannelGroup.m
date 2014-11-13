@@ -67,7 +67,6 @@
             isValidName = ([channelGroupNameComponents count] <= 2);
             if (isValidName) {
                 
-                channelName = [name stringByReplacingOccurrencesOfString:@":" withString:@""];
                 nspace = ([[channelGroupNameComponents objectAtIndex:0] length] ?
                           [channelGroupNameComponents objectAtIndex:0] : nil);
                 name = ([[channelGroupNameComponents lastObject] length] ? [channelGroupNameComponents lastObject] : nil);

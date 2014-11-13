@@ -14,6 +14,7 @@
 
 #import "PNReachability.h"
 #import <SystemConfiguration/SystemConfiguration.h>
+#import "NSObject+PNAdditions.h"
 #import "PNResponseParser.h"
 #import "PubNub+Protected.h"
 #import "PNNetworkHelper.h"
@@ -99,7 +100,6 @@ typedef enum _PNReachabilityStatus {
 
 - (void)startServiceReachabilityMonitoring:(BOOL)shouldStopPrevious;
 
-- (BOOL)isOriginLookupActive;
 - (void)startOriginLookup;
 - (void)startOriginLookup:(BOOL)shouldStopPrevious;
 - (void)stopOriginLookup;
@@ -169,6 +169,9 @@ typedef enum _PNReachabilityStatus {
     
     // Check whether initialization was successful or not
     if((self = [super init])) {
+        
+        dispatch_queue_t targetQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        [self pn_setPrivateDispatchQueue:[self pn_serialQueueWithOwnerIdentifier:@"reachability" andTargetQueue:targetQueue]];
         
         self.status = PNReachabilityStatusUnknown;
         self.reachabilityStatus = PNReachabilityStatusUnknown;
@@ -375,11 +378,6 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     }
 }
 
-- (BOOL)isOriginLookupActive {
-    
-    return [self.originLookupTimer isValid];
-}
-
 - (void)startOriginLookup {
     
     [self startOriginLookup:YES];
@@ -392,22 +390,28 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         [self stopOriginLookup];
     }
     
-    if (![self isOriginLookupActive]) {
+    [self pn_dispatchAsynchronouslyBlock:^{
         
-        self.originLookupTimer = [NSTimer timerWithTimeInterval:kPNReachabilityOriginLookupInterval target:self
-                                                       selector:@selector(handleOriginLookupTimer) userInfo:nil repeats:NO];
-        [[NSRunLoop mainRunLoop] addTimer:self.originLookupTimer forMode:NSRunLoopCommonModes];
-    }
+        if (![self.originLookupTimer isValid]) {
+            
+            self.originLookupTimer = [NSTimer timerWithTimeInterval:kPNReachabilityOriginLookupInterval target:self
+                                                           selector:@selector(handleOriginLookupTimer) userInfo:nil repeats:NO];
+            [[NSRunLoop mainRunLoop] addTimer:self.originLookupTimer forMode:NSRunLoopCommonModes];
+        }
+    }];
 }
 
 - (void)stopOriginLookup {
     
-    if ([self.originLookupTimer isValid]) {
-        
-        [self.originLookupTimer invalidate];
-    }
+    [self pn_dispatchAsynchronouslyBlock:^{
     
-    self.originLookupTimer = nil;
+        if ([self.originLookupTimer isValid]) {
+            
+            [self.originLookupTimer invalidate];
+        }
+        
+        self.originLookupTimer = nil;
+    }];
 }
 
 - (void)restartServiceReachabilityMonitoring {
