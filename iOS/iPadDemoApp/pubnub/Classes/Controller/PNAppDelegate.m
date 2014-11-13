@@ -120,6 +120,9 @@
     }
     
     [self initializePubNubClient];
+    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
+    [PubNub connect];
+    [PubNub requestPushNotificationEnabledChannelsForDevicePushToken:[@"00000000000000000000000000000000" dataUsingEncoding:NSUTF8StringEncoding]  withCompletionHandlingBlock:nil];
     
     #if !TARGET_IPHONE_SIMULATOR
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
@@ -405,7 +408,7 @@
 
 - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error {
 
-    NSLog(@"PubNub client failed to download history for %@ because of error: %@", channel, error);
+    NSLog(@"PubNub client failed to download history for %@ because of error: %@", channel.name, error);
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation
