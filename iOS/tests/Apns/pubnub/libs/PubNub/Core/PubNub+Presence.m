@@ -689,7 +689,7 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = channels;
+        [error replaceAssociatedObject:channels];
         [self notifyDelegateAboutParticipantsListDownloadFailedWithError:error];
     }
     else {
@@ -741,7 +741,7 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = clientIdentifier;
+        [error replaceAssociatedObject:clientIdentifier];
         [self notifyDelegateAboutParticipantChannelsListDownloadFailedWithError:error];
     }
     else {

@@ -873,7 +873,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = message;
+        [error replaceAssociatedObject:message];
         [self notifyDelegateAboutMessageSendingFailedWithError:error];
     }
     else {

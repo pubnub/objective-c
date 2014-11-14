@@ -890,7 +890,7 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = channels;
+        [error replaceAssociatedObject:channels];
         [self notifyDelegateAboutPushNotificationsEnableFailedWithError:error];
     }
     else {
@@ -945,7 +945,7 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = channels;
+        [error replaceAssociatedObject:channels];
         [self notifyDelegateAboutPushNotificationsDisableFailedWithError:error];
     }
     else {

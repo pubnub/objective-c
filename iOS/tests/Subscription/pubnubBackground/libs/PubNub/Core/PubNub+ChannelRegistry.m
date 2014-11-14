@@ -1242,7 +1242,7 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = nspace;
+        [error replaceAssociatedObject:nspace];
         [self notifyDelegateAboutChannelGroupsRequestFailedWithError:error];
     }
     else {
@@ -1333,6 +1333,7 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
+        [error replaceAssociatedObject:nspace];
         [self notifyDelegateAboutChannelGroupNamespaceRemovalFailedWithError:error];
     }
     else {
@@ -1427,7 +1428,6 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = group;
         [self notifyDelegateAboutChannelsForGroupRequestFailedWithError:error];
     }
     else {

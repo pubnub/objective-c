@@ -22,7 +22,15 @@
 @end
 
 
-@interface PNJSONSerializationTest : XCTestCase
+@interface PNJSONSerializationTest : XCTestCase {
+    NSDictionary *_dictionary;
+    NSDictionary *_deserializedDictionaryNS;
+    NSDictionary *_deserializedDictionaryPN;
+    
+    NSString *_jsonString;
+    NSString *_jsonStringNS;
+    NSString *_jsonStringPN;
+}
 
 @end
 
@@ -37,6 +45,8 @@
 }
 
 #pragma mark - Tests
+
+
 
 -(void)testJSONObjectWithString {
     
@@ -69,12 +79,13 @@
 									   }];
 		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+        
 
 		semaphore = dispatch_semaphore_create(0);
 		[PNJSONSerialization JSONObjectWithData: [json dataUsingEncoding:NSUTF8StringEncoding]
 								  completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName){
 									  dispatch_semaphore_signal(semaphore);
-									  //									  NSLog(@"result %@", result);
+									  NSLog(@"result %@", result);
 									  XCTAssertTrue( [result isEqual: arrTest[1]], @"");
 									  XCTAssertTrue( isJSONP == [arrTest[2] boolValue], @"");
 									  XCTAssertTrue( [callbackMethodName isEqualToString: arrTest[3]], @"");
@@ -85,8 +96,117 @@
 									   }];
 		while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-	}
+        	}
 }
+
+
+// SERGEY
+// Comparison PNJSONSerialization with NSJSONSerialization
+-(void)testComparisonJSONSerialization {
+    
+    // Initial dictionary for JSONSerialization
+    _dictionary =
+  @{
+    @"First Name": @"Anthony",
+    @"Last Name": @"Robbins",
+    @"Age": @51,
+    @"children": @[
+            @"Anthony's Son 1",
+            @"Anthony's Daughter 1",
+            @"Anthony's Son 2",
+            @"Anthony's Son 3",
+            @"Anthony's Daughter 2"
+            ],
+    };
+
+    // Serialize the dictionary in a JSON object with NSJSONSerialization and PNJSONSerialization, then сomparison of the results
+    
+    // Serialize the dictionary in a JSON object (NS)
+    NSError *error = nil;
+        NSData *jsonDataNS = [NSJSONSerialization dataWithJSONObject:_dictionary
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
+
+    if ([jsonDataNS length] > 0 && error == nil){
+        _jsonStringNS = [[NSString alloc] initWithData: jsonDataNS
+                                                     encoding: NSUTF8StringEncoding];
+        NSLog(@"Successfully serialized the dictionary into Json data (NS) = %@", _jsonStringNS);
+    }
+    else if ([jsonDataNS length] == 0 && error == nil){
+        NSLog(@"No data was returned after serialization the dictionary into Json data  (NS)");
+    }
+    else if (error!= nil){
+        NSLog(@"An error happened while serialization into Json data (NS) %@", error);
+    }
+    
+    // Serialize the dictionary in a JSON object (PN)   !!! Thera no method [PNJSONSerialization dataWithJSONObject] ???
+    _jsonStringPN = [PNJSONSerialization stringFromJSONObject:_dictionary];
+    NSLog(@"Successfully serialized the dictionary into data (PN) = %@", _jsonStringPN);
+    
+    NSData *jsonDataPN = [_jsonStringPN dataUsingEncoding:NSUTF8StringEncoding];
+
+    
+    // Test equal result jsonDataNS and jsonDataPN
+    NSLog(@"Serialized the dictionary in a JSON object (NS) = %@", jsonDataNS);
+    NSLog(@"Serialized the dictionary in a JSON object (PN) = %@", jsonDataPN);
+//    XCTAssertTrue([_jsonStringNS isEqualToString: _jsonStringPN], @"Equaling jsonStrings after serialized - error");
+//    XCTAssertEqualObjects(jsonDataNS, jsonDataPN, @"Equaling jsonDatas after serialized - error");   !!! Work differently (/n), afterwards it works correctly ???
+    
+
+    
+    // Deserialize the JSON object in a dictionary with NSJSONSerialization and PNJSONSerialization, then сomparison of the results
+    
+    // Deserialize the JSON object in a dictionary (NS)
+    error = nil;
+    id jsonObjectNS = [NSJSONSerialization JSONObjectWithData:jsonDataNS
+                                                    options:NSJSONReadingAllowFragments
+                                                      error:&error];
+    if (jsonObjectNS!= nil && error == nil){
+        
+        if ([jsonObjectNS isKindOfClass: [NSDictionary class]]){
+            _deserializedDictionaryNS = (NSDictionary *)jsonObjectNS;
+            NSLog(@"Successfully deserialized the JSON data (NS) = %@", _deserializedDictionaryNS);
+        }
+        else {
+            NSLog(@"Error deserialized the JSON data (NS)");
+        }
+ 
+    }
+    else if (error!= nil){
+        NSLog(@"An error happened while deserializing the JSON data (NS)");
+    }
+    
+    // Deserialize the JSON object in a dictionary (PN)
+    error = nil;
+    [PNJSONSerialization JSONObjectWithData:jsonDataPN
+                            completionBlock:^(id jsonObjectPN, BOOL isJSONP, NSString *callbackMethodName) {
+                                
+                                if (jsonObjectPN!= nil && [jsonObjectPN isKindOfClass: [NSDictionary class]]){
+                                    _deserializedDictionaryPN = (NSDictionary *)jsonObjectPN;
+                                    NSLog(@"Successfully deserialized the JSON data (PN) = %@", _deserializedDictionaryPN);
+                                }
+                                else {
+                                    NSLog(@"Error deserialized the JSON data (PN)");
+                                }
+                                
+                            } errorBlock:^(NSError *error) {
+                                NSLog(@"An error happened while deserializing the JSON data (PN) %@", error);
+                            }];
+   
+    // Test equal result deserializedDictionaryNS and deserializedDictionaryPN
+    _jsonStringNS = [_deserializedDictionaryNS description];
+    _jsonStringPN = [_deserializedDictionaryPN description];
+    XCTAssertTrue([_jsonStringNS isEqualToString: _jsonStringPN], @"Equaling strings after deserialized - error");
+    XCTAssertEqualObjects(_deserializedDictionaryNS, _deserializedDictionaryPN, @"Equaling dictionaries after deserialized - error");
+    
+
+    // Test equal result dictionary (PN) and initial dictionary
+    _jsonString = [_dictionary description];
+    XCTAssertTrue([_jsonString isEqualToString: _jsonStringPN], @"Serialize error");
+    XCTAssertEqualObjects(_dictionary, _deserializedDictionaryPN, @"Serialize error");
+    
+}
+
 
 -(void)testStringFromJSONObject {
 	XCTAssertTrue( [[PNJSONSerialization stringFromJSONObject: @"message"] isEqualToString: @"\"message\""], @"");
@@ -128,6 +248,7 @@
 -(void)testIsJSONStringObject {
 	XCTAssertTrue( [PNJSONSerialization isJSONStringObject: @"Hello PubNub"] == NO, @"");
 	XCTAssertTrue( [PNJSONSerialization isJSONStringObject: @"\"Hello PubNub\""] == YES, @"");
+    XCTAssertTrue( [PNJSONSerialization isJSONStringObject: @"\"[Hello PubNub]\""] == YES, @"");
 	XCTAssertTrue( [PNJSONSerialization isJSONStringObject: @"\"Hello PubNub"] == NO, @"");
 }
 
@@ -136,7 +257,7 @@
 }
 
 -(void)testIsJSONKitAvailable {
-	XCTAssertTrue( [PNJSONSerialization isJSONKitAvailable] == [@"" respondsToSelector:NSSelectorFromString(@"JSONString")], @"" );
+   	XCTAssertTrue( [PNJSONSerialization isJSONKitAvailable] == [@"" respondsToSelector:NSSelectorFromString(@"JSONString")], @"" );
 }
 
 @end
