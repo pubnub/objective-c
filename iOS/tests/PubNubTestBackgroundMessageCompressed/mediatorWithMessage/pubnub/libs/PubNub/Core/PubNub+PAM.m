@@ -878,59 +878,56 @@
     clientsAuthorizationKeys = clientsAuthorizationKeys ? clientsAuthorizationKeys : @[];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsAccessRightsChangeObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsAccessRightsChangeObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && [self.configuration.secretKey length]) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.changeAccessRights, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsAccessRightsChangeObserverWithBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0 && [self.configuration.secretKey length]) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.changeAccessRights, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsAccessRightsChangeObserverWithBlock:handlerBlock];
-                }
-                
-                [self.serviceChannel changeAccessRightsFor:channelObjects accessRights:accessRights
-                                         authorizationKeys:clientsAuthorizationKeys onPeriod:accessPeriodDuration];
-            }
+
+            [self.serviceChannel changeAccessRightsFor:channelObjects accessRights:accessRights
+                                     authorizationKeys:clientsAuthorizationKeys onPeriod:accessPeriodDuration];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.accessRightsChangeImpossible, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNAccessRightOptions *options = [PNAccessRightOptions accessRightOptionsForApplication:self.configuration.subscriptionKey
-                                                                                            withRights:accessRights
-                                                                                              channels:channelObjects
-                                                                                               clients:clientsAuthorizationKeys
-                                                                                          accessPeriod:accessPeriodDuration];
-                if (![self.configuration.secretKey length]) {
-                    
-                    statusCode = kPNSecretKeyNotSpecifiedError;
-                }
-                PNError *accessRightChangeError = [PNError errorWithCode:statusCode];
-                accessRightChangeError.associatedObject = options;
-                
-                [self notifyDelegateAboutAccessRightsChangeFailedWithError:accessRightChangeError];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(nil, accessRightChangeError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.accessRightsChangeImpossible, [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNAccessRightOptions *options = [PNAccessRightOptions accessRightOptionsForApplication:self.configuration.subscriptionKey
+                                                                                        withRights:accessRights
+                                                                                          channels:channelObjects
+                                                                                           clients:clientsAuthorizationKeys
+                                                                                      accessPeriod:accessPeriodDuration];
+            if (![self.configuration.secretKey length]) {
+
+                statusCode = kPNSecretKeyNotSpecifiedError;
             }
-        }];
+            PNError *accessRightChangeError = [PNError errorWithCode:statusCode];
+            accessRightChangeError.associatedObject = options;
+
+            [self notifyDelegateAboutAccessRightsChangeFailedWithError:accessRightChangeError];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(nil, accessRightChangeError);
+            }
+        }
     }
            postponedExecutionBlock:^{
                
@@ -1053,59 +1050,56 @@
     clientsAuthorizationKeys = (clientsAuthorizationKeys ? clientsAuthorizationKeys : @[]);
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsAccessRightsAuditObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsAccessRightsAuditObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && [self.configuration.secretKey length]) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.auditAccessRights, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsAccessRightsAuditObserverWithBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0 && [self.configuration.secretKey length]) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.auditAccessRights, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsAccessRightsAuditObserverWithBlock:handlerBlock];
-                }
-                
-                [self.serviceChannel auditAccessRightsFor:channelObjects clients:clientsAuthorizationKeys];
-            }
+
+            [self.serviceChannel auditAccessRightsFor:channelObjects clients:clientsAuthorizationKeys];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.accessRightsAuditImpossible, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNAccessRightOptions *options = [PNAccessRightOptions accessRightOptionsForApplication:self.configuration.subscriptionKey
-                                                                                            withRights:PNUnknownAccessRights
-                                                                                              channels:channelObjects
-                                                                                               clients:clientsAuthorizationKeys
-                                                                                          accessPeriod:0];
-                if (![self.configuration.secretKey length]) {
-                    
-                    statusCode = kPNSecretKeyNotSpecifiedError;
-                }
-                PNError *accessRightAuditError = [PNError errorWithCode:statusCode];
-                accessRightAuditError.associatedObject = options;
-                
-                [self notifyDelegateAboutAccessRightsAuditFailedWithError:accessRightAuditError];
-                
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(nil, accessRightAuditError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.accessRightsAuditImpossible, [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNAccessRightOptions *options = [PNAccessRightOptions accessRightOptionsForApplication:self.configuration.subscriptionKey
+                                                                                        withRights:PNUnknownAccessRights
+                                                                                          channels:channelObjects
+                                                                                           clients:clientsAuthorizationKeys
+                                                                                      accessPeriod:0];
+            if (![self.configuration.secretKey length]) {
+
+                statusCode = kPNSecretKeyNotSpecifiedError;
             }
-        }];
+            PNError *accessRightAuditError = [PNError errorWithCode:statusCode];
+            accessRightAuditError.associatedObject = options;
+
+            [self notifyDelegateAboutAccessRightsAuditFailedWithError:accessRightAuditError];
+
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(nil, accessRightAuditError);
+            }
+        }
     }
            postponedExecutionBlock:^{
                
@@ -1188,24 +1182,28 @@
             
             return @[PNLoggerSymbols.api.didChangeAccessRights, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            // Check whether delegate is able to handle access rights change event or not
-            SEL selector = @selector(pubnubClient:didChangeAccessRights:);
-            if ([self.clientDelegate respondsToSelector:selector]) {
-                
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate performSelector:selector withObject:self withObject:accessRightsCollection];
-                });
-                #pragma clang diagnostic pop
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate is able to handle access rights change event or not
+                SEL selector = @selector(pubnubClient:didChangeAccessRights:);
+                if ([self.clientDelegate respondsToSelector:selector]) {
+
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:selector withObject:self withObject:accessRightsCollection];
+                    });
+                    #pragma clang diagnostic pop
+                }
+
+                [self sendNotification:kPNClientAccessRightsChangeDidCompleteNotification withObject:accessRightsCollection];
             }
-            
-            [self sendNotification:kPNClientAccessRightsChangeDidCompleteNotification withObject:accessRightsCollection];
-        }
+        }];
+
     }
                                 shouldStartNext:YES];
 }
@@ -1243,24 +1241,27 @@
             
             return @[PNLoggerSymbols.api.didAuditAccessRights, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            // Check whether delegate is able to handle access rights change event or not
-            SEL selector = @selector(pubnubClient:didAuditAccessRights:);
-            if ([self.clientDelegate respondsToSelector:selector]) {
-                
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate performSelector:selector withObject:self withObject:accessRightsCollection];
-                });
-                #pragma clang diagnostic pop
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate is able to handle access rights change event or not
+                SEL selector = @selector(pubnubClient:didAuditAccessRights:);
+                if ([self.clientDelegate respondsToSelector:selector]) {
+
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:selector withObject:self withObject:accessRightsCollection];
+                    });
+                    #pragma clang diagnostic pop
+                }
+
+                [self sendNotification:kPNClientAccessRightsAuditDidCompleteNotification withObject:accessRightsCollection];
             }
-            
-            [self sendNotification:kPNClientAccessRightsAuditDidCompleteNotification withObject:accessRightsCollection];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }

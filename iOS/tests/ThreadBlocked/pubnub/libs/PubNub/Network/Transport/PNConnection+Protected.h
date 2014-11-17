@@ -38,12 +38,16 @@ extern struct PNConnectionIdentifiersStruct PNConnectionIdentifiers;
 /**
  * Open connection from name of the user (if flag is set to 'YES')
  */
-- (BOOL)connectByInternalRequest;
+- (void)connectByInternalRequest:(void (^)(BOOL connecting))resultBlock;
 - (BOOL)isConnecting;
 - (BOOL)isReconnecting;
 - (BOOL)shouldReconnect;
+- (BOOL)canRetryConnection;
+- (void)retryConnection;
 
+- (BOOL)isConnected;
 - (BOOL)isSuspending;
+- (BOOL)isSuspended;
 - (BOOL)isResuming;
 
 /**

@@ -54,6 +54,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 @property (nonatomic, strong) PNChannelGroup *channelGroup;
 @property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
 @property (nonatomic, assign, getter = shouldStoreInHistory) BOOL storeInHistory;
+@property (nonatomic, assign, getter = isContentEncrypted) BOOL contentEncrypted;
 @property (nonatomic, strong) id message;
 @property (nonatomic, strong) PNDate *receiveDate;
 @property (nonatomic, strong) PNDate *date;

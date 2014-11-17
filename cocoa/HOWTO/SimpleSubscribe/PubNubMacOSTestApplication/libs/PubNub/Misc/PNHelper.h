@@ -71,21 +71,30 @@
  */
 @property (nonatomic, readonly, pn_dispatch_property_ownership) dispatch_queue_t queue;
 
+/**
+ @brief Stores reference on value which stores reference on pointer used during set specific on 
+ queue.
+ 
+ @since 3.7.3
+ */
+@property (nonatomic, readonly, strong) NSValue *specificKeyPointer;
+
 
 #pragma mark - Class methods
 
 /**
  Construct object wrapper for provided GCD object. 
  
- @note Ownership will be set to wrapper, so there will be no need additionally retain it.
+ @note Ownership will be set to wrapper, so there will be no need additionally retain it (in case if
+ GCD objects treated as ARC enabled objects).
  @note Main usage for this wrapper defined by cases, when non-structure object can't be stored.
  
- @param object
- \a GCD object which should be stored inside wrapper.
+ @param object  \a GCD object which should be stored inside wrapper.
+ @param pointer Reference on value which store pointer used during set specific operation on queue.
  
  @return Reference on wrapper which will store \a GCD object for us.
  */
-+ (PNDispatchObjectWrapper *)wrapperForObject:(dispatch_queue_t)queue;
++ (PNDispatchObjectWrapper *)wrapperForObject:(dispatch_queue_t)queue specificKey:(NSValue *)pointer;
 
 #pragma mark -
 
@@ -99,6 +108,20 @@
 
 
 #pragma mark - Class methods
+
+/**
+@brief Construct new dispatch queue which won't be bound to any target queue.
+
+@param identifier Identifier of the owner which will be append as prefix to unique queue
+identifier.
+
+@warning Caller is responsible for queue retain and release.
+
+@since 3.7.3
+
+@return New non-retained dispatch queue.
+*/
++ (dispatch_queue_t)serialQueueWithIdentifier:(NSString *)identifier;
 
 /**
  Perform correct \c 'retain' on dispatch object (till iOS 6.x dispatch objects treated as strucutres).

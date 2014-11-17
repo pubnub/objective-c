@@ -294,7 +294,8 @@
 + (void)disablePushNotificationsOnChannel:(PNChannel *)channel withDevicePushToken:(NSData *)pushToken
                andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
     
-    [self disablePushNotificationsOnChannels:(channel ? @[channel] : nil) withDevicePushToken:pushToken andCompletionHandlingBlock:handlerBlock];
+    [self disablePushNotificationsOnChannels:(channel ? @[channel] : nil) withDevicePushToken:pushToken
+                  andCompletionHandlingBlock:handlerBlock];
 }
 
 + (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken {
@@ -361,59 +362,56 @@
     }];
 
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsPushNotificationsEnableObserver];
-                [self.observationCenter removeClientAsPushNotificationsDisableObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsPushNotificationsEnableObserver];
+            [self.observationCenter removeClientAsPushNotificationsDisableObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && pushToken != nil) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.enablingPushNotifications, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsPushNotificationsEnableObserverWithBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0 && pushToken != nil) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.enablingPushNotifications, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsPushNotificationsEnableObserverWithBlock:handlerBlock];
-                }
-                
-                PNPushNotificationsStateChangeRequest *request;
-                request = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken:pushToken
-                                                                                    toState:PNPushNotificationsState.enable
-                                                                                forChannels:channels];
-                [self sendRequest:request shouldObserveProcessing:YES];
-            }
+
+            PNPushNotificationsStateChangeRequest *request;
+            request = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken:pushToken
+                                                                                toState:PNPushNotificationsState.enable
+                                                                            forChannels:channels];
+            [self sendRequest:request shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.pushNotificationEnablingImpossible, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (pushToken == nil) {
-                    
-                    statusCode = kPNDevicePushTokenIsEmptyError;
-                }
-                PNError *stateChangeError = [PNError errorWithCode:statusCode];
-                stateChangeError.associatedObject = channels;
-                
-                [self notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
-                
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(channels, stateChangeError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.pushNotificationEnablingImpossible, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (pushToken == nil) {
+
+                statusCode = kPNDevicePushTokenIsEmptyError;
             }
-        }];
+            PNError *stateChangeError = [PNError errorWithCode:statusCode];
+            stateChangeError.associatedObject = channels;
+
+            [self notifyDelegateAboutPushNotificationsEnableFailedWithError:stateChangeError];
+
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(channels, stateChangeError);
+            }
+        }
     }
            postponedExecutionBlock:^{
 
@@ -476,62 +474,59 @@
     }];
 
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
 
-            if (!isMethodCallRescheduled) {
+        if (!isMethodCallRescheduled) {
 
-                [self.observationCenter removeClientAsPushNotificationsEnableObserver];
-                [self.observationCenter removeClientAsPushNotificationsDisableObserver];
+            [self.observationCenter removeClientAsPushNotificationsEnableObserver];
+            [self.observationCenter removeClientAsPushNotificationsDisableObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && pushToken != nil) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.disablingPushNotifications,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsPushNotificationsDisableObserverWithBlock:handlerBlock];
             }
 
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0 && pushToken != nil) {
-
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.api.disablingPushNotifications,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-
-                if (handlerBlock && !isMethodCallRescheduled) {
-
-                    [self.observationCenter addClientAsPushNotificationsDisableObserverWithBlock:handlerBlock];
-                }
-
-                PNPushNotificationsStateChangeRequest *request;
-                request = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken:pushToken
-                                                                                    toState:PNPushNotificationsState.disable
-                                                                                forChannels:channels];
-                [self sendRequest:request shouldObserveProcessing:YES];
-            }
+            PNPushNotificationsStateChangeRequest *request;
+            request = [PNPushNotificationsStateChangeRequest requestWithDevicePushToken:pushToken
+                                                                                toState:PNPushNotificationsState.disable
+                                                                            forChannels:channels];
+            [self sendRequest:request shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
+        else {
 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return @[PNLoggerSymbols.api.pushNotificationDisablingImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
+                return @[PNLoggerSymbols.api.pushNotificationDisablingImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
 
-                if (pushToken == nil) {
+            if (pushToken == nil) {
 
-                    statusCode = kPNDevicePushTokenIsEmptyError;
-                }
-
-                PNError *stateChangeError = [PNError errorWithCode:statusCode];
-                stateChangeError.associatedObject = channels;
-
-                [self notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
-
-
-                if (handlerBlock && !isMethodCallRescheduled) {
-
-                    handlerBlock(channels, stateChangeError);
-                }
+                statusCode = kPNDevicePushTokenIsEmptyError;
             }
-        }];
+
+            PNError *stateChangeError = [PNError errorWithCode:statusCode];
+            stateChangeError.associatedObject = channels;
+
+            [self notifyDelegateAboutPushNotificationsDisableFailedWithError:stateChangeError];
+
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(channels, stateChangeError);
+            }
+        }
     }
            postponedExecutionBlock:^{
 
@@ -576,54 +571,51 @@
     }];
 
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
 
-            if (!isMethodCallRescheduled) {
+        if (!isMethodCallRescheduled) {
 
-                [self.observationCenter removeClientAsPushNotificationsRemoveObserver];
+            [self.observationCenter removeClientAsPushNotificationsRemoveObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && pushToken != nil) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.removePushNotifications, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsPushNotificationsRemoveObserverWithBlock:handlerBlock];
             }
 
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0 && pushToken != nil) {
-
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.api.removePushNotifications, [self humanReadableStateFrom:self.state]];
-                }];
-
-                if (handlerBlock && !isMethodCallRescheduled) {
-
-                    [self.observationCenter addClientAsPushNotificationsRemoveObserverWithBlock:handlerBlock];
-                }
-
-                [self sendRequest:[PNPushNotificationsRemoveRequest requestWithDevicePushToken:pushToken]
-                           shouldObserveProcessing:YES];
-            }
+            [self sendRequest:[PNPushNotificationsRemoveRequest requestWithDevicePushToken:pushToken]
+      shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
+        else {
 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return @[PNLoggerSymbols.api.pushNotificationRemovalImpossible, [self humanReadableStateFrom:self.state]];
-                }];
+                return @[PNLoggerSymbols.api.pushNotificationRemovalImpossible, [self humanReadableStateFrom:self.state]];
+            }];
 
-                if (pushToken == nil) {
+            if (pushToken == nil) {
 
-                    statusCode = kPNDevicePushTokenIsEmptyError;
-                }
-
-                PNError *removalError = [PNError errorWithCode:statusCode];
-                [self notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
-
-
-                if (handlerBlock && !isMethodCallRescheduled) {
-
-                    handlerBlock(removalError);
-                }
+                statusCode = kPNDevicePushTokenIsEmptyError;
             }
-        }];
+
+            PNError *removalError = [PNError errorWithCode:statusCode];
+            [self notifyDelegateAboutPushNotificationsRemoveFailedWithError:removalError];
+
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(removalError);
+            }
+        }
     }
            postponedExecutionBlock:^{
 
@@ -665,55 +657,52 @@
     }];
 
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsPushNotificationsEnabledChannelsObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsPushNotificationsEnabledChannelsObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0 && pushToken != nil) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.auditPushNotifications, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsPushNotificationsEnabledChannelsObserverWithBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0 && pushToken != nil) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.auditPushNotifications, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsPushNotificationsEnabledChannelsObserverWithBlock:handlerBlock];
-                }
-                
-                [self sendRequest:[PNPushNotificationsEnabledChannelsRequest requestWithDevicePushToken:pushToken]
-          shouldObserveProcessing:YES];
-            }
+
+            [self sendRequest:[PNPushNotificationsEnabledChannelsRequest requestWithDevicePushToken:pushToken]
+      shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.pushNotificationAuditImpossible, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (pushToken == nil) {
-                    
-                    statusCode = kPNDevicePushTokenIsEmptyError;
-                }
-                
-                PNError *listRetrieveError = [PNError errorWithCode:statusCode];
-                
-                [self notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
-                
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(nil, listRetrieveError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.pushNotificationAuditImpossible, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (pushToken == nil) {
+
+                statusCode = kPNDevicePushTokenIsEmptyError;
             }
-        }];
+
+            PNError *listRetrieveError = [PNError errorWithCode:statusCode];
+
+            [self notifyDelegateAboutPushNotificationsEnabledChannelsFailedWithError:listRetrieveError];
+
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(nil, listRetrieveError);
+            }
+        }
     }
            postponedExecutionBlock:^{
 
@@ -863,24 +852,27 @@
             
             return @[PNLoggerSymbols.api.didEnablePushNotifications, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            // Check whether delegate is able to handle push notification enabled event or not
-            SEL selector = @selector(pubnubClient:didEnablePushNotificationsOnChannels:);
-            if ([self.clientDelegate respondsToSelector:selector]) {
-                
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate performSelector:selector withObject:self withObject:channels];
-                });
-                #pragma clang diagnostic pop
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate is able to handle push notification enabled event or not
+                SEL selector = @selector(pubnubClient:didEnablePushNotificationsOnChannels:);
+                if ([self.clientDelegate respondsToSelector:selector]) {
+
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:selector withObject:self withObject:channels];
+                    });
+                    #pragma clang diagnostic pop
+                }
+
+                [self sendNotification:kPNClientPushNotificationEnableDidCompleteNotification withObject:channels];
             }
-            
-            [self sendNotification:kPNClientPushNotificationEnableDidCompleteNotification withObject:channels];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }
@@ -918,24 +910,28 @@
             
             return @[PNLoggerSymbols.api.didDisablePushNotifications, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            // Check whether delegate is able to handle push notification disable event or not
-            SEL selector = @selector(pubnubClient:didDisablePushNotificationsOnChannels:);
-            if ([self.clientDelegate respondsToSelector:selector]) {
-                
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate performSelector:selector withObject:self withObject:channels];
-                });
-                #pragma clang diagnostic pop
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate is able to handle push notification disable event or not
+                SEL selector = @selector(pubnubClient:didDisablePushNotificationsOnChannels:);
+                if ([self.clientDelegate respondsToSelector:selector]) {
+
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:selector withObject:self withObject:channels];
+                    });
+                    #pragma clang diagnostic pop
+                }
+
+                [self sendNotification:kPNClientPushNotificationDisableDidCompleteNotification withObject:channels];
             }
-            
-            [self sendNotification:kPNClientPushNotificationDisableDidCompleteNotification withObject:channels];
-        }
+        }];
+
     }
                                 shouldStartNext:YES];
 }
@@ -973,25 +969,28 @@
             
             return @[PNLoggerSymbols.api.didRemovePushNotifications, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            // Check wheter delegate is able to handle successful push notification removal from
-            // all channels or not
-            SEL selector = @selector(pubnubClientDidRemovePushNotifications:);
-            if ([self.clientDelegate respondsToSelector:selector]) {
-                
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate performSelector:selector withObject:self];
-                });
-                #pragma clang diagnostic pop
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate is able to handle successful push notification removal from
+                // all channels or not
+                SEL selector = @selector(pubnubClientDidRemovePushNotifications:);
+                if ([self.clientDelegate respondsToSelector:selector]) {
+
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:selector withObject:self];
+                    });
+                    #pragma clang diagnostic pop
+                }
+
+                [self sendNotification:kPNClientPushNotificationRemoveDidCompleteNotification withObject:nil];
             }
-            
-            [self sendNotification:kPNClientPushNotificationRemoveDidCompleteNotification withObject:nil];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }
@@ -1027,25 +1026,28 @@
             
             return @[PNLoggerSymbols.api.didAuditPushNotifications, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            // Check whether delegate is able to handle push notification enabled
-            // channels retrieval or not
-            SEL selector = @selector(pubnubClient:didReceivePushNotificationEnabledChannels:);
-            if ([self.clientDelegate respondsToSelector:selector]) {
-                
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate performSelector:selector withObject:self withObject:channels];
-                });
-                #pragma clang diagnostic pop
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate is able to handle push notification enabled
+                // channels retrieval or not
+                SEL selector = @selector(pubnubClient:didReceivePushNotificationEnabledChannels:);
+                if ([self.clientDelegate respondsToSelector:selector]) {
+
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:selector withObject:self withObject:channels];
+                    });
+                    #pragma clang diagnostic pop
+                }
+
+                [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification withObject:channels];
             }
-            
-            [self sendNotification:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification withObject:channels];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }

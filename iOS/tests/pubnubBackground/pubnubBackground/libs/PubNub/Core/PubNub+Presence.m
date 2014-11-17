@@ -410,53 +410,50 @@
     }];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsParticipantsListDownloadObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsParticipantsListDownloadObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.requestingParticipantsList, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handleBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsParticipantsListDownloadObserverWithBlock:handleBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.requestingParticipantsList, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handleBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsParticipantsListDownloadObserverWithBlock:handleBlock];
-                }
-                
-                PNHereNowRequest *request = [PNHereNowRequest whoNowRequestForChannels:channelObjects
-                                                             clientIdentifiersRequired:isClientIdentifiersRequired
-                                                                           clientState:shouldFetchClientState];
-                [self sendRequest:request shouldObserveProcessing:YES];
-            }
+
+            PNHereNowRequest *request = [PNHereNowRequest whoNowRequestForChannels:channelObjects
+                                                         clientIdentifiersRequired:isClientIdentifiersRequired
+                                                                       clientState:shouldFetchClientState];
+            [self sendRequest:request shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.participantsListRequestImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *sendingError = [PNError errorWithCode:statusCode];
-                sendingError.associatedObject = channelObjects;
-                
-                [self notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
-                
-                if (handleBlock && !isMethodCallRescheduled) {
-                    
-                    handleBlock(nil, channelObjects, sendingError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.participantsListRequestImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNError *sendingError = [PNError errorWithCode:statusCode];
+            sendingError.associatedObject = channelObjects;
+
+            [self notifyDelegateAboutParticipantsListDownloadFailedWithError:sendingError];
+
+            if (handleBlock && !isMethodCallRescheduled) {
+
+                handleBlock(nil, channelObjects, sendingError);
             }
-        }];
+        }
     }
            postponedExecutionBlock:^{
                
@@ -508,50 +505,47 @@
     }];
 
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsParticipantChannelsListDownloadObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsParticipantChannelsListDownloadObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.requestingParticipantChannelsList, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handleBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsParticipantChannelsListDownloadObserverWithBlock:handleBlock];
             }
 
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
+            PNWhereNowRequest *request = [PNWhereNowRequest whereNowRequestForIdentifier:clientIdentifier];
+            [self sendRequest:request shouldObserveProcessing:YES];
+        }
+        else {
 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return @[PNLoggerSymbols.api.requestingParticipantChannelsList, [self humanReadableStateFrom:self.state]];
-                }];
+                return @[PNLoggerSymbols.api.participantChannelsListRequestImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
 
-                if (handleBlock && !isMethodCallRescheduled) {
+            PNError *sendingError = [PNError errorWithCode:statusCode];
+            sendingError.associatedObject = clientIdentifier;
 
-                    [self.observationCenter addClientAsParticipantChannelsListDownloadObserverWithBlock:handleBlock];
-                }
+            [self notifyDelegateAboutParticipantChannelsListDownloadFailedWithError:sendingError];
 
-                PNWhereNowRequest *request = [PNWhereNowRequest whereNowRequestForIdentifier:clientIdentifier];
-                [self sendRequest:request shouldObserveProcessing:YES];
+            if (handleBlock && !isMethodCallRescheduled) {
+
+                handleBlock(clientIdentifier, nil, sendingError);
             }
-            else {
-
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.api.participantChannelsListRequestImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-
-                PNError *sendingError = [PNError errorWithCode:statusCode];
-                sendingError.associatedObject = clientIdentifier;
-
-                [self notifyDelegateAboutParticipantChannelsListDownloadFailedWithError:sendingError];
-
-                if (handleBlock && !isMethodCallRescheduled) {
-
-                    handleBlock(clientIdentifier, nil, sendingError);
-                }
-            }
-        }];
+        }
     }
            postponedExecutionBlock:^{
 
@@ -652,34 +646,37 @@
             
             return @[PNLoggerSymbols.api.didReceiveParticipantsList, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:serviceChannel]) {
-            
-            #pragma clang diagnostic push
-            #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            // Check whether delegate can response on participants list download event or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsList:forChannel:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                
-                    [self.clientDelegate pubnubClient:self didReceiveParticipantsList:participants.participants
-                                           forChannel:participants.channel];
-                });
-            }
-            #pragma clang diagnostic pop
-            
-            // Check whether delegate can response on participants list download event or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveParticipants:forObjects:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
 
-                    [self.clientDelegate pubnubClient:self didReceiveParticipants:participants
-                                           forObjects:[participants channels]];
-                });
+        [self checkShouldChannelNotifyAboutEvent:serviceChannel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                // Check whether delegate can response on participants list download event or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantsList:forChannel:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate pubnubClient:self didReceiveParticipantsList:participants.participants
+                                               forChannel:participants.channel];
+                    });
+                }
+                #pragma clang diagnostic pop
+
+                // Check whether delegate can response on participants list download event or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveParticipants:forObjects:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate pubnubClient:self didReceiveParticipants:participants
+                                               forObjects:[participants channels]];
+                    });
+                }
+
+                [self sendNotification:kPNClientDidReceiveParticipantsListNotification withObject:participants];
             }
-            
-            [self sendNotification:kPNClientDidReceiveParticipantsListNotification withObject:participants];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }
@@ -717,21 +714,24 @@
             
             return @[PNLoggerSymbols.api.didReceiveParticipantChannelsList, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:serviceChannel]) {
-            
-            // Check whether delegate can response on participant channels list download event or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantChannelsList:forIdentifier:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                
-                    [self.clientDelegate pubnubClient:self didReceiveParticipantChannelsList:participantChannels.channels
-                                        forIdentifier:participantChannels.identifier];
-                });
+
+        [self checkShouldChannelNotifyAboutEvent:serviceChannel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate can response on participant channels list download event or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveParticipantChannelsList:forIdentifier:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate pubnubClient:self didReceiveParticipantChannelsList:participantChannels.channels
+                                            forIdentifier:participantChannels.identifier];
+                    });
+                }
+
+                [self sendNotification:kPNClientDidReceiveParticipantChannelsListNotification withObject:participantChannels];
             }
-            
-            [self sendNotification:kPNClientDidReceiveParticipantChannelsListNotification withObject:participantChannels];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }

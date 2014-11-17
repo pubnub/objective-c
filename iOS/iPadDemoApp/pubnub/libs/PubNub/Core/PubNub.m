@@ -569,7 +569,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 + (void)disconnect {
     
-	[[self sharedInstance] disconnectByUser:YES];
+	[[self sharedInstance] disconnect];
 }
 
 

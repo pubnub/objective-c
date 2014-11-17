@@ -85,7 +85,7 @@ typedef enum _PNReachabilityStatus {
 @property (nonatomic, strong) NSString *currentWLANBSSID;
 @property (nonatomic, strong) NSString *currentWLANSSID;
 
-@property (nonatomic, strong) NSTimer *originLookupTimer;
+@property (nonatomic, pn_dispatch_property_ownership) dispatch_source_t originLookupTimer;
 
 
 #pragma mark - Class methods
@@ -170,9 +170,7 @@ typedef enum _PNReachabilityStatus {
     // Check whether initialization was successful or not
     if((self = [super init])) {
         
-        dispatch_queue_t targetQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        [self pn_setPrivateDispatchQueue:[self pn_serialQueueWithOwnerIdentifier:@"reachability" andTargetQueue:targetQueue]];
-        
+        [self pn_setupPrivateSerialQueueWithIdentifier:@"reachability" andPriority:DISPATCH_QUEUE_PRIORITY_DEFAULT];
         self.status = PNReachabilityStatusUnknown;
         self.reachabilityStatus = PNReachabilityStatusUnknown;
         self.lookupStatus = PNReachabilityStatusUnknown;
@@ -266,49 +264,52 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                     [reachabilityMonitor humanReadableStatus:status], @(available)];
         }];
 
-        // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
-        // connection state in non appropriate state
-        reachabilityMonitor.simulatingNetworkSwitchEvent = NO;
+        [reachabilityMonitor pn_dispatchBlock:^{
 
-        // Updating reachability information
-        reachabilityMonitor.reachabilityFlags = flags;
-        reachabilityMonitor.reachabilityStatus = status;
-        
+            // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
+            // connection state in non appropriate state
+            reachabilityMonitor.simulatingNetworkSwitchEvent = NO;
+
+            // Updating reachability information
+            reachabilityMonitor.reachabilityFlags = flags;
+            reachabilityMonitor.reachabilityStatus = status;
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-        BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+            BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
 #else
         BOOL shouldSuspectWrongState = YES;
 #endif
-        
-        if (available && shouldSuspectWrongState) {
-                
-            [reachabilityMonitor startOriginLookup];
-        }
-        
-        if (!available || (available && !shouldSuspectWrongState)) {
-            
-            if (!available) {
-                
-                [reachabilityMonitor stopOriginLookup];
+
+            if (available && shouldSuspectWrongState) {
+
+                [reachabilityMonitor startOriginLookup];
             }
-            
-            reachabilityMonitor.lookupStatus = status;
-        }
-        
-        if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
-            ([reachabilityMonitor isServiceAvailableForStatus:reachabilityMonitor.status] && [reachabilityMonitor isServiceAvailableForStatus:status])) {
-            
-            reachabilityMonitor.status = status;
-        }
-        else {
 
-            [PNLogger logReachabilityMessageFrom:reachabilityMonitor withParametersFromBlock:^NSArray *{
+            if (!available || (available && !shouldSuspectWrongState)) {
 
-                return @[PNLoggerSymbols.reachability.reachabilityFlagsChangeIgnoredOnCallback,
-                        [reachabilityMonitor humanReadableStatus:reachabilityMonitor.reachabilityStatus],
-                        [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus], @(available)];
-            }];
-        }
+                if (!available) {
+
+                    [reachabilityMonitor stopOriginLookup];
+                }
+
+                reachabilityMonitor.lookupStatus = status;
+            }
+
+            if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
+                    ([reachabilityMonitor isServiceAvailableForStatus:reachabilityMonitor.status] && [reachabilityMonitor isServiceAvailableForStatus:status])) {
+
+                reachabilityMonitor.status = status;
+            }
+            else {
+
+                [PNLogger logReachabilityMessageFrom:reachabilityMonitor withParametersFromBlock:^NSArray *{
+
+                    return @[PNLoggerSymbols.reachability.reachabilityFlagsChangeIgnoredOnCallback,
+                            [reachabilityMonitor humanReadableStatus:reachabilityMonitor.reachabilityStatus],
+                            [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus], @(available)];
+                }];
+            }
+        }];
     }
     else {
 
@@ -343,8 +344,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
             // Schedule service reachability monitoring on current run-loop with
             // common mode (prevent from blocking by other tasks)
-            SCNetworkReachabilityScheduleWithRunLoop(self.serviceReachability,
-                                                     CFRunLoopGetCurrent(),
+            SCNetworkReachabilityScheduleWithRunLoop(self.serviceReachability, CFRunLoopGetMain(),
                                                      kCFRunLoopCommonModes);
         }
 
@@ -384,33 +384,48 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 }
 
 - (void)startOriginLookup:(BOOL)shouldStopPrevious {
-    
-    if (shouldStopPrevious) {
-        
-        [self stopOriginLookup];
-    }
-    
-    [self pn_dispatchAsynchronouslyBlock:^{
-        
-        if (![self.originLookupTimer isValid]) {
-            
-            self.originLookupTimer = [NSTimer timerWithTimeInterval:kPNReachabilityOriginLookupInterval target:self
-                                                           selector:@selector(handleOriginLookupTimer) userInfo:nil repeats:NO];
-            [[NSRunLoop mainRunLoop] addTimer:self.originLookupTimer forMode:NSRunLoopCommonModes];
+
+    [self pn_dispatchBlock:^{
+
+        if (shouldStopPrevious) {
+
+            [self stopOriginLookup];
+        }
+
+        if (self.originLookupTimer == NULL) {
+
+            dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
+                    [self pn_privateQueue]);
+            [PNDispatchHelper retain:timerSource];
+            self.originLookupTimer = timerSource;
+
+            __pn_desired_weak __typeof__(self) weakSelf = self;
+            dispatch_source_set_event_handler(self.originLookupTimer, ^{
+
+                [weakSelf stopOriginLookup];
+                [weakSelf handleOriginLookupTimer];
+            });
+            dispatch_source_set_cancel_handler(self.originLookupTimer, ^{
+
+                [PNDispatchHelper release:timerSource];
+                weakSelf.originLookupTimer = NULL;
+            });
+
+            dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC));
+            dispatch_source_set_timer(self.originLookupTimer, start, (uint64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC), NSEC_PER_SEC);
+            dispatch_resume(self.originLookupTimer);
         }
     }];
 }
 
 - (void)stopOriginLookup {
-    
-    [self pn_dispatchAsynchronouslyBlock:^{
-    
-        if ([self.originLookupTimer isValid]) {
-            
-            [self.originLookupTimer invalidate];
+
+    [self pn_dispatchBlock:^{
+
+        if (self.originLookupTimer != NULL) {
+
+            dispatch_source_cancel(self.originLookupTimer);
         }
-        
-        self.originLookupTimer = nil;
     }];
 }
 
@@ -490,16 +505,19 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
 - (void)resume {
 
-    // Check whether reachability instance crated before destroy it
-    if (self.serviceReachability && [self isSuspended]) {
+    [self pn_dispatchBlock:^{
 
-        [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
+        // Check whether reachability instance crated before destroy it
+        if (self.serviceReachability && [self isSuspended]) {
 
-            return @[PNLoggerSymbols.reachability.resumedReachabilityObservation];
-        }];
-        self.notificationsSuspended = NO;
-        [self startOriginLookup];
-    }
+            [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                return @[PNLoggerSymbols.reachability.resumedReachabilityObservation];
+            }];
+            self.notificationsSuspended = NO;
+            [self startOriginLookup];
+        }
+    }];
 }
 
 
@@ -530,7 +548,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             NSData *downloadedTimeTokenData = [NSURLConnection sendSynchronousRequest:timeTokenRequest returningResponse:&response error:&requestError];
             [[NSURLCache sharedURLCache] removeCachedResponseForRequest:timeTokenRequest];
             
-            dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async([self pn_privateQueue], ^{
                 
                 [weakSelf handleOriginLookupCompletionWithData:downloadedTimeTokenData response:response error:requestError];
             });
@@ -539,7 +557,10 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 }
 
 - (void)handleOriginLookupCompletionWithData:(NSData *)responseData response:(NSHTTPURLResponse *)response error:(NSError *)error {
-    
+
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
     // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
     // allow to check network state for sure
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -1026,6 +1047,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Clean up
     [self stopOriginLookup];
     [self stopServiceReachabilityMonitoring];
+    [self pn_destroyPrivateDispatchQueue];
 }
 
 - (PNReachabilityStatus)status {
@@ -1179,7 +1201,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                 __block __pn_desired_weak __typeof(self) weakSelf = self;
                 int64_t delayInSeconds = kPNReachabilityNetworkSwitchSimulationDelay;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+                dispatch_after(popTime, [self pn_privateQueue], ^(void) {
 
                     // Check whether there is no new events arrived while simulated network change event
                     if (weakSelf.isSimulatingNetworkSwitchEvent) {

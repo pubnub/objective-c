@@ -233,7 +233,7 @@
         if ([channel isPresenceObserver]) {
             
             PNChannel *observedChannel = [(PNChannelPresence *)channel observedChannel];
-            if (observedChannel && [_channelsForPresenceDisabling containsObject:observedChannel]) {
+            if (observedChannel && [self->_channelsForPresenceDisabling containsObject:observedChannel]) {
                 
                 [channelsForRemoval addObject:channel];
             }

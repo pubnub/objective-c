@@ -247,7 +247,7 @@
 
     [self performAsyncLockingBlock:^{
 
-        [self pn_dispatchAsynchronouslyBlock:^{
+        [self pn_dispatchBlock:^{
 
             [self.observationCenter removeClientAsPresenceEnabling];
             [self.observationCenter removeClientAsPresenceDisabling];
@@ -256,7 +256,7 @@
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
                     return @[PNLoggerSymbols.api.enablingPresenceObservation, [self humanReadableStateFrom:self.state]];
                 }];
@@ -277,7 +277,7 @@
             }
             else {
 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
                     return @[PNLoggerSymbols.api.presenceObservationEnableImpossible, [self humanReadableStateFrom:self.state]];
                 }];
@@ -352,49 +352,49 @@
 
     [self performAsyncLockingBlock:^{
 
-                [self pn_dispatchAsynchronouslyBlock:^{
+        [self pn_dispatchBlock:^{
 
-                    [self.observationCenter removeClientAsPresenceEnabling];
-                    [self.observationCenter removeClientAsPresenceDisabling];
+            [self.observationCenter removeClientAsPresenceEnabling];
+            [self.observationCenter removeClientAsPresenceDisabling];
 
-                    // Check whether client is able to send request or not
-                    NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-                    if (statusCode == 0) {
+            // Check whether client is able to send request or not
+            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+            if (statusCode == 0) {
 
-                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                            return @[PNLoggerSymbols.api.disablingPresenceObservation, [self humanReadableStateFrom:self.state]];
-                        }];
-
-                        if (handlerBlock != nil) {
-
-                            [self.observationCenter addClientAsPresenceDisablingObserverWithBlock:handlerBlock];
-                        }
-
-                        [self.messagingChannel disablePresenceObservationForChannels:channelObjects];
-                    }
-                    else {
-
-                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                            return @[PNLoggerSymbols.api.presenceObservationDisableImpossible,
-                                    [self humanReadableStateFrom:self.state]];
-                        }];
-
-                        PNError *presencedisableError = [PNError errorWithCode:statusCode];
-                        presencedisableError.associatedObject = channelObjects;
-
-
-                        [self notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError
-                                                       completeLockingOperation:YES];
-
-                        if (handlerBlock != nil) {
-
-                            handlerBlock(channelObjects, presencedisableError);
-                        }
-                    }
+                    return @[PNLoggerSymbols.api.disablingPresenceObservation, [self humanReadableStateFrom:self.state]];
                 }];
+
+                if (handlerBlock != nil) {
+
+                    [self.observationCenter addClientAsPresenceDisablingObserverWithBlock:handlerBlock];
+                }
+
+                [self.messagingChannel disablePresenceObservationForChannels:channelObjects];
             }
+            else {
+
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                    return @[PNLoggerSymbols.api.presenceObservationDisableImpossible,
+                            [self humanReadableStateFrom:self.state]];
+                }];
+
+                PNError *presencedisableError = [PNError errorWithCode:statusCode];
+                presencedisableError.associatedObject = channelObjects;
+
+
+                [self notifyDelegateAboutPresenceDisablingFailWithError:presencedisableError
+                                               completeLockingOperation:YES];
+
+                if (handlerBlock != nil) {
+
+                    handlerBlock(channelObjects, presencedisableError);
+                }
+            }
+        }];
+    }
            postponedExecutionBlock:^{
 
                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -499,11 +499,11 @@
         return @[PNLoggerSymbols.api.willEnablePresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
-    
-    [self pn_dispatchAsynchronouslyBlock:^{
-        
+
+    [self pn_dispatchBlock:^{
+
         if ([self isConnected]) {
-            
+
             self.asyncLockingOperationInProgress = YES;
         }
     }];
@@ -519,21 +519,24 @@
             return @[PNLoggerSymbols.api.enabledPresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
-            
-            // Check whether delegate can handle new message arrival or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOn:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                
-                    [self.clientDelegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOn:)
-                                              withObject:self withObject:channelObjects];
-                });
+
+        [self checkShouldChannelNotifyAboutEvent:messagingChannel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate can handle new message arrival or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didEnablePresenceObservationOn:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didEnablePresenceObservationOn:)
+                                                  withObject:self withObject:channelObjects];
+                    });
+                }
+
+                [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channelObjects];
             }
-            
-            [self sendNotification:kPNClientPresenceEnablingDidCompleteNotification withObject:channelObjects];
-        }
+        }];
     };
     
     if (!isSequenced) {
@@ -561,11 +564,11 @@
         return @[PNLoggerSymbols.api.willDisablePresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
-    
-    [self pn_dispatchAsynchronouslyBlock:^{
-    
+
+    [self pn_dispatchBlock:^{
+
         if ([self isConnected]) {
-            
+
             self.asyncLockingOperationInProgress = YES;
         }
     }];
@@ -581,29 +584,32 @@
             return @[PNLoggerSymbols.api.disabledPresenceObservation, (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
-            
-            // Check whether delegate can handle new message arrival or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOn:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                
-                    [self.clientDelegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOn:)
-                                              withObject:self withObject:channelObjects];
-                });
+
+        [self checkShouldChannelNotifyAboutEvent:messagingChannel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate can handle new message arrival or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didDisablePresenceObservationOn:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didDisablePresenceObservationOn:)
+                                                  withObject:self withObject:channelObjects];
+                    });
+                }
+
+                [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channelObjects];
             }
-            
-            [self sendNotification:kPNClientPresenceDisablingDidCompleteNotification withObject:channelObjects];
-        }
+        }];
     };
-    
+
     if (!isSequenced) {
-        
+
         [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
     }
     else {
-        
+
         handlerBlock();
     }
 }
@@ -631,21 +637,24 @@
     }];
     
     [self launchHeartbeatTimer];
-    
-    if ([self shouldChannelNotifyAboutEvent:messagingChannel]) {
-        
-        // Check whether delegate can handle presence event arrival or not
-        if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceivePresenceEvent:)]) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-            
-                [self.clientDelegate performSelector:@selector(pubnubClient:didReceivePresenceEvent:) withObject:self
-                                          withObject:event];
-            });
+
+    [self checkShouldChannelNotifyAboutEvent:messagingChannel withBlock:^(BOOL shouldNotify) {
+
+        if (shouldNotify) {
+
+            // Check whether delegate can handle presence event arrival or not
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceivePresenceEvent:)]) {
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+
+                    [self.clientDelegate performSelector:@selector(pubnubClient:didReceivePresenceEvent:) withObject:self
+                                              withObject:event];
+                });
+            }
+
+            [self sendNotification:kPNClientDidReceivePresenceEventNotification withObject:event];
         }
-        
-        [self sendNotification:kPNClientDidReceivePresenceEventNotification withObject:event];
-    }
+    }];
 }
 
 #pragma mark -

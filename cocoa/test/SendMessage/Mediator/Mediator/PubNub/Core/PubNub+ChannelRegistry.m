@@ -433,51 +433,48 @@
     }];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsChannelGroupsRequestObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsChannelGroupsRequestObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.requestChannelGroups, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsChannelGroupsRequestObserverWithCallbackBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.requestChannelGroups, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsChannelGroupsRequestObserverWithCallbackBlock:handlerBlock];
-                }
-                
-                PNChannelGroupsRequest *request = [PNChannelGroupsRequest channelGroupsRequestForNamespace:nspace];
-                [self sendRequest:request shouldObserveProcessing:YES];
-            }
+
+            PNChannelGroupsRequest *request = [PNChannelGroupsRequest channelGroupsRequestForNamespace:nspace];
+            [self sendRequest:request shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.channelGroupsRequestImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = nspace;
-                
-                [self notifyDelegateAboutChannelGroupsRequestFailedWithError:requestError];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(nspace, nil, requestError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.channelGroupsRequestImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNError *requestError = [PNError errorWithCode:statusCode];
+            requestError.associatedObject = nspace;
+
+            [self notifyDelegateAboutChannelGroupsRequestFailedWithError:requestError];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(nspace, nil, requestError);
             }
-        }];
+        }
     }
            postponedExecutionBlock:^{
                
@@ -524,48 +521,45 @@
     }];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsChannelGroupNamespacesRequestObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsChannelGroupNamespacesRequestObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.retrievingChannelGroupNamespaces, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsChannelGroupNamespacesRequestObserverWithCallbackBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.retrievingChannelGroupNamespaces, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsChannelGroupNamespacesRequestObserverWithCallbackBlock:handlerBlock];
-                }
-                
-                [self sendRequest:[PNChannelGroupNamespacesRequest new] shouldObserveProcessing:YES];
-            }
+
+            [self sendRequest:[PNChannelGroupNamespacesRequest new] shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.channelGroupNamespacesRetrieveImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *requestError = [PNError errorWithCode:statusCode];
-                [self notifyDelegateAboutChannelGroupNamespacesRequestFailedWithError:requestError];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(nil, requestError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.channelGroupNamespacesRetrieveImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNError *requestError = [PNError errorWithCode:statusCode];
+            [self notifyDelegateAboutChannelGroupNamespacesRequestFailedWithError:requestError];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(nil, requestError);
             }
-        }];
+        }
     }
            postponedExecutionBlock:^{
                
@@ -610,49 +604,46 @@
     }];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsChannelGroupNamespaceRemovalObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsChannelGroupNamespaceRemovalObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.removingChannelGroupNamespace, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsChannelGroupNamespaceRemovalObserverWithCallbackBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.removingChannelGroupNamespace, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsChannelGroupNamespaceRemovalObserverWithCallbackBlock:handlerBlock];
-                }
-                
-                [self sendRequest:[PNChannelGroupNamespaceRemoveRequest requestToRemoveNamespace:nspace] shouldObserveProcessing:YES];
-            }
+
+            [self sendRequest:[PNChannelGroupNamespaceRemoveRequest requestToRemoveNamespace:nspace] shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.channelGroupNamespaceRemovalImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = nspace;
-                [self notifyDelegateAboutChannelGroupNamespaceRemovalFailedWithError:requestError];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(nspace, requestError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.channelGroupNamespaceRemovalImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNError *requestError = [PNError errorWithCode:statusCode];
+            requestError.associatedObject = nspace;
+            [self notifyDelegateAboutChannelGroupNamespaceRemovalFailedWithError:requestError];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(nspace, requestError);
             }
-        }];
+        }
     }
            postponedExecutionBlock:^{
                
@@ -697,49 +688,46 @@
     }];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsChannelGroupRemovalObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsChannelGroupRemovalObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.removingChannelGroup, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsChannelGroupRemovalObserverWithCallbackBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.removingChannelGroup, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsChannelGroupRemovalObserverWithCallbackBlock:handlerBlock];
-                }
-                
-                [self sendRequest:[PNChannelGroupRemoveRequest requestToRemoveGroup:group] shouldObserveProcessing:YES];
-            }
+
+            [self sendRequest:[PNChannelGroupRemoveRequest requestToRemoveGroup:group] shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.channelGroupRemovalImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = group;
-                [self notifyDelegateAboutChannelGroupRemovalFailedWithError:requestError];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(group, requestError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.channelGroupRemovalImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNError *requestError = [PNError errorWithCode:statusCode];
+            requestError.associatedObject = group;
+            [self notifyDelegateAboutChannelGroupRemovalFailedWithError:requestError];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(group, requestError);
             }
-        }];
+        }
     }
            postponedExecutionBlock:^{
                
@@ -788,51 +776,48 @@
     }];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsChannelsForGroupRequestObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsChannelsForGroupRequestObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.requestChannelsForGroup, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsChannelsForGroupRequestObserverWithCallbackBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.requestChannelsForGroup, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsChannelsForGroupRequestObserverWithCallbackBlock:handlerBlock];
-                }
-                
-                PNChannelsForGroupRequest *request = [PNChannelsForGroupRequest channelsRequestForGroup:group];
-                [self sendRequest:request shouldObserveProcessing:YES];
-            }
+
+            PNChannelsForGroupRequest *request = [PNChannelsForGroupRequest channelsRequestForGroup:group];
+            [self sendRequest:request shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.channelsForGroupRequestImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = group;
-                
-                [self notifyDelegateAboutChannelsForGroupRequestFailedWithError:requestError];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(group, requestError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.channelsForGroupRequestImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNError *requestError = [PNError errorWithCode:statusCode];
+            requestError.associatedObject = group;
+
+            [self notifyDelegateAboutChannelsForGroupRequestFailedWithError:requestError];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(group, requestError);
             }
-        }];
+        }
     }
            postponedExecutionBlock:^{
                
@@ -881,52 +866,49 @@
     }];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsChannelsAdditionToGroupObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsChannelsAdditionToGroupObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.addingChannelsToGroup, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsChannelsAdditionToGroupObserverWithCallbackBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.addingChannelsToGroup, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsChannelsAdditionToGroupObserverWithCallbackBlock:handlerBlock];
-                }
-                
-                PNChannelsListUpdateForChannelGroupRequest *request = [PNChannelsListUpdateForChannelGroupRequest channelsListAddition:channels
-                                                                                                                       forChannelGroup:group];
-                [self sendRequest:request shouldObserveProcessing:YES];
-            }
+
+            PNChannelsListUpdateForChannelGroupRequest *request = [PNChannelsListUpdateForChannelGroupRequest channelsListAddition:channels
+                                                                                                                   forChannelGroup:group];
+            [self sendRequest:request shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.channelsAdditionToGroupImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = [PNChannelGroupChange changeForGroup:group channels:channels addingChannels:YES];
-                
-                [self notifyDelegateAboutChannelsListChangeFailedWithError:requestError];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(group, channels, requestError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.channelsAdditionToGroupImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNError *requestError = [PNError errorWithCode:statusCode];
+            requestError.associatedObject = [PNChannelGroupChange changeForGroup:group channels:channels addingChannels:YES];
+
+            [self notifyDelegateAboutChannelsListChangeFailedWithError:requestError];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(group, channels, requestError);
             }
-        }];
+        }
     }
            postponedExecutionBlock:^{
                
@@ -974,52 +956,49 @@
     }];
     
     [self performAsyncLockingBlock:^{
-        
-        [self pn_dispatchAsynchronouslyBlock:^{
-            
-            if (!isMethodCallRescheduled) {
-                
-                [self.observationCenter removeClientAsChannelsRemovalFromGroupObserver];
+
+        if (!isMethodCallRescheduled) {
+
+            [self.observationCenter removeClientAsChannelsRemovalFromGroupObserver];
+        }
+
+        // Check whether client is able to send request or not
+        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+        if (statusCode == 0) {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.removingChannelsFromGroup, [self humanReadableStateFrom:self.state]];
+            }];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                [self.observationCenter addClientAsChannelsRemovalFromGroupObserverWithCallbackBlock:handlerBlock];
             }
-            
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.removingChannelsFromGroup, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    [self.observationCenter addClientAsChannelsRemovalFromGroupObserverWithCallbackBlock:handlerBlock];
-                }
-                
-                PNChannelsListUpdateForChannelGroupRequest *request = [PNChannelsListUpdateForChannelGroupRequest channelsListRemoval:channels
-                                                                                                                       forChannelGroup:group];
-                [self sendRequest:request shouldObserveProcessing:YES];
-            }
+
+            PNChannelsListUpdateForChannelGroupRequest *request = [PNChannelsListUpdateForChannelGroupRequest channelsListRemoval:channels
+                                                                                                                  forChannelGroup:group];
+            [self sendRequest:request shouldObserveProcessing:YES];
+        }
             // Looks like client can't send request because of some reasons
-            else {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.channelsRemovalGroupImpossible,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = [PNChannelGroupChange changeForGroup:group channels:channels addingChannels:NO];
-                
-                [self notifyDelegateAboutChannelsListChangeFailedWithError:requestError];
-                
-                if (handlerBlock && !isMethodCallRescheduled) {
-                    
-                    handlerBlock(group, channels, requestError);
-                }
+        else {
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.channelsRemovalGroupImpossible,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            PNError *requestError = [PNError errorWithCode:statusCode];
+            requestError.associatedObject = [PNChannelGroupChange changeForGroup:group channels:channels addingChannels:NO];
+
+            [self notifyDelegateAboutChannelsListChangeFailedWithError:requestError];
+
+            if (handlerBlock && !isMethodCallRescheduled) {
+
+                handlerBlock(group, channels, requestError);
             }
-        }];
+        }
     }
            postponedExecutionBlock:^{
                
@@ -1213,26 +1192,29 @@
             
             return @[PNLoggerSymbols.api.channelGroupsRequestCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            // Check whether delegate can response on participants list download event or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelGroups:forNamespace:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate pubnubClient:self didReceiveChannelGroups:channelGroups forNamespace:nspace];
-                });
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                // Check whether delegate can response on participants list download event or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelGroups:forNamespace:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate pubnubClient:self didReceiveChannelGroups:channelGroups forNamespace:nspace];
+                    });
+                }
+
+                id notificationObject = channelGroups;
+                if (nspace) {
+
+                    notificationObject = @{nspace:channelGroups};
+                }
+
+                [self sendNotification:kPNClientChannelGroupsRequestCompleteNotification withObject:notificationObject];
             }
-            
-            id notificationObject = channelGroups;
-            if (nspace) {
-                
-                notificationObject = @{nspace:channelGroups};
-            }
-            
-            [self sendNotification:kPNClientChannelGroupsRequestCompleteNotification withObject:notificationObject];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }
@@ -1267,19 +1249,22 @@
             
             return @[PNLoggerSymbols.api.channelGroupNamespacesRetrievalCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelGroupNamespaces:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate pubnubClient:self didReceiveChannelGroupNamespaces:namespaces];
-                });
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelGroupNamespaces:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate pubnubClient:self didReceiveChannelGroupNamespaces:namespaces];
+                    });
+                }
+
+                [self sendNotification:kPNClientChannelGroupNamespacesRequestCompleteNotification withObject:namespaces];
             }
-            
-            [self sendNotification:kPNClientChannelGroupNamespacesRequestCompleteNotification withObject:namespaces];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }
@@ -1312,19 +1297,22 @@
             
             return @[PNLoggerSymbols.api.channelGroupNamespaceRemovalCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRemoveNamespace:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate pubnubClient:self didRemoveNamespace:nspace];
-                });
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRemoveNamespace:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate pubnubClient:self didRemoveNamespace:nspace];
+                    });
+                }
+
+                [self sendNotification:kPNClientChannelGroupNamespaceRemovalCompleteNotification withObject:nspace];
             }
-            
-            [self sendNotification:kPNClientChannelGroupNamespaceRemovalCompleteNotification withObject:nspace];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }
@@ -1358,19 +1346,22 @@
             
             return @[PNLoggerSymbols.api.channelGroupRemovalCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRemoveChannelGroup:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate pubnubClient:self didRemoveChannelGroup:group];
-                });
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRemoveChannelGroup:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate pubnubClient:self didRemoveChannelGroup:group];
+                    });
+                }
+
+                [self sendNotification:kPNClientChannelGroupRemovalCompleteNotification withObject:group];
             }
-            
-            [self sendNotification:kPNClientChannelGroupRemovalCompleteNotification withObject:group];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }
@@ -1403,22 +1394,25 @@
             
             return @[PNLoggerSymbols.api.channelsForGroupRequestCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            group.channels = channels;
-            
-            // Check whether delegate can response on participants list download event or not
-            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelsForGroup:)]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.clientDelegate pubnubClient:self didReceiveChannelsForGroup:group];
-                });
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                group.channels = channels;
+
+                // Check whether delegate can response on participants list download event or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelsForGroup:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate pubnubClient:self didReceiveChannelsForGroup:group];
+                    });
+                }
+
+                [self sendNotification:kPNClientChannelsForGroupRequestCompleteNotification withObject:group];
             }
-            
-            [self sendNotification:kPNClientChannelsForGroupRequestCompleteNotification withObject:group];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }
@@ -1448,44 +1442,47 @@
     
     [self handleLockingOperationBlockCompletion:^{
         
-        NSString *symbol = ([change addingChannels] ? PNLoggerSymbols.api.channelsAdditionToGroupCompleted :
-                                                      PNLoggerSymbols.api.channelsRemovalFromGroupCompleted);
+        __block NSString *symbol = ([change addingChannels] ? PNLoggerSymbols.api.channelsAdditionToGroupCompleted :
+                                                              PNLoggerSymbols.api.channelsRemovalFromGroupCompleted);
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
             return @[symbol, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
-            NSString *notification = kPNClientGroupChannelsAdditionCompleteNotification;
-            SEL selector = @selector(pubnubClient:didAddChannels:toGroup:);
-            if (!change.addingChannels) {
-                
-                symbol = PNLoggerSymbols.api.channelsRemovalFromGroupFailed;
-                notification = kPNClientGroupChannelsRemovalCompleteNotification;
-                selector = @selector(pubnubClient:didRemoveChannels:fromGroup:);
+
+        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+            if (shouldNotify) {
+
+                NSString *notification = kPNClientGroupChannelsAdditionCompleteNotification;
+                SEL selector = @selector(pubnubClient:didAddChannels:toGroup:);
+                if (!change.addingChannels) {
+
+                    symbol = PNLoggerSymbols.api.channelsRemovalFromGroupFailed;
+                    notification = kPNClientGroupChannelsRemovalCompleteNotification;
+                    selector = @selector(pubnubClient:didRemoveChannels:fromGroup:);
+                }
+
+                // Check whether delegate can response on group channels list manipulation or not
+                if ([self.clientDelegate respondsToSelector:selector]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        if (change.addingChannels) {
+
+                            [self.clientDelegate pubnubClient:self didAddChannels:change.channels toGroup:change.group];
+                        }
+                        else {
+
+                            [self.clientDelegate pubnubClient:self didRemoveChannels:change.channels fromGroup:change.group];
+                        }
+
+                    });
+                }
+
+                [self sendNotification:notification withObject:change];
             }
-            
-            // Check whether delegate can response on group channels list manipulation or not
-            if ([self.clientDelegate respondsToSelector:selector]) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    if (change.addingChannels) {
-                        
-                        [self.clientDelegate pubnubClient:self didAddChannels:change.channels toGroup:change.group];
-                    }
-                    else {
-                        
-                        [self.clientDelegate pubnubClient:self didRemoveChannels:change.channels fromGroup:change.group];
-                    }
-                    
-                });
-            }
-            
-            [self sendNotification:notification withObject:change];
-        }
+        }];
     }
                                 shouldStartNext:YES];
 }

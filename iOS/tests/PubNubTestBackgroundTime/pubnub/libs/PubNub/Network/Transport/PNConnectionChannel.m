@@ -121,7 +121,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
  Timer used to track requests execution time and report timeout if execution time (till response arrive) exceeded
  allowed time frame
  */
-@property (nonatomic, strong) NSTimer *timeoutTimer;
+@property (nonatomic, pn_dispatch_property_ownership) dispatch_source_t timeoutTimer;
 
 /**
  Current connection channel state
@@ -180,7 +180,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
  @note Template method
  */
-- (void)handleTimeoutTimer:(NSTimer *)timer;
+- (void)handleTimeoutTimer:(PNBaseRequest *)request;
 
 /**
  Called when new request is scheduled on queue and specify whether request should be stored for some time or not
@@ -201,8 +201,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
  @since 3.7.0
  */
 - (void)prepareConnectionIfRequired;
-
-- (BOOL)isConnecting;
 
 /**
  * Allow to manipulate with requests in specific storage by their identifiers
@@ -231,7 +229,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 + (id)connectionChannelWithConfiguration:(PNConfiguration *)configuration type:(PNConnectionChannelType)connectionChannelType
                              andDelegate:(id<PNConnectionChannelDelegate>)delegate {
     
-    return [[[self class] alloc] initWithConfiguration:configuration type:connectionChannelType andDelegate:delegate];
+    return [[self alloc] initWithConfiguration:configuration type:connectionChannelType andDelegate:delegate];
 }
 
 
@@ -261,8 +259,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         // Set initial connection channel state
         [PNBitwiseHelper removeFrom:&_state bit:PNConnectionChannelDisconnected];
 
-        dispatch_queue_t targetQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        [self pn_setPrivateDispatchQueue:[self pn_serialQueueWithOwnerIdentifier:@"connection-channel" andTargetQueue:targetQueue]];
+        [self pn_setupPrivateSerialQueueWithIdentifier:@"connection-channel"
+                                           andPriority:DISPATCH_QUEUE_PRIORITY_DEFAULT];
 
         // Initialize connection to the PubNub services
         self.requestsQueue = [PNRequestsQueue new];
@@ -277,104 +275,128 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connect {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
             return @[PNLoggerSymbols.connectionChannel.connectionAttempt, (self.name ? self.name : self), @(self.state)];
         }];
 
         void(^connectionCompletionSimulation)(void) = ^{
 
-            [PNBitwiseHelper clear:&_state];
-            [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
+            [PNBitwiseHelper clear:&self->_state];
+            [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
-            // Because with getters 'isConnected' channel provided wrong state, outside code may rely on connection
+            // Because with getters 'checkConnected:' channel provided wrong state, outside code may rely on connection
             // completion notifications, so we simulate it
             [self connection:self.connection didConnectToHost:self.configuration.origin];
         };
-        
 
         // Check whether connection already connected but channel internal state is out of sync
-        if (([self.connection isConnected] && ![self isConnected])) {
-
-            [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.connectionChannel.outOfSyncWithConnection, (self.name ? self.name : self), @(self.state)];
+        void(^checkCompletionBlock)(BOOL) = ^(BOOL connected) {
+            
+            [self pn_dispatchBlock:^{
+                
+                if (connected && ![self isConnected]) {
+                    
+                    [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray * {
+                        
+                        return @[PNLoggerSymbols.connectionChannel.outOfSyncWithConnection,
+                                 (self.name ? self.name : self), @(self.state)];
+                    }];
+                    
+                    connectionCompletionSimulation();
+                }
+                // Checking whether data connection is connected or not
+                else if (!connected) {
+                    
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                        
+                        return @[PNLoggerSymbols.connectionChannel.connecting, (self.name ? self.name : self), @(self.state)];
+                    }];
+                    
+                    [PNBitwiseHelper clear:&self->_state];
+                    [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting,
+                     BITS_LIST_TERMINATOR];
+                    [self prepareConnectionIfRequired];
+                    [self.connection connectWithResult:NULL];
+                }
+                // Check whether channel already connected or not
+                else if ([self isConnected]) {
+                    
+                    connectionCompletionSimulation();
+                }
             }];
-
-            connectionCompletionSimulation();
+        };
+        
+        if (self.connection) {
+            
+            [self.connection checkConnected:checkCompletionBlock];
         }
-        // Checking whether data connection is connected or not
-        else if (![self.connection isConnected]) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.connectionChannel.connecting, (self.name ? self.name : self), @(self.state)];
-            }];
-
-            [PNBitwiseHelper clear:&_state];
-            [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting, BITS_LIST_TERMINATOR];
-            [self prepareConnectionIfRequired];
-            [self.connection connect];
+        else {
+            
+            checkCompletionBlock(NO);
         }
-        // Check whether channel already connected or not
-        else if ([self isConnected]) {
+    }];
+}
 
-            connectionCompletionSimulation();
-        }
+- (void)checkConnecting:(void (^)(BOOL connecting))checkCompletionBlock {
+
+    [self pn_dispatchBlock:^{
+
+        checkCompletionBlock([self isConnecting]);
     }];
 }
 
 - (BOOL)isConnecting {
 
-    __block BOOL isConnecting = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        isConnecting = [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting,
-                        BITS_LIST_TERMINATOR];
-    }];
 
-    
-    return isConnecting;
+    return [PNBitwiseHelper is:self.state strictly:YES
+                  containsBits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting,
+                               BITS_LIST_TERMINATOR];
 }
 
 - (BOOL)isReconnecting {
 
-    __block BOOL isReconnecting = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        isReconnecting = [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionChannelConnecting, PNConnectionChannelReconnect,
-                          BITS_LIST_TERMINATOR];
+
+    return [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionChannelConnecting, PNConnectionChannelReconnect,
+                                                                    BITS_LIST_TERMINATOR];
+}
+
+- (void)checkConnected:(void (^)(BOOL connected))checkCompletionBlock {
+
+    [self pn_dispatchBlock:^{
+
+        checkCompletionBlock([self isConnected]);
     }];
-
-    
-    return isReconnecting;
 }
 
 - (BOOL)isConnected {
 
-    __block BOOL isConnected = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
-
-        isConnected = [PNBitwiseHelper is:self.state containsBit:PNConnectionChannelConnected] && ![self isReconnecting];
-    }];
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
 
-    return isConnected;
+    return ([PNBitwiseHelper is:self.state containsBit:PNConnectionChannelConnected] && ![self isReconnecting]);
 }
 
 - (void)disconnect {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
-
-        [self disconnectWithEvent:YES];
-    }];
+    [self disconnectWithEvent:YES];
 }
 
-- (void)disconnectOnInternalRequest {
+- (void)terminateConnection {
 
-    [self.connection closeConnection];
+    [self pn_dispatchBlock:^{
+
+        [self.connection closeConnection];
+    }];
 }
 
 - (void)disconnectWithEvent:(BOOL)shouldNotifyOnDisconnection {
@@ -385,9 +407,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         symbolCode = PNLoggerSymbols.connectionChannel.disconnectingWithOutEvent;
     }
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
             return @[symbolCode, (self.name ? self.name : self), @(self.state)];
         }];
@@ -399,121 +421,129 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
                 return @[PNLoggerSymbols.connectionChannel.disconnected, (self.name ? self.name : self), @(self.state)];
             }];
 
-            [PNBitwiseHelper clear:&_state];
-            [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelDisconnected];
+            [PNBitwiseHelper clear:&self->_state];
+            [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelDisconnected];
 
             [self stopTimeoutTimerForRequest:nil];
             [self unscheduleNextRequest];
 
             if (shouldNotifyOnDisconnection) {
 
-                // Because with getters 'isDisconnected' channel provided wrong state, outside code may rely on disconnection
+                // Because with getters 'checkDisconnected:' channel provided wrong state, outside code may rely on disconnection
                 // completion notifications, so we simulate it
                 [self connection:self.connection didDisconnectFromHost:self.configuration.origin];
             }
         };
 
         // Check whether connection already disconnected but channel internal state is out of sync
-        if ([self.connection isDisconnected] && ![self isDisconnected]) {
+        [self.connection checkDisconnected:^(BOOL disconnected) {
 
-            [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray * {
+            [self pn_dispatchBlock:^{
 
-                return @[PNLoggerSymbols.connectionChannel.outOfSyncWithDisconnection, (self.name ? self.name : self),
-                        @(self.state)];
+                if (disconnected && ![self isDisconnected]) {
+
+                    [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.outOfSyncWithDisconnection, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+
+                    // Destroy connection communication instance
+                    self.connection.delegate = nil;
+                    self.connection = nil;
+
+                    disconnectionCompletionSimulation();
+                }
+                    // Checking whether data connection is disconnected or not
+                else if (!disconnected) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.disconnecting, (self.name ? self.name : self), @(self.state)];
+                    }];
+
+
+                    [PNBitwiseHelper clear:&self->_state];
+                    if (shouldNotifyOnDisconnection) {
+
+                        [self stopTimeoutTimerForRequest:nil];
+                        [self unscheduleNextRequest];
+
+                        [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
+                                                            BITS_LIST_TERMINATOR];
+                        [self.connection disconnect];
+                    }
+                    else {
+
+                        // Destroy connection communication instance
+                        self.connection.delegate = nil;
+                        self.connection = nil;
+
+                        disconnectionCompletionSimulation();
+                    }
+                }
+                    // Check whether channel already disconnected or not
+                else if ([self isConnected]) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.disconnecting, (self.name ? self.name : self), @(self.state)];
+                    }];
+
+                    self.connection.delegate = nil;
+                    self.connection = nil;
+
+                    disconnectionCompletionSimulation();
+                }
+                else {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.alreadyDisconnected, (self.name ? self.name : self), @(self.state)];
+                    }];
+
+                    self.connection.delegate = nil;
+                    self.connection = nil;
+                }
             }];
-
-
-            // Destroy connection communication instance
-            self.connection.delegate = nil;
-            _connection = nil;
-
-            disconnectionCompletionSimulation();
-        }
-            // Checking whether data connection is disconnected or not
-        else if (![self.connection isDisconnected]) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.disconnecting, (self.name ? self.name : self), @(self.state)];
-            }];
-
-
-            [PNBitwiseHelper clear:&_state];
-            if (shouldNotifyOnDisconnection) {
-
-                [self stopTimeoutTimerForRequest:nil];
-                [self unscheduleNextRequest];
-
-                [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
-                                       BITS_LIST_TERMINATOR];
-                [self.connection disconnect];
-            }
-            else {
-
-                // Destroy connection communication instance
-                self.connection.delegate = nil;
-                _connection = nil;
-
-                disconnectionCompletionSimulation();
-            }
-        }
-            // Check whether channel already disconnected or not
-        else if ([self isConnected]) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.disconnecting, (self.name ? self.name : self), @(self.state)];
-            }];
-
-            self.connection.delegate = nil;
-            _connection = nil;
-
-            disconnectionCompletionSimulation();
-        }
-        else {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.alreadyDisconnected, (self.name ? self.name : self), @(self.state)];
-            }];
-
-            self.connection.delegate = nil;
-            _connection = nil;
-        }
+        }];
     }];
 }
 
 - (BOOL)isDisconnecting {
 
-    __block BOOL isDisconnecting = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        isDisconnecting = [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
-                           BITS_LIST_TERMINATOR];
+
+    return [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
+                                                                    BITS_LIST_TERMINATOR];
+}
+
+- (void)checkDisconnected:(void (^)(BOOL disconnected))checkCompletionBlock {
+
+    [self pn_dispatchBlock:^{
+
+        checkCompletionBlock([self isDisconnected]);
     }];
-
-
-    return isDisconnecting;
 }
 
 - (BOOL)isDisconnected {
 
-    __block BOOL isDisconnected = NO;
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-    [self pn_dispatchSynchronouslyBlock:^{
-
-        isDisconnected = [PNBitwiseHelper is:self.state containsBit:PNConnectionChannelDisconnected];
-        isDisconnected = isDisconnected || [PNBitwiseHelper is:self.state containsBit:PNConnectionChannelSuspended];
-        isDisconnected = isDisconnected && ![self isConnecting];
-    }];
+    BOOL isDisconnected = [PNBitwiseHelper is:self.state containsBit:PNConnectionChannelDisconnected];
+    isDisconnected = (isDisconnected || [PNBitwiseHelper is:self.state containsBit:PNConnectionChannelSuspended]);
 
 
-    return isDisconnected;
+    return (isDisconnected && ![self isConnecting]);
 }
 
 - (void)suspend {
 
-    [self pn_dispatchSynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
 
         [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -522,142 +552,165 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
         void(^suspensionCompletionSimulation)(void) = ^{
 
-            [PNBitwiseHelper clear:&_state];
-            [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelSuspended, BITS_LIST_TERMINATOR];
+            [PNBitwiseHelper clear:&self->_state];
+            [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelDisconnected, PNConnectionChannelSuspended, BITS_LIST_TERMINATOR];
 
             [self stopTimeoutTimerForRequest:nil];
             [self unscheduleNextRequest];
 
-            // Because with getters 'isSuspended' channel provided wrong state, outside code may rely on suspension
+            // Because with getters 'checkSuspended:' channel provided wrong state, outside code may rely on suspension
             // completion notifications, so we simulate it
             [self connectionDidSuspend:self.connection];
         };
 
         // Check whether connection already suspended but channel internal state is out of sync
-        if ([self.connection isSuspended] && ![self.connection isResuming] && ![self isSuspended]) {
+        [self.connection checkSuspended:^(BOOL suspended) {
 
-            [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
+            [self.connection checkResuming:^(BOOL resuming) {
 
-                return @[PNLoggerSymbols.connectionChannel.outOfSyncWithSuspension, (self.name ? self.name : self),
-                         @(self.state)];
+                if (suspended && !resuming && ![self isSuspended]) {
+
+                    [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                        return @[PNLoggerSymbols.connectionChannel.outOfSyncWithSuspension, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    suspensionCompletionSimulation();
+                }
+                    // Checking whether data connection is suspended or try to resume
+                else if (!suspended || resuming) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                        return @[PNLoggerSymbols.connectionChannel.suspending, (self.name ? self.name : self), @(self.state)];
+                    }];
+
+                    [PNBitwiseHelper clear:&self->_state];
+                    [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelConnected, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR];
+
+                    [self stopTimeoutTimerForRequest:nil];
+                    [self unscheduleNextRequest];
+
+                    [self.delegate connectionChannelWillSuspend:self];
+
+                    [self.connection suspend];
+                }
+                    // Check whether channel already suspended or not
+                else if ([self isSuspended]) {
+
+                    suspensionCompletionSimulation();
+                }
             }];
-
-            suspensionCompletionSimulation();
-        }
-        // Checking whether data connection is suspended or try to resume
-        else if (![self.connection isSuspended] || [self.connection isResuming]) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.connectionChannel.suspending, (self.name ? self.name : self), @(self.state)];
-            }];
-
-            [PNBitwiseHelper clear:&_state];
-            [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelConnected, PNConnectionChannelSuspending, BITS_LIST_TERMINATOR];
-
-            [self stopTimeoutTimerForRequest:nil];
-            [self unscheduleNextRequest];
-
-            [self.delegate connectionChannelWillSuspend:self];
-
-            [self.connection suspend];
-        }
-        // Check whether channel already suspended or not
-        else if ([self isSuspended]) {
-
-            suspensionCompletionSimulation();
-        }
+        }];
     }];
 }
 
 - (BOOL)isSuspending {
 
-    __block BOOL isSuspending = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        isSuspending = [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionChannelConnected, PNConnectionChannelSuspending,
-                        BITS_LIST_TERMINATOR];
+
+    return [PNBitwiseHelper is:self.state strictly:YES
+                  containsBits:PNConnectionChannelConnected, PNConnectionChannelSuspending,
+                               BITS_LIST_TERMINATOR];
+}
+
+- (void)checkSuspended:(void (^)(BOOL suspended))checkCompletionBlock {
+
+    [self pn_dispatchBlock:^{
+
+        checkCompletionBlock([self isSuspended]);
     }];
-
-
-    return isSuspending;
 }
 
 - (BOOL)isSuspended {
 
-    __block BOOL isSuspended = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
-
-        isSuspended = [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionChannelDisconnected,
-                       PNConnectionChannelSuspended, BITS_LIST_TERMINATOR];
-    }];
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
 
-    return isSuspended;
+    return [PNBitwiseHelper is:self.state strictly:YES
+                  containsBits:PNConnectionChannelDisconnected, PNConnectionChannelSuspended,
+                               BITS_LIST_TERMINATOR];
 }
 
 - (void)resume {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
             return @[PNLoggerSymbols.connectionChannel.resumeAttempt, (self.name ? self.name : self), @(self.state)];
         }];
 
         void(^resumingCompletionSimulation)(void) = ^{
 
-            [PNBitwiseHelper clear:&_state];
-            [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
+            [PNBitwiseHelper clear:&self->_state];
+            [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
-            // Because with getters 'isSuspended' channel provided wrong state, outside code may rely on resume completion
+            // Because with getters 'checkSuspended:' channel provided wrong state, outside code may rely on resume completion
             // notifications, so we simulate it
             [self connectionDidResume:self.connection];
         };
 
-        // Check whether connection already resumed but channel internal state is out of sync
-        if (![self.connection isSuspended] && [self isSuspended]) {
+        [self.connection checkSuspended:^(BOOL suspended) {
 
-            [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
+            [self pn_dispatchBlock:^{
 
-                return @[PNLoggerSymbols.connectionChannel.outOfSyncWithResuming, (self.name ? self.name : self),
-                         @(self.state)];
+                // Check whether connection already resumed but channel internal state is out of sync
+                if (!suspended && [self isSuspended]) {
+
+                    [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.outOfSyncWithResuming, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    resumingCompletionSimulation();
+                }
+                    // Checking whether data connection is suspended or not
+                else if (suspended) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.resuming, (self.name ? self.name : self), @(self.state)];
+                    }];
+
+                    [PNBitwiseHelper clear:&self->_state];
+                    [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelDisconnected, PNConnectionChannelResuming, BITS_LIST_TERMINATOR];
+                    [self.delegate connectionChannelWillResume:self];
+
+                    [self.connection resume];
+                }
+                    // Check whether channel already resumed or not
+                else if (![self isSuspended]) {
+
+                    resumingCompletionSimulation();
+                }
             }];
+        }];
+    }];
+}
 
-            resumingCompletionSimulation();
-        }
-        // Checking whether data connection is suspended or not
-        else if ([self.connection isSuspended]) {
+- (void)checkResuming:(void (^)(BOOL resuming))checkCompletionBlock {
 
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
 
-                return @[PNLoggerSymbols.connectionChannel.resuming, (self.name ? self.name : self), @(self.state)];
-            }];
-
-            [PNBitwiseHelper clear:&_state];
-            [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelResuming, BITS_LIST_TERMINATOR];
-            [self.delegate connectionChannelWillResume:self];
-
-            [self.connection resume];
-        }
-        // Check whether channel already resumed or not
-        else if (![self isSuspended]) {
-
-            resumingCompletionSimulation();
-        }
+        checkCompletionBlock([self isResuming]);
     }];
 }
 
 - (BOOL)isResuming {
 
-    __block BOOL isResuming = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        isResuming = [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionChannelDisconnected,
-                      PNConnectionChannelResuming, BITS_LIST_TERMINATOR];
-    }];
 
-    return isResuming;
+    return [PNBitwiseHelper is:self.state strictly:YES
+                  containsBits:PNConnectionChannelDisconnected, PNConnectionChannelResuming,
+                               BITS_LIST_TERMINATOR];
 }
 
 - (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request {
@@ -666,6 +719,10 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 }
 
 - (BOOL)isWaitingRequestCompletion:(NSString *)requestIdentifier {
+
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
     
     return [self observedRequestWithIdentifier:requestIdentifier] != nil ||
            [self isWaitingStoredRequestCompletion:requestIdentifier];
@@ -688,10 +745,10 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)purgeObservedRequestsPool {
 
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        [self.observedRequests removeAllObjects];
-    }];
+    [self.observedRequests removeAllObjects];
 }
 
 - (id)requestFromStorage:(NSMutableDictionary *)storage withIdentifier:(NSString *)identifier {
@@ -716,6 +773,9 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (PNBaseRequest *)requestWithIdentifier:(NSString *)identifier {
 
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
     PNBaseRequest *request = [self observedRequestWithIdentifier:identifier];
     if (!request) {
 
@@ -728,44 +788,39 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (PNBaseRequest *)observedRequestWithIdentifier:(NSString *)identifier {
 
-    __block PNBaseRequest *request = nil;
-    [self pn_dispatchSynchronouslyBlock:^{
-
-        request = [self requestFromStorage:self.observedRequests withIdentifier:identifier];
-    }];
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
 
-    return request;
+    return [self requestFromStorage:self.observedRequests withIdentifier:identifier];;
 }
 
 - (void)removeObservationFromRequest:(PNBaseRequest *)request {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        [self removeRequest:request fromStorage:self.observedRequests];
-    }];
+    [self removeRequest:request fromStorage:self.observedRequests];
 }
 
 - (void)purgeStoredRequestsPool {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        [self.storedRequestsList removeAllObjects];
-        [self.storedRequests removeAllObjects];
-    }];
+    [self.storedRequestsList removeAllObjects];
+    [self.storedRequests removeAllObjects];
 }
 
 - (PNBaseRequest *)storedRequestWithIdentifier:(NSString *)identifier {
 
-    __block PNBaseRequest *request = nil;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        NSDictionary *storedRequestInformation = [self requestFromStorage:self.storedRequests withIdentifier:identifier];
-        request = [storedRequestInformation valueForKeyPath:PNStoredRequestKeys.request];
-    }];
+    NSDictionary *storedRequestInformation = [self requestFromStorage:self.storedRequests withIdentifier:identifier];
 
 
-    return request;
+    return [storedRequestInformation valueForKeyPath:PNStoredRequestKeys.request];
 }
 
 - (PNBaseRequest *)nextStoredRequest {
@@ -775,15 +830,15 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (PNBaseRequest *)nextStoredRequestAfter:(PNBaseRequest *)request {
 
-    __block PNBaseRequest *nextRequest = nil;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        NSUInteger previousRequestIndex = [self.storedRequestsList indexOfObject:request.shortIdentifier];
-        if (previousRequestIndex != NSNotFound) {
+    PNBaseRequest *nextRequest = nil;
+    NSUInteger previousRequestIndex = [self.storedRequestsList indexOfObject:request.shortIdentifier];
+    if (previousRequestIndex != NSNotFound) {
 
-            nextRequest = [self storedRequestAtIndex:(previousRequestIndex + 1)];
-        }
-    }];
+        nextRequest = [self storedRequestAtIndex:(previousRequestIndex + 1)];
+    }
 
 
     return nextRequest;
@@ -791,27 +846,20 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (PNBaseRequest *)lastStoredRequest {
 
-    __block PNBaseRequest *lastStoredRequest = nil;
-    [self pn_dispatchSynchronouslyBlock:^{
-
-        lastStoredRequest = [self storedRequestAtIndex:MAX([self.storedRequestsList count] - 1, 0)];
-    }];
-
-
-    return lastStoredRequest;
+    return [self storedRequestAtIndex:MAX([self.storedRequestsList count] - 1, 0)];
 }
 
 - (PNBaseRequest *)storedRequestAtIndex:(NSUInteger)requestIndex {
 
-    __block PNBaseRequest *request = nil;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        if ([self.storedRequestsList count] > 0 && requestIndex < [self.storedRequestsList count]) {
+    PNBaseRequest *request = nil;
+    if ([self.storedRequestsList count] > 0 && requestIndex < [self.storedRequestsList count]) {
 
-            NSString *requestIdentifier = [self.storedRequestsList objectAtIndex:requestIndex];
-            request = [self storedRequestWithIdentifier:requestIdentifier];
-        }
-    }];
+        NSString *requestIdentifier = [self.storedRequestsList objectAtIndex:requestIndex];
+        request = [self storedRequestWithIdentifier:requestIdentifier];
+    }
 
 
     return request;
@@ -819,33 +867,34 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (BOOL)isWaitingStoredRequestCompletion:(NSString *)identifier {
 
-    __block BOOL isWaitingStoredRequestCompletion = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        NSDictionary *storedRequestInformation = [self requestFromStorage:self.storedRequests withIdentifier:identifier];
-        isWaitingStoredRequestCompletion = [[storedRequestInformation valueForKeyPath:PNStoredRequestKeys.isObserved] boolValue];
-    }];
+    NSDictionary *storedRequestInformation = [self requestFromStorage:self.storedRequests withIdentifier:identifier];
 
 
-    return isWaitingStoredRequestCompletion;
+    return [[storedRequestInformation valueForKeyPath:PNStoredRequestKeys.isObserved] boolValue];
 }
 
 - (void)removeStoredRequest:(PNBaseRequest *)request {
 
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
     if (request) {
 
-        [self pn_dispatchAsynchronouslyBlock:^{
-
-            [self.storedRequestsList removeObject:request.shortIdentifier];
-            [self removeRequest:request fromStorage:self.storedRequests];
-        }];
+        [self.storedRequestsList removeObject:request.shortIdentifier];
+        [self removeRequest:request fromStorage:self.storedRequests];
     }
 }
 
 - (void)destroyRequest:(PNBaseRequest *)request {
 
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
     if (request) {
-        
+
         [self unscheduleRequest:request];
         [self removeStoredRequest:request];
         [self removeObservationFromRequest:request];
@@ -854,41 +903,41 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)destroyByRequestClass:(Class)requestClass {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
-        NSMutableArray *requests = [NSMutableArray array];
-        [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                              BOOL *requestIdentifierEnumeratorStop) {
+    NSMutableArray *requests = [NSMutableArray array];
+    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+            BOOL *requestIdentifierEnumeratorStop) {
 
-            PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
-            if ([request isKindOfClass:requestClass]) {
+        PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+        if ([request isKindOfClass:requestClass]) {
 
-                [requests addObject:request];
-            }
-        }];
+            [requests addObject:request];
+        }
+    }];
 
-        [requests enumerateObjectsUsingBlock:^(id request, NSUInteger requestIdx, BOOL *requestEnumeratorStop) {
+    [requests enumerateObjectsUsingBlock:^(id request, NSUInteger requestIdx, BOOL *requestEnumeratorStop) {
 
-            [self destroyRequest:request];
-        }];
+        [self destroyRequest:request];
     }];
 }
 
 - (BOOL)hasRequestsWithClass:(Class)requestClass {
 
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
     __block BOOL hasRequestsWithClass = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
+    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+                                                          BOOL *requestIdentifierEnumeratorStop) {
 
-        [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                              BOOL *requestIdentifierEnumeratorStop) {
+        PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+        if ([request isKindOfClass:requestClass]) {
 
-            PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
-            if ([request isKindOfClass:requestClass]) {
-
-                hasRequestsWithClass = YES;
-                *requestIdentifierEnumeratorStop = YES;
-            }
-        }];
+            hasRequestsWithClass = YES;
+            *requestIdentifierEnumeratorStop = YES;
+        }
     }];
 
 
@@ -897,18 +946,18 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (NSArray *)requestsWithClass:(Class)requestClass {
 
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
     NSMutableArray *requests = [NSMutableArray array];
-    [self pn_dispatchSynchronouslyBlock:^{
+    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+                                                          BOOL *requestIdentifierEnumeratorStop) {
 
-        [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                              BOOL *requestIdentifierEnumeratorStop) {
+        PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+        if ([request isKindOfClass:requestClass]) {
 
-            PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
-            if ([request isKindOfClass:requestClass]) {
-
-                [requests addObject:request];
-            }
-        }];
+            [requests addObject:request];
+        }
     }];
 
 
@@ -917,23 +966,20 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)prepareConnectionIfRequired {
     
-    [self pn_dispatchSynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
         
-        if (_connection == nil) {
-            
-            _connection = [PNConnection connectionWithConfiguration:self.configuration andIdentifier:self.name];
-            
-            [_connection pn_dispatchSynchronouslyBlock:^{
-                
-                _connection.delegate = self;
-                _connection.dataSource = self.requestsQueue;
-            }];
+        if (self.connection == nil) {
+
+            self.connection = [PNConnection connectionWithConfiguration:self.configuration andIdentifier:self.name];
+
+            self.connection.delegate = self;
+            self.connection.dataSource = self.requestsQueue;
             
             [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
                 
                 return @[PNLoggerSymbols.connectionChannel.resourceLinkage, (self.name ? self.name : self),
                          (self.requestsQueue ? [NSString stringWithFormat:@"%p", self.requestsQueue] : [NSNull null]),
-                         (_connection ? [NSString stringWithFormat:@"%p", _connection] : [NSNull null])];
+                         (self.connection ? [NSString stringWithFormat:@"%p", self.connection] : [NSNull null])];
             }];
         }
     }];
@@ -942,7 +988,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 #pragma mark - Handler methods
 
-- (void)handleTimeoutTimer:(NSTimer *)timer {
+- (void)handleTimeoutTimer:(PNBaseRequest *)request {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
@@ -1013,44 +1059,50 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 - (void)scheduleRequest:(PNBaseRequest *)request shouldObserveProcessing:(BOOL)shouldObserveProcessing
              outOfOrder:(BOOL)shouldEnqueueRequestOutOfOrder launchProcessing:(BOOL)shouldLaunchRequestsProcessing {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
 
         if ([self shouldScheduleRequest:request]) {
 
-            if([self.requestsQueue enqueueRequest:request outOfOrder:shouldEnqueueRequestOutOfOrder]) {
-                
-                [request finalizeWithConfiguration:self.configuration clientIdentifier:[self.delegate clientIdentifier]];
+            [self.requestsQueue enqueueRequest:request outOfOrder:shouldEnqueueRequestOutOfOrder withBlock:^(BOOL scheduled) {
 
-                if (shouldObserveProcessing) {
+                [self pn_dispatchBlock:^{
 
-                    [self.observedRequests setValue:request forKey:request.shortIdentifier];
-                }
+                    if (scheduled) {
 
-                if ([self shouldStoreRequest:request]) {
+                        [request finalizeWithConfiguration:self.configuration clientIdentifier:[self.delegate clientIdentifier]];
 
-                    if (shouldEnqueueRequestOutOfOrder) {
+                        if (shouldObserveProcessing) {
 
-                        [self.storedRequestsList insertObject:request.shortIdentifier atIndex:0];
+                            [self.observedRequests setValue:request forKey:request.shortIdentifier];
+                        }
+
+                        if ([self shouldStoreRequest:request]) {
+
+                            if (shouldEnqueueRequestOutOfOrder) {
+
+                                [self.storedRequestsList insertObject:request.shortIdentifier atIndex:0];
+                            }
+                            else {
+
+                                [self.storedRequestsList addObject:request.shortIdentifier];
+                            }
+                            [self.storedRequests setValue:@{PNStoredRequestKeys.request : request,
+                                            PNStoredRequestKeys.isObserved : @(shouldObserveProcessing)}
+                                                   forKey:request.shortIdentifier];
+                        }
+
+                        if (shouldLaunchRequestsProcessing) {
+
+                            // Launch communication process on sockets by triggering requests queue processing
+                            [self scheduleNextRequest];
+                        }
                     }
-                    else {
-
-                        [self.storedRequestsList addObject:request.shortIdentifier];
-                    }
-                    [self.storedRequests setValue:@{PNStoredRequestKeys.request:request,
-                                                    PNStoredRequestKeys.isObserved :@(shouldObserveProcessing)}
-                                           forKey:request.shortIdentifier];
-                }
-
-                if (shouldLaunchRequestsProcessing) {
-
-                    // Launch communication process on sockets by triggering requests queue processing
-                    [self scheduleNextRequest];
-                }
-            }
+                }];
+            }];
         }
         else {
 
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
                 return @[PNLoggerSymbols.connectionChannel.ignoreScheduledRequest, (self.name ? self.name : self),
                         (request ? request : [NSNull null]), @(self.state)];
@@ -1061,12 +1113,12 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)scheduleNextRequest {
 
-    [_connection scheduleNextRequestExecution];
+    [self.connection scheduleNextRequestExecution];
 }
 
 - (void)unscheduleNextRequest {
 
-    [_connection unscheduleRequestsExecution];
+    [self.connection unscheduleRequestsExecution];
 }
 
 - (void)unscheduleRequest:(PNBaseRequest *)request {
@@ -1076,22 +1128,21 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)reconnect {
 
-    BOOL isConnected = [self isConnected];
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
             return @[PNLoggerSymbols.connectionChannel.reconnectingByRequest, (self.name ? self.name : self),
                     @(self.state)];
         }];
 
-        [PNBitwiseHelper clear:&_state];
-        if (isConnected) {
+        [PNBitwiseHelper clear:&self->_state];
+        if ([self isConnected]) {
 
-            [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
+            [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
         }
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelReconnect];
-        
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelReconnect];
+
         [self prepareConnectionIfRequired];
         [self.connection reconnect];
     }];
@@ -1127,15 +1178,12 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (BOOL)shouldHandleConnectionToHost {
 
-    __block BOOL shouldHandleConnectionToHost = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
-
-        shouldHandleConnectionToHost = [PNBitwiseHelper is:self.state strictly:NO containsBits:PNConnectionChannelDisconnected, PNConnectionChannelDisconnecting,
-                                        PNConnectionChannelConnecting, BITS_LIST_TERMINATOR];
-    }];
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
 
 
-    return shouldHandleConnectionToHost;
+    return [PNBitwiseHelper is:self.state strictly:NO containsBits:PNConnectionChannelDisconnected, PNConnectionChannelDisconnecting,
+                                                                   PNConnectionChannelConnecting, BITS_LIST_TERMINATOR];
 }
 
 - (BOOL)shouldHandleReconnectionToHost {
@@ -1145,38 +1193,60 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)startTimeoutTimerForRequest:(PNBaseRequest *)request {
 
-    [self pn_dispatchSynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
 
         [self stopTimeoutTimerForRequest:nil];
 
         // Stop timeout timer only for requests which is scheduled from the name of user
         if ((request.isSendingByUserRequest && [self isWaitingRequestCompletion:request.shortIdentifier]) ||
-                request == nil) {
+            request == nil) {
 
-            NSTimeInterval interval = request ? [request timeout] : self.configuration.subscriptionRequestTimeout;
-            self.timeoutTimer = [NSTimer timerWithTimeInterval:interval
-                                                        target:self
-                                                      selector:@selector(handleTimeoutTimer:)
-                                                      userInfo:request
-                                                       repeats:NO];
-            [[NSRunLoop mainRunLoop] addTimer:self.timeoutTimer forMode:NSRunLoopCommonModes];
+            if (self.timeoutTimer == NULL) {
+
+                NSTimeInterval interval = request ? [request timeout] : self.configuration.subscriptionRequestTimeout;
+                dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
+                        [self pn_privateQueue]);
+                [PNDispatchHelper retain:timerSource];
+                self.timeoutTimer = timerSource;
+
+                __pn_desired_weak __typeof__(self) weakSelf = self;
+                dispatch_source_set_event_handler(self.timeoutTimer, ^{
+
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connection.handleTimeoutTimer, (weakSelf.name ? weakSelf.name : weakSelf),
+                                @(weakSelf.state)];
+                    }];
+
+                    [weakSelf stopTimeoutTimerForRequest:nil];
+                    [weakSelf handleTimeoutTimer:request];
+                });
+                dispatch_source_set_cancel_handler(self.timeoutTimer, ^{
+
+                    [PNDispatchHelper release:timerSource];
+                    weakSelf.timeoutTimer = NULL;
+                });
+
+                dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC));
+                dispatch_source_set_timer(self.timeoutTimer, start, (uint64_t)(interval * NSEC_PER_SEC), NSEC_PER_SEC);
+                dispatch_resume(self.timeoutTimer);
+            }
         }
     }];
 }
 
 - (void)stopTimeoutTimerForRequest:(PNBaseRequest *)request {
 
-    [self pn_dispatchSynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
 
         // Stop timeout timer only for requests which is scheduled from the name of user
         if ((request.isSendingByUserRequest && [self isWaitingRequestCompletion:request.shortIdentifier]) ||
             request == nil) {
 
-            if ([self.timeoutTimer isValid]) {
+            if (self.timeoutTimer != NULL) {
 
-                [self.timeoutTimer invalidate];
+                dispatch_source_cancel(self.timeoutTimer);
             }
-            self.timeoutTimer = nil;
         }
     }];
 }
@@ -1186,16 +1256,16 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connectionConfigurationDidFail:(PNConnection *)connection {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.configurationFailed, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.configurationFailed, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelError, BITS_LIST_TERMINATOR];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelDisconnected, PNConnectionChannelError, BITS_LIST_TERMINATOR];
 
         // Clean up requests, because there is no use from stream
         [self purgeStoredRequestsPool];
@@ -1214,16 +1284,16 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connectionDidReset:(PNConnection *)connection {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionReset, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleConnectionReset, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
         if ([self.storedRequestsList count]) {
 
@@ -1238,18 +1308,18 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionReady, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleConnectionReady, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
-
+    [self pn_dispatchBlock:^{
+        
         // Check whether channel is waiting for connection completion or not
         BOOL isExpected = [self shouldHandleConnectionToHost];
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
         if ([self.storedRequestsList count]) {
 
@@ -1259,7 +1329,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
         // Launch communication process on sockets by triggering requests queue processing
         [self scheduleNextRequest];
-
 
         if (isExpected) {
 
@@ -1276,19 +1345,19 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connectionDidSuspend:(PNConnection *)connection {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.handleSuspension, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleSuspension, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
-
+    [self pn_dispatchBlock:^{
+        
         // Check whether channel is waiting for suspension or not
         BOOL isExpected = [self isSuspending];
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelSuspended,
-                               BITS_LIST_TERMINATOR];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelDisconnected, PNConnectionChannelSuspended,
+                                            BITS_LIST_TERMINATOR];
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
@@ -1309,18 +1378,18 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connectionDidResume:(PNConnection *)connection {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.handleResume, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleResume, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
-
+    [self pn_dispatchBlock:^{
+        
         // Check whether channel is waiting for resume or not
         BOOL isExpected = [self isResuming];
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
 
         BOOL doesWarmingUpRequired = [self.storedRequestsList count] == 0;
@@ -1332,7 +1401,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
         }
-
 
         if (isExpected) {
 
@@ -1359,38 +1427,38 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.willRestoreConnection, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.willRestoreConnection, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
 
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting,
-                               PNConnectionChannelReconnect, BITS_LIST_TERMINATOR];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting,
+                                            PNConnectionChannelReconnect, BITS_LIST_TERMINATOR];
     }];
 }
 
 - (void)connection:(PNConnection *)connection didReconnectToHost:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionRestore, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleConnectionRestore, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
-
+    [self pn_dispatchBlock:^{
+        
         // Check whether channel is waiting for reconnection completion or not
         BOOL isExpected = [self shouldHandleReconnectionToHost];
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
         BOOL doesWarmingUpRequired = [self.storedRequestsList count] == 0;
         if ([self.storedRequestsList count] > 0) {
@@ -1402,7 +1470,7 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             [self scheduleNextRequest];
         }
 
-
+        // Check whether channel is waiting for reconnection completion or not
         if (isExpected && doesWarmingUpRequired) {
 
             [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
@@ -1418,38 +1486,37 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connection:(PNConnection *)connection willReconnectToHostAfterError:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.willRestoreConnectionAfterError, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.willRestoreConnectionAfterError, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting,
-                               PNConnectionChannelReconnect, BITS_LIST_TERMINATOR];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelDisconnected, PNConnectionChannelConnecting,
+                                            PNConnectionChannelReconnect, BITS_LIST_TERMINATOR];
     }];
 }
 
 - (void)connection:(PNConnection *)connection didReconnectToHostAfterError:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionRestoreAfterError, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleConnectionRestoreAfterError, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
-
+    [self pn_dispatchBlock:^{
+        
         // Check whether channel is waiting for reconnection completion or not
         BOOL isExpected = [self shouldHandleReconnectionToHost];
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
-
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
         BOOL doesWarmingUpRequired = [self.storedRequestsList count] == 0;
         if ([self.storedRequestsList count] > 0) {
@@ -1460,7 +1527,6 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
         }
-
 
         if (isExpected && doesWarmingUpRequired) {
 
@@ -1478,118 +1544,121 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connection:(PNConnection *)connection willDisconnectFromHost:(NSString *)host withError:(PNError *)error {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.handleDisconnectionBecauseOfError, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleDisconnectionBecauseOfError, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
         // Check whether channel is in suitable state to handle this event or not
-        BOOL isExpected = [self isConnected] && ![PNBitwiseHelper is:self.state
-                                                         containsBit:PNConnectionChannelDisconnecting];
-        isExpected = isExpected && ![self isSuspending];
+        BOOL isExpected = ([self isConnected] && ![PNBitwiseHelper is:self.state containsBit:PNConnectionChannelDisconnecting]);
+        isExpected = (isExpected && ![self isSuspending]);
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
-                               PNConnectionChannelError, BITS_LIST_TERMINATOR];
-
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
+                                            PNConnectionChannelError, BITS_LIST_TERMINATOR];
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
 
-        
+
         [self.delegate isPubNubServiceAvailable:NO checkCompletionBlock:^(BOOL available) {
-            
-            if ([self.storedRequestsList count]) {
-                
-                PNError *errorForRequests = nil;
-                if (available) {
-                    
-                    errorForRequests = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+
+            [self pn_dispatchBlock:^{
+
+                if ([self.storedRequestsList count]) {
+
+                    PNError *errorForRequests = nil;
+                    if (available) {
+
+                        errorForRequests = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+                    }
+                    [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList]
+                                          withError:errorForRequests];
                 }
-                [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList]
-                                      withError:errorForRequests];
-            }
-            
-            
-            if (isExpected) {
-                
-                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
-                    
-                    return @[PNLoggerSymbols.connectionChannel.disconnectedBecauseOfError, (self.name ? self.name : self),
-                             @(self.state)];
-                }];
-                
-                [self.delegate connectionChannel:self willDisconnectFromOrigin:host withError:error];
-            }
+
+                if (isExpected) {
+
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.disconnectedBecauseOfError, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    [self.delegate connectionChannel:self willDisconnectFromOrigin:host withError:error];
+                }
+            }];
         }];
     }];
 }
 
 - (void)connection:(PNConnection *)connection didDisconnectFromHost:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.handleDisconnection, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleDisconnection, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
         // Check whether channel is in suitable state to handle this event or not
-        BOOL isExpected = [PNBitwiseHelper is:self.state strictly:NO containsBits:PNConnectionChannelDisconnected,
-                                              PNConnectionChannelDisconnecting, BITS_LIST_TERMINATOR];
+        BOOL isExpected = [PNBitwiseHelper is:self.state strictly:NO
+                                 containsBits:PNConnectionChannelDisconnected, PNConnectionChannelDisconnecting,
+                                              BITS_LIST_TERMINATOR];
         if (isExpected) {
 
-            [PNBitwiseHelper clear:&_state];
-            [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelDisconnected];
+            [PNBitwiseHelper clear:&self->_state];
+            [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelDisconnected];
         }
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
 
         [self.delegate isPubNubServiceAvailable:NO checkCompletionBlock:^(BOOL available) {
-            
-            if ([self.storedRequestsList count]) {
-                
-                PNError *error = nil;
-                if (available) {
-                    
-                    error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+
+            [self pn_dispatchBlock:^{
+
+                if ([self.storedRequestsList count]) {
+
+                    PNError *error = nil;
+                    if (available) {
+
+                        error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
+                    }
+                    [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList] withError:error];
                 }
-                [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList] withError:error];
-            }
-            
-            
-            if (isExpected) {
-                
-                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-                    
-                    return @[PNLoggerSymbols.connectionChannel.disconnected, (self.name ? self.name : self),
-                             @(self.state)];
-                }];
-                
-                [self.delegate connectionChannel:self didDisconnectFromOrigin:hostName];
-            }
+
+
+                if (isExpected) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.disconnected, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    [self.delegate connectionChannel:self didDisconnectFromOrigin:hostName];
+                }
+            }];
         }];
     }];
 }
 
 - (void)connection:(PNConnection *)connection didRestoreAfterServerCloseConnectionToHost:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.connectionRestoredAfterClosingByServerRequest, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.connectionRestoredAfterClosingByServerRequest, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelConnected];
-
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
         if ([self.storedRequestsList count]) {
 
@@ -1604,35 +1673,35 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connection:(PNConnection *)connection willDisconnectByServerRequestFromHost:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.closingConnectionByServerRequest, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.closingConnectionByServerRequest, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
-                               BITS_LIST_TERMINATOR];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelConnected, PNConnectionChannelDisconnecting,
+                                            BITS_LIST_TERMINATOR];
     }];
 }
 
 - (void)connection:(PNConnection *)connection didDisconnectByServerRequestFromHost:(NSString *)hostName {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.disconnectedByServerRequest, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.disconnectedByServerRequest, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelDisconnected];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelDisconnected];
 
         [self stopTimeoutTimerForRequest:nil];
         [self unscheduleNextRequest];
@@ -1641,159 +1710,166 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)connection:(PNConnection *)connection connectionDidFailToHost:(NSString *)hostName withError:(PNError *)error {
 
-    [self pn_dispatchAsynchronouslyBlock:^{
+    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+        return @[PNLoggerSymbols.connectionChannel.handleConnectionFailedBecauseOfError, (self.name ? self.name : self),
+                @(self.state)];
+    }];
 
-            return @[PNLoggerSymbols.connectionChannel.handleConnectionFailedBecauseOfError, (self.name ? self.name : self),
-                    @(self.state)];
-        }];
+    [self pn_dispatchBlock:^{
 
         // Check whether channel is in suitable state to handle this event or not
-        BOOL isExpected = [self isConnecting] || [self isReconnecting];
-        isExpected = isExpected || [self isResuming];
+        BOOL isExpected = ([self isConnecting] || [self isReconnecting] || [self isResuming]);
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bits:PNConnectionChannelDisconnected, PNConnectionChannelError,
-                               BITS_LIST_TERMINATOR];
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bits:PNConnectionChannelDisconnected, PNConnectionChannelError,
+                                            BITS_LIST_TERMINATOR];
 
 
         // Check whether all streams closed or not (in case if server closed only one from read/write streams)
-        if (![connection isDisconnected]) {
+        [connection checkDisconnected:^(BOOL disconnected) {
 
-            [connection disconnectByInternalRequest];
-        }
+            [self pn_dispatchBlock:^{
+
+                if (!disconnected) {
+
+                    [connection disconnectByInternalRequest];
+                }
+
+                [self stopTimeoutTimerForRequest:nil];
+                [self unscheduleNextRequest];
 
 
-        [self stopTimeoutTimerForRequest:nil];
-        [self unscheduleNextRequest];
+                if (isExpected) {
 
+                    [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-        if (isExpected) {
+                        return @[PNLoggerSymbols.connectionChannel.connectionFailedBecauseOfError, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
 
-            [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.connectionFailedBecauseOfError, (self.name ? self.name : self),
-                        @(self.state)];
+                    [self.delegate connectionChannel:self connectionDidFailToOrigin:hostName withError:error];
+                }
             }];
-
-            [self.delegate connectionChannel:self connectionDidFailToOrigin:hostName withError:error];
-        }
+        }];
     }];
 }
 
 - (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response {
 
-    // Retrieve reference on request for which this response was received
-    PNBaseRequest *request = [self observedRequestWithIdentifier:response.requestIdentifier];
-    BOOL shouldObserveExecution = request != nil;
+    [self pn_dispatchBlock:^{
 
-    // In case if there is no request object, this mean that this is non-observer request which is stored in other storage
-    if (request == nil) {
+        // Retrieve reference on request for which this response was received
+        PNBaseRequest *request = [self observedRequestWithIdentifier:response.requestIdentifier];
+        BOOL shouldObserveExecution = request != nil;
 
-        request = [self requestWithIdentifier:response.requestIdentifier];
-        shouldObserveExecution = [self isWaitingRequestCompletion:request.shortIdentifier];
-    }
-    
-    // In case if arrived malformed response (completely messed) there is no chance to find out to which request it is related. This is prediction
-    // way which will allow to detect corresponding request (will be taken last one in queue).
-    // WARNING: This approach a bit risky, because it heavily rely on order of requests in queue (if something will alter it, wrong request may
-    // suffer from error handling logic.
-    if (request == nil && response.response == nil) {
-        
-        request = [self nextStoredRequest];
-        shouldObserveExecution = [self isWaitingRequestCompletion:request.shortIdentifier];
-    }
+        // In case if there is no request object, this mean that this is non-observer request which is stored in other storage
+        if (request == nil) {
 
-    // Check whether request successfully received and can be used or not
-    BOOL shouldResendRequest = response.error.code == kPNResponseMalformedJSONError || response.statusCode >= 500;
-    BOOL isRequestSentByUser = request != nil && request.isSendingByUserRequest;
-    BOOL shouldHandleResponse = [self shouldHandleResponse:response];
-
-    [self stopTimeoutTimerForRequest:request];
-
-    // Check whether response is valid or not
-    if (shouldResendRequest) {
-
-        [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-            return @[PNLoggerSymbols.connectionChannel.malformedJSONPResponse, (self.name ? self.name : self),
-                    (response ? response : [NSNull null]), @(self.state)];
-        }];
-
-        if (request) {
-            
-            // In case if response arrived with unexpected code, store it for future research.
-            [PNLogger storeUnexpectedHTTPDescription:[request debugResourcePath] packetData:^NSData *{
-                
-                return response.content;
-            }];
-
-            if ([request canRetry]) {
-                
-                [request increaseRetryCount];
-                [request resetWithRetryCount:NO];
-                
-                [self destroyRequest:request];
-            }
-            else {
-                
-                shouldResendRequest = NO;
-                [self requestsQueue:nil didFailRequestSend:request withError:response.error];
-            }
-        }
-    }
-    // Looks like response is valid (continue)
-    else {
-
-        if (shouldHandleResponse && isRequestSentByUser) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.connectionChannel.receivedResponse, (self.name ? self.name : self),
-                        (response ? response : [NSNull null]), @(self.state)];
-            }];
+            request = [self requestWithIdentifier:response.requestIdentifier];
+            shouldObserveExecution = [self isWaitingRequestCompletion:request.shortIdentifier];
         }
 
-        [self destroyRequest:request];
+        // In case if arrived malformed response (completely messed) there is no chance to find out to which request it is related. This is prediction
+        // way which will allow to detect corresponding request (will be taken last one in queue).
+        // WARNING: This approach a bit risky, because it heavily rely on order of requests in queue (if something will alter it, wrong request may
+        // suffer from error handling logic.
+        if (request == nil && response.response == nil) {
 
-        if (shouldHandleResponse) {
-
-            [self processResponse:response forRequest:request];
+            request = [self nextStoredRequest];
+            shouldObserveExecution = [self isWaitingRequestCompletion:request.shortIdentifier];
         }
-    }
-    
 
-    if (shouldResendRequest) {
+        // Check whether request successfully received and can be used or not
+        BOOL shouldResendRequest = response.error.code == kPNResponseMalformedJSONError || response.statusCode >= 500;
+        BOOL isRequestSentByUser = request != nil && request.isSendingByUserRequest;
+        BOOL shouldHandleResponse = [self shouldHandleResponse:response];
 
-        if (request) {
+        [self stopTimeoutTimerForRequest:request];
 
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.connectionChannel.reschedulingRequest, (self.name ? self.name : self),
-                        (request ? request : [NSNull null]), @(self.state)];
-            }];
-
-            [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution outOfOrder:YES
-                 launchProcessing:NO];
-        }
-        else {
+        // Check whether response is valid or not
+        if (shouldResendRequest) {
 
             [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.connectionChannel.requestRescheduleImpossible, (self.name ? self.name : self),
-                        (request ? request : [NSNull null]), @(self.state)];
+                return @[PNLoggerSymbols.connectionChannel.malformedJSONPResponse, (self.name ? self.name : self),
+                        (response ? response : [NSNull null]), @(self.state)];
             }];
+
+            if (request) {
+
+                // In case if response arrived with unexpected code, store it for future research.
+                [PNLogger storeUnexpectedHTTPDescription:[request debugResourcePath] packetData:^NSData *{
+
+                    return response.content;
+                }];
+
+                if ([request canRetry]) {
+
+                    [request increaseRetryCount];
+                    [request resetWithRetryCount:NO];
+
+                    [self destroyRequest:request];
+                }
+                else {
+
+                    shouldResendRequest = NO;
+                    [self requestsQueue:nil didFailRequestSend:request withError:response.error];
+                }
+            }
+        }
+        // Looks like response is valid (continue)
+        else {
+
+            if (shouldHandleResponse && isRequestSentByUser) {
+
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                    return @[PNLoggerSymbols.connectionChannel.receivedResponse, (self.name ? self.name : self),
+                            (response ? response : [NSNull null]), @(self.state)];
+                }];
+            }
+
+            [self destroyRequest:request];
+
+            if (shouldHandleResponse) {
+
+                [self processResponse:response forRequest:request];
+            }
         }
 
-        // Asking to schedule next request
-        [self scheduleNextRequest];
-    }
-    else {
 
-        // Asking to schedule next request
-        [self scheduleNextRequest];
-    }
+        if (shouldResendRequest) {
+
+            if (request) {
+
+                [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                    return @[PNLoggerSymbols.connectionChannel.reschedulingRequest, (self.name ? self.name : self),
+                            (request ? request : [NSNull null]), @(self.state)];
+                }];
+
+                [self scheduleRequest:request shouldObserveProcessing:shouldObserveExecution outOfOrder:YES
+                     launchProcessing:NO];
+            }
+            else {
+
+                [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                    return @[PNLoggerSymbols.connectionChannel.requestRescheduleImpossible, (self.name ? self.name : self),
+                            (request ? request : [NSNull null]), @(self.state)];
+                }];
+            }
+
+            // Asking to schedule next request
+            [self scheduleNextRequest];
+        }
+        else {
+
+            // Asking to schedule next request
+            [self scheduleNextRequest];
+        }
+    }];
 }
 
 
@@ -1807,17 +1883,20 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didSendRequest:(PNBaseRequest *)request {
 
-    // Updating request state
-    request.processing = NO;
-    request.processed = YES;
+    [self pn_dispatchBlock:^{
 
-    BOOL isWaitingForRequestCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+        // Updating request state
+        request.processing = NO;
+        request.processed = YES;
 
-    // Launching timeout timer only for requests which is scheduled from the name of user
-    if (request.isSendingByUserRequest && isWaitingForRequestCompletion) {
+        BOOL isWaitingForRequestCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
 
-        [self startTimeoutTimerForRequest:request];
-    }
+        // Launching timeout timer only for requests which is scheduled from the name of user
+        if (request.isSendingByUserRequest && isWaitingForRequestCompletion) {
+
+            [self startTimeoutTimerForRequest:request];
+        }
+    }];
 }
 
 - (void)requestsQueue:(PNRequestsQueue *)queue didFailRequestSend:(PNBaseRequest *)request withError:(PNError *)error {
@@ -1828,14 +1907,17 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
     // Check whether connection available or not
     [self.delegate isPubNubServiceAvailable:YES checkCompletionBlock:^(BOOL available) {
-        
-        if ([self isConnected] && available) {
-            
-            // Increase request retry count
-            [request increaseRetryCount];
-        }
-        
-        [self stopTimeoutTimerForRequest:request];
+
+        [self pn_dispatchBlock:^{
+
+            if ([self isConnected] && available) {
+
+                // Increase request retry count
+                [request increaseRetryCount];
+            }
+
+            [self stopTimeoutTimerForRequest:request];
+        }];
     }];
 }
 
@@ -1859,45 +1941,38 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 #pragma mark - Memory management
 
 - (void)cleanUp {
-    
-    BOOL isConnected = [self isConnected];
-    [self pn_dispatchSynchronouslyBlock:^{
-    
+
+    [self pn_dispatchBlock:^{
+
         // Remove all requests sent by this communication channel
         [self clearScheduledRequestsQueue];
         [self stopTimeoutTimerForRequest:nil];
         [self purgeObservedRequestsPool];
         [self purgeStoredRequestsPool];
-        
-        _connection.dataSource = nil;
-        _requestsQueue.delegate = nil;
-        _requestsQueue = nil;
 
-        [PNBitwiseHelper clear:&_state];
-        [PNBitwiseHelper addTo:&_state bit:PNConnectionChannelDisconnected];
-    }];
-    
-    if (isConnected) {
-        
-        [_delegate connectionChannel:self didDisconnectFromOrigin:nil];
-    }
+        self.connection.dataSource = nil;
+        self.requestsQueue.delegate = nil;
+        self.requestsQueue = nil;
 
-    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+        [PNBitwiseHelper clear:&self->_state];
+        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelDisconnected];
 
-        return @[PNLoggerSymbols.connectionChannel.connectionReset, (self.name ? self.name : self),
-                (_connection ? [NSString stringWithFormat:@"%p", _connection] : [NSNull null]),
-                (_connection ? _connection : [NSNull null]), @(self.state)];
+        if ([self isConnected]) {
+
+            [self.delegate connectionChannel:self didDisconnectFromOrigin:nil];
+        }
+
+        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.connectionChannel.connectionReset, (self.name ? self.name : self),
+                    (self.connection ? [NSString stringWithFormat:@"%p", self.connection] : [NSNull null]),
+                    (self.connection ? self.connection : [NSNull null]), @(self.state)];
+        }];
+
+        self.connection.delegate = nil;
+        [self.connection prepareForTermination];
+        self.connection = nil;
     }];
-    
-    [self pn_dispatchSynchronouslyBlock:^{
-        
-        _connection.delegate = nil;
-        [_connection prepareForTermination];
-        _connection = nil;
-    }];
-    
-    [PNDispatchHelper release:[self pn_privateQueue]];
-    [self pn_setPrivateDispatchQueue:nil];
 }
 
 - (void)dealloc {
@@ -1906,11 +1981,13 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
         [self cleanUp];
     }
+    
+    [self pn_destroyPrivateDispatchQueue];
 
     [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return @[PNLoggerSymbols.connectionChannel.destroyed, (_name ? _name : @""),
-                @(_state)];
+        return @[PNLoggerSymbols.connectionChannel.destroyed, (self->_name ? self->_name : @""),
+                @(self->_state)];
     }];
 }
 

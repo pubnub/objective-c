@@ -27,18 +27,21 @@
  Sent to the delegate when messaging channel would like to change channels set and it need to know whether it should
  proceed with last time token or request new one from server.
  */
-- (BOOL)shouldKeepTimeTokenOnChannelsListChange:(PNMessagingChannel *)messagingChannel;
+- (void)checkShouldKeepTimeTokenOnChannelsListChange:(PNMessagingChannel *)messagingChannel
+                                           withBlock:(void (^)(BOOL shouldKeepTimeToken))checkCompletionBlock;
 
 /**
  * Sent to the delegate when messaging channel would like to know on whether it should restore subscription or not
  */
-- (BOOL)shouldMessagingChannelRestoreSubscription:(PNMessagingChannel *)messagingChannel;
+- (void)checkShouldMessagingChannelRestoreSubscription:(PNMessagingChannel *)messagingChannel
+                                             withBlock:(void (^)(BOOL restoreSubscription))checkCompletionBlock;
 
 /**
  * Sent to the delegate when messaging channel would like to know on whether it should use last time token for
  * subscription or not
  */
-- (BOOL)shouldMessagingChannelRestoreWithLastTimeToken:(PNMessagingChannel *)messagingChannel;
+- (void)checkShouldMessagingChannelRestoreWithLastTimeToken:(PNMessagingChannel *)messagingChannel
+                                                  withBlock:(void (^)(BOOL restoreWithLastTimeToken))checkCompletionBlock;
 
 /**
  Retrieve client state informatino for set of channels.
@@ -48,7 +51,7 @@
  
  @return Cached information for channels from list,
  */
-- (NSDictionary *)clientStateInformationForChannels:(NSArray *)channels;
+- (void)clientStateInformationForChannels:(NSArray *)channels withBlock:(void (^)(NSDictionary *stateOnChannel))stateFetchCompletionBlock;
 
 /**
  Retrieve reference on composed client state which should be used to update client information inside \b PubNub network.
@@ -58,14 +61,14 @@
  
  @return Full client state information with latest changes from provided data.
  */
-- (NSDictionary *)clientStateMergedWith:(NSDictionary *)updatedState;
+- (void)clientStateMergedWith:(NSDictionary *)updatedState andBlock:(void (^)(NSDictionary *mergedState))mergeCompletionBlock;
 
 /**
  Retrieve full client state information.
  
  @param Completed client's state information which is stored in cache.
  */
-- (NSDictionary *)clientStateInformation;
+- (void)clientStateInformation:(void (^)(NSDictionary *clientState))stateFetchCompletionBlock;
 
 /**
  Store updated client's state on specified channels in local cache.
@@ -76,7 +79,7 @@
  @param channels
  List of \b PNChannel instances for which client state updated in local cache.
  */
-- (void)updateClientStateInformationWith:(NSDictionary *)state forChannels:(NSArray *)channels;
+- (void)updateClientStateInformationWith:(NSDictionary *)state forChannels:(NSArray *)channels withBlock:(dispatch_block_t)updateCompletionBlock;
 
 /**
  * Sent to the delegate when client did reset it's state

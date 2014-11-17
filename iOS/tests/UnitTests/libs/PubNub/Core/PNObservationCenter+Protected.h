@@ -45,7 +45,7 @@
  * Check whether observer is subscribed on PubNub state
  * change
  */
-- (BOOL)isSubscribedOnClientStateChange:(id)observer;
+- (void)checkSubscribedOnClientStateChange:(id)observer withBlock:(void (^)(BOOL observing))checkCompletionBlock;
 
 
 #pragma mark - Client connection state observation

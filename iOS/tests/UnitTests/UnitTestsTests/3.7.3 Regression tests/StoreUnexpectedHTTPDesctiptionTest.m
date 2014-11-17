@@ -19,6 +19,7 @@
 #define IS_RESPONSE			0x00001000
 
 #define DELIM_UNKNOWN		0
+
 #define DELIM_CRLF			1
 #define DELIM_CR			2
 #define DELIM_LF			3

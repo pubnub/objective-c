@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		960063291A027789002063CF /* PNCryptoHistoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960063281A027789002063CF /* PNCryptoHistoryTest.m */; };
 		9606DE6E1A15EB6E00EF1934 /* PNConnectNegativeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9606DE6D1A15EB6E00EF1934 /* PNConnectNegativeTest.m */; };
-		964F68321A13A876002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 964F682C1A12657C002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m */; };
 		964F68351A13B5D5002AE069 /* testdata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 964F68341A13B5D5002AE069 /* testdata.plist */; };
 		965236821A09126600E6BF32 /* PNChannelGroupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 965236811A09126600E6BF32 /* PNChannelGroupTest.m */; };
 		9688151E1A03FEAE00BB548D /* PNCryptoInstanceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */; };
@@ -1522,7 +1521,6 @@
 				96CB6A9B19D19A6B0093D64E /* PNWriteBufferTest.m in Sources */,
 				9688151E1A03FEAE00BB548D /* PNCryptoInstanceTest.m in Sources */,
 				96CB6A8E19D19A6B0093D64E /* PNMessageHistoryRequestTest.m in Sources */,
-				964F68321A13A876002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m in Sources */,
 				96CB6A0B19D01F210093D64E /* PNTestManager.m in Sources */,
 				96CB6A8F19D19A6B0093D64E /* PNMessagesHistoryTest.m in Sources */,
 				960063291A027789002063CF /* PNCryptoHistoryTest.m in Sources */,

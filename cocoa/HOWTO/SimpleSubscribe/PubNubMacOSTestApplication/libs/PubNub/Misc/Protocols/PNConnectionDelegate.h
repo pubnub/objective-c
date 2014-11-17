@@ -134,15 +134,14 @@
  * Check whether data source can provide connection with data which can be sent over the network
  * to PubNub services (requests will be executed automatically)
  */
-- (BOOL)hasDataForConnection:(PNConnection *)connection;
+- (void)checkHasDataForConnection:(PNConnection *)connection withBlock:(void (^)(BOOL hasData))checkCompletionBlock;
 
-- (NSString *)nextRequestIdentifierForConnection:(PNConnection *)connection;
-- (PNBaseRequest *)nextRequestForConnection:(PNConnection *)connection;
+- (void)nextRequestIdentifierForConnection:(PNConnection *)connection withBlock:(void (^)(NSString *identifier))fetchCompletionBlock;
 
 /**
  * Delegate should provide write buffer which will be used to send serialized data over the network
  */
-- (PNWriteBuffer *)connection:(PNConnection *)connection requestDataForIdentifier:(NSString *)requestIdentifier;
+- (void)connection:(PNConnection *)connection requestDataForIdentifier:(NSString *)requestIdentifier withBlock:(void (^)(PNWriteBuffer *buffer))fetchCompletionBlock;
 
 /**
  * Sent when connection started request processing (sending payload via sockets)
