@@ -12,6 +12,7 @@
 //
 
 #import "PNConnection.h"
+#import <objc/runtime.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <Security/SecureTransport.h>
 #import "PNConnection+Protected.h"
@@ -3949,25 +3950,23 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 #pragma mark - Memory management
 
 - (void)prepareForTermination {
+   
+    [self pn_ignorePrivateQueueRequirement];
 
-    [self pn_dispatchBlock:^{
-
-        [self stopWakeUpTimer];
-        [self stopTimeoutTimer];
-    }];
+    [self stopWakeUpTimer];
+    [self stopTimeoutTimer];
 }
 
 - (void)dealloc {
 
-    [self pn_dispatchBlock:^{
+    [self pn_ignorePrivateQueueRequirement];
 
-        // Closing all streams and free up resources which was allocated for their support
-        [self destroyStreams];
-        [self stopWakeUpTimer];
-        [self stopTimeoutTimer];
-        self.delegate = nil;
-        self.proxySettings = nil;
-    }];
+    // Closing all streams and free up resources which was allocated for their support
+    [self destroyStreams];
+    [self stopWakeUpTimer];
+    [self stopTimeoutTimer];
+    self.delegate = nil;
+    self.proxySettings = nil;
     
     [self pn_destroyPrivateDispatchQueue];
 

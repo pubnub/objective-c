@@ -53,12 +53,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"feature-pt81243156";
+static NSString * const kPNCodebaseBranch = @"develop";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"9b27bdb5057ed1465214a27c446a699a8563e4e1";
+static NSString * const kPNCodeCommitIdentifier = @"528fe5e5af002844b49750f4be74aaec4c2405cb";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -492,6 +492,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             [PNObservationCenter resetCenter];
             [PNChannel purgeChannelsCache];
             _sharedInstance.cryptoHelper = nil;
+            
+            _sharedInstance.clientConfiguration = nil;
+            _sharedInstance.temporaryConfiguration = nil;
 
             _sharedInstance.updatingClientIdentifier = NO;
             _sharedInstance.messagingChannel.delegate = nil;

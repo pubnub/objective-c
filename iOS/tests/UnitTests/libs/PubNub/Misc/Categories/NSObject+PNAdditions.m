@@ -11,7 +11,7 @@
 #import "PNHelper.h"
 
 
-#define DEBUG_QUEUE 0
+#define DEBUG_QUEUE 1
 #if DEBUG_QUEUE
     #warning Queue assertion is ON. Turn OFF before deployment.
 #endif
@@ -25,6 +25,16 @@
 #pragma mark - Instance methods
 
 #pragma mark - Misc methods
+
+/**
+ @brief Look into instance storage for information about whether object discard requirement on code
+ execution only on private queue or not.
+ 
+ @return \c YES will allow to execute submitted block w/o check and treated as private by default.
+ 
+ @since 3.7.3
+ */
+- (BOOL)pn_ignoringPrivateQueueRequirement;
 
 /**
  @brief Allow to check whether currently instance code is running on it's private queue or not.
@@ -138,15 +148,32 @@
 #endif
 }
 
+- (void)pn_ignorePrivateQueueRequirement {
+    
+    objc_setAssociatedObject(self, "ignorePrivateQueueRequirement", @YES, OBJC_ASSOCIATION_RETAIN);
+}
+
 
 #pragma mark - Misc methods
 
+- (BOOL)pn_ignoringPrivateQueueRequirement {
+    
+    return [(NSNumber *)objc_getAssociatedObject(self, "ignorePrivateQueueRequirement") boolValue];
+}
+
 - (BOOL)pn_runningOnPrivateQueue {
     
-    PNDispatchObjectWrapper *wrapper = [self pn_privateQueueWrapper];
+    BOOL runningOnPrivateQueue = [self pn_ignoringPrivateQueueRequirement];
+    if (!runningOnPrivateQueue) {
+        
+        PNDispatchObjectWrapper *wrapper = [self pn_privateQueueWrapper];
+        if (wrapper) {
+            
+            runningOnPrivateQueue = [(__bridge id)dispatch_get_specific(wrapper.specificKeyPointer.pointerValue) isEqual:self];
+        }
+    }
     
-    
-    return (wrapper ? [(__bridge id)dispatch_get_specific(wrapper.specificKeyPointer.pointerValue) isEqual:self] : NO);
+    return runningOnPrivateQueue;
 }
 
 #pragma mark -

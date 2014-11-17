@@ -2761,11 +2761,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 #pragma mark Memory management
 
 - (void)dealloc {
-
-    [self pn_dispatchBlock:^{
-
-        [self stopChannelIdleTimer];
-    }];
+    
+    [self pn_ignorePrivateQueueRequirement];
+    [self stopChannelIdleTimer];
 }
 
 #pragma mark -

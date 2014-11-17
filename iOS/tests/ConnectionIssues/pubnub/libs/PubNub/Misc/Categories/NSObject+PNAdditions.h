@@ -70,6 +70,17 @@
  */
 - (void)pn_scheduleOnPrivateQueueAssert;
 
+/**
+ @brief Allow to disable assert for the time when code should be called outside of queue.
+ 
+ @discussion This method mostly used in cases where there is not much time for GCD async operation 
+ completion, but queue dedicated methods should be called.
+ This method doesn't have backward functionality and permanently disable requirement.
+ 
+ @since 3.7.3
+ */
+- (void)pn_ignorePrivateQueueRequirement;
+
 #pragma mark -
 
 
