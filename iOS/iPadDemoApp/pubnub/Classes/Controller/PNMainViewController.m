@@ -198,7 +198,8 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     // initialize auto messager
     
     [[PNAutoMessager sharedManager] setPresendMessageBlock:^(NSString *message) {
-        _messageInputField.text = message;
+        
+        self.messageInputField.text = message;
     }];
 }
 

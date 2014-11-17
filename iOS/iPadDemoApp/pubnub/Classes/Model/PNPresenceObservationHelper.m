@@ -138,7 +138,10 @@
     void(^completionHandler)(NSArray *, PNError *) = ^(NSArray *channels, PNError *presenceStateManipulationError){
         
         channels = [weakSelf.channelsForPresenceManipulation copy];
-        [weakSelf reset];
+        if (!presenceStateManipulationError) {
+            
+            [weakSelf reset];
+        }
         
         if (handlerBlock) {
             
