@@ -202,7 +202,7 @@
                                  (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
                     }];
                     
-                    ((PNError *)parsedData).associatedObject = response.additionalData;
+                    [(PNError *)parsedData replaceAssociatedObject:response.additionalData];
                     [self.serviceDelegate serviceChannel:self clientStateReceiveDidFailWithError:parsedData];
                 }
             }
@@ -228,7 +228,7 @@
                                  (parsedData ? parsedData : [NSNull null]), (response.additionalData ? response.additionalData : [NSNull null])];
                     }];
                     
-                    ((PNError *)parsedData).associatedObject = response.additionalData;
+                    [(PNError *)parsedData replaceAssociatedObject:response.additionalData];
                     [self.serviceDelegate serviceChannel:self clientStateUpdateDidFailWithError:parsedData];
                 }
             }
@@ -677,7 +677,7 @@
                 }
                 else {
                     
-                    ((PNError *)parsedData).associatedObject = options;
+                    [(PNError *)parsedData replaceAssociatedObject:options];
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
                         return @[PNLoggerSymbols.connectionChannel.service.accessRightsChangeRequestFailed, (self.name ? self.name : self),
@@ -708,7 +708,7 @@
                 }
                 else {
                     
-                    ((PNError *)parsedData).associatedObject = options;
+                    [(PNError *)parsedData replaceAssociatedObject:options];
                     [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                         
                         return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestFailed, (self.name ? self.name : self),
@@ -768,7 +768,7 @@
 
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = client;
+            [error replaceAssociatedObject:client];
         }
 
         NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed;
@@ -822,7 +822,7 @@
         }
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = object;
+            [error replaceAssociatedObject:object];
         }
         
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -874,7 +874,7 @@
                                                     PNLoggerSymbols.connectionChannel.service.channelsRemovalFromGroupRequestFailed);
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = change;
+            [error replaceAssociatedObject:change];
         }
         
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -920,7 +920,7 @@
                 
                 [options setValue:historyRequest.endDate forKey:@"endDate"];
             }
-            error.associatedObject = options;
+            [error replaceAssociatedObject:options];
         }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -943,8 +943,8 @@
         PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = @{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
-                                       @"fetchClientState":@(hereNowRequest.shouldFetchClientState)};
+            [error replaceAssociatedObject:@{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
+                                             @"fetchClientState":@(hereNowRequest.shouldFetchClientState)}];
         }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -981,7 +981,7 @@
         
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = ((PNPushNotificationsStateChangeRequest *)request).devicePushToken;
+            [error replaceAssociatedObject:((PNPushNotificationsStateChangeRequest *)request).devicePushToken];
         }
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 
@@ -1019,7 +1019,7 @@
         
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
+            [error replaceAssociatedObject:((PNPushNotificationsRemoveRequest *)request).devicePushToken];
         }
         [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:error];
     }
@@ -1036,7 +1036,7 @@
         
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
+            [error replaceAssociatedObject:((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken];
         }
         [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:error];
     }
@@ -1047,7 +1047,7 @@
 
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = options;
+            [error replaceAssociatedObject:options];
         }
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -1066,7 +1066,7 @@
 
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            error.associatedObject = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
+            [error replaceAssociatedObject:((PNAccessRightsAuditRequest *)request).accessRightOptions];
         }
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 

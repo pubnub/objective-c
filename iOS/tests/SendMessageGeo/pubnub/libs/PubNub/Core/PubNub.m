@@ -53,12 +53,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"feature-pt80663324";
+static NSString * const kPNCodebaseBranch = @"feature-pt81243156";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"4ceba6d5eed2d8536393c47316e0f8b9c3f35eb9";
+static NSString * const kPNCodeCommitIdentifier = @"9b27bdb5057ed1465214a27c446a699a8563e4e1";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -438,6 +438,35 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     return [[self alloc] initWithConfiguration:configuration andDelegate:delegate];
 }
+
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration {
+    
+    return [self connectingClientWithConfiguration:configuration andSuccessBlock:nil errorBlock:nil];
+}
+
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration
+                              andSuccessBlock:(PNClientConnectionSuccessBlock)success
+                                   errorBlock:(PNClientConnectionFailureBlock)failure {
+    
+    return [self connectingClientWithConfiguration:configuration delegate:nil andSuccessBlock:success errorBlock:failure];
+}
+
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
+    
+    return [self connectingClientWithConfiguration:configuration delegate:delegate andSuccessBlock:nil errorBlock:nil];
+}
+
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration delegate:(id<PNDelegate>)delegate
+                              andSuccessBlock:(PNClientConnectionSuccessBlock)success
+                                   errorBlock:(PNClientConnectionFailureBlock)failure {
+    
+    PubNub *pubNub = [[self alloc] initWithConfiguration:configuration andDelegate:delegate];
+    [pubNub connectWithSuccessBlock:success errorBlock:failure];
+    
+    
+    return pubNub;
+}
+
 
 + (void)resetClient {
 

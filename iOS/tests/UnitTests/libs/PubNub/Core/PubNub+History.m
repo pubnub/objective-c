@@ -683,7 +683,7 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = channel;
+        [error replaceAssociatedObject:channel];
         [self notifyDelegateAboutHistoryDownloadFailedWithError:error];
     }
     else {
