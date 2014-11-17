@@ -120,9 +120,6 @@
     }
     
     [self initializePubNubClient];
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-    [PubNub connect];
-    [PubNub requestPushNotificationEnabledChannelsForDevicePushToken:[@"00000000000000000000000000000000" dataUsingEncoding:NSUTF8StringEncoding]  withCompletionHandlingBlock:nil];
     
     #if !TARGET_IPHONE_SIMULATOR
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {

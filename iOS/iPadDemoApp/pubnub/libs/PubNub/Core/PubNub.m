@@ -492,6 +492,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             [PNObservationCenter resetCenter];
             [PNChannel purgeChannelsCache];
             _sharedInstance.cryptoHelper = nil;
+            
+            _sharedInstance.clientConfiguration = nil;
+            _sharedInstance.temporaryConfiguration = nil;
 
             _sharedInstance.updatingClientIdentifier = NO;
             _sharedInstance.messagingChannel.delegate = nil;
