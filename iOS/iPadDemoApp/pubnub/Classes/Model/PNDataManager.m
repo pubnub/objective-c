@@ -214,26 +214,31 @@ static PNDataManager *_sharedInstance = nil;
                     
                     eventType = @"timeout";
                 }
-                PNChannel *channel = event.channel;
-                NSString *eventMessage = [weakSelf.messages valueForKey:channel.name];
+                id <PNChannelProtocol> object = event.channel;
+                if (event.channelGroup) {
+
+                    object = event.channelGroup;
+                }
+                NSString *eventMessage = [weakSelf.messages valueForKey:object.name];
                 if (eventMessage == nil) {
 
                     eventMessage = @"";
                 }
-                eventMessage = [eventMessage stringByAppendingFormat:@"<%@> \"%@\" %@\n",
-                                                                     [dateFormatter stringFromDate:event.date.date],
-                                                                     event.client.identifier,
-                                                                     eventType];
-                [weakSelf.messages setValue:eventMessage forKey:channel.name];
+                eventMessage = [eventMessage stringByAppendingFormat:@"<%@>%@ \"%@\" %@\n",
+                                 [dateFormatter stringFromDate:event.date.date],
+                                 (![object isEqual:event.channel] ? [NSString stringWithFormat:@"<%@>", event.channel.name] : @""),
+                                 event.client.identifier,
+                                 eventType];
+                [weakSelf.messages setValue:eventMessage forKey:object.name];
 
 
                 weakSelf.currentChannelChat = [weakSelf.messages valueForKey:weakSelf.currentChannel.name];
 
 
-                if (![channel isEqual:weakSelf.currentChannel]) {
+                if (![object isEqual:weakSelf.currentChannel]) {
 
-                    NSNumber *numberOfEvents = [weakSelf.events valueForKey:channel.name];
-                    [weakSelf.events setValue:@([numberOfEvents intValue]+1) forKey:channel.name];
+                    NSNumber *numberOfEvents = [weakSelf.events valueForKey:object.name];
+                    [weakSelf.events setValue:@([numberOfEvents intValue]+1) forKey:object.name];
                 }
             }];
 

@@ -141,17 +141,20 @@
 /**
  * Delegate should provide write buffer which will be used to send serialized data over the network
  */
-- (void)connection:(PNConnection *)connection requestDataForIdentifier:(NSString *)requestIdentifier withBlock:(void (^)(PNWriteBuffer *buffer))fetchCompletionBlock;
+- (void)connection:(PNConnection *)connection requestDataForIdentifier:(NSString *)requestIdentifier
+         withBlock:(void (^)(PNWriteBuffer *buffer))fetchCompletionBlock;
 
 /**
  * Sent when connection started request processing (sending payload via sockets)
  */
-- (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier;
+- (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier
+         withBlock:(dispatch_block_t)notifyCompletionBlock;
 
 /**
  * Notify data source that request with specified identifier has been sent, so it should be removed from queue
  */
-- (void)connection:(PNConnection *)connection didSendRequestWithIdentifier:(NSString *)requestIdentifier;
+- (void)connection:(PNConnection *)connection didSendRequestWithIdentifier:(NSString *)requestIdentifier
+         withBlock:(dispatch_block_t)notifyCompletionBlock;
 
 /**
  * Notify data source that request with specified identifier has been canceled (unscheduled) from execution
