@@ -521,10 +521,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             NSHTTPURLResponse *response;
             NSString *timeTokenRequestPath = [[PNNetworkHelper originLookupResourcePath] stringByReplacingOccurrencesOfString:@"(null)"
                                                                                                                withString:@"pubsub.pubnub.com"];
-            NSMutableURLRequest *timeTokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:timeTokenRequestPath]];
-            timeTokenRequest.timeoutInterval = kPNReachabilityOriginLookupTimeout;
+            NSMutableURLRequest *timeTokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:timeTokenRequestPath] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:kPNReachabilityOriginLookupTimeout];
             NSData *downloadedTimeTokenData = [NSURLConnection sendSynchronousRequest:timeTokenRequest returningResponse:&response error:&requestError];
-            [[NSURLCache sharedURLCache] removeCachedResponseForRequest:timeTokenRequest];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
