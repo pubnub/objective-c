@@ -1941,38 +1941,37 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 #pragma mark - Memory management
 
 - (void)cleanUp {
+    
+    [self pn_ignorePrivateQueueRequirement];
 
-    [self pn_dispatchBlock:^{
+    // Remove all requests sent by this communication channel
+    [self clearScheduledRequestsQueue];
+    [self stopTimeoutTimerForRequest:nil];
+    [self purgeObservedRequestsPool];
+    [self purgeStoredRequestsPool];
 
-        // Remove all requests sent by this communication channel
-        [self clearScheduledRequestsQueue];
-        [self stopTimeoutTimerForRequest:nil];
-        [self purgeObservedRequestsPool];
-        [self purgeStoredRequestsPool];
+    self.connection.dataSource = nil;
+    self.requestsQueue.delegate = nil;
+    self.requestsQueue = nil;
 
-        self.connection.dataSource = nil;
-        self.requestsQueue.delegate = nil;
-        self.requestsQueue = nil;
+    [PNBitwiseHelper clear:&self->_state];
+    [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelDisconnected];
 
-        [PNBitwiseHelper clear:&self->_state];
-        [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelDisconnected];
+    if ([self isConnected]) {
 
-        if ([self isConnected]) {
+        [self.delegate connectionChannel:self didDisconnectFromOrigin:nil];
+    }
 
-            [self.delegate connectionChannel:self didDisconnectFromOrigin:nil];
-        }
+    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-            return @[PNLoggerSymbols.connectionChannel.connectionReset, (self.name ? self.name : self),
-                    (self.connection ? [NSString stringWithFormat:@"%p", self.connection] : [NSNull null]),
-                    (self.connection ? self.connection : [NSNull null]), @(self.state)];
-        }];
-
-        self.connection.delegate = nil;
-        [self.connection prepareForTermination];
-        self.connection = nil;
+        return @[PNLoggerSymbols.connectionChannel.connectionReset, (self.name ? self.name : self),
+                (self.connection ? [NSString stringWithFormat:@"%p", self.connection] : [NSNull null]),
+                (self.connection ? self.connection : [NSNull null]), @(self.state)];
     }];
+
+    self.connection.delegate = nil;
+    [self.connection prepareForTermination];
+    self.connection = nil;
 }
 
 - (void)dealloc {

@@ -395,7 +395,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
         if (self.originLookupTimer == NULL) {
 
             dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
-                    [self pn_privateQueue]);
+                                                                   [self pn_privateQueue]);
             [PNDispatchHelper retain:timerSource];
             self.originLookupTimer = timerSource;
 
@@ -1043,6 +1043,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 #pragma mark - Memory management
 
 - (void)dealloc {
+    
+    [self pn_ignorePrivateQueueRequirement];
     
     // Clean up
     [self stopOriginLookup];
