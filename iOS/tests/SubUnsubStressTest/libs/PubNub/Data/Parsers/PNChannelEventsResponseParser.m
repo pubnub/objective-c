@@ -181,27 +181,27 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
                 PNChannel *detailedChannel = ([channelDetails count] ? channelExtractBlock([channelDetails objectAtIndex:eventIdx]): nil);
 
                 id eventObject = nil;
+                PNChannelGroup *group = nil;
+                PNChannel *targetChannel = (detailedChannel ? detailedChannel : channel);
+                if (detailedChannel && channel) {
+                    
+                    if (channel.isChannelGroup) {
+                        
+                        group = (PNChannelGroup *)channel;
+                    }
+                }
 
                 // Checking whether event presence event or not
                 if ([event isKindOfClass:[NSDictionary class]] && [PNPresenceEvent isPresenceEventObject:event]) {
                     
-                    eventObject = [PNPresenceEvent presenceEventForResponse:event];
-                    ((PNPresenceEvent *)eventObject).channel = (detailedChannel ? detailedChannel : channel);
+                    eventObject = [PNPresenceEvent presenceEventForResponse:event
+                                                                  onChannel:targetChannel
+                                                               channelGroup:group];
                 }
                 else {
-                    
-                    PNChannelGroup *group = nil;
-                    PNChannel *targetChannel = (detailedChannel ? detailedChannel : channel);
-                    if (detailedChannel && channel) {
-                        
-                        if (channel.isChannelGroup) {
-                            
-                            group = (PNChannelGroup *)channel;
-                        }
-                    }
 
-                    eventObject = [PNMessage messageFromServiceResponse:event onChannel:targetChannel channelGroup:group
-                                                                 atDate:eventDate];
+                    eventObject = [PNMessage messageFromServiceResponse:event onChannel:targetChannel
+                                                           channelGroup:group atDate:eventDate];
                 }
 
                 [eventObjects addObject:eventObject];

@@ -18,6 +18,7 @@
 #pragma mark Class forward
 
 @class PNClient;
+@class PNChannelGroup;
 
 
 @interface PNPresenceEvent : NSObject
@@ -46,6 +47,13 @@
 @property (nonatomic, readonly, assign) PNChannel *channel;
 
 /**
+ @brief Stores reference on channel group with channel for which this event is fired
+ 
+ @since 3.7.3
+ */
+@property (nonatomic, readonly, strong) PNChannelGroup *channelGroup;
+
+/**
  Stores reference on user identifier which is triggered presence event.
 
  Deprecated. Will be DISCARDED in 3.6.0.
@@ -63,7 +71,7 @@
  * provided response this method will return array
  * of events.
  */
-+ (id)presenceEventForResponse:(id)presenceResponse;
++ (id)presenceEventForResponse:(id)presenceResponse onChannel:(PNChannel *)channel channelGroup:(PNChannelGroup *)channelGroup;
 
 /**
  * Allow to check whether specified object is valid
@@ -78,7 +86,8 @@
  * Initialize presence event instance from 
  * PubNub service response
  */
-- (id)initWithResponse:(id)presenceResponse;
+- (id)initWithResponse:(id)presenceResponse onChannel:(PNChannel *)channel
+          channelGroup:(PNChannelGroup *)channelGroup;
 
 #pragma mark -
 

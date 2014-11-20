@@ -1249,7 +1249,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
                             subscribeRequest.channelsForPresenceEnabling = [channelsForPresenceEnabling allObjects];
                             [self.messagingDelegate messagingChannel:self
-                                     willEnablePresenceObservationOn:[[channelsForPresenceEnabling valueForKey:@"observedChannel"] allObjects]
+                                     willEnablePresenceObservationOn:[[channelsForPresenceEnabling allObjects] valueForKey:@"observedChannel"]
                                                            sequenced:([channelsForPresenceDisabling count] > 0)];
                         }
 
