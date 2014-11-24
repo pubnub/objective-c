@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class GCDGroup;
+
 @interface GCDWrapper : NSObject
 
 /**
@@ -47,5 +49,13 @@
  * timeout 30 second
  */
 + (BOOL)isGroup:(dispatch_group_t)dispatchGroup timeoutFiredValue:(NSInteger)timeout;
+
+/**
+ * Hold current thread and keep it for
+ * timeout value,
+ * if timeout fires return value is YES
+ * timeout 30 second
+ */
++ (BOOL)isGCDGroup:(GCDGroup *)gcdGroup timeoutFiredValue:(NSInteger)timeout;
 
 @end

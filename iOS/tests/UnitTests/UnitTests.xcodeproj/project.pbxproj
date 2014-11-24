@@ -11,6 +11,7 @@
 		9606DE6E1A15EB6E00EF1934 /* PNConnectNegativeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9606DE6D1A15EB6E00EF1934 /* PNConnectNegativeTest.m */; };
 		964F68351A13B5D5002AE069 /* testdata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 964F68341A13B5D5002AE069 /* testdata.plist */; };
 		965236821A09126600E6BF32 /* PNChannelGroupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 965236811A09126600E6BF32 /* PNChannelGroupTest.m */; };
+		965C8CA01A1F526E00DC6C30 /* GCDGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 965C8C9F1A1F526E00DC6C30 /* GCDGroup.m */; };
 		9688151E1A03FEAE00BB548D /* PNCryptoInstanceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */; };
 		96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A252F519DB3EB600C4CFCC /* PubNubTest.m */; };
 		96A5F8AB1A07D0DF004C92AA /* PNJSONSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5F8AA1A07D0DF004C92AA /* PNJSONSerializationTest.m */; };
@@ -205,6 +206,8 @@
 		964F682C1A12657C002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreUnexpectedHTTPDesctiptionTest.m; sourceTree = "<group>"; };
 		964F68341A13B5D5002AE069 /* testdata.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testdata.plist; sourceTree = "<group>"; };
 		965236811A09126600E6BF32 /* PNChannelGroupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupTest.m; sourceTree = "<group>"; };
+		965C8C9E1A1F526E00DC6C30 /* GCDGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDGroup.h; sourceTree = "<group>"; };
+		965C8C9F1A1F526E00DC6C30 /* GCDGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDGroup.m; sourceTree = "<group>"; };
 		9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoInstanceTest.m; sourceTree = "<group>"; };
 		96A252F519DB3EB600C4CFCC /* PubNubTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNubTest.m; sourceTree = "<group>"; };
 		96A5F8AA1A07D0DF004C92AA /* PNJSONSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNJSONSerializationTest.m; sourceTree = "<group>"; };
@@ -724,6 +727,8 @@
 		96CB6A0219D01F210093D64E /* PNTestSuite */ = {
 			isa = PBXGroup;
 			children = (
+				965C8C9E1A1F526E00DC6C30 /* GCDGroup.h */,
+				965C8C9F1A1F526E00DC6C30 /* GCDGroup.m */,
 				96CB6A2519D071D40093D64E /* Swizzler.h */,
 				96CB6A2619D071D40093D64E /* Swizzler.m */,
 				96CB6A0319D01F210093D64E /* GCDWrapper.h */,
@@ -1487,6 +1492,7 @@
 				96CB6A8619D19A6B0093D64E /* PNDateTest.m in Sources */,
 				96CB6A7B19D19A6B0093D64E /* PNActionResponseParserTest.m in Sources */,
 				96CB6A9319D19A6B0093D64E /* PNOperationStatusResponseParserTest.m in Sources */,
+				965C8CA01A1F526E00DC6C30 /* GCDGroup.m in Sources */,
 				96CB6A6F19D19A6B0093D64E /* CatchupTest.m in Sources */,
 				96CB6A9619D19A6B0093D64E /* PNReachabilityTest.m in Sources */,
 				96CB6A6E19D19A6B0093D64E /* AbbreviatedPresenceTest.m in Sources */,
