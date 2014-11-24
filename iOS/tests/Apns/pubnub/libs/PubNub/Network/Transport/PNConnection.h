@@ -68,7 +68,7 @@
 /**
  * Reconnect sockets and streams by user request
  */
-- (void)reconnect;
+- (void)reconnectWithBlock:(dispatch_block_t)processReportBlock;
 
 /**
  * Suspend sockets (basically they will be closed w/o PNConnection instance destroy)

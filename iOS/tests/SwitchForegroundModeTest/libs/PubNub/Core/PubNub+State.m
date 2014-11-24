@@ -271,70 +271,73 @@ withCompletionHandlingBlock:handlerBlock];
        reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-        return @[PNLoggerSymbols.api.clientStateAuditAttempt, (clientIdentifier ? clientIdentifier : [NSNull null]),
-                (object ? (id)object : [NSNull null]), [self humanReadableStateFrom:self.state]];
-    }];
-
-    [self performAsyncLockingBlock:^{
-
-        if (!isMethodCallRescheduled) {
-
-            [self.observationCenter removeClientAsStateRequestObserver];
-        }
-
-        // Check whether client is able to send request or not
-        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-        if (statusCode == 0) {
-
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.auditClientState, [self humanReadableStateFrom:self.state]];
-            }];
-
-            if (handlerBlock && !isMethodCallRescheduled) {
-
-                [self.observationCenter addClientAsStateRequestObserverWithBlock:handlerBlock];
+    [self pn_dispatchBlock:^{
+        
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.clientStateAuditAttempt, (clientIdentifier ? clientIdentifier : [NSNull null]),
+                     (object ? (id)object : [NSNull null]), [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [self performAsyncLockingBlock:^{
+            
+            if (!isMethodCallRescheduled) {
+                
+                [self.observationCenter removeClientAsStateRequestObserver];
             }
-
-            PNClientStateRequest *request = [PNClientStateRequest clientStateRequestForIdentifier:clientIdentifier
-                                                                                       andChannel:object];
-            [self sendRequest:request shouldObserveProcessing:YES];
-        }
+            
+            // Check whether client is able to send request or not
+            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+            if (statusCode == 0) {
+                
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.api.auditClientState, [self humanReadableStateFrom:self.state]];
+                }];
+                
+                if (handlerBlock && !isMethodCallRescheduled) {
+                    
+                    [self.observationCenter addClientAsStateRequestObserverWithBlock:handlerBlock];
+                }
+                
+                PNClientStateRequest *request = [PNClientStateRequest clientStateRequestForIdentifier:clientIdentifier
+                                                                                           andChannel:object];
+                [self sendRequest:request shouldObserveProcessing:YES];
+            }
             // Looks like client can't send request because of some reasons
-        else {
-
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.clientStateAuditionImpossible,
-                        (clientIdentifier ? clientIdentifier : [NSNull null]),
-                        (object ? (id) object : [NSNull null]), [self humanReadableStateFrom:self.state]];
-            }];
-
-            PNError *requestError = [PNError errorWithCode:statusCode];
-            requestError.associatedObject = [PNClient clientForIdentifier:clientIdentifier channel:object
-                                                                  andData:nil];;
-
-            [self notifyDelegateAboutStateRetrievalDidFailWithError:requestError];
-
-
-            if (handlerBlock && !isMethodCallRescheduled) {
-
-                handlerBlock(requestError.associatedObject, requestError);
+            else {
+                
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.api.clientStateAuditionImpossible,
+                             (clientIdentifier ? clientIdentifier : [NSNull null]),
+                             (object ? (id) object : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                }];
+                
+                PNError *requestError = [PNError errorWithCode:statusCode];
+                requestError.associatedObject = [PNClient clientForIdentifier:clientIdentifier channel:object
+                                                                      andData:nil];;
+                
+                [self notifyDelegateAboutStateRetrievalDidFailWithError:requestError];
+                
+                
+                if (handlerBlock && !isMethodCallRescheduled) {
+                    
+                    handlerBlock(requestError.associatedObject, requestError);
+                }
             }
         }
-    }
-           postponedExecutionBlock:^{
-
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                   return @[PNLoggerSymbols.api.postponeClientStateAudit, [self humanReadableStateFrom:self.state]];
+               postponedExecutionBlock:^{
+                   
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeClientStateAudit, [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeRequestClientState:clientIdentifier forObject:object
+                             reschedulingMethodCall:isMethodCallRescheduled witCompletionHandlingBlock:handlerBlock];
                }];
-
-               [self postponeRequestClientState:clientIdentifier forObject:object
-                         reschedulingMethodCall:isMethodCallRescheduled witCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeRequestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
@@ -378,102 +381,105 @@ withCompletionHandlingBlock:handlerBlock];
                     forObject:(id <PNChannelProtocol>)object reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
 
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-        return @[PNLoggerSymbols.api.clientStateChangeAttempt, (clientIdentifier ? clientIdentifier : [NSNull null]),
-                (object ? (id)object : [NSNull null]), [self humanReadableStateFrom:self.state]];
-    }];
-
-    [self performAsyncLockingBlock:^{
-
-        if (!isMethodCallRescheduled) {
-
-            [self.observationCenter removeClientAsStateUpdateObserver];
-        }
-
-        __block NSDictionary *mergedClientState = @{object.name : clientState};
-
-        dispatch_block_t completionBlock = ^{
-
-            // Check whether client is able to send request or not
-            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-            if (statusCode == 0 && mergedClientState && (![mergedClientState pn_isValidState] ||
-                    ![[self subscribedObjectsList] containsObject:object])) {
-
-                statusCode = kPNInvalidStatePayloadError;
-                if (![[self subscribedObjectsList] containsObject:object]) {
-
-                    statusCode = kPNCantUpdateStateForNotSubscribedChannelsError;
-                }
+    [self pn_dispatchBlock:^{
+        
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.clientStateChangeAttempt, (clientIdentifier ? clientIdentifier : [NSNull null]),
+                     (object ? (id)object : [NSNull null]), [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [self performAsyncLockingBlock:^{
+            
+            if (!isMethodCallRescheduled) {
+                
+                [self.observationCenter removeClientAsStateUpdateObserver];
             }
-            if (statusCode == 0) {
-
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                    return @[PNLoggerSymbols.api.changeClientState, (mergedClientState ? mergedClientState : [NSNull null]),
-                            [self humanReadableStateFrom:self.state]];
-                }];
-
-                if (handlerBlock && !isMethodCallRescheduled) {
-
-                    [self.observationCenter addClientAsStateUpdateObserverWithBlock:handlerBlock];
+            
+            __block NSDictionary *mergedClientState = @{object.name : clientState};
+            
+            dispatch_block_t completionBlock = ^{
+                
+                // Check whether client is able to send request or not
+                NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+                if (statusCode == 0 && mergedClientState && (![mergedClientState pn_isValidState] ||
+                                                             ![[self subscribedObjectsList] containsObject:object])) {
+                    
+                    statusCode = kPNInvalidStatePayloadError;
+                    if (![[self subscribedObjectsList] containsObject:object]) {
+                        
+                        statusCode = kPNCantUpdateStateForNotSubscribedChannelsError;
+                    }
                 }
-
-                mergedClientState = [mergedClientState valueForKeyPath:object.name];
-                PNClientStateUpdateRequest *request = [PNClientStateUpdateRequest clientStateUpdateRequestWithIdentifier:clientIdentifier
-                                                                                                                 channel:object
-                                                                                                          andClientState:mergedClientState];
-                [self sendRequest:request shouldObserveProcessing:YES];
-            }
+                if (statusCode == 0) {
+                    
+                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                        
+                        return @[PNLoggerSymbols.api.changeClientState, (mergedClientState ? mergedClientState : [NSNull null]),
+                                 [self humanReadableStateFrom:self.state]];
+                    }];
+                    
+                    if (handlerBlock && !isMethodCallRescheduled) {
+                        
+                        [self.observationCenter addClientAsStateUpdateObserverWithBlock:handlerBlock];
+                    }
+                    
+                    mergedClientState = [mergedClientState valueForKeyPath:object.name];
+                    PNClientStateUpdateRequest *request = [PNClientStateUpdateRequest clientStateUpdateRequestWithIdentifier:clientIdentifier
+                                                                                                                     channel:object
+                                                                                                              andClientState:mergedClientState];
+                    [self sendRequest:request shouldObserveProcessing:YES];
+                }
                 // Looks like client can't send request because of some reasons
-            else {
-
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                    return @[PNLoggerSymbols.api.clientStateChangeImpossible, (clientState ? clientState : [NSNull null]),
-                            [self humanReadableStateFrom:self.state]];
-                }];
-
-                PNError *requestError = [PNError errorWithCode:statusCode];
-                requestError.associatedObject = [PNClient clientForIdentifier:clientIdentifier channel:object
-                                                                      andData:clientState];
-
-                [self notifyDelegateAboutStateUpdateDidFailWithError:requestError];
-
-
-                if (handlerBlock && !isMethodCallRescheduled) {
-
-                    handlerBlock(requestError.associatedObject, requestError);
+                else {
+                    
+                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                        
+                        return @[PNLoggerSymbols.api.clientStateChangeImpossible, (clientState ? clientState : [NSNull null]),
+                                 [self humanReadableStateFrom:self.state]];
+                    }];
+                    
+                    PNError *requestError = [PNError errorWithCode:statusCode];
+                    requestError.associatedObject = [PNClient clientForIdentifier:clientIdentifier channel:object
+                                                                          andData:clientState];
+                    
+                    [self notifyDelegateAboutStateUpdateDidFailWithError:requestError];
+                    
+                    
+                    if (handlerBlock && !isMethodCallRescheduled) {
+                        
+                        handlerBlock(requestError.associatedObject, requestError);
+                    }
                 }
-            }
-        };
-        // Only in case if client update it's own state, we can append cached data to it.
-        if ([clientIdentifier isEqualToString:self.clientIdentifier]) {
-
-            [self.cache stateMergedWithState:mergedClientState withBlock:^(NSDictionary *mergedState) {
-
-                [self pn_dispatchBlock:^{
-
-                    mergedClientState = mergedState;
-                    completionBlock();
+            };
+            // Only in case if client update it's own state, we can append cached data to it.
+            if ([clientIdentifier isEqualToString:self.clientIdentifier]) {
+                
+                [self.cache stateMergedWithState:mergedClientState withBlock:^(NSDictionary *mergedState) {
+                    
+                    [self pn_dispatchBlock:^{
+                        
+                        mergedClientState = mergedState;
+                        completionBlock();
+                    }];
                 }];
-            }];
+            }
+            else {
+                
+                completionBlock();
+            }
         }
-        else {
-
-            completionBlock();
-        }
-    }
-           postponedExecutionBlock:^{
-
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                   return @[PNLoggerSymbols.api.postponeClientStateChange, [self humanReadableStateFrom:self.state]];
+               postponedExecutionBlock:^{
+                   
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeClientStateChange, [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeUpdateClientState:clientIdentifier state:clientState forObject:object
+                            reschedulingMethodCall:isMethodCallRescheduled withCompletionHandlingBlock:handlerBlock];
                }];
-
-               [self postponeUpdateClientState:clientIdentifier state:clientState forObject:object
-                        reschedulingMethodCall:isMethodCallRescheduled withCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
@@ -540,12 +546,12 @@ withCompletionHandlingBlock:handlerBlock];
 
 #pragma mark - Service channel delegate methods
 
-- (void)serviceChannel:(PNServiceChannel *)channel didReceiveClientState:(PNClient *)client {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+- (void)serviceChannel:(PNServiceChannel *)serviceChannel didReceiveClientState:(PNClient *)client {
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.didReceiveClientState, [self humanReadableStateFrom:self.state]];
         }];
 
@@ -561,28 +567,33 @@ withCompletionHandlingBlock:handlerBlock];
             }];
         }
 
-        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+        if (shouldNotify) {
 
-            if (shouldNotify) {
+            // Check whether delegate is able to handle state retrieval event or not
+            SEL selector = @selector(pubnubClient:didReceiveClientState:);
+            if ([self.clientDelegate respondsToSelector:selector]) {
 
-                // Check whether delegate is able to handle state retrieval event or not
-                SEL selector = @selector(pubnubClient:didReceiveClientState:);
-                if ([self.clientDelegate respondsToSelector:selector]) {
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                dispatch_async(dispatch_get_main_queue(), ^{
 
-                    #pragma clang diagnostic push
-                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                    dispatch_async(dispatch_get_main_queue(), ^{
-
-                        [self.clientDelegate performSelector:selector withObject:self withObject:client];
-                    });
-                    #pragma clang diagnostic pop
-                }
-
-                [self sendNotification:kPNClientDidReceiveClientStateNotification withObject:client];
+                    [self.clientDelegate performSelector:selector withObject:self withObject:client];
+                });
+                #pragma clang diagnostic pop
             }
-        }];
-    }
-                                shouldStartNext:YES];
+
+            [self sendNotification:kPNClientDidReceiveClientStateNotification withObject:client];
+        }
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:serviceChannel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel clientStateReceiveDidFailWithError:(PNError *)error {
@@ -609,11 +620,11 @@ withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didUpdateClientState:(PNClient *)client {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.didChangeClientState, [self humanReadableStateFrom:self.state]];
         }];
 
@@ -623,28 +634,33 @@ withCompletionHandlingBlock:handlerBlock];
             [self.cache storeClientState:[client stateForChannel:client.channel] forChannel:client.channel];
         }
 
-        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+        if (shouldNotify) {
 
-            if (shouldNotify) {
+            // Check whether delegate is able to handle state update event or not
+            SEL selector = @selector(pubnubClient:didUpdateClientState:);
+            if ([self.clientDelegate respondsToSelector:selector]) {
 
-                // Check whether delegate is able to handle state update event or not
-                SEL selector = @selector(pubnubClient:didUpdateClientState:);
-                if ([self.clientDelegate respondsToSelector:selector]) {
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                dispatch_async(dispatch_get_main_queue(), ^{
 
-                    #pragma clang diagnostic push
-                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                    dispatch_async(dispatch_get_main_queue(), ^{
-
-                        [self.clientDelegate performSelector:selector withObject:self withObject:client];
-                    });
-                    #pragma clang diagnostic pop
-                }
-
-                [self sendNotification:kPNClientDidUpdateClientStateNotification withObject:client];
+                    [self.clientDelegate performSelector:selector withObject:self withObject:client];
+                });
+                #pragma clang diagnostic pop
             }
-        }];
-    }
-                                shouldStartNext:YES];
+
+            [self sendNotification:kPNClientDidUpdateClientStateNotification withObject:client];
+        }
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel clientStateUpdateDidFailWithError:(PNError *)error {
@@ -666,7 +682,7 @@ withCompletionHandlingBlock:handlerBlock];
             
             [self updateClientState:clientInformation.identifier
                               state:[clientInformation stateForChannel:clientInformation.channel]
-                  forObject:clientInformation.channel
+                          forObject:clientInformation.channel
              reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
         }];
     }

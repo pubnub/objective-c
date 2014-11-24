@@ -290,6 +290,7 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
 @property (nonatomic, assign) CFReadStreamRef socketReadStream;
 @property (nonatomic, assign) CFWriteStreamRef socketWriteStream;
 @property (nonatomic, assign, getter = isWriteStreamCanHandleData) BOOL writeStreamCanHandleData;
+@property (nonatomic, assign) BOOL fetchingDataForSending;
 
 // Socket streams configuration and security
 @property (nonatomic, strong) NSDictionary *proxySettings;
@@ -406,7 +407,8 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
 - (void)handleStreamError:(CFErrorRef)error;
 - (void)handleStreamError:(CFErrorRef)error shouldCloseConnection:(BOOL)shouldCloseConnection;
 - (void)handleStreamSetupError;
-- (void)handleRequestProcessingError:(CFErrorRef)error;
+
+- (void)handleRequestProcessingError:(CFErrorRef)error withBlock:(dispatch_block_t)notifyCompletionBlock;
 
 
 #pragma mark - Misc methods
@@ -518,18 +520,27 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
 
         [PNBitwiseHelper addTo:&self->_state bit:PNConnectionProcessingRequests];
 
-        // Ensure that both streams connected at this moment and connection doesn't try to close or suspend
+        // Ensure that both streams connected at this moment and connection doesn't try to close
+        // or suspend
         if ([self isConnected] && ![self isDisconnecting] && ![self isSuspending]) {
 
             // Check whether sending data at this moment or not
-            if (![PNBitwiseHelper is:self.state containsBit:PNSendingData] || ![self.writeBuffer isSendingBytes]) {
+            if (![PNBitwiseHelper is:self.state containsBit:PNSendingData] ||
+                ![self.writeBuffer isSendingBytes]) {
 
                 dispatch_block_t continueBlock = ^{
 
-                    if (self.writeBuffer != nil) {
+                    if ([PNBitwiseHelper is:self.state containsBit:PNConnectionProcessingRequests]) {
 
-                        // Try to initiate request sending process
-                        [self writeBufferContent];
+                        if (self.writeBuffer != nil) {
+
+                            // Try to initiate request sending process
+                            [self writeBufferContent];
+                        }
+                    }
+                    else {
+
+                        self.writeBuffer = nil;
                     }
                 };
 
@@ -548,8 +559,8 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
 
                 [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return @[PNLoggerSymbols.connection.stream.write.alreadySendingData, (self.name ? self.name : self),
-                            @(self.state)];
+                    return @[PNLoggerSymbols.connection.stream.write.alreadySendingData,
+                            (self.name ? self.name : self), @(self.state)];
                 }];
             }
         }
@@ -631,11 +642,7 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
 
                     [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef {
 
-                        CFErrorRef cfError = NULL;
-                        if (retainedStream) {
-
-                            cfError = CFReadStreamCopyError(retainedStream);
-                        }
+                        CFErrorRef cfError = CFReadStreamCopyError(retainedStream);
                         CFRelease(retainedStream);
 
 
@@ -732,11 +739,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                     [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef {
 
-                        CFErrorRef cfError = NULL;
-                        if (retainedStream) {
-
-                            cfError = CFWriteStreamCopyError(retainedStream);
-                        }
+                        CFErrorRef cfError = CFWriteStreamCopyError(retainedStream);
                         CFRelease(retainedStream);
 
 
@@ -1389,7 +1392,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     // Check whether reconnection was issued because of SSL error or not
     if (self.sslConfigurationLevel == PNConnectionSSLConfigurationInsecure &&
-            [PNBitwiseHelper is:self.state strictly:YES containsBits:PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR]) {
+        [PNBitwiseHelper is:self.state strictly:YES containsBits:PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR]) {
 
         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
@@ -1405,90 +1408,116 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }];
     }
 
-    [self reconnect];
+    [self reconnectWithBlock:NULL];
 }
 
-- (void)reconnect {
-
+- (void)reconnectWithBlock:(dispatch_block_t)processReportBlock {
+    
     [self pn_dispatchBlock:^{
-
+        
         unsigned long oldStates = self.state;
+        __block unsigned long newStates = self.state;
+        
         [self.delegate connection:self checkShouldRestoreConnection:^(BOOL shouldReconnect) {
-
+            
             [self pn_dispatchBlock:^{
-
-                unsigned long newStates = self.state;
+                
+                newStates = self.state;
+                
                 BOOL stateChangedFromOutside = (oldStates != newStates && ![PNBitwiseHelper is:oldStates containsBit:PNByUserRequest] &&
-                        [PNBitwiseHelper is:newStates containsBit:PNByUserRequest]);
-
+                                                [PNBitwiseHelper is:newStates containsBit:PNByUserRequest]);
+                
                 if (!stateChangedFromOutside) {
-
+                    
                     if (shouldReconnect) {
-
+                        
                         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                            return @[PNLoggerSymbols.connection.connectionRetryAttempt, (self.name ? self.name : self), @(self.state)];
+                            
+                            return @[PNLoggerSymbols.connection.connectionRetryAttempt,
+                                     (self.name ? self.name : self), @(self.state)];
                         }];
                     }
                     else {
-
+                        
                         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
+                            
                             return @[PNLoggerSymbols.connection.connectionRetryImpossibleAtCurrentMoment, (self.name ? self.name : self),
-                                    @(self.state)];
+                                     @(self.state)];
                         }];
                     }
-
+                    
                     // Ask delegate whether connection should initiate connection to remote host or not
                     if (shouldReconnect) {
-
+                        
                         BOOL isWaitingForReconnection = [PNBitwiseHelper is:self.state containsBit:PNConnectionReconnect];
                         BOOL isReconnectingBecauseOfError = [PNBitwiseHelper is:self.state containsBit:PNConnectionError];
                         [PNBitwiseHelper removeFrom:&self->_state bits:PNConnectionCleanReconnection, PNConnectionError, BITS_LIST_TERMINATOR];
-
+                        
                         // Marking that connection instance is reconnecting now and after last connection will be closed should
                         // automatically renew connection
                         [PNBitwiseHelper addTo:&self->_state bit:PNConnectionReconnect];
                         [self destroyStreams];
-
+                        
                         // Check whether 'reconnection' delayed request already has been issued or not
                         if (!isWaitingForReconnection) {
-
+                            
                             // Attempt to restore connection after small delay defined in 'static' section of this class
                             __pn_desired_weak __typeof__(self) weakSelf = self;
                             NSTimeInterval delay = (NSTimeInterval) kPNConnectionRetryDelay;
                             if (!isReconnectingBecauseOfError) {
-
+                                
                                 delay = kPNConnectionRetryFastDelay;
                             }
                             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delay * NSEC_PER_SEC));
                             dispatch_after(popTime, [self pn_privateQueue], ^{
-
+                                
                                 if ([PNBitwiseHelper is:weakSelf.state containsBit:PNConnectionReconnect]) {
-
+                                    
                                     [self disconnectByInternalRequest];
+                                }
+
+                                if (processReportBlock) {
+
+                                    processReportBlock();
                                 }
                             });
                         }
+                        else {
+
+                            if (processReportBlock) {
+
+                                processReportBlock();
+                            }
+                        }
                     }
                     else {
-
+                        
                         [PNBitwiseHelper addTo:&self->_state bit:PNConnectionWakeUpTimer];
-
+                        
                         [self resumeWakeUpTimer];
+
+                        if (processReportBlock) {
+
+                            processReportBlock();
+                        }
                     }
                 }
                 else {
-
+                    
                     [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
+                        
                         return @[PNLoggerSymbols.connection.connectionRetryCanceledBecauseStateAltered, (self.name ? self.name : self),
-                                @(self.state)];
+                                 @(self.state)];
                     }];
-
+                    
                     [PNBitwiseHelper addTo:&self->_state bit:PNConnectionWakeUpTimer];
-
+                    
                     [self resumeWakeUpTimer];
+
+                    if (processReportBlock) {
+
+                        processReportBlock();
+                    }
                 }
             }];
         }];
@@ -1615,6 +1644,15 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     [self pn_dispatchBlock:^{
 
+        dispatch_block_t suspendProceedBlock = ^{
+
+            [self pn_dispatchBlock:^{
+
+                [self suspendWakeUpTimer];
+                [self stopTimeoutTimer];
+            }];
+        };
+
         // Check whether connection established to the remote host or not
         if ([self isConnected]) {
 
@@ -1629,11 +1667,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 [PNBitwiseHelper addTo:&self->_state bit:PNConnectionSuspending];
                 [self disconnectByInternalRequest];
+                suspendProceedBlock();
             }
             // Looks like connection already suspended
             else if ([self isSuspended]){
 
-                [self.delegate connectionDidSuspend:self];
+                [self.delegate connectionDidSuspend:self withBlock:suspendProceedBlock];
             }
         }
         else {
@@ -1641,11 +1680,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             [self disconnectOnInternalRequest];
             [PNBitwiseHelper addTo:&self->_state bits:PNConnectionDisconnected, PNConnectionSuspended, BITS_LIST_TERMINATOR];
 
-            [self.delegate connectionDidSuspend:self];
+            [self.delegate connectionDidSuspend:self withBlock:suspendProceedBlock];
         }
-
-        [self suspendWakeUpTimer];
-        [self stopTimeoutTimer];
     }];
 }
 
@@ -1672,7 +1708,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     [self pn_scheduleOnPrivateQueueAssert];
 
 
-    return [PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnected, PNConnectionSuspended, BITS_LIST_TERMINATOR];
+    return [PNBitwiseHelper is:self.state strictly:YES
+                  containsBits:PNConnectionDisconnected, PNConnectionSuspended, BITS_LIST_TERMINATOR];
 }
 
 - (void)resume {
@@ -1696,7 +1733,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         else if ([self isConnected]) {
 
-            [self.delegate connectionDidResume:self];
+            [self.delegate connectionDidResume:self withBlock:NULL];
         }
     }];
 }
@@ -1972,6 +2009,21 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     }
                     else {
 
+                        // Check whether temporary storage has been filled with data while deserializer worked
+                        if ([_temporaryRetrievedData length] > 0) {
+
+
+                            NSRange temporaryDataRange = [self.retrievedData rangeOfData:_temporaryRetrievedData
+                                                                                 options:(NSDataSearchOptions)0
+                                                                                   range:NSMakeRange(0, [self.retrievedData length])];
+                            if (temporaryDataRange.location == NSNotFound) {
+
+                                // Append bytes from temporary storage before just readed one.
+                                [self.retrievedData appendData:_temporaryRetrievedData];
+                            }
+                            _temporaryRetrievedData = nil;
+                        }
+
                         // Store fetched data
                         [self.retrievedData appendBytes:data.buffer length:(NSUInteger)readedBytesCount];
                         [self processResponse];
@@ -1999,6 +2051,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (void)processResponse {
 
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
     // Retrieve response objects from server response
     [self.deserializer parseResponseData:self.retrievedData withBlock:^(NSArray *responses) {
 
@@ -2015,16 +2070,24 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [responses enumerateObjectsUsingBlock:^(id response, NSUInteger responseIdx, BOOL *responseEnumeratorStop) {
 
                     // Check whether server reported that connection will be closed after this portion of data
-                    if (![PNBitwiseHelper is:self.state containsBit:PNByServerRequest] && [(id<PNResponseProtocol>)response isLastResponseOnConnection]) {
+                    if (![PNBitwiseHelper is:self.state containsBit:PNByServerRequest] &&
+                        [(id<PNResponseProtocol>)response isLastResponseOnConnection]) {
 
                         [PNBitwiseHelper addTo:&self->_state bits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR];
 
                         // Inform delegate that connection will be closed soon by server request
-                        [self.delegate connection:self willDisconnectByServerRequestFromHost:self.configuration.origin];
-                    }
+                        [self.delegate connection:self willDisconnectByServerRequestFromHost:self.configuration.origin
+                                        withBlock:^{
 
-                    // Notify delegate about new event arrival
-                    [self.delegate connection:self didReceiveResponse:response];
+                            // Notify delegate about new event arrival
+                            [self.delegate connection:self didReceiveResponse:response withBlock:NULL];
+                        }];
+                    }
+                    else {
+
+                        // Notify delegate about new event arrival
+                        [self.delegate connection:self didReceiveResponse:response withBlock:NULL];
+                    }
                 }];
             }
 
@@ -2038,7 +2101,13 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             @([self->_temporaryRetrievedData length]), @(self.state)];
                 }];
 
-                [self.retrievedData appendData:_temporaryRetrievedData];
+                NSRange temporaryDataRange = [self.retrievedData rangeOfData:_temporaryRetrievedData
+                                                                     options:(NSDataSearchOptions)0
+                                                                       range:NSMakeRange(0, [self.retrievedData length])];
+                if (temporaryDataRange.location == NSNotFound) {
+
+                    [self.retrievedData appendData:_temporaryRetrievedData];
+                }
                 _temporaryRetrievedData = nil;
 
                 // Try to process retrieved data once more (maybe some full response arrived from remote server)
@@ -2049,7 +2118,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 // Check whether client is still connected and there is request from server side to close connection.
                 // Connection will be restored after full disconnection
                 if ([self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
-                        [PNBitwiseHelper is:self.state containsBit:PNByServerRequest]) {
+                    [PNBitwiseHelper is:self.state containsBit:PNByServerRequest]) {
 
                     [self disconnectByInternalRequest];
                 }
@@ -2231,7 +2300,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                              ![PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect,
                                PNByServerRequest, BITS_LIST_TERMINATOR] && ![self isResuming];
 
-    if (shouldPrepareData) {
+    if (shouldPrepareData && !self.fetchingDataForSending) {
+
+        self.fetchingDataForSending = YES;
 
         [self.dataSource checkHasDataForConnection:self withBlock:^(BOOL hasData) {
 
@@ -2242,18 +2313,24 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                     if (requestIdentifier) {
                         
-                        [self.dataSource connection:self requestDataForIdentifier:requestIdentifier withBlock:^(PNWriteBuffer *buffer) {
+                        [self.dataSource connection:self requestDataForIdentifier:requestIdentifier
+                                          withBlock:^(PNWriteBuffer *buffer) {
                             
                             [self pn_dispatchBlock:^{
-                                
+
                                 self.writeBuffer = buffer;
+                                self.fetchingDataForSending = NO;
                                 completionBlock();
                             }];
                         }];
                     }
                     else {
-                        
-                        completionBlock();
+
+                        [self pn_dispatchBlock:^{
+
+                            self.fetchingDataForSending = NO;
+                            completionBlock();
+                        }];
                     }
                 }];
             }
@@ -2261,6 +2338,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 
                 [self pn_dispatchBlock:^{
 
+                    self.fetchingDataForSending = NO;
                     completionBlock();
                 }];
             }
@@ -2349,8 +2427,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             if (writeStreamIsAbleToSend() && self.writeBuffer != nil) {
 
                                 // Try write data into write stream
-                                CFIndex bytesWritten = CFWriteStreamWrite(self.socketWriteStream, [self.writeBuffer buffer],
-                                        [self.writeBuffer bufferLength]);
+                                CFIndex bytesWritten = CFWriteStreamWrite(self.socketWriteStream,
+                                                                         [self.writeBuffer buffer],
+                                                                         [self.writeBuffer bufferLength]);
 
                                 // Check whether error occurred while tried to process request
                                 if (bytesWritten < 0) {
@@ -2369,12 +2448,17 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                                     CFErrorRef writeError = CFWriteStreamCopyError(self.socketWriteStream);
                                     [PNBitwiseHelper addTo:&_state bit:PNWriteStreamError];
 
-                                    [self handleRequestProcessingError:writeError];
+                                    [self handleRequestProcessingError:writeError withBlock:^{
 
-                                    [PNHelper releaseCFObject:&writeError];
-                                    isWriteBufferIsEmpty = YES;
+                                        [self pn_dispatchBlock:^{
+
+                                            [PNHelper releaseCFObject:(void *)&writeError];
+                                            isWriteBufferIsEmpty = YES;
+                                            emptyBufferHandleBlock();
+                                        }];
+                                    }];
                                 }
-                                    // Check whether socket was able to transfer whole write buffer at once or not
+                                // Check whether socket was able to transfer whole write buffer at once or not
                                 else if (bytesWritten == self.writeBuffer.length) {
 
                                     [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -2391,6 +2475,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                                     self.writeBuffer.offset = self.writeBuffer.length;
 
                                     isWriteBufferIsEmpty = YES;
+                                    emptyBufferHandleBlock();
                                 }
                                 else {
 
@@ -2410,6 +2495,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                                         self.writeStreamCanHandleData = YES;
                                         isWriteBufferIsEmpty = YES;
                                     }
+                                    emptyBufferHandleBlock();
                                 }
                             }
                             else {
@@ -2419,9 +2505,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                                     return @[PNLoggerSymbols.connection.stream.write.writeCanceled, (self.name ? self.name : self),
                                             @(self.state)];
                                 }];
-                            }
 
-                            emptyBufferHandleBlock();
+                                emptyBufferHandleBlock();
+                            }
                         };
 
                         // Check whether we just started request processing or not
@@ -2461,7 +2547,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                         [self scheduleNextRequestExecution];
                     }
-                    else if([PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
+                    else if([PNBitwiseHelper is:self.state strictly:YES
+                                   containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
 
                         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -2556,6 +2643,18 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         @(self.state)];
             }];
         }
+        
+        dispatch_block_t streamConnecionCompletionBlock =^{
+
+            [self pn_dispatchBlock:^{
+
+                // Check whether channel should process requests from upper layers or not
+                if ([PNBitwiseHelper is:self.state containsBit:PNConnectionProcessingRequests]) {
+
+                    [self scheduleNextRequestExecution];
+                }
+            }];
+        };
 
         // Check whether connection has been established as result of user calling '-connect' method or not
         if (isByUserRequest) {
@@ -2567,7 +2666,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             }];
 
             // Notify delegate that initial connection is established
-            [self.delegate connection:self didConnectToHost:self.configuration.origin];
+            [self.delegate connection:self didConnectToHost:self.configuration.origin
+                            withBlock:streamConnecionCompletionBlock];
         }
         else {
 
@@ -2580,20 +2680,21 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             @(self.state)];
                 }];
 
-                [self.delegate connectionDidResume:self];
+                [self.delegate connectionDidResume:self withBlock:streamConnecionCompletionBlock];
             }
             // Check whether connection has been restored after server closed it (for example when server doesn't
             // support 'keep-alive' connection type
             else if (isRestoredAfterServerClosed) {
 
                 // Inform delegate that connection finally recovered after it has been close by remote server
-                [self.delegate connection:self didRestoreAfterServerCloseConnectionToHost:self.configuration.origin];
+                [self.delegate connection:self didRestoreAfterServerCloseConnectionToHost:self.configuration.origin
+                                withBlock:streamConnecionCompletionBlock];
             }
             // Check whether connection has been forcibly reset after found out that it is in wrong state
             else if (isConnectionReset) {
 
                 // Inform delegate that connection has been completely reset and ready to work
-                [self.delegate connectionDidReset:self];
+                [self.delegate connectionDidReset:self withBlock:streamConnecionCompletionBlock];
             }
             // Check whether connection has been restored after some error occurred on streams
             else if (connectedAfterError) {
@@ -2604,7 +2705,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             @(self.state)];
                 }];
 
-                [self.delegate connection:self didReconnectToHostAfterError:self.configuration.origin];
+                [self.delegate connection:self didReconnectToHostAfterError:self.configuration.origin
+                                withBlock:streamConnecionCompletionBlock];
             }
             // Check whether connection has been reconnected by request from 'wake up' timer/SSL/sockets
             else if (isReconnectedByWakeUpTimer || isReconnectedBySSL || isReconnectedBySocket) {
@@ -2624,7 +2726,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     return @[symbolCode, (self.name ? self.name : self), @(self.state)];
                 }];
 
-                [self.delegate connection:self didReconnectToHostAfterError:self.configuration.origin];
+                [self.delegate connection:self didReconnectToHostAfterError:self.configuration.origin
+                                withBlock:streamConnecionCompletionBlock];
             }
             // Check whether connection has been reconnected by request or not
             else if (isReconnecting) {
@@ -2635,18 +2738,14 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             @(self.state)];
                 }];
 
-                [self.delegate connection:self didReconnectToHost:self.configuration.origin];
+                [self.delegate connection:self didReconnectToHost:self.configuration.origin
+                                withBlock:streamConnecionCompletionBlock];
             }
             else {
 
-                [self.delegate connection:self didConnectToHost:self.configuration.origin];
+                [self.delegate connection:self didConnectToHost:self.configuration.origin
+                                withBlock:streamConnecionCompletionBlock];
             }
-        }
-
-        // Check whether channel should process requests from upper layers or not
-        if ([PNBitwiseHelper is:self.state containsBit:PNConnectionProcessingRequests]) {
-
-            [self scheduleNextRequestExecution];
         }
     }
 }
@@ -2750,7 +2849,37 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             isDisconnectedByWakeUpTimer || isDisconnectedBySSL || isDisconnectedBySocket || isReconnecting ||
             retriedConnection) {
 
-            unsigned long flagsToEnableBack = 0;
+            __block unsigned long flagsToEnableBack = 0;
+            dispatch_block_t connectionRestoreBlock = ^{
+
+                [self pn_dispatchBlock:^{
+
+                    [PNBitwiseHelper addTo:&_state bit:PNConnectionWakeUpTimer];
+                    [self resumeWakeUpTimer];
+                    if (isByUserRequest) {
+
+                        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                            return @[PNLoggerSymbols.connection.reconnectFromTheUserName, (self.name ? self.name : self),
+                                    @(self.state)];
+                        }];
+
+                        [self connectWithResult:^(BOOL connecting) {
+                            
+                            // Restore error state flags because of which connection should be restored back
+                            [PNBitwiseHelper addTo:&_state bit:flagsToEnableBack];
+                        }];
+                    }
+                    else {
+
+                        [self connectByInternalRequest:^(BOOL connecting) {
+                            
+                            // Restore error state flags because of which connection should be restored back
+                            [PNBitwiseHelper addTo:&_state bit:flagsToEnableBack];
+                        }];
+                    }
+                }];
+            };
 
             // Check whether there was attempt to connect while was connection was in disconnection state
             if (shouldConnectOnDisconnect) {
@@ -2760,6 +2889,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     return @[PNLoggerSymbols.connection.closedWithFurtherConnectionOnUserRequest, (self.name ? self.name : self),
                             @(self.state)];
                 }];
+                connectionRestoreBlock();
             }
             else if (isDisconnectedByServerRequest) {
 
@@ -2773,7 +2903,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [PNBitwiseHelper addTo:&_state bit:flagsToEnableBack];
 
                 // Notify delegate that connection has been terminated by server request
-                [self.delegate connection:self didDisconnectByServerRequestFromHost:self.configuration.origin];
+                [self.delegate connection:self didDisconnectByServerRequestFromHost:self.configuration.origin
+                                withBlock:connectionRestoreBlock];
             }
             else if (isDisconnectedOnReset) {
 
@@ -2784,6 +2915,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 }];
                 
                 [PNBitwiseHelper addTo:&flagsToEnableBack bits:PNByInternalRequest, PNConnectionError, BITS_LIST_TERMINATOR];
+                connectionRestoreBlock();
             }
             else if (isDisconnectedByWakeUpTimer || isDisconnectedBySSL || isDisconnectedBySocket) {
 
@@ -2813,7 +2945,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [PNBitwiseHelper addTo:&_state bit:flagsToEnableBack];
 
                 // Notify delegate that connection will be restored because of reconnection request
-                [self.delegate connection:self willReconnectToHostAfterError:self.configuration.origin];
+                [self.delegate connection:self willReconnectToHostAfterError:self.configuration.origin
+                                withBlock:connectionRestoreBlock];
             }
             else if (isReconnecting) {
 
@@ -2826,7 +2959,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [PNBitwiseHelper addTo:&flagsToEnableBack bit:PNConnectionReconnection];
 
                 // Notify delegate that connection will be restored because of reconnection request
-                [self.delegate connection:self willReconnectToHost:self.configuration.origin];
+                [self.delegate connection:self willReconnectToHost:self.configuration.origin
+                                withBlock:connectionRestoreBlock];
             }
             else if (retriedConnection) {
 
@@ -2835,27 +2969,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     return @[PNLoggerSymbols.connection.connectionRetry, (self.name ? self.name : self), @(self.connectionRetryCount),
                             @(kPNMaximumConnectionRetryCount), @(self.state)];
                 }];
+                connectionRestoreBlock();
             }
-
-            [PNBitwiseHelper addTo:&_state bit:PNConnectionWakeUpTimer];
-            [self resumeWakeUpTimer];
-            if (isByUserRequest) {
-
-                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                    return @[PNLoggerSymbols.connection.reconnectFromTheUserName, (self.name ? self.name : self),
-                            @(self.state)];
-                }];
-
-                [self connectWithResult:NULL];
-            }
-            else {
-
-                [self connectByInternalRequest:NULL];
-            }
-
-            // Restore error state flags because of which connection should be restored back
-            [PNBitwiseHelper addTo:&_state bit:flagsToEnableBack];
         }
         // Check whether connection has been closed by user request or not
         else if (isByUserRequest) {
@@ -2873,7 +2988,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [PNBitwiseHelper addTo:&_state bit:PNConnectionWakeUpTimer];
                 [self resumeWakeUpTimer];
 
-                [self.delegate connection:self didDisconnectFromHost:self.configuration.origin];
+                [self.delegate connection:self didDisconnectFromHost:self.configuration.origin
+                                withBlock:NULL];
             }
             else {
 
@@ -2901,7 +3017,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 [self suspendWakeUpTimer];
                 [self stopTimeoutTimer];
 
-                [self.delegate connectionDidSuspend:self];
+                [self.delegate connectionDidSuspend:self withBlock:NULL];
             }
             else {
 
@@ -2929,11 +3045,16 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                                 @(self.state)];
                     }];
                     self.connectionRetryCount = 0;
-                    [self.delegate connection:self didDisconnectFromHost:self.configuration.origin];
+                    [self.delegate connection:self didDisconnectFromHost:self.configuration.origin
+                                    withBlock:^{
 
-                    [PNBitwiseHelper addTo:&_state bit:PNConnectionWakeUpTimer];
-                    [self resumeWakeUpTimer];
-                    [self stopTimeoutTimer];
+                        [self pn_dispatchBlock:^{
+
+                            [PNBitwiseHelper addTo:&_state bit:PNConnectionWakeUpTimer];
+                            [self resumeWakeUpTimer];
+                            [self stopTimeoutTimer];
+                        }];
+                    }];
                 }
             }
         }
@@ -2956,7 +3077,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
     self.writeStreamCanHandleData = YES;
 
-    if (![PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
+    if (![PNBitwiseHelper is:self.state strictly:YES
+                containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
 
         [self writeBufferContent];
     }
@@ -2982,7 +3104,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         [PNBitwiseHelper removeFrom:&_state bit:PNSendingData];
 
         // Notify delegate about that request processing hasn't been completed
-        [self.dataSource connection:self didCancelRequestWithIdentifier:interruptedRequestIdentifier];
+        [self.dataSource connection:self didCancelRequestWithIdentifier:interruptedRequestIdentifier
+                          withBlock:NULL];
     }
 }
 
@@ -2996,7 +3119,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     [PNBitwiseHelper removeFrom:&_state bits:PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming, BITS_LIST_TERMINATOR];
     [PNBitwiseHelper addTo:&_state bit:PNConnectionDisconnected];
 
-    [self reconnect];
+    [self reconnectWithBlock:NULL];
 }
 
 - (void)handleWakeUpTimer {
@@ -3052,7 +3175,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         // Check whether connection should be restored via '-reconnect' method or not
                         if ([self shouldReconnect]) {
 
-                            [self reconnect];
+                            [self reconnectWithBlock:NULL];
                         }
                         else if ([PNBitwiseHelper is:self.state containsBit:PNConnectionPrepareToConnect]) {
 
@@ -3255,7 +3378,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR];
 
                     // Try to reconnect with new SSL security settings
-                    [self reconnect];
+                    [self reconnectWithBlock:NULL];
                 }
                 // Check whether connection can fallback and use plain HTTP connection w/o SSL
                 else if (self.configuration.canIgnoreSecureConnectionRequirement &&
@@ -3273,7 +3396,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR];
                     
                     // Try to reconnect with new SSL security settings
-                    [self reconnect];
+                    [self reconnectWithBlock:NULL];
                 }
             }
             else {
@@ -3286,8 +3409,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 shouldCloseConnection = NO;
                 [PNBitwiseHelper removeFrom:&_state bit:PNConnectionErrorCleanAll];
                 [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR];
-                
-                [self reconnect];
+
+                [self reconnectWithBlock:NULL];
             }
         }
         else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX] ||
@@ -3409,44 +3532,68 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         if (shouldCloseConnection) {
 
+            dispatch_block_t errorHandlingCompletionBlock = ^{
+
+                if ([self isConnected] && ![self isDisconnecting]) {
+
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connection.closingConnectionBecauseOfError, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    [PNBitwiseHelper removeFrom:&_state bits:PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
+                                                             PNConnectionDisconnect, PNByServerRequest, PNByInternalRequest,PNByUserRequest,
+                                                             PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, BITS_LIST_TERMINATOR];
+
+                    self.connectionRetryCount = 0;
+                    [self.delegate connection:self willDisconnectFromHost:self.configuration.origin
+                                    withError:errorObject andBlock:^{
+
+                        [self pn_dispatchBlock:^{
+
+                            [self disconnectByInternalRequest];
+                        }];
+                    }];
+                }
+                else if ([self isConnecting]) {
+
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connection.closingConnectionBecauseOfErrorWhileTriedToConnect,
+                                (self.name ? self.name : self), @(self.state)];
+                    }];
+
+                    [PNBitwiseHelper removeFrom:&_state bits:PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
+                                                             PNConnectionDisconnect, PNByServerRequest, PNByInternalRequest,PNByUserRequest,
+                                                             PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, BITS_LIST_TERMINATOR];
+
+                    self.connectionRetryCount = 0;
+                    [self.delegate connection:self connectionDidFailToHost:self.configuration.origin
+                                    withError:errorObject andBlock:^{
+
+                        [self pn_dispatchBlock:^{
+
+                            [self disconnectOnInternalRequest];
+                        }];
+                    }];
+                }
+            };
+
             // Check whether error occurred during data sending or not
             if ([PNBitwiseHelper is:self.state containsBit:PNConnectionProcessingRequests] && self.writeBuffer) {
 
-                [self handleRequestProcessingError:error];
-            }
+                [self handleRequestProcessingError:error withBlock:^{
 
+                    [self pn_dispatchBlock:^{
 
-            if ([self isConnected] && ![self isDisconnecting]) {
-
-                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                    return @[PNLoggerSymbols.connection.closingConnectionBecauseOfError, (self.name ? self.name : self),
-                            @(self.state)];
+                        errorHandlingCompletionBlock();
+                    }];
                 }];
-                
-                [PNBitwiseHelper removeFrom:&_state bits:PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
-                 PNConnectionDisconnect, PNByServerRequest, PNByInternalRequest,PNByUserRequest,
-                 PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, BITS_LIST_TERMINATOR];
-                
-                self.connectionRetryCount = 0;
-                [self.delegate connection:self willDisconnectFromHost:self.configuration.origin withError:errorObject];
-                [self disconnectByInternalRequest];
             }
-            else if ([self isConnecting]) {
+            else {
 
-                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                    return @[PNLoggerSymbols.connection.closingConnectionBecauseOfErrorWhileTriedToConnect,
-                             (self.name ? self.name : self), @(self.state)];
-                }];
-                
-                [PNBitwiseHelper removeFrom:&_state bits:PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
-                 PNConnectionDisconnect, PNByServerRequest, PNByInternalRequest,PNByUserRequest,
-                 PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, BITS_LIST_TERMINATOR];
-                
-                self.connectionRetryCount = 0;
-                [self.delegate connection:self connectionDidFailToHost:self.configuration.origin withError:errorObject];
-                [self disconnectOnInternalRequest];
+                errorHandlingCompletionBlock();
             }
         }
     }
@@ -3471,7 +3618,8 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         PNError *setupError = [PNError errorWithCode:kPNConnectionErrorOnSetup];
 
         // Connection instance can't operate anymore, notify delegate about it's state
-        [self.delegate connection:self connectionDidFailToHost:self.configuration.origin withError:setupError];
+        [self.delegate connection:self connectionDidFailToHost:self.configuration.origin
+                        withError:setupError andBlock:NULL];
     }
     // Looks like error occurred during initial configuration or when reconnection has been called within library
     else {
@@ -3537,7 +3685,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
     }
 }
 
-- (void)handleRequestProcessingError:(CFErrorRef)error {
+- (void)handleRequestProcessingError:(CFErrorRef)error withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
@@ -3547,7 +3695,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         if (self.writeBuffer && [PNBitwiseHelper is:self.state containsBit:PNSendingData]) {
 
             [self.dataSource connection:self didFailToProcessRequestWithIdentifier:self.writeBuffer.requestIdentifier
-                              withError:[self processStreamError:error]];
+                                  error:[self processStreamError:error] withBlock:notifyCompletionBlock];
         }
     }
 }

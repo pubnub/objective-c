@@ -56,7 +56,7 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 @property (nonatomic, strong) PNDate *date;
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, assign) NSUInteger occupancy;
-@property (nonatomic, assign) PNChannel *channel;
+@property (nonatomic, strong) PNChannel *channel;
 @property (nonatomic, strong) PNChannelGroup *channelGroup;
 
 

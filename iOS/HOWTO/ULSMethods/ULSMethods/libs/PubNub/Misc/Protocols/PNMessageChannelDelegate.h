@@ -51,7 +51,8 @@
  
  @return Cached information for channels from list,
  */
-- (void)clientStateInformationForChannels:(NSArray *)channels withBlock:(void (^)(NSDictionary *stateOnChannel))stateFetchCompletionBlock;
+- (void)clientStateInformationForChannels:(NSArray *)channels
+                                withBlock:(void (^)(NSDictionary *stateOnChannel))stateFetchCompletionBlock;
 
 /**
  Retrieve reference on composed client state which should be used to update client information inside \b PubNub network.
@@ -61,7 +62,8 @@
  
  @return Full client state information with latest changes from provided data.
  */
-- (void)clientStateMergedWith:(NSDictionary *)updatedState andBlock:(void (^)(NSDictionary *mergedState))mergeCompletionBlock;
+- (void)clientStateMergedWith:(NSDictionary *)updatedState
+                     andBlock:(void (^)(NSDictionary *mergedState))mergeCompletionBlock;
 
 /**
  Retrieve full client state information.
@@ -79,7 +81,8 @@
  @param channels
  List of \b PNChannel instances for which client state updated in local cache.
  */
-- (void)updateClientStateInformationWith:(NSDictionary *)state forChannels:(NSArray *)channels withBlock:(dispatch_block_t)updateCompletionBlock;
+- (void)updateClientStateInformationWith:(NSDictionary *)state forChannels:(NSArray *)channels
+                               withBlock:(dispatch_block_t)updateCompletionBlock;
 
 /**
  * Sent to the delegate when client did reset it's state

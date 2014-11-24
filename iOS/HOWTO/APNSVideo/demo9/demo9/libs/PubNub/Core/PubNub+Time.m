@@ -105,62 +105,65 @@
 - (void)requestServerTimeTokenReschedulingMethodCall:(BOOL)isMethodCallRescheduled
                                  withCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success {
 
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-        return @[PNLoggerSymbols.api.timeTokenFetchAttempt, [self humanReadableStateFrom:self.state]];
-    }];
-
-    [self performAsyncLockingBlock:^{
-
-        if (!isMethodCallRescheduled) {
-
-            [self.observationCenter removeClientAsTimeTokenReceivingObserver];
-        }
-
-        // Check whether client is able to send request or not
-        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-        if (statusCode == 0) {
-
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.fetchingTimeToken, [self humanReadableStateFrom:self.state]];
-            }];
-
-            if (success && !isMethodCallRescheduled) {
-
-                [self.observationCenter addClientAsTimeTokenReceivingObserverWithCallbackBlock:success];
+    [self pn_dispatchBlock:^{
+        
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.timeTokenFetchAttempt, [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [self performAsyncLockingBlock:^{
+            
+            if (!isMethodCallRescheduled) {
+                
+                [self.observationCenter removeClientAsTimeTokenReceivingObserver];
             }
-
-            [self sendRequest:[PNTimeTokenRequest new] shouldObserveProcessing:YES];
-        }
+            
+            // Check whether client is able to send request or not
+            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+            if (statusCode == 0) {
+                
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.api.fetchingTimeToken, [self humanReadableStateFrom:self.state]];
+                }];
+                
+                if (success && !isMethodCallRescheduled) {
+                    
+                    [self.observationCenter addClientAsTimeTokenReceivingObserverWithCallbackBlock:success];
+                }
+                
+                [self sendRequest:[PNTimeTokenRequest new] shouldObserveProcessing:YES];
+            }
             // Looks like client can't send request because of some reasons
-        else {
-
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.timeTokenFetchImpossible, [self humanReadableStateFrom:self.state]];
-            }];
-
-            PNError *timeTokenError = [PNError errorWithCode:statusCode];
-
-            [self notifyDelegateAboutTimeTokenRetrievalFailWithError:timeTokenError];
-
-
-            if (success && !isMethodCallRescheduled) {
-
-                success(nil, timeTokenError);
+            else {
+                
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.api.timeTokenFetchImpossible, [self humanReadableStateFrom:self.state]];
+                }];
+                
+                PNError *timeTokenError = [PNError errorWithCode:statusCode];
+                
+                [self notifyDelegateAboutTimeTokenRetrievalFailWithError:timeTokenError];
+                
+                
+                if (success && !isMethodCallRescheduled) {
+                    
+                    success(nil, timeTokenError);
+                }
             }
         }
-    }
-           postponedExecutionBlock:^{
-
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                   return @[PNLoggerSymbols.api.postponeTimeTokenFetch, [self humanReadableStateFrom:self.state]];
+               postponedExecutionBlock:^{
+                   
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeTimeTokenFetch, [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeRequestServerTimeTokenReschedulingMethodCall:isMethodCallRescheduled withCompletionBlock:success];
                }];
-
-               [self postponeRequestServerTimeTokenReschedulingMethodCall:isMethodCallRescheduled withCompletionBlock:success];
-           }];
+    }];
 }
 
 - (void)postponeRequestServerTimeTokenReschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -202,33 +205,38 @@
 #pragma mark - Service channel delegate methods
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveTimeToken:(NSNumber *)timeToken {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.didReceiveTimeToken, [self humanReadableStateFrom:self.state]];
         }];
 
-        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+        if (shouldNotify) {
 
-            if (shouldNotify) {
+            // Check whether delegate can handle time token retrieval or not
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveTimeToken:)]) {
 
-                // Check whether delegate can handle time token retrieval or not
-                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveTimeToken:)]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
 
-                    dispatch_async(dispatch_get_main_queue(), ^{
-
-                        [self.clientDelegate performSelector:@selector(pubnubClient:didReceiveTimeToken:) withObject:self
-                                                  withObject:timeToken];
-                    });
-                }
-
-                [self sendNotification:kPNClientDidReceiveTimeTokenNotification withObject:timeToken];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:didReceiveTimeToken:) withObject:self
+                                              withObject:timeToken];
+                });
             }
-        }];
-    }
-                                shouldStartNext:YES];
+
+            [self sendNotification:kPNClientDidReceiveTimeTokenNotification withObject:timeToken];
+        }
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel receiveTimeTokenDidFailWithError:(PNError *)error {

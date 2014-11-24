@@ -201,7 +201,10 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
     [self pn_dispatchBlock:^{
 
-        checkCompletionBlock([[self unprocessedQueue] count] > 0);
+        if (checkCompletionBlock) {
+
+            checkCompletionBlock([[self unprocessedQueue] count] > 0);
+        }
     }];
 }
 
@@ -210,7 +213,10 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
     [self pn_dispatchBlock:^{
 
-        fetchCompletionBlock([self nextRequestIdentifier]);
+        if (fetchCompletionBlock) {
+
+            fetchCompletionBlock([self nextRequestIdentifier]);
+        }
     }];
 }
 
@@ -231,7 +237,10 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
             buffer = [nextRequest buffer];
         }
 
-        fetchCompletionBlock(buffer);
+        if (fetchCompletionBlock) {
+
+            fetchCompletionBlock(buffer);
+        }
     }];
 }
 
@@ -244,9 +253,15 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
         if (currentRequest != nil) {
 
             /// Forward request processing start to the delegate
-            [self.delegate requestsQueue:self willSendRequest:currentRequest];
+            [self.delegate requestsQueue:self willSendRequest:currentRequest withBlock:notifyCompletionBlock];
         }
-        notifyCompletionBlock();
+        else {
+
+            if (notifyCompletionBlock) {
+
+                notifyCompletionBlock();
+            }
+        }
     }];
 }
 
@@ -259,38 +274,48 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
         if (processedRequest != nil) {
 
             // Forward request processing completion to the delegate
-            [self.delegate requestsQueue:self didSendRequest:processedRequest];
+            [self.delegate requestsQueue:self didSendRequest:processedRequest withBlock:^{
 
+                // Check whether request issuer allow to remove completed request from queue or should leave it there and
+                // lock queue with it
+                [self.delegate shouldRequestsQueue:self removeCompletedRequest:processedRequest
+                                   checkCompletion:^(BOOL shouldRemove) {
 
-            // Check whether request issuer allow to remove completed request from queue or should leave it there and
-            // lock queue with it
-            [self.delegate shouldRequestsQueue:self removeCompletedRequest:processedRequest
-                               checkCompletion:^(BOOL shouldRemove) {
+                    if (shouldRemove) {
 
-                if (shouldRemove) {
+                        [self pn_dispatchBlock:^{
 
-                    [self pn_dispatchBlock:^{
+                            // Find processed request by identifier to remove it from requests queue
+                            [self removeRequest:[self dequeRequestWithIdentifier:requestIdentifier]];
 
-                        // Find processed request by identifier to remove it from requests queue
-                        [self removeRequest:[self dequeRequestWithIdentifier:requestIdentifier]];
+                            if (notifyCompletionBlock) {
 
-                        notifyCompletionBlock();
-                    }];
-                }
-                else {
+                                notifyCompletionBlock();
+                            }
+                        }];
+                    }
+                    else {
 
-                    notifyCompletionBlock();
-                }
+                        if (notifyCompletionBlock) {
+
+                            notifyCompletionBlock();
+                        }
+                    }
+                }];
             }];
         }
         else {
 
-            notifyCompletionBlock();
+            if (notifyCompletionBlock) {
+
+                notifyCompletionBlock();
+            }
         }
     }];
 }
 
-- (void)connection:(PNConnection *)connection didCancelRequestWithIdentifier:(NSString *)requestIdentifier {
+- (void)connection:(PNConnection *)connection didCancelRequestWithIdentifier:(NSString *)requestIdentifier
+         withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -298,7 +323,14 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
         if (currentRequest != nil) {
 
             // Forward request processing cancellation to the delegate
-            [self.delegate requestsQueue:self didCancelRequest:currentRequest];
+            [self.delegate requestsQueue:self didCancelRequest:currentRequest withBlock:notifyCompletionBlock];
+        }
+        else {
+
+            if (notifyCompletionBlock) {
+
+                notifyCompletionBlock();
+            }
         }
     }];
 }
@@ -308,7 +340,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
  * should resend request right after connection is up again
  */
 - (void)connection:(PNConnection *)connection didFailToProcessRequestWithIdentifier:(NSString *)requestIdentifier
-         withError:(PNError *)error {
+             error:(PNError *)error withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -316,7 +348,15 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
         if (currentRequest != nil) {
 
             // Forward request processing failure to the delegate
-            [self.delegate requestsQueue:self didFailRequestSend:currentRequest withError:error];
+            [self.delegate requestsQueue:self didFailRequestSend:currentRequest error:error
+                               withBlock:notifyCompletionBlock];
+        }
+        else {
+
+            if (notifyCompletionBlock) {
+
+                notifyCompletionBlock();
+            }
         }
     }];
 }

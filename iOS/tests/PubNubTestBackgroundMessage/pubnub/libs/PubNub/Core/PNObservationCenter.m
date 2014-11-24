@@ -2192,10 +2192,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 }
 
 - (NSMutableArray *)oneTimeObserversForEvent:(NSString *)eventName {
-
-    // This method should be launched only from within it's private queue
-    [self pn_scheduleOnPrivateQueueAssert];
-        
+    
     if ([self.oneTimeObservers valueForKey:eventName] == nil) {
 
         [self.oneTimeObservers setValue:[NSMutableArray array] forKey:eventName];
@@ -2206,11 +2203,13 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 }
 
 - (void)observersForEvent:(NSString *)eventName withBlock:(void (^)(NSMutableArray *observers))fetchCompletionBlock {
-
+    
+    // One-time events can be accessed outside of queue for reading.
+    NSMutableArray *oneTimeEventObservers = [self oneTimeObserversForEvent:eventName];
+    
     [self pn_dispatchBlock:^{
 
         NSMutableArray *persistentObservers = [self persistentObserversForEvent:eventName];
-        NSMutableArray *oneTimeEventObservers = [self oneTimeObserversForEvent:eventName];
 
 
         // Composing full observers list depending on whether at least

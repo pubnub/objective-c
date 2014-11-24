@@ -345,71 +345,74 @@ andCompletionHandlingBlock:handlerBlock];
                  clientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.subscribeAttempt, (channelObjects ? channelObjects : [NSNull null]),
-                 @(shouldCatchUp), [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
-
-        [self.observationCenter removeClientAsSubscriptionObserver];
-        [self.observationCenter removeClientAsUnsubscribeObserver];
-
-        // Check whether client is able to send request or not
-        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-        if (statusCode == 0 && clientState && ![clientState pn_isValidState]) {
-
-            statusCode = kPNInvalidStatePayloadError;
-        }
-        if (statusCode == 0) {
-
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.subscribing, [self humanReadableStateFrom:self.state]];
-            }];
-
-            if (handlerBlock != nil) {
-
-                [self.observationCenter addClientAsSubscriptionObserverWithBlock:handlerBlock];
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.subscribeAttempt, (channelObjects ? channelObjects : [NSNull null]),
+                     @(shouldCatchUp), [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [self performAsyncLockingBlock:^{
+            
+            [self.observationCenter removeClientAsSubscriptionObserver];
+            [self.observationCenter removeClientAsUnsubscribeObserver];
+            
+            // Check whether client is able to send request or not
+            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+            if (statusCode == 0 && clientState && ![clientState pn_isValidState]) {
+                
+                statusCode = kPNInvalidStatePayloadError;
             }
-
-
-            [self.messagingChannel subscribeOnChannels:channelObjects withCatchUp:shouldCatchUp
-                                        andClientState:clientState];
-        }
+            if (statusCode == 0) {
+                
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.api.subscribing, [self humanReadableStateFrom:self.state]];
+                }];
+                
+                if (handlerBlock != nil) {
+                    
+                    [self.observationCenter addClientAsSubscriptionObserverWithBlock:handlerBlock];
+                }
+                
+                
+                [self.messagingChannel subscribeOnChannels:channelObjects withCatchUp:shouldCatchUp
+                                            andClientState:clientState];
+            }
             // Looks like client can't send request because of some reasons
-        else {
-
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.subscriptionImpossible, [self humanReadableStateFrom:self.state]];
-            }];
-
-            PNError *subscriptionError = [PNError errorWithCode:statusCode];
-            subscriptionError.associatedObject = channelObjects;
-
-            [self notifyDelegateAboutSubscriptionFailWithError:subscriptionError
-                                      completeLockingOperation:YES];
-
-
-            if (handlerBlock) {
-
-                handlerBlock(PNSubscriptionProcessNotSubscribedState, channelObjects, subscriptionError);
+            else {
+                
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.api.subscriptionImpossible, [self humanReadableStateFrom:self.state]];
+                }];
+                
+                PNError *subscriptionError = [PNError errorWithCode:statusCode];
+                subscriptionError.associatedObject = channelObjects;
+                
+                [self notifyDelegateAboutSubscriptionFailWithError:subscriptionError
+                                          completeLockingOperation:YES];
+                
+                
+                if (handlerBlock) {
+                    
+                    handlerBlock(PNSubscriptionProcessNotSubscribedState, channelObjects, subscriptionError);
+                }
             }
         }
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeSubscription,
-                            [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeSubscription,
+                                [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeSubscribeOn:channelObjects withCatchUp:shouldCatchUp clientState:clientState
+                  andCompletionHandlingBlock:handlerBlock];
                }];
-               
-               [self postponeSubscribeOn:channelObjects withCatchUp:shouldCatchUp clientState:clientState
-              andCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void) postponeSubscribeOn:(NSArray *)channelObjects withCatchUp:(BOOL)shouldCatchUp
@@ -454,62 +457,65 @@ andCompletionHandlingBlock:handlerBlock];
 - (void)    unsubscribeFrom:(NSArray *)channelObjects
 withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.unsubscribeAttempt, (channelObjects ? channelObjects : [NSNull null]),
-                 [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
-
-        [self.observationCenter removeClientAsSubscriptionObserver];
-        [self.observationCenter removeClientAsUnsubscribeObserver];
-
-        // Check whether client is able to send request or not
-        NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
-        if (statusCode == 0) {
-
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.unsubscribing, [self humanReadableStateFrom:self.state]];
-            }];
-
-            if (handlerBlock) {
-
-                [self.observationCenter addClientAsUnsubscribeObserverWithBlock:handlerBlock];
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.unsubscribeAttempt, (channelObjects ? channelObjects : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [self performAsyncLockingBlock:^{
+            
+            [self.observationCenter removeClientAsSubscriptionObserver];
+            [self.observationCenter removeClientAsUnsubscribeObserver];
+            
+            // Check whether client is able to send request or not
+            NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+            if (statusCode == 0) {
+                
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.api.unsubscribing, [self humanReadableStateFrom:self.state]];
+                }];
+                
+                if (handlerBlock) {
+                    
+                    [self.observationCenter addClientAsUnsubscribeObserverWithBlock:handlerBlock];
+                }
+                
+                [self.messagingChannel unsubscribeFromChannels:channelObjects];
             }
-
-            [self.messagingChannel unsubscribeFromChannels:channelObjects];
-        }
             // Looks like client can't send request because of some reasons
-        else {
-
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.unsubscriptionImpossible, [self humanReadableStateFrom:self.state]];
-            }];
-
-            PNError *unsubscriptionError = [PNError errorWithCode:statusCode];
-            unsubscriptionError.associatedObject = channelObjects;
-
-            [self notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError completeLockingOperation:YES];
-
-
-            if (handlerBlock) {
-
-                handlerBlock(channelObjects, unsubscriptionError);
+            else {
+                
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                    
+                    return @[PNLoggerSymbols.api.unsubscriptionImpossible, [self humanReadableStateFrom:self.state]];
+                }];
+                
+                PNError *unsubscriptionError = [PNError errorWithCode:statusCode];
+                unsubscriptionError.associatedObject = channelObjects;
+                
+                [self notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError completeLockingOperation:YES];
+                
+                
+                if (handlerBlock) {
+                    
+                    handlerBlock(channelObjects, unsubscriptionError);
+                }
             }
         }
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeUnsubscription, [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeUnsubscription, [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeUnsubscribeFrom:channelObjects withCompletionHandlingBlock:handlerBlock];
                }];
-
-               [self postponeUnsubscribeFrom:channelObjects withCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeUnsubscribeFrom:(NSArray *)channelObjects
@@ -687,82 +693,83 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 - (void)messagingChannel:(PNMessagingChannel *)channel didSubscribeOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced withClientState:(NSDictionary *)clientState {
 
-    void(^handlingBlock)(void) = ^{
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
 
-        [self pn_dispatchBlock:^{
+        self.restoringConnection = NO;
 
-            self.restoringConnection = NO;
+        // Storing new data for channels.
+        [self.cache storeClientState:clientState forChannels:channelObjects];
 
-            // Storing new data for channels.
-            [self.cache storeClientState:clientState forChannels:channelObjects];
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.api.didSubscribe, (channelObjects ? channelObjects : [NSNull null]),
-                        [self humanReadableStateFrom:self.state]];
-            }];
+            return @[PNLoggerSymbols.api.didSubscribe, (channelObjects ? channelObjects : [NSNull null]),
+                    [self humanReadableStateFrom:self.state]];
         }];
 
-        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+        if (shouldNotify) {
 
-            if (shouldNotify) {
+            if (!self.isUpdatingClientIdentifier) {
 
-                [self pn_dispatchBlock:^{
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                // Check whether delegate can handle subscription on channel or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
 
-                    if (!self.isUpdatingClientIdentifier) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
 
-                        #pragma clang diagnostic push
-                        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                        // Check whether delegate can handle subscription on channel or not
-                        if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didSubscribeOnChannels:)]) {
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
+                                                  withObject:self withObject:channelObjects];
+                    });
+                }
+                #pragma clang diagnostic pop
 
-                            dispatch_async(dispatch_get_main_queue(), ^{
+                // Check whether delegate can handle subscription on channel or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didSubscribeOn:)]) {
 
-                                [self.clientDelegate performSelector:@selector(pubnubClient:didSubscribeOnChannels:)
-                                                          withObject:self withObject:channelObjects];
-                            });
-                        }
-                        #pragma clang diagnostic pop
+                    dispatch_async(dispatch_get_main_queue(), ^{
 
-                        // Check whether delegate can handle subscription on channel or not
-                        if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didSubscribeOn:)]) {
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didSubscribeOn:)
+                                                  withObject:self withObject:channelObjects];
+                    });
+                }
 
-                            dispatch_async(dispatch_get_main_queue(), ^{
-
-                                [self.clientDelegate performSelector:@selector(pubnubClient:didSubscribeOn:)
-                                                          withObject:self withObject:channelObjects];
-                            });
-                        }
-
-                        [self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channelObjects];
-                    }
-                    else {
-
-                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                            return @[PNLoggerSymbols.api.didSubscribeDuringClientIdentifierChange,
-                                    (channelObjects ? channelObjects : [NSNull null]),
-                                    [self humanReadableStateFrom:self.state]];
-                        }];
-
-                        [self sendNotification:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification
-                                    withObject:channelObjects];
-                    }
-                }];
+                [self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channelObjects];
             }
-        }];
+            else {
+
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                    return @[PNLoggerSymbols.api.didSubscribeDuringClientIdentifierChange,
+                            (channelObjects ? channelObjects : [NSNull null]),
+                            [self humanReadableStateFrom:self.state]];
+                }];
+
+                [self sendNotification:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification
+                            withObject:channelObjects];
+            }
+        }
     };
     
-    if (!isSequenced) {
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
         
-        [self handleLockingOperationBlockCompletion:handlingBlock shouldStartNext:YES];
-    }
-    else {
-        
-        handlingBlock();
-    }
-    
-    [self launchHeartbeatTimer];
+        [self pn_dispatchBlock:^{
+            
+            if (!isSequenced) {
+                
+                [self handleLockingOperationBlockCompletion:^{
+                    
+                    handlingBlock(shouldNotify);
+                }
+                                            shouldStartNext:YES];
+            }
+            else {
+                
+                handlingBlock(shouldNotify);
+            }
+            
+            [self launchHeartbeatTimer];
+        }];
+    }];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOn:(NSArray *)channelObjects
@@ -798,12 +805,12 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
 - (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOn:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
-    
+
     [self pn_dispatchBlock:^{
         
         self.restoringConnection = NO;
 
-        void(^handlingBlock)(void) = ^{
+        void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
 
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -811,48 +818,53 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self checkShouldChannelNotifyAboutEvent:messagingChannel withBlock:^(BOOL shouldNotify) {
+            if (shouldNotify) {
 
-                if (shouldNotify) {
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                // Check whether delegate can handle subscription restore on channels or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
 
-                    #pragma clang diagnostic push
-                    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                    // Check whether delegate can handle subscription restore on channels or not
-                    if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
 
-                        dispatch_async(dispatch_get_main_queue(), ^{
-
-                            [self.clientDelegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)
-                                                      withObject:self withObject:channelObjects];
-                        });
-                    }
-                    #pragma clang diagnostic pop
-
-                    // Check whether delegate can handle subscription restore on channels or not
-                    if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOn:)]) {
-
-                        dispatch_async(dispatch_get_main_queue(), ^{
-
-                            [self.clientDelegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOn:)
-                                                      withObject:self withObject:channelObjects];
-                        });
-                    }
-
-                    [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channelObjects];
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOnChannels:)
+                                                  withObject:self withObject:channelObjects];
+                    });
                 }
-            }];
+                #pragma clang diagnostic pop
+
+                // Check whether delegate can handle subscription restore on channels or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRestoreSubscriptionOn:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didRestoreSubscriptionOn:)
+                                                  withObject:self withObject:channelObjects];
+                    });
+                }
+
+                [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channelObjects];
+            }
         };
 
-        if (!isSequenced) {
 
-            [self handleLockingOperationBlockCompletion:handlingBlock shouldStartNext:YES];
-        }
-        else {
+        [self checkShouldChannelNotifyAboutEvent:messagingChannel withBlock:^(BOOL shouldNotify) {
 
-            handlingBlock();
-        }
+            if (!isSequenced) {
 
-        [self launchHeartbeatTimer];
+                [self handleLockingOperationBlockCompletion:^{
+
+                    handlingBlock(shouldNotify);
+                }
+                                            shouldStartNext:YES];
+            }
+            else {
+
+                handlingBlock(shouldNotify);
+            }
+
+            [self launchHeartbeatTimer];
+        }];
     }];
 }
 
@@ -885,79 +897,80 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didUnsubscribeFrom:(NSArray *)channelObjects
                sequenced:(BOOL)isSequenced {
-    
-    void(^handlerBlock)(void) = ^{
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
+        // Removing cached data for channels set.
+        [self.cache purgeStateForChannels:channelObjects];
+
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+            return @[PNLoggerSymbols.api.didUnsubscribe, (channelObjects ? channelObjects : [NSNull null]),
+                    [self humanReadableStateFrom:self.state]];
+        }];
+
+        if (shouldNotify) {
+
+            if (!self.isUpdatingClientIdentifier) {
+
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                // Check whether delegate can handle unsubscription event or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)
+                                                  withObject:self withObject:channelObjects];
+                    });
+                }
+                #pragma clang diagnostic pop
+
+                // Check whether delegate can handle unsubscription event or not
+                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didUnsubscribeFrom:)]) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didUnsubscribeFrom:)
+                                                  withObject:self withObject:channelObjects];
+                    });
+                }
+
+                [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channelObjects];
+            }
+            else {
+
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                    return @[PNLoggerSymbols.api.didUnsubscribeDuringClientIdentifierChange,
+                            (channelObjects ? channelObjects : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                }];
+
+                [self sendNotification:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification withObject:self];
+            }
+        }
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
 
         [self pn_dispatchBlock:^{
 
-            // Removing cached data for channels set.
-            [self.cache purgeStateForChannels:channelObjects];
+            if (!isSequenced) {
 
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                [self handleLockingOperationBlockCompletion:^{
 
-                return @[PNLoggerSymbols.api.didUnsubscribe, (channelObjects ? channelObjects : [NSNull null]),
-                        [self humanReadableStateFrom:self.state]];
-            }];
-
-            [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
-
-                if (shouldNotify) {
-
-                    [self pn_dispatchBlock:^{
-
-                        if (!self.isUpdatingClientIdentifier) {
-
-                            #pragma clang diagnostic push
-                            #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                            // Check whether delegate can handle unsubscription event or not
-                            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)]) {
-
-                                dispatch_async(dispatch_get_main_queue(), ^{
-
-                                    [self.clientDelegate performSelector:@selector(pubnubClient:didUnsubscribeOnChannels:)
-                                                              withObject:self withObject:channelObjects];
-                                });
-                            }
-                            #pragma clang diagnostic pop
-
-                            // Check whether delegate can handle unsubscription event or not
-                            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didUnsubscribeFrom:)]) {
-
-                                dispatch_async(dispatch_get_main_queue(), ^{
-
-                                    [self.clientDelegate performSelector:@selector(pubnubClient:didUnsubscribeFrom:)
-                                                              withObject:self withObject:channelObjects];
-                                });
-                            }
-
-                            [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channelObjects];
-                        }
-                        else {
-
-                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                return @[PNLoggerSymbols.api.didUnsubscribeDuringClientIdentifierChange,
-                                        (channelObjects ? channelObjects : [NSNull null]), [self humanReadableStateFrom:self.state]];
-                            }];
-
-                            [self sendNotification:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification withObject:self];
-                        }
-                    }];
+                    handlingBlock(shouldNotify);
                 }
-            }];
+                                            shouldStartNext:YES];
+            }
+            else {
+
+                handlingBlock(shouldNotify);
+            }
+
+            [self launchHeartbeatTimer];
         }];
-    };
-    
-    if (!isSequenced) {
-        
-        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
-    }
-    else {
-        
-        handlerBlock();
-    }
-    
-    [self launchHeartbeatTimer];
+    }];
 }
 
 - (void)messagingChannel:(PNMessagingChannel *)channel didFailUnsubscribeFrom:(NSArray *)channelObjects

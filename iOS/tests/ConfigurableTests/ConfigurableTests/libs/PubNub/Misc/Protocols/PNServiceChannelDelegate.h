@@ -14,7 +14,8 @@
 
 #pragma mark Class forward
 
-@class PNAccessRightsCollection, PNChannelGroupChange, PNServiceChannel, PNMessagesHistory, PNWhereNow, PNResponse, PNHereNow, PNClient;
+@class PNAccessRightsCollection, PNChannelGroupChange, PNServiceChannel, PNMessagesHistory,
+       PNWhereNow, PNResponse, PNHereNow, PNClient;
 
 
 @protocol PNServiceChannelDelegate<NSObject>
