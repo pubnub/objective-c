@@ -110,7 +110,9 @@
 - (NSString *)description {
 
     return [NSString stringWithFormat:@"%@(%p) %@ on (%@) channel (%@)", NSStringFromClass([self class]), self,
-            self.identifier, [[self.channels valueForKey:@"name"] componentsJoinedByString:@","], self.clientData];
+            self.identifier,
+            ([self.channels count] ? [[self.channels valueForKey:@"name"] componentsJoinedByString:@","] : self.channel.name),
+            self.clientData];
 }
 
 - (NSString *)logDescription {

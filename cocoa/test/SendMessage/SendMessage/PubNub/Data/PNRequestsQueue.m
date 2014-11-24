@@ -235,7 +235,8 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     }];
 }
 
-- (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier {
+- (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier
+         withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -245,10 +246,12 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
             /// Forward request processing start to the delegate
             [self.delegate requestsQueue:self willSendRequest:currentRequest];
         }
+        notifyCompletionBlock();
     }];
 }
 
-- (void)connection:(PNConnection *)connection didSendRequestWithIdentifier:(NSString *)requestIdentifier {
+- (void)connection:(PNConnection *)connection didSendRequestWithIdentifier:(NSString *)requestIdentifier
+         withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -264,15 +267,25 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
             [self.delegate shouldRequestsQueue:self removeCompletedRequest:processedRequest
                                checkCompletion:^(BOOL shouldRemove) {
 
-                   if (shouldRemove) {
-                       
-                       [self pn_dispatchBlock:^{
+                if (shouldRemove) {
 
-                           // Find processed request by identifier to remove it from requests queue
-                           [self removeRequest:[self dequeRequestWithIdentifier:requestIdentifier]];
-                       }];
-                   }
-               }];
+                    [self pn_dispatchBlock:^{
+
+                        // Find processed request by identifier to remove it from requests queue
+                        [self removeRequest:[self dequeRequestWithIdentifier:requestIdentifier]];
+
+                        notifyCompletionBlock();
+                    }];
+                }
+                else {
+
+                    notifyCompletionBlock();
+                }
+            }];
+        }
+        else {
+
+            notifyCompletionBlock();
         }
     }];
 }

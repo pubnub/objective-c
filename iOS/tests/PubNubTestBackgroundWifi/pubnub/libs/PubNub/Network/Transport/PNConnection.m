@@ -2304,10 +2304,125 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
                 // Check whether connection can pull some data
                 // from write buffer or not
-                BOOL isWriteBufferIsEmpty = ![self.writeBuffer hasData];
+                __block BOOL isWriteBufferIsEmpty = ![self.writeBuffer hasData];
+                dispatch_block_t emptyBufferHandleBlock = ^{
+
+                    if (isWriteBufferIsEmpty) {
+
+                        [PNBitwiseHelper removeFrom:&_state bit:PNSendingData];
+
+                        // Retrieving reference on request's identifier who's body has been sent
+                        NSString *identifier = self.writeBuffer.requestIdentifier;
+                        self.writeBuffer = nil;
+
+                        [self.dataSource connection:self didSendRequestWithIdentifier:identifier withBlock:^{
+
+                            [self pn_dispatchBlock:^{
+
+                                // Check whether should try to send next request or not
+                                if ([PNBitwiseHelper is:self.state containsBit:PNConnectionProcessingRequests]) {
+
+                                    if (writeStreamIsAbleToSend()) {
+
+                                        [self scheduleNextRequestExecution];
+                                    }
+                                    else if ([PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
+
+                                        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                            return @[PNLoggerSymbols.connection.stream.write.unableProcessNextRequestOnConnectionTermination,
+                                                    (self.name ? self.name : self), @(self.state)];
+                                        }];
+                                    }
+                                }
+                            }];
+                        }];
+                    }
+                };
+
                 if (!isWriteBufferIsEmpty) {
 
                     if (self.isWriteStreamCanHandleData) {
+
+                        void(^bufferProcessingBlock)(void) = ^{
+
+                            if (writeStreamIsAbleToSend() && self.writeBuffer != nil) {
+
+                                // Try write data into write stream
+                                CFIndex bytesWritten = CFWriteStreamWrite(self.socketWriteStream, [self.writeBuffer buffer],
+                                        [self.writeBuffer bufferLength]);
+
+                                // Check whether error occurred while tried to process request
+                                if (bytesWritten < 0) {
+
+                                    [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                        return @[PNLoggerSymbols.connection.stream.write.dataWriteError,
+                                                (self.name ? self.name : self), @(self.state)];
+                                    }];
+
+                                    // Mark that buffer content is not processed at this moment
+                                    self.writeBuffer.sendingBytes = NO;
+                                    self.writeStreamCanHandleData = NO;
+
+                                    // Retrieve error which occurred while tried to write buffer into socket
+                                    CFErrorRef writeError = CFWriteStreamCopyError(self.socketWriteStream);
+                                    [PNBitwiseHelper addTo:&_state bit:PNWriteStreamError];
+
+                                    [self handleRequestProcessingError:writeError];
+
+                                    [PNHelper releaseCFObject:&writeError];
+                                    isWriteBufferIsEmpty = YES;
+                                }
+                                    // Check whether socket was able to transfer whole write buffer at once or not
+                                else if (bytesWritten == self.writeBuffer.length) {
+
+                                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                        return @[PNLoggerSymbols.connection.stream.write.writenDataFromBufferAtOnce,
+                                                (self.name ? self.name : self), @(bytesWritten), @(self.writeBuffer.length),
+                                                @(self.state)];
+                                    }];
+
+                                    // Mark that buffer content is not processed at this moment
+                                    self.writeBuffer.sendingBytes = NO;
+
+                                    // Set readout offset to buffer content length (there is no more data to send)
+                                    self.writeBuffer.offset = self.writeBuffer.length;
+
+                                    isWriteBufferIsEmpty = YES;
+                                }
+                                else {
+
+                                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                        return @[PNLoggerSymbols.connection.stream.write.writenPartOfDataFromBuffer,
+                                                (self.name ? self.name : self), @(self.writeBuffer.offset + bytesWritten),
+                                                @(self.writeBuffer.length), @(self.state)];
+                                    }];
+
+                                    self.writeStreamCanHandleData = NO;
+
+                                    // Increase buffer readout offset
+                                    self.writeBuffer.offset = (self.writeBuffer.offset + bytesWritten);
+                                    if (self.writeBuffer.offset == self.writeBuffer.length) {
+
+                                        self.writeStreamCanHandleData = YES;
+                                        isWriteBufferIsEmpty = YES;
+                                    }
+                                }
+                            }
+                            else {
+
+                                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                    return @[PNLoggerSymbols.connection.stream.write.writeCanceled, (self.name ? self.name : self),
+                                            @(self.state)];
+                                }];
+                            }
+
+                            emptyBufferHandleBlock();
+                        };
 
                         // Check whether we just started request processing or not
                         if (self.writeBuffer.offset == 0) {
@@ -2316,114 +2431,25 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             self.writeBuffer.sendingBytes = YES;
 
                             // Notify data source that we started request processing
-                            [self.dataSource connection:self processingRequestWithIdentifier:self.writeBuffer.requestIdentifier];
-                        }
+                            [self.dataSource connection:self
+                        processingRequestWithIdentifier:self.writeBuffer.requestIdentifier
+                                              withBlock:^{
 
-                        if (writeStreamIsAbleToSend() && self.writeBuffer != nil) {
-                            
-                            // Try write data into write stream
-                            CFIndex bytesWritten = CFWriteStreamWrite(self.socketWriteStream, [self.writeBuffer buffer],
-                                                                      [self.writeBuffer bufferLength]);
+                                [self pn_dispatchBlock:^{
 
-                            // Check whether error occurred while tried to process request
-                            if (bytesWritten < 0) {
-
-                                [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                                    return @[PNLoggerSymbols.connection.stream.write.dataWriteError,
-                                             (self.name ? self.name : self), @(self.state)];
+                                    bufferProcessingBlock();
                                 }];
-
-                                // Mark that buffer content is not processed at this moment
-                                self.writeBuffer.sendingBytes = NO;
-                                self.writeStreamCanHandleData = NO;
-
-                                // Retrieve error which occurred while tried to write buffer into socket
-                                CFErrorRef writeError = CFWriteStreamCopyError(self.socketWriteStream);
-                                [PNBitwiseHelper addTo:&_state bit:PNWriteStreamError];
-
-                                [self handleRequestProcessingError:writeError];
-                                
-                                [PNHelper releaseCFObject:&writeError];
-                                isWriteBufferIsEmpty = YES;
-                            }
-                            // Check whether socket was able to transfer whole write buffer at once or not
-                            else if (bytesWritten == self.writeBuffer.length) {
-
-                                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                                    return @[PNLoggerSymbols.connection.stream.write.writenDataFromBufferAtOnce,
-                                             (self.name ? self.name : self), @(bytesWritten), @(self.writeBuffer.length),
-                                             @(self.state)];
-                                }];
-
-                                // Mark that buffer content is not processed at this moment
-                                self.writeBuffer.sendingBytes = NO;
-
-                                // Set readout offset to buffer content length (there is no more data to send)
-                                self.writeBuffer.offset = self.writeBuffer.length;
-
-                                isWriteBufferIsEmpty = YES;
-                            }
-                            else {
-
-                                [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                                    return @[PNLoggerSymbols.connection.stream.write.writenPartOfDataFromBuffer,
-                                             (self.name ? self.name : self), @(self.writeBuffer.offset + bytesWritten),
-                                             @(self.writeBuffer.length), @(self.state)];
-                                }];
-
-                                self.writeStreamCanHandleData = NO;
-
-                                // Increase buffer readout offset
-                                self.writeBuffer.offset = (self.writeBuffer.offset + bytesWritten);
-                                if (self.writeBuffer.offset == self.writeBuffer.length) {
-
-                                    self.writeStreamCanHandleData = YES;
-                                    isWriteBufferIsEmpty = YES;
-                                }
-                            }
+                            }];
                         }
                         else {
 
-                            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                                return @[PNLoggerSymbols.connection.stream.write.writeCanceled, (self.name ? self.name : self),
-                                        @(self.state)];
-                            }];
+                            bufferProcessingBlock();
                         }
                     }
                 }
+                else {
 
-
-                if (isWriteBufferIsEmpty) {
-
-                    [PNBitwiseHelper removeFrom:&_state bit:PNSendingData];
-
-                    // Retrieving reference on request's identifier who's body has been sent
-                    NSString *identifier = self.writeBuffer.requestIdentifier;
-                    self.writeBuffer = nil;
-
-                    [self.dataSource connection:self didSendRequestWithIdentifier:identifier];
-
-
-                    // Check whether should try to send next request or not
-                    if ([PNBitwiseHelper is:self.state containsBit:PNConnectionProcessingRequests]) {
-
-                        if (writeStreamIsAbleToSend()) {
-
-                            [self scheduleNextRequestExecution];
-                        }
-                        else if ([PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
-
-                            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                                return @[PNLoggerSymbols.connection.stream.write.unableProcessNextRequestOnConnectionTermination,
-                                        (self.name ? self.name : self), @(self.state)];
-                            }];
-                        }
-                    }
+                    emptyBufferHandleBlock();
                 }
             }
             // Looks like because of some reasons there is no new data

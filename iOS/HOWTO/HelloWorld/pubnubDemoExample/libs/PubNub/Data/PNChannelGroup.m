@@ -36,21 +36,32 @@
 
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name {
     
-    return [self channelGroupWithName:name shouldObservePresence:NO];
+    return [self channelGroupWithName:name inNamespace:nil shouldObservePresence:NO
+    shouldUpdatePresenceObservingFlag:NO];
 }
 
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name shouldObservePresence:(BOOL)observePresence {
     
-    return [self channelGroupWithName:name inNamespace:nil shouldObservePresence:observePresence];
+    return [self channelGroupWithName:name inNamespace:nil shouldObservePresence:observePresence
+    shouldUpdatePresenceObservingFlag:YES];
 }
 
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace {
     
-    return [self channelGroupWithName:name inNamespace:nspace shouldObservePresence:NO];
+    return [self channelGroupWithName:name inNamespace:nspace shouldObservePresence:NO
+    shouldUpdatePresenceObservingFlag:NO];
 }
 
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace
                    shouldObservePresence:(BOOL)observePresence {
+    
+    return [self channelGroupWithName:name inNamespace:nspace shouldObservePresence:observePresence
+    shouldUpdatePresenceObservingFlag:YES];
+}
+
++ (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace
+                   shouldObservePresence:(BOOL)observePresence
+       shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
     
     BOOL isValidName = YES;
     NSString *channelName = name;
@@ -98,10 +109,11 @@
     
     PNChannelGroup *channel = nil;
     if (isValidName) {
-       
+        
         id <PNChannelProtocol> (^channelCreateBlock)(void) = ^{
             
-            return [self channelWithName:channelName shouldObservePresence:observePresence];
+            return [self channelWithName:channelName shouldObservePresence:observePresence
+       shouldUpdatePresenceObservingFlag:shouldUpdatePresenceObservingFlag];
         };
         
         channel = channelCreateBlock();

@@ -65,7 +65,6 @@
 		96CB6A9019D19A6B0093D64E /* PNMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A5519D19A6B0093D64E /* PNMessageTest.m */; };
 		96CB6A9119D19A6B0093D64E /* PNMessagingChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A5719D19A6B0093D64E /* PNMessagingChannelTest.m */; };
 		96CB6A9319D19A6B0093D64E /* PNOperationStatusResponseParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A5919D19A6B0093D64E /* PNOperationStatusResponseParserTest.m */; };
-		96CB6A9419D19A6B0093D64E /* PNPresenceEventTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A5A19D19A6B0093D64E /* PNPresenceEventTest.m */; };
 		96CB6A9519D19A6B0093D64E /* PNPushNotificationsEnabledChannelsParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A5B19D19A6B0093D64E /* PNPushNotificationsEnabledChannelsParserTest.m */; };
 		96CB6A9619D19A6B0093D64E /* PNReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A5D19D19A6B0093D64E /* PNReachabilityTest.m */; };
 		96CB6A9719D19A6B0093D64E /* PNResponseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96CB6A5E19D19A6B0093D64E /* PNResponseTest.m */; };
@@ -1496,7 +1495,6 @@
 				96CB6A7119D19A6B0093D64E /* ChannelLimitTest.m in Sources */,
 				A519BB9419E2DAAD0095FD54 /* ChannelGroupTest.m in Sources */,
 				96CB6A7619D19A6B0093D64E /* PAMTestError.m in Sources */,
-				96CB6A9419D19A6B0093D64E /* PNPresenceEventTest.m in Sources */,
 				96A5F8AB1A07D0DF004C92AA /* PNJSONSerializationTest.m in Sources */,
 				96CB6A8419D19A6B0093D64E /* PNCryptoHelperTest.m in Sources */,
 				96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */,

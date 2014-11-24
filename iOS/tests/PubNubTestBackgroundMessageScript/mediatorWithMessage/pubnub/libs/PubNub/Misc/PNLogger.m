@@ -1095,10 +1095,9 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
     
     if (httpPacketBlock) {
         
-        NSString *entryTimeToken = [[NSDate date] performSelector:@selector(logDescription)];
-        
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wundeclared-selector"
+        NSString *entryTimeToken = [[NSDate date] performSelector:@selector(logDescription)];
         NSString *baseFileName = [NSString stringWithFormat:@"%@response-%@",
                                   (!isExpectedResponse ? [NSString stringWithFormat:@"unexpected-"] : @""),
                                   entryTimeToken];

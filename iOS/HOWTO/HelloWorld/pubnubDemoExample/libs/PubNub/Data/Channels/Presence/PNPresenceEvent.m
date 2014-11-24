@@ -17,6 +17,7 @@
 #import "PNClient+Protected.h"
 #import "PNClient.h"
 #import "PNDate.h"
+#import "PNChannelGroup.h"
 
 
 // ARC check
@@ -56,6 +57,7 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, assign) NSUInteger occupancy;
 @property (nonatomic, assign) PNChannel *channel;
+@property (nonatomic, strong) PNChannelGroup *channelGroup;
 
 
 @end
@@ -68,9 +70,10 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
 #pragma mark Class methods
 
-+ (id)presenceEventForResponse:(id)presenceResponse {
++ (id)presenceEventForResponse:(id)presenceResponse onChannel:(PNChannel *)channel
+                  channelGroup:(PNChannelGroup *)channelGroup {
     
-    return [[[self class] alloc] initWithResponse:presenceResponse];
+    return [[self alloc] initWithResponse:presenceResponse onChannel:channel channelGroup:channelGroup];
 }
 
 + (BOOL)isPresenceEventObject:(NSDictionary *)event {
@@ -89,7 +92,8 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
 #pragma mark - Instance methods
 
-- (id)initWithResponse:(id)presenceResponse {
+- (id)initWithResponse:(id)presenceResponse onChannel:(PNChannel *)channel
+          channelGroup:(PNChannelGroup *)channelGroup {
     
     // Check whether initialization successful or not
     if((self = [super init])) {
@@ -125,6 +129,9 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
         self.client = [PNClient clientForIdentifier:[presenceResponse valueForKey:PNPresenceEventDataKeys.uuid]
                                             channel:nil
                                             andData:[presenceResponse valueForKey:PNPresenceEventDataKeys.data]];
+
+        self.channel = channel;
+        self.channelGroup = channelGroup;
         
         /**
          DEPRECATED. WILL BE COMPLETELY REMOVED IN PubNub 3.5.5
@@ -144,6 +151,12 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
 
     _channel = channel;
     self.client.channel = channel;
+}
+
+- (void)setChannelGroup:(PNChannelGroup *)channelGroup {
+
+    _channelGroup = channelGroup;
+    self.client.group = channelGroup;
 }
 
 - (NSString *)description {
