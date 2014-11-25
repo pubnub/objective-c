@@ -199,7 +199,7 @@ Then, watch the following in order:
 
 [1 Creating the App ID and PEM Cert File](https://vimeo.com/67419903)
 
-[Click here for a very quick way to create your certs, and verify your certs are working.](https://github.com/pubnub/objective-c/blob/master/iOS/create_and_verify_apns.md)
+Click here for [a very quick step-by-step procedure to create and verify your certs.](https://github.com/pubnub/objective-c/blob/master/iOS/create_and_verify_apns.md) You should successfully complete this procedure before continuing.
 
 [2 Create the Provisioning Profile](https://vimeo.com/67420404)
 
