@@ -37,11 +37,11 @@
     [super setUp];
     [PubNub disconnect];
     
-    _pubNub = [[PubNub alloc] init];
-    [_pubNub setConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                           publishKey:kTestPNPublishKey
-                                                         subscribeKey:kTestPNSubscriptionKey
-                                                            secretKey:kTestPNSecretKey]];
+    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost
+                                                                            publishKey:kTestPNPublishKey
+                                                                          subscribeKey:kTestPNSubscriptionKey
+                                                                             secretKey:kTestPNSecretKey] andDelegate:self];
+    
     [_pubNub connect];
     
     _namespaceName = @"namespace1";
@@ -230,9 +230,9 @@
                 XCTAssert([group isEqual:_group1], @"Received group is wrong: %@ <> %@", group, _group1);
                 
                 NSUInteger equalChannelsCounter = 0;
-                for (NSString *channelName in group.channels) {
+                for (PNChannel *channelInGroup in group.channels) {
                     for (PNChannel *channel in _channels) {
-                        if ([channelName isEqualToString:channel.name]) {
+                        if ([channelInGroup.name isEqualToString:channel.name]) {
                             equalChannelsCounter += 1;
                         }
                     }
@@ -360,6 +360,12 @@ withCompletionHandlingBlock:^(PNChannelGroup *group, NSArray *channels, PNError 
     if (_resGroup2) {
         XCTFail(@"Did fail to get group in default namespace: %@", [error localizedFailureReason]);
     }
+}
+
+- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
+    
+    // Update your interface to let user know that we are ready to work.
+    NSLog(@"Connected: %@", origin);
 }
 
 @end

@@ -14,70 +14,84 @@
 #import "PNConfiguration.h"
 #import "PNCryptoHelper.h"
 
-static NSString *kTestMessage = @"Hello World";
-
 static NSString *kOriginPath = @"pubsub.pubnub.com";
-
 static NSString *kPublishKey = @"demo";
 static NSString *kSubscribeKey = @"demo";
 static NSString *kSecretKey = nil;
 
 @interface PNCryptoInstanceTest : XCTestCase <PNDelegate> {
 
-    // 1. First user
+    // First user
     PNConfiguration *_firstUserConfiguration;
     PNCryptoHelper *_firstUserCryptoHelper;
     PubNub *_firstUserPubNub;
     
-    // 2. Second user
+    // Second user
     PNConfiguration *_secondUserConfiguration;
     PNCryptoHelper *_secondUserCryptoHelper;
     PubNub *_secondUserPubNub;
     
-    // 3. Array of messages
-    NSMutableArray *_arrayMessages;
-    
+     NSMutableArray *_arrayMessages;
+    PNChannel *_testChannel;
+    NSString *_testMessage;
+    PNCryptoHelper *_cryptoHelper;
+    NSInteger _numberMessage;
+    NSString *_resultMessage;
 }
 @end
 
 
 @implementation PNCryptoInstanceTest {
-     dispatch_group_t _resGroup;
+    dispatch_group_t _resGroup1;
+    dispatch_group_t _resGroup2;
+    dispatch_group_t _resGroup3;
+    dispatch_group_t _resGroup4;
+    dispatch_group_t _resGroup5;
 }
 
 - (void)setUp {
-    
     [super setUp];
-    
-    
     [_firstUserPubNub disconnect];
     [_secondUserPubNub disconnect];
     
-    // Configuration
+    // Configuration first user
     _firstUserConfiguration = [PNConfiguration configurationForOrigin:kOriginPath
                                                            publishKey:kPublishKey
                                                          subscribeKey:kSubscribeKey
                                                             secretKey:kSecretKey
                                                             cipherKey:@"enigma"];
-    // Connection 
+    // Connection first user
     _firstUserPubNub = [PubNub clientWithConfiguration:_firstUserConfiguration andDelegate:self];
     
-    // Configuration
+    
+    // Configuration second user
     _secondUserConfiguration = [PNConfiguration configurationForOrigin:kOriginPath
                                                             publishKey:kPublishKey
                                                           subscribeKey:kSubscribeKey
                                                              secretKey:kSecretKey
                                                             cipherKey:@"enigma"];
-    
+    // Connection second user
     _secondUserPubNub = [PubNub clientWithConfiguration:_secondUserConfiguration andDelegate:self];
     
+    // Crypto helper
+    PNError *helperInitializationError = nil;
+    _cryptoHelper = [PNCryptoHelper helperWithConfiguration:_secondUserConfiguration error:&helperInitializationError];
     
-    // test data
+    if (helperInitializationError) {
+        NSLog(@"%@ setup error: %@", self.name, helperInitializationError);
+    }
+    
+    // Test data
+    _arrayMessages = nil;
     _arrayMessages = [[NSMutableArray alloc] init];
     
-    [_arrayMessages addObject:@""];
-    [_arrayMessages addObject:@"Hello World"];
-    [_arrayMessages addObject:[NSString stringWithFormat:@"%@", [NSDate date]]];
+    [_arrayMessages addObject:@"Hello World 1"];
+    [_arrayMessages addObject:@"Hello World 2"];
+//    [_arrayMessages addObject:@""];
+//    [_arrayMessages addObject:[NSString stringWithFormat:@"%@", [NSDate date]]];
+    
+    // Test channel
+    _testChannel = [PNChannel channelWithName:@"iosdev"];
 }
 
 - (void)tearDown {
@@ -91,49 +105,44 @@ static NSString *kSecretKey = nil;
     [_secondUserPubNub disconnect];
     
     [PubNub setDelegate:nil];
-
     [super tearDown];
 }
 
 - (void)testCryptoInstance {
     
-    [_firstUserPubNub connect];
+    // First user connection
+    _resGroup1 =  dispatch_group_create();
+    dispatch_group_enter(_resGroup1);
     
-    _resGroup =  dispatch_group_create();
-    
-    dispatch_group_enter(_resGroup);
-    
-    [_secondUserPubNub connectWithSuccessBlock:^(NSString *origin) {
-        dispatch_group_leave(_resGroup);
+    [_firstUserPubNub connectWithSuccessBlock:^(NSString *origin) {
+        dispatch_group_leave(_resGroup1);
     } errorBlock:^(PNError *error) {
-        XCTFail(@"Cannot connect to PubNub the second instance");
-        
-        dispatch_group_leave(_resGroup);
-        _resGroup = NULL;
-        return;
+        XCTFail(@"First user cannot connect to PubNub, error: %@", error);
+        dispatch_group_leave(_resGroup1);
+        _resGroup1 = NULL;
     }];
     
-    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:10]) {
-        XCTFail(@"Timeout is fired. Cannot connect to PubNub the second instance.");
-        dispatch_group_leave(_resGroup);
-        _resGroup = NULL;
-        
+    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:5]) {
+        XCTFail(@"Timeout is fired. First user cannot connect to PubNub");
+        dispatch_group_leave(_resGroup1);
+        _resGroup1 = NULL;
         return;
     }
     
-    _resGroup =  dispatch_group_create();
+    // First user subscription
+    _resGroup2 =  dispatch_group_create();
+    dispatch_group_enter(_resGroup2);
     
-    // Subscribing
-    PNChannel *testChannel = [PNChannel channelWithName:@"iosdev"];
-    
-    dispatch_group_enter(_resGroup);
-    
-    [_firstUserPubNub subscribeOn:@[testChannel] withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+    [_firstUserPubNub subscribeOn:@[_testChannel]
+      withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+          
+        XCTAssertNil(error, @"First user cannot subscribe on _testChannel, error: %@", error);
         
         switch (state) {
             case PNSubscriptionProcessSubscribedState:
             {
-                dispatch_group_leave(_resGroup);
+                dispatch_group_leave(_resGroup2);
+                _resGroup2 = NULL;
             }
                 break;
                 
@@ -142,95 +151,132 @@ static NSString *kSecretKey = nil;
         }
     }];
     
-    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:10]) {
-        XCTFail(@"Timeout is fired. Cannot subscribe with first instance of PubNub.");
-        dispatch_group_leave(_resGroup);
-        _resGroup = NULL;
-        
+    if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:5]) {
+        XCTFail(@"Timeout is fired. First user cannot subscribe on _testChannel");
+        dispatch_group_leave(_resGroup2);
+        _resGroup2 = NULL;
         return;
     }
     
-    dispatch_group_enter(_resGroup);
+    // Second user connection
+    _resGroup3 =  dispatch_group_create();
+    dispatch_group_enter(_resGroup3);
     
-    [_secondUserPubNub subscribeOn:@[[PNChannel channelWithName:@"iosdev"]]];
+    [_secondUserPubNub connectWithSuccessBlock:^(NSString *origin) {
+        dispatch_group_leave(_resGroup3);
+    } errorBlock:^(PNError *error) {
+        XCTFail(@"Second user cannot connect to PubNub, error: %@", error);
+        dispatch_group_leave(_resGroup3);
+        _resGroup3 = NULL;
+    }];
     
-    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:10]) {
-        XCTFail(@"Timeout is fired. Cannot subscribe to second instance of PubNub.");
-        dispatch_group_leave(_resGroup);
-        _resGroup = NULL;
+    if ([GCDWrapper isGroup:_resGroup3 timeoutFiredValue:5]) {
+        XCTFail(@"Timeout is fired. Second user cannot connect to PubNub");
+        dispatch_group_leave(_resGroup3);
+        _resGroup3 = NULL;
+        return;
+     }
+
+    // Second user subscription
+    _resGroup4 =  dispatch_group_create();
+    dispatch_group_enter(_resGroup4);
+    
+    [_secondUserPubNub subscribeOn:@[_testChannel]
+       withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
         
+        XCTAssertNil(error, @"Second user cannot subscribe on _testChannel, error: %@", error);
+        
+        switch (state) {
+            case PNSubscriptionProcessSubscribedState:
+            {
+                dispatch_group_leave(_resGroup4);
+                _resGroup4 = NULL;
+            }
+                break;
+
+            default:
+                break;
+        }
+    }];
+
+    if ([GCDWrapper isGroup:_resGroup4 timeoutFiredValue:5]) {
+        XCTFail(@"Timeout is fired. Second user cannot subscribe on _testChannel");
+        dispatch_group_leave(_resGroup4);
+        _resGroup4 = NULL;
         return;
     }
     
-    _resGroup =  dispatch_group_create();
     
-    dispatch_group_enter(_resGroup);
-    dispatch_group_enter(_resGroup);
+    // First user sends messages to second user
+    _resGroup5 = dispatch_group_create();
+    _numberMessage = 0;
     
-    // Send message
-    NSString *encryptedMessage = kTestMessage;
+    for (int j=0; j< _arrayMessages.count; j++ ) {
+        _testMessage = _arrayMessages[j];
+        
+        dispatch_group_enter(_resGroup5);
+        
+        PNError *processingError = nil;
+        NSString *encryptedMessage = [_cryptoHelper encryptedStringFromString:_testMessage error: &processingError];
     
-    [_firstUserPubNub sendMessage:encryptedMessage
-                        toChannel:testChannel
-                       compressed:YES
-                   storeInHistory:YES
-              withCompletionBlock:^(PNMessageState state, id message) {
-                  
-                  switch (state) {
-                      case PNMessageSending:
-                          NSLog(@"Message sending");
-                          break;
-                      case PNMessageSendingError:
-                          XCTFail(@"Error during sending massege occured: PNMessageSendingError");
-                          break;
-                      case PNMessageSent: {
-                          NSLog(@"Sending message %@, %@",encryptedMessage, message);
-                          dispatch_group_leave(_resGroup);
-                          break;
+        [_firstUserPubNub sendMessage:encryptedMessage
+                            toChannel:_testChannel
+                           compressed:YES
+                       storeInHistory:YES
+                  withCompletionBlock:^(PNMessageState state, id message) {
+                      
+                      switch (state) {
+                          case PNMessageSending:
+                              NSLog(@"Message sending");
+                              break;
+                          case PNMessageSendingError:
+                              XCTFail(@"Error during sending massege occured: PNMessageSendingError");
+                              break;
+                          case PNMessageSent: {
+                              NSLog(@"Sent message %@, %@",encryptedMessage, message);
+                              dispatch_group_leave(_resGroup5);
+                              break;
+                          }
                       }
-                  }
-                  
-              }];
+                      
+                  }];
+    }
+
+#warning Does not send second message
     
-    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:10]) {
-       XCTFail(@"Cannot send/receive message.");
-        
-        NSLog(@"Subscribed channels: %@", [_secondUserPubNub subscribedObjectsList]);
+    if ([GCDWrapper isGroup:_resGroup5 timeoutFiredValue:10]) {
+        XCTFail(@"Timeout is fired. Not all messages were sent");
+        dispatch_group_leave(_resGroup5);
+     }
+
+    if (_numberMessage < _arrayMessages.count) {
+        XCTFail(@"Not all messages decoded");
+    }
+    else {
+        _resGroup5 = NULL;
     }
 }
 
 
 #pragma mark - PubNub Delegate
 
-- (void)pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects {
-    if ([client isEqual:_secondUserPubNub]) {
-        if (_resGroup != NULL) {
-            dispatch_group_leave(_resGroup);
-        }
-    }
-}
-
-- (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
-    XCTFail(@"Did fail subscription on channel: %@", error);
-}
-
-- (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)_encryptedMessage withError:(PNError *)error {
+- (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)encryptedMessage withError:(PNError *)error {
     XCTFail(@"Did fail encrypted message send: %@", error);
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)encryptedMessage {
-    
+
     if ([client isEqual:_secondUserPubNub]) {
-        if (_resGroup != NULL) {
-            
-            if (![kTestMessage isEqualToString:encryptedMessage.message]) {
-                XCTFail(@"Strings are not equal %@ <> %@", kTestMessage, encryptedMessage.message);
-            }
-            
-            dispatch_group_leave(_resGroup);
+        
+        PNError *processingError = nil;
+        NSString *decodeString = [_cryptoHelper decryptedStringFromString:encryptedMessage.message
+                                                             error:&processingError];
+        if ([_arrayMessages containsObject:decodeString]) {
+            _numberMessage = _numberMessage + 1;        }
+        else {
+            XCTFail(@"Such message: %@ is not contained in the test array", decodeString);
         }
     }
-    
     
 }
 
