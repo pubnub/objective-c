@@ -23,23 +23,27 @@
 /**
  * Will notify delegate every time when request which delegate scheduled went for processing
  */
-- (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request;
+- (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request
+            withBlock:(dispatch_block_t)notifyCompletionBlock;
 
 /**
  * Will notify delegate that particular request processing  has been canceled (in most cases this will be caused by
  * socket write stream error)
  */
-- (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request;
+- (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request
+            withBlock:(dispatch_block_t)notifyCompletionBlock;
 
 /**
  * Will notify delegate that particular request has been processed and sent to the server
  */
-- (void)requestsQueue:(PNRequestsQueue *)queue didSendRequest:(PNBaseRequest *)request;
+- (void)requestsQueue:(PNRequestsQueue *)queue didSendRequest:(PNBaseRequest *)request
+            withBlock:(dispatch_block_t)notifyCompletionBlock;
 
 /**
  * Will notify delegate that particular request processing failed
  */
-- (void)requestsQueue:(PNRequestsQueue *)queue didFailRequestSend:(PNBaseRequest *)request withError:(PNError *)error;
+- (void)requestsQueue:(PNRequestsQueue *)queue didFailRequestSend:(PNBaseRequest *)request
+                error:(PNError *)error withBlock:(dispatch_block_t)notifyCompletionBlock;
 
 /**
  * Ask delegate whether he allow to remove sent request from queue or not (there are some special cases when whole

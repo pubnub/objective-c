@@ -55,7 +55,7 @@ typedef enum _PNConnectionChannelType {
 #pragma mark - Properties
 
 // Connection channel delegate
-@property (nonatomic, assign) id<PNConnectionChannelDelegate> delegate;
+@property (nonatomic, pn_desired_weak) id<PNConnectionChannelDelegate> delegate;
 
 
 #pragma mark Class methods
@@ -115,6 +115,15 @@ typedef enum _PNConnectionChannelType {
  * Check whether connection channel disconnected
  */
 - (void)checkDisconnected:(void (^)(BOOL disconnected))checkCompletionBlock;
+
+/**
+ @brief Check whether connection channel re-establish connection on request or because of internal
+ logic.
+
+ @param checkCompletionBlock Block which is called at the end of check process and pass \c YES in
+                             case if channel in the reconnection process.
+ */
+- (void)checkReconnecting:(void (^)(BOOL reconnecting))checkCompletionBlock;
 
 /**
  * Stop any channel activity by request

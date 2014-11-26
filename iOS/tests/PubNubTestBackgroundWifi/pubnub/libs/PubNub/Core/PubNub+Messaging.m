@@ -846,33 +846,38 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didSendMessage:(PNMessage *)message {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.didSendMessage, [self humanReadableStateFrom:self.state]];
         }];
 
-        [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+        if (shouldNotify) {
 
-            if (shouldNotify) {
+            // Check whether delegate can handle message sent event or not
+            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didSendMessage:)]) {
 
-                // Check whether delegate can handle message sent event or not
-                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didSendMessage:)]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
 
-                    dispatch_async(dispatch_get_main_queue(), ^{
-
-                        [self.clientDelegate performSelector:@selector(pubnubClient:didSendMessage:) withObject:self
-                                                  withObject:message];
-                    });
-                }
-
-                [self sendNotification:kPNClientDidSendMessageNotification withObject:message];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:didSendMessage:)
+                                              withObject:self withObject:message];
+                });
             }
-        }];
-    }
-                                shouldStartNext:YES];
+
+            [self sendNotification:kPNClientDidSendMessageNotification withObject:message];
+        }
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
@@ -891,7 +896,9 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
                 return @[PNLoggerSymbols.api.rescheduleMessageSending, [self humanReadableStateFrom:self.state]];
             }];
 
-            [self sendMessage:message.message toChannel:message.channel alreadyEncrypted:NO compressed:message.shouldCompressMessage storeInHistory:message.shouldStoreInHistory reschedulingMethodCall:YES withCompletionBlock:nil];
+            [self sendMessage:message.message toChannel:message.channel alreadyEncrypted:NO
+                   compressed:message.shouldCompressMessage storeInHistory:message.shouldStoreInHistory
+       reschedulingMethodCall:YES withCompletionBlock:nil];
         }];
     }
 }

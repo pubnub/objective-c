@@ -103,7 +103,7 @@
 /**
  * Reconnect main communication channel on which this communication channel is working
  */
-- (void)reconnect;
+- (void)reconnectWithBlock:(dispatch_block_t)processReportBlock;
 
 
 #pragma mark - Misc methods

@@ -737,7 +737,7 @@
  
  @note \c failure block may be called few times in few cases:
        1) connection really failed and it will pass \b PNError instance in block.
-       2) at the moment when this method has been called there was no connection or \b PubNub client doesn't have enough time to validate its availability.
+       2) at the moment when this method has been called there was no connection or \b PubNub client doesn't have enough time to validate its availability. In this case \c error will be \c nil
 
  @warning Connection will fail in case if \b PubNub client not configured (\a +setConfiguration:).
 

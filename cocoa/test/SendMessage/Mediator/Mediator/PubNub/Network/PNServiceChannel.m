@@ -1120,10 +1120,19 @@
                [self destroyRequest:request];
 
                [self requestsQueue:nil didFailRequestSend:request
-                         withError:[PNError errorWithCode:kPNRequestCantBeProcessedWithOutRescheduleError]];
-           }];
+                             error:[PNError errorWithCode:kPNRequestCantBeProcessedWithOutRescheduleError]
+                         withBlock:^{
 
-            [self scheduleNextRequest];
+                   if (requestIdentifierIdx == ([requestsList count] - 1)) {
+
+                       [self scheduleNextRequest];
+                   }
+               }];
+            }];
+            if (![requestsList count]) {
+
+                [self scheduleNextRequest];
+            }
         }];
     }
 }
@@ -1414,34 +1423,42 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
 #pragma mark - Requests queue delegate methods
 
-- (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request {
+- (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request
+            withBlock:(dispatch_block_t)notifyCompletionBlock {
 
-    [self pn_dispatchBlock:^{
+    // Forward to the super class
+    [super requestsQueue:queue willSendRequest:request withBlock:^{
 
-        // Forward to the super class
-        [super requestsQueue:queue willSendRequest:request];
-        [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+        [self pn_dispatchBlock:^{
 
-            return @[PNLoggerSymbols.connectionChannel.service.willStartRequestProcessing, (self.name ? self.name : self),
-                    (request ? request : [NSNull null])];
+            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.connectionChannel.service.willStartRequestProcessing, (self.name ? self.name : self),
+                        (request ? request : [NSNull null])];
+            }];
+
+
+            // Check whether this is 'Message post' request or not
+            if ([request isKindOfClass:[PNMessagePostRequest class]]) {
+
+                // Notify delegate about that message post request will be sent now
+                [self.serviceDelegate serviceChannel:self willSendMessage:((PNMessagePostRequest *) request).message];
+            }
+
+            if (notifyCompletionBlock) {
+
+                notifyCompletionBlock();
+            }
         }];
-
-
-        // Check whether this is 'Message post' request or not
-        if ([request isKindOfClass:[PNMessagePostRequest class]]) {
-
-            // Notify delegate about that message post request will be sent now
-            [self.serviceDelegate serviceChannel:self willSendMessage:((PNMessagePostRequest *) request).message];
-        }
     }];
 }
 
-- (void)requestsQueue:(PNRequestsQueue *)queue didSendRequest:(PNBaseRequest *)request {
+- (void)requestsQueue:(PNRequestsQueue *)queue didSendRequest:(PNBaseRequest *)request
+            withBlock:(dispatch_block_t)notifyCompletionBlock {
 
-    [self pn_dispatchBlock:^{
+    // Forward to the super class
+    [super requestsQueue:queue didSendRequest:request withBlock:^{
 
-        // Forward to the super class
-        [super requestsQueue:queue didSendRequest:request];
         [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
             return @[PNLoggerSymbols.connectionChannel.service.didSendRequest, (self.name ? self.name : self),
@@ -1484,17 +1501,21 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
             }
         }
 
-
         [self scheduleNextRequest];
+
+        if (notifyCompletionBlock) {
+
+            notifyCompletionBlock();
+        }
     }];
 }
 
-- (void)requestsQueue:(PNRequestsQueue *)queue didFailRequestSend:(PNBaseRequest *)request withError:(PNError *)error {
+- (void)requestsQueue:(PNRequestsQueue *)queue didFailRequestSend:(PNBaseRequest *)request
+                error:(PNError *)error withBlock:(dispatch_block_t)notifyCompletionBlock {
 
-    [self pn_dispatchBlock:^{
+    // Forward to the super class
+    [super requestsQueue:queue didFailRequestSend:request error:error withBlock:^{
 
-        // Forward to the super class
-        [super requestsQueue:queue didFailRequestSend:request withError:error];
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
             return @[PNLoggerSymbols.connectionChannel.service.requestSendingDidFail, (self.name ? self.name : self),
@@ -1526,12 +1547,18 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
 
                     [self scheduleNextRequest];
                 }
+
+                if (notifyCompletionBlock) {
+
+                    notifyCompletionBlock();
+                }
             }];
         }];
     }];
 }
 
-- (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request {
+- (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request
+            withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -1549,7 +1576,7 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
         }
 
         // Forward to the super class
-        [super requestsQueue:queue didCancelRequest:request];
+        [super requestsQueue:queue didCancelRequest:request withBlock:notifyCompletionBlock];
     }];
 }
 

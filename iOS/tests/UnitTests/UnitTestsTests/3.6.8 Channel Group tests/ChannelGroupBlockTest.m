@@ -9,14 +9,13 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-static NSString *kOrigin = @"pubsub-emea.pubnub.com";
-static NSString *kPublishKey = @"demo";
-static NSString *kSubscribeKey = @"demo";
-static NSString *kSecretKey = @"mySecret";
+@interface ChannelGroupBlockTest : XCTestCase
 
-@interface ChannelGroupBlockTest : XCTestCase {
+<PNDelegate>
+
+{
     dispatch_group_t _resGroup1;
-    dispatch_group_t _resGroup2;
+    GCDGroup *_resGroup2;
     dispatch_group_t _resGroup3;
     dispatch_group_t _resGroup4;
     dispatch_group_t _resGroup5;
@@ -39,10 +38,10 @@ static NSString *kSecretKey = @"mySecret";
     [PubNub disconnect];
     
     _pubNub = [[PubNub alloc] init];
-    [_pubNub setConfiguration:[PNConfiguration configurationForOrigin:kOrigin
-                                                           publishKey:kPublishKey
-                                                         subscribeKey:kSubscribeKey
-                                                            secretKey:kSecretKey]];
+    [_pubNub setConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost
+                                                           publishKey:kTestPNPublishKey
+                                                         subscribeKey:kTestPNSubscriptionKey
+                                                            secretKey:kTestPNSecretKey]];
     [_pubNub connect];
     
     _namespaceName = @"namespace1";
@@ -55,7 +54,6 @@ static NSString *kSecretKey = @"mySecret";
 }
 
 - (void)tearDown {
-//    _resGroup = NULL;
     [PubNub disconnect];
     [super tearDown];
 }
@@ -87,36 +85,50 @@ static NSString *kSecretKey = @"mySecret";
 // 2.1 Request list of namespaces with block
 - (void)testRequestChannelGroupNamespaces {
 
-    _resGroup2 = dispatch_group_create();
-    dispatch_group_enter(_resGroup2);
+    _resGroup2 = [GCDGroup group];
+    [_resGroup2 enterTimes:3];
+    
+    [_pubNub.observationCenter addChannelGroupNamespacesRequestObserver:self withCallbackBlock:^(NSArray *namespaces, PNError *error) {
+        
+        if (!error) {
+            
+            // PubNub client received list of namespaces which is registered under current subscribe key.
+        }
+        else {
+            
+            // PubNub client did fail to retrieve list of namespaces.
+            //
+            // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use -localizedDescription /
+            // -localizedFailureReason and -localizedRecoverySuggestion to get human readable description for error).
+            XCTFail(@"Fail to retrieve list of namespace(observer): %@", [error localizedFailureReason]);
+        }
+        
+        [_resGroup2 leave];
+    }];
     
     [_pubNub requestChannelGroupNamespacesWithCompletionHandlingBlock:^(NSArray *namespaces, PNError *error) {
         if (_resGroup2 != NULL) {
             
             if (error == nil) {
-                BOOL res = NO;
                 
-                for (NSString *namespaceName in namespaces) {
-                    if ([namespaceName isEqualToString:_namespaceName]) {
-                        res = YES;
-                        break;
-                    }
-                }
-                
-                if (!res) {
+                if ([namespaces count] == 0) {
                     XCTFail(@"Cannot find test namespace.");
                 }
             } else {
                 XCTFail(@"PubNub client did fail to receive list of namespaces");
             }
             
-            dispatch_group_leave(_resGroup2);
+            [_resGroup2 leave];
         }
     }];
     
-    if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup2 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive list of namespaces with completion block");
     }
+    
+    [_pubNub.observationCenter removeChannelGroupNamespacesRequestObserver:self];
+    
+    _resGroup2 = nil;
 }
 
 
@@ -326,6 +338,27 @@ withCompletionHandlingBlock:^(PNChannelGroup *group, NSArray *channels, PNError 
     
     if ([GCDWrapper isGroup:_resGroup8 timeoutFiredValue:5]) {
         XCTFail(@"Timeout is fired. Didn't remove namespace with completion block");
+    }
+}
+
+#pragma mark - PubNub Delegate
+
+- (void)pubnubClient:(PubNub *)client didReceiveChannelGroupNamespaces:(NSArray *)namespaces {
+    
+    // PubNub client received list of namespaces which is registered under current subscribe key.
+    if (_resGroup2) {
+        [_resGroup2 leave];
+    }
+}
+
+- (void)pubnubClient:(PubNub *)client channelGroupNamespacesRequestDidFailWithError:(PNError *)error {
+    
+    // PubNub client did fail to retrieve list of namespaces.
+    //
+    // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use -localizedDescription /
+    // -localizedFailureReason and -localizedRecoverySuggestion to get human readable description for error).
+    if (_resGroup2) {
+        XCTFail(@"Did fail to get group in default namespace: %@", [error localizedFailureReason]);
     }
 }
 

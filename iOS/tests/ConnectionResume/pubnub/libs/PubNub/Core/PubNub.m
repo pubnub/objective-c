@@ -1103,151 +1103,153 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.clientIdentifierUpdateAttempt, [self humanReadableStateFrom:self.state]];
-    }];
-
-        
-    if (![self.uniqueClientIdentifier isEqualToString:identifier]) {
-        
-        [self performAsyncLockingBlock:^{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            return @[PNLoggerSymbols.api.clientIdentifierUpdateAttempt, [self humanReadableStateFrom:self.state]];
+        }];
+        
+        if (![self.uniqueClientIdentifier isEqualToString:identifier]) {
+            
+            [self performAsyncLockingBlock:^{
                 
-                return @[PNLoggerSymbols.api.updatingClientIdentifier, [self humanReadableStateFrom:self.state]];
-            }];
-
-            // Check whether identifier has been changed since last method call or not
-            if ([self isConnected]) {
-
-                self.userProvidedClientIdentifier = identifier != nil;
-
-                NSArray *allChannels = [self.messagingChannel fullSubscribedChannelsList];
-                if ([allChannels count]) {
-
-                    self.asyncLockingOperationInProgress = NO;
-                    if (shouldCatchup) {
-
-                        [allChannels makeObjectsPerformSelector:@selector(lockTimeTokenChange)];
-                    }
-
-                    __block NSUInteger resubscribeRetryCount = 0;
-                    __block __pn_desired_weak PubNub *weakSelf = self;
-                    __block void(^retrySubscription)(PNError *);
-                    __block void(^retryUnsubscription)(PNError *);
-
-                    void(^resubscribeErrorBlock)(PNError *, void(^)(void)) = ^(PNError *resubscriptionError, void(^block)(void)) {
-
-                        if (resubscribeRetryCount < kPNClientIdentifierUpdateRetryCount) {
-
-                            resubscribeRetryCount++;
-                            block();
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                    
+                    return @[PNLoggerSymbols.api.updatingClientIdentifier, [self humanReadableStateFrom:self.state]];
+                }];
+                
+                // Check whether identifier has been changed since last method call or not
+                if ([self isConnected]) {
+                    
+                    self.userProvidedClientIdentifier = identifier != nil;
+                    
+                    NSArray *allChannels = [self.messagingChannel fullSubscribedChannelsList];
+                    if ([allChannels count]) {
+                        
+                        self.asyncLockingOperationInProgress = NO;
+                        if (shouldCatchup) {
+                            
+                            [allChannels makeObjectsPerformSelector:@selector(lockTimeTokenChange)];
                         }
-                        else {
-
-                            weakSelf.updatingClientIdentifier = NO;
-                            [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
-
-                            [weakSelf notifyDelegateAboutSubscriptionFailWithError:resubscriptionError
-                                                          completeLockingOperation:YES];
-                        }
-                    };
-
-                    void(^subscribeBlock)(void) = ^{
-
-                        weakSelf.asyncLockingOperationInProgress = NO;
-                        [weakSelf subscribeOn:allChannels withCatchUp:shouldCatchup clientState:nil
-                   andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
-                                                PNError *subscribeError) {
-
-                       if (subscribeError == nil) {
-
-                            weakSelf.updatingClientIdentifier = NO;
-                            [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
-
-                            [weakSelf handleLockingOperationComplete:YES];
-                        }
-                        else {
-
-                            retrySubscription(subscribeError);
-                        }
-                        }];
-                    };
-
-                    retrySubscription = ^(PNError *error) {
-
-                        resubscribeErrorBlock(error, subscribeBlock);
-                    };
-
-                    void(^unsubscribeBlock)(void) = ^{
-
-                        weakSelf.asyncLockingOperationInProgress = NO;
-                        [weakSelf unsubscribeFrom:allChannels
-                    withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
-
-                            if (leaveError == nil) {
-
-                                // Check whether user identifier was provided by user or not
-                                if (identifier == nil) {
-
-                                    // Change user identifier before connect to the PubNub services
-                                    weakSelf.uniqueClientIdentifier = [PNHelper UUID];
-                                }
-                                else {
-
-                                   weakSelf.uniqueClientIdentifier = identifier;
-                                }
-
-                                resubscribeRetryCount = 0;
-                                subscribeBlock();
+                        
+                        __block NSUInteger resubscribeRetryCount = 0;
+                        __block __pn_desired_weak PubNub *weakSelf = self;
+                        __block void(^retrySubscription)(PNError *);
+                        __block void(^retryUnsubscription)(PNError *);
+                        
+                        void(^resubscribeErrorBlock)(PNError *, void(^)(void)) = ^(PNError *resubscriptionError, void(^block)(void)) {
+                            
+                            if (resubscribeRetryCount < kPNClientIdentifierUpdateRetryCount) {
+                                
+                                resubscribeRetryCount++;
+                                block();
                             }
                             else {
-
-                                retryUnsubscription(leaveError);
+                                
+                                weakSelf.updatingClientIdentifier = NO;
+                                [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
+                                
+                                [weakSelf notifyDelegateAboutSubscriptionFailWithError:resubscriptionError
+                                                              completeLockingOperation:YES];
                             }
-                        }];
-                    };
-
-                    retryUnsubscription = ^(PNError *error) {
-
-                        resubscribeErrorBlock(error, unsubscribeBlock);
-                    };
-
-                    unsubscribeBlock();
+                        };
+                        
+                        void(^subscribeBlock)(void) = ^{
+                            
+                            weakSelf.asyncLockingOperationInProgress = NO;
+                            [weakSelf subscribeOn:allChannels withCatchUp:shouldCatchup clientState:nil
+                       andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
+                                                    PNError *subscribeError) {
+                           
+                           if (subscribeError == nil) {
+                               
+                               weakSelf.updatingClientIdentifier = NO;
+                               [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
+                               
+                               [weakSelf handleLockingOperationComplete:YES];
+                           }
+                           else {
+                               
+                               retrySubscription(subscribeError);
+                           }
+                       }];
+                        };
+                        
+                        retrySubscription = ^(PNError *error) {
+                            
+                            resubscribeErrorBlock(error, subscribeBlock);
+                        };
+                        
+                        void(^unsubscribeBlock)(void) = ^{
+                            
+                            weakSelf.asyncLockingOperationInProgress = NO;
+                            [weakSelf unsubscribeFrom:allChannels
+                          withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+                              
+                              if (leaveError == nil) {
+                                  
+                                  // Check whether user identifier was provided by user or not
+                                  if (identifier == nil) {
+                                      
+                                      // Change user identifier before connect to the PubNub services
+                                      weakSelf.uniqueClientIdentifier = [PNHelper UUID];
+                                  }
+                                  else {
+                                      
+                                      weakSelf.uniqueClientIdentifier = identifier;
+                                  }
+                                  
+                                  resubscribeRetryCount = 0;
+                                  subscribeBlock();
+                              }
+                              else {
+                                  
+                                  retryUnsubscription(leaveError);
+                              }
+                          }];
+                        };
+                        
+                        retryUnsubscription = ^(PNError *error) {
+                            
+                            resubscribeErrorBlock(error, unsubscribeBlock);
+                        };
+                        
+                        unsubscribeBlock();
+                    }
+                    else {
+                        
+                        self.uniqueClientIdentifier = identifier;
+                        self.userProvidedClientIdentifier = identifier != nil;
+                        [self handleLockingOperationComplete:YES];
+                    }
                 }
                 else {
-
+                    
                     self.uniqueClientIdentifier = identifier;
                     self.userProvidedClientIdentifier = identifier != nil;
                     [self handleLockingOperationComplete:YES];
                 }
             }
-            else {
-
-                self.uniqueClientIdentifier = identifier;
-                self.userProvidedClientIdentifier = identifier != nil;
-                [self handleLockingOperationComplete:YES];
-            }
-        }
-               postponedExecutionBlock:^{
-                   
-                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                   postponedExecutionBlock:^{
                        
-                       return @[PNLoggerSymbols.api.postponeClientIdentifierUpdate,
-                                [self humanReadableStateFrom:self.state]];
+                       [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                           
+                           return @[PNLoggerSymbols.api.postponeClientIdentifierUpdate,
+                                    [self humanReadableStateFrom:self.state]];
+                       }];
+                       
+                       [self postponeSetClientIdentifier:identifier];
                    }];
-                   
-                   [self postponeSetClientIdentifier:identifier];
-               }];
-    }
-    else {
-        
-        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        }
+        else {
             
-            return @[PNLoggerSymbols.api.sameClientIdentifierProvided, [self humanReadableStateFrom:self.state]];
-        }];
-    }
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                
+                return @[PNLoggerSymbols.api.sameClientIdentifierProvided, [self humanReadableStateFrom:self.state]];
+            }];
+        }
+    }];
 }
 
 - (void)postponeSetClientIdentifier:(NSString *)identifier {
@@ -1266,12 +1268,15 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)connect {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.connectionAttemptWithOutHandlerBlock, [self humanReadableStateFrom:self.state]];
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.connectionAttemptWithOutHandlerBlock, [self humanReadableStateFrom:self.state]];
+        }];
+        
+        [self connectWithSuccessBlock:nil errorBlock:nil];
     }];
-    
-    [self connectWithSuccessBlock:nil errorBlock:nil];
 }
 
 - (void)connectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
@@ -1419,166 +1424,179 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     }
 
                     // Check whether services are available or not
-                    if ([self.reachability isServiceReachabilityChecked]) {
+                    [self.reachability checkServiceReachabilityChecked:^(BOOL checked) {
 
-                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                        [self pn_dispatchBlock:^{
 
-                            return @[PNLoggerSymbols.api.reachabilityChecked, [self humanReadableStateFrom:self.state]];
-                        }];
-
-                        // Forcibly refresh reachability information
-                        [self.reachability refreshReachabilityState];
-
-                        // Checking whether remote PubNub services is reachable or not (if they are not reachable,
-                        // this mean that probably there is no connection)
-                        if ([self.reachability isServiceAvailable]) {
-
-                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                return @[PNLoggerSymbols.api.internetConnectionAvailable,
-                                        [self humanReadableStateFrom:self.state]];
-                            }];
-
-                            // Notify PubNub delegate about that it will try to establish connection with remote PubNub
-                            // origin (notify if delegate implements this method)
-                            if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:willConnectToOrigin:)]) {
-
-                                dispatch_async(dispatch_get_main_queue(), ^{
-
-                                    [self.clientDelegate performSelector:@selector(pubnubClient:willConnectToOrigin:)
-                                                              withObject:self withObject:self.clientConfiguration.origin];
-                                });
-                            }
-
-                            [self sendNotification:kPNClientWillConnectToOriginNotification withObject:self.clientConfiguration.origin];
-
-                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                return @[PNLoggerSymbols.api.willConnect,
-                                        (self.clientConfiguration.origin ? self.clientConfiguration.origin : [NSNull null]),
-                                        [self humanReadableStateFrom:self.state]];
-                            }];
-
-                            BOOL channelsDestroyed = (self.messagingChannel == nil && self.serviceChannel == nil);
-                            BOOL channelsShouldBeCreated = (self.state == PNPubNubClientStateCreated ||
-                                                            self.state == PNPubNubClientStateDisconnected ||
-                                                            self.state == PNPubNubClientStateReset);
-
-                            // Check whether PubNub client was just created and there is no resources for reuse or not
-                            if (channelsShouldBeCreated || channelsDestroyed) {
+                            if (checked) {
 
                                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                                    return @[PNLoggerSymbols.api.createNewCommunicationComponents,
-                                            [self humanReadableStateFrom:self.state]];
+                                    return @[PNLoggerSymbols.api.reachabilityChecked, [self humanReadableStateFrom:self.state]];
                                 }];
 
-                                if (!channelsShouldBeCreated && channelsDestroyed) {
+                                // Forcibly refresh reachability information
+                                [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
 
-                                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                                    // Checking whether remote PubNub services is reachable or not (if they are not reachable,
+                                    // this mean that probably there is no connection)
+                                    [self.reachability checkServiceAvailable:^(BOOL available) {
 
-                                        return @[PNLoggerSymbols.api.previousCommunicationComponentsHasBeenDestroyed,
-                                                [self humanReadableStateFrom:self.state]];
+                                        [self pn_dispatchBlock:^{
+
+                                            if (available) {
+
+                                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                                    return @[PNLoggerSymbols.api.internetConnectionAvailable,
+                                                            [self humanReadableStateFrom:self.state]];
+                                                }];
+
+                                                // Notify PubNub delegate about that it will try to establish connection with remote PubNub
+                                                // origin (notify if delegate implements this method)
+                                                if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:willConnectToOrigin:)]) {
+
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                                                        [self.clientDelegate performSelector:@selector(pubnubClient:willConnectToOrigin:)
+                                                                                  withObject:self withObject:self.clientConfiguration.origin];
+                                                    });
+                                                }
+
+                                                [self sendNotification:kPNClientWillConnectToOriginNotification withObject:self.clientConfiguration.origin];
+
+                                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                                    return @[PNLoggerSymbols.api.willConnect,
+                                                            (self.clientConfiguration.origin ? self.clientConfiguration.origin : [NSNull null]),
+                                                            [self humanReadableStateFrom:self.state]];
+                                                }];
+
+                                                BOOL channelsDestroyed = (self.messagingChannel == nil && self.serviceChannel == nil);
+                                                BOOL channelsShouldBeCreated = (self.state == PNPubNubClientStateCreated ||
+                                                        self.state == PNPubNubClientStateDisconnected ||
+                                                        self.state == PNPubNubClientStateReset);
+
+                                                // Check whether PubNub client was just created and there is no resources for reuse or not
+                                                if (channelsShouldBeCreated || channelsDestroyed) {
+
+                                                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                                        return @[PNLoggerSymbols.api.createNewCommunicationComponents,
+                                                                [self humanReadableStateFrom:self.state]];
+                                                    }];
+
+                                                    if (!channelsShouldBeCreated && channelsDestroyed) {
+
+                                                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                                            return @[PNLoggerSymbols.api.previousCommunicationComponentsHasBeenDestroyed,
+                                                                    [self humanReadableStateFrom:self.state]];
+                                                        }];
+                                                    }
+
+                                                    self.state = PNPubNubClientStateConnecting;
+
+                                                    // Initialize communication channels
+                                                    self.messagingChannel = [PNMessagingChannel messageChannelWithConfiguration:self.clientConfiguration
+                                                                                                                    andDelegate:self];
+                                                    self.messagingChannel.messagingDelegate = self;
+                                                    self.serviceChannel = [PNServiceChannel serviceChannelWithConfiguration:self.clientConfiguration
+                                                                                                                andDelegate:self];
+                                                    self.serviceChannel.serviceDelegate = self;
+
+                                                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                                        return @[PNLoggerSymbols.api.resourceLinkage, (self.observationCenter ? [NSString stringWithFormat:@"%p", self.observationCenter] : [NSNull null]),
+                                                                (self.reachability ? [NSString stringWithFormat:@"%p", self.reachability] : [NSNull null]),
+                                                                (self.cryptoHelper ? [NSString stringWithFormat:@"%p", self.cryptoHelper] : [NSNull null]),
+                                                                (self.messagingChannel ? [NSString stringWithFormat:@"%p", self.messagingChannel] : [NSNull null]),
+                                                                (self.serviceChannel ? [NSString stringWithFormat:@"%p", self.serviceChannel] : [NSNull null])];
+                                                    }];
+                                                }
+                                                else {
+
+                                                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                                        return @[PNLoggerSymbols.api.reuseExistingCommunicationComponents,
+                                                                [self humanReadableStateFrom:self.state]];
+                                                    }];
+
+                                                    self.state = PNPubNubClientStateConnecting;
+
+                                                    // Reuse existing communication channels and reconnect them to remote origin server
+                                                    [self.messagingChannel connect];
+                                                    [self.serviceChannel connect];
+                                                }
+
+                                                shouldAddStateObservation = YES;
+                                                completionBlock();
+                                            }
+                                            else {
+
+                                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                                    return @[PNLoggerSymbols.api.internetConnectionNotAvailableAtThisMoment,
+                                                            [self humanReadableStateFrom:self.state]];
+                                                }];
+
+                                                // Mark that client should try to connect when network will be available again
+                                                self.connectOnServiceReachabilityCheck = NO;
+                                                self.asyncLockingOperationInProgress = YES;
+                                                self.connectOnServiceReachability = YES;
+
+                                                postponeConnectionTillNetworkCheck = YES;
+
+                                                [self handleConnectionErrorOnNetworkFailureWithError:nil];
+                                                self.asyncLockingOperationInProgress = NO;
+
+                                                [self.observationCenter checkSubscribedOnClientStateChange:self
+                                                                                                 withBlock:^(BOOL observing) {
+
+                                                     if (!observing) {
+
+                                                         if (failure) {
+
+                                                             dispatch_async(dispatch_get_main_queue(), ^{
+
+                                                                 failure(nil);
+                                                             });
+                                                         }
+
+                                                         shouldAddStateObservation = YES;
+                                                     }
+
+                                                     // Returning execution flow back on private queue
+                                                     [self pn_dispatchBlock:^{
+
+                                                         completionBlock();
+                                                     }];
+                                                 }];
+                                            }
+                                        }];
                                     }];
-                                }
-
-                                self.state = PNPubNubClientStateConnecting;
-
-                                // Initialize communication channels
-                                self.messagingChannel = [PNMessagingChannel messageChannelWithConfiguration:self.clientConfiguration
-                                                                                                andDelegate:self];
-                                self.messagingChannel.messagingDelegate = self;
-                                self.serviceChannel = [PNServiceChannel serviceChannelWithConfiguration:self.clientConfiguration
-                                                                                            andDelegate:self];
-                                self.serviceChannel.serviceDelegate = self;
-
-                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                    return @[PNLoggerSymbols.api.resourceLinkage, (self.observationCenter ? [NSString stringWithFormat:@"%p", self.observationCenter] : [NSNull null]),
-                                            (self.reachability ? [NSString stringWithFormat:@"%p", self.reachability] : [NSNull null]),
-                                            (self.cryptoHelper ? [NSString stringWithFormat:@"%p", self.cryptoHelper] : [NSNull null]),
-                                            (self.messagingChannel ? [NSString stringWithFormat:@"%p", self.messagingChannel] : [NSNull null]),
-                                            (self.serviceChannel ? [NSString stringWithFormat:@"%p", self.serviceChannel] : [NSNull null])];
                                 }];
                             }
+                            // Looks like reachability manager was unable to check services reachability (user still not
+                            // configured client or just not enough time to check passed since client configuration)
                             else {
 
                                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                                    return @[PNLoggerSymbols.api.reuseExistingCommunicationComponents,
+                                    return @[PNLoggerSymbols.api.internetConnectionAvailabilityNotCheckedYet,
                                             [self humanReadableStateFrom:self.state]];
                                 }];
 
-                                self.state = PNPubNubClientStateConnecting;
+                                self.asyncLockingOperationInProgress = YES;
+                                self.connectOnServiceReachabilityCheck = YES;
+                                self.connectOnServiceReachability = NO;
 
-                                // Reuse existing communication channels and reconnect them to remote origin server
-                                [self.messagingChannel connect];
-                                [self.serviceChannel connect];
+                                postponeConnectionTillNetworkCheck = YES;
+                                shouldAddStateObservation = YES;
+                                completionBlock();
                             }
-
-                            shouldAddStateObservation = YES;
-                            completionBlock();
-                        }
-                        else {
-
-                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                return @[PNLoggerSymbols.api.internetConnectionNotAvailableAtThisMoment,
-                                        [self humanReadableStateFrom:self.state]];
-                            }];
-
-                            // Mark that client should try to connect when network will be available again
-                            self.connectOnServiceReachabilityCheck = NO;
-                            self.asyncLockingOperationInProgress = YES;
-                            self.connectOnServiceReachability = YES;
-
-                            postponeConnectionTillNetworkCheck = YES;
-
-                            [self handleConnectionErrorOnNetworkFailureWithError:nil];
-                            self.asyncLockingOperationInProgress = NO;
-
-                            [self.observationCenter checkSubscribedOnClientStateChange:self
-                                                                             withBlock:^(BOOL observing) {
-
-                                 if (!observing) {
-
-                                     if (failure) {
-
-                                         dispatch_async(dispatch_get_main_queue(), ^{
-
-                                             failure(nil);
-                                         });
-                                     }
-
-                                     shouldAddStateObservation = YES;
-                                 }
-
-                                 // Returning execution flow back on private queue
-                                 [self pn_dispatchBlock:^{
-
-                                     completionBlock();
-                                 }];
-                             }];
-                        }
-                    }
-                    // Looks like reachability manager was unable to check services reachability (user still not
-                    // configured client or just not enough time to check passed since client configuration)
-                    else {
-
-                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                            return @[PNLoggerSymbols.api.internetConnectionAvailabilityNotCheckedYet,
-                                    [self humanReadableStateFrom:self.state]];
                         }];
-
-                        self.asyncLockingOperationInProgress = YES;
-                        self.connectOnServiceReachabilityCheck = YES;
-                        self.connectOnServiceReachability = NO;
-
-                        postponeConnectionTillNetworkCheck = YES;
-                        shouldAddStateObservation = YES;
-                        completionBlock();
-                    }
+                    }];
                 }];
             }
         }
@@ -1629,10 +1647,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
         [self stopHeartbeatTimer];
 
-        if ([self.reachability isSuspended]) {
+        [self.reachability checkSuspended:^(BOOL suspended) {
 
-            [self.reachability resume];
-        }
+            if (suspended) {
+
+                [self.reachability resume];
+            }
+        }];
 
         if (isDisconnectedByUser) {
 
@@ -2238,185 +2259,209 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                             }
                             self.state = state;
 
-                            BOOL reachabilityWillSimulateAction = NO;
+                            __block BOOL reachabilityWillSimulateAction = NO;
+                            dispatch_block_t disconnectionProceedBlock = ^{
+
+                                // Check whether client still in bad state or not (because of async operations it is possible that before
+                                // this moment client was in corresponding state
+                                if (self.state != PNPubNubClientStateConnecting) {
+
+                                    if (state == PNPubNubClientStateDisconnected) {
+
+                                        // Clean up cached data
+                                        [PNChannel purgeChannelsCache];
+
+                                        // Delay disconnection notification to give client ability to perform clean up well
+                                        __block __pn_desired_weak __typeof__(self) weakSelf = self;
+                                        void(^disconnectionNotifyBlock)(void) = ^{
+
+                                            self.messagingChannel.delegate = nil;
+                                            self.messagingChannel = nil;
+                                            self.serviceChannel.delegate = nil;
+                                            self.serviceChannel = nil;
+
+                                            if ([weakSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+
+                                                dispatch_async(dispatch_get_main_queue(), ^{
+
+                                                    [weakSelf.clientDelegate pubnubClient:weakSelf didDisconnectFromOrigin:connectedToHost];
+                                                });
+                                            }
+                                            [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
+
+                                                return @[PNLoggerSymbols.api.disconnected, (connectedToHost ? connectedToHost : [NSNull null]),
+                                                        [self humanReadableStateFrom:self.state]];
+                                            }];
+
+
+                                            [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:connectedToHost];
+                                            [self handleLockingOperationComplete:YES];
+                                        };
+                                        if (channel == nil) {
+
+                                            disconnectionNotifyBlock();
+                                        }
+                                        else {
+
+                                            double delayInSeconds = 1.0;
+                                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
+                                            dispatch_after(popTime, [self pn_privateQueue], disconnectionNotifyBlock);
+                                        }
+                                    }
+                                    else {
+
+                                        __block __pn_desired_weak __typeof__(self) weakSelf = self;
+                                        void(^disconnectionNotifyBlock)(void) = ^{
+
+                                            if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                                                [weakSelf handleLockingOperationBlockCompletion:^{
+
+                                                            if ([weakSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+
+                                                                dispatch_async(dispatch_get_main_queue(), ^{
+
+                                                                    [weakSelf.clientDelegate pubnubClient:weakSelf didDisconnectFromOrigin:connectedToHost withError:connectionError];
+                                                                });
+                                                            }
+                                                            [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
+
+                                                                return @[PNLoggerSymbols.api.disconnectedBecauseOfError,
+                                                                        (connectionError ? connectionError : [NSNull null]),
+                                                                        [self humanReadableStateFrom:self.state]];
+                                                            }];
+
+                                                            connectionError.associatedObject = weakSelf.clientConfiguration.origin;
+                                                            [weakSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
+                                                        }
+                                                                                shouldStartNext:YES];
+                                            }
+                                        };
+
+                                        // Check whether service is available (this event may arrive after device was unlocked so basically
+                                        // connection is available and only sockets closed by remote server or internal kernel layer)
+                                        [self.reachability checkServiceReachabilityChecked:^(BOOL checked) {
+
+                                            if (checked) {
+
+                                                [self.reachability checkServiceAvailable:^(BOOL available) {
+                                                    
+                                                    [self pn_dispatchBlock:^{
+                                                        
+                                                        if (available) {
+                                                            
+                                                            // Check whether should restore connection or not
+                                                            if ([self shouldRestoreConnection]) {
+                                                                
+                                                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                                                                    
+                                                                    return @[PNLoggerSymbols.api.connectionShouldBeRestoredOnReacabilityCheck,
+                                                                             [self humanReadableStateFrom:self.state]];
+                                                                }];
+                                                                
+                                                                self.asyncLockingOperationInProgress = NO;
+                                                                self.restoringConnection = YES;
+                                                                
+                                                                // Try to restore connection to remote PubNub services
+                                                                [self connect];
+                                                            }
+                                                            else {
+                                                                
+                                                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                                                                    
+                                                                    return @[PNLoggerSymbols.api.destroyCommunicationComponents,
+                                                                             [self humanReadableStateFrom:self.state]];
+                                                                }];
+                                                                
+                                                                disconnectionNotifyBlock();
+                                                            }
+                                                        }
+                                                        // In case if there is no connection check whether clint should restore connection or not.
+                                                        else if (![self shouldRestoreConnection]) {
+                                                            
+                                                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                                                                
+                                                                return @[PNLoggerSymbols.api.destroyCommunicationComponents,
+                                                                         [self humanReadableStateFrom:self.state]];
+                                                            }];
+                                                            
+                                                            self.state = PNPubNubClientStateDisconnected;
+                                                            disconnectionNotifyBlock();
+                                                        }
+                                                        else if ([self shouldRestoreConnection]) {
+                                                            
+                                                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                                                                
+                                                                return @[PNLoggerSymbols.api.connectionWillBeRestoredOnNetworkConnectionRestore,
+                                                                         [self humanReadableStateFrom:self.state]];
+                                                            }];
+                                                            
+                                                            if (!reachabilityWillSimulateAction) {
+                                                                
+                                                                [self notifyDelegateClientDidDisconnectWithError:connectionError];
+                                                            }
+                                                        }
+                                                    }];
+                                                }];
+                                            }
+                                        }];
+                                    }
+                                }
+                                else {
+
+                                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                        return @[PNLoggerSymbols.api.alreadyRestoringConnection, [self humanReadableStateFrom:self.state]];
+                                    }];
+                                }
+                            };
 
                             // Check whether error is caused by network error or not
                             switch (connectionError.code) {
                                 case kPNClientConnectionFailedOnInternetFailureError:
                                 case kPNClientConnectionClosedOnInternetFailureError:
-
-                                    // Check whether should restore connection or not
-                                    if ([self shouldRestoreConnection] && state == PNPubNubClientStateDisconnectedOnNetworkError) {
-
-                                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                            return @[PNLoggerSymbols.api.connectionShouldBeRestoredOnReacabilityCheck,
-                                                    [self humanReadableStateFrom:self.state]];
+                                    {
+                                        // Check whether should restore connection or not
+                                        if ([self shouldRestoreConnection] && state == PNPubNubClientStateDisconnectedOnNetworkError) {
+                                            
+                                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+                                                
+                                                return @[PNLoggerSymbols.api.connectionShouldBeRestoredOnReacabilityCheck,
+                                                         [self humanReadableStateFrom:self.state]];
+                                            }];
+                                            
+                                            self.restoringConnection = YES;
+                                        }
+                                        
+                                        // Try to refresh reachability state (there is situation when reachability state changed within
+                                        // library to handle sockets timeout/error)
+                                        [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
+                                            
+                                            reachabilityWillSimulateAction = willGenerateReachabilityChangeEvent;
+                                            
+                                            [self.reachability checkServiceAvailable:^(BOOL available) {
+                                                
+                                                [self pn_dispatchBlock:^{
+                                                    
+                                                    if (!available) {
+                                                        
+                                                        self.restoringConnection = NO;
+                                                    }
+                                                    disconnectionProceedBlock();
+                                                }];
+                                            }];
                                         }];
-
-                                        self.restoringConnection = YES;
-                                    }
-
-                                    // Try to refresh reachability state (there is situation when reachability state changed within
-                                    // library to handle sockets timeout/error)
-                                    reachabilityWillSimulateAction = [self.reachability refreshReachabilityState];
-
-                                    if (![self.reachability isServiceAvailable]) {
-
-                                        self.restoringConnection = NO;
                                     }
                                     break;
 
                                 default:
+                                    {
+                                        disconnectionProceedBlock();
+                                    }
                                     break;
                             }
-
-
-                            // Check whether client still in bad state or not (because of async operations it is possible that before
-                            // this moment client was in corresponding state
-                            if (self.state != PNPubNubClientStateConnecting) {
-
-                                if (state == PNPubNubClientStateDisconnected) {
-
-                                    // Clean up cached data
-                                    [PNChannel purgeChannelsCache];
-
-                                    // Delay disconnection notification to give client ability to perform clean up well
-                                    __block __pn_desired_weak __typeof__(self) weakSelf = self;
-                                    void(^disconnectionNotifyBlock)(void) = ^{
-
-                                        self.messagingChannel.delegate = nil;
-                                        self.messagingChannel = nil;
-                                        self.serviceChannel.delegate = nil;
-                                        self.serviceChannel = nil;
-
-                                        if ([weakSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
-
-                                            dispatch_async(dispatch_get_main_queue(), ^{
-
-                                                [weakSelf.clientDelegate pubnubClient:weakSelf didDisconnectFromOrigin:connectedToHost];
-                                            });
-                                        }
-                                        [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
-
-                                            return @[PNLoggerSymbols.api.disconnected, (connectedToHost ? connectedToHost : [NSNull null]),
-                                                    [self humanReadableStateFrom:self.state]];
-                                        }];
-
-
-                                        [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:connectedToHost];
-                                        [self handleLockingOperationComplete:YES];
-                                    };
-                                    if (channel == nil) {
-
-                                        disconnectionNotifyBlock();
-                                    }
-                                    else {
-
-                                        double delayInSeconds = 1.0;
-                                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));
-                                        dispatch_after(popTime, [self pn_privateQueue], disconnectionNotifyBlock);
-                                    }
-                                }
-                                else {
-
-                                    __block __pn_desired_weak __typeof__(self) weakSelf = self;
-                                    void(^disconnectionNotifyBlock)(void) = ^{
-
-                                        if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
-
-                                            [weakSelf handleLockingOperationBlockCompletion:^{
-
-                                                    if ([weakSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
-
-                                                        dispatch_async(dispatch_get_main_queue(), ^{
-
-                                                            [weakSelf.clientDelegate pubnubClient:weakSelf didDisconnectFromOrigin:connectedToHost withError:connectionError];
-                                                        });
-                                                    }
-                                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
-
-                                                        return @[PNLoggerSymbols.api.disconnectedBecauseOfError,
-                                                                (connectionError ? connectionError : [NSNull null]),
-                                                                [self humanReadableStateFrom:self.state]];
-                                                    }];
-
-                                                    connectionError.associatedObject = weakSelf.clientConfiguration.origin;
-                                                    [weakSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
-                                                }
-                                                                            shouldStartNext:YES];
-                                        }
-                                    };
-
-                                    // Check whether service is available (this event may arrive after device was unlocked so basically
-                                    // connection is available and only sockets closed by remote server or internal kernel layer)
-                                    if ([self.reachability isServiceReachabilityChecked]) {
-
-                                        if ([self.reachability isServiceAvailable]) {
-
-                                            // Check whether should restore connection or not
-                                            if ([self shouldRestoreConnection]) {
-
-                                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                                    return @[PNLoggerSymbols.api.connectionShouldBeRestoredOnReacabilityCheck,
-                                                            [self humanReadableStateFrom:self.state]];
-                                                }];
-
-                                                self.asyncLockingOperationInProgress = NO;
-                                                self.restoringConnection = YES;
-
-                                                // Try to restore connection to remote PubNub services
-                                                [self connect];
-                                            }
-                                            else {
-
-                                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                                    return @[PNLoggerSymbols.api.destroyCommunicationComponents,
-                                                            [self humanReadableStateFrom:self.state]];
-                                                }];
-
-                                                disconnectionNotifyBlock();
-                                            }
-                                        }
-                                            // In case if there is no connection check whether clint should restore connection or not.
-                                        else if (![self shouldRestoreConnection]) {
-
-                                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                                return @[PNLoggerSymbols.api.destroyCommunicationComponents,
-                                                        [self humanReadableStateFrom:self.state]];
-                                            }];
-
-                                            self.state = PNPubNubClientStateDisconnected;
-                                            disconnectionNotifyBlock();
-                                        }
-                                        else if ([self shouldRestoreConnection]) {
-
-                                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                                return @[PNLoggerSymbols.api.connectionWillBeRestoredOnNetworkConnectionRestore,
-                                                        [self humanReadableStateFrom:self.state]];
-                                            }];
-
-                                            if (!reachabilityWillSimulateAction) {
-
-                                                [self notifyDelegateClientDidDisconnectWithError:connectionError];
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else {
-
-                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                                    return @[PNLoggerSymbols.api.alreadyRestoringConnection, [self humanReadableStateFrom:self.state]];
-                                }];
-                            }
                         }
-                            // Check whether server unexpectedly closed connection while client was active or not
+                        // Check whether server unexpectedly closed connection while client was active or not
                         else if (self.state == PNPubNubClientStateConnected) {
 
                             self.state = PNPubNubClientStateDisconnected;
@@ -2541,13 +2586,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if (self.state == PNPubNubClientStateConnected && [self.clientConfiguration.origin isEqualToString:host]) {
 
             self.state = PNPubNubClientStateDisconnecting;
-            __block BOOL disconnectedOnNetworkError = ![self.reachability isServiceAvailable];
-            if (!disconnectedOnNetworkError) {
-
-                disconnectedOnNetworkError = (error.code == kPNRequestExecutionFailedOnInternetFailureError ||
-                                              error.code == kPNClientConnectionClosedOnInternetFailureError);
-            }
-
+            __block BOOL disconnectedOnNetworkError = NO;
             dispatch_block_t completionBlock = ^{
 
                 if (disconnectedOnNetworkError) {
@@ -2558,22 +2597,31 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 [self.reachability updateReachabilityFromError:error];
                 [self notifyDelegateClientWillDisconnectWithError:error];
             };
+            [self.reachability checkServiceAvailable:^(BOOL available) {
 
-            if (!disconnectedOnNetworkError) {
+                disconnectedOnNetworkError = !available;
+                if (!disconnectedOnNetworkError) {
 
-                [self checkConnectionChannelsConnectionState:^(BOOL messageChannelConnected, BOOL serviceChannelConnected) {
+                    disconnectedOnNetworkError = (error.code == kPNRequestExecutionFailedOnInternetFailureError ||
+                                                  error.code == kPNClientConnectionClosedOnInternetFailureError);
+                }
 
-                    [self pn_dispatchBlock:^{
+                if (!disconnectedOnNetworkError) {
 
-                        disconnectedOnNetworkError = (!messageChannelConnected || !serviceChannelConnected);
-                        completionBlock();
+                    [self checkConnectionChannelsConnectionState:^(BOOL messageChannelConnected, BOOL serviceChannelConnected) {
+
+                        [self pn_dispatchBlock:^{
+
+                            disconnectedOnNetworkError = (!messageChannelConnected || !serviceChannelConnected);
+                            completionBlock();
+                        }];
                     }];
-                }];
-            }
-            else {
+                }
+                else {
 
-                completionBlock();
-            }
+                    completionBlock();
+                }
+            }];
         }
     }];
 }
@@ -2638,9 +2686,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [self pn_dispatchBlock:^{
 
         // Help reachability instance update it's state our of schedule
-        [self.reachability refreshReachabilityState];
+        [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
 
-        checkCompletionBlock([self.reachability isServiceAvailable]);
+            [self.reachability checkServiceAvailable:checkCompletionBlock];
+        }];
     }];
 }
 
@@ -2649,18 +2698,21 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [self pn_dispatchBlock:^{
         
         // Help reachability instance update it's state our of schedule
-        [self.reachability refreshReachabilityState];
-        
-        BOOL isSimulatingReachability = [self.reachability isSimulatingNetworkSwitchEvent];
-        BOOL shouldRestoreConnection = (self.state == PNPubNubClientStateConnecting ||
-                                        self.state == PNPubNubClientStateConnected ||
-                                        self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
-                                        self.state == PNPubNubClientStateDisconnectedOnNetworkError);
-        
-        // Ensure that there is connection available as well as permission to connect
-        shouldRestoreConnection = (shouldRestoreConnection && [self.reachability isServiceAvailable] && !isSimulatingReachability);
-        
-        checkCompletionBlock(shouldRestoreConnection);
+        [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
+
+            BOOL isSimulatingReachability = [self.reachability isSimulatingNetworkSwitchEvent];
+            BOOL shouldRestoreConnection = (self.state == PNPubNubClientStateConnecting ||
+                    self.state == PNPubNubClientStateConnected ||
+                    self.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+                    self.state == PNPubNubClientStateDisconnectedOnNetworkError);
+
+            // Ensure that there is connection available as well as permission to connect
+            shouldRestoreConnection = (shouldRestoreConnection && !isSimulatingReachability);
+            [self.reachability checkServiceAvailable:^(BOOL available) {
+
+                checkCompletionBlock(shouldRestoreConnection && available);
+            }];
+        }];
     }];
 }
 
@@ -2668,13 +2720,25 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
     [self pn_dispatchBlock:^{
 
+        dispatch_block_t completionBlock = ^{
+
+            [self.reachability checkServiceAvailable:^(BOOL available) {
+
+                checkCompletionBlock(available);
+            }];
+        };
         if (shouldUpdateInformation) {
 
             // Help reachability instance update it's state our of schedule
-            [self.reachability refreshReachabilityState];
-        }
+            [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
 
-        checkCompletionBlock([self.reachability isServiceAvailable]);
+                completionBlock();
+            }];
+        }
+        else {
+
+            completionBlock();
+        }
     }];
 }
 
@@ -2897,87 +2961,94 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)handleApplicationDidEnterForegroundState:(NSNotification *)__unused notification  {
 
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-        return @[PNLoggerSymbols.api.handleEnterForeground, [self humanReadableStateFrom:self.state]];
-    }];
-    
     [self pn_dispatchBlock:^{
+
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.api.handleEnterForeground, [self humanReadableStateFrom:self.state]];
+        }];
         
         // Try to refresh reachability state (there is situation when reachability state changed within
         // library to handle sockets timeout/error)
-        BOOL reachabilityWillSimulateAction = [self.reachability refreshReachabilityState];
-        
-        if ([self.reachability isServiceAvailable]) {
-            
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                
-                return @[PNLoggerSymbols.api.internetConnectionAvailable, [self humanReadableStateFrom:self.state]];
-            }];
-            
-            // Check whether application is suspended
-            if (self.state == PNPubNubClientStateSuspended) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.resumingConnection, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                self.state = PNPubNubClientStateConnected;
-                
-                self.asyncLockingOperationInProgress = NO;
-                [self.messagingChannel resume];
-                [self.serviceChannel resume];
-            }
-            else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.api.previousConnectionWasTerminatedBecauseOfErrorOnTransitionToForeground,
-                             [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if ([self shouldRestoreConnection]) {
-                    
-                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                        
-                        return @[PNLoggerSymbols.api.shouldRestoreConnection, [self humanReadableStateFrom:self.state]];
-                    }];
-                    
-                    
-                    self.asyncLockingOperationInProgress = NO;
-                    self.restoringConnection = YES;
-                    
-                    // Try to restore connection to remote PubNub services
-                    [self connect];
-                }
-            }
-        }
-        else {
-            
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                
-                return @[PNLoggerSymbols.api.networkConnectionWentDownWhileWasInBackgroundOnTransitionToForeground,
-                         [self humanReadableStateFrom:self.state]];
-            }];
-            
-            if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
-                
-                if ([self shouldRestoreConnection]) {
-                    
-                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                        
-                        return @[PNLoggerSymbols.api.connectionWillRestoreOnNetworkAvailability,
-                                 [self humanReadableStateFrom:self.state]];
-                    }];
-                    
-                    if (!reachabilityWillSimulateAction) {
-                        
-                        [self notifyDelegateClientDidDisconnectWithError:[PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]];
+        [self.reachability refreshReachabilityState:^(BOOL reachabilityWillSimulateAction) {
+
+            [self.reachability checkServiceAvailable:^(BOOL available) {
+
+                [self pn_dispatchBlock:^{
+
+                    if (available) {
+
+                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.api.internetConnectionAvailable, [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        // Check whether application is suspended
+                        if (self.state == PNPubNubClientStateSuspended) {
+
+                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                return @[PNLoggerSymbols.api.resumingConnection, [self humanReadableStateFrom:self.state]];
+                            }];
+
+                            self.state = PNPubNubClientStateConnected;
+
+                            self.asyncLockingOperationInProgress = NO;
+                            [self.messagingChannel resume];
+                            [self.serviceChannel resume];
+                        }
+                        else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                return @[PNLoggerSymbols.api.previousConnectionWasTerminatedBecauseOfErrorOnTransitionToForeground,
+                                        [self humanReadableStateFrom:self.state]];
+                            }];
+
+                            if ([self shouldRestoreConnection]) {
+
+                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                    return @[PNLoggerSymbols.api.shouldRestoreConnection, [self humanReadableStateFrom:self.state]];
+                                }];
+
+
+                                self.asyncLockingOperationInProgress = NO;
+                                self.restoringConnection = YES;
+
+                                // Try to restore connection to remote PubNub services
+                                [self connect];
+                            }
+                        }
                     }
-                }
-            }
-        }
+                    else {
+
+                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.api.networkConnectionWentDownWhileWasInBackgroundOnTransitionToForeground,
+                                    [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                            if ([self shouldRestoreConnection]) {
+
+                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                    return @[PNLoggerSymbols.api.connectionWillRestoreOnNetworkAvailability,
+                                            [self humanReadableStateFrom:self.state]];
+                                }];
+
+                                if (!reachabilityWillSimulateAction) {
+
+                                    [self notifyDelegateClientDidDisconnectWithError:[PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]];
+                                }
+                            }
+                        }
+                    }
+                }];
+            }];
+        }];
     }];
 }
 #else
@@ -3049,87 +3120,94 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 }
 
 - (void)handleWorkspaceDidWake:(NSNotification *)notification {
-    
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-        return @[PNLoggerSymbols.api.handleWorkspaceWake, [self humanReadableStateFrom:self.state]];
-    }];
-    
     [self pn_dispatchBlock:^{
+    
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+            return @[PNLoggerSymbols.api.handleWorkspaceWake, [self humanReadableStateFrom:self.state]];
+        }];
     
         // Try to refresh reachability state (there is situation when reachability state changed within
         // library to handle sockets timeout/error)
-        BOOL reachabilityWillSimulateAction = [self.reachability refreshReachabilityState];
-        
-        if ([self.reachability isServiceAvailable]) {
-            
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        [self.reachability refreshReachabilityState:^(BOOL reachabilityWillSimulateAction) {
 
-                return @[PNLoggerSymbols.api.internetConnectionAvailable, [self humanReadableStateFrom:self.state]];
-            }];
-            
-            // Check whether application is suspended
-            if (self.state == PNPubNubClientStateSuspended) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            [self.reachability checkServiceAvailable:^(BOOL available) {
 
-                    return @[PNLoggerSymbols.api.resumingConnection, [self humanReadableStateFrom:self.state]];
-                }];
-                
-                self.state = PNPubNubClientStateConnected;
-                
-                self.asyncLockingOperationInProgress = NO;
-                [self.messagingChannel resume];
-                [self.serviceChannel resume];
-            }
-            else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [self pn_dispatchBlock:^{
 
-                    return @[PNLoggerSymbols.api.previousConnectionWasTerminatedBecauseOfErrorOnWorkspaceWeak,
-                            [self humanReadableStateFrom:self.state]];
-                }];
-                
-                if ([self shouldRestoreConnection]) {
-                    
-                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                    if (available) {
 
-                        return @[PNLoggerSymbols.api.shouldRestoreConnection, [self humanReadableStateFrom:self.state]];
-                    }];
-                    
-                    
-                    self.asyncLockingOperationInProgress = NO;
-                    self.restoringConnection = YES;
-                    
-                    // Try to restore connection to remote PubNub services
-                    [self connect];
-                }
-            }
-        }
-        else {
-            
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.api.networkConnectionWentDownWhileWasInBackgroundOnWorkspaceWeak, [self humanReadableStateFrom:self.state]];
-            }];
-            
-            if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
-                
-                if ([self shouldRestoreConnection]) {
-                    
-                    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                            return @[PNLoggerSymbols.api.internetConnectionAvailable, [self humanReadableStateFrom:self.state]];
+                        }];
 
-                        return @[PNLoggerSymbols.api.connectionWillRestoreOnNetworkAvailability,
-                                [self humanReadableStateFrom:self.state]];
-                    }];
-                    
-                    if (!reachabilityWillSimulateAction) {
-                        
-                        [self notifyDelegateClientDidDisconnectWithError:[PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]];
+                        // Check whether application is suspended
+                        if (self.state == PNPubNubClientStateSuspended) {
+
+                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                return @[PNLoggerSymbols.api.resumingConnection, [self humanReadableStateFrom:self.state]];
+                            }];
+
+                            self.state = PNPubNubClientStateConnected;
+
+                            self.asyncLockingOperationInProgress = NO;
+                            [self.messagingChannel resume];
+                            [self.serviceChannel resume];
+                        }
+                        else if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                return @[PNLoggerSymbols.api.previousConnectionWasTerminatedBecauseOfErrorOnWorkspaceWeak,
+                                        [self humanReadableStateFrom:self.state]];
+                            }];
+
+                            if ([self shouldRestoreConnection]) {
+
+                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                    return @[PNLoggerSymbols.api.shouldRestoreConnection, [self humanReadableStateFrom:self.state]];
+                                }];
+
+
+                                self.asyncLockingOperationInProgress = NO;
+                                self.restoringConnection = YES;
+
+                                // Try to restore connection to remote PubNub services
+                                [self connect];
+                            }
+                        }
                     }
-                }
-            }
-        }
+                    else {
+
+                        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.api.networkConnectionWentDownWhileWasInBackgroundOnWorkspaceWeak, [self humanReadableStateFrom:self.state]];
+                        }];
+
+                        if (self.state == PNPubNubClientStateDisconnectedOnNetworkError) {
+
+                            if ([self shouldRestoreConnection]) {
+
+                                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                                    return @[PNLoggerSymbols.api.connectionWillRestoreOnNetworkAvailability,
+                                            [self humanReadableStateFrom:self.state]];
+                                }];
+
+                                if (!reachabilityWillSimulateAction) {
+
+                                    [self notifyDelegateClientDidDisconnectWithError:[PNError errorWithCode:kPNClientConnectionFailedOnInternetFailureError]];
+                                }
+                            }
+                        }
+                    }
+                }];
+            }];
+        }];
     }];
 }
 #endif
@@ -3901,11 +3979,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                     [channel checkConnecting:^(BOOL connecting) {
 
-                        [self pn_dispatchBlock:^{
+                        [channel checkReconnecting:^(BOOL reconnecting) {
 
-                            shouldChannelNotifyAboutEvent = (connected || connecting);
-                            completionBlock();
-                            checkCompletionBlock(shouldChannelNotifyAboutEvent);
+                            [self pn_dispatchBlock:^{
+
+                                shouldChannelNotifyAboutEvent = (connected || connecting || reconnecting);
+                                completionBlock();
+                                checkCompletionBlock(shouldChannelNotifyAboutEvent);
+                            }];
                         }];
                     }];
                 }];
@@ -3941,7 +4022,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (NSInteger)requestExecutionPossibilityStatusCode {
     
-    NSInteger statusCode = 0;
+    __block NSInteger statusCode = 0;
     
     // Check whether library suspended or not
     if (self.state == PNPubNubClientStateSuspended) {
@@ -3955,10 +4036,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if (![self isConnected]) {
 
             // Check whether client can subscribe for channels or not
-            if ([self.reachability isServiceReachabilityChecked] && [self.reachability isServiceAvailable]) {
+            [self.reachability checkServiceReachabilityChecked:^(BOOL checked) {
 
-                statusCode = kPNRequestExecutionFailedClientNotReadyError;
-            }
+                [self.reachability checkServiceAvailable:^(BOOL available) {
+
+                    if (checked && available) {
+
+                        statusCode = kPNRequestExecutionFailedClientNotReadyError;
+                    }
+                }];
+            }];
         }
         else {
 

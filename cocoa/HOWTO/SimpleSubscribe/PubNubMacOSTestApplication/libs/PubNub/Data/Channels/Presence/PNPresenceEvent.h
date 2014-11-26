@@ -44,7 +44,7 @@
 
 // Stores reference on channel on which this event
 // is fired
-@property (nonatomic, readonly, assign) PNChannel *channel;
+@property (nonatomic, readonly, strong) PNChannel *channel;
 
 /**
  @brief Stores reference on channel group with channel for which this event is fired

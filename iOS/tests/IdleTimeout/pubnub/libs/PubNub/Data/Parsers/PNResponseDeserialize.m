@@ -246,9 +246,8 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
             NSUInteger lastResponseEndIndex = contentRange.location + contentRange.length;
             [data setData:[data subdataWithRange:NSMakeRange(lastResponseEndIndex, [data length]-lastResponseEndIndex)]];
         }
-        
-        self.deserializing = NO;
 
+        self.deserializing = NO;
         parseCompletionBlock(parsedData);
     }];
 }
