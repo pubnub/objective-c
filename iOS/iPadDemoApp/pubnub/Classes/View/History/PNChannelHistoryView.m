@@ -387,7 +387,9 @@ typedef enum _PNHistoryMode {
     [progressAlertView show];
     
     __block __pn_desired_weak __typeof(self) weakSelf = self;
-    [self.historyHelper fetchHistoryWithBlock:^(NSArray *messages, PNChannel *channel, PNDate *startDate, PNDate *endDate, PNError *requestError) {
+    [self.historyHelper fetchHistoryWithBlock:^(NSArray *messages, PNChannel *channel,
+                                                PNDate *startDate, PNDate *endDate,
+                                                PNError *requestError) {
         
         [progressAlertView dismissWithAnimation:YES];
         

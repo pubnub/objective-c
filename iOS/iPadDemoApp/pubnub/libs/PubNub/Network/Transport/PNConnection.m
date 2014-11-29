@@ -1477,7 +1477,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delay * NSEC_PER_SEC));
                             dispatch_after(popTime, [self pn_privateQueue], ^{
                                 
-                                if ([PNBitwiseHelper is:weakSelf.state containsBit:PNConnectionReconnect]) {
+                                __strong __typeof__(self) strongSelf = weakSelf;
+                                
+                                if ([PNBitwiseHelper is:strongSelf.state containsBit:PNConnectionReconnect]) {
                                     
                                     [self disconnectByInternalRequest];
                                 }
@@ -2808,32 +2810,35 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             __pn_desired_weak __typeof__ (self) weakSelf = self;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPNConnectionRetryDelay * NSEC_PER_SEC));
             dispatch_after(popTime, [self pn_privateQueue], ^{
+                
+                __strong __typeof__(self) strongSelf = weakSelf;
 
                 // Check whether connection is still in bad state before issue connection
-                if ([PNBitwiseHelper is:weakSelf.state containsBit:PNConnectionError]) {
+                if ([PNBitwiseHelper is:strongSelf.state containsBit:PNConnectionError]) {
 
-                    [PNLogger logConnectionInfoMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
+                    [PNLogger logConnectionInfoMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
 
                         return @[PNLoggerSymbols.connection.closedWithFurtherReconnectionBecauseOfError,
-                                 (weakSelf.name ? weakSelf.name : weakSelf), @(weakSelf.state)];
+                                 (strongSelf.name ? strongSelf.name : strongSelf), @(strongSelf.state)];
                     }];
 
-                    [weakSelf resumeWakeUpTimer];
-                    [self stopTimeoutTimer];
+                    [strongSelf resumeWakeUpTimer];
+                    [strongSelf stopTimeoutTimer];
 
                     if (isByUserRequest) {
 
-                        [PNLogger logConnectionInfoMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
+                        [PNLogger logConnectionInfoMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
 
-                            return @[PNLoggerSymbols.connection.reconnectFromTheUserName, (weakSelf.name ? weakSelf.name : weakSelf),
-                                    @(weakSelf.state)];
+                            return @[PNLoggerSymbols.connection.reconnectFromTheUserName,
+                                     (strongSelf.name ? strongSelf.name : strongSelf),
+                                    @(strongSelf.state)];
                         }];
 
-                        [weakSelf connectWithResult:NULL];
+                        [strongSelf connectWithResult:NULL];
                     }
                     else {
 
-                        [weakSelf connectByInternalRequest:NULL];
+                        [strongSelf connectByInternalRequest:NULL];
                     }
                 }
             });
@@ -3686,51 +3691,54 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         }
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delay * NSEC_PER_SEC));
         void(^delayedBlock)(void) = ^{
+            
+            __strong __typeof__(self) strongSelf = weakSelf;
 
             // Check whether connection is still in bad state before issue connection
-            if ([PNBitwiseHelper is:weakSelf.state containsBit:PNConnectionConfiguring]) {
+            if ([PNBitwiseHelper is:strongSelf.state containsBit:PNConnectionConfiguring]) {
 
-                if (weakSelf.configurationRetryCount + 1 < kPNMaximumConfigurationRetryCount) {
+                if (strongSelf.configurationRetryCount + 1 < kPNMaximumConfigurationRetryCount) {
 
-                    [PNLogger logConnectionErrorMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
+                    [PNLogger logConnectionErrorMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
 
                         return @[PNLoggerSymbols.connection.stream.configurationRetryAttempt,
-                                 (weakSelf.name ? weakSelf.name : weakSelf), @(weakSelf.state)];
+                                 (strongSelf.name ? strongSelf.name : strongSelf),
+                                 @(strongSelf.state)];
                     }];
 
-                    weakSelf.configurationRetryCount++;
+                    strongSelf.configurationRetryCount++;
 
                     // Check whether client configuration failed during connection attempt or not
-                    if ([PNBitwiseHelper is:weakSelf.state strictly:YES containsBits:PNConnectionConfiguring, PNConnectionPrepareToConnect,
+                    if ([PNBitwiseHelper is:strongSelf.state strictly:YES containsBits:PNConnectionConfiguring, PNConnectionPrepareToConnect,
                          BITS_LIST_TERMINATOR]) {
 
-                        [weakSelf connectByInternalRequest:NULL];
+                        [strongSelf connectByInternalRequest:NULL];
                     }
                     else {
 
-                        [weakSelf prepareStreams];
+                        [strongSelf prepareStreams];
                     }
                 }
                 // Looks like connection instance can't retry anymore because it reached maximum retry count
                 else {
 
-                    [PNLogger logConnectionErrorMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
+                    [PNLogger logConnectionErrorMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
 
                         return @[PNLoggerSymbols.connection.stream.configurationRetryAttemptsExceeded,
-                                 (weakSelf.name ? weakSelf.name : weakSelf), @(weakSelf.state)];
+                                 (strongSelf.name ? strongSelf.name : strongSelf), @(strongSelf.state)];
                     }];
 
-                    weakSelf.configurationRetryCount = 0;
-                    weakSelf.connectionRetryCount = 0;
+                    strongSelf.configurationRetryCount = 0;
+                    strongSelf.connectionRetryCount = 0;
 
                     // Terminate operation of all streams and buffers (clean up)
-                    [weakSelf destroyStreams];
+                    [strongSelf destroyStreams];
                     
-                    [PNBitwiseHelper clear:&self->_state];
-                    [PNBitwiseHelper addTo:&self->_state bit:PNConnectionDisconnected];
+                    [PNBitwiseHelper clear:&strongSelf->_state];
+                    [PNBitwiseHelper addTo:&strongSelf->_state bit:PNConnectionDisconnected];
 
                     // Connection instance can't operate anymore, notify delegate about it's state
-                    [weakSelf.delegate connectionConfigurationDidFail:weakSelf];
+                    [strongSelf.delegate connectionConfigurationDidFail:strongSelf];
                 }
             }
         };
@@ -3773,20 +3781,24 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
         __pn_desired_weak __typeof__(self) weakSelf = self;
         dispatch_source_set_event_handler(self.connectionTimeoutTimer, ^{
+            
+            __strong __typeof__(self) strongSelf = weakSelf;
 
             [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                return @[PNLoggerSymbols.connection.handleTimeoutTimer, (weakSelf.name ? weakSelf.name : weakSelf),
-                        @(weakSelf.state)];
+                return @[PNLoggerSymbols.connection.handleTimeoutTimer,
+                         (strongSelf.name ? strongSelf.name : strongSelf), @(strongSelf.state)];
             }];
 
-            [weakSelf stopTimeoutTimer];
-            [weakSelf handleStreamTimeout];
+            [strongSelf stopTimeoutTimer];
+            [strongSelf handleStreamTimeout];
         });
         dispatch_source_set_cancel_handler(self.connectionTimeoutTimer, ^{
+            
+            __strong __typeof__(self) strongSelf = weakSelf;
 
             [PNDispatchHelper release:timerSource];
-            weakSelf.connectionTimeoutTimer = NULL;
+            strongSelf.connectionTimeoutTimer = NULL;
         });
 
         dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPNConnectionTimeout * NSEC_PER_SEC));
@@ -3821,15 +3833,19 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         self.wakeUpTimer = timerSource;
         __pn_desired_weak __typeof__(self) weakSelf = self;
         dispatch_source_set_event_handler(self.wakeUpTimer, ^{
+            
+            __strong __typeof__(self) strongSelf = weakSelf;
 
-            [weakSelf handleWakeUpTimer];
+            [strongSelf handleWakeUpTimer];
         });
         dispatch_source_set_cancel_handler(self.wakeUpTimer, ^{
+            
+            __strong __typeof__(self) strongSelf = weakSelf;
 
             [PNDispatchHelper release:timerSource];
 
-            weakSelf.wakeUpTimerSuspended = NO;
-            weakSelf.wakeUpTimer = NULL;
+            strongSelf.wakeUpTimerSuspended = NO;
+            strongSelf.wakeUpTimer = NULL;
         });
 
         [self resetWakeUpTimer];
