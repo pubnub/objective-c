@@ -10,7 +10,9 @@
 #import "PNMessage+Protected.h"
 #import "PubNub+Protected.h"
 
-@interface ViewController ()
+@interface ViewController () <PNDelegate>
+
+@property (nonatomic, strong) PubNub *pubNub;
 
 @end
 
@@ -25,23 +27,27 @@
 
     PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"  publishKey:@"demo" subscribeKey:@"demo" secretKey:@"demo"];
     myConfig.presenceHeartbeatTimeout = 5;
-    PubNub *pubNub = [PubNub clientWithConfiguration:myConfig andDelegate:self];
+    self.pubNub = [PubNub clientWithConfiguration:myConfig andDelegate:self];
 
-
-    [pubNub.observationCenter addMessageReceiveObserver:self
+    __pn_desired_weak __typeof__(self) weakSelf = self;
+    [self.pubNub.observationCenter addMessageReceiveObserver:self
                                               withBlock:^(PNMessage *message) {
+                                                  
+          __strong __typeof__(self) strongSelf = weakSelf;
 
-                                                  NSLog(@"Text Length: %i", textView.text.length);
+          NSLog(@"Text Length: %i", strongSelf.textView.text.length);
 
-                                                  if (textView.text.length > 2000) {
-                                                      [textView setText:@""];
-                                                  }
+          if (strongSelf.textView.text.length > 2000) {
+              [strongSelf.textView setText:@""];
+          }
 
-                                                  [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
+          [strongSelf.textView setText:[message.message stringByAppendingFormat:@"\n%@\n", strongSelf.textView.text]];
 
-                                              }];
+      }];
 
-    [pubNub.observationCenter addPresenceEventObserver:self withBlock:^(PNPresenceEvent *event) {
+    [self.pubNub.observationCenter addPresenceEventObserver:self withBlock:^(PNPresenceEvent *event) {
+        
+        __strong __typeof__(self) strongSelf = weakSelf;
 
         NSString *eventString;
         if (event.type == PNPresenceEventJoin) {
@@ -56,14 +62,14 @@
 
         eventString = [NSString stringWithFormat:@"%@ : %@", event.client.identifier, eventString];
 
-        [presenceView setText:[eventString stringByAppendingFormat:@"\n%@\n", presenceView.text]];
+        [strongSelf.presenceView setText:[eventString stringByAppendingFormat:@"\n%@\n", strongSelf.presenceView.text]];
 
     }];
 
 
-    [pubNub setClientIdentifier:@"SimpleSubscribeInstance"];
+    [self.pubNub setClientIdentifier:@"SimpleSubscribeInstance"];
 
-    [pubNub connectWithSuccessBlock:^(NSString *origin) {
+    [self.pubNub connectWithSuccessBlock:^(NSString *origin) {
 
                 PNLog(PNLogGeneralLevel, self, @"{BLOCK} PubNub client connected to: %@", origin);
 
@@ -82,12 +88,12 @@
                 [currentState setObject:zzState forKey:@"a"];
 
 
-                [pubNub subscribeOn:@[myChannel] withClientState:currentState];
+                [self.pubNub subscribeOn:@[myChannel] withClientState:currentState];
 
                 int64_t delayInSeconds = 5.0;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC); dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 // grab global occupancy list 5s later
-                [pubNub requestParticipantsListWithClientIdentifiers:NO clientState:YES];
+                [self.pubNub requestParticipantsListWithClientIdentifiers:NO clientState:YES];
 
             });
 
