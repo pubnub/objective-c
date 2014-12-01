@@ -17,55 +17,32 @@
 #pragma mark - Instance methods
 
 /**
- Construct new dispatch queue which should be owned by caller.
-
- @param ownerIdentifier
- Identifier of the owner which will be append as prefix to unique queue identifier.
-
- @param targetQueue
- If provided, then it will be used as target for new queue.
-
- @warning Caller is responsible for queue retain and release.
-
- @return New non-retained dispatch queue.
- */
-- (dispatch_queue_t)pn_serialQueueWithOwnerIdentifier:(NSString *)ownerIdentifier andTargetQueue:(dispatch_queue_t)targetQueue;
-
-/**
  Retrieve reference on private queue.
-
+ 
  @return Private queue or \c NULL if it hasn't been set yet.
  */
 - (dispatch_queue_t)pn_privateQueue;
 
 /**
- Set provided queue as object's private queue which will be used for synchronous and asynchronous block execution.
-
- @param queue
- Reference on queue which should be set as object's private queue.
+ @brief Configure private queue which will be owned by object on which it configured.
+ 
+ @discussion At configuration, object is able to retain created queue, but destruction should be 
+ assisted from outside (because category created on base class which won't allow to reload -dealloc
+ method).
+ 
+ @param identifier Identifier of the owner which will be append as prefix to unique queue 
+                   identifier.
+ @param priority   Priority of the queue, which should be set as target for this private queue.
+ 
+ @since 3.7.3
  */
-- (void)pn_setPrivateDispatchQueue:(dispatch_queue_t)queue;
+- (void)pn_setupPrivateSerialQueueWithIdentifier:(NSString *)identifier
+                                     andPriority:(dispatch_queue_priority_t)priority;
 
 /**
- Dispatch specified block synchronously on private queue.
-
- @warning Assertion will fire in case if private queue not specified earlier.
-
- @param block
- Code block which should be dispatched.
+ Terminate and release private dispatch queue.
  */
-- (void)pn_dispatchSynchronouslyBlock:(dispatch_block_t)block;
-
-/**
- Dispatch specified block on queue synchronously.
-
- @param queue
- Reference on queue which should be used for block dispatching.
-
- @param block
- Code block which should be dispatched.
- */
-- (void)pn_dispatchSynchronouslyOnQueue:(dispatch_queue_t)queue block:(dispatch_block_t)block;
+- (void)pn_destroyPrivateDispatchQueue;
 
 /**
  Dispatch specified block asynchronously on private queue.
@@ -73,7 +50,7 @@
  @param block
  Code block which should be dispatched.
  */
-- (void)pn_dispatchAsynchronouslyBlock:(dispatch_block_t)block;
+- (void)pn_dispatchBlock:(dispatch_block_t)block;
 
 /**
  Dispatch specified block on queue asynchronously.
@@ -86,12 +63,23 @@
  @param block
  Code block which should be dispatched.
  */
-- (void)pn_dispatchAsynchronouslyOnQueue:(dispatch_queue_t)queue block:(dispatch_block_t)block;
+- (void)pn_dispatchOnQueue:(dispatch_queue_t)queue block:(dispatch_block_t)block;
 
 /**
  Create assertion which will fire in case if code is running on non-private queue.
  */
 - (void)pn_scheduleOnPrivateQueueAssert;
+
+/**
+ @brief Allow to disable assert for the time when code should be called outside of queue.
+ 
+ @discussion This method mostly used in cases where there is not much time for GCD async operation 
+ completion, but queue dedicated methods should be called.
+ This method doesn't have backward functionality and permanently disable requirement.
+ 
+ @since 3.7.3
+ */
+- (void)pn_ignorePrivateQueueRequirement;
 
 #pragma mark -
 

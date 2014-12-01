@@ -55,7 +55,7 @@ typedef enum _PNConnectionChannelType {
 #pragma mark - Properties
 
 // Connection channel delegate
-@property (nonatomic, assign) id<PNConnectionChannelDelegate> delegate;
+@property (nonatomic, pn_desired_weak) id<PNConnectionChannelDelegate> delegate;
 
 
 #pragma mark Class methods
@@ -99,10 +99,12 @@ typedef enum _PNConnectionChannelType {
 
 - (void)connect;
 
+- (void)checkConnecting:(void (^)(BOOL connecting))checkCompletionBlock;
+
 /**
  * Check whether connection channel connected and ready for work
  */
-- (BOOL)isConnected;
+- (void)checkConnected:(void (^)(BOOL connected))checkCompletionBlock;
 
 /**
  Closing connection to the server. Requests queue won't be flushed.
@@ -112,20 +114,28 @@ typedef enum _PNConnectionChannelType {
 /**
  * Check whether connection channel disconnected
  */
-- (BOOL)isDisconnected;
+- (void)checkDisconnected:(void (^)(BOOL disconnected))checkCompletionBlock;
+
+/**
+ @brief Check whether connection channel re-establish connection on request or because of internal
+ logic.
+
+ @param checkCompletionBlock Block which is called at the end of check process and pass \c YES in
+                             case if channel in the reconnection process.
+ */
+- (void)checkReconnecting:(void (^)(BOOL reconnecting))checkCompletionBlock;
 
 /**
  * Stop any channel activity by request
  */
 - (void)suspend;
-- (BOOL)isSuspending;
-- (BOOL)isSuspended;
+- (void)checkSuspended:(void (^)(BOOL suspended))checkCompletionBlock;
 
 /**
  * Resume channel activity and proceed execution of all suspended tasks
  */
 - (void)resume;
-- (BOOL)isResuming;
+- (void)checkResuming:(void (^)(BOOL resuming))checkCompletionBlock;
 
 
 #pragma mark - Requests queue management methods
@@ -141,10 +151,8 @@ typedef enum _PNConnectionChannelType {
  * Same as scheduleRequest:shouldObserveProcessing: but allow to specify whether request should be put
  * out of order (executed next) or not
  */
-- (void)scheduleRequest:(PNBaseRequest *)request
-shouldObserveProcessing:(BOOL)shouldObserveProcessing
-             outOfOrder:(BOOL)shouldEnqueueRequestOutOfOrder
-       launchProcessing:(BOOL)shouldLaunchRequestsProcessing;
+- (void)scheduleRequest:(PNBaseRequest *)request shouldObserveProcessing:(BOOL)shouldObserveProcessing
+             outOfOrder:(BOOL)shouldEnqueueRequestOutOfOrder launchProcessing:(BOOL)shouldLaunchRequestsProcessing;
 
 /**
  * Triggering requests queue execution (maybe it was locked with previous request and waited)

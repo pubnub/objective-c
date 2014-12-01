@@ -25,8 +25,8 @@
 
 #pragma mark Static
 
-static NSString * const kPNLoggerDumpFileName = @"pubnub-console-dump.txt";
-static NSString * const kPNLoggerOldDumpFileName = @"pubnub-console-dump.1.txt";
+static NSString * const kPNLoggerDumpFileName = @"pubnub-console-dump.pnlog";
+static NSString * const kPNLoggerOldDumpFileName = @"pubnub-console-dump.1.pnlog";
 
 /**
  Stores maximum in-memory log size before storing it into the file. As soon as in-memory storage will reach this limit it
@@ -125,6 +125,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .proxyConfigurationNotRequired = @"0100066",
         .destroyed = @"0100067",
         .resourceLinkage = @"0100068",
+        .connectionRetryAttemptInProgress = @"0100069",
 
         .stream = {
 
@@ -784,6 +785,17 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
  */
 + (BOOL)isDebuggerAttached;
 
+/**
+ @brief Store binary data received from remote server.
+ 
+ @param isExpectedResponse Whether packet received under expected status code and it's content valid.
+ @param httpPacketBlock    Block which is called to calculate data which should be stored.
+ 
+ @since 3.7.3
+ */
++ (void)storeRAWHTTPPacket:(BOOL)isExpectedResponse dataDescription:(NSString *)dataDescription
+                  withData:(NSData *(^)(void))httpPacketBlock;
+
 
 #pragma mark - Instance methods
 
@@ -1068,19 +1080,49 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
 + (void)storeHTTPPacketData:(NSData *(^)(void))httpPacketBlock {
 
-    if ([self isDumpingHTTPResponse] && httpPacketBlock) {
+    if ([self isDumpingHTTPResponse]) {
+        
+        [self storeRAWHTTPPacket:YES dataDescription:nil withData:httpPacketBlock];
+    }
+}
 
++ (void)storeUnexpectedHTTPDescription:(NSString *)packetDescription packetData:(NSData *(^)(void))httpPacketBlock {
+    
+    [self storeRAWHTTPPacket:NO dataDescription:packetDescription withData:httpPacketBlock];
+}
+
++ (void)storeRAWHTTPPacket:(BOOL)isExpectedResponse dataDescription:(NSString *)dataDescription
+                  withData:(NSData *(^)(void))httpPacketBlock {
+    
+    if (httpPacketBlock) {
+        
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wundeclared-selector"
-        NSString *storePath = [[self sharedInstance].httpPacketStoreFolderPath stringByAppendingFormat:@"/response-%@.dmp",
-                               [[NSDate date] performSelector:@selector(logDescription)]];
+        NSString *entryTimeToken = [[NSDate date] performSelector:@selector(logDescription)];
+        NSString *baseFileName = [NSString stringWithFormat:@"%@response-%@",
+                                  (!isExpectedResponse ? [NSString stringWithFormat:@"unexpected-"] : @""),
+                                  entryTimeToken];
+        NSString *packetName = [baseFileName stringByAppendingPathExtension:@"dmp"];
+        NSString *packetDetailsName = [baseFileName stringByAppendingString:@"-details.dmp"];
+        NSString *packetStorePath = [[self sharedInstance].httpPacketStoreFolderPath stringByAppendingPathComponent:packetName];
+        
+        NSString *detailsStorePath = nil;
+        if (dataDescription) {
+            
+            detailsStorePath = [[self sharedInstance].httpPacketStoreFolderPath stringByAppendingPathComponent:packetDetailsName];
+        }
         #pragma clang diagnostic pop
-
+        
         NSData *packetData = httpPacketBlock();
+        NSData *packetDescription = (dataDescription ? [dataDescription dataUsingEncoding:NSUTF8StringEncoding] : nil);
         dispatch_async([self sharedInstance].httpProcessingQueue, ^{
 
-            if(![packetData writeToFile:storePath atomically:YES]){
-
+            if(![packetData writeToFile:packetStorePath atomically:YES]){
+                
+                NSLog(@"CAN'T SAVE DUMP: %@", packetData);
+            }
+            if(![packetDescription writeToFile:detailsStorePath atomically:YES]){
+                
                 NSLog(@"CAN'T SAVE DUMP: %@", packetData);
             }
         });

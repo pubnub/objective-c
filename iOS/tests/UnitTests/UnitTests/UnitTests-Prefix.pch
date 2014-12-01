@@ -16,6 +16,7 @@
     #import "PNImports.h"
 
     #import "GCDWrapper.h"
+    #import "GCDGroup.h"
 
     static NSUInteger const kTestTestTimout = 30;
 

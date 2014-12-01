@@ -80,6 +80,9 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
 // Stores whether message should be stored on PubNub servers for future usage with History API.
 @property (nonatomic, assign, getter = shouldStoreInHistory) BOOL storeInHistory;
 
+// Stpres whether message body has been encrypted or not
+@property (nonatomic, assign, getter = isContentEncrypted) BOOL contentEncrypted;
+
 // Stores reference on channel to which this message
 // should be sent
 @property (nonatomic, strong) PNChannel *channel;

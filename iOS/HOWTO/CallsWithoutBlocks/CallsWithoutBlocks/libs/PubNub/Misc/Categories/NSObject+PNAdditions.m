@@ -11,6 +11,12 @@
 #import "PNHelper.h"
 
 
+#define DEBUG_QUEUE 0
+#if DEBUG_QUEUE
+    #warning Queue assertion is ON. Turn OFF before deployment.
+#endif
+
+
 #pragma mark Category private interface declaration
 
 @interface NSObject (PNAdditionsPrivate)
@@ -18,54 +24,37 @@
 
 #pragma mark - Instance methods
 
-
-/**
- Dispatch specified block on queue synchronous or asynchronous depending on settings.
-
- @param queue
- Reference on queue which should be used for block dispatching.
-
- @param dispatchSynchronously
- Whether code should be dispatched with \a dispatch_sync or \a dispatch_async.
-
- @param block
- Code block which should be dispatched.
- */
-- (void)pn_dispatchOnQueue:(dispatch_queue_t)queue synchronous:(BOOL)dispatchSynchronously block:(dispatch_block_t)block;
-
-
 #pragma mark - Misc methods
 
 /**
- Check associated objects storage for reference on specific key pointer value.
-
- @note If \c NULL returned as pointer it mean that it never stored for provided queue. Queue is new or doesn't belong
- to receiver object.
-
- @param queue
- Reference on queue for which pointer should be found.
-
- @return Specific key pointer value or \c NULL if there is no key stored for specified queue.
+ @brief Look into instance storage for information about whether object discard requirement on code
+ execution only on private queue or not.
+ 
+ @return \c YES will allow to execute submitted block w/o check and treated as private by default.
+ 
+ @since 3.7.3
  */
-- (const void *)pn_specificKeyPointerForQueue:(dispatch_queue_t)queue;
+- (BOOL)pn_ignoringPrivateQueueRequirement;
 
 /**
- Store in associated objects linkage between queue and specific key pointer.
-
- @param pointer
- Pointer to specific key.
-
- @param queue
- Reference on GCD queue which should be linked with pointer.
+ @brief Allow to check whether currently instance code is running on it's private queue or not.
+ 
+ @return \c YES in case if dispatch_get_specific for pointer stored inside of associated object will
+ return non-NULL information.
+ 
+ @since 3.7.3
  */
-- (void)pn_storeSpecificKeyPointer:(const void *)pointer forQueue:(dispatch_queue_t)queue;
+- (BOOL)pn_runningOnPrivateQueue;
 
 /**
- Return reference on existing or lazily create new map of queue name to pointer of "specific" key.
-
- @return Mutable dictionary which is able to store new mapping entries.
+ @brief Try to retrieve reference on wrapper which should be stored as associated object of instance
+ if queue has been configured before.
+ 
+ @return \c nil in case if private queue never been configured for this instance.
+ 
+ @since 3.7.3
  */
-- (NSMutableDictionary *)pn_queuePointers;
+- (PNDispatchObjectWrapper *)pn_privateQueueWrapper;
 
 #pragma mark -
 
@@ -80,149 +69,111 @@
 
 #pragma mark - Instance methods
 
-- (dispatch_queue_t)pn_serialQueueWithOwnerIdentifier:(NSString *)ownerIdentifier andTargetQueue:(dispatch_queue_t)targetQueue {
-
-    NSString *queueIdentifier = [NSString stringWithFormat:@"com.pubnub.%@.%@", ownerIdentifier, [PNHelper UUID]];
-    const char *cQueueIdentifier = [queueIdentifier UTF8String];
-
-    dispatch_queue_t privateQueue = dispatch_queue_create(cQueueIdentifier, DISPATCH_QUEUE_SERIAL);
-    if (targetQueue) {
-
-        dispatch_set_target_queue(privateQueue, targetQueue);
-    }
-
-    void *context = (__bridge void *)self;
-
-    // Construct pointer which will be used for code block execution and make sure to run code on provided queue.
-    const void *privateQueueSpecificPointer = &cQueueIdentifier;
-    [self pn_storeSpecificKeyPointer:privateQueueSpecificPointer forQueue:privateQueue];
-    dispatch_queue_set_specific(privateQueue, privateQueueSpecificPointer, context, NULL);
-
-
-    return privateQueue;
-}
-
 - (dispatch_queue_t)pn_privateQueue {
     
-    dispatch_queue_t queue = ((PNDispatchObjectWrapper *)objc_getAssociatedObject(self, "privateQueue")).queue;
+    dispatch_queue_t queue = [self pn_privateQueueWrapper].queue;
     
     return (queue ? queue : NULL);
 }
 
-- (void)pn_setPrivateDispatchQueue:(dispatch_queue_t)queue {
+- (PNDispatchObjectWrapper *)pn_privateQueueWrapper {
     
-    if (queue) {
+    return (PNDispatchObjectWrapper *)objc_getAssociatedObject(self, "privateQueue");
+}
 
-        objc_setAssociatedObject(self, "privateQueue", [PNDispatchObjectWrapper wrapperForObject:queue], OBJC_ASSOCIATION_RETAIN);
+- (void)pn_setupPrivateSerialQueueWithIdentifier:(NSString *)identifier
+                                     andPriority:(dispatch_queue_priority_t)priority {
+    
+    dispatch_queue_t privateQueue = [PNDispatchHelper serialQueueWithIdentifier:identifier];
+    dispatch_queue_t targetQueue = dispatch_get_global_queue(priority, 0);
+    dispatch_set_target_queue(privateQueue, targetQueue);
+    const char *cQueueIdentifier = dispatch_queue_get_label(privateQueue);
+    
+    // Construct pointer which will be used for code block execution and make sure to run code on provided queue.
+    void *context = (__bridge void *)self;
+    const void *privateQueueSpecificPointer = &cQueueIdentifier;
+    dispatch_queue_set_specific(privateQueue, privateQueueSpecificPointer, context, NULL);
+    
+    // Store queue inside of wrapper as associated object of this instance
+    PNDispatchObjectWrapper *wrapper = [PNDispatchObjectWrapper wrapperForObject:privateQueue
+                                        specificKey:[NSValue valueWithPointer:privateQueueSpecificPointer]];
+    if (wrapper) {
+        
+        objc_setAssociatedObject(self, "privateQueue", wrapper, OBJC_ASSOCIATION_RETAIN);
     }
+    
 }
 
-- (void)pn_dispatchSynchronouslyBlock:(dispatch_block_t)block {
+- (void)pn_destroyPrivateDispatchQueue {
+    
+    [PNDispatchHelper release:[self pn_privateQueue]];
+    objc_setAssociatedObject(self, "privateQueue", nil, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (void)pn_dispatchBlock:(dispatch_block_t)block {
 
     dispatch_queue_t privateQueue = [self pn_privateQueue];
     NSAssert(privateQueue != NULL, @"The given block can't be scheduled because private queue not set yet.");
 
-    [self pn_dispatchSynchronouslyOnQueue:privateQueue block:block];
+    [self pn_dispatchOnQueue:privateQueue block:block];
 }
 
-- (void)pn_dispatchSynchronouslyOnQueue:(dispatch_queue_t)queue block:(dispatch_block_t)block {
-
-    [self pn_dispatchOnQueue:queue synchronous:YES block:block];
-}
-
-- (void)pn_dispatchAsynchronouslyBlock:(dispatch_block_t)block {
-
-    dispatch_queue_t privateQueue = [self pn_privateQueue];
-    NSAssert(privateQueue != NULL, @"The given block can't be scheduled because private queue not set yet.");
-
-    [self pn_dispatchAsynchronouslyOnQueue:privateQueue block:block];
-}
-
-- (void)pn_dispatchAsynchronouslyOnQueue:(dispatch_queue_t)queue block:(dispatch_block_t)block {
-
-    [self pn_dispatchOnQueue:queue synchronous:NO block:block];
-}
-
-- (void)pn_dispatchOnQueue:(dispatch_queue_t)queue synchronous:(BOOL)dispatchSynchronously block:(dispatch_block_t)block {
+- (void)pn_dispatchOnQueue:(dispatch_queue_t)queue block:(dispatch_block_t)block {
 
     if (block) {
 
-        // Checking whether we already running on provided queue or not.
-        if ([self pn_specificKeyPointerForQueue:queue]) {
+        if (queue) {
 
-            // Looks like code execution flow already on specified queue, so we will just execute block.
-            // In this case dispatchSynchronously is ignored and executed in current context to prevent possible deadlock.
-            block();
-        }
-        else {
+            // Check whether code is running on instance private queue or not
+            if ([self pn_runningOnPrivateQueue]) {
 
-            if (dispatchSynchronously) {
-
-                dispatch_sync(queue, ^{
-
-                    block();
-                });
+                block();
             }
             else {
 
                 dispatch_async(queue, block);
             }
         }
+        else {
+
+            block();
+        }
     }
 }
 
 - (void)pn_scheduleOnPrivateQueueAssert {
+    
+#if DEBUG_QUEUE
+    NSAssert([self pn_runningOnPrivateQueue], @"Code should be scheduled on private queue");
+#endif
+}
 
-    dispatch_queue_t privateQueue = [self pn_privateQueue];
-    if (privateQueue != NULL) {
-
-        NSAssert(([self pn_specificKeyPointerForQueue:[self pn_privateQueue]] != NULL),
-                 @"Code shoud be shceduled on private queue");
-    }
+- (void)pn_ignorePrivateQueueRequirement {
+    
+    objc_setAssociatedObject(self, "ignorePrivateQueueRequirement", @YES, OBJC_ASSOCIATION_RETAIN);
 }
 
 
 #pragma mark - Misc methods
 
-- (const void *)pn_specificKeyPointerForQueue:(dispatch_queue_t)queue {
-
-    const char *pointer = NULL;
-    if (queue) {
-
-        // Retrieve reference on stored specific ket pointer value using queue label as key.
-        const char *queueLabel = dispatch_queue_get_label(queue);
-        NSValue *pointerValue = [[self pn_queuePointers] valueForKey:[NSString stringWithUTF8String:queueLabel]];
-
-
-        pointer = (pointerValue ? [pointerValue pointerValue] : NULL);
-    }
-
-
-    return pointer;
+- (BOOL)pn_ignoringPrivateQueueRequirement {
+    
+    return [(NSNumber *)objc_getAssociatedObject(self, "ignorePrivateQueueRequirement") boolValue];
 }
 
-- (void)pn_storeSpecificKeyPointer:(const void *)pointer forQueue:(dispatch_queue_t)queue {
-
-    if (pointer != NULL && queue != NULL) {
-
-        // Store reference on specific ket pointer value using queue label as key.
-        const char *queueLabel = dispatch_queue_get_label(queue);
-        [[self pn_queuePointers] setValue:[NSValue valueWithPointer:pointer]
-                                   forKey:[NSString stringWithUTF8String:queueLabel]];
+- (BOOL)pn_runningOnPrivateQueue {
+    
+    BOOL runningOnPrivateQueue = [self pn_ignoringPrivateQueueRequirement];
+    if (!runningOnPrivateQueue) {
+        
+        PNDispatchObjectWrapper *wrapper = [self pn_privateQueueWrapper];
+        if (wrapper) {
+            
+            runningOnPrivateQueue = [(__bridge id)dispatch_get_specific(wrapper.specificKeyPointer.pointerValue) isEqual:self];
+        }
     }
-}
-
-- (NSMutableDictionary *)pn_queuePointers {
-
-    NSMutableDictionary *queuePointers = objc_getAssociatedObject(self, "queuePointersMap");
-    if (!queuePointers) {
-
-        queuePointers = [NSMutableDictionary dictionary];
-        objc_setAssociatedObject(self, "queuePointersMap", queuePointers, OBJC_ASSOCIATION_RETAIN);
-    }
-
-
-    return queuePointers;
+    
+    return runningOnPrivateQueue;
 }
 
 #pragma mark -

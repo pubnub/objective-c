@@ -359,9 +359,9 @@ didFailParticipantsListDownloadForChannel:(PNChannel *)channel
     NSNumber *shouldRestoreSubscriptionFromLastTimeToken = @(NO);
     NSString *lastTimeToken = @"0";
 
-    if ([[PubNub subscribedChannels] count] > 0) {
+    if ([[PubNub subscribedObjectsList] count] > 0) {
 
-        lastTimeToken = [[[PubNub subscribedChannels] lastObject] updateTimeToken];
+        lastTimeToken = [[[PubNub subscribedObjectsList] lastObject] updateTimeToken];
     }
 
     PNLog(PNLogGeneralLevel, self, @"PubNub client should restore subscription from last time token? %@ (last time token: %@)",

@@ -74,6 +74,27 @@
     return res;
 }
 
++ (BOOL)isGCDGroup:(GCDGroup *)gcdGroup timeoutFiredValue:(NSInteger)timeout {
+    NSDate *dateLimit = [NSDate dateWithTimeIntervalSinceNow:timeout];
+    
+    BOOL res = NO;
+    
+    while(YES) {
+        if (![gcdGroup wait:DISPATCH_TIME_NOW]) {
+            break;
+        }
+        
+        if ([[NSDate date] compare:dateLimit] == NSOrderedDescending) {
+            res = YES;
+            break;
+        }
+        
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+    }
+    
+    return res;
+}
+
 + (void)sleepForSeconds:(NSUInteger)sec {
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:sec]];
 }

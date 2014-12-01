@@ -67,8 +67,11 @@
  * Retrieve reference on request which was stored by communication channel by it's identifier
  */
 - (PNBaseRequest *)storedRequestWithIdentifier:(NSString *)identifier;
+
 - (PNBaseRequest *)nextStoredRequest;
+
 - (PNBaseRequest *)nextStoredRequestAfter:(PNBaseRequest *)request;
+
 - (PNBaseRequest *)lastStoredRequest;
 - (BOOL)isWaitingStoredRequestCompletion:(NSString *)identifier;
 - (void)removeStoredRequest:(PNBaseRequest *)request;
@@ -88,7 +91,7 @@
 /**
  Close only connection w/o any further notification to the user.
  */
-- (void)disconnectOnInternalRequest;
+- (void)terminateConnection;
 
 /**
  Closing connection to the server. Requests queue won't be flushed.
@@ -100,13 +103,28 @@
 /**
  * Reconnect main communication channel on which this communication channel is working
  */
-- (void)reconnect;
+- (void)reconnectWithBlock:(dispatch_block_t)processReportBlock;
 
 
 #pragma mark - Misc methods
 
+/**
+* Check whether connection channel connected and ready for work
+*/
+- (BOOL)isConnected;
+
 - (BOOL)isConnecting;
 - (BOOL)isReconnecting;
+
+- (BOOL)isSuspending;
+- (BOOL)isSuspended;
+- (BOOL)isResuming;
+
+/**
+* Check whether connection channel disconnected
+*/
+- (BOOL)isDisconnected;
+
 - (BOOL)isDisconnecting;
 
 /**

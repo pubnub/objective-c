@@ -282,6 +282,11 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
     [self updateLayout];
 }
 
+- (void)handleUserInputCompleted {
+    
+    [self completeUserInput];
+}
+
 
 #pragma mark - UITextView delegate methods
 
@@ -403,6 +408,7 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
             
             self.stateHelper.channelName = nil;
         }
+        self.stateHelper.state = self.clientStateTextView.text;
     }
     else {
         

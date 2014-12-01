@@ -73,9 +73,9 @@
 "channelRegistryGroupAuditSuccessAlertViewDescription"="PubNub client successfully retrieved list of channel groups for \"%@\" namespace.";
 "channelRegistryGroupChannelsAuditSuccessAlertViewDescription"="PubNub client successfully retrieved list of channels for %@ group.";
 "channelRegistryAuditFailureAlertViewShortDescription"="Channel registry audition did fail.";
-"channelRegistryNamespaceAuditFailureAlertViewDescription"="PubNub client was unable to retrieved list of namespaces because of error:\n%@";
-"channelRegistryGroupAuditFailureAlertViewDescription"="PubNub client was unable to retrieved list of channel groups for \"@\" namespace because of error:\n%@";
-"channelRegistryGroupChannelsAuditFailureAlertViewDescription"="PubNub client was unable to retrieved list of channels for %@ group because of error:\n%@";
+"channelRegistryNamespaceAuditFailureAlertViewDescription"="PubNub client was unable to retrieve list of namespaces because of error:\n%@";
+"channelRegistryGroupAuditFailureAlertViewDescription"="PubNub client was unable to retrieve list of channel groups for \"%@\" namespace because of error:\n%@";
+"channelRegistryGroupChannelsAuditFailureAlertViewDescription"="PubNub client was unable to retrieve list of channels for %@ group because of error:\n%@";
 "channelRegistryNamespaceRemoveSuccessAlertViewShortDescription"="Namespace removal successful.";
 "channelRegistryNamespaceRemoveSuccessAlertViewDescription"="PubNub client successfully removed \"%@\" namespace from channel registry.";
 "channelRegistryNamespaceRemoveFailureAlertViewShortDescription"="Namespace removal did fail.";

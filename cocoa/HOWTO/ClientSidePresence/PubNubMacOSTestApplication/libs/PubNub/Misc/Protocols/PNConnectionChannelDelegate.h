@@ -66,6 +66,16 @@
                 withError:(PNError *)error;
 
 /**
+ @brief Send to PubNub client when connection channel is about to reschedule requests which stored
+ in queue and didn't have enough time to complete processing.
+ 
+ @param channel Reference on communication channel which sent this event.
+ 
+ @since 3.7.3
+ */
+- (void)connectionChannelWillReschedulePendingRequests:(PNConnectionChannel *)channel;
+
+/**
  * Sent to the PubNub client when connection channel is about to suspend it's operation
  */
 - (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel;

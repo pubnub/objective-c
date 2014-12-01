@@ -102,7 +102,8 @@
                 
                 if (hasVaildName || hasVaildNamespace) {
                     
-                    object = [PNChannelGroup channelGroupWithName:self.objectName inNamespace:self.objectNamespace];
+                    object = [PNChannelGroup channelGroupWithName:self.objectName inNamespace:self.objectNamespace
+                                            shouldObservePresence:self.observePresence];
                 }
             }
             else if(hasVaildName) {

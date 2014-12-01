@@ -73,7 +73,7 @@
 /**
  Check whether channel is able and will restore subscription on set of channels.
  */
-- (BOOL)willRestoreSubscription;
+- (void)checkWillRestoreSubscription:(void (^)(BOOL willRestore))checkCompletionBlock;
 
 /**
  Method will initiate subscription on specified set of channels. This request will add provided channels set to the

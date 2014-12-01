@@ -92,6 +92,100 @@
 + (PubNub *)clientWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;
 
 /**
+ @brief Create and initialize \b PubNub client instance with pre-defined configuration. Returned instance automatically
+ will attempt to establish connection.
+ 
+ @param configuration \b PNConfiguration stores all required parameters to make sure that \b PubNub client will operate
+                      as it has been requested.
+ 
+ @return Initialized and ready to use \b PubNub client instance.
+ 
+ @since 3.7.3
+ */
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration;
+
+/**
+ @brief Create and initialize \b PubNub client instance with pre-defined configuration. Returned instance automatically
+ will attempt to establish connection.
+ 
+ @code
+ @endcode
+ This method extends \a +connectingClientWithConfiguration: and allow to specify connection success and failure 
+ handling blocks.
+ 
+ @param configuration \b PNConfiguration stores all required parameters to make sure that \b PubNub client will operate
+                      as it has been requested.
+ @param success       The block which will be called by \b PubNub client as soon as it will complete handshake and all
+                      preparations. The block takes one argument: \c origin - name of the origin to which \b PubNub
+                      client connected.
+ @param failure       The block which will be called by \b PubNub client in case of any errors which occurred during
+                      connection. The block takes one argument: \c connectionError - error which describes what exactly
+                      went wrong. Always check \a connectionError.code to find out what caused error (check 
+                      PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and 
+                      \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @note \c failure block may be called few times in few cases:
+       1) connection really failed and it will pass \b PNError instance in block.
+       2) at the moment when this method has been called there was no connection or \b PubNub client doesn't have
+          enough time to validate its availability.
+ 
+ @return Initialized and ready to use \b PubNub client instance.
+ 
+ @since 3.7.3
+ */
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration
+                              andSuccessBlock:(PNClientConnectionSuccessBlock)success
+                                   errorBlock:(PNClientConnectionFailureBlock)failure;
+
+/**
+ @brief Create and initialize \b PubNub client instance with pre-defined configuration. Returned instance automatically
+ will attempt to establish connection.
+ 
+ @param configuration \b PNConfiguration stores all required parameters to make sure that \b PubNub client will operate
+                      as it has been requested.
+ @param delegate      Reference on instance which would like to receive callbacks from \b PubNub client.
+ 
+ @return Initialized and ready to use \b PubNub client instance.
+ 
+ @since 3.7.3
+ */
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate;
+
+/**
+ @brief Create and initialize \b PubNub client instance with pre-defined configuration. Returned instance automatically
+ will attempt to establish connection.
+ 
+ @code
+ @endcode
+ This method extends \a +connectingClientWithConfiguration:andDelegate: and allow to specify connection success and 
+ failure handling blocks.
+ 
+ @param configuration \b PNConfiguration stores all required parameters to make sure that \b PubNub client will operate
+                      as it has been requested.
+ @param delegate      Reference on instance which would like to receive callbacks from \b PubNub client.
+  @param success       The block which will be called by \b PubNub client as soon as it will complete handshake and all
+                      preparations. The block takes one argument: \c origin - name of the origin to which \b PubNub
+                      client connected.
+ @param failure       The block which will be called by \b PubNub client in case of any errors which occurred during
+                      connection. The block takes one argument: \c connectionError - error which describes what exactly
+                      went wrong. Always check \a connectionError.code to find out what caused error (check 
+                      PNErrorCodes header file and use \a -localizedDescription / \a -localizedFailureReason and 
+                      \a -localizedRecoverySuggestion to get human readable description for error).
+ 
+ @note \c failure block may be called few times in few cases:
+       1) connection really failed and it will pass \b PNError instance in block.
+       2) at the moment when this method has been called there was no connection or \b PubNub client doesn't have
+          enough time to validate its availability.
+ 
+ @return Initialized and ready to use \b PubNub client instance.
+ 
+ @since 3.7.3
+ */
++ (PubNub *)connectingClientWithConfiguration:(PNConfiguration *)configuration delegate:(id<PNDelegate>)delegate
+                              andSuccessBlock:(PNClientConnectionSuccessBlock)success
+                                   errorBlock:(PNClientConnectionFailureBlock)failure;
+
+/**
  Allow completely reset \b PubNub client. All caches, scheduled messages, transport layer instances will be discarded.
  
  @code
@@ -643,7 +737,7 @@
  
  @note \c failure block may be called few times in few cases:
        1) connection really failed and it will pass \b PNError instance in block.
-       2) at the moment when this method has been called there was no connection or \b PubNub client doesn't have enough time to validate its availability.
+       2) at the moment when this method has been called there was no connection or \b PubNub client doesn't have enough time to validate its availability. In this case \c error will be \c nil
 
  @warning Connection will fail in case if \b PubNub client not configured (\a +setConfiguration:).
 

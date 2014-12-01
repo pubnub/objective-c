@@ -426,15 +426,15 @@
 - (void)requestChannelGroupsForNamespace:(NSString *)nspace reschedulingMethodCall:(BOOL)isMethodCallRescheduled
              withCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.channelGroupsRequestAttempt, (nspace ? nspace : [NSNull null]),
-                 [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.channelGroupsRequestAttempt, (nspace ? nspace : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
+        }];
         
-        [self pn_dispatchAsynchronouslyBlock:^{
+        [self performAsyncLockingBlock:^{
             
             if (!isMethodCallRescheduled) {
                 
@@ -445,7 +445,7 @@
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.requestChannelGroups, [self humanReadableStateFrom:self.state]];
                 }];
@@ -461,7 +461,7 @@
             // Looks like client can't send request because of some reasons
             else {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.channelGroupsRequestImpossible,
                              [self humanReadableStateFrom:self.state]];
@@ -477,19 +477,19 @@
                     handlerBlock(nspace, nil, requestError);
                 }
             }
-        }];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        }
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeChannelGroupsRequest,
-                            [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeChannelGroupsRequest,
+                                [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeRequestChannelGroupsForNamespace:nspace reschedulingMethodCall:isMethodCallRescheduled
+                                      withCompletionHandlingBlock:handlerBlock];
                }];
-               
-               [self postponeRequestChannelGroupsForNamespace:nspace reschedulingMethodCall:isMethodCallRescheduled
-                                           withCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeRequestChannelGroupsForNamespace:(NSString *)nspace reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -518,14 +518,14 @@
 - (void)requestChannelGroupNamespacesWithReschedulingMethodCall:(BOOL)isMethodCallRescheduled
                                      andCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.channelGroupNamespacesRetrieveAttempt, [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.channelGroupNamespacesRetrieveAttempt, [self humanReadableStateFrom:self.state]];
+        }];
         
-        [self pn_dispatchAsynchronouslyBlock:^{
+        [self performAsyncLockingBlock:^{
             
             if (!isMethodCallRescheduled) {
                 
@@ -536,7 +536,7 @@
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.retrievingChannelGroupNamespaces, [self humanReadableStateFrom:self.state]];
                 }];
@@ -551,7 +551,7 @@
             // Looks like client can't send request because of some reasons
             else {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.channelGroupNamespacesRetrieveImpossible,
                              [self humanReadableStateFrom:self.state]];
@@ -565,19 +565,19 @@
                     handlerBlock(nil, requestError);
                 }
             }
-        }];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        }
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeChannelGroupNamespacesRetrieval,
-                            [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeChannelGroupNamespacesRetrieval,
+                                [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeChannelGroupNamespacesRequestWithReschedulingMethodCall:isMethodCallRescheduled
+                                                              andCompletionHandlingBlock:handlerBlock];
                }];
-               
-               [self postponeChannelGroupNamespacesRequestWithReschedulingMethodCall:isMethodCallRescheduled
-                                                          andCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeChannelGroupNamespacesRequestWithReschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -603,15 +603,15 @@
 - (void)removeChannelGroupNamespace:(NSString *)nspace reschedulingMethodCall:(BOOL)isMethodCallRescheduled
         withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.channelGroupNamespaceRemovalAttempt, (nspace ? nspace : [NSNull null]),
-                 [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.channelGroupNamespaceRemovalAttempt, (nspace ? nspace : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
+        }];
         
-        [self pn_dispatchAsynchronouslyBlock:^{
+        [self performAsyncLockingBlock:^{
             
             if (!isMethodCallRescheduled) {
                 
@@ -622,7 +622,7 @@
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.removingChannelGroupNamespace, [self humanReadableStateFrom:self.state]];
                 }];
@@ -637,7 +637,7 @@
             // Looks like client can't send request because of some reasons
             else {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.channelGroupNamespaceRemovalImpossible,
                              [self humanReadableStateFrom:self.state]];
@@ -652,19 +652,19 @@
                     handlerBlock(nspace, requestError);
                 }
             }
-        }];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        }
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeChannelGroupNamespaceRemoval,
-                            [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeChannelGroupNamespaceRemoval,
+                                [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeRemoveChannelGroupNamespace:nspace reschedulingMethodCall:isMethodCallRescheduled
+                                 withCompletionHandlingBlock:handlerBlock];
                }];
-               
-               [self postponeRemoveChannelGroupNamespace:nspace reschedulingMethodCall:isMethodCallRescheduled
-                             withCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeRemoveChannelGroupNamespace:(NSString *)nspace reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -690,15 +690,15 @@
 - (void)   removeChannelGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.channelGroupRemovalAttempt, (group ? group : [NSNull null]),
-                 [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.channelGroupRemovalAttempt, (group ? group : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
+        }];
         
-        [self pn_dispatchAsynchronouslyBlock:^{
+        [self performAsyncLockingBlock:^{
             
             if (!isMethodCallRescheduled) {
                 
@@ -709,7 +709,7 @@
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.removingChannelGroup, [self humanReadableStateFrom:self.state]];
                 }];
@@ -724,7 +724,7 @@
             // Looks like client can't send request because of some reasons
             else {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.channelGroupRemovalImpossible,
                              [self humanReadableStateFrom:self.state]];
@@ -739,19 +739,19 @@
                     handlerBlock(group, requestError);
                 }
             }
-        }];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        }
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeChannelGroupRemoval,
-                            [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeChannelGroupRemoval,
+                                [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeRemoveChannelGroup:group reschedulingMethodCall:isMethodCallRescheduled
+                        withCompletionHandlingBlock:handlerBlock];
                }];
-               
-               [self postponeRemoveChannelGroup:group reschedulingMethodCall:isMethodCallRescheduled
-                    withCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeRemoveChannelGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -781,15 +781,15 @@
 - (void)requestChannelsForGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
     withCompletionHandlingBlock:(PNClientChannelsForGroupRequestHandlingBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.channelsForGroupRequestAttempt, (group ? group : [NSNull null]),
-                 [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.channelsForGroupRequestAttempt, (group ? group : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
+        }];
         
-        [self pn_dispatchAsynchronouslyBlock:^{
+        [self performAsyncLockingBlock:^{
             
             if (!isMethodCallRescheduled) {
                 
@@ -800,7 +800,7 @@
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.requestChannelsForGroup, [self humanReadableStateFrom:self.state]];
                 }];
@@ -816,7 +816,7 @@
             // Looks like client can't send request because of some reasons
             else {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.channelsForGroupRequestImpossible,
                              [self humanReadableStateFrom:self.state]];
@@ -832,19 +832,19 @@
                     handlerBlock(group, requestError);
                 }
             }
-        }];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        }
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeChannelsForGroupRequest,
-                            [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeChannelsForGroupRequest,
+                                [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeRequestChannelsForGroup:group reschedulingMethodCall:isMethodCallRescheduled
+                             withCompletionHandlingBlock:handlerBlock];
                }];
-               
-               [self postponeRequestChannelsForGroup:group reschedulingMethodCall:isMethodCallRescheduled
-                         withCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeRequestChannelsForGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -874,15 +874,15 @@
 - (void)          addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.channelsAdditionToGroupAttempt, (channels ? channels : [NSNull null]),
-                 (group ? group : [NSNull null]), [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.channelsAdditionToGroupAttempt, (channels ? channels : [NSNull null]),
+                     (group ? group : [NSNull null]), [self humanReadableStateFrom:self.state]];
+        }];
         
-        [self pn_dispatchAsynchronouslyBlock:^{
+        [self performAsyncLockingBlock:^{
             
             if (!isMethodCallRescheduled) {
                 
@@ -893,7 +893,7 @@
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.addingChannelsToGroup, [self humanReadableStateFrom:self.state]];
                 }];
@@ -910,7 +910,7 @@
             // Looks like client can't send request because of some reasons
             else {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.channelsAdditionToGroupImpossible,
                              [self humanReadableStateFrom:self.state]];
@@ -926,19 +926,19 @@
                     handlerBlock(group, channels, requestError);
                 }
             }
-        }];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        }
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeChannelsAdditionToGroup,
-                            [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeChannelsAdditionToGroup,
+                                [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeAddChannels:channels toGroup:group reschedulingMethodCall:isMethodCallRescheduled
+                 withCompletionHandlingBlock:handlerBlock];
                }];
-               
-               [self postponeAddChannels:channels toGroup:group reschedulingMethodCall:isMethodCallRescheduled
-             withCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)  postponeAddChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -967,15 +967,15 @@
 - (void)       removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
   withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock {
     
-    [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+    [self pn_dispatchBlock:^{
         
-        return @[PNLoggerSymbols.api.channelsRemovalFromGroupAttempt, (channels ? channels : [NSNull null]),
-                 (group ? group : [NSNull null]), [self humanReadableStateFrom:self.state]];
-    }];
-    
-    [self performAsyncLockingBlock:^{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+            
+            return @[PNLoggerSymbols.api.channelsRemovalFromGroupAttempt, (channels ? channels : [NSNull null]),
+                     (group ? group : [NSNull null]), [self humanReadableStateFrom:self.state]];
+        }];
         
-        [self pn_dispatchAsynchronouslyBlock:^{
+        [self performAsyncLockingBlock:^{
             
             if (!isMethodCallRescheduled) {
                 
@@ -986,7 +986,7 @@
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.removingChannelsFromGroup, [self humanReadableStateFrom:self.state]];
                 }];
@@ -997,13 +997,13 @@
                 }
                 
                 PNChannelsListUpdateForChannelGroupRequest *request = [PNChannelsListUpdateForChannelGroupRequest channelsListRemoval:channels
-                                                                                                                       forChannelGroup:group];
+                                                                                                                      forChannelGroup:group];
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
             // Looks like client can't send request because of some reasons
             else {
                 
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
                     
                     return @[PNLoggerSymbols.api.channelsRemovalGroupImpossible,
                              [self humanReadableStateFrom:self.state]];
@@ -1019,19 +1019,19 @@
                     handlerBlock(group, channels, requestError);
                 }
             }
-        }];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        }
+               postponedExecutionBlock:^{
                    
-                   return @[PNLoggerSymbols.api.postponeChannelsRemovalFromGroup,
-                            [self humanReadableStateFrom:self.state]];
+                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                       
+                       return @[PNLoggerSymbols.api.postponeChannelsRemovalFromGroup,
+                                [self humanReadableStateFrom:self.state]];
+                   }];
+                   
+                   [self postponeRemoveChannels:channels fromGroup:group reschedulingMethodCall:isMethodCallRescheduled
+                    withCompletionHandlingBlock:handlerBlock];
                }];
-               
-               [self postponeRemoveChannels:channels fromGroup:group reschedulingMethodCall:isMethodCallRescheduled
-                withCompletionHandlingBlock:handlerBlock];
-           }];
+    }];
 }
 
 - (void)postponeRemoveChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group reschedulingMethodCall:(BOOL)isMethodCallRescheduled
@@ -1206,35 +1206,43 @@
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannelGroups:(NSArray *)channelGroups
           forNamespace:(NSString *)nspace {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.channelGroupsRequestCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
+
+        if (shouldNotify) {
+
             // Check whether delegate can response on participants list download event or not
             if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelGroups:forNamespace:)]) {
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
+
                     [self.clientDelegate pubnubClient:self didReceiveChannelGroups:channelGroups forNamespace:nspace];
                 });
             }
-            
+
             id notificationObject = channelGroups;
             if (nspace) {
-                
+
                 notificationObject = @{nspace:channelGroups};
             }
-            
+
             [self sendNotification:kPNClientChannelGroupsRequestCompleteNotification withObject:notificationObject];
         }
-    }
-                                shouldStartNext:YES];
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel channelGroupsRequestForNamespace:(NSString *)nspace
@@ -1242,7 +1250,7 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = nspace;
+        [error replaceAssociatedObject:nspace];
         [self notifyDelegateAboutChannelGroupsRequestFailedWithError:error];
     }
     else {
@@ -1254,34 +1262,43 @@
                 return @[PNLoggerSymbols.api.rescheduleChannelGroupsRequest, [self humanReadableStateFrom:self.state]];
             }];
             
-            [self requestChannelGroupsForNamespace:nspace reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
+            [self requestChannelGroupsForNamespace:nspace reschedulingMethodCall:YES
+                       withCompletionHandlingBlock:nil];
         }];
     }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannelGroupNamespaces:(NSArray *)namespaces {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.channelGroupNamespacesRetrievalCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
+
+        if (shouldNotify) {
+
             if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelGroupNamespaces:)]) {
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
+
                     [self.clientDelegate pubnubClient:self didReceiveChannelGroupNamespaces:namespaces];
                 });
             }
-            
+
             [self sendNotification:kPNClientChannelGroupNamespacesRequestCompleteNotification withObject:namespaces];
         }
-    }
-                                shouldStartNext:YES];
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel channelGroupNamespacesRequestDidFailWithError:(PNError *)error {
@@ -1299,40 +1316,50 @@
                 return @[PNLoggerSymbols.api.rescheduleChannelGroupNamespacesRetrieval, [self humanReadableStateFrom:self.state]];
             }];
             
-            [self requestChannelGroupNamespacesWithReschedulingMethodCall:YES andCompletionHandlingBlock:nil];
+            [self requestChannelGroupNamespacesWithReschedulingMethodCall:YES
+                                               andCompletionHandlingBlock:nil];
         }];
     }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didRemoveNamespace:(NSString *)nspace {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.channelGroupNamespaceRemovalCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
+
+        if (shouldNotify) {
+
             if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRemoveNamespace:)]) {
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
+
                     [self.clientDelegate pubnubClient:self didRemoveNamespace:nspace];
                 });
             }
-            
+
             [self sendNotification:kPNClientChannelGroupNamespaceRemovalCompleteNotification withObject:nspace];
         }
-    }
-                                shouldStartNext:YES];
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel namespace:(NSString *)nspace removalDidFailWithError:(PNError *)error {
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
+        [error replaceAssociatedObject:nspace];
         [self notifyDelegateAboutChannelGroupNamespaceRemovalFailedWithError:error];
     }
     else {
@@ -1344,34 +1371,43 @@
                 return @[PNLoggerSymbols.api.rescheduleChannelGroupNamespaceRemoval, [self humanReadableStateFrom:self.state]];
             }];
             
-            [self removeChannelGroupNamespace:nspace reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
+            [self removeChannelGroupNamespace:nspace reschedulingMethodCall:YES
+                  withCompletionHandlingBlock:nil];
         }];
     }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didRemoveChannelGroup:(PNChannelGroup *)group {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.channelGroupRemovalCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
+
+        if (shouldNotify) {
+
             if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didRemoveChannelGroup:)]) {
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
+
                     [self.clientDelegate pubnubClient:self didRemoveChannelGroup:group];
                 });
             }
-            
+
             [self sendNotification:kPNClientChannelGroupRemovalCompleteNotification withObject:group];
         }
-    }
-                                shouldStartNext:YES];
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel channelGroup:(PNChannelGroup *)group removalDidFailWithError:(PNError *)error {
@@ -1389,37 +1425,46 @@
                 return @[PNLoggerSymbols.api.rescheduleChannelGroupRemoval, [self humanReadableStateFrom:self.state]];
             }];
             
-            [self removeChannelGroup:group reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
+            [self removeChannelGroup:group reschedulingMethodCall:YES
+         withCompletionHandlingBlock:nil];
         }];
     }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannels:(NSArray *)channels forGroup:(PNChannelGroup *)group {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[PNLoggerSymbols.api.channelsForGroupRequestCompleted, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
+
+        if (shouldNotify) {
+
             group.channels = channels;
-            
+
             // Check whether delegate can response on participants list download event or not
             if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:didReceiveChannelsForGroup:)]) {
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
+
                     [self.clientDelegate pubnubClient:self didReceiveChannelsForGroup:group];
                 });
             }
-            
+
             [self sendNotification:kPNClientChannelsForGroupRequestCompleteNotification withObject:group];
         }
-    }
-                                shouldStartNext:YES];
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel channelsForGroupRequest:(PNChannelGroup *)group
@@ -1427,7 +1472,6 @@
     
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        error.associatedObject = group;
         [self notifyDelegateAboutChannelsForGroupRequestFailedWithError:error];
     }
     else {
@@ -1439,55 +1483,64 @@
                 return @[PNLoggerSymbols.api.rescheduleChannelsForGroupRequest, [self humanReadableStateFrom:self.state]];
             }];
             
-            [self requestChannelsForGroup:group reschedulingMethodCall:YES withCompletionHandlingBlock:nil];
+            [self requestChannelsForGroup:group reschedulingMethodCall:YES
+              withCompletionHandlingBlock:nil];
         }];
     }
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel didChangeGroupChannels:(PNChannelGroupChange *)change {
-    
-    [self handleLockingOperationBlockCompletion:^{
-        
+
+    void(^handlingBlock)(BOOL) = ^(BOOL shouldNotify){
+
         NSString *symbol = ([change addingChannels] ? PNLoggerSymbols.api.channelsAdditionToGroupCompleted :
-                                                      PNLoggerSymbols.api.channelsRemovalFromGroupCompleted);
-        
+                            PNLoggerSymbols.api.channelsRemovalFromGroupCompleted);
+
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+
             return @[symbol, [self humanReadableStateFrom:self.state]];
         }];
-        
-        if ([self shouldChannelNotifyAboutEvent:channel]) {
-            
+
+        if (shouldNotify) {
+
             NSString *notification = kPNClientGroupChannelsAdditionCompleteNotification;
             SEL selector = @selector(pubnubClient:didAddChannels:toGroup:);
             if (!change.addingChannels) {
-                
+
                 symbol = PNLoggerSymbols.api.channelsRemovalFromGroupFailed;
                 notification = kPNClientGroupChannelsRemovalCompleteNotification;
                 selector = @selector(pubnubClient:didRemoveChannels:fromGroup:);
             }
-            
+
             // Check whether delegate can response on group channels list manipulation or not
             if ([self.clientDelegate respondsToSelector:selector]) {
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
+
                     if (change.addingChannels) {
-                        
+
                         [self.clientDelegate pubnubClient:self didAddChannels:change.channels toGroup:change.group];
                     }
                     else {
-                        
+
                         [self.clientDelegate pubnubClient:self didRemoveChannels:change.channels fromGroup:change.group];
                     }
-                    
+
                 });
             }
-            
+
             [self sendNotification:notification withObject:change];
         }
-    }
-                                shouldStartNext:YES];
+    };
+
+    [self checkShouldChannelNotifyAboutEvent:channel withBlock:^(BOOL shouldNotify) {
+
+        [self handleLockingOperationBlockCompletion:^{
+
+            handlingBlock(shouldNotify);
+        }
+                                    shouldStartNext:YES];
+    }];
 }
 
 - (void)serviceChannel:(PNServiceChannel *)channel groupChannelsChange:(PNChannelGroupChange *)change

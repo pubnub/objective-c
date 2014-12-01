@@ -19,21 +19,15 @@
 @interface PNResponseDeserialize : NSObject
 
 
-#pragma mark Properties
-
-// Reflects whether deserializer still working or not
-@property (nonatomic, readonly, assign, getter = isDeserializing) BOOL deserializing;
-
-
 #pragma mark - Instance methods
+
+- (void)checkDeserializing:(void(^)(BOOL deserializing))checkCompletionBlock;
 
 /**
  * Will parse response which arrived from PubNub service
  * and update data holder to remove parsed data from it
  */
-- (NSArray *)parseResponseData:(NSMutableData *)data;
-
-#pragma mark -
+- (void)parseResponseData:(NSMutableData *)data withBlock:(void (^)(NSArray *responses))parseCompletionBlock;
 
 
 @end

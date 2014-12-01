@@ -121,8 +121,22 @@
     
     [self initializePubNubClient];
     
-    UIRemoteNotificationType type = (UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound);
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:type];
+    #if !TARGET_IPHONE_SIMULATOR
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        
+        // Registering for push notifications under iOS8
+        UIUserNotificationType types = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
+        UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }
+    else {
+        
+        // Register for push notifications for pre-iOS8
+        UIRemoteNotificationType type = (UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound);
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:type];
+    }
+    #endif
     
     // Configure application window and its content
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -391,7 +405,7 @@
 
 - (void)pubnubClient:(PubNub *)client didFailHistoryDownloadForChannel:(PNChannel *)channel withError:(PNError *)error {
 
-    NSLog(@"PubNub client failed to download history for %@ because of error: %@", channel, error);
+    NSLog(@"PubNub client failed to download history for %@ because of error: %@", channel.name, error);
 }
 
 - (void)pubnubClient:(PubNub *)client didReceiveParticipants:(PNHereNow *)presenceInformation

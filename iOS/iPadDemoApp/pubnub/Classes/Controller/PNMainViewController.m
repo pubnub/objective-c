@@ -198,7 +198,8 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     // initialize auto messager
     
     [[PNAutoMessager sharedManager] setPresendMessageBlock:^(NSString *message) {
-        _messageInputField.text = message;
+        
+        self.messageInputField.text = message;
     }];
 }
 
@@ -751,7 +752,7 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
     
     BOOL isSubscribed = [[PNDataManager sharedInstance].subscribedChannelsList count] > 0;
     BOOL isChannelSelected = [PNDataManager sharedInstance].currentChannel != nil;
-    BOOL isChannelGroupSelected = (isChannelSelected && [[PNDataManager sharedInstance].currentChannel isKindOfClass:[PNChannelGroup class]]);
+    BOOL isChannelGroupSelected = (isChannelSelected && [PNDataManager sharedInstance].currentChannel.isChannelGroup);
     BOOL isEmptyMessage = message == nil || [message pn_isEmpty];
     
     if (!isChannelSelected) {

@@ -117,18 +117,19 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
         self.httpHeaderStartData = [@"HTTP/1.1 " dataUsingEncoding:NSUTF8StringEncoding];
         self.httpChunkedContentEndData = [@"0\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding];
         self.endLineCharactersData = [@"\r\n" dataUsingEncoding:NSUTF8StringEncoding];
-        [self pn_setPrivateDispatchQueue:[self pn_serialQueueWithOwnerIdentifier:@"connection" andTargetQueue:nil]];
+        [self pn_setupPrivateSerialQueueWithIdentifier:@"response-deserializer"
+                                           andPriority:DISPATCH_QUEUE_PRIORITY_DEFAULT];
     }
     
     
     return self;
 }
 
-- (NSArray *)parseResponseData:(NSMutableData *)data {
+- (void)parseResponseData:(NSMutableData *)data withBlock:(void (^)(NSArray *responses))parseCompletionBlock {
     
-    NSMutableArray *parsedData = [NSMutableArray array];
-    
-    [self pn_dispatchSynchronouslyBlock:^{
+    [self pn_dispatchBlock:^{
+
+        NSMutableArray *parsedData = [NSMutableArray array];
         
         self.deserializing = YES;
         
@@ -245,24 +246,18 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
             NSUInteger lastResponseEndIndex = contentRange.location + contentRange.length;
             [data setData:[data subdataWithRange:NSMakeRange(lastResponseEndIndex, [data length]-lastResponseEndIndex)]];
         }
-        
+
         self.deserializing = NO;
+        parseCompletionBlock(parsedData);
     }];
-    
-    
-    return parsedData;
 }
 
-- (BOOL)isDeserializing {
-    
-    __block BOOL isDeserializing = NO;
-    [self pn_dispatchSynchronouslyBlock:^{
-        
-        isDeserializing = _deserializing;
+- (void)checkDeserializing:(void(^)(BOOL deserializing))checkCompletionBlock {
+
+    [self pn_dispatchBlock:^{
+
+        checkCompletionBlock(self.isDeserializing);
     }];
-    
-    
-    return isDeserializing;
 }
 
 - (BOOL)isChunkedTransfer:(NSDictionary *)httpResponseHeaders {
@@ -375,6 +370,12 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
                         return @[PNLoggerSymbols.deserializer.unexpectedResponseStatusCode, @(statusCode),
                                 (encodedContent ? encodedContent : [NSNull null])];
+                    }];
+                    
+                    // In case if response arrived with unexpected code, store it for future research.
+                    [PNLogger storeUnexpectedHTTPDescription:nil packetData:^NSData *{
+                        
+                        return responseSubdata;
                     }];
                 }
 
@@ -519,8 +520,17 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
 - (NSUInteger)nextResponseStartIndexForData:(NSData *)data inRange:(NSRange)responseRange {
     
-    NSRange range = [data rangeOfData:self.httpHeaderStartData options:(NSDataSearchOptions)0
-                                range:[self nextResponseStartSearchRangeInRange:responseRange]];
+    NSRange range = NSMakeRange(NSNotFound, 0);
+    if ([data length]) {
+        
+        NSRange searchRange = [self nextResponseStartSearchRangeInRange:responseRange];
+        
+        if (searchRange.location != NSNotFound && searchRange.location + searchRange.length < [data length]) {
+            
+            range = [data rangeOfData:self.httpHeaderStartData options:(NSDataSearchOptions)0
+                                range:searchRange];
+        }
+    }
     
     
     return range.location;
@@ -529,6 +539,11 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 - (NSRange)nextResponseStartSearchRangeInRange:(NSRange)responseRange; {
     
     return NSMakeRange(responseRange.location + 1, responseRange.length-1);
+}
+
+- (void)dealloc {
+    
+    [self pn_destroyPrivateDispatchQueue];
 }
 
 #pragma mark -

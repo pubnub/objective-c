@@ -60,12 +60,8 @@
 
 - (BOOL)isAblePerformAuditRequest {
     
-    BOOL isAblePerformAuditRequest = [self workingWithNamespace];
-    if ([self workingWithChannelGroup]) {
-        
-        isAblePerformAuditRequest = (self.namespaceName && ![self.namespaceName pn_isEmpty]);
-    }
-    else if ([self workingWithChannelGroupChannels]) {
+    BOOL isAblePerformAuditRequest = ([self workingWithNamespace] || [self workingWithChannelGroup]);
+    if ([self workingWithChannelGroupChannels]) {
         
         isAblePerformAuditRequest = (self.channelGroupName && ![self.channelGroupName pn_isEmpty]);
     }

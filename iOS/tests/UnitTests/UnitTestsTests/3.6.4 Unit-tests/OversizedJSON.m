@@ -100,6 +100,8 @@
 	XCTAssertTrue(_reconnectCount == 0, @"excess reconnect, %d", _reconnectCount);
 }
 
+#warning I think it won't work after last changes in SDK.
+
 -(SwizzleReceipt*)setReconnect {
 	return [Swizzler swizzleSelector:@selector(reconnect)
 				 forInstancesOfClass:[PNConnection class]
@@ -108,7 +110,9 @@
 				PNLog(PNLogGeneralLevel, nil, @"PNConnection setReconnect");
 				_reconnectCount++;
 				[Swizzler unswizzleFromReceipt:receiptReconnect];
-				[(PNConnection*)object reconnect];
+				[(PNConnection*)object reconnectWithBlock:^{
+                    // TODO: some code should be here.
+                }];
 				receiptReconnect = [self setReconnect];
 			}];
 }

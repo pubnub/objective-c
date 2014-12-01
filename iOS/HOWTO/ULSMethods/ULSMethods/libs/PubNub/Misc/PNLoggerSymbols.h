@@ -228,6 +228,9 @@ struct PNLoggerSymbolsStructure {
         // Parameters requirements: [code, connection name, response deserializer instance memory address]
         __unsafe_unretained NSString *resourceLinkage;
         
+        // Parameter requirements: [code, connection name, connection bit field with state]
+        __unsafe_unretained NSString *connectionRetryAttemptInProgress;
+        
         // Connection instance streams log symbols. Group code: 0110yyy
         struct {
             
