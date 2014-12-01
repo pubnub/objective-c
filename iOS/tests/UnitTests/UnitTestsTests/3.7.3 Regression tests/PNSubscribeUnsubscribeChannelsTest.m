@@ -99,21 +99,23 @@
     
     NSArray *_channels = [PNChannel channelsWithNames:unsubChannels];
     
+    [_resGroup enter];
+    
     [PubNub unsubscribeFrom:_channels withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
         XCTAssertNil(error,@"Error unsubscribing from channels");
         [_resGroup leave];
     }];
     
-    BOOL res = NO;
+    BOOL res = YES;
     
     if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:5]) {
         XCTFail(@"Timeout is fired. Didn't unsubscribing from channels");
-        res = YES;
+        res = NO;
     }
     
     _resGroup = nil;
     
-    return NO;
+    return res;
 }
 
 - (NSUInteger)getCountSubscribedChannels {

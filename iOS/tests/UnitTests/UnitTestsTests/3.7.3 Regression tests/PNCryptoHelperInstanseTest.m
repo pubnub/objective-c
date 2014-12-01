@@ -108,7 +108,7 @@
     dispatch_group_enter(_resGroup);
     
     PNError *processingError = nil;
-    NSString *encryptedMessage = [_cryptoHelper encryptedStringFromString:message error: &processingError];
+    NSString *encryptedMessage = [_cryptoHelper encryptedStringFromString:message error:&processingError];
     
 //    [client setDelegate:self];
     [client sendMessage:encryptedMessage
@@ -160,13 +160,17 @@
     dispatch_group_leave(_resGroup);
 }
 
-
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)encryptedMessage {
  
     if ([client isEqual:_pubNubClient2]) {
         PNError *processingError = nil;
         _decodeString = [_cryptoHelper decryptedStringFromString:encryptedMessage.message
                                                                     error:&processingError];
+        
+        if (processingError) {
+            XCTFail(@"Failed to decrypt message \"%@\" with error: %@", _message, [processingError localizedDescription]);
+        }
+        
     }
 
 }
@@ -179,7 +183,7 @@
     PNError *helperInitializationError = nil;
     _cryptoHelper = [PNCryptoHelper helperWithConfiguration:_clientConfiguration
                                                       error:&helperInitializationError];
-    if (helperInitializationError || _cryptoHelper) {
+    if (helperInitializationError || !_cryptoHelper) {
         XCTFail(@"%@ setup error: %@", self.name, helperInitializationError);
         return;
     }

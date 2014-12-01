@@ -408,14 +408,18 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
             __pn_desired_weak __typeof__(self) weakSelf = self;
             dispatch_source_set_event_handler(self.originLookupTimer, ^{
+                
+                __strong __typeof__(self) strongSelf = weakSelf;
 
-                [weakSelf stopOriginLookup];
-                [weakSelf handleOriginLookupTimer];
+                [strongSelf stopOriginLookup];
+                [strongSelf handleOriginLookupTimer];
             });
             dispatch_source_set_cancel_handler(self.originLookupTimer, ^{
+                
+                __strong __typeof__(self) strongSelf = weakSelf;
 
                 [PNDispatchHelper release:timerSource];
-                weakSelf.originLookupTimer = NULL;
+                strongSelf.originLookupTimer = NULL;
             });
 
             dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC));
@@ -561,19 +565,22 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
             __block __pn_desired_weak __typeof(self) weakSelf = self;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                
+                __strong __typeof__(self) strongSelf = weakSelf;
 
                 NSError *requestError;
                 NSHTTPURLResponse *response;
                 NSString *timeTokenRequestPath = [[PNNetworkHelper originLookupResourcePath] stringByReplacingOccurrencesOfString:@"(null)"
                                                                                                                        withString:@"pubsub.pubnub.com"];
-                NSMutableURLRequest *timeTokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:timeTokenRequestPath]];
-                timeTokenRequest.timeoutInterval = kPNReachabilityOriginLookupTimeout;
+                NSURLRequest *timeTokenRequest = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:timeTokenRequestPath]
+                                                                       cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                                   timeoutInterval:kPNReachabilityOriginLookupTimeout];
                 NSData *downloadedTimeTokenData = [NSURLConnection sendSynchronousRequest:timeTokenRequest returningResponse:&response error:&requestError];
-                [[NSURLCache sharedURLCache] removeCachedResponseForRequest:timeTokenRequest];
 
-                dispatch_async([self pn_privateQueue], ^{
+                dispatch_async([strongSelf pn_privateQueue], ^{
 
-                    [weakSelf handleOriginLookupCompletionWithData:downloadedTimeTokenData response:response error:requestError];
+                    [strongSelf handleOriginLookupCompletionWithData:downloadedTimeTokenData
+                                                            response:response error:requestError];
                 });
             });
         }
@@ -1258,19 +1265,21 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                     dispatch_after(popTime, [self pn_privateQueue], ^(void) {
                         
+                        __strong __typeof__(self) strongSelf = weakSelf;
+                        
                         // Check whether there is no new events arrived while simulated network change event
-                        if (weakSelf.isSimulatingNetworkSwitchEvent) {
+                        if (strongSelf.isSimulatingNetworkSwitchEvent) {
                             
                             [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
                                 
                                 return @[PNLoggerSymbols.reachability.reachabilityFlagsChangeEventGeneratedOnSet, @(available),
-                                         (weakSelf.currentNetworkAddress ? weakSelf.currentNetworkAddress : @"'not assigned'"),
-                                         @(weakSelf.reachabilityFlags)];
+                                         (strongSelf.currentNetworkAddress ? strongSelf.currentNetworkAddress : @"'not assigned'"),
+                                         @(strongSelf.reachabilityFlags)];
                             }];
                             
-                            weakSelf.simulatingNetworkSwitchEvent = NO;
-                            weakSelf.reachabilityStatus = originalReachabilityStatus;
-                            weakSelf.status = newStatus;
+                            strongSelf.simulatingNetworkSwitchEvent = NO;
+                            strongSelf.reachabilityStatus = originalReachabilityStatus;
+                            strongSelf.status = newStatus;
                         }
                     });
                 }

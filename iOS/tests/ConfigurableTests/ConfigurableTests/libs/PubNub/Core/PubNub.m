@@ -611,261 +611,266 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         __block __pn_desired_weak PubNub *weakSelf = self;
         self.reachability = [PNReachability serviceReachability];
         self.reachability.reachabilityChangeHandleBlock = ^(BOOL connected) {
+            
+            __strong __typeof__(self) strongSelf = weakSelf;
 
-            [weakSelf pn_dispatchBlock:^{
+            [strongSelf pn_dispatchBlock:^{
 
-                [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
-                    return @[PNLoggerSymbols.api.isConnected, @(connected), [weakSelf humanReadableStateFrom:weakSelf.state]];
+                    return @[PNLoggerSymbols.api.isConnected, @(connected),
+                             [strongSelf humanReadableStateFrom:strongSelf.state]];
                 }];
 
                 if (!connected) {
 
-                    [weakSelf stopHeartbeatTimer];
+                    [strongSelf stopHeartbeatTimer];
                 }
 
-                weakSelf.updatingClientIdentifier = NO;
-                if (weakSelf.shouldConnectOnServiceReachabilityCheck) {
+                strongSelf.updatingClientIdentifier = NO;
+                if (strongSelf.shouldConnectOnServiceReachabilityCheck) {
 
-                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                         return @[PNLoggerSymbols.api.connectOnNetworkReachabilityCheck,
-                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                     }];
 
                     if (connected) {
 
-                        [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                        [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                             return @[PNLoggerSymbols.api.networkAvailableProceedConnection,
-                                    [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                    [strongSelf humanReadableStateFrom:strongSelf.state]];
                         }];
 
-                        weakSelf.asyncLockingOperationInProgress = NO;
+                        strongSelf.asyncLockingOperationInProgress = NO;
 
-                        [weakSelf connect];
+                        [strongSelf connect];
                     }
                     else {
 
-                        weakSelf.connectOnServiceReachabilityCheck = NO;
+                        strongSelf.connectOnServiceReachabilityCheck = NO;
 
-                        [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                        [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                             return @[PNLoggerSymbols.api.networkNotAvailableReportError,
-                                    [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                    [strongSelf humanReadableStateFrom:strongSelf.state]];
                         }];
 
-                        weakSelf.connectOnServiceReachability = YES;
-                        [weakSelf handleConnectionErrorOnNetworkFailure];
-                        weakSelf.asyncLockingOperationInProgress = NO;
+                        strongSelf.connectOnServiceReachability = YES;
+                        [strongSelf handleConnectionErrorOnNetworkFailure];
+                        strongSelf.asyncLockingOperationInProgress = NO;
                     }
                 }
                 else {
 
                     if (connected) {
 
-                        [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                        [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                             return @[PNLoggerSymbols.api.networkAvailable,
-                                    [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                    [strongSelf humanReadableStateFrom:strongSelf.state]];
                         }];
 
                         // In case if client is in 'disconnecting on network error' state when connection become available
                         // force client to change it state to "completed" stage of disconnection on network error
-                        if (weakSelf.state == PNPubNubClientStateDisconnectingOnNetworkError) {
+                        if (strongSelf.state == PNPubNubClientStateDisconnectingOnNetworkError) {
 
-                            [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                            [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                 return @[PNLoggerSymbols.api.previouslyDisconnectedBecauseOfError,
-                                        [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                        [strongSelf humanReadableStateFrom:strongSelf.state]];
                             }];
 
-                            weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
+                            strongSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
 
-                            [weakSelf.messagingChannel disconnectWithEvent:NO];
-                            [weakSelf.serviceChannel disconnectWithEvent:NO];
+                            [strongSelf.messagingChannel disconnectWithEvent:NO];
+                            [strongSelf.serviceChannel disconnectWithEvent:NO];
                         }
 
 
                         // Check whether connection available message appeared while library tried to connect
                         // (to handle situation when library doesn't have enough time to accept callbacks and reset it
                         // state to 'disconnected'
-                        if (weakSelf.state == PNPubNubClientStateConnecting) {
+                        if (strongSelf.state == PNPubNubClientStateConnecting) {
 
-                            [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                            [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                 return @[PNLoggerSymbols.api.connectionStateImpossibleOnNetworkBecomeAvailable,
-                                        [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                        [strongSelf humanReadableStateFrom:strongSelf.state]];
                             }];
 
                             // Because all connection channels will be destroyed, it means that client currently disconnected
-                            weakSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
+                            strongSelf.state = PNPubNubClientStateDisconnectedOnNetworkError;
 
-                            [weakSelf.messagingChannel disconnectWithEvent:NO];
-                            [weakSelf.serviceChannel disconnectWithEvent:NO];
+                            [strongSelf.messagingChannel disconnectWithEvent:NO];
+                            [strongSelf.serviceChannel disconnectWithEvent:NO];
                         }
 
-                        BOOL isSuspended = weakSelf.state == PNPubNubClientStateSuspended;
+                        BOOL isSuspended = strongSelf.state == PNPubNubClientStateSuspended;
 
-                        if (weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError ||
-                            weakSelf.shouldConnectOnServiceReachability || isSuspended) {
+                        if (strongSelf.state == PNPubNubClientStateDisconnectedOnNetworkError ||
+                            strongSelf.shouldConnectOnServiceReachability || isSuspended) {
 
                             // Check whether should restore connection or not
-                            if([weakSelf shouldRestoreConnection] || weakSelf.shouldConnectOnServiceReachability) {
+                            if([strongSelf shouldRestoreConnection] || strongSelf.shouldConnectOnServiceReachability) {
 
-                                weakSelf.asyncLockingOperationInProgress = NO;
-                                if(!weakSelf.shouldConnectOnServiceReachability){
+                                strongSelf.asyncLockingOperationInProgress = NO;
+                                if(!strongSelf.shouldConnectOnServiceReachability){
 
-                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                         return @[PNLoggerSymbols.api.shouldRestoreConnection,
-                                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                                     }];
 
-                                    weakSelf.restoringConnection = YES;
+                                    strongSelf.restoringConnection = YES;
                                 }
 
                                 if (isSuspended) {
 
-                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                         return @[PNLoggerSymbols.api.shouldResumeConnection,
-                                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                                     }];
 
-                                    weakSelf.state = PNPubNubClientStateConnected;
+                                    strongSelf.state = PNPubNubClientStateConnected;
 
-                                    weakSelf.restoringConnection = NO;
-                                    [weakSelf.messagingChannel resume];
-                                    [weakSelf.serviceChannel resume];
+                                    strongSelf.restoringConnection = NO;
+                                    [strongSelf.messagingChannel resume];
+                                    [strongSelf.serviceChannel resume];
                                 }
                                 else {
 
-                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                         return @[PNLoggerSymbols.api.shouldConnect,
-                                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                                     }];
 
-                                    [weakSelf connect];
+                                    [strongSelf connect];
                                 }
                             }
                         }
                         else {
 
-                            [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                            [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                 return @[PNLoggerSymbols.api.noSuitableActionsForCurrentSituation,
-                                        [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                        [strongSelf humanReadableStateFrom:strongSelf.state]];
                             }];
                         }
                     }
                     else {
 
-                        [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                        [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
-                            return @[PNLoggerSymbols.api.networkNotAvailable, [weakSelf humanReadableStateFrom:weakSelf.state]];
+                            return @[PNLoggerSymbols.api.networkNotAvailable,
+                                     [strongSelf humanReadableStateFrom:strongSelf.state]];
                         }];
-                        BOOL hasBeenSuspended = weakSelf.state == PNPubNubClientStateSuspended;
+                        BOOL hasBeenSuspended = strongSelf.state == PNPubNubClientStateSuspended;
 
                         // Check whether PubNub client was connected or connecting right now
-                        if (weakSelf.state == PNPubNubClientStateConnected ||
-                            weakSelf.state == PNPubNubClientStateConnecting || hasBeenSuspended) {
+                        if (strongSelf.state == PNPubNubClientStateConnected ||
+                            strongSelf.state == PNPubNubClientStateConnecting || hasBeenSuspended) {
 
-                            if (weakSelf.state == PNPubNubClientStateConnecting) {
+                            if (strongSelf.state == PNPubNubClientStateConnecting) {
 
-                                [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
-                                    return @[PNLoggerSymbols.api.triedToConnect, [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                    return @[PNLoggerSymbols.api.triedToConnect,
+                                             [strongSelf humanReadableStateFrom:strongSelf.state]];
                                 }];
 
-                                weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
+                                strongSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
 
                                 // Messaging channel will close second channel automatically.
-                                [weakSelf.messagingChannel disconnectWithReset:NO];
+                                [strongSelf.messagingChannel disconnectWithReset:NO];
 
-                                if (weakSelf.state == PNPubNubClientStateDisconnectingOnNetworkError ||
-                                    weakSelf.state == PNPubNubClientStateDisconnectedOnNetworkError) {
+                                if (strongSelf.state == PNPubNubClientStateDisconnectingOnNetworkError ||
+                                    strongSelf.state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
-                                    [weakSelf handleConnectionErrorOnNetworkFailure];
+                                    [strongSelf handleConnectionErrorOnNetworkFailure];
                                 }
                                 else {
 
-                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                         return @[PNLoggerSymbols.api.networkWentDownDuringConnectionRestoring,
-                                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                                     }];
                                 }
 
-                                [weakSelf flushPostponedMethods:YES];
+                                [strongSelf flushPostponedMethods:YES];
                             }
                             else {
 
-                                if (weakSelf.state == PNPubNubClientStateSuspended) {
+                                if (strongSelf.state == PNPubNubClientStateSuspended) {
 
-                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                         return @[PNLoggerSymbols.api.networkWentDownWhileSuspended,
-                                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                                     }];
                                 }
                                 else {
 
-                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                         return @[PNLoggerSymbols.api.networkWentDownWhileWasConnected,
-                                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                                     }];
                                 }
 
 
-                                if (![weakSelf shouldRestoreConnection]) {
+                                if (![strongSelf shouldRestoreConnection]) {
 
-                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                         return @[PNLoggerSymbols.api.autoConnectionDisabled,
-                                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                                     }];
                                 }
                                 else {
 
-                                    [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                         return @[PNLoggerSymbols.api.connectionWillBeRestoredOnNetworkConnectionRestore,
-                                                [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                                [strongSelf humanReadableStateFrom:strongSelf.state]];
                                     }];
                                 }
 
                                 PNError *connectionError = [PNError errorWithCode:kPNClientConnectionClosedOnInternetFailureError];
-                                [weakSelf notifyDelegateClientWillDisconnectWithError:connectionError];
+                                [strongSelf notifyDelegateClientWillDisconnectWithError:connectionError];
 
-                                weakSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
+                                strongSelf.state = PNPubNubClientStateDisconnectingOnNetworkError;
 
                                 // Check whether client was suspended or not.
                                 if (hasBeenSuspended) {
 
-                                    [weakSelf.messagingChannel disconnectWithReset:NO];
-                                    [weakSelf.serviceChannel disconnect];
+                                    [strongSelf.messagingChannel disconnectWithReset:NO];
+                                    [strongSelf.serviceChannel disconnect];
 
-                                    [weakSelf notifyDelegateClientDidDisconnectWithError:connectionError];
+                                    [strongSelf notifyDelegateClientDidDisconnectWithError:connectionError];
                                 }
                                 else {
 
-                                    [weakSelf flushPostponedMethods:YES];
+                                    [strongSelf flushPostponedMethods:YES];
 
                                     // Disconnect communication channels because of network issues
                                     // Messaging channel will close second channel automatically.
-                                    [weakSelf.messagingChannel disconnectWithReset:NO];
+                                    [strongSelf.messagingChannel disconnectWithReset:NO];
                                 }
                             }
                         }
                         else {
 
-                            [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                            [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray *{
 
                                 return @[PNLoggerSymbols.api.networkWentDownBeforeConnectionCompletion,
-                                        [weakSelf humanReadableStateFrom:weakSelf.state]];
+                                        [strongSelf humanReadableStateFrom:strongSelf.state]];
                             }];
                         }
                     }
@@ -1140,6 +1145,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         
                         void(^resubscribeErrorBlock)(PNError *, void(^)(void)) = ^(PNError *resubscriptionError, void(^block)(void)) {
                             
+                            __strong __typeof__(self) strongSelf = weakSelf;
+                            
                             if (resubscribeRetryCount < kPNClientIdentifierUpdateRetryCount) {
                                 
                                 resubscribeRetryCount++;
@@ -1147,27 +1154,29 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                             }
                             else {
                                 
-                                weakSelf.updatingClientIdentifier = NO;
+                                strongSelf.updatingClientIdentifier = NO;
                                 [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
                                 
-                                [weakSelf notifyDelegateAboutSubscriptionFailWithError:resubscriptionError
+                                [strongSelf notifyDelegateAboutSubscriptionFailWithError:resubscriptionError
                                                               completeLockingOperation:YES];
                             }
                         };
                         
                         void(^subscribeBlock)(void) = ^{
                             
-                            weakSelf.asyncLockingOperationInProgress = NO;
-                            [weakSelf subscribeOn:allChannels withCatchUp:shouldCatchup clientState:nil
+                            __strong __typeof__(self) strongSelf = weakSelf;
+                            
+                            strongSelf.asyncLockingOperationInProgress = NO;
+                            [strongSelf subscribeOn:allChannels withCatchUp:shouldCatchup clientState:nil
                        andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
                                                     PNError *subscribeError) {
                            
                            if (subscribeError == nil) {
                                
-                               weakSelf.updatingClientIdentifier = NO;
+                               strongSelf.updatingClientIdentifier = NO;
                                [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
                                
-                               [weakSelf handleLockingOperationComplete:YES];
+                               [strongSelf handleLockingOperationComplete:YES];
                            }
                            else {
                                
@@ -1183,8 +1192,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         
                         void(^unsubscribeBlock)(void) = ^{
                             
-                            weakSelf.asyncLockingOperationInProgress = NO;
-                            [weakSelf unsubscribeFrom:allChannels
+                            __strong __typeof__(self) strongSelf = weakSelf;
+                            
+                            strongSelf.asyncLockingOperationInProgress = NO;
+                            [strongSelf unsubscribeFrom:allChannels
                           withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
                               
                               if (leaveError == nil) {
@@ -1193,11 +1204,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                   if (identifier == nil) {
                                       
                                       // Change user identifier before connect to the PubNub services
-                                      weakSelf.uniqueClientIdentifier = [PNHelper UUID];
+                                      strongSelf.uniqueClientIdentifier = [PNHelper UUID];
                                   }
                                   else {
                                       
-                                      weakSelf.uniqueClientIdentifier = identifier;
+                                      strongSelf.uniqueClientIdentifier = identifier;
                                   }
                                   
                                   resubscribeRetryCount = 0;
@@ -1812,24 +1823,26 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 int64_t delayInSeconds = 1;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                 dispatch_after(popTime, [self pn_privateQueue], ^(void) {
+                    
+                    __strong __typeof__(self) strongSelf = weakSelf;
 
-                    weakSelf.asyncLockingOperationInProgress = NO;
+                    strongSelf.asyncLockingOperationInProgress = NO;
 
-                    weakSelf.state = PNPubNubClientStateCreated;
-                    [weakSelf.clientConfiguration migrateConfigurationFrom:weakSelf.temporaryConfiguration];
-                    weakSelf.temporaryConfiguration = nil;
+                    strongSelf.state = PNPubNubClientStateCreated;
+                    [strongSelf.clientConfiguration migrateConfigurationFrom:strongSelf.temporaryConfiguration];
+                    strongSelf.temporaryConfiguration = nil;
 
-                    [weakSelf showConfigurationInfo];
-                    [weakSelf prepareCryptoHelper];
+                    [strongSelf showConfigurationInfo];
+                    [strongSelf prepareCryptoHelper];
 
-                    weakSelf.reachability.serviceOrigin = weakSelf.configuration.origin;
+                    strongSelf.reachability.serviceOrigin = strongSelf.configuration.origin;
 
                     // Refresh reachability configuration
-                    [weakSelf.reachability startServiceReachabilityMonitoring];
+                    [strongSelf.reachability startServiceReachabilityMonitoring];
 
 
                     // Restore connection which will use new configuration
-                    [weakSelf connect];
+                    [strongSelf connect];
                 });
             }
         }];
@@ -1923,9 +1936,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 // (as soon as event will occur PubNub client will be removed
                 // from observers list)
                 __pn_desired_weak __typeof__(self) weakSelf = self;
-                [self.observationCenter addClientConnectionStateObserver:weakSelf oneTimeEvent:YES
+                [self.observationCenter addClientConnectionStateObserver:self oneTimeEvent:YES
                                                        withCallbackBlock:^(NSString *origin, BOOL connected,
                                                                            PNError *connectionError) {
+                                                           
+                    __strong __typeof__(self) strongSelf = weakSelf;
 
                     // Notify subscriber via blocks
                     if (connected && success) {
@@ -1944,11 +1959,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     }
 
                     // Returning execution flow back on private queue
-                    [weakSelf pn_dispatchBlock:^{
+                    [strongSelf pn_dispatchBlock:^{
 
-                        if (weakSelf.shouldConnectOnServiceReachability) {
+                        if (strongSelf.shouldConnectOnServiceReachability) {
 
-                            [weakSelf setClientConnectionObservationWithSuccessBlock:success failureBlock:failure];
+                            [strongSelf setClientConnectionObservationWithSuccessBlock:success
+                                                                          failureBlock:failure];
                         }
                     }];
                 }];
@@ -2274,27 +2290,29 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                         // Delay disconnection notification to give client ability to perform clean up well
                                         __block __pn_desired_weak __typeof__(self) weakSelf = self;
                                         void(^disconnectionNotifyBlock)(void) = ^{
+                                            
+                                            __strong __typeof__(self) strongSelf = weakSelf;
 
-                                            self.messagingChannel.delegate = nil;
-                                            self.messagingChannel = nil;
-                                            self.serviceChannel.delegate = nil;
-                                            self.serviceChannel = nil;
+                                            strongSelf.messagingChannel.delegate = nil;
+                                            strongSelf.messagingChannel = nil;
+                                            strongSelf.serviceChannel.delegate = nil;
+                                            strongSelf.serviceChannel = nil;
 
-                                            if ([weakSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
+                                            if ([strongSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:)]) {
 
                                                 dispatch_async(dispatch_get_main_queue(), ^{
 
-                                                    [weakSelf.clientDelegate pubnubClient:weakSelf didDisconnectFromOrigin:connectedToHost];
+                                                    [strongSelf.clientDelegate pubnubClient:strongSelf didDisconnectFromOrigin:connectedToHost];
                                                 });
                                             }
-                                            [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
+                                            [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
 
                                                 return @[PNLoggerSymbols.api.disconnected, (connectedToHost ? connectedToHost : [NSNull null]),
                                                         [self humanReadableStateFrom:self.state]];
                                             }];
 
 
-                                            [weakSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:connectedToHost];
+                                            [strongSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:connectedToHost];
                                             [self handleLockingOperationComplete:YES];
                                         };
                                         if (channel == nil) {
@@ -2312,27 +2330,29 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                                         __block __pn_desired_weak __typeof__(self) weakSelf = self;
                                         void(^disconnectionNotifyBlock)(void) = ^{
+                                            
+                                            __strong __typeof__(self) strongSelf = weakSelf;
 
                                             if (state == PNPubNubClientStateDisconnectedOnNetworkError) {
 
-                                                [weakSelf handleLockingOperationBlockCompletion:^{
+                                                [strongSelf handleLockingOperationBlockCompletion:^{
 
-                                                            if ([weakSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+                                                            if ([strongSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
 
                                                                 dispatch_async(dispatch_get_main_queue(), ^{
 
-                                                                    [weakSelf.clientDelegate pubnubClient:weakSelf didDisconnectFromOrigin:connectedToHost withError:connectionError];
+                                                                    [strongSelf.clientDelegate pubnubClient:strongSelf didDisconnectFromOrigin:connectedToHost withError:connectionError];
                                                                 });
                                                             }
-                                                            [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray * {
+                                                            [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
 
                                                                 return @[PNLoggerSymbols.api.disconnectedBecauseOfError,
                                                                         (connectionError ? connectionError : [NSNull null]),
                                                                         [self humanReadableStateFrom:self.state]];
                                                             }];
 
-                                                            connectionError.associatedObject = weakSelf.clientConfiguration.origin;
-                                                            [weakSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
+                                                            connectionError.associatedObject = strongSelf.clientConfiguration.origin;
+                                                            [strongSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
                                                         }
                                                                                 shouldStartNext:YES];
                                             }
@@ -3489,13 +3509,17 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                 __pn_desired_weak __typeof__(self) weakSelf = self;
                 dispatch_source_set_event_handler(self.heartbeatTimer, ^{
+                    
+                    __strong __typeof__(self) strongSelf = weakSelf;
 
-                    [weakSelf handleHeartbeatTimer];
+                    [strongSelf handleHeartbeatTimer];
                 });
                 dispatch_source_set_cancel_handler(self.heartbeatTimer, ^{
+                    
+                    __strong __typeof__(self) strongSelf = weakSelf;
 
                     [PNDispatchHelper release:timerSource];
-                    weakSelf.heartbeatTimer = NULL;
+                    strongSelf.heartbeatTimer = NULL;
                 });
 
                 dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.clientConfiguration.presenceHeartbeatInterval * NSEC_PER_SEC));

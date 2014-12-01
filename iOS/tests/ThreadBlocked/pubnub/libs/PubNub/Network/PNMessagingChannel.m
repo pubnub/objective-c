@@ -1945,14 +1945,18 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
         __pn_desired_weak __typeof__(self) weakSelf = self;
         dispatch_source_set_event_handler(self.idleTimer, ^{
+            
+            __strong __typeof__(self) strongSelf = weakSelf;
 
-            [weakSelf stopChannelIdleTimer];
-            [weakSelf handleIdleTimer];
+            [strongSelf stopChannelIdleTimer];
+            [strongSelf handleIdleTimer];
         });
         dispatch_source_set_cancel_handler(self.idleTimer, ^{
+            
+            __strong __typeof__(self) strongSelf = weakSelf;
 
             [PNDispatchHelper release:timerSource];
-            weakSelf.idleTimer = NULL;
+            strongSelf.idleTimer = NULL;
         });
 
         [self resetChannelIdleTimer];

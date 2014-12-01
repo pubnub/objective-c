@@ -1244,20 +1244,25 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
                 __pn_desired_weak __typeof__(self) weakSelf = self;
                 dispatch_source_set_event_handler(self.timeoutTimer, ^{
+                    
+                    __strong __typeof__(self) strongSelf = weakSelf;
 
                     [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return @[PNLoggerSymbols.connection.handleTimeoutTimer, (weakSelf.name ? weakSelf.name : weakSelf),
-                                @(weakSelf.state)];
+                        return @[PNLoggerSymbols.connection.handleTimeoutTimer,
+                                 (strongSelf.name ? strongSelf.name : strongSelf),
+                                @(strongSelf.state)];
                     }];
 
-                    [weakSelf stopTimeoutTimerForRequest:nil];
-                    [weakSelf handleTimeoutTimer:request];
+                    [strongSelf stopTimeoutTimerForRequest:nil];
+                    [strongSelf handleTimeoutTimer:request];
                 });
                 dispatch_source_set_cancel_handler(self.timeoutTimer, ^{
+                    
+                    __strong __typeof__(self) strongSelf = weakSelf;
 
                     [PNDispatchHelper release:timerSource];
-                    weakSelf.timeoutTimer = NULL;
+                    strongSelf.timeoutTimer = NULL;
                 });
 
                 dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC));

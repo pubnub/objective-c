@@ -3,7 +3,7 @@
 //  UnitTests
 //
 //  Created by Vadim Osovets on 10/10/14.
-//  Copyright (c) 2014 Vadim Osovets. All rights reserved.
+//  Copyright (c) 2014 PubNub. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
@@ -15,8 +15,9 @@ PNDelegate
 @end
 
 @implementation ChannelGroupSubscriptionTest {
+    GCDGroup *_resGroup;
     dispatch_group_t _resGroup1;
-    dispatch_group_t _resGroup2;
+    GCDGroup *_resGroup2;
     dispatch_group_t _resGroup3;
     dispatch_group_t _resGroup4;
     dispatch_group_t _resGroup5;
@@ -75,18 +76,19 @@ PNDelegate
 
 // Test 1
 - (void)testSubscribeOn {
-    _resGroup1 = dispatch_group_create();
+    _resGroup = [GCDGroup group];
 
     // 1. Add channels to group
-    dispatch_group_enter(_resGroup1);
+    [_resGroup enter];
     [[PubNub sharedInstance] addChannels:_channels toGroup:_group];
 
-    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup1);
-        _resGroup1 = NULL;
+        _resGroup = nil;
         return;
     }
+    
+    _resGroup = [GCDGroup group];
 
     // 2. Subscribe on group
     [PubNub subscribeOn:@[_group]];
@@ -94,69 +96,66 @@ PNDelegate
     XCTAssert([PubNub isSubscribedOn:_group], @"Is not subscribed on group 1");
 
     // 3. Check that if we send a message to this group we are able to receive it
-    dispatch_group_enter(_resGroup1);
-    dispatch_group_enter(_resGroup1);
-
+    [_resGroup enterTimes:2];
+    
     [PubNub sendMessage:_testMessage
               toChannel:_channels[0]
              compressed:YES
          storeInHistory:YES
     withCompletionBlock:^(PNMessageState state, id message) {
         if (state == PNMessageSent) {
-            dispatch_group_leave(_resGroup1);
+            [_resGroup leave];
         } else if (state == PNMessageSendingError) {
             XCTFail(@"Failed to send message");
         }
     }];
 
-    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. We didn't receive message about sending channel.");
     }
 
-    _resGroup1 = NULL;
+    _resGroup = nil;
 }
 
 // Test 2
 - (void)t1estSubscribeOnWithCompletionBlockInstance {
-    _resGroup2 = dispatch_group_create();
+    _resGroup2 = [GCDGroup group];
     
     NSArray *channels = [PNChannel channelsWithNames:@[@"test_ios_4", @"test_ios_5", @"test_ios_6"]];
     
     // 1. Add channels to group
-    dispatch_group_enter(_resGroup2);
+    [_resGroup2 enter];
     [[PubNub sharedInstance] addChannels:channels toGroup:_group];
     
-    if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup2 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup2);
-        _resGroup2 = NULL;
+        _resGroup2 = nil;
         return;
     }
     
     // 2. Subscribe on groups with block
-    dispatch_group_enter(_resGroup2);
+    [_resGroup2 enter];
     
     [PubNub subscribeOn:@[_group] withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *groups, PNError *error) {
         
-        if (_resGroup2 != NULL) {
+        if ([_resGroup2 isEntered]) {
             if (error == nil) {
                 XCTAssert([groups isEqual:@[_group]], @"Received groups is wrong: %@ <> %@", groups, _group);
             } else {
                 XCTFail(@"PubNub client did fail to subscribe to an array of groups %@", error);
             }
-            dispatch_group_leave(_resGroup2);
+            [_resGroup2 leave];
         }
     }];
     
-    if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup2 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. We didn't subscribe to an array of groups.");
-        dispatch_group_leave(_resGroup2);
     }
     
-    _resGroup2 = NULL;
+    _resGroup2 = nil;
 }
 
-- (void)testSimultaneousSubscription {
+- (void)t1estSimultaneousSubscription {
     _resGroup7 = dispatch_group_create();
     
     NSArray *channels1 = [PNChannel channelsWithNames:@[@"test_sim_1", @"test_sim_2", @"test_sim_3"]];
@@ -339,8 +338,8 @@ PNDelegate
 
 // Receive message (did)
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
-    if (_resGroup1) {
-        dispatch_group_leave(_resGroup1);
+    if ([_resGroup isEntered]) {
+        [_resGroup leave];
     }
 }
 
@@ -352,16 +351,16 @@ PNDelegate
     }
 }
 
-
-// Add channels in group (did)
 - (void)pubnubClient:(PubNub *)client didAddChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group {
     
-    if (_resGroup1 != NULL) {
-        dispatch_group_leave(_resGroup1);
+    // PubNub client added channels to the group.
+    
+    if ([_resGroup isEntered]) {
+        [_resGroup leave];
     }
     
-    if (_resGroup2 != NULL) {
-        dispatch_group_leave(_resGroup2);
+    if ([_resGroup2 isEntered]) {
+        [_resGroup2 leave];
     }
     
     if (_resGroup3 != NULL) {
