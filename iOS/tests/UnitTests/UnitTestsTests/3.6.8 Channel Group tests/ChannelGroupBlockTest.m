@@ -16,8 +16,8 @@
 {
     dispatch_group_t _resGroup1;
     GCDGroup *_resGroup2;
-    dispatch_group_t _resGroup3;
-    dispatch_group_t _resGroup4;
+    GCDGroup *_resGroup3;
+    GCDGroup *_resGroup4;
     dispatch_group_t _resGroup5;
     dispatch_group_t _resGroup6;
     dispatch_group_t _resGroup7;
@@ -137,8 +137,8 @@
         
     [_pubNub addChannels:_channels toGroup:_group1];
      
-    _resGroup3 = dispatch_group_create();
-    dispatch_group_enter(_resGroup3);
+    _resGroup3 = [GCDGroup group];
+    [_resGroup3 enter];
     
     [_pubNub requestChannelGroupsForNamespace:_namespaceName
                   withCompletionHandlingBlock:^(NSString *nameSpace, NSArray *groups, PNError *error) {
@@ -147,8 +147,8 @@
                           if (error == nil) {
                               BOOL res = NO;
                               
-                              for (NSArray *group in groups) {
-                                  if ([group isEqual:_group1]) {
+                              for (PNChannelGroup *group in groups) {
+                                  if ([group.name isEqualToString:_group1.name]) {
                                       res = YES;
                                       break;
                                  }
@@ -161,10 +161,10 @@
                               XCTFail(@"PubNub client did fail to receive groups from the namespace");
                           }
                           
-                          dispatch_group_leave(_resGroup3);
+                          [_resGroup3 leave];
                       }
                   }];
-        if ([GCDWrapper isGroup:_resGroup3 timeoutFiredValue:10]) {
+        if ([GCDWrapper isGCDGroup:_resGroup3 timeoutFiredValue:10]) {
             XCTFail(@"Timeout is fired. Didn't receive list of channel groups with completion block");
         }
 }
@@ -172,8 +172,8 @@
 // 2.3 Request list of all groups with block ???
 - (void)testRequestDefaultChannelGroups {
     
-    _resGroup4 = dispatch_group_create();
-    dispatch_group_enter(_resGroup4);
+    _resGroup4 = [GCDGroup group];
+    [_resGroup4 enter];
     
     _group1 = [PNChannelGroup channelGroupWithName:_groupName
                                        inNamespace:nil
@@ -190,7 +190,7 @@
                 BOOL res = NO;
                 
                 for (PNChannelGroup *group in groups) {
-                    if ([group.name isEqualToString:_group1.name]) {
+                    if ([group.groupName isEqualToString:_group1.groupName]) {
                         res = YES;
                         break;
                     }
@@ -203,16 +203,15 @@
                 XCTFail(@"PubNub client did fail to receive groups from the namespace: %@", error);
             }
             
-            dispatch_group_leave(_resGroup4);
+            [_resGroup4 leave];
         }
     }];
     
-    if ([GCDWrapper isGroup:_resGroup4 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup4 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive list of all groups with completion block");
-        dispatch_group_leave(_resGroup4);
     }
     
-    _resGroup4 = NULL;
+    _resGroup4 = nil;
 }
 
 // 2.4 Request list of channels for group with block ???

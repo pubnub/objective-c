@@ -1106,6 +1106,9 @@
     if ([requestsList count] > 0) {
 
         [self pn_dispatchBlock:^{
+            
+            // Inform delegate that channel is about to reschedule pending requests.
+            [self.delegate connectionChannelWillReschedulePendingRequests:self];
 
             [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
                                            usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,

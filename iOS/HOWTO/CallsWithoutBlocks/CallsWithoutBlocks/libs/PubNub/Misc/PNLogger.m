@@ -125,6 +125,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .proxyConfigurationNotRequired = @"0100066",
         .destroyed = @"0100067",
         .resourceLinkage = @"0100068",
+        .connectionRetryAttemptInProgress = @"0100069",
 
         .stream = {
 

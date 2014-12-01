@@ -2626,6 +2626,17 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
+- (void)connectionChannelWillReschedulePendingRequests:(PNConnectionChannel *)channel {
+    
+    [self pn_dispatchBlock:^{
+        
+        if ([channel isEqual:self.serviceChannel]) {
+            
+            self.methodCallRescheduleDate = nil;
+        }
+    }];
+}
+
 - (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel {
     
     //

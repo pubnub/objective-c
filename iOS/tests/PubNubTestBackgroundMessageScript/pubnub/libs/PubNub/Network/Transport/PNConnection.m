@@ -47,117 +47,120 @@ typedef NS_OPTIONS(NSUInteger, PNConnectionActionSourceFlag)  {
 };
 
 typedef NS_OPTIONS(NSUInteger, PNConnectionActionFlag)  {
-
+    
+    // Flag which allow to set whether client is about to reconnect or not
+    PNConnectionWillReconnect = 1 << 3,
+    
     // Flag which allow to set whether client is reconnecting at this moment or not
-    PNConnectionReconnect = 1 << 3,
+    PNConnectionReconnect = 1 << 4,
 
     // Flag which allow to set whether client should connect back as soon as disconnection will be completed or not
-    PNConnectionReconnectOnDisconnect = 1 << 4,
+    PNConnectionReconnectOnDisconnect = 1 << 5,
 
     // Flag which allow to set whether client should disconnect or not
-    PNConnectionDisconnect = 1 << 5
+    PNConnectionDisconnect = 1 << 6
 };
 
 typedef NS_OPTIONS(NSUInteger, PNConnectionActionOwnerFlag)  {
 
     // Flag which allow to set whether action on connection has been triggered by user or not
-    PNByUserRequest = 1 << 6,
+    PNByUserRequest = 1 << 7,
 
     // Flag which allow to set whether action on connection has been triggered by internal code or not
-    PNByInternalRequest = 1 << 7,
+    PNByInternalRequest = 1 << 8,
 
     // Flag which allow to set whether action on connection has been triggered by server or not
-    PNByServerRequest = 1 << 8
+    PNByServerRequest = 1 << 9
 };
 
 typedef NS_OPTIONS(NSUInteger, PNConnectionStateFlag)  {
 
     // Flag which allow to set whether read stream configuration started or not
-    PNReadStreamConfiguring = 1 << 9,
+    PNReadStreamConfiguring = 1 << 10,
 
     // Flag which allow to set whether write stream configuration started or not
-    PNWriteStreamConfiguring = 1 << 10,
+    PNWriteStreamConfiguring = 1 << 11,
 
     // Flag which allow to set whether connection configuration started or not
     PNConnectionConfiguring = (PNReadStreamConfiguring | PNWriteStreamConfiguring),
 
     // Flag which allow to set whether read stream configured or not
-    PNReadStreamConfigured = 1 << 11,
+    PNReadStreamConfigured = 1 << 12,
 
     // Flag which allow to set whether write stream configured or not
-    PNWriteStreamConfigured = 1 << 12,
+    PNWriteStreamConfigured = 1 << 13,
 
     // Flag which allow to set whether connection configured or not
     PNConnectionConfigured = (PNReadStreamConfigured | PNWriteStreamConfigured),
 
     // Flag which allow to set whether read stream is connecting right now or not
-    PNReadStreamConnecting = 1 << 13,
+    PNReadStreamConnecting = 1 << 14,
 
     // Flag which allow to set whether write stream is connecting right now or not
-    PNWriteStreamConnecting = 1 << 14,
+    PNWriteStreamConnecting = 1 << 15,
 
     // Flag which allow to set whether client is connecting at this moment or not
     PNConnectionConnecting = (PNReadStreamConnecting | PNWriteStreamConnecting),
 
     // Flag which allow to set whether read stream is connected right now or not
-    PNReadStreamConnected = 1 << 15,
+    PNReadStreamConnected = 1 << 16,
 
     // Flag which allow to set whether write stream is connected right now or not
-    PNWriteStreamConnected = 1 << 16,
+    PNWriteStreamConnected = 1 << 17,
 
     // Flag which allow to set whether connection channel is preparing to establish connection
-    PNConnectionPrepareToConnect = 1 << 17,
+    PNConnectionPrepareToConnect = 1 << 18,
 
     // Flag which allow to set whether client is connected or not
     PNConnectionConnected = (PNReadStreamConnected | PNWriteStreamConnected),
 
     // Flag which allow to set whether connection is suspended or not or not
-    PNConnectionResuming = 1 << 18,
+    PNConnectionResuming = 1 << 19,
 
     // Flag which allow to set whether read stream is disconnecting right now or not
-    PNReadStreamDisconnecting = 1 << 19,
+    PNReadStreamDisconnecting = 1 << 20,
 
     // Flag which allow to set whether write stream is disconnecting right now or not
-    PNWriteStreamDisconnecting = 1 << 20,
+    PNWriteStreamDisconnecting = 1 << 21,
 
     // Flag which allow to set whether client is disconnecting at this moment or not
     PNConnectionDisconnecting = (PNReadStreamDisconnecting | PNWriteStreamDisconnecting),
 
     // Flag which allow to set whether connection is suspending or not or not
-    PNConnectionSuspending = 1 << 21,
+    PNConnectionSuspending = 1 << 22,
 
     // Flag which allow to set whether read stream is disconnected right now or not
-    PNReadStreamDisconnected = 1 << 22,
+    PNReadStreamDisconnected = 1 << 23,
 
     // Flag which allow to set whether write stream is disconnected right now or not
-    PNWriteStreamDisconnected = 1 << 23,
+    PNWriteStreamDisconnected = 1 << 24,
 
     // Flag which allow to set whether client is disconnected at this moment or not
     PNConnectionDisconnected = (PNReadStreamDisconnected | PNWriteStreamDisconnected),
 
     // Flag which stores all states which is responsible for connection 'reconnect' state
-    PNConnectionReconnection = (PNConnectionReconnect | PNConnectionReconnectOnDisconnect),
+    PNConnectionReconnection = (PNConnectionWillReconnect | PNConnectionReconnect | PNConnectionReconnectOnDisconnect),
 
     // Flag which allow to set whether connection is suspended or not or not
-    PNConnectionSuspended = 1 << 24,
+    PNConnectionSuspended = 1 << 25,
 
     // Flag which allow to set whether connection should schedule next requests or not
-    PNConnectionProcessingRequests = 1 << 25
+    PNConnectionProcessingRequests = 1 << 26
 };
 
 typedef NS_OPTIONS(NSUInteger, PNConnectionDataSendingStateFlag)  {
 
     // Flag which allow to set whether action on connection has been triggered by user or not
-    PNSendingData = 1 << 26
+    PNSendingData = 1 << 27
 };
 
 typedef NS_OPTIONS(NSUInteger, PNConnectionErrorStateFlag)  {
 
     // Flag which allow to set whether error occurred on read stream or not
-    PNReadStreamError = 1 << 27,
+    PNReadStreamError = 1 << 28,
 
     // Flag which allow to set whether error occurred on write stream or not
-    PNWriteStreamError = 1 << 28,
+    PNWriteStreamError = 1 << 29,
 
     // Flag which allow to set whether client is experiencing some error or not
     PNConnectionError = (PNReadStreamError | PNWriteStreamError)
@@ -1194,11 +1197,12 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         }
                         else if (![PNBitwiseHelper is:self.state strictly:YES containsBit:PNConnectionConnected]) {
 
-                            [PNBitwiseHelper removeFrom:&self->_state bits:PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming,
-                                                                     BITS_LIST_TERMINATOR];
+                            [PNBitwiseHelper removeFrom:&self->_state
+                                                   bits:PNConnectionSuspending, PNConnectionSuspended, PNConnectionResuming,
+                                                        BITS_LIST_TERMINATOR];
 
                             symbolCode = PNLoggerSymbols.connection.connectionInProgress;
-                            if ( [self shouldReconnect]) {
+                            if ([self shouldReconnect]) {
 
                                 symbolCode = PNLoggerSymbols.connection.reconnectionInProgress;
                             }
@@ -1374,40 +1378,41 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (BOOL)canRetryConnection {
 
-    return self.connectionRetryCount < kPNMaximumConnectionRetryCount;
+    return (self.connectionRetryCount < kPNMaximumConnectionRetryCount);
 }
 
 - (void)retryConnection {
 
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
-
+        
     self.connectionRetryCount++;
-
+    
     [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
+        
         return @[PNLoggerSymbols.connection.connectionRetry, (self.name ? self.name : self), @(self.connectionRetryCount),
-                @(kPNMaximumConnectionRetryCount), @(self.state)];
+                 @(kPNMaximumConnectionRetryCount), @(self.state)];
     }];
-
+    
     // Check whether reconnection was issued because of SSL error or not
     if (self.sslConfigurationLevel == PNConnectionSSLConfigurationInsecure &&
         [PNBitwiseHelper is:self.state strictly:YES containsBits:PNByInternalRequest, PNConnectionSSL, BITS_LIST_TERMINATOR]) {
-
+        
         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
+            
             return @[PNLoggerSymbols.connection.connectionRetryOnSSLError, (self.name ? self.name : self), @(self.state)];
         }];
     }
-        // Check whether reconnection was issued because of socket temporary issues or not
+    // Check whether reconnection was issued because of socket temporary issues or not
     else if ([PNBitwiseHelper is:self.state strictly:YES containsBits:PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR]) {
-
+        
         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
+            
             return @[PNLoggerSymbols.connection.connectionRetryOnTemporaryConnectionIssues, (self.name ? self.name : self), @(self.state)];
         }];
     }
-
+    
+    [PNBitwiseHelper addTo:&_state bit:PNConnectionWillReconnect];
     [self reconnectWithBlock:NULL];
 }
 
@@ -1422,6 +1427,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             
             [self pn_dispatchBlock:^{
                 
+                [PNBitwiseHelper removeFrom:&self->_state bit:PNConnectionWillReconnect];
                 newStates = self.state;
                 
                 BOOL stateChangedFromOutside = (oldStates != newStates && ![PNBitwiseHelper is:oldStates containsBit:PNByUserRequest] &&
@@ -1446,7 +1452,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         }];
                     }
                     
-                    // Ask delegate whether connection should initiate connection to remote host or not
+                    // Ask delegat e whether connection should initiate connection to remote host or not
                     if (shouldReconnect) {
                         
                         BOOL isWaitingForReconnection = [PNBitwiseHelper is:self.state containsBit:PNConnectionReconnect];
@@ -1482,12 +1488,9 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                                 }
                             });
                         }
-                        else {
+                        else if (processReportBlock) {
 
-                            if (processReportBlock) {
-
-                                processReportBlock();
-                            }
+                            processReportBlock();
                         }
                     }
                     else {
@@ -3143,7 +3146,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     @(self.state)];
         }];
 
-
         unsigned long oldStates = self.state;
         [self.delegate connection:self checkShouldRestoreConnection:^(BOOL shouldReconnect) {
 
@@ -3416,97 +3418,131 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
         else if ([errorDomain isEqualToString:(NSString *)kCFErrorDomainPOSIX] ||
                 [errorDomain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
 
-            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connection.generalError, (self.name ? self.name : self), @(self.state)];
-            }];
-
-            // Check whether connection should be reconnected because of critical error
-            if ([self isConnectionIssuesError:error]) {
-
+            // Check whether connection configuration still valid or destruction process already started
+            if ([PNBitwiseHelper is:self.state containsBit:PNConnectionConfigured]) {
+                
                 [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                    return @[PNLoggerSymbols.connection.internetConnectionFailure, (self.name ? self.name : self), @(self.state)];
+                    return @[PNLoggerSymbols.connection.generalError, (self.name ? self.name : self), @(self.state)];
                 }];
 
-                if ([self isConnectionUpLinkError:error]) {
+                // Check whether connection should be reconnected because of critical error
+                if ([self isConnectionIssuesError:error]) {
 
                     [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                        return @[PNLoggerSymbols.connection.uplinkConnectionFailure, (self.name ? self.name : self), @(self.state)];
+                        return @[PNLoggerSymbols.connection.internetConnectionFailure, (self.name ? self.name : self), @(self.state)];
                     }];
+
+                    if ([self isConnectionUpLinkError:error]) {
+
+                        [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                            return @[PNLoggerSymbols.connection.uplinkConnectionFailure, (self.name ? self.name : self), @(self.state)];
+                        }];
+                    }
+
+                    if (![self isReconnecting]) {
+                        
+                        if ([self canRetryConnection]) {
+                            
+                            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                                
+                                return @[PNLoggerSymbols.connection.connectionRetryAttemptIsPossible,
+                                         (self.name ? self.name : self), @(self.state)];
+                            }];
+                            
+                            shouldCloseConnection = NO;
+                            [self retryConnection];
+                        }
+                        else {
+                            
+                            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                                
+                                return @[PNLoggerSymbols.connection.connectionRetryAttemptImpossible, (self.name ? self.name : self),
+                                         @(self.state)];
+                            }];
+                            
+                            // Mark that we should init streams close because of critical error
+                            shouldCloseConnection = YES;
+                        }
+                    }
+                    else {
+                        
+                        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                            
+                            return @[PNLoggerSymbols.connection.connectionRetryAttemptInProgress,
+                                     (self.name ? self.name : self), @(self.state)];
+                        }];
+                        
+                        shouldCloseConnection = NO;
+                    }
                 }
-
-                if ([self canRetryConnection]) {
-
-                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                        return @[PNLoggerSymbols.connection.connectionRetryAttemptIsPossible, (self.name ? self.name : self),
-                                 @(self.state)];
-                    }];
+                
+                if ([self isTemporaryError:error]) {
                     
-                    shouldCloseConnection = NO;
-                    [self retryConnection];
-                }
-                else {
+                    [PNBitwiseHelper removeFrom:&_state bit:PNConnectionErrorCleanAll];
+                    [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR];
 
-                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                    if ([self isServerError:error]) {
 
-                        return @[PNLoggerSymbols.connection.connectionRetryAttemptImpossible, (self.name ? self.name : self),
-                                 @(self.state)];
-                    }];
+                        [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                            return @[PNLoggerSymbols.connection.generalErrorBecauseOfServerActions, (self.name ? self.name : self),
+                                    @(self.state)];
+                        }];
+                    }
+                    else {
+
+                        [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                            return @[PNLoggerSymbols.connection.generalErrorOfTemporaryConnectionIssues, (self.name ? self.name : self),
+                                    @(self.state)];
+                        }];
+                    }
                     
-                    // Mark that we should init streams close because of critical error
-                    shouldCloseConnection = YES;
+                    if (![self isReconnecting]) {
+                        
+                        // Checking whether connection is able to perform another connection attempt or not
+                        if ([self canRetryConnection]) {
+
+                            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                                
+                                return @[PNLoggerSymbols.connection.connectionRetryAttemptIsPossible,
+                                         (self.name ? self.name : self), @(self.state)];
+                            }];
+                            
+                            shouldCloseConnection = NO;
+                            [self retryConnection];
+                        }
+                        else {
+
+                            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                                return @[PNLoggerSymbols.connection.connectionRetryAttemptImpossible, (self.name ? self.name : self),
+                                        @(self.state)];
+                            }];
+                            
+                            // Mark that we should init streams close because of critical error
+                            shouldCloseConnection = YES;
+                        }
+                    }
+                    else {
+                        
+                        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                            
+                            return @[PNLoggerSymbols.connection.connectionRetryAttemptInProgress,
+                                     (self.name ? self.name : self), @(self.state)];
+                        }];
+                        
+                        shouldCloseConnection = NO;
+                    }
                 }
             }
-            
-            if ([self isTemporaryError:error]) {
+            // Looks like connection already invalid and all corresponding actions in a queue.
+            else {
                 
-                [PNBitwiseHelper removeFrom:&_state bit:PNConnectionErrorCleanAll];
-                [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR];
-
-                if ([self isServerError:error]) {
-
-                    [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                        return @[PNLoggerSymbols.connection.generalErrorBecauseOfServerActions, (self.name ? self.name : self),
-                                @(self.state)];
-                    }];
-                }
-                else {
-
-                    [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                        return @[PNLoggerSymbols.connection.generalErrorOfTemporaryConnectionIssues, (self.name ? self.name : self),
-                                @(self.state)];
-                    }];
-                }
-                
-                // Checking whether connection is able to perform another connection attempt or not
-                if ([self canRetryConnection]) {
-
-                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                        return @[PNLoggerSymbols.connection.connectionRetryAttemptIsPossible, (self.name ? self.name : self),
-                                @(self.state)];
-                    }];
-
-                    
-                    shouldCloseConnection = NO;
-                    [self retryConnection];
-                }
-                else {
-
-                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                        return @[PNLoggerSymbols.connection.connectionRetryAttemptImpossible, (self.name ? self.name : self),
-                                @(self.state)];
-                    }];
-                    
-                    // Mark that we should init streams close because of critical error
-                    shouldCloseConnection = YES;
-                }
+                shouldCloseConnection = NO;
             }
         }
 
@@ -3514,15 +3550,33 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
             
             // Check whether we are tried to establish connection and some error occurred there
             if ([self isConnecting]) {
-
-                shouldCloseConnection = (shouldCloseConnection && ![self canRetryConnection] ? YES : shouldCloseConnection);
-                if (!shouldCloseConnection) {
+                
+                if (![self isReconnecting]) {
                     
-                    [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR];
-
-                    [self retryConnection];
+                    shouldCloseConnection = (shouldCloseConnection && ![self canRetryConnection] ? YES : shouldCloseConnection);
+                    if (!shouldCloseConnection) {
+                        
+                        [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                            
+                            return @[PNLoggerSymbols.connection.connectionRetryAttemptIsPossible,
+                                     (self.name ? self.name : self), @(self.state)];
+                        }];
+                        
+                        [PNBitwiseHelper addTo:&_state bits:PNByInternalRequest, PNConnectionSocket, BITS_LIST_TERMINATOR];
+                        [self retryConnection];
+                    }
+                    else {
+                        
+                        [PNBitwiseHelper removeFrom:&_state bit:PNConnectionSocket];
+                    }
                 }
                 else {
+                    
+                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+                        
+                        return @[PNLoggerSymbols.connection.connectionRetryAttemptInProgress,
+                                 (self.name ? self.name : self), @(self.state)];
+                    }];
                     
                     [PNBitwiseHelper removeFrom:&_state bit:PNConnectionSocket];
                 }
@@ -3567,7 +3621,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     [PNBitwiseHelper removeFrom:&_state bits:PNConnectionCleanReconnection, PNReadStreamCleanAll, PNWriteStreamCleanAll,
                                                              PNConnectionDisconnect, PNByServerRequest, PNByInternalRequest,PNByUserRequest,
                                                              PNConnectionWakeUpTimer, PNConnectionSSL, PNConnectionSocket, BITS_LIST_TERMINATOR];
-
+                    
                     self.connectionRetryCount = 0;
                     [self.delegate connection:self connectionDidFailToHost:self.configuration.origin
                                     withError:errorObject andBlock:^{

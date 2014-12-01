@@ -144,6 +144,8 @@
 		<string>DESTROYED (STATE: %@)</string>
 		<key>0100068</key>
 		<string>INSTANCE USE RESPONSE DESERIALIZER AT %@</string>
+		<key>0100069</key>
+		<string>CONNECTION RETRY ALREADY IN PROGRESS (STATE: %@)</string>
 		<key>0110</key>
 		<dict>
 			<key>0110000</key>

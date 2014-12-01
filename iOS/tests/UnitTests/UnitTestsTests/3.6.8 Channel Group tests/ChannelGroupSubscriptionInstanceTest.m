@@ -9,11 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-static NSString *kOriginPath = @"pubsub-emea.pubnub.com";
-static NSString *kPublishKey = @"demo";
-static NSString *kSubscribeKey = @"demo";
-static NSString *kSecretKey = @"mySecret";
-
 @interface ChannelGroupSubscriptionInstanceTest : XCTestCase
 <
 PNDelegate
@@ -44,10 +39,10 @@ PNDelegate
     [super setUp];
 
     [_pubNub disconnect];
-    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kOriginPath
-                                                                           publishKey:kPublishKey
-                                                                         subscribeKey:kSubscribeKey
-                                                                            secretKey:kSecretKey] andDelegate:self];
+    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost
+                                                                           publishKey:kTestPNPublishKey
+                                                                         subscribeKey:kTestPNSubscriptionKey
+                                                                            secretKey:kTestPNSecretKey] andDelegate:self];
     [_pubNub connect];
     
     _channels = [PNChannel channelsWithNames:@[@"test_ios_1", @"test_ios_2", @"test_ios_3"]];
