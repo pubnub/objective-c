@@ -1235,11 +1235,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vadym Osovets (TS2DHB4U39)";
 				GCC_PREFIX_HEADER = APNSClient/PrefixHeader.pch;
 				INFOPLIST_FILE = APNSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bdfa2eeb-950c-47c2-92cb-a27b3443e421";
+				PROVISIONING_PROFILE = "5b970059-c0e1-488e-b4d6-014837e51aa4";
 			};
 			name = Debug;
 		};
@@ -1251,7 +1252,7 @@
 				INFOPLIST_FILE = APNSClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bdfa2eeb-950c-47c2-92cb-a27b3443e421";
+				PROVISIONING_PROFILE = "5b970059-c0e1-488e-b4d6-014837e51aa4";
 			};
 			name = Release;
 		};

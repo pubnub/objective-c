@@ -28,6 +28,8 @@
                                                              publishKey:@"pub-c-12b1444d-4535-4c42-a003-d509cc071e09"
                                                            subscribeKey:@"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe"
                                                               secretKey:@"sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz"];
+//    [myConfig setCipherKey:@"qrerweqrewrw"];
+    
     // Define Channel
     PNChannel *my_channel = [PNChannel channelWithName:@"test_push"
                                  shouldObservePresence:YES];
@@ -108,6 +110,23 @@
                 [PubNub sendMessage:[NSString stringWithFormat:@"This is an Apple Push Notification!" ] toChannel:my_channel ];
                 
                 [PubNub sendMessage:message toChannel:my_channel];
+                
+#warning To test special case from customer, related to crypt key in configuraiton and sending push notifications.
+                
+                [PubNub sendMessage:@"Send encrypted" applePushNotification:nil toChannel:my_channel
+                         compressed:YES storeInHistory:NO withCompletionBlock:^(PNMessageState
+                                                                                state, id object) {
+                             switch (state) {
+                                 case PNMessageSent:
+                                     NSLog(@"Done");
+                                     break;
+                                     
+                                 default:
+                                     break;
+                             }
+                         
+                         }];
+                
             }
                 break;
             case PNSubscriptionProcessNotSubscribedState:
@@ -140,7 +159,9 @@
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self withBlock:^(PNMessage *message) {
         NSLog(@"OBSERVER: Channel: %@, Message: %@", message.channel.name, message.message);
         
-        [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"APNS in channel: %@", message.channel.name] message:message.message
+        NSString *stringMessage = [NSString stringWithFormat:@"%@", message.message];
+        
+        [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"APNS in channel: %@", message.channel.name] message:stringMessage
                                   delegate:nil cancelButtonTitle:@"Ok"
                           otherButtonTitles:nil] show];
         
