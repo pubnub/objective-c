@@ -7,7 +7,6 @@
 //
 
 #import "PNChannelRegistryHelper.h"
-#import "NSString+PNAddition.h"
 
 
 #pragma mark Private interface declaration

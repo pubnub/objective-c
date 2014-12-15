@@ -7,10 +7,7 @@
 //
 
 #import "PNClientStateHelper.h"
-
-// Don't use this category on your own, because interface can be changed (private).
-#import "NSDictionary+PNAdditions.h"
-
+#import "NSDictionary+PNDemoAddition.h"
 
 #pragma mark Private interface declaration
 

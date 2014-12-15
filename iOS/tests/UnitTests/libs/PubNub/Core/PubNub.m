@@ -30,6 +30,7 @@
 #import "PNConnection+Protected.h"
 #import "NSObject+PNAdditions.h"
 #import "PNMessagingChannel.h"
+#import "PNLogger+Protected.h"
 #import "PNServiceChannel.h"
 #import "PNRequestsImport.h"
 #import "PNLoggerSymbols.h"
@@ -53,12 +54,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"develop";
+static NSString * const kPNCodebaseBranch = @"feature-pt75668732";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"8d6cb267c30bacd9c491a1ddc2ecdfbbf366ea0b";
+static NSString * const kPNCodeCommitIdentifier = @"2c21a5b75302b058f377d33f6d97ed799fc5f5d3";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -906,6 +907,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)rescheduleMethodCall:(void(^)(void))methodBlock {
 
+    void(^methodBlockCopy)(void) = (methodBlock ? [methodBlock copy] : nil);
     void(^checkCompletionBlock)(BOOL) = ^(BOOL willRestore) {
 
         [self pn_dispatchBlock:^{
@@ -922,9 +924,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             self.methodCallRescheduleDate = [NSDate new];
 
-            if (methodBlock) {
+            if (methodBlockCopy) {
 
-                methodBlock();
+                methodBlockCopy();
             }
         }];
     };
@@ -1094,8 +1096,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 }
 
 - (void)setDelegate:(id<PNDelegate>)delegate {
-
-    self.clientDelegate = delegate;
+    
+    [self pn_dispatchBlock:^{
+    
+        self.clientDelegate = delegate;
+    }];
 }
 
 
@@ -4205,6 +4210,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     [self pn_destroyPrivateDispatchQueue];
     
+    [self unsubscribeFromNotifications];
     [self.cache purgeAllState];
     self.cache = nil;
 

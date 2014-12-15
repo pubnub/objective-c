@@ -53,7 +53,7 @@
 #pragma mark - Instance methods
 
 /**
- Allow to check whether valid information has been provided for new data feed objecr creation or not.
+ Allow to check whether valid information has been provided for new data feed object creation or not.
  
  @return \c YES if provided data can be used to create new data feed object which can be used in future.
  */

@@ -37,10 +37,14 @@
     [super setUp];
     [PubNub disconnect];
     
-    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                            publishKey:kTestPNPublishKey
-                                                                          subscribeKey:kTestPNSubscriptionKey
-                                                                             secretKey:kTestPNSecretKey] andDelegate:self];
+//    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost
+//                                                                            publishKey:kTestPNPublishKey
+//                                                                          subscribeKey:kTestPNSubscriptionKey
+//                                                                             secretKey:
+//                                               kTestPNSecretKey
+//                                                                          andDelegate:self];
+//    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
+    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost publishKey:kTestPNPublishKey subscribeKey:kTestPNSubscriptionKey secretKey:kTestPNSecretKey] andDelegate:self];
     
     [_pubNub connect];
     
@@ -71,7 +75,7 @@
                 NSLog(@"PubNub client added channels: %@ to the group: %@", channel, group);
             }
         } else {
-            XCTFail(@"PubNub client did fail to add channels to the group");
+            XCTFail(@"PubNub client did fail to add channels to the group: %@", error);
         }
         
         dispatch_group_leave(_resGroup1);

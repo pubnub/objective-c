@@ -8,10 +8,7 @@
 
 #import "PNChannelInformationHelper.h"
 #import "PNChannelInformationHelperDelegate.h"
-#import "PNChannelGroup.h"
-
-// Don't use this category on your own, because interface can be changed (private).
-#import "NSDictionary+PNAdditions.h"
+#import "NSDictionary+PNDemoAddition.h"
 
 
 #pragma mark Private interface declaration
@@ -108,7 +105,7 @@
             }
             else if(hasVaildName) {
                 
-                object = [PNChannel channelWithName:self.objectName];
+                object = [PNChannel channelWithName:self.objectName shouldObservePresence:self.shouldObservePresence];
             }
         }
     }
@@ -136,7 +133,7 @@
 - (BOOL)shouldChangePresenceObservationState {
     
     BOOL shouldChangePresenceObservationState = NO;
-    id <PNChannelProtocol> object = self.object;
+    id <PNChannelProtocol> object = _object;
     if (object && [PubNub isSubscribedOn:object]) {
         
         shouldChangePresenceObservationState = self.shouldObservePresence != [PubNub isPresenceObservationEnabledFor:object];
@@ -149,7 +146,7 @@
 - (BOOL)shouldChangeObjectState {
     
     BOOL shouldChangeChannelState = NO;
-    id <PNChannelProtocol> object = self.object;
+    id <PNChannelProtocol> object = _object;
     if (object && [PubNub isSubscribedOn:object]) {
         
         shouldChangeChannelState = [self.state isEqualToDictionary:self.originalState];

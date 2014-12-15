@@ -54,7 +54,7 @@ static NSString *kSecretKey = @"mySecret";
                          errorBlock:^(PNError *connectionError){
                              
                              if (connectionError == nil) {
-                                 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+                                 NSLog(@"connectionError %@", connectionError);
                                  XCTFail(@"Looks like there is no internet for connection");
                              }
                              else {
@@ -92,7 +92,7 @@ static NSString *kSecretKey = @"mySecret";
                          errorBlock:^(PNError *connectionError) {
                             
                           if (connectionError == nil) {
-                              PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+                              NSLog(@"connectionError %@", connectionError);
                               XCTFail(@"Looks like there is no internet connection");
                           }
                           else {

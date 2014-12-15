@@ -7,7 +7,6 @@
 //
 
 #import "PNAccessRightsHelper.h"
-#import "PNChannelProtocol.h"
 
 
 #pragma mark Structures
