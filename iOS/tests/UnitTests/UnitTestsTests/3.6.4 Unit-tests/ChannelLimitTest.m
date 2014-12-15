@@ -2,8 +2,8 @@
 //  ChannelLimitTest.m
 //  pubnub
 //
-//  Created by Valentin Tuller on 11/20/13.
-//  Copyright (c) 2013 PubNub Inc. All rights reserved.
+//  Created by Sergey Kazanskiy on 12/10/14.
+//  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 // Old results: Executed 1 test, with 0 failures (0 unexpected) in 171.068 (171.074) seconds
 
@@ -27,10 +27,8 @@
 }
 
 -(void)resetConnection {
-//	[PubNub resetClient];
     
     dispatch_group_t resetGroup = dispatch_group_create();
-    
     dispatch_group_enter(resetGroup);
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -55,7 +53,6 @@
 	NSDate *start = [NSDate date];
     
     dispatch_group_t sendMessageGroup = dispatch_group_create();
-    
     dispatch_group_enter(sendMessageGroup);
     
 	[PubNub sendMessage: message toChannel: channel withCompletionBlock:^(PNMessageState messageSendingState, id data)
@@ -65,7 +62,7 @@
          
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
          
-		 XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+		 XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
 		 XCTAssertFalse(messageSendingState==PNMessageSendingError, @"messageSendingState==PNMessageSendingError %@", data);
          
@@ -83,47 +80,59 @@
 						   selector:@selector(kPNClientUnsubscriptionDidCompleteNotification:)
 							   name:kPNClientUnsubscriptionDidCompleteNotification
 							 object:nil];
-
+    
+//    Array of channels
 	NSMutableArray *arr = [NSMutableArray array];
-	int i=0;
+	int i = 0;
 	for( ; i<20; i++ ) {
-		NSString *channelName = [NSString stringWithFormat: @"%@ %d", [NSDate date], i];
+		NSString *channelName = [NSString stringWithFormat: @"Channel%d", i];
 		[arr addObject: channelName];
 	}
-
+    NSArray *_channels = [PNChannel channelsWithNames:arr];
+    
+//    Subscribe on channels
+    dispatch_group_t subscribeGroup = dispatch_group_create();
+    dispatch_group_enter(subscribeGroup);
 	__block NSDate *start = [NSDate date];
     
-    dispatch_group_t subscribeGroup = dispatch_group_create();
-    
-    dispatch_group_enter(subscribeGroup);
-    
-	[PubNub subscribeOnChannels: [PNChannel channelsWithNames: arr]
+ 	[PubNub subscribeOn:_channels
 	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 	 {
+         switch (state) {
+             case PNSubscriptionProcessNotSubscribedState:
+                 break;
+             case PNSubscriptionProcessSubscribedState:
+                 dispatch_group_leave(subscribeGroup);
+                 break;
+             case PNSubscriptionProcessWillRestoreState:
+                 break;
+             case PNSubscriptionProcessRestoredState:
+                 break;
+         }
+
 		 NSTimeInterval interval = -[start timeIntervalSinceNow];
 		 NSLog(@"subscribed arr %f, error %@", interval, subscriptionError);
          
-		 XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
-
+		 XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 		 XCTAssertNil( subscriptionError, @"arr subscriptionError %@", subscriptionError);
          
-         dispatch_group_leave(subscribeGroup);
 	 }];
     
 	XCTAssertTrue(![GCDWrapper isGroup:subscribeGroup
                    timeoutFiredValue:[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1], @"timout fired");
-
-	__block int requestFinishedCount = 0;
+    
+//    Send message
+    dispatch_group_t sendMessage = dispatch_group_create();
+    
+    __block int requestFinishedCount = 0;
 	start = [NSDate date];
     
 	NSString *message = [NSString stringWithFormat: @"%@", arr];
 	message = [arr description];
-	message = [message substringToIndex: 500];
+	message = [message substringToIndex: 50];
+ 	message = [message stringByReplacingOccurrencesOfString:@"\"" withString: @"\\\""];
     
-	message = [message stringByReplacingOccurrencesOfString:@"\"" withString: @"\\\""];
-    
-    dispatch_group_t sendMessage = dispatch_group_create();
-
+ 
 	for( int i=0; i<arr.count; i++ ) {
         
         dispatch_group_enter(sendMessage);
@@ -144,28 +153,34 @@
     
     [GCDWrapper waitGroup:sendMessage];
     
-	for( ; i<10; i++ ) {
-		NSString *channelName = [NSString stringWithFormat: @"%@ %d", [NSDate date], i];
+//    Unsubscribe from channels
+    dispatch_group_t unsubscribeGroup = dispatch_group_create();
+    dispatch_group_enter(unsubscribeGroup);
+    
+    [PubNub unsubscribeFrom:_channels withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
+        if (!error)
+            dispatch_group_leave(unsubscribeGroup);
+    }];
+    
+    [GCDWrapper waitGroup:unsubscribeGroup];
+
+//    Subscribe on channels in order
+	for( int i=0; i<10; i++ ) {
+        
+        NSString *channelName = [NSString stringWithFormat: @"Channel%d", i];
 		NSArray *arr = [PNChannel channelsWithNames: @[channelName]];
-		NSDate *start = [NSDate date];
-        
-		NSLog(@"Start subscribe to channel %@", channelName);
-        
 		__block NSArray *subscribedChannels = nil;
+         dispatch_group_enter(sendMessage);
         
-        
-        dispatch_group_enter(sendMessage);
-        
-		[PubNub subscribeOnChannels: arr
-		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
+        [PubNub subscribeOn: arr
+        withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 		 {
 			 subscribedChannels = channels;
 			 NSTimeInterval interval = -[start timeIntervalSinceNow];
 			 NSLog(@"subscribed %f, %@", interval, subscriptionError);
-			 XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %d instead of %d", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+//			 XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout+1, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
 
 			 XCTAssertNil( subscriptionError, @"channel %@, \nsubscriptionError %@", channelName, subscriptionError);
-             
             dispatch_group_leave(sendMessage);
 		 }];
         
@@ -180,35 +195,28 @@
 		}
 	}
 
-	NSMutableArray *arrChannel = [NSMutableArray arrayWithArray: [PubNub subscribedChannels]];
-    
-	NSLog(@"[PubNub subscribedChannels] %@", [PubNub subscribedChannels]);
+//    Unsubscribe from channels in order
+    dispatch_group_t unsubGroup = dispatch_group_create();
+    NSMutableArray *arrChannel = [NSMutableArray arrayWithArray: [PubNub subscribedObjectsList]];
     
 	for( int i=0; i < arrChannel.count; i++) {
-        
-		__block PNChannel *channel = arrChannel[i];
-		__block int blockCount = 0;
-        
-        dispatch_group_t unsubGroup = dispatch_group_create();
-        
         dispatch_group_enter(unsubGroup);
-        
+       
+		PNChannel *channel = arrChannel[i];
 		NSLog(@"start unsubscribeFromChannels %@", channel);
 		clientUnsubscriptionDidCompleteNotificationCount = 0;
-		[PubNub unsubscribeFromChannels: @[channel] withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
-			NSLog(@"unsubscribeFromChannels %@", channel);
-			NSLog(@"block isSubscribedOnChannel %d", [PubNub isSubscribedOnChannel: channel]);
+
+		[PubNub unsubscribeFrom: @[channel] withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
+			NSLog(@"block isSubscribedOnChannel %d", [PubNub isSubscribedOn: channel]);
 			XCTAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
-			blockCount++;
+            dispatch_group_leave(unsubGroup);
 		}];
         
-        [GCDWrapper waitGroup:unsubGroup];
         
-		XCTAssertTrue(clientUnsubscriptionDidCompleteNotificationCount>0, @"notification not called");
+		XCTAssertFalse(clientUnsubscriptionDidCompleteNotificationCount=0, @"notification not called");
 		XCTAssertFalse(clientUnsubscriptionDidCompleteNotificationCount>1, @"notification called repeatedly, %d", clientUnsubscriptionDidCompleteNotificationCount);
-		XCTAssertTrue(blockCount>0, @"block not called");
-		XCTAssertFalse(blockCount>1, @"block called repeatedly, %d", blockCount);
 	}
+    [GCDWrapper waitGroup:unsubGroup];
 }
 
 -(void)kPNClientUnsubscriptionDidCompleteNotification:(NSNotification*)notification {
