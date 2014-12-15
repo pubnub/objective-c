@@ -9,7 +9,6 @@
 #import "PNObjectCell.h"
 #import "PNNumberBadgeView.h"
 #import "PNDataManager.h"
-#import "PNChannel.h"
 
 
 #pragma mark Private methods declaration

@@ -20,7 +20,6 @@
 #import "UIView+PNAddition.h"
 #import "PNDataManager.h"
 #import "PNAlertView.h"
-#import "PNMacro.h"
 
 
 #pragma mark Private interface methods
@@ -164,7 +163,6 @@
 
     // Update PubNub client configuration
     [PubNub setConfiguration:[PNDataManager sharedInstance].configuration];
-
 
     __block __pn_desired_weak __typeof(self) weakSelf = self;
     [PubNub connectWithSuccessBlock:^(NSString *origin) {

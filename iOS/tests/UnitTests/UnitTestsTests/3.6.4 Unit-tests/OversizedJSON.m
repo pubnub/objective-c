@@ -43,11 +43,11 @@
 
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
 
-			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
+			NSLog(@"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
 //			dispatch_semaphore_signal(semaphore);
 		}
 							 errorBlock:^(PNError *connectionError) {
-								 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+								 NSLog(@"connectionError %@", connectionError);
 //								 dispatch_semaphore_signal(semaphore);
 								 XCTFail(@"connectionError %@", connectionError);
 							 }];
@@ -107,7 +107,7 @@
 				 forInstancesOfClass:[PNConnection class]
 						   withBlock:
 			^(id object, SEL sel){
-				PNLog(PNLogGeneralLevel, nil, @"PNConnection setReconnect");
+				NSLog(@"PNConnection setReconnect");
 				_reconnectCount++;
 				[Swizzler unswizzleFromReceipt:receiptReconnect];
 				[(PNConnection*)object reconnectWithBlock:^{

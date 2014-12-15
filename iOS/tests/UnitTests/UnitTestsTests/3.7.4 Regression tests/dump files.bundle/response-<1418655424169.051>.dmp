@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Date: Mon, 15 Dec 2014 14:57:04 GMT
+Content-Type: text/javascript; charset="UTF-8"
+Content-Length: 157
+Connection: keep-alive
+Cache-Control: no-cache
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET
+
+s_167af([[{"action": "timeout", "timestamp": 1418655423, "uuid": "02274d4d-acbd-408e-b04d-f0092bdacc2b", "occupancy": 2}],"14186554240600615","test-pnpres"])
