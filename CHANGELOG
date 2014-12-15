@@ -1,4 +1,24 @@
-10-22-2014 - 240fab - 3.7
+12-01-2014 - 0fe765c - 3.7.3
+. hardened multithread protection code concerning issues with PNConnection and PNReachability
+. strongified some weak pointers to prevent dying before block execution
+. demo app improvements / fixes
+. if the client receives some unexpected response, it will now be logged
+. improvements to PNJSONSerialization class
+. Provide ability for shorthand channel groups notation
+. improvements made to reachability class
+. fixed crash when wrong object was returned inside of associated error object
+. fixed bug where message could be double-encrypted when resending of already encrypted message
+. internal callbacks now pass queue on which block should be called
+. added new connectingClientWithConfiguration method
+. improved connection retry logic when connection channel reschedules incomplete requests
+
+10-30-2014 - 57844d8 - 3.7.2
+. Fixed decryption of history message bug
+
+10-25-2014 - 594691c - 3.7.1
+. Fixed bug in cryptohelper which fixes encryption
+
+10-22-2014 - 240fab - 3.7.0
 . Instance-based support
 . Background thread support
 . Thread safety support
