@@ -32,9 +32,6 @@
 #import "PNButton.h"
 #import "PNAutoMessager.h"
 
-// Don't use this import, because it is private PubNub API
-#import "PNConfiguration+Protected.h"
-
 
 #pragma mark Static
 
@@ -777,13 +774,8 @@ static double const kPNActionRetryDelayOnPAMError = 15.0f;
 
 - (void)configurationChangeDidComplete:(PNConfiguration *)updatedConfiguration {
    
-    // Checking whether configuration update will require hard reset (this functionality maybe will be moved to public
-    // PubNub API).
-    if ([[PubNub configuration] requiresConnectionResetWithConfiguration:updatedConfiguration]) {
-        
-        [[PNDataManager sharedInstance] clearChatHistory];
-        [[PNDataManager sharedInstance] clearChannels];
-    }
+    [[PNDataManager sharedInstance] clearChatHistory];
+    [[PNDataManager sharedInstance] clearChannels];
     [PNDataManager sharedInstance].configuration = updatedConfiguration;
     [PubNub setConfiguration:[PNDataManager sharedInstance].configuration];
 }

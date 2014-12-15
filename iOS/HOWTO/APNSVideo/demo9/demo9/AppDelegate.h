@@ -10,8 +10,7 @@
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, PNDelegate>
 
+@property (nonatomic, readonly, strong) NSData *devicePushToken;
 @property (strong, nonatomic) UIWindow *window;
-@property NSString *apnsID;
-@property NSData *dToken;
 
 @end

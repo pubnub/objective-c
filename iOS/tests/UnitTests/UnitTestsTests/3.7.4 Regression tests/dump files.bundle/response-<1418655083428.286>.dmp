@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Date: Mon, 15 Dec 2014 14:51:23 GMT
+Content-Type: text/javascript; charset="UTF-8"
+Content-Length: 28
+Connection: keep-alive
+Cache-Control: no-cache
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET
+
+t_cc445([14186550834114471])

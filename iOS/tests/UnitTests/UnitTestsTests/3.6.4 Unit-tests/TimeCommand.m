@@ -88,12 +88,12 @@
 		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
 
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
-			PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
+			NSLog(@"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
 			dispatch_semaphore_signal(semaphore);
 			isCompletionBlockCalled = YES;
 		}
 							 errorBlock:^(PNError *connectionError) {
-								 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+								 NSLog(@"connectionError %@", connectionError);
 								 dispatch_semaphore_signal(semaphore);
 								 //								 XCTFail(@"connectionError %@", connectionError);
 								 isCompletionBlockCalled = YES;
@@ -129,7 +129,7 @@
 				 forClass:[PNNetworkHelper class]
 						   withBlock:
 			^(id self, SEL sel){
-				PNLog(PNLogGeneralLevel, nil, @"PNNetworkHelper originLookupResourcePath");
+				NSLog(@"PNNetworkHelper originLookupResourcePath");
 				return @"http://google.com";
 			}];
 }

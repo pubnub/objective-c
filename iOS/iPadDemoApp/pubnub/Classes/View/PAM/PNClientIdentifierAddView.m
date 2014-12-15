@@ -7,7 +7,6 @@
 //
 
 #import "PNClientIdentifierAddView.h"
-#import "NSString+PNAddition.h"
 #import "UIView+PNAddition.h"
 #import "PNButton.h"
 

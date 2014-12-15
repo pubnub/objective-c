@@ -38,11 +38,11 @@
 
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
 
-        PNLog(PNLogGeneralLevel, nil, @"{BLOCK} PubNub client connected to: %@", origin);
+        NSLog(@"{BLOCK} PubNub client connected to: %@", origin);
         dispatch_semaphore_signal(semaphore);
     }
                          errorBlock:^(PNError *connectionError) {
-							 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+							 NSLog(@"connectionError %@", connectionError);
 							 dispatch_semaphore_signal(semaphore);
 							 XCTFail(@"connectionError %@", connectionError);
                          }];

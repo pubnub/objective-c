@@ -75,11 +75,11 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
 
 	[PubNub connectWithSuccessBlock:^(NSString *origin) {
 
-		PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
+		NSLog(@"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
         
         dispatch_group_leave(_resGroup);
 	} errorBlock:^(PNError *connectionError) {
-							 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+							 NSLog(@"connectionError %@", connectionError);
 							 XCTFail(@"connectionError %@", connectionError);
                              dispatch_group_leave(_resGroup);
     }];

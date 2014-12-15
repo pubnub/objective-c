@@ -8,10 +8,6 @@
 
 
 #import "PNDataManager.h"
-#import "PNPresenceEvent+Protected.h"
-#import "PNMessage+Protected.h"
-#import "PNChannel+Protected.h"
-#import "PNClient.h"
 
 
 #pragma mark Structures
@@ -144,25 +140,26 @@ static PNDataManager *_sharedInstance = nil;
             
             NSPredicate *objectPredicate = [NSPredicate predicateWithFormat:@"NOT (self IN %@)", objectsForRemoval];
             weakSelf.subscribedChannelsList = [weakSelf.subscribedChannelsList filteredArrayUsingPredicate:objectPredicate];
+            [PubNub unsubscribeFrom:objectsForRemoval];
         };
         
         [[PNObservationCenter defaultCenter] addChannelGroupNamespaceRemovalObserver:weakSelf
                                                                    withCallbackBlock:^(NSString *namespace, PNError *error) {
                                                                        
-                                                                       if (!error) {
-                                                                           
-                                                                           removeChannelGroupObject(namespace, YES);
-                                                                       }
-                                                                   }];
+            if (!error) {
+               
+                removeChannelGroupObject(namespace, YES);
+            }
+        }];
         
         [[PNObservationCenter defaultCenter] addChannelGroupRemovalObserver:self
                                                           withCallbackBlock:^(PNChannelGroup *channelGroup, PNError *error) {
               
-                                                              if (!error) {
-                                                                  
-                                                                  removeChannelGroupObject(channelGroup, NO);
-                                                              }
-                                                          }];
+            if (!error) {
+                  
+                removeChannelGroupObject(channelGroup, NO);
+            }
+        }];
 
         [[PNObservationCenter defaultCenter] addMessageReceiveObserver:weakSelf
                                                              withBlock:^(PNMessage *message) {

@@ -68,13 +68,13 @@
 }
 
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to subscribe because of error: %@", error);
+    NSLog(@"PubNub client failed to subscribe because of error: %@", error);
 	subscribeOnChannelsFinish = YES;
 }
 
 //nonSubscriptionRequestTimeout
 - (void)pubnubClient:(PubNub *)client didFailParticipantsListDownloadForChannel:(PNChannel *)channel withError:(PNError *)error {
-    PNLog(PNLogGeneralLevel, self, @"PubNub client failed to download participants list for channel %@ because of error: %@",
+    NSLog(@"PubNub client failed to download participants list for channel %@ because of error: %@",
           channel, error);
 	participantsListForChannelFinish = YES;
 }
@@ -286,22 +286,22 @@
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
-	PNLog(PNLogGeneralLevel, self, @"NSNotification handleApplicationDidEnterBackgroundState: %@", notification);
+	NSLog(@"NSNotification handleApplicationDidEnterBackgroundState: %@", notification);
 	handleApplicationDidEnterBackgroundState = YES;
 }
 
 - (void)handleApplicationDidEnterForegroundState:(NSNotification *)__unused notification  {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleApplicationDidEnterForegroundState: %@", notification);
+    NSLog(@"NSNotification handleApplicationDidEnterForegroundState: %@", notification);
 	handleApplicationDidEnterForegroundState = YES;
 }
 #else
 - (void)handleWorkspaceWillSleep:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleWorkspaceWillSleep: %@", notification);
+    NSLog(@"NSNotification handleWorkspaceWillSleep: %@", notification);
 	handleWorkspaceWillSleep = YES;
 }
 
 - (void)handleWorkspaceDidWake:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleWorkspaceDidWake: %@", notification);
+    NSLog(@"NSNotification handleWorkspaceDidWake: %@", notification);
 	handleWorkspaceDidWake = YES;
 }
 #endif
@@ -313,72 +313,72 @@
 }
 
 - (void)handleClientConnectionStateChange:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientConnectionStateChange: %@", notification);
+    NSLog(@"NSNotification handleClientConnectionStateChange: %@", notification);
 	handleClientConnectionStateChange = YES;
 }
 
 - (void)handleClientSubscriptionProcess:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientSubscriptionProcess: %@", notification);
+    NSLog(@"NSNotification handleClientSubscriptionProcess: %@", notification);
 	handleClientSubscriptionProcess = YES;
 }
 
 - (void)handleClientUnsubscriptionProcess:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientUnsubscriptionProcess: %@", notification);
+    NSLog(@"NSNotification handleClientUnsubscriptionProcess: %@", notification);
 	handleClientUnsubscriptionProcess = YES;
 }
 
 - (void)handleClientPresenceObservationEnablingProcess:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientPresenceObservationEnablingProcess: %@", notification);
+    NSLog(@"NSNotification handleClientPresenceObservationEnablingProcess: %@", notification);
 	handleClientPresenceObservationEnablingProcess = YES;
 }
 
 - (void)handleClientPresenceObservationDisablingProcess:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientPresenceObservationDisablingProcess: %@", notification);
+    NSLog(@"NSNotification handleClientPresenceObservationDisablingProcess: %@", notification);
 	handleClientPresenceObservationDisablingProcess = YES;
 }
 
 - (void)handleClientPushNotificationStateChange:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientPushNotificationStateChange: %@", notification);
+    NSLog(@"NSNotification handleClientPushNotificationStateChange: %@", notification);
 	handleClientPushNotificationStateChange = YES;
 }
 
 - (void)handleClientPushNotificationRemoveProcess:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientPushNotificationRemoveProcess: %@", notification);
+    NSLog(@"NSNotification handleClientPushNotificationRemoveProcess: %@", notification);
 	handleClientPushNotificationRemoveProcess = YES;
 }
 
 - (void)handleClientPushNotificationEnabledChannels:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientPushNotificationEnabledChannels: %@", notification);
+    NSLog(@"NSNotification handleClientPushNotificationEnabledChannels: %@", notification);
 	handleClientPushNotificationEnabledChannels = YES;
 }
 
 - (void)handleClientMessageProcessingStateChange:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientMessageProcessingStateChange: %@", notification);
+    NSLog(@"NSNotification handleClientMessageProcessingStateChange: %@", notification);
 	handleClientMessageProcessingStateChange = YES;
 }
 
 - (void)handleClientDidReceiveMessage:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientDidReceiveMessage: %@", notification);
+    NSLog(@"NSNotification handleClientDidReceiveMessage: %@", notification);
 	handleClientDidReceiveMessage = YES;
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientDidReceivePresenceEvent: %@", notification);
+    NSLog(@"NSNotification handleClientDidReceivePresenceEvent: %@", notification);
 	handleClientDidReceivePresenceEvent = YES;
 }
 
 - (void)handleClientMessageHistoryProcess:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientMessageHistoryProcess: %@", notification);
+    NSLog(@"NSNotification handleClientMessageHistoryProcess: %@", notification);
 	handleClientMessageHistoryProcess = YES;
 }
 
 - (void)handleClientHereNowProcess:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientHereNowProcess: %@", notification);
+    NSLog(@"NSNotification handleClientHereNowProcess: %@", notification);
 	handleClientHereNowProcess = YES;
 }
 
 - (void)handleClientCompletedTimeTokenProcessing:(NSNotification *)notification {
-    PNLog(PNLogGeneralLevel, self, @"NSNotification handleClientCompletedTimeTokenProcessing: %@", notification);
+    NSLog(@"NSNotification handleClientCompletedTimeTokenProcessing: %@", notification);
 	handleClientCompletedTimeTokenProcessing = YES;
 }
 
@@ -394,7 +394,7 @@
 	 {
 		 XCTAssertNil( error, @"error %@", error);
 		 if (!connected && error) {
-			 PNLog(PNLogGeneralLevel, self, @"#2 PubNub client was unable to connect because of error: %@",
+			 NSLog(@"#2 PubNub client was unable to connect because of error: %@",
 				   [error localizedDescription],
 				   [error localizedFailureReason]);
 		 }
@@ -423,7 +423,7 @@
     [[PNObservationCenter defaultCenter] addPresenceEventObserver:weakSelf
                                                         withBlock:^(PNPresenceEvent *presenceEvent) {
 
-                                                            PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new event: %@",
+                                                            NSLog(@"{BLOCK-P} PubNubc client received new event: %@",
 																  presenceEvent);
                                                         }];
 }
@@ -551,13 +551,13 @@
 	{
 		handleClientHereNowProcess = NO;
 		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-		//		PNLog(PNLogGeneralLevel, nil, @"pnChannels[i] %@", pnChannels[i]);
+		//		NSLog(@"pnChannels[i] %@", pnChannels[i]);
         
 		[PubNub requestParticipantsListForChannel:pnChannels[i]
 							  withCompletionBlock:^(NSArray *udids, PNChannel *channel, PNError *error)
 		 {
 			 if( error != nil )
-				 PNLog(PNLogGeneralLevel, nil, @"error %@", error);
+				 NSLog(@"error %@", error);
 			 XCTAssertNil( error, @"error %@", error);
 			 dispatch_semaphore_signal(semaphore);
 			 NSLog(@"udids %@", udids);

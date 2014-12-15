@@ -165,11 +165,11 @@
 
 	[PubNub connectWithSuccessBlock:^(NSString *origin) {
 
-		PNLog(PNLogGeneralLevel, nil, @"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
+		NSLog(@"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
 		dispatch_semaphore_signal(semaphore);
 	}
 						 errorBlock:^(PNError *connectionError) {
-							 PNLog(PNLogGeneralLevel, nil, @"connectionError %@", connectionError);
+							 NSLog(@"connectionError %@", connectionError);
 							 dispatch_semaphore_signal(semaphore);
 							 XCTFail(@"connectionError %@", connectionError);
 						 }];
