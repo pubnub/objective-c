@@ -1,13 +1,13 @@
 Pod::Spec.new do |s|
   s.name         = 'PubNub'
-  s.version      = '3.7.1'
+  s.version      = '3.7.4'
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'PubNub, Inc.' => 'support@pubnub.com'
   }
   s.source = {
     :git => 'https://github.com/pubnub/objective-c.git',
-    :tag => 'v3.7.1'
+    :tag => 'v3.7.4'
   }
   
   # A list of file patterns which select the source files that should be
@@ -15,22 +15,21 @@ Pod::Spec.new do |s|
   # path will automatically have '*.{h,m,mm,c,cpp}' appended.
   #  
   
-  s.source_files = 'iOS/iPadDemoApp/pubnub/libs/PubNub/Misc/Categories',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Misc',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Misc/Protocols',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Core',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Channels',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Crypto',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Network/Packets',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Buffers',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Network',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Network/Transport',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Channels/Presence',
-   'iOS/iPadDemoApp/pubnub/libs/PubNub/Data/Parsers',
-   'PNConstants.h'
+  s.source_files = 'PubNub/PubNub/PubNub/Misc/Categories',
+   'PubNub/PubNub/PubNub/Data',
+   'PubNub/PubNub/PubNub/Misc',
+   'PubNub/PubNub/PubNub/Misc/Protocols',
+   'PubNub/PubNub/PubNub/Core',
+   'PubNub/PubNub/PubNub/Data/Channels',
+   'PubNub/PubNub/PubNub/Data/Crypto',
+   'PubNub/PubNub/PubNub/Network/Packets',
+   'PubNub/PubNub/PubNub/Data/Buffers',
+   'PubNub/PubNub/PubNub/Network',
+   'PubNub/PubNub/PubNub/Network/Transport',
+   'PubNub/PubNub/PubNub/Data/Channels/Presence',
+   'PubNub/PubNub/PubNub/Data/Parsers'
    
-   s.resources = 'iOS/iPadDemoApp/pubnub/libs/PubNub/Resources/*'
+   s.resources = 'PubNub/PubNub/PubNub/Resources/*'
 
   s.ios.deployment_target = '5.1'
   s.osx.deployment_target = '10.7'
