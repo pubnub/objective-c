@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
+#import <PubNub/PNImports.h>
+
 @interface MessageToUnsubChannelTest : XCTestCase <PNDelegate>
 @end
 
@@ -18,6 +20,8 @@
     GCDGroup *_resGroup3;
     GCDGroup *_resGroup4;
     GCDGroup *_resGroup6;
+    
+    GCDGroup *_resGroup7;
 }
 
 
@@ -166,7 +170,7 @@
     
 }
 
-- (void)testScenario2 {
+- (void)t2estScenario {
     
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
     [PubNub setDelegate:self];
@@ -239,6 +243,26 @@
 
 }
 
+- (void)testUnsubscribeAndContinueWork {
+    
+    // Connect
+    _resGroup7 = [GCDGroup group];
+    [_resGroup7 enterTimes:2];
+    
+    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
+    [PubNub setDelegate:self];
+    [PubNub connect];
+    [PubNub subscribeOn:[PNChannel channelsWithNames:@[@"iosdev1",@"iosdev2",@"iosdev3",@"iosdev4"]]];
+    [PubNub sendMessage:@"Hello world #1" toChannel:[PNChannel channelWithName:@"iosdev3"]];
+    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev2"]]];
+    [PubNub sendMessage:@"Hello world #2" toChannel:[PNChannel channelWithName:@"iosdev4"]];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup7 timeoutFiredValue:30]) {
+        XCTFail(@"Timeout is fired. Couldn't send message to channel");
+    }
+    
+    _resGroup7 = nil;
+}
 
 #pragma mark - PubNub Delegate
 
@@ -277,6 +301,10 @@
 - (void)pubnubClient:(PubNub *)client didSendMessage:(PNMessage *)message {
     if (_resGroup3) {
         [_resGroup3 leave];
+    }
+    
+    if (_resGroup7) {
+        [_resGroup7 leave];
     }
 }
 
