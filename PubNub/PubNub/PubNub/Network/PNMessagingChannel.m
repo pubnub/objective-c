@@ -1169,11 +1169,16 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                                                                                    
                                     [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0
                                                              forRequest:nil forcibly:YES];
+                                                                                   
+                                    [self.messagingDelegate messagingChannel:self didSubscribeOn:channels sequenced:isPresenceModification
+                                                             withClientState:clientStateForRequest];
                                 }];
                             }
-                            
-                            [self.messagingDelegate messagingChannel:self didSubscribeOn:channels sequenced:isPresenceModification
-                                                     withClientState:clientStateForRequest];
+                            else {
+                                
+                                [self.messagingDelegate messagingChannel:self didSubscribeOn:channels sequenced:isPresenceModification
+                                                         withClientState:clientStateForRequest];
+                            }
                         }];
                     }];
                 }
@@ -1692,6 +1697,15 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             }
             presenceModificationType = modificationType;
         }
+        
+        // Subscribe to the channels with new update time token
+        NSArray *targetChannels = [self.subscribedChannelsSet count] ? [self.subscribedChannelsSet allObjects] : nil;
+        targetChannels = targetChannels ? targetChannels : (request != nil ? request.channelsForSubscription : nil);
+        if ([targetChannels count] || request) {
+            
+            [self updateSubscriptionForChannels:targetChannels withPresence:presenceModificationType forRequest:request
+                                       forcibly:NO];
+        }
 
         // Check whether events arrived from PubNub service (messages, presence)
         if ([events.events count] > 0) {
@@ -1733,15 +1747,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                     [self.messagingDelegate messagingChannel:self didReceiveMessage:event];
                 }
             }];
-        }
-
-        // Subscribe to the channels with new update time token
-        NSArray *targetChannels = [self.subscribedChannelsSet count] ? [self.subscribedChannelsSet allObjects] : nil;
-        targetChannels = targetChannels ? targetChannels : (request != nil ? request.channelsForSubscription : nil);
-        if ([targetChannels count] || request) {
-
-            [self updateSubscriptionForChannels:targetChannels withPresence:presenceModificationType forRequest:request
-                                       forcibly:NO];
         }
     }
 }
@@ -2351,7 +2356,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             [self updateSubscriptionForChannels:[self.subscribedChannelsSet allObjects] withPresence:0 forRequest:nil
                                        forcibly:NO];
         }
-            // Check whether reconnection was because of 'unsubscribe' request or not
+        // Check whether reconnection was because of 'unsubscribe' request or not
         else if ([self hasRequestsWithClass:[PNLeaveRequest class]]) {
 
             [PNBitwiseHelper removeFrom:&self->_messagingState bit:PNMessagingChannelSubscriptionWaitingForEvents];
