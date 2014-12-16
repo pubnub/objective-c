@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		960063291A027789002063CF /* PNCryptoHistoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 960063281A027789002063CF /* PNCryptoHistoryTest.m */; };
 		9606DE6E1A15EB6E00EF1934 /* PNConnectNegativeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9606DE6D1A15EB6E00EF1934 /* PNConnectNegativeTest.m */; };
+		961B70EC1A40B86C0036C02B /* MessageToUnsubChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 961B70EB1A40B86C0036C02B /* MessageToUnsubChannelTest.m */; };
 		964F68351A13B5D5002AE069 /* testdata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 964F68341A13B5D5002AE069 /* testdata.plist */; };
 		965236821A09126600E6BF32 /* PNChannelGroupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 965236811A09126600E6BF32 /* PNChannelGroupTest.m */; };
 		965C8CA01A1F526E00DC6C30 /* GCDGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 965C8C9F1A1F526E00DC6C30 /* GCDGroup.m */; };
@@ -208,6 +209,7 @@
 /* Begin PBXFileReference section */
 		960063281A027789002063CF /* PNCryptoHistoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHistoryTest.m; sourceTree = "<group>"; };
 		9606DE6D1A15EB6E00EF1934 /* PNConnectNegativeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectNegativeTest.m; sourceTree = "<group>"; };
+		961B70EB1A40B86C0036C02B /* MessageToUnsubChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageToUnsubChannelTest.m; sourceTree = "<group>"; };
 		964F682C1A12657C002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreUnexpectedHTTPDesctiptionTest.m; sourceTree = "<group>"; };
 		964F68341A13B5D5002AE069 /* testdata.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testdata.plist; sourceTree = "<group>"; };
 		965236811A09126600E6BF32 /* PNChannelGroupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupTest.m; sourceTree = "<group>"; };
@@ -629,6 +631,14 @@
 			path = "3.7.2 Regression tests";
 			sourceTree = "<group>";
 		};
+		961B70EA1A40B86C0036C02B /* 3.7.5 Regression tests */ = {
+			isa = PBXGroup;
+			children = (
+				961B70EB1A40B86C0036C02B /* MessageToUnsubChannelTest.m */,
+			);
+			path = "3.7.5 Regression tests";
+			sourceTree = "<group>";
+		};
 		96A252F419DB3EA000C4CFCC /* 3.6.8 Instance version */ = {
 			isa = PBXGroup;
 			children = (
@@ -713,6 +723,7 @@
 		96CB66E819CFE75D0093D64E /* UnitTestsTests */ = {
 			isa = PBXGroup;
 			children = (
+				961B70EA1A40B86C0036C02B /* 3.7.5 Regression tests */,
 				96E28B9B1A3EEBF800DC39F4 /* 3.7.4 Regression tests */,
 				96A5F8A91A07D0DF004C92AA /* 3.7.3 Regression tests */,
 				960063271A027770002063CF /* 3.7.2 Regression tests */,
@@ -1511,6 +1522,7 @@
 				96E9B30B19E8380500362A9D /* ChannelGroupSubscriptionTest.m in Sources */,
 				96CB6A0A19D01F210093D64E /* PNBaseTestCase.m in Sources */,
 				96CB6A7019D19A6B0093D64E /* ChangingChannels.m in Sources */,
+				961B70EC1A40B86C0036C02B /* MessageToUnsubChannelTest.m in Sources */,
 				96CB6A9919D19A6B0093D64E /* PNSubscribeUnsubscribeTest.m in Sources */,
 				96CB6A9D19D19A6B0093D64E /* TimeCommand.m in Sources */,
 				96CB6A7919D19A6B0093D64E /* PNAccessRightsCollectionTest.m in Sources */,
