@@ -592,7 +592,7 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
 
     NSString *status = [connection stringifyStreamStatus:CFReadStreamGetStatus(stream)];
 
-
+    CFReadStreamRef retainedStream = (CFReadStreamRef)CFRetain(stream);
     [connection pn_dispatchBlock:^{
 
         switch (type) {
@@ -611,6 +611,7 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                     [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamConnected];
 
                     [connection handleStreamConnection];
+                    CFRelease(retainedStream);
                 }
                 break;
 
@@ -624,7 +625,6 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                                  (status ? status : [NSNull null]), @(connection.state)];
                     }];
                     
-                    CFReadStreamRef retainedStream = (CFReadStreamRef)CFRetain(stream);
                     [connection handleReadStreamHasData:retainedStream];
                     CFRelease(retainedStream);
                 }
@@ -640,7 +640,6 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                                  (status ? status : [NSNull null]), @(connection.state)];
                     }];
 
-                    CFReadStreamRef retainedStream = (CFReadStreamRef)CFRetain(stream);
                     [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef {
 
                         CFErrorRef cfError = CFReadStreamCopyError(retainedStream);
@@ -662,14 +661,17 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                                  (status ? status : [NSNull null]), @(connection.state)];
                     }];
 
-                        [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanAll];
-                        [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamDisconnected];
+                    [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanAll];
+                    [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamDisconnected];
 
-                        [connection handleStreamTimeout];
+                    [connection handleStreamTimeout];
+                    CFRelease(retainedStream);
                 }
                 break;
 
             default:
+                
+                CFRelease(retainedStream);
                 break;
         }
     }];
@@ -683,6 +685,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
     NSString *status = [connection stringifyStreamStatus:CFWriteStreamGetStatus(stream)];
     
+    CFWriteStreamRef retainedStream = (CFWriteStreamRef)CFRetain(stream);
     [connection pn_dispatchBlock:^{
 
         switch (type) {
@@ -701,6 +704,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamConnected];
 
                     [connection handleStreamConnection];
+                    CFRelease(retainedStream);
                 }
                 break;
 
@@ -715,6 +719,7 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     }];
 
                     [connection handleWriteStreamCanAcceptData];
+                    CFRelease(retainedStream);
                 }
                 break;
 
@@ -728,7 +733,6 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                                  (status ? status : [NSNull null]), @(connection.state)];
                     }];
 
-                    CFWriteStreamRef retainedStream = (CFWriteStreamRef)CFRetain(stream);
                     [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef {
 
                         CFErrorRef cfError = CFWriteStreamCopyError(retainedStream);
@@ -754,10 +758,13 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                     [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamDisconnected];
 
                     [connection handleStreamTimeout];
+                    CFRelease(retainedStream);
                 }
                 break;
 
             default:
+                
+                CFRelease(retainedStream);
                 break;
         }
     }];
