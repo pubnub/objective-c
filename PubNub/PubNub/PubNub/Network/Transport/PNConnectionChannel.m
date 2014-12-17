@@ -1093,15 +1093,15 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
         if ([self shouldScheduleRequest:request]) {
 
+            [request finalizeWithConfiguration:self.configuration
+                              clientIdentifier:[self.delegate clientIdentifier]];
+
             [self.requestsQueue enqueueRequest:request outOfOrder:shouldEnqueueRequestOutOfOrder
                                      withBlock:^(BOOL scheduled) {
 
                 [self pn_dispatchBlock:^{
 
                     if (scheduled) {
-
-                        [request finalizeWithConfiguration:self.configuration
-                                          clientIdentifier:[self.delegate clientIdentifier]];
 
                         if (shouldObserveProcessing) {
 

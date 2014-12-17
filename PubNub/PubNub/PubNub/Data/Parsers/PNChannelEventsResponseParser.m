@@ -162,6 +162,7 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
             NSMutableArray *eventObjects = [NSMutableArray arrayWithCapacity:[events count]];
             [events enumerateObjectsUsingBlock:^(id event, NSUInteger eventIdx, BOOL *eventEnumeratorStop) {
 
+                __block BOOL isPresenceObservationChannel = NO;
                 PNChannel* (^channelExtractBlock)(NSString *) = ^(NSString *channelName) {
                     
                     // Retrieve reference on channel on which event is occurred
@@ -169,7 +170,8 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
                     
                     // Checking whether event occurred on presence observing channel or no and retrieve reference on
                     // original channel
-                    if ([channel isPresenceObserver]) {
+                    isPresenceObservationChannel = ([channel isPresenceObserver]);
+                    if (isPresenceObservationChannel) {
                         
                         channel = [(PNChannelPresence *)channel observedChannel];
                     }
@@ -192,7 +194,8 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
                 }
 
                 // Checking whether event presence event or not
-                if ([event isKindOfClass:[NSDictionary class]] && [PNPresenceEvent isPresenceEventObject:event]) {
+                if (isPresenceObservationChannel && [event isKindOfClass:[NSDictionary class]] &&
+                    [PNPresenceEvent isPresenceEventObject:event]) {
                     
                     eventObject = [PNPresenceEvent presenceEventForResponse:event
                                                                   onChannel:targetChannel
