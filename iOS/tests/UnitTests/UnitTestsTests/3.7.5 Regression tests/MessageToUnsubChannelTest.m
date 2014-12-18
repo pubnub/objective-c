@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-#import <PubNub/PNImports.h>
 
 @interface MessageToUnsubChannelTest : XCTestCase <PNDelegate>
 @end
