@@ -9,7 +9,7 @@
 //
 //
 
-#import "PNConnectionChannel.h"
+#import "PNConnectionChannel+Protected.h"
 #import "PNConnection+Protected.h"
 #import "NSObject+PNAdditions.h"
 #import "PNLogger+Protected.h"
@@ -79,6 +79,12 @@ struct PNStoredRequestKeysStruct {
 struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     .request = @"request",
     .isObserved = @"shouldObserve"
+};
+
+struct PNRequestForRescheduleStructure PNRequestForReschedule = {
+    
+    .request = @"request",
+    .isWaitingForCompletion = @"waitingForCompletion"
 };
 
 
@@ -993,6 +999,32 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
     return requests;
 }
 
+- (NSArray *)requestForRescheduleByIdentifiers:(NSArray *)requestIdentifiers {
+
+    // This method should be launched only from within it's private queue
+    [self pn_scheduleOnPrivateQueueAssert];
+
+    NSMutableArray *requests = [NSMutableArray array];
+    [requestIdentifiers enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+                                                     BOOL *requestIdentifierEnumeratorStop) {
+
+        // Fetch actual request from storage
+        PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+
+        if (request) {
+
+            // Check whether client is waiting for request completion
+            BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+
+            [requests addObject:@{PNRequestForReschedule.request:request,
+                   PNRequestForReschedule.isWaitingForCompletion:@(isWaitingForCompletion)}];
+        }
+    }];
+
+
+    return requests;
+}
+
 - (void)prepareConnectionIfRequired {
     
     [self pn_dispatchBlock:^{
@@ -1193,7 +1225,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
 - (void)rescheduleStoredRequests:(NSArray *)requestsList {
 
-    [self rescheduleStoredRequests:requestsList resetRetryCount:YES];
+    [self rescheduleStoredRequests:[self requestForRescheduleByIdentifiers:requestsList]
+                   resetRetryCount:YES];
 }
 
 - (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
@@ -1338,6 +1371,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
             // Ask to reschedule required requests
             [self rescheduleStoredRequests:self.storedRequestsList];
+        }
+        else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
@@ -1371,9 +1406,11 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
             // Ask to reschedule required requests
             [self rescheduleStoredRequests:self.storedRequestsList];
         }
+        else {
 
-        // Launch communication process on sockets by triggering requests queue processing
-        [self scheduleNextRequest];
+            // Launch communication process on sockets by triggering requests queue processing
+            [self scheduleNextRequest];
+        }
 
         if (isExpected) {
 
@@ -1452,6 +1489,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
             // Ask to reschedule required requests
             [self rescheduleStoredRequests:self.storedRequestsList];
+        }
+        else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
@@ -1532,6 +1571,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
             // Ask to reschedule required requests
             [self rescheduleStoredRequests:self.storedRequestsList];
+        }
+        else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
@@ -1602,6 +1643,8 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
 
             // Ask to reschedule required requests
             [self rescheduleStoredRequests:self.storedRequestsList];
+        }
+        else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
@@ -1760,7 +1803,10 @@ struct PNStoredRequestKeysStruct PNStoredRequestKeys = {
         if ([self.storedRequestsList count]) {
 
             // Ask to reschedule required requests
-            [self rescheduleStoredRequests:self.storedRequestsList resetRetryCount:NO];
+            [self rescheduleStoredRequests:[self requestForRescheduleByIdentifiers:self.storedRequestsList]
+                           resetRetryCount:NO];
+        }
+        else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];

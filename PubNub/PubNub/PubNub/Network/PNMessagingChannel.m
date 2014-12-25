@@ -416,97 +416,103 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
 
-    requestsList = [requestsList copy];
-    if ([requestsList count] > 0) {
+    NSArray *sortedRequestsList = [[requestsList copy] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 
-        void(^checkCompletionBlock)(BOOL) = ^(BOOL useLastTimeToken) {
+        NSComparisonResult result = NSOrderedSame;
+        BOOL firstObjectIsLeaveRequest = [obj1 isKindOfClass:[PNLeaveRequest class]];
+        BOOL secondObjectIsLeaveRequest = [obj2 isKindOfClass:[PNLeaveRequest class]];
+        if (!(firstObjectIsLeaveRequest && secondObjectIsLeaveRequest) &&
+            (firstObjectIsLeaveRequest || secondObjectIsLeaveRequest)) {
+            
+            result = (firstObjectIsLeaveRequest ? NSOrderedAscending : NSOrderedDescending);
+        }
 
-            [self pn_dispatchBlock:^{
+        return result;
+    }];
+    
+    [self pn_dispatchBlock:^{
+        
+        // Clean up all possible requests from queue and continue work only with list of passed
+        // requests.
+        [self destroyByRequestClass:[PNLeaveRequest class]];
+        [self destroyByRequestClass:[PNSubscribeRequest class]];
+        
+        if ([sortedRequestsList count] > 0) {
 
-                [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
-                                               usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                            BOOL *requestIdentifierEnumeratorStop) {
+            void(^checkCompletionBlock)(BOOL) = ^(BOOL useLastTimeToken) {
 
-                       PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
-                       [request resetWithRetryCount:shouldResetRequestsRetryCount];
-                       request.closeConnection = NO;
+                [self pn_dispatchBlock:^{
 
-                       BOOL isSubscribeRequest = [request isKindOfClass:[PNSubscribeRequest class]];
-                       if (isSubscribeRequest && self.isRestoringSubscriptionOnResume) {
+                    [sortedRequestsList enumerateObjectsUsingBlock:^(NSDictionary *requestData, NSUInteger requestDataIdx,
+                                                                     BOOL *requestDataEnumeratorStop) {
 
-                           BOOL shouldNotifyAboutSubscriptionRestore = ![PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
-                           if (!useLastTimeToken) {
+                        PNBaseRequest *request = [requestData valueForKey:PNRequestForReschedule.request];
+                        [request resetWithRetryCount:shouldResetRequestsRetryCount];
+                        request.closeConnection = NO;
 
-                               [(PNSubscribeRequest *) request resetTimeToken];
-                           }
+                        BOOL isSubscribeRequest = [request isKindOfClass:[PNSubscribeRequest class]];
+                        if (isSubscribeRequest && self.isRestoringSubscriptionOnResume) {
 
-                           [PNBitwiseHelper removeFrom:&self->_messagingState bits:PNMessagingChannelUpdateSubscription, PNMessagingChannelResubscribeOnTimeOut,
-                                                                             PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR];
+                            BOOL shouldNotifyAboutSubscriptionRestore = ![PNBitwiseHelper is:self.messagingState containsBit:PNMessagingChannelRestoringSubscription];
+                            if (!useLastTimeToken) {
 
-                           [PNBitwiseHelper addTo:&self->_messagingState bits:PNMessagingChannelRestoringSubscription,
-                                                                        PNMessagingChannelSubscriptionTimeTokenRetrieve, BITS_LIST_TERMINATOR];
+                                [(PNSubscribeRequest *) request resetTimeToken];
+                            }
 
-                           [(PNSubscribeRequest *) request resetSubscriptionTimeToken];
-                           
-                           NSArray *onlyChannels = [self channelsWithOutPresenceFromList:((PNSubscribeRequest *) request).channels];
-                           if (shouldNotifyAboutSubscriptionRestore && [onlyChannels count]) {
+                            [PNBitwiseHelper removeFrom:&self->_messagingState bits:PNMessagingChannelUpdateSubscription, PNMessagingChannelResubscribeOnTimeOut,
+                                                                                    PNMessagingChannelSubscriptionWaitingForEvents, BITS_LIST_TERMINATOR];
 
-                               // Notify delegate that messaging channel is about to restore subscription on previous channels
-                               [self.messagingDelegate messagingChannel:self
-                                              willRestoreSubscriptionOn:onlyChannels
-                                                              sequenced:NO];
-                           }
-                       }
+                            [PNBitwiseHelper addTo:&self->_messagingState bits:PNMessagingChannelRestoringSubscription,
+                                                                               PNMessagingChannelSubscriptionTimeTokenRetrieve, BITS_LIST_TERMINATOR];
 
-                       // Check whether client is waiting for request completion
-                       BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
-                       if (isSubscribeRequest) {
+                            [(PNSubscribeRequest *) request resetSubscriptionTimeToken];
 
-                           isWaitingForCompletion = [(PNSubscribeRequest *) request isInitialSubscription];
-                       }
+                            NSArray *onlyChannels = [self channelsWithOutPresenceFromList:((PNSubscribeRequest *) request).channels];
+                            if (shouldNotifyAboutSubscriptionRestore && [onlyChannels count]) {
 
-                       // Clean up query (if request has been stored in it)
-                       [self destroyRequest:request];
-
-                       // Send request back into queue with higher priority among other requests
-                       [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
-                            launchProcessing:NO];
-                   }];
-
-                // Try to check whether there is leave request or not in stack
-                if ([self hasRequestsWithClass:[PNLeaveRequest class]]) {
-
-                    PNBaseRequest *request = [[self requestsWithClass:[PNLeaveRequest class]] lastObject];
-                    if (request) {
+                                // Notify delegate that messaging channel is about to restore subscription on previous channels
+                                [self.messagingDelegate messagingChannel:self
+                                               willRestoreSubscriptionOn:onlyChannels
+                                                               sequenced:NO];
+                            }
+                        }
 
                         // Check whether client is waiting for request completion
-                        BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
+                        BOOL isWaitingForCompletion = [[requestData valueForKey:PNRequestForReschedule.isWaitingForCompletion] boolValue];
+                        if (isSubscribeRequest) {
+
+                            isWaitingForCompletion = [(PNSubscribeRequest *) request isInitialSubscription];
+                        }
 
                         // Clean up query (if request has been stored in it)
                         [self destroyRequest:request];
 
                         // Send request back into queue with higher priority among other requests
-                        [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion outOfOrder:YES
-                             launchProcessing:NO];
-                    }
-
-                }
+                        [self scheduleRequest:request shouldObserveProcessing:isWaitingForCompletion
+                                   outOfOrder:NO launchProcessing:NO];
+                    }];
 
 
-                [self scheduleNextRequest];
-            }];
-        };
+                    [self scheduleNextRequest];
+                }];
+            };
 
-        if (self.messagingDelegate) {
+            if (self.messagingDelegate) {
 
-            [self.messagingDelegate checkShouldMessagingChannelRestoreWithLastTimeToken:self
-                                                                              withBlock:checkCompletionBlock];
+                [self.messagingDelegate checkShouldMessagingChannelRestoreWithLastTimeToken:self
+                                                                                  withBlock:checkCompletionBlock];
+            }
+            else {
+
+                checkCompletionBlock(NO);
+            }
         }
         else {
 
-            checkCompletionBlock(NO);
+
+            [self scheduleNextRequest];
         }
-    }
+    }];
 }
 
 - (BOOL)shouldStoreRequest:(PNBaseRequest *)request {

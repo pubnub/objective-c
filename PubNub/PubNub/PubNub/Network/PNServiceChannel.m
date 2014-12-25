@@ -1104,41 +1104,43 @@
 
 - (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
 
-    if ([requestsList count] > 0) {
+    [self pn_dispatchBlock:^{
 
-        [self pn_dispatchBlock:^{
-            
+        if ([requestsList count] > 0) {
+
             // Inform delegate that channel is about to reschedule pending requests.
             [self.delegate connectionChannelWillReschedulePendingRequests:self];
 
+            __block NSUInteger requestIdentifierIdx = 0;
             [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
-                                           usingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                        BOOL *requestIdentifierEnumeratorStop) {
+                                           usingBlock:^(NSDictionary *requestData, NSUInteger requestDataIdx,
+                                                   BOOL *requestDataEnumeratorStop) {
 
-               PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
+                PNBaseRequest *request = [requestData valueForKey:PNRequestForReschedule.request];
+                [request resetWithRetryCount:shouldResetRequestsRetryCount];
+                request.closeConnection = NO;
 
-               [request resetWithRetryCount:shouldResetRequestsRetryCount];
-               request.closeConnection = NO;
+                // Clean up query (if request has been stored in it)
+                [self destroyRequest:request];
 
-               // Clean up query (if request has been stored in it)
-               [self destroyRequest:request];
+                [self requestsQueue:nil didFailRequestSend:request
+                              error:[PNError errorWithCode:kPNRequestCantBeProcessedWithOutRescheduleError]
+                          withBlock:^{
 
-               [self requestsQueue:nil didFailRequestSend:request
-                             error:[PNError errorWithCode:kPNRequestCantBeProcessedWithOutRescheduleError]
-                         withBlock:^{
+                    if (requestIdentifierIdx == ([requestsList count] - 1)) {
 
-                   if (requestIdentifierIdx == ([requestsList count] - 1)) {
+                        [self scheduleNextRequest];
+                    }
 
-                       [self scheduleNextRequest];
-                   }
-               }];
+                    requestIdentifierIdx++;
+                }];
             }];
-            if (![requestsList count]) {
+        }
+        else {
 
-                [self scheduleNextRequest];
-            }
-        }];
-    }
+            [self scheduleNextRequest];
+        }
+    }];
 }
 
 - (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
