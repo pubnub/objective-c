@@ -414,7 +414,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }];
 }
 
-- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
+- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount
+                        andBlock:(dispatch_block_t)rescheduleCompletionBlock {
 
     NSArray *sortedRequestsList = [[requestsList copy] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 
@@ -494,6 +495,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 
                     [self scheduleNextRequest];
+
+                    if (rescheduleCompletionBlock) {
+
+                        rescheduleCompletionBlock();
+                    }
                 }];
             };
 
@@ -509,8 +515,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         }
         else {
 
-
             [self scheduleNextRequest];
+
+            if (rescheduleCompletionBlock) {
+
+                rescheduleCompletionBlock();
+            }
         }
     }];
 }

@@ -1102,7 +1102,8 @@
     }];
 }
 
-- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
+- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount
+                        andBlock:(dispatch_block_t)rescheduleCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -1130,6 +1131,11 @@
                     if (requestIdentifierIdx == ([requestsList count] - 1)) {
 
                         [self scheduleNextRequest];
+
+                        if (rescheduleCompletionBlock) {
+
+                            rescheduleCompletionBlock();
+                        }
                     }
 
                     requestIdentifierIdx++;
@@ -1139,6 +1145,11 @@
         else {
 
             [self scheduleNextRequest];
+
+            if (rescheduleCompletionBlock) {
+
+                rescheduleCompletionBlock();
+            }
         }
     }];
 }

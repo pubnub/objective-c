@@ -146,7 +146,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
  @note Template method
  */
-- (void)rescheduleStoredRequests:(NSArray *)requestsList;
+- (void)rescheduleStoredRequests:(NSArray *)requestsList withBlock:(dispatch_block_t)rescheduleCompletionBlock;
 
 /**
  Allow schedule stored requests back into requests queue. Which requests should be scheduled back controlled by
@@ -160,7 +160,8 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
  @note Template method
  */
-- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount;
+- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount
+                        andBlock:(dispatch_block_t)rescheduleCompletionBlock;
 
 /**
  Retrieve reference on stored request at specific index
@@ -1223,13 +1224,14 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     [self cleanUp];
 }
 
-- (void)rescheduleStoredRequests:(NSArray *)requestsList {
+- (void)rescheduleStoredRequests:(NSArray *)requestsList withBlock:(dispatch_block_t)rescheduleCompletionBlock {
 
     [self rescheduleStoredRequests:[self requestForRescheduleByIdentifiers:requestsList]
-                   resetRetryCount:YES];
+                   resetRetryCount:YES andBlock:rescheduleCompletionBlock];
 }
 
-- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount {
+- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount
+                        andBlock:(dispatch_block_t)rescheduleCompletionBlock {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
@@ -1370,17 +1372,17 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
         if ([self.storedRequestsList count]) {
 
             // Ask to reschedule required requests
-            [self rescheduleStoredRequests:self.storedRequestsList];
+            [self rescheduleStoredRequests:self.storedRequestsList withBlock:notifyCompletionBlock];
         }
         else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
-        }
 
-        if (notifyCompletionBlock) {
+            if (notifyCompletionBlock) {
 
-            notifyCompletionBlock();
+                notifyCompletionBlock();
+            }
         }
     }];
 }
@@ -1401,31 +1403,40 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
         [PNBitwiseHelper clear:&self->_state];
         [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
+        dispatch_block_t storedRequestProcessingCompletionBlock = ^{
+            
+            [self pn_dispatchBlock:^{
+                
+                if (isExpected) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.connected, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    [self.delegate connectionChannel:self didConnectToHost:hostName];
+                }
+
+                if (notifyCompletionBlock) {
+
+                    notifyCompletionBlock();
+                }
+            }];
+        };
+
         if ([self.storedRequestsList count]) {
 
             // Ask to reschedule required requests
-            [self rescheduleStoredRequests:self.storedRequestsList];
+            [self rescheduleStoredRequests:self.storedRequestsList
+                                 withBlock:storedRequestProcessingCompletionBlock];
         }
         else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
-        }
 
-        if (isExpected) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.connected, (self.name ? self.name : self),
-                        @(self.state)];
-            }];
-
-            [self.delegate connectionChannel:self didConnectToHost:hostName];
-        }
-
-        if (notifyCompletionBlock) {
-
-            notifyCompletionBlock();
+            storedRequestProcessingCompletionBlock();
         }
     }];
 }
@@ -1483,33 +1494,41 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
         [PNBitwiseHelper clear:&self->_state];
         [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
-
         BOOL doesWarmingUpRequired = [self.storedRequestsList count] == 0;
+        dispatch_block_t storedRequestProcessingCompletionBlock = ^{
+            
+            [self pn_dispatchBlock:^{
+
+                if (isExpected) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.resumed, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    [self.delegate connectionChannelDidResume:self requireWarmUp:doesWarmingUpRequired];
+                }
+
+                if (notifyCompletionBlock) {
+
+                    notifyCompletionBlock();
+                }
+            }];
+        };
+
         if ([self.storedRequestsList count]) {
 
             // Ask to reschedule required requests
-            [self rescheduleStoredRequests:self.storedRequestsList];
+            [self rescheduleStoredRequests:self.storedRequestsList
+                                 withBlock:storedRequestProcessingCompletionBlock];
         }
         else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
-        }
 
-        if (isExpected) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.resumed, (self.name ? self.name : self),
-                        @(self.state)];
-            }];
-
-            [self.delegate connectionChannelDidResume:self requireWarmUp:doesWarmingUpRequired];
-        }
-
-        if (notifyCompletionBlock) {
-
-            notifyCompletionBlock();
+            storedRequestProcessingCompletionBlock();
         }
     }];
 }
@@ -1567,32 +1586,41 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
         [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
         BOOL doesWarmingUpRequired = [self.storedRequestsList count] == 0;
+        dispatch_block_t storedRequestProcessingCompletionBlock = ^{
+            
+            [self pn_dispatchBlock:^{
+
+                // Check whether channel is waiting for reconnection completion or not
+                if (isExpected && doesWarmingUpRequired) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.connectionRestored, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    [self.delegate connectionChannel:self didReconnectToHost:hostName];
+                }
+
+                if (notifyCompletionBlock) {
+
+                    notifyCompletionBlock();
+                }
+            }];
+        };
+
         if ([self.storedRequestsList count] > 0) {
 
             // Ask to reschedule required requests
-            [self rescheduleStoredRequests:self.storedRequestsList];
+            [self rescheduleStoredRequests:self.storedRequestsList
+                                 withBlock:storedRequestProcessingCompletionBlock];
         }
         else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
-        }
 
-        // Check whether channel is waiting for reconnection completion or not
-        if (isExpected && doesWarmingUpRequired) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.connectionRestored, (self.name ? self.name : self),
-                        @(self.state)];
-            }];
-
-            [self.delegate connectionChannel:self didReconnectToHost:hostName];
-        }
-
-        if (notifyCompletionBlock) {
-
-            notifyCompletionBlock();
+            storedRequestProcessingCompletionBlock();
         }
     }];
 }
@@ -1639,31 +1667,40 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
         [PNBitwiseHelper addTo:&self->_state bit:PNConnectionChannelConnected];
 
         BOOL doesWarmingUpRequired = [self.storedRequestsList count] == 0;
+        dispatch_block_t storedRequestProcessingCompletionBlock = ^{
+            
+            [self pn_dispatchBlock:^{
+
+                if (isExpected && doesWarmingUpRequired) {
+
+                    [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                        return @[PNLoggerSymbols.connectionChannel.connectionRestored, (self.name ? self.name : self),
+                                @(self.state)];
+                    }];
+
+                    [self.delegate connectionChannel:self didReconnectToHost:hostName];
+                }
+
+                if (notifyCompletionBlock) {
+
+                    notifyCompletionBlock();
+                }
+            }];
+        };
+
         if ([self.storedRequestsList count] > 0) {
 
             // Ask to reschedule required requests
-            [self rescheduleStoredRequests:self.storedRequestsList];
+            [self rescheduleStoredRequests:self.storedRequestsList
+                                 withBlock:storedRequestProcessingCompletionBlock];
         }
         else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
-        }
 
-        if (isExpected && doesWarmingUpRequired) {
-
-            [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-
-                return @[PNLoggerSymbols.connectionChannel.connectionRestored, (self.name ? self.name : self),
-                        @(self.state)];
-            }];
-
-            [self.delegate connectionChannel:self didReconnectToHost:hostName];
-        }
-
-        if (notifyCompletionBlock) {
-
-            notifyCompletionBlock();
+            storedRequestProcessingCompletionBlock();
         }
     }];
 }
@@ -1804,17 +1841,17 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
             // Ask to reschedule required requests
             [self rescheduleStoredRequests:[self requestForRescheduleByIdentifiers:self.storedRequestsList]
-                           resetRetryCount:NO];
+                           resetRetryCount:NO andBlock:notifyCompletionBlock];
         }
         else {
 
             // Launch communication process on sockets by triggering requests queue processing
             [self scheduleNextRequest];
-        }
 
-        if (notifyCompletionBlock) {
+            if (notifyCompletionBlock) {
 
-            notifyCompletionBlock();
+                notifyCompletionBlock();
+            }
         }
     }];
 }
