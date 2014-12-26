@@ -1177,7 +1177,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 }
 
 - (void)scheduleNextRequest {
-
+    
     [self.connection scheduleNextRequestExecution];
 }
 
@@ -1573,7 +1573,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
-
+        
         [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray * {
 
             return @[PNLoggerSymbols.connectionChannel.handleConnectionRestore, (self.name ? self.name : self),

@@ -1117,11 +1117,11 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         NSData *packetDescription = (dataDescription ? [dataDescription dataUsingEncoding:NSUTF8StringEncoding] : nil);
         dispatch_async([self sharedInstance].httpProcessingQueue, ^{
 
-            if(![packetData writeToFile:packetStorePath atomically:YES]){
+            if(packetData && ![packetData writeToFile:packetStorePath atomically:YES]){
                 
                 NSLog(@"CAN'T SAVE DUMP: %@\nTO: %@", packetData, packetStorePath);
             }
-            if(![packetDescription writeToFile:detailsStorePath atomically:YES]){
+            if(packetDescription && ![packetDescription writeToFile:detailsStorePath atomically:YES]){
                 
                 NSLog(@"CAN'T SAVE DUMP INFORMATION: %@\nTO: %@", packetDescription, detailsStorePath);
             }
