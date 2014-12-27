@@ -526,7 +526,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 + (void)setConfiguration:(PNConfiguration *)configuration {
     
-    [self setupWithConfiguration:configuration andDelegate:[self sharedInstance].clientDelegate];
+    [[self sharedInstance] pn_dispatchBlock:^{
+        
+        [self setupWithConfiguration:configuration andDelegate:[self sharedInstance].clientDelegate];
+    }];
 }
 
 + (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
@@ -951,7 +954,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)setConfiguration:(PNConfiguration *)configuration {
     
-    [self setupWithConfiguration:configuration andDelegate:self.clientDelegate];
+    [self pn_dispatchBlock:^{
+    
+        [self setupWithConfiguration:configuration andDelegate:self.clientDelegate];
+    }];
 }
 
 - (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
