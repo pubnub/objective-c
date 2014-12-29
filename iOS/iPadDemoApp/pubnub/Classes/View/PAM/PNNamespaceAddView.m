@@ -36,8 +36,6 @@ static NSTimeInterval const kPNViewDisappearAnimationDuration = 0.2f;
 
 /**
  @brief Reference on resulting namespace name inputed by user.
- 
- @since <#version number#>
  */
 @property (nonatomic, copy) NSString *namespaceName;
 

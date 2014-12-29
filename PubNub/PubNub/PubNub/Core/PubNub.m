@@ -59,7 +59,7 @@ static NSString * const kPNCodebaseBranch = @"master";
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"7752d1594be53a9889fa9da69351da3eabb813a2";
+static NSString * const kPNCodeCommitIdentifier = @"a64f029edd40d7eee83e52a7e696a46402ce002f";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -526,7 +526,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 + (void)setConfiguration:(PNConfiguration *)configuration {
     
-    [self setupWithConfiguration:configuration andDelegate:[self sharedInstance].clientDelegate];
+    [[self sharedInstance] pn_dispatchBlock:^{
+        
+        [self setupWithConfiguration:configuration andDelegate:[self sharedInstance].clientDelegate];
+    }];
 }
 
 + (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
@@ -951,7 +954,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)setConfiguration:(PNConfiguration *)configuration {
     
-    [self setupWithConfiguration:configuration andDelegate:self.clientDelegate];
+    [self pn_dispatchBlock:^{
+    
+        [self setupWithConfiguration:configuration andDelegate:self.clientDelegate];
+    }];
 }
 
 - (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
@@ -1428,8 +1434,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                         // Disconnecting communication channels and preserve all issued requests which wasn't sent till
                         // this moment (they will be send as soon as connection will be restored)
-                        [_sharedInstance.messagingChannel disconnectWithEvent:NO];
-                        [_sharedInstance.serviceChannel disconnectWithEvent:NO];
+                        [self.messagingChannel disconnectWithEvent:NO];
+                        [self.serviceChannel disconnectWithEvent:NO];
                     }
 
                     // Check whether user identifier was provided by user or not
@@ -1753,16 +1759,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                 if (allowGenerateEvents) {
 
-                    [_sharedInstance.messagingChannel terminate];
-                    [_sharedInstance.serviceChannel terminate];
+                    [self.messagingChannel terminate];
+                    [self.serviceChannel terminate];
                 }
                 else {
 
-                    [_sharedInstance.messagingChannel disconnectWithEvent:NO];
-                    [_sharedInstance.serviceChannel disconnectWithEvent:NO];
+                    [self.messagingChannel disconnectWithEvent:NO];
+                    [self.serviceChannel disconnectWithEvent:NO];
                 }
-                _sharedInstance.messagingChannel = nil;
-                _sharedInstance.serviceChannel = nil;
+                self.messagingChannel = nil;
+                self.serviceChannel = nil;
             };
 
             if (isDisconnectedByUser) {
