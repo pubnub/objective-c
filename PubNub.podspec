@@ -1,12 +1,12 @@
 Pod::Spec.new do |s|
   s.name         = 'PubNub'
-  s.version      = '3.7.7'
+  s.version      = '3.7.7-fix'
   s.summary      = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
   s.authors = {
     'PubNub, Inc.' => 'support@pubnub.com'
   }
   s.source = {
-    :git => 'https://github.com/pubnub/objective-c.git',
+    :git => 'https://github.com/SandyChapman/objective-c.git',
     :tag => 'v3.7.7'
   }
   
