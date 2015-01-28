@@ -4242,6 +4242,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [self.cache purgeAllState];
     self.cache = nil;
     [self.reachability stopServiceReachabilityMonitoring];
+    self.reachability.reachabilityChangeHandleBlock = nil;
     self.reachability = nil;
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
