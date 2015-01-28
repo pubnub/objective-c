@@ -346,6 +346,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)unsubscribeFromNotifications;
 
 /**
+ @brief Disable observation on all available vents.
+ 
+ @since 3.7.8
+ */
+- (void)unsubscribeFromAllEvents;
+
+/**
  * Flush postponed methods call queue. If 'shouldExecute' is set to 'YES', than they will be not just removed but also
  * their code will be called (procedural lock will be always 'OFF').
  */
@@ -1694,30 +1701,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             }];
 
             [self.cache purgeAllState];
-
-            [self.observationCenter removeClientAsPushNotificationsEnabledChannelsObserver];
-            [self.observationCenter removeClientAsParticipantChannelsListDownloadObserver];
-            [self.observationCenter removeClientAsChannelGroupNamespaceRemovalObserver];
-            [self.observationCenter removeClientAsPushNotificationsDisableObserver];
-            [self.observationCenter removeClientAsParticipantsListDownloadObserver];
-            [self.observationCenter removeClientAsChannelsRemovalFromGroupObserver];
-            [self.observationCenter removeClientAsPushNotificationsRemoveObserver];
-            [self.observationCenter removeClientAsPushNotificationsEnableObserver];
-            [self.observationCenter removeClientAsChannelsAdditionToGroupObserver];
-            [self.observationCenter removeClientAsChannelsForGroupRequestObserver];
-            [self.observationCenter removeClientAsChannelGroupsRequestObserver];
-            [self.observationCenter removeClientAsChannelGroupRemovalObserver];
-            [self.observationCenter removeClientAsTimeTokenReceivingObserver];
-            [self.observationCenter removeClientAsAccessRightsChangeObserver];
-            [self.observationCenter removeClientAsAccessRightsAuditObserver];
-            [self.observationCenter removeClientAsMessageProcessingObserver];
-            [self.observationCenter removeClientAsHistoryDownloadObserver];
-            [self.observationCenter removeClientAsStateRequestObserver];
-            [self.observationCenter removeClientAsSubscriptionObserver];
-            [self.observationCenter removeClientAsStateUpdateObserver];
-            [self.observationCenter removeClientAsUnsubscribeObserver];
-            [self.observationCenter removeClientAsPresenceDisabling];
-            [self.observationCenter removeClientAsPresenceEnabling];
+            
+            [self unsubscribeFromAllEvents];
         }
         else {
 
@@ -3805,6 +3790,34 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 #endif
 }
 
+- (void)unsubscribeFromAllEvents {
+    
+    [self.observationCenter removeClientAsPushNotificationsEnabledChannelsObserver];
+    [self.observationCenter removeClientAsParticipantChannelsListDownloadObserver];
+    [self.observationCenter removeClientAsChannelGroupNamespacesRequestObserver];
+    [self.observationCenter removeClientAsChannelGroupNamespaceRemovalObserver];
+    [self.observationCenter removeClientAsPushNotificationsDisableObserver];
+    [self.observationCenter removeClientAsParticipantsListDownloadObserver];
+    [self.observationCenter removeClientAsChannelsRemovalFromGroupObserver];
+    [self.observationCenter removeClientAsPushNotificationsRemoveObserver];
+    [self.observationCenter removeClientAsPushNotificationsEnableObserver];
+    [self.observationCenter removeClientAsChannelsAdditionToGroupObserver];
+    [self.observationCenter removeClientAsChannelsForGroupRequestObserver];
+    [self.observationCenter removeClientAsChannelGroupsRequestObserver];
+    [self.observationCenter removeClientAsChannelGroupRemovalObserver];
+    [self.observationCenter removeClientAsTimeTokenReceivingObserver];
+    [self.observationCenter removeClientAsAccessRightsChangeObserver];
+    [self.observationCenter removeClientAsAccessRightsAuditObserver];
+    [self.observationCenter removeClientAsMessageProcessingObserver];
+    [self.observationCenter removeClientAsHistoryDownloadObserver];
+    [self.observationCenter removeClientAsStateRequestObserver];
+    [self.observationCenter removeClientAsSubscriptionObserver];
+    [self.observationCenter removeClientAsStateUpdateObserver];
+    [self.observationCenter removeClientAsUnsubscribeObserver];
+    [self.observationCenter removeClientAsPresenceDisabling];
+    [self.observationCenter removeClientAsPresenceEnabling];
+}
+
 - (void)flushPostponedMethods:(BOOL)shouldExecute {
 
     [self pn_dispatchBlock:^{
@@ -4225,6 +4238,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     [self stopHeartbeatTimer];
     [self unsubscribeFromNotifications];
+    [self unsubscribeFromAllEvents];
     [self.cache purgeAllState];
     self.cache = nil;
     [self.reachability stopServiceReachabilityMonitoring];
