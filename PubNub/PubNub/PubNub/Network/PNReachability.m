@@ -107,6 +107,7 @@ typedef enum _PNReachabilityStatus {
 - (void)startOriginLookup;
 - (void)startOriginLookup:(BOOL)shouldStopPrevious;
 - (void)stopOriginLookup;
+- (void)stopOriginLookup:(BOOL)forRelaunch;
 
 - (SCNetworkConnectionFlags)synchronousStatusFlags;
 
@@ -256,76 +257,79 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     // Retrieve reference on reachability monitor and update it's state
     PNReachability *reachabilityMonitor = (__bridge PNReachability *)info;
 
-    // Make reachability flags human-readable
-    PNReachabilityStatus status = PNReachabilityStatusForFlags(flags);
-    BOOL available = [reachabilityMonitor isServiceAvailableForStatus:status];
-
-    [reachabilityMonitor pn_dispatchBlock:^{
-
-        if (!reachabilityMonitor.isNotificationsSuspended) {
-
-            [PNLogger logReachabilityMessageFrom:reachabilityMonitor withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.reachability.reachabilityFlagsChangedOnCallback, @(flags),
-                        [reachabilityMonitor humanReadableStatus:status], @(available)];
-            }];
-
-            [reachabilityMonitor pn_dispatchBlock:^{
-
-                // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
-                // connection state in non appropriate state
-                reachabilityMonitor.simulatingNetworkSwitchEvent = NO;
-
-                // Updating reachability information
-                reachabilityMonitor.reachabilityFlags = flags;
-                reachabilityMonitor.reachabilityStatus = status;
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-                BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
-#else
-        BOOL shouldSuspectWrongState = YES;
-#endif
-
-                if (available && shouldSuspectWrongState) {
-
-                    [reachabilityMonitor startOriginLookup];
-                }
-
-                if (!available || (available && !shouldSuspectWrongState)) {
-
-                    if (!available) {
-
-                        [reachabilityMonitor stopOriginLookup];
+    if ([reachabilityMonitor respondsToSelector:@selector(isServiceAvailableForStatus:)]) {
+        
+        // Make reachability flags human-readable
+        PNReachabilityStatus status = PNReachabilityStatusForFlags(flags);
+        BOOL available = [reachabilityMonitor isServiceAvailableForStatus:status];
+        
+        [reachabilityMonitor pn_dispatchBlock:^{
+            
+            if (!reachabilityMonitor.isNotificationsSuspended) {
+                
+                [PNLogger logReachabilityMessageFrom:reachabilityMonitor withParametersFromBlock:^NSArray *{
+                    
+                    return @[PNLoggerSymbols.reachability.reachabilityFlagsChangedOnCallback, @(flags),
+                             [reachabilityMonitor humanReadableStatus:status], @(available)];
+                }];
+                
+                [reachabilityMonitor pn_dispatchBlock:^{
+                    
+                    // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
+                    // connection state in non appropriate state
+                    reachabilityMonitor.simulatingNetworkSwitchEvent = NO;
+                    
+                    // Updating reachability information
+                    reachabilityMonitor.reachabilityFlags = flags;
+                    reachabilityMonitor.reachabilityStatus = status;
+                    
+                    #if __IPHONE_OS_VERSION_MIN_REQUIRED
+                    BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+                    #else
+                    BOOL shouldSuspectWrongState = YES;
+                    #endif
+                    
+                    if (available && shouldSuspectWrongState) {
+                        
+                        [reachabilityMonitor startOriginLookup];
                     }
-
-                    reachabilityMonitor.lookupStatus = status;
-                }
-
-                if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
+                    
+                    if (!available || (available && !shouldSuspectWrongState)) {
+                        
+                        if (!available) {
+                            
+                            [reachabilityMonitor stopOriginLookup];
+                        }
+                        
+                        reachabilityMonitor.lookupStatus = status;
+                    }
+                    
+                    if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
                         ([reachabilityMonitor isServiceAvailableForStatus:reachabilityMonitor.status] && [reachabilityMonitor isServiceAvailableForStatus:status])) {
-
-                    reachabilityMonitor.status = status;
-                }
-                else {
-
-                    [PNLogger logReachabilityMessageFrom:reachabilityMonitor withParametersFromBlock:^NSArray *{
-
-                        return @[PNLoggerSymbols.reachability.reachabilityFlagsChangeIgnoredOnCallback,
-                                [reachabilityMonitor humanReadableStatus:reachabilityMonitor.reachabilityStatus],
-                                [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus], @(available)];
-                    }];
-                }
-            }];
-        }
-        else {
-
-            [PNLogger logReachabilityMessageFrom:reachabilityMonitor withParametersFromBlock:^NSArray *{
-
-                return @[PNLoggerSymbols.reachability.reachabilityFlagsChangesWhileSuspendedOnCallback,
-                        [reachabilityMonitor humanReadableStatus:status], @(available)];
-            }];
-        }
-    }];
+                        
+                        reachabilityMonitor.status = status;
+                    }
+                    else {
+                        
+                        [PNLogger logReachabilityMessageFrom:reachabilityMonitor withParametersFromBlock:^NSArray *{
+                            
+                            return @[PNLoggerSymbols.reachability.reachabilityFlagsChangeIgnoredOnCallback,
+                                     [reachabilityMonitor humanReadableStatus:reachabilityMonitor.reachabilityStatus],
+                                     [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus], @(available)];
+                        }];
+                    }
+                }];
+            }
+            else {
+                
+                [PNLogger logReachabilityMessageFrom:reachabilityMonitor withParametersFromBlock:^NSArray *{
+                    
+                    return @[PNLoggerSymbols.reachability.reachabilityFlagsChangesWhileSuspendedOnCallback,
+                             [reachabilityMonitor humanReadableStatus:status], @(available)];
+                }];
+            }
+        }];
+    }
 }
 
 - (void)startServiceReachabilityMonitoring {
@@ -397,10 +401,10 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 
         if (shouldStopPrevious) {
 
-            [self stopOriginLookup];
+            [self stopOriginLookup:YES];
         }
 
-        if (self.originLookupTimer == NULL) {
+        if (self.originLookupTimer == NULL || dispatch_source_testcancel(self.originLookupTimer) > 0) {
 
             dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                                                                    [self pn_privateQueue]);
@@ -408,35 +412,42 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             self.originLookupTimer = timerSource;
 
             __pn_desired_weak __typeof__(self) weakSelf = self;
-            dispatch_source_set_event_handler(self.originLookupTimer, ^{
+            dispatch_source_set_event_handler(timerSource, ^{
                 
                 __strong __typeof__(self) strongSelf = weakSelf;
 
                 [strongSelf stopOriginLookup];
                 [strongSelf handleOriginLookupTimer];
             });
-            dispatch_source_set_cancel_handler(self.originLookupTimer, ^{
-                
-                __strong __typeof__(self) strongSelf = weakSelf;
+            dispatch_source_set_cancel_handler(timerSource, ^{
 
                 [PNDispatchHelper release:timerSource];
-                strongSelf.originLookupTimer = NULL;
             });
 
             dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC));
-            dispatch_source_set_timer(self.originLookupTimer, start, (uint64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC), NSEC_PER_SEC);
-            dispatch_resume(self.originLookupTimer);
+            dispatch_source_set_timer(timerSource, start, (uint64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC), NSEC_PER_SEC);
+            dispatch_resume(timerSource);
         }
     }];
 }
 
 - (void)stopOriginLookup {
+    
+    [self stopOriginLookup:NO];
+}
 
+- (void)stopOriginLookup:(BOOL)forRelaunch {
+    
     [self pn_dispatchBlock:^{
-
-        if (self.originLookupTimer != NULL) {
-
+        
+        if (self.originLookupTimer != NULL && dispatch_source_testcancel(self.originLookupTimer) == 0) {
+            
             dispatch_source_cancel(self.originLookupTimer);
+        }
+        
+        if (!forRelaunch) {
+            
+            self.originLookupTimer = NULL;
         }
     }];
 }

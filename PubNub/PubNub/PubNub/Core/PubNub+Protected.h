@@ -144,6 +144,16 @@ typedef enum _PNPubNubClientState {
  */
 - (void)stopHeartbeatTimer;
 
+/**
+ @brief      Disable previously launched heartbeat timer.
+ 
+ @discussion In case if stop is called as part of timer re-launch process, this method won't 
+             remove reference on heartbeat timer dispatch source on instance property.
+ 
+ @param forRelaunch Whether timer has been stopped for further re-launch.
+ */
+- (void)stopHeartbeatTimer:(BOOL)forRelaunch;
+
 
 #pragma mark - Requests management methods
 

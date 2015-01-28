@@ -179,6 +179,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
  */
 - (void)startTimeoutTimerForRequest:(PNBaseRequest *)request;
 - (void)stopTimeoutTimerForRequest:(PNBaseRequest *)request;
+- (void)stopTimeoutTimerForRequest:(PNBaseRequest *)request forRelaunch:(BOOL)forRelaunch;
 
 
 #pragma mark - Handler methods
@@ -1264,22 +1265,22 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
     [self pn_dispatchBlock:^{
 
-        [self stopTimeoutTimerForRequest:nil];
+        [self stopTimeoutTimerForRequest:nil forRelaunch:YES];
 
         // Stop timeout timer only for requests which is scheduled from the name of user
         if ((request.isSendingByUserRequest && [self isWaitingRequestCompletion:request.shortIdentifier]) ||
             request == nil) {
 
-            if (self.timeoutTimer == NULL) {
+            if (self.timeoutTimer == NULL || dispatch_source_testcancel(self.timeoutTimer) > 0) {
 
                 NSTimeInterval interval = request ? [request timeout] : self.configuration.subscriptionRequestTimeout;
                 dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
-                        [self pn_privateQueue]);
+                                                                       [self pn_privateQueue]);
                 [PNDispatchHelper retain:timerSource];
                 self.timeoutTimer = timerSource;
 
                 __pn_desired_weak __typeof__(self) weakSelf = self;
-                dispatch_source_set_event_handler(self.timeoutTimer, ^{
+                dispatch_source_set_event_handler(timerSource, ^{
                     
                     __strong __typeof__(self) strongSelf = weakSelf;
 
@@ -1293,37 +1294,43 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
                     [strongSelf stopTimeoutTimerForRequest:nil];
                     [strongSelf handleTimeoutTimer:request];
                 });
-                dispatch_source_set_cancel_handler(self.timeoutTimer, ^{
-                    
-                    __strong __typeof__(self) strongSelf = weakSelf;
+                dispatch_source_set_cancel_handler(timerSource, ^{
 
                     [PNDispatchHelper release:timerSource];
-                    strongSelf.timeoutTimer = NULL;
                 });
 
                 dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC));
-                dispatch_source_set_timer(self.timeoutTimer, start, (uint64_t)(interval * NSEC_PER_SEC), NSEC_PER_SEC);
-                dispatch_resume(self.timeoutTimer);
+                dispatch_source_set_timer(timerSource, start, (uint64_t)(interval * NSEC_PER_SEC), NSEC_PER_SEC);
+                dispatch_resume(timerSource);
             }
         }
     }];
 }
 
 - (void)stopTimeoutTimerForRequest:(PNBaseRequest *)request {
+    
+    [self stopTimeoutTimerForRequest:request forRelaunch:NO];
+}
 
+- (void)stopTimeoutTimerForRequest:(PNBaseRequest *)request forRelaunch:(BOOL)forRelaunch {
+    
     [self pn_dispatchBlock:^{
-
+        
         // Stop timeout timer only for requests which is scheduled from the name of user
         if ((request.isSendingByUserRequest && [self isWaitingRequestCompletion:request.shortIdentifier]) ||
             request == nil) {
-
-            if (self.timeoutTimer != NULL) {
-
+            
+            if (self.timeoutTimer != NULL && dispatch_source_testcancel(self.timeoutTimer) == 0) {
+                
                 dispatch_source_cancel(self.timeoutTimer);
             }
+            
+            if (!forRelaunch) {
+                
+                self.timeoutTimer = NULL;
+            }
         }
-    }];
-}
+    }];}
 
 
 #pragma mark - Connection delegate methods

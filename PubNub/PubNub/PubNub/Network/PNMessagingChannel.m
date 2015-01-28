@@ -231,6 +231,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
  */
 - (void)startChannelIdleTimer;
 - (void)stopChannelIdleTimer;
+- (void)stopChannelIdleTimer:(BOOL)forRelaunch;
 - (void)pauseChannelIdleTimer;
 - (void)resumeChannelIdleTimer;
 - (void)resetChannelIdleTimer;
@@ -2053,30 +2054,27 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    [self stopChannelIdleTimer];
+    [self stopChannelIdleTimer:YES];
 
-    if (self.idleTimer == NULL) {
+    if (self.idleTimer == NULL || dispatch_source_testcancel(self.idleTimer) > 0) {
 
         self.idleTimerSuspended = YES;
         dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
-                [self pn_privateQueue]);
+                                                               [self pn_privateQueue]);
         [PNDispatchHelper retain:timerSource];
         self.idleTimer = timerSource;
 
         __pn_desired_weak __typeof__(self) weakSelf = self;
-        dispatch_source_set_event_handler(self.idleTimer, ^{
+        dispatch_source_set_event_handler(timerSource, ^{
             
             __strong __typeof__(self) strongSelf = weakSelf;
 
             [strongSelf stopChannelIdleTimer];
             [strongSelf handleIdleTimer];
         });
-        dispatch_source_set_cancel_handler(self.idleTimer, ^{
-            
-            __strong __typeof__(self) strongSelf = weakSelf;
+        dispatch_source_set_cancel_handler(timerSource, ^{
 
             [PNDispatchHelper release:timerSource];
-            strongSelf.idleTimer = NULL;
         });
 
         [self resetChannelIdleTimer];
@@ -2089,13 +2087,28 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 }
 
 - (void)stopChannelIdleTimer {
+    
+    [self stopChannelIdleTimer:NO];
+}
 
+- (void)stopChannelIdleTimer:(BOOL)forRelaunch {
+    
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
-
-    if (self.idleTimer != NULL) {
-
+    
+    if (self.idleTimer != NULL && dispatch_source_testcancel(self.idleTimer) == 0) {
+        
+        if (self.idleTimerSuspended) {
+            
+            [self resumeChannelIdleTimer];
+        }
+        self.idleTimerSuspended = NO;
         dispatch_source_cancel(self.idleTimer);
+    }
+    
+    if (!forRelaunch) {
+        
+        self.idleTimer = NULL;
     }
 }
 
@@ -2104,7 +2117,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    if (self.idleTimer != NULL) {
+    if (self.idleTimer != NULL && dispatch_source_testcancel(self.idleTimer) == 0) {
 
         if (!self.isIdleTimerSuspended) {
 
@@ -2123,7 +2136,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    if (self.idleTimer == NULL) {
+    if (self.idleTimer == NULL || dispatch_source_testcancel(self.idleTimer) > 0) {
 
         [self startChannelIdleTimer];
     }

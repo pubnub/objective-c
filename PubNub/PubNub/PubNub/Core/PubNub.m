@@ -3509,9 +3509,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if ([self isConnected] && !resuming && [[self subscribedObjectsList] count] &&
             self.clientConfiguration.presenceHeartbeatTimeout > 0.0f) {
 
-            [self stopHeartbeatTimer];
+            [self stopHeartbeatTimer:YES];
 
-            if (self.heartbeatTimer == NULL) {
+            if (self.heartbeatTimer == NULL || dispatch_source_testcancel(self.heartbeatTimer) > 0) {
 
                 dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                         [self pn_privateQueue]);
@@ -3519,35 +3519,42 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 self.heartbeatTimer = timerSource;
 
                 __pn_desired_weak __typeof__(self) weakSelf = self;
-                dispatch_source_set_event_handler(self.heartbeatTimer, ^{
+                dispatch_source_set_event_handler(timerSource, ^{
                     
                     __strong __typeof__(self) strongSelf = weakSelf;
-
+                    
                     [strongSelf handleHeartbeatTimer];
                 });
-                dispatch_source_set_cancel_handler(self.heartbeatTimer, ^{
-                    
-                    __strong __typeof__(self) strongSelf = weakSelf;
+                dispatch_source_set_cancel_handler(timerSource, ^{
 
                     [PNDispatchHelper release:timerSource];
-                    strongSelf.heartbeatTimer = NULL;
                 });
 
                 dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.clientConfiguration.presenceHeartbeatInterval * NSEC_PER_SEC));
-                dispatch_source_set_timer(self.heartbeatTimer, start, (uint64_t)(self.clientConfiguration.presenceHeartbeatInterval * NSEC_PER_SEC), NSEC_PER_SEC);
-                dispatch_resume(self.heartbeatTimer);
+                dispatch_source_set_timer(timerSource, start, (uint64_t)(self.clientConfiguration.presenceHeartbeatInterval * NSEC_PER_SEC), NSEC_PER_SEC);
+                dispatch_resume(timerSource);
             }
         }
     }];
 }
 
 - (void)stopHeartbeatTimer {
+    
+    [self stopHeartbeatTimer:NO];
+}
 
+- (void)stopHeartbeatTimer:(BOOL)forRelaunch {
+    
     [self pn_dispatchBlock:^{
-
-        if (self.heartbeatTimer != NULL) {
-
+        
+        if (self.heartbeatTimer != NULL && dispatch_source_testcancel(self.heartbeatTimer) == 0) {
+            
             dispatch_source_cancel(self.heartbeatTimer);
+        }
+        
+        if (!forRelaunch) {
+            
+            self.heartbeatTimer = NULL;
         }
     }];
 }
@@ -4216,9 +4223,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     [self pn_destroyPrivateDispatchQueue];
     
+    [self stopHeartbeatTimer];
     [self unsubscribeFromNotifications];
     [self.cache purgeAllState];
     self.cache = nil;
+    [self.reachability stopServiceReachabilityMonitoring];
+    self.reachability = nil;
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
