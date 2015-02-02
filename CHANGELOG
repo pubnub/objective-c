@@ -1,21 +1,21 @@
-29-01-2014 - f9d96dc - 3.7.7
+01-29-2015 - f9d96dc - 3.7.7
 
 . fixed singleton code because of which reference on delegate has been used out of sequence outisde of private queue on which it has been sent
 . fixed subscription update logic and queue clean up on reschedule during leave cycle
 . fixed issue with state flag which prevented client from check whether subscription should be restored using last time token or not
 . protected reuquests queue during reschedule process to emilinate posibility send any of them till process completion
 
-18-01-2014 - 81269a6 - 3.7.6
+01-18-2015 - 81269a6 - 3.7.6
 
 . adjusted way how presence event detected from subscribe stream
 . fix request object configuration completion process
 . fixed race of conditions with private queue code
 
-16-01-2014 - 458edbf - 3.7.5
+01-16-2015 - 458edbf - 3.7.5
 
 . fixed race of conditions during sbuscription cycle update and 
 
-16-01-2014 - 49d44f7 - 3.7.4
+01-16-2015 - 49d44f7 - 3.7.4
 . changed PNMessage object representation
 . fixed callbacks for subscription on channels on which client already subscribed
 . PNConnection read sream callback tweaked to forward reference on stream right to method which read out data on event
