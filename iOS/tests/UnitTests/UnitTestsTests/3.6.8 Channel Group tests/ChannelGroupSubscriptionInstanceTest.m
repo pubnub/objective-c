@@ -16,12 +16,12 @@ PNDelegate
 @end
 
 @implementation ChannelGroupSubscriptionInstanceTest {
-    dispatch_group_t _resGroup1;
-    dispatch_group_t _resGroup2;
-    dispatch_group_t _resGroup3;
-    dispatch_group_t _resGroup4;
-    dispatch_group_t _resGroup5;
-    dispatch_group_t _resGroup6;
+    GCDGroup *_resGroup1;
+    GCDGroup *_resGroup2;
+    GCDGroup *_resGroup3;
+    GCDGroup *_resGroup4;
+    GCDGroup *_resGroup5;
+    GCDGroup *_resGroup6;
     
     NSString *_namespaceName;
     NSArray *_channels;
@@ -34,15 +34,11 @@ PNDelegate
     id _testMessage;
 }
 
-
 - (void)setUp {
     [super setUp];
 
     [_pubNub disconnect];
-    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                           publishKey:kTestPNPublishKey
-                                                                         subscribeKey:kTestPNSubscriptionKey
-                                                                            secretKey:kTestPNSecretKey] andDelegate:self];
+    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultTestConfiguration] andDelegate:self];
     [_pubNub connect];
     
     _channels = [PNChannel channelsWithNames:@[@"test_ios_1", @"test_ios_2", @"test_ios_3"]];
@@ -51,7 +47,6 @@ PNDelegate
 
     _groups = [NSArray arrayWithObjects:_group,_group2, nil];
     _testMessage = @"Test message";
-    
 }
 
 - (void)tearDown {
@@ -62,64 +57,68 @@ PNDelegate
 
 // Test 1
 - (void)testSubscribeOnInstance {
-    _resGroup1 = dispatch_group_create();
+    _resGroup1 = [GCDGroup group];
 
     // 1. Add channels to group
-    dispatch_group_enter(_resGroup1);
+    [_resGroup1 enter];
     [_pubNub addChannels:_channels toGroup:_group];
     
-    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup1 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup1);
-        _resGroup1 = NULL;
+        _resGroup1 = nil;
         return;
     }
 
     // 2. Subscribe on group
+    
+    [_resGroup1 enter];
     [_pubNub subscribeOn:@[_group]];
-    [GCDWrapper sleepForSeconds:3];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup1 timeoutFiredValue:10]) {
+        XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
+        _resGroup1 = nil;
+        return;
+    }
+
     XCTAssert([_pubNub isSubscribedOn:_group], @"Is not subscribed on group 1");
 
     // 3. Check that if we send a message to this group we are able to receive it
-    dispatch_group_enter(_resGroup1);
-    dispatch_group_enter(_resGroup1);
-
+    [_resGroup1 enterTimes:2];
     [_pubNub sendMessage:_testMessage
               toChannel:_channels[0]
              compressed:YES
          storeInHistory:YES
     withCompletionBlock:^(PNMessageState state, id message) {
         if (state == PNMessageSent) {
-            dispatch_group_leave(_resGroup1);
+            [_resGroup1 leave];
         } else if (state == PNMessageSendingError) {
             XCTFail(@"Failed to send message");
         }
     }];
 
-    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup1 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. We didn't receive message about sending channel.");
     }
     
-    _resGroup1 = NULL;
+    _resGroup1 = nil;
 }
 
 // Test 2
 - (void)testSubscribeOnWithCompletionBlockInstance {
-    _resGroup2 = dispatch_group_create();
+    _resGroup2 = [GCDGroup group];
     
     // 1. Add channels to group
-    dispatch_group_enter(_resGroup2);
+    [_resGroup2 enter];
     [_pubNub addChannels:_channels toGroup:_group];
     
-    if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup2 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup2);
-        _resGroup2 = NULL;
+        _resGroup2 = nil;
         return;
     }
 
     // 2. Subscribe on groups with block
-    dispatch_group_enter(_resGroup2);
+    [_resGroup2 enter];
 
     [_pubNub subscribeOn:@[_group] withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *groups, PNError *error) {
 
@@ -129,116 +128,116 @@ PNDelegate
             } else {
                 XCTFail(@"PubNub client did fail to subscribe to an array of groups %@", error);
             }
-            dispatch_group_leave(_resGroup2);
+            [_resGroup2 leave];
         }
     }];
 
-    if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup2 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. We didn't subscribe to an array of groups.");
-        dispatch_group_leave(_resGroup2);
+        [_resGroup2 leave];
     }
     
-    _resGroup2 = NULL;
+    _resGroup2 = nil;
 }
 
 // Test 3
 - (void)testSubscribeWithClientStateInstance {
-    _resGroup3 = dispatch_group_create();
+    _resGroup3 = [GCDGroup group];
     
     // 1. Add channels to group
-    dispatch_group_enter(_resGroup3);
+    [_resGroup3 enter];
     [_pubNub addChannels:_channels toGroup:_group];
     
-    if ([GCDWrapper isGroup:_resGroup3 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup3 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup3);
-        _resGroup3 = NULL;
+        _resGroup3 = nil;
         return;
     }
     
     // 2. Subscribe on group with client state
-    dispatch_group_enter(_resGroup3);
+    [_resGroup3 enter];
     _dictionary = [NSDictionary dictionaryWithObject:@"tObject1" forKey:@"tKey1"];
     
     [_pubNub subscribeOn:@[_group] withClientState:_dictionary];
-    [GCDWrapper sleepForSeconds:3];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup3 timeoutFiredValue:3]) {
+        XCTFail(@"Timeout during group subscription.");
+        _resGroup3 = nil;
+        return;
+    }
+    
     XCTAssert([_pubNub isSubscribedOn:_group], @"Is not subscribed on group 1");
     
-    _resGroup3 = NULL;
+    _resGroup3 = nil;
 }
 
 // Test 4
 - (void)testSubscribeWithClientStateAndCompletionBlockInstance {
-    _resGroup4 = dispatch_group_create();
+    _resGroup4 = [GCDGroup group];
     
     // 1. Add channels to group
-    dispatch_group_enter(_resGroup4);
+    [_resGroup4 enter];
     [_pubNub addChannels:_channels toGroup:_group];
     
-    if ([GCDWrapper isGroup:_resGroup4 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup4 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup4);
-        _resGroup4 = NULL;
+        _resGroup4 = nil;
         return;
     }
     
     // 2. Subscribe on group with client state and block
-    dispatch_group_enter(_resGroup4);
+    [_resGroup4 enter];
     _dictionary = [NSDictionary dictionaryWithObject:@"tObject1" forKey:@"tKey1"];
 
     [_pubNub subscribeOn:@[_group] withClientState:_dictionary andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *groups, PNError *error) {
-        if (_resGroup4 != NULL) {
+        if (_resGroup4 != nil) {
             if (error == nil) {
                 XCTAssert([groups isEqual:@[_group]], @"Received groups is wrong: %@ <> %@", groups, _groups);
             } else {
                 XCTFail(@"PubNub client did fail to subscribe to an array of groups %@", error);
             }
-            dispatch_group_leave(_resGroup4);
+            [_resGroup4 leave];
         }
     }];
     
-    if ([GCDWrapper isGroup:_resGroup4 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup4 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. We didn't subscribe to an array of groups.");
-        dispatch_group_leave(_resGroup4);
     }
     
-    _resGroup4 = NULL;
+    _resGroup4 = nil;
 }
 
 // Test 5
 - (void)testUnsubscribeInstance {
-    _resGroup5 = dispatch_group_create();
+    _resGroup5 = [GCDGroup group];
     
     // 1. Add channels to group
-    dispatch_group_enter(_resGroup5);
+    [_resGroup5 enter];
     [_pubNub addChannels:_channels toGroup:_group];
     
-    if ([GCDWrapper isGroup:_resGroup5 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup5 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup5);
-        _resGroup5 = NULL;
+        _resGroup5 = nil;
         return;
     }
     
     // 2. Subscribe on group
-    dispatch_group_enter(_resGroup5);
+    [_resGroup5 enter];
     [_pubNub subscribeOn:@[_group]];
     
-    if ([GCDWrapper isGroup:_resGroup5 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup5 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup5);
-        _resGroup5 = NULL;
+        _resGroup5 = nil;
         return;
     }
 
     // 3. Unubscribe from group
-    dispatch_group_enter(_resGroup5);
+    [_resGroup5 enter];
     [_pubNub unsubscribeFrom:@[_group]];
     
-    if ([GCDWrapper isGroup:_resGroup5 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup5 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup5);
-        _resGroup5 = NULL;
+        _resGroup5 = nil;
         return;
     }
 
@@ -246,57 +245,54 @@ PNDelegate
         XCTFail(@"Is not unsubscribed from group 1");
     }
     
-    _resGroup5 = NULL;
+    _resGroup5 = nil;
 }
 
 // Test 6
 - (void)testUnsubscribeWithCompletionBlockInstance {
-    _resGroup6 = dispatch_group_create();
+    _resGroup6 = [GCDGroup group];
     
     // 1. Add channels to group
-    dispatch_group_enter(_resGroup6);
+    [_resGroup6 enter];
     [_pubNub addChannels:_channels toGroup:_group];
     
-    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup6 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup6);
-        _resGroup6 = NULL;
+        _resGroup6 = nil;
         return;
     }
     
     // 2. Subscribe on group
-    dispatch_group_enter(_resGroup6);
+    [_resGroup6 enter];
     [_pubNub subscribeOn:@[_group]];
 
-    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup6 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-        dispatch_group_leave(_resGroup6);
-        _resGroup6 = NULL;
+        _resGroup6 = nil;
         return;
     }
     
     XCTAssert([_pubNub isSubscribedOn:_group], @"Is not subscribed on group 1");
     
     // 3. Unubscribe from group with block
-    dispatch_group_enter(_resGroup6);
+    [_resGroup6 enter];
     
     [_pubNub unsubscribeFrom:@[_group] withCompletionHandlingBlock:^(NSArray *groups, PNError *error) {
-        if (_resGroup6 != NULL) {
+        if (_resGroup6 != nil) {
             if (error == nil) {
                 XCTAssert([groups isEqual:@[_group]], @"Received groups is wrong: %@ <> %@", groups, _group);
             } else {
                 XCTFail(@"PubNub client did fail to unsubscribe from groups %@", error);
             }
-            dispatch_group_leave(_resGroup6);
+            [_resGroup6 leave];
         }
     }];
     
-    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup6 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. We didn't unsubscribe from groups.");
-        dispatch_group_leave(_resGroup6);
     }
 
-    _resGroup6 = NULL;
+    _resGroup6 = nil;
 }
 
 #pragma mark - PNDelegate
@@ -304,7 +300,7 @@ PNDelegate
 // Receive message (did)
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
     if (_resGroup1) {
-        dispatch_group_leave(_resGroup1);
+        [_resGroup1 leave];
     }
 }
 
@@ -312,30 +308,30 @@ PNDelegate
 - (void)pubnubClient:(PubNub *)client error:(PNError *)error {
     if (_resGroup1) {
         XCTFail(@"Did fail during test 1: %@", error);
-        dispatch_group_leave(_resGroup1);
+        [_resGroup1 leave];
     }
 }
 
 
 // Add channels in group (did)
 - (void)pubnubClient:(PubNub *)client didAddChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group {
-    if (_resGroup1 != NULL) {
-        dispatch_group_leave(_resGroup1);
+    if (_resGroup1 != nil) {
+        [_resGroup1 leave];
     }
-    if (_resGroup2 != NULL) {
-        dispatch_group_leave(_resGroup2);
+    if (_resGroup2 != nil) {
+        [_resGroup2 leave];
     }
-    if (_resGroup3 != NULL) {
-        dispatch_group_leave(_resGroup3);
+    if (_resGroup3 != nil) {
+        [_resGroup3 leave];
     }
-    if (_resGroup4 != NULL) {
-        dispatch_group_leave(_resGroup4);
+    if (_resGroup4 != nil) {
+        [_resGroup4 leave];
     }
-    if (_resGroup5 != NULL) {
-        dispatch_group_leave(_resGroup5);
+    if (_resGroup5 != nil) {
+        [_resGroup5 leave];
     }
-    if (_resGroup6 != NULL) {
-        dispatch_group_leave(_resGroup6);
+    if (_resGroup6 != nil) {
+        [_resGroup6 leave];
     }
      for(NSArray *channel in channels){
         NSLog(@"!!! Did receive channel: %@ in group: %@", channel, group);
@@ -344,23 +340,23 @@ PNDelegate
 
 // Add channels to group (fail)
 - (void)pubnubClient:(PubNub *)client channelsAdditionToGroupDidFailWithError:(PNError *)error {
-    if (_resGroup1 != NULL) {
-        dispatch_group_leave(_resGroup1);
+    if (_resGroup1 != nil) {
+        [_resGroup1 leave];
     }
-    if (_resGroup2 != NULL) {
-        dispatch_group_leave(_resGroup1);
+    if (_resGroup2 != nil) {
+        [_resGroup2 leave];
     }
-    if (_resGroup3 != NULL) {
-        dispatch_group_leave(_resGroup3);
+    if (_resGroup3 != nil) {
+        [_resGroup3 leave];
     }
-    if (_resGroup4 != NULL) {
-        dispatch_group_leave(_resGroup4);
+    if (_resGroup4 != nil) {
+        [_resGroup4 leave];
     }
-    if (_resGroup5 != NULL) {
-        dispatch_group_leave(_resGroup5);
+    if (_resGroup5 != nil) {
+        [_resGroup5 leave];
     }
-    if (_resGroup6 != NULL) {
-        dispatch_group_leave(_resGroup6);
+    if (_resGroup6 != nil) {
+        [_resGroup6 leave];
     }
     if (error) {
         XCTFail(@"PubNub client did fail to add channels from the group: %@", error);
@@ -370,13 +366,13 @@ PNDelegate
 // Subscribe on group (did)
 - (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels {
     if (_resGroup3) {
-        dispatch_group_leave(_resGroup3);
+        [_resGroup3 leave];
     }
     if (_resGroup5) {
-        dispatch_group_leave(_resGroup5);
+        [_resGroup5 leave];
     }
     if (_resGroup6) {
-        dispatch_group_leave(_resGroup6);
+        [_resGroup6 leave];
     }
 }
 
@@ -384,28 +380,27 @@ PNDelegate
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
     if (_resGroup1) {
         XCTFail(@"Did fail during test 1: %@", error);
-        dispatch_group_leave(_resGroup2);
+        [_resGroup1 leave];
     }
     if (_resGroup3) {
         XCTFail(@"Did fail during test 3: %@", error);
-        dispatch_group_leave(_resGroup3);
+        [_resGroup3 leave];
     }
     if (_resGroup5) {
         XCTFail(@"Did fail during test 5: %@", error);
-        dispatch_group_leave(_resGroup5);
+        [_resGroup5 leave];
     }
     if (_resGroup6) {
         XCTFail(@"Did fail during test 6: %@", error);
-        dispatch_group_leave(_resGroup6);
+        [_resGroup6 leave];
     }
-
 }
 
 
 // Unsubscribe from group (did)
 - (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects {
     if (_resGroup5) {
-        dispatch_group_leave(_resGroup5);
+        [_resGroup5 leave];
     }
 }
 
@@ -413,7 +408,7 @@ PNDelegate
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
     if (_resGroup5) {
         XCTFail(@"Did fail during test 5: %@", error);
-        dispatch_group_leave(_resGroup5);
+        [_resGroup5 leave];
     }
 }
 

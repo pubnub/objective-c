@@ -2,11 +2,9 @@
 //  Configuration.m
 //  pubnub
 //
-//  Created by Valentin Tuller on 11/13/13.
-//  Copyright (c) 2013 PubNub Inc. All rights reserved.
+//  Created by Sergey on 12/25/14.
+//  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
-
-// TODO: needs improvement. It practically doesn't test anything.
 
 #import <XCTest/XCTest.h>
 #import "PNBaseRequest.h"
@@ -19,124 +17,121 @@
 #import "PNConstants.h"
 
 @interface Configuration : XCTestCase <PNDelegate> {
-    
-	NSMutableArray *_configurations;
+     GCDGroup *_resGroup;
 }
-
 @end
 
 @implementation Configuration
 
 - (void)tearDown {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
 	[super tearDown];
 }
 
 - (void)setUp {
     [super setUp];
-
-	PNConfiguration *configuration = nil;
-	_configurations = [NSMutableArray array];
-
-	configuration = [PNConfiguration configurationForOrigin:@"punsub123.pubnub.com"
-												 publishKey:@"sdfga"
-											   subscribeKey:@"sadasfsad"
-												  secretKey:@"test key"
-												  cipherKey:@"my_key"];
-	configuration.useSecureConnection = NO;
-	[_configurations addObject: configuration];
-
-	configuration = [PNConfiguration configurationForOrigin:@"punsub.pubnub.com"
-												 publishKey:@"aasd sad ads"
-											   subscribeKey:@"asdfadas asd"
-												  secretKey:@"test key"
-												  cipherKey:@" asdashd asd fsdkl faskd asdkf kasldf "];
-	configuration.useSecureConnection = YES;
-	[_configurations addObject: configuration];
-	////
-	configuration = [PNConfiguration configurationForOrigin:@"punsub1.pubnub.com"
-												 publishKey:@"a a as a "
-											   subscribeKey:@"a a as a "
-												  secretKey:@"test key"
-												  cipherKey:@"chaos.pubnub.com"];
-	configuration.useSecureConnection = NO;
-	[_configurations addObject: configuration];
-	////
-	configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
-												 publishKey:@"ss s s sdgdaf"
-											   subscribeKey:@"aaaaasdfaaaa"
-												  secretKey:@"test key"
-												  cipherKey:@"enigma"];
-	configuration.useSecureConnection = YES;
-	[_configurations addObject: configuration];
-	////
-	configuration = [PNConfiguration configurationForOrigin:@"pubsub2.pubnub.com"
-												 publishKey:@"enigma"
-											   subscribeKey:@"enigma"
-												  secretKey:@"test key"
-												  cipherKey:@"chaos.pubnub.com"];
-	configuration.useSecureConnection = NO;
-	[_configurations addObject: configuration];
-	////
-	configuration = [PNConfiguration configurationForOrigin:@"google.com.ua"
-												 publishKey:@"enigma"
-											   subscribeKey:@"enigma"
-												  secretKey:@"test key"
-												  cipherKey:@"chaos.pubnub.com"];
-	configuration.useSecureConnection = YES;
-	[_configurations addObject: configuration];
-	////
-	configuration = [PNConfiguration configurationForOrigin:@"google.com"
-												 publishKey:@"enigma"
-											   subscribeKey:@"enigma"
-												  secretKey:@"test key"
-												  cipherKey:@"chaos.pubnub.com"];
-	configuration.useSecureConnection = NO;
-	[_configurations addObject: configuration];
-	////
-	configuration = [PNConfiguration configurationForOrigin:@"mail.ru"
-												 publishKey:@"enigma"
-											   subscribeKey:@"enigma"
-												  secretKey:@"test key"
-												  cipherKey:@"chaos.pubnub.com"];
-	configuration.useSecureConnection = YES;
-	[_configurations addObject: configuration];
-
-	configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"pub-c-c9b0fe21-4ae1-433b-b766-62667cee65ef" subscribeKey:@"sub-c-d91ee366-9dbd-11e3-a759-02ee2ddab7fe" secretKey: @"sec-c-ZDUxZGEyNmItZjY4Ny00MjJmLWE0MjQtZTQyMDM0NTY2MDVk" cipherKey:@"rwrwrweqrewrwerewrewqrw"];
-	[_configurations addObject: configuration];
-
-
-                     configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey:@"test key" cipherKey:@"fsdafasdfsdaf"];
-	[_configurations addObject: configuration];
-	
-	[_configurations addObject: [PNConfiguration defaultConfiguration]];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-						   selector:@selector(clientErrorNotification:)
-							   name:kPNClientErrorNotification
-							 object:nil];
-    
-    [PubNub setDelegate:self];
 }
 
-#pragma mark - Test
 
-- (void)test10Configurations {
-    for(PNConfiguration *configuration in _configurations) {
-        
-        [PubNub setConfiguration:configuration];
-        
-        if (![[[PubNub sharedInstance] configuration].origin isEqualToString:configuration.origin ]) {
-            NSLog(@"1");
-        }
-        
-        XCTAssertEqualObjects([[PubNub sharedInstance] configuration].origin, configuration.origin, @"Origins are not equial: %@ <> %@", [[PubNub sharedInstance] configuration].origin, configuration.origin);
-        XCTAssertEqualObjects([[PubNub sharedInstance] configuration].publishKey, configuration.publishKey, @"PublishKeys are not equial");
-        XCTAssertEqualObjects([[PubNub sharedInstance] configuration].subscriptionKey, configuration.subscriptionKey, @"SubcriptionKeys are not equial");
-        XCTAssertEqualObjects([[PubNub sharedInstance] configuration].cipherKey, configuration.cipherKey, @"CipherKeys are not equial");
+#pragma mark - Scenario
+
+- (void)testScenario {
+    
+//  Client1 - min information for connection
+    PNConfiguration *configuration1 = [PNConfiguration configurationForOrigin:@" .pubnub.co"
+                                                                   publishKey:@" "
+                                                                 subscribeKey:nil
+                                                                    secretKey:nil
+                                                                    cipherKey:nil];
+
+    PubNub *client1 = [self connectClientWithConfiguration:configuration1];
+    
+    [client1 setClientIdentifier:@"pubnub-user"];
+
+    sleep(1);
+    XCTAssertEqualObjects([client1 clientIdentifier], @"pubnub-user", @"Client identifiers inconsistent.");
+    
+    XCTAssertTrue(([client1 isConnected]));
+    XCTAssertEqualObjects(client1.configuration.origin, configuration1.origin, @"Origins are not equial");
+    XCTAssertEqualObjects(client1.configuration.publishKey, configuration1.publishKey, @"PublishKeys are not equial");
+    XCTAssertEqualObjects(client1.configuration.subscriptionKey, configuration1.subscriptionKey, @"SubscriptionKeys are not equial");
+    XCTAssertEqualObjects(client1.configuration.cipherKey, configuration1.cipherKey, @"CipherKey are not equial");
+
+   
+//  Client2 - max mix information for connection (keys can hold any information, why?)
+    PNConfiguration *configuration2 = [PNConfiguration configurationForOrigin:@" wrewrewrerewrweterqtwewerweerwrhgfhdfgfggdfgdfgdfgdfgdfewqrewr.pubnub.co"
+                                                                   publishKey:@"wrewrewrerewrweterqtwewerweerwrhgfhdfgfggdfgdfgdfgdfgdfewqrewrwrewrewrerewrweterqtwewerweerwrhgfhdfgfggdffgdfgdfgdfewqrewrewrwrew"
+                                                                    subscribeKey:@"wrewrewrerewrweterqtwewerweerwrhgfhdfgfggdfgdfgdfgdfgdfewqrewrwwrewrerewrweterqtwewerweerwrhgfhdfgfggdfgdfgdfgdfgdfewqrewrewrr"
+                                                                    secretKey:@"wrewrewrerewrweterqtwewerweerwrhgfhdfgfggdfgdfgdfgdfgdfewqrewrwrrewrerewrweterqtwewerweerwrhgfhdfgfggdfgdfgdfgdfgdfewqrewrewrwrer"
+                                                                    cipherKey:@"wrewrewrerewrweterqtwewerweerwrhgfhdfgfggdfgdfgdfgdfgdfewqrewrwrewrerewrweterqtwewerweerwrhgfhdfgfggdfgdfgdfgdfgdfewqrewrewrwre"];
+    
+    PubNub *client2 = [self connectClientWithConfiguration:configuration2];
+    
+    XCTAssertTrue(([client2 isConnected]));
+    XCTAssertEqualObjects(client2.configuration.origin, configuration2.origin, @"Origins are not equial");
+    XCTAssertEqualObjects(client2.configuration.publishKey, configuration2.publishKey, @"PublishKeys are not equial");
+    XCTAssertEqualObjects(client2.configuration.subscriptionKey, configuration2.subscriptionKey, @"SubscriptionKeys are not equial");
+    XCTAssertEqualObjects(client2.configuration.cipherKey, configuration2.cipherKey, @"CipherKey are not equial");
+
+//  Client3 - incorrect Origin
+    PNConfiguration *configuration3 = [PNConfiguration configurationForOrigin:@" .pub.co"
+                                                                   publishKey:@" "                                                                 subscribeKey:nil
+                                                                    secretKey:nil
+                                                                    cipherKey:nil];
+    
+    PubNub *client3 = [self connectClientWithConfiguration:configuration3];
+    XCTAssertFalse(([client3 isConnected])); // False test
+    
+//  Client4 - incorrect publishKey
+    PNConfiguration *configuration4 = [PNConfiguration configurationForOrigin:@" .pubnub.co"
+                                                                   publishKey:nil
+                                                                 subscribeKey:nil
+                                                                    secretKey:nil
+                                                                    cipherKey:nil];
+    
+    PubNub *client4 = [self connectClientWithConfiguration:configuration4];
+    XCTAssertFalse(([client4 isConnected])); // False test
+    
+}
+
+
+#pragma mark - Private method
+
+- (id)connectClientWithConfiguration:(PNConfiguration *)configuration {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    PubNub *client = [PubNub connectingClientWithConfiguration:configuration delegate:self andSuccessBlock:^(NSString *res) {
+        [_resGroup leave];
+    } errorBlock:^(PNError *error) {
+        NSLog(@"Error occurs during connection: %@", error);
+    }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:5]) {
+        NSLog(@"Timeout is fired. Didn't connect client to PubNub");
+        [_resGroup leave];
+        [_resGroup leave];
+        _resGroup = nil;
+        return nil;
+    } else {
+        _resGroup = nil;
+        return client;
     }
+}
+
+
+#pragma mark - PubNub Delegate
+
+// Connect did
+- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
+    if (_resGroup) {
+        [_resGroup leave];
+    }
+}
+
+// Connect fail
+- (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
+    NSLog(@"Did fail connection: %@", error);
 }
 
 @end

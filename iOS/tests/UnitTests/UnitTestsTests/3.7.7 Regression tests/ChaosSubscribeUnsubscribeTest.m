@@ -2,22 +2,30 @@
 //  ChaosSubscribeUnsubscribeTest.m
 //  UnitTests
 //
-//  Created by Sergey Kazanskiy on 12/29/14.
-//  Copyright (c) 2014 PubNub. All rights reserved.
+//  Created by Sergey on 12/29/14.
+//  Copyright (c) 2014 Vadim Osovets. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-@interface ChaosSubscribeUnsubscribeTest : XCTestCase <PNDelegate> {
+@interface ChaosSubscribeUnsubscribeTest : XCTestCase
+
+<
+PNDelegate
+>
+
+{
     GCDGroup *_resGroup;
 }
+
 @end
 
 @implementation ChaosSubscribeUnsubscribeTest
 
 - (void)setUp {
     [super setUp];
+    
     [PubNub disconnect];
     [PubNub setDelegate:self];
 }
@@ -27,70 +35,9 @@
     [super tearDown];
 }
 
-- (void)testSubscribeSeria {
+- (void)testSubscribeSerialCalls {
     
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-    [PubNub setDelegate:self];
-    
-    // Connect
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
-    
-    [PubNub connect];
-    
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:5]) {
-        XCTFail(@"Timeout is fired. Didn't connect to PubNub");
-        [_resGroup leave];
-        _resGroup = nil;
-        return;
-    }
-    
-//    Send message and unsubscribe from channel in order in one group
-    _resGroup = [GCDGroup group];
-    [_resGroup enterTimes:21];
-    
-    [PubNub subscribeOn:[PNChannel channelsWithNames:@[@"iosdev1",@"iosdev2",@"iosdev3",@"iosdev4",@"iosdev5",@"iosdev6",@"iosdev7",@"iosdev8",@"iosdev9",@"iosdev10"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev1" toChannel:[PNChannel channelWithName:@"iosdev1"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev1"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev2" toChannel:[PNChannel channelWithName:@"iosdev2"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev2"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev3" toChannel:[PNChannel channelWithName:@"iosdev3"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev3"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev4" toChannel:[PNChannel channelWithName:@"iosdev4"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev4"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev5" toChannel:[PNChannel channelWithName:@"iosdev5"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev5"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev6" toChannel:[PNChannel channelWithName:@"iosdev6"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev6"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev7" toChannel:[PNChannel channelWithName:@"iosdev7"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev7"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev8" toChannel:[PNChannel channelWithName:@"iosdev8"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev8"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev9" toChannel:[PNChannel channelWithName:@"iosdev9"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev9"]]];
-    
-    [PubNub sendMessage:@"Hello iosdev10" toChannel:[PNChannel channelWithName:@"iosdev10"]];
-    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev10"]]];
-    
-    
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:20]) {
-        XCTFail(@"Timeout is fired. Didn't subscribe on channels");
-    }
-    _resGroup = nil;
-}
-
-- (void)testSubscribeLoop {
-    
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
+    [PubNub setConfiguration:[PNConfiguration defaultTestConfiguration]];
     [PubNub setDelegate:self];
     
     // Connect
@@ -145,6 +92,10 @@
 // Connect fail
 - (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
     XCTFail(@"Did fail connection: %@", error);
+    
+    if (_resGroup) {
+        [_resGroup leave];
+    }
 }
 
 // Subscribe on did
@@ -157,6 +108,10 @@
 // Subscribe on fail
 - (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
     XCTFail(@"Did fail subscription: %@", error);
+    
+    if (_resGroup) {
+        [_resGroup leave];
+    }
 }
 
 // Send message did
@@ -169,37 +124,25 @@
 // Send message fail
 - (void)pubnubClient:(PubNub *)client didFailMessageSend:(PNMessage *)message withError:(PNError *)error {
     XCTFail(@"Did fail message send: %@", error);
+    
+    if (_resGroup) {
+        [_resGroup leave];
+    }
 }
 
-// Unsubscribe from did
 - (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects {
     if (_resGroup) {
         [_resGroup leave];
     }
-    NSLog(@"!!! %@", channelObjects);
 }
 
-// Unsubscribe from fail
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
     XCTFail(@"Did fail unsubscription: %@", error);
+    
+    if (_resGroup) {
+        [_resGroup leave];
+    }
+
 }
 
 @end
-
-
-//- (void)testAll {
-//
-//    for (int i = 0; i < 2; i++) {
-//        [PubNub disconnect];
-//        [self t1estSubscribeSeria];
-//    }
-//
-//    for (int i = 0; i < 2; i++) {
-//        [PubNub disconnect];
-//        [GCDWrapper sleepForSeconds:1];
-//        [self t2estSubscribeLoop];
-//    }
-//}
-
-
-
