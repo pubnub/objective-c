@@ -54,12 +54,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"master";
+static NSString * const kPNCodebaseBranch = @"hotfix-pt86687980";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"a64f029edd40d7eee83e52a7e696a46402ce002f";
+static NSString * const kPNCodeCommitIdentifier = @"62a20e78e129a60b727a49f51c84a1d9953baf4a";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -171,6 +171,15 @@ static dispatch_once_t onceToken;
  into pending set)
  */
 @property (nonatomic, assign, getter = isAsyncLockingOperationInProgress) BOOL asyncLockingOperationInProgress;
+
+/**
+ @brief This property is used in case if postponed method flush has been used during active task
+        and store whether flush should be performed later (after active task completion/error) or
+        not.
+ 
+ @since 3.7.8
+ */
+@property (nonatomic, assign, getter = shouldFlushPostponedMethods) BOOL flushPostponedMethods;
 
 /**
  Stores reference on flag which specify whether client identifier was passed by user or generated on demand
@@ -636,6 +645,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 if (!connected) {
 
                     [strongSelf stopHeartbeatTimer];
+                }
+                
+                if (strongSelf.shouldFlushPostponedMethods) {
+                        
+                    [strongSelf flushPostponedMethods:YES];
                 }
 
                 strongSelf.updatingClientIdentifier = NO;
@@ -3297,20 +3311,27 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             [self.reprioritizedPendingInvocations removeAllObjects];
         }
 
-        if (shouldStartNext) {
-
-            NSInvocation *methodInvocation = nil;
-            if ([self.pendingInvocations count] > 0) {
-
-                // Retrieve reference on invocation instance at the start of the list
-                // (oldest scheduled instance)
-                methodInvocation = [self.pendingInvocations objectAtIndex:0];
-                [self.pendingInvocations removeObjectAtIndex:0];
+        if (shouldStartNext && !self.isAsyncLockingOperationInProgress) {
+            
+            if (self.shouldFlushPostponedMethods) {
+                
+                [self flushPostponedMethods:YES];
             }
+            else {
 
-            if (methodInvocation) {
+                NSInvocation *methodInvocation = nil;
+                if ([self.pendingInvocations count] > 0) {
 
-                [methodInvocation invoke];
+                    // Retrieve reference on invocation instance at the start of the list
+                    // (oldest scheduled instance)
+                    methodInvocation = [self.pendingInvocations objectAtIndex:0];
+                    [self.pendingInvocations removeObjectAtIndex:0];
+                }
+
+                if (methodInvocation) {
+
+                    [methodInvocation invoke];
+                }
             }
         }
     }];
@@ -3321,6 +3342,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)performAsyncLockingBlock:(void(^)(void))codeBlock postponedExecutionBlock:(void(^)(void))postponedCodeBlock {
 
     [self pn_dispatchBlock:^{
+        
+        if (self.shouldFlushPostponedMethods) {
+            
+            [self flushPostponedMethods:YES];
+        }
 
         // Checking whether code can be executed right now or should be postponed
         if ([self shouldPostponeMethodCall]) {
@@ -3821,24 +3847,41 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)flushPostponedMethods:(BOOL)shouldExecute {
 
     [self pn_dispatchBlock:^{
+        
+        // Flush shouldn't be done while there is at least one operation for which client
+        // is waiting for completion.
+        // Flushing with active tasks may lead to the issue, caused by limitation when PubNub
+        // client is able to remember only one completion block per used API type. If among
+        // postponed method calls is one which has same type of currently executed task -
+        // completion block from active task won't be called.
+        if (![self shouldPostponeMethodCall]) {
+            
+            self.flushPostponedMethods = NO;
 
-        NSMutableArray *invocationsForFlush = [NSMutableArray arrayWithArray:self.pendingInvocations];
-        if (self.reprioritizedPendingInvocations) {
+            NSMutableArray *invocationsForFlush = [NSMutableArray arrayWithArray:self.pendingInvocations];
+            if (self.reprioritizedPendingInvocations) {
 
-            [invocationsForFlush addObjectsFromArray:self.reprioritizedPendingInvocations];
-            [self.reprioritizedPendingInvocations removeAllObjects];
-        }
-        [self.pendingInvocations removeAllObjects];
-
-        [invocationsForFlush enumerateObjectsUsingBlock:^(NSInvocation *postponedInvocation, NSUInteger postponedInvocationIdx,
-                BOOL *postponedInvocationEnumeratorStop) {
-
-            self.asyncLockingOperationInProgress = NO;
-            if (postponedInvocation && shouldExecute) {
-
-                [postponedInvocation invoke];
+                [invocationsForFlush addObjectsFromArray:self.reprioritizedPendingInvocations];
+                [self.reprioritizedPendingInvocations removeAllObjects];
             }
-        }];
+            [self.pendingInvocations removeAllObjects];
+
+            [invocationsForFlush enumerateObjectsUsingBlock:^(NSInvocation *postponedInvocation, NSUInteger postponedInvocationIdx,
+                    BOOL *postponedInvocationEnumeratorStop) {
+
+                self.asyncLockingOperationInProgress = NO;
+                if (postponedInvocation && shouldExecute) {
+
+                    [postponedInvocation invoke];
+                }
+            }];
+        }
+        else {
+            
+            // Marking that current tasks should be flushed as soon as active task will be
+            // completed.
+            self.flushPostponedMethods = YES;
+        }
     }];
 }
 

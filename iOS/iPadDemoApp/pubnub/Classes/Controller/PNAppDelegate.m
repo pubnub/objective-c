@@ -120,9 +120,6 @@
     }
     
     [self initializePubNubClient];
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-    [PubNub connect];
-    [PubNub subscribeOn:@[[PNChannel channelWithName:@"swifty"]]];
     
     #if !TARGET_IPHONE_SIMULATOR
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {

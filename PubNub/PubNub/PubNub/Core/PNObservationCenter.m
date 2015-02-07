@@ -2205,10 +2205,10 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 - (void)observersForEvent:(NSString *)eventName withBlock:(void (^)(NSMutableArray *observers))fetchCompletionBlock {
     
-    // One-time events can be accessed outside of queue for reading.
-    NSMutableArray *oneTimeEventObservers = [self oneTimeObserversForEvent:eventName];
-    
     [self pn_dispatchBlock:^{
+        
+        // One-time events can be accessed outside of queue for reading.
+        NSMutableArray *oneTimeEventObservers = [self oneTimeObserversForEvent:eventName];
 
         NSMutableArray *persistentObservers = [self persistentObserversForEvent:eventName];
 
