@@ -12,4 +12,6 @@
 
 + (PNConfiguration *)defaultTestConfiguration;
 
++ (PNConfiguration *)accessManagerTestConfiguration;
+
 @end

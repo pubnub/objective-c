@@ -6,6 +6,13 @@
 //  Copyright (c) 2014 Vadim Osovets. All rights reserved.
 //
 
+/*
+ Prerequisities:
+  - 'Access Manager'should be disabled in account.
+ Test Purpose:
+  - subscripe/unsubscribe to group and send messages.
+ */
+
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
@@ -364,7 +371,11 @@ PNDelegate
 }
 
 // Subscribe on group (did)
-- (void)pubnubClient:(PubNub *)client didSubscribeOnChannels:(NSArray *)channels {
+- (void)pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects {
+    if (_resGroup1) {
+        [_resGroup1 leave];
+    }
+    
     if (_resGroup3) {
         [_resGroup3 leave];
     }

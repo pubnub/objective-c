@@ -53,7 +53,7 @@
 - (void)subscribeOnChannels:(NSArray*)pnChannels withPresenceEvent:(BOOL)presenceEvent {
 	NSLog(@"subscribeOnChannels");
 	__block BOOL isCompletionBlockCalled = NO;
-	[PubNub subscribeOnChannels: pnChannels withCompletionHandlingBlock: ^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+	[PubNub subscribeOn: pnChannels withCompletionHandlingBlock: ^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
 		 NSLog(@"subscribeOnChannels end");
 		 isCompletionBlockCalled = YES;
 		 XCTAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
@@ -78,7 +78,7 @@
 //		 dispatch_semaphore_signal(semaphore);
 		 isCompletionBlockCalled = YES;
 		 XCTAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
-		 XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+		 XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %@, channels.count %@", @(pnChannels.count), @(channels.count));
 	 }];
     // Run loop
 	NSLog(@"unsubscribeOnChannels runloop");

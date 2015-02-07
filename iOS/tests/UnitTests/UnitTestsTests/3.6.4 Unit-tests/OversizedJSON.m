@@ -55,14 +55,15 @@
 	for( int j=0; j<10; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
-	[PubNub grantAllAccessRightsForApplicationAtPeriod: 10 andCompletionHandlingBlock:^(PNAccessRightsCollection *collection, PNError *error) {
-		XCTAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);
-	}];
+    [PubNub changeApplicationAccessRightsTo:PNAllAccessRights onPeriod:10 andCompletionHandlingBlock:^(PNAccessRightsCollection *accessRightsCollection, PNError *error) {
+        XCTAssertNil( error, @"grantAllAccessRightsForApplicationAtPeriod %@", error);
+    }];
+    
 	for( int j=0; j<10; j++ )
 		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
 
     semaphore = dispatch_semaphore_create(0);
-	[PubNub subscribeOnChannels: [PNChannel channelsWithNames: @[@"channel"]]
+	[PubNub subscribeOn: [PNChannel channelsWithNames: @[@"channel"]]
 	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 	 {
 		 dispatch_semaphore_signal(semaphore);

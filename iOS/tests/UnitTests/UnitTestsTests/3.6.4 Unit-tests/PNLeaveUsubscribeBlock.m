@@ -96,7 +96,7 @@
     
     dispatch_group_enter(resGroup);
     
-    [PubNub subscribeOnChannels:channels
+    [PubNub subscribeOn:channels
     withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
         switch (state) {
             case PNSubscriptionProcessSubscribedState:
@@ -122,7 +122,7 @@
 //
     dispatch_group_enter(resGroup);
     
-    [PubNub unsubscribeFromChannel:channels[1]
+    [PubNub unsubscribeFrom:channels[1]
        withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
            
            NSLog(@"Channels: %@", channels);
@@ -131,7 +131,7 @@
     
     [GCDWrapper waitGroup:resGroup];
     
-    channels = [PubNub subscribedChannels];
+    channels = [PubNub subscribedObjectsList];
     
     XCTAssertTrue([channels count] == 2, @"Subscribed on channels: %lu", (unsigned long)[channels count]);
 }

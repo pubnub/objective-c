@@ -56,7 +56,7 @@
 	XCTAssertTrue( info.level == PNApplicationAccessRightsLevel, @"");
 	XCTAssertTrue( info.rights == PNUnknownAccessRights, @"");
 	XCTAssertTrue( [info.subscriptionKey isEqualToString: @"key"] == TRUE, @"");
-	XCTAssertTrue( info.channel == nil, @"");
+	XCTAssertTrue( info.object == nil, @"");
 	XCTAssertTrue( info.authorizationKey == nil, @"");
 	XCTAssertTrue( info.accessPeriodDuration == 0, @"");
 }
@@ -73,11 +73,11 @@
 	PNAccessRightsCollection *collection = [PNAccessRightsCollection accessRightsCollectionForApplication: @"key" andAccessRightsLevel: PNApplicationAccessRightsLevel];
 	PNChannel *channel = [PNChannel channelWithName: @"channel"];
 
-	PNAccessRightsInformation *info = [collection accessRightsInformationForChannel: channel];
+	PNAccessRightsInformation *info = [collection accessRightsInformationFor:channel];
 	XCTAssertTrue( info.level == PNChannelAccessRightsLevel, @"");
 	XCTAssertTrue( info.rights == PNUnknownAccessRights, @"");
 	XCTAssertTrue( [info.subscriptionKey isEqualToString: @"key"] == TRUE, @"");
-	XCTAssertTrue( info.channel == channel, @"");
+	XCTAssertTrue( info.object == channel, @"");
 	XCTAssertTrue( info.authorizationKey == nil, @"");
 	XCTAssertTrue( info.accessPeriodDuration == 0, @"");
 
@@ -85,11 +85,11 @@
 	info = [PNAccessRightsInformation accessRightsInformationForLevel: PNChannelAccessRightsLevel rights: PNReadAccessRight | PNWriteAccessRight applicationKey: @"key" forChannel: channel client: @"client" accessPeriod: 123];
 	[collection storeChannelAccessRightsInformation: info];
 
-	info = [collection accessRightsInformationForChannel: channel];
+	info = [collection accessRightsInformationFor:channel];
 	XCTAssertTrue( info.level == PNChannelAccessRightsLevel, @"");
 	XCTAssertTrue( info.rights == (PNReadAccessRight | PNWriteAccessRight), @"");
 	XCTAssertTrue( [info.subscriptionKey isEqualToString: @"key"] == TRUE, @"");
-	XCTAssertTrue( info.channel == channel, @"");
+	XCTAssertTrue( info.object == channel, @"");
 	XCTAssertTrue( [info.authorizationKey isEqualToString: @"client"], @"");
 	XCTAssertTrue( info.accessPeriodDuration == 123, @"");
 }

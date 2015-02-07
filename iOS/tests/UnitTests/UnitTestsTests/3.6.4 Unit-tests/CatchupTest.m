@@ -233,7 +233,7 @@
 	 {
 		 dispatch_semaphore_signal(semaphore);
 		 XCTAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
-		 XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+		 XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %@, channels.count %@", @(pnChannels.count), @(channels.count));
 	 }];
     // Run loop
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))

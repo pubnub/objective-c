@@ -18,7 +18,7 @@
 - (void)enter;
 - (void)leave;
 
-- (void)enterTimes:(int)times;
+- (void)enterTimes:(NSUInteger)times;
 - (long)wait:(dispatch_time_t) timeout;
 
 - (BOOL)isEntered;

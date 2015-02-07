@@ -33,7 +33,7 @@
     dispatch_group_enter(_gcdGroup);
 }
 
-- (void)enterTimes:(int)times {
+- (void)enterTimes:(NSUInteger)times {
     _enterCount += times;
     
     for (int i = 0; i < times; i++) {

@@ -48,7 +48,7 @@ static const NSUInteger kAmountOfChannels = 20;
     
     [resGroup enter];
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
+    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
     [PubNub setConfiguration:configuration];
 
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
