@@ -7,6 +7,7 @@
 //
 
 #import "GCDWrapper.h"
+#import "GCDGroup.h"
 
 @implementation GCDWrapper
 
