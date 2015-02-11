@@ -2,7 +2,7 @@
 
 # PubNub 3.7.8 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
-### Example app with complete integration available in iPadDemoApp directory
+### Example app with complete PubNub API integration available in iPadDemoApp directory
 ### Lighter-weight samples available in the HOWTO directory
 
 All requests made by the client are asynchronous, and are handled by:
