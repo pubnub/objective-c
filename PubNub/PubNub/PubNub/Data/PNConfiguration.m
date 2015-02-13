@@ -347,19 +347,15 @@
 
 - (void)shouldKillDNSCache:(BOOL)shouldKillDNSCache {
 
-    if (shouldKillDNSCache) {
+    if (shouldKillDNSCache && self.isDNSCacheClearingEnabled) {
+        
+        NSString *subDomain = [self.realOrigin stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@",
+                                                                                     kPNServiceMainDomain]
+                                                                         withString:@""];
 
-        if (shouldKillDNSCache && self.isDNSCacheClearingEnabled) {
-            
-            NSString *subDomain = [self.realOrigin stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@",
-                                                                                         kPNServiceMainDomain]
-                                                                             withString:@""];
-
-            self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
-                            kPNServiceMainDomain];
-        }
-    }
-    else {
+        self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
+                        kPNServiceMainDomain];
+    } else {
 
         self.origin = self.realOrigin;
     }
