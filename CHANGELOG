@@ -1,3 +1,11 @@
+02-14-2015 - 6518b765 - 3.7.8.2
+
+. changed removeChannelFromCache method behaviour
+
+02-13-2015 - 232506d - 3.7.8.1
+
+. moved DNS cache clearing control to PNConfiguration and exposed to the user
+
 02-07-2015 - f9d96dc - 3.7.8
 
 . fixed issue when among of flushed postponed method calls is the one of the same type of operation which currently processed by the client
