@@ -109,8 +109,8 @@
         
         channelName = @":";
     }
-    
-    PNChannelGroup *channel = nil;
+
+    id <PNChannelProtocol> channel = nil;
     if (isValidName) {
         
         id <PNChannelProtocol> (^channelCreateBlock)(void) = ^{
@@ -125,13 +125,13 @@
             [self removeChannelFromCache:channel];
             channel = channelCreateBlock();
         }
-        channel.channelGroup = YES;
-        channel.groupName = ([name length] ? name : nil);
-        channel.nspace = ([nspace length] ? nspace : nil);
+        ((PNChannelGroup *)channel).channelGroup = YES;
+        ((PNChannelGroup *)channel).groupName = ([name length] ? name : nil);
+        ((PNChannelGroup *)channel).nspace = ([nspace length] ? nspace : nil);
     }
     
     
-    return channel;
+    return (PNChannelGroup *)channel;
 }
 
 
