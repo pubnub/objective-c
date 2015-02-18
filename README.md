@@ -379,7 +379,8 @@ You can use few class methods to initialize and update instance properties:
   __Default:__ 310 seconds (_kPNSubscriptionRequestTimeout_ key in [__PNDefaultConfiguration.h__](PubNub/PubNub/PubNub/Misc/PNDefaultConfiguration.h))  
   ***Please consult with PubNub support before setting this value lower than the default to avoid incurring additional charges.***
     
-<a id="presenceHeartbeatTimeout"></a>  - Client will pass this value during subscription to inform it after which period of inactivity (when client will stop send ping to the server) it should mark client and __timed out__.
+  - <a id="presenceHeartbeatTimeout">presenceHeartbeatTimeout</a>
+  Client will pass this value during subscription to inform it after which period of inactivity (when client will stop send ping to the server) it should mark client and __timed out__.
   ```objc
   presenceHeartbeatTimeout
   ```
