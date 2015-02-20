@@ -45,7 +45,33 @@
  * Check whether observer is subscribed on PubNub state
  * change
  */
-- (void)checkSubscribedOnClientStateChange:(id)observer withBlock:(void (^)(BOOL observing))checkCompletionBlock;
+- (void)checkSubscribedOnClientStateChange:(id)observer
+                                 withBlock:(void (^)(BOOL observing))checkCompletionBlock;
+
+/**
+ @brief Move callback stored under old token to new one.
+
+ @discussion This operation required in case of methods reschedule, when block itself already stored
+             inside of this observation center. Each time, when method rescheduled, it generate
+             different callback tokens. This method allow to migrate callback stored during previous
+             method call to new token (this will allow to call it at the end of request processing).
+
+ @param oldCallbackToken Reference on callback token under which callback has been stored during
+                         previous method call.
+ @param callbackToken    Reference on callback token which has been generated on method reschedule
+                         and under which callback from previous call session should be placed.
+
+ @since <#version number#>
+ */
+- (void)changeClientCallbackToken:(NSString *)oldCallbackToken to:(NSString *)callbackToken;
+
+/**
+ @brief Ubsubscribe \b PubNub client instance which instantiated this observer from any
+        notifications which may fire in future.
+
+ @since <#version number#>
+ */
+- (void)removeClientAsObserver;
 
 
 #pragma mark - Client connection state observation
@@ -69,15 +95,15 @@
  Observing for state retrieval process (this action will be performed only once per request).
  After event will be fired this observation request will be removed from queue.
  */
-- (void)addClientAsStateRequestObserverWithBlock:(PNClientStateRetrieveHandlingBlock)handleBlock;
-- (void)removeClientAsStateRequestObserver;
+- (void)addClientAsStateRequestObserverWithToken:(NSString *)callbackToken
+                                        andBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
 
 /**
  Observing for state update process (this action will be performed only once per request).
  After event will be fired this observation request will be removed from queue.
  */
-- (void)addClientAsStateUpdateObserverWithBlock:(PNClientStateUpdateHandlingBlock)handleBlock;
-- (void)removeClientAsStateUpdateObserver;
+- (void)addClientAsStateUpdateObserverWithToken:(NSString *)callbackToken
+                                       andBlock:(PNClientStateUpdateHandlingBlock)handlerBlock;
 
 
 #pragma mark - Client channel groups observation
@@ -85,40 +111,41 @@
 /**
  Add/remove observer which would like to know when PubNub client will receive channel groups.
  */
-- (void)addClientAsChannelGroupsRequestObserverWithCallbackBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock;
-- (void)removeClientAsChannelGroupsRequestObserver;
+- (void)addClientAsChannelGroupsRequestObserverWithToken:(NSString *)callbackToken
+                                                andBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock;
 
 /**
  Add/remove observer which would like to know when PubNub client will receive channel group namespaces.
  */
-- (void)addClientAsChannelGroupNamespacesRequestObserverWithCallbackBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock;
-- (void)removeClientAsChannelGroupNamespacesRequestObserver;
+- (void)addClientAsChannelGroupNamespacesRequestObserverWithToken:(NSString *)callbackToken
+                                                         andBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock;
 
 /**
  Add/remove observer which would like to know when PubNub client will remove namespace.
  */
-- (void)addClientAsChannelGroupNamespaceRemovalObserverWithCallbackBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock;
-- (void)removeClientAsChannelGroupNamespaceRemovalObserver;
+- (void)addClientAsChannelGroupNamespaceRemovalObserverWithToken:(NSString *)callbackToken
+                                                        andBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock;
 
 /**
  Add/remove observer which would like to know when PubNub client will remove channel group.
  */
-- (void)addClientAsChannelGroupRemovalObserverWithCallbackBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock;
-- (void)removeClientAsChannelGroupRemovalObserver;
+- (void)addClientAsChannelGroupRemovalObserverWithToken:(NSString *)callbackToken
+                                               andBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock;
 
 /**
  Add/remove observer which would like to know when PubNub client will receive channels for concrete channel group.
  */
-- (void)addClientAsChannelsForGroupRequestObserverWithCallbackBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock;
-- (void)removeClientAsChannelsForGroupRequestObserver;
+- (void)addClientAsChannelsForGroupRequestObserverWithToken:(NSString *)callbackToken
+                                                   andBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock;
 
 /**
  Add/remove observer which would like to know when PubNub client will modify channels list for concrete channel group.
  */
-- (void)addClientAsChannelsAdditionToGroupObserverWithCallbackBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock;
-- (void)removeClientAsChannelsAdditionToGroupObserver;
-- (void)addClientAsChannelsRemovalFromGroupObserverWithCallbackBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock;
-- (void)removeClientAsChannelsRemovalFromGroupObserver;
+- (void)addClientAsChannelsAdditionToGroupObserverWithToken:(NSString *)callbackToken
+                                                   andBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock;
+
+- (void)addClientAsChannelsRemovalFromGroupObserverWithToken:(NSString *)callbackToken
+                                                    andBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock;
 
 
 #pragma mark - Channels subscribe/leave observers
@@ -171,8 +198,8 @@
  * After event will be fired, this observation request will be removed from
  * queue.
  */
-- (void)addClientAsPushNotificationsEnableObserverWithBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
-- (void)removeClientAsPushNotificationsEnableObserver;
+- (void)addClientAsPushNotificationsEnableObserverWithToken:(NSString *)callbackToken
+                                                   andBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
 
 /**
  * Add/remove observer for push notification disabling on specified list of channels
@@ -180,8 +207,8 @@
  * After event will be fired, this observation request will be removed from
  * queue.
  */
-- (void)addClientAsPushNotificationsDisableObserverWithBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
-- (void)removeClientAsPushNotificationsDisableObserver;
+- (void)addClientAsPushNotificationsDisableObserverWithToken:(NSString *)callbackToken
+                                                    andBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
 
 /**
  * Add/remove observer for push notification enabled channels retrieval process
@@ -190,8 +217,8 @@
  * After event will be fired, this observation request will be removed from
  * queue.
  */
-- (void)addClientAsPushNotificationsEnabledChannelsObserverWithBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
-- (void)removeClientAsPushNotificationsEnabledChannelsObserver;
+- (void)addClientAsPushNotificationsEnabledChannelsObserverWithToken:(NSString *)callbackToken
+                                                            andBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
 
 /**
  * Add/remove observer for push notification removal from all channels process.
@@ -199,8 +226,8 @@
  * After event will be fired, this observation request will be removed from
  * queue.
  */
-- (void)addClientAsPushNotificationsRemoveObserverWithBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
-- (void)removeClientAsPushNotificationsRemoveObserver;
+- (void)addClientAsPushNotificationsRemoveObserverWithToken:(NSString *)callbackToken
+                                                   andBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
 
 
 #pragma mark - Time token observation
@@ -209,8 +236,8 @@
  * Add PubNub client as observer for time token receiving
  * event till first event will arrive
  */
-- (void)addClientAsTimeTokenReceivingObserverWithCallbackBlock:(PNClientTimeTokenReceivingCompleteBlock)callbackBlock;
-- (void)removeClientAsTimeTokenReceivingObserver;
+- (void)addClientAsTimeTokenReceivingObserverWithToken:(NSString *)callbackToken
+                                              andBlock:(PNClientTimeTokenReceivingCompleteBlock)callbackBlock;
 
 
 #pragma mark - Message sending observers
@@ -221,12 +248,8 @@
  * After event will be fired this observation request will be
  * removed from queue.
  */
-- (void)addClientAsMessageProcessingObserverWithBlock:(PNClientMessageProcessingBlock)handleBlock;
-- (void)removeClientAsMessageProcessingObserver;
-- (void)addMessageProcessingObserver:(id)observer
-                           withBlock:(PNClientMessageProcessingBlock)handleBlock
-                        oneTimeEvent:(BOOL)isOneTimeEventObserver;
-- (void)removeMessageProcessingObserver:(id)observer oneTimeEvent:(BOOL)isOneTimeEventObserver;
+- (void)addClientAsMessageProcessingObserverWithToken:(NSString *)callbackToken
+                                             andBlock:(PNClientMessageProcessingBlock)handleBlock;
 
 
 #pragma mark - History observers
@@ -236,8 +259,8 @@
  * After event will be fired this observation request will be
  * removed from queue.
  */
-- (void)addClientAsHistoryDownloadObserverWithBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
-- (void)removeClientAsHistoryDownloadObserver;
+- (void)addClientAsHistoryDownloadObserverWithToken:(NSString *)callbackToken
+                                           andBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
 
 #pragma mark - PAM observer
@@ -246,10 +269,11 @@
  * Add/remove observer for PAM manipulation and audit.
  * After event will be fired this observation request will be removed from queue.
  */
-- (void)addClientAsAccessRightsChangeObserverWithBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
-- (void)removeClientAsAccessRightsChangeObserver;
-- (void)addClientAsAccessRightsAuditObserverWithBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
-- (void)removeClientAsAccessRightsAuditObserver;
+- (void)addClientAsAccessRightsChangeObserverWithToken:(NSString *)callbackToken
+                                              andBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock;
+
+- (void)addClientAsAccessRightsAuditObserverWithToken:(NSString *)callbackToken
+                                             andBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock;
 
 
 #pragma mark - Participants observer
@@ -258,15 +282,15 @@
  Add/remove observer for participants list download.
  After event will be fired this observation request will be removed from queue.
  */
-- (void)addClientAsParticipantsListDownloadObserverWithBlock:(PNClientParticipantsHandlingBlock)handleBlock;
-- (void)removeClientAsParticipantsListDownloadObserver;
+- (void)addClientAsParticipantsListDownloadObserverWithToken:(NSString *)callbackToken
+                                                    andBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
 /**
  Add/remove observer for participant channels list download.
  After event will be fired this observation request will be removed from queue.
  */
-- (void)addClientAsParticipantChannelsListDownloadObserverWithBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
-- (void)removeClientAsParticipantChannelsListDownloadObserver;
+- (void)addClientAsParticipantChannelsListDownloadObserverWithToken:(NSString *)callbackToken
+                                                           andBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
 
 #pragma mark -
 

@@ -17,7 +17,7 @@
 
 #pragma mark Class forward
 
-@class PNConnectionChannel, PNError;
+@class PNConnectionChannel, PNBaseRequest, PNError;
 
 
 #pragma mark - Connection channel observer methods
@@ -104,11 +104,26 @@
 - (void)connectionChannel:(PNConnectionChannel *)channel checkCanConnect:(void(^)(BOOL))checkCompletionBlock;
 
 /**
- * Sent to the delegate each timer when connection channel want to ensure on whether it should resume it's operation
+ * Sent to the delegate each time when connection channel want to ensure on whether it should resume it's operation
  * or not (after it was disconnected).
  * This method is called periodically by intervals defined in connection class.
  */
 - (void)connectionChannel:(PNConnectionChannel *)channel checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock;
+
+/**
+ @brief      Sent to the delegate each time when another request has been sent to the server.
+ @discussion As soon as request body will be written to the socket, this method will be called to
+             inform delegate that queue is free and another request can be sent while waiting for
+             response on previous request.
+
+ @param channel Reference on connection channel which generated this event,
+ @param request Reference on request which has been sent.
+
+ @return <#return value description#>
+
+ @since <#version number#>
+ */
+- (void)connectionChannel:(PNConnectionChannel *)channel didSendRequest:(PNBaseRequest *)request;
 
 /**
  Retrieve client identifier provided or generated for user by \b PubNub client.

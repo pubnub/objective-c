@@ -207,8 +207,8 @@ andCompletionHandlingBlock:handlerBlock];
                  clientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
     
-    [[self sharedInstance] subscribeOn:channelObjects withCatchUp:shouldCatchUp clientState:clientState
-            andCompletionHandlingBlock:handlerBlock];
+    [[self sharedInstance] subscribeOn:channelObjects withCatchUp:shouldCatchUp
+                           clientState:clientState andCompletionHandlingBlock:handlerBlock];
 }
 
 + (void)unsubscribeFromChannel:(PNChannel *)channel {
@@ -219,7 +219,8 @@ andCompletionHandlingBlock:handlerBlock];
 + (void)unsubscribeFromChannel:(PNChannel *)channel
    withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
     
-    [self unsubscribeFromChannels:(channel ? @[channel] : nil) withCompletionHandlingBlock:handlerBlock];
+    [self unsubscribeFromChannels:(channel ? @[channel] : nil)
+      withCompletionHandlingBlock:handlerBlock];
 }
 
 + (void)unsubscribeFromChannels:(NSArray *)channels {
@@ -353,68 +354,69 @@ andCompletionHandlingBlock:handlerBlock];
                      @(shouldCatchUp), [self humanReadableStateFrom:self.state]];
         }];
         
-        [self performAsyncLockingBlock:^{
-            
+        [self   performAsyncLockingBlock:^{
+
             [self.observationCenter removeClientAsSubscriptionObserver];
             [self.observationCenter removeClientAsUnsubscribeObserver];
-            
+
             // Check whether client is able to send request or not
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0 && clientState && ![clientState pn_isValidState]) {
-                
+
                 statusCode = kPNInvalidStatePayloadError;
             }
             if (statusCode == 0) {
-                
+
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-                    
+
                     return @[PNLoggerSymbols.api.subscribing, [self humanReadableStateFrom:self.state]];
                 }];
-                
+
                 if (handlerBlock != nil) {
-                    
+
                     [self.observationCenter addClientAsSubscriptionObserverWithBlock:handlerBlock];
                 }
-                
-                
+
+
                 [self.messagingChannel subscribeOnChannels:channelObjects withCatchUp:shouldCatchUp
                                             andClientState:clientState];
             }
-            // Looks like client can't send request because of some reasons
+                // Looks like client can't send request because of some reasons
             else {
-                
+
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-                    
-                    return @[PNLoggerSymbols.api.subscriptionImpossible, [self humanReadableStateFrom:self.state]];
+
+                    return @[PNLoggerSymbols.api.subscriptionImpossible,
+                            [self humanReadableStateFrom:self.state]];
                 }];
-                
+
                 PNError *subscriptionError = [PNError errorWithCode:statusCode];
                 subscriptionError.associatedObject = channelObjects;
-                
+
                 [self notifyDelegateAboutSubscriptionFailWithError:subscriptionError
                                           completeLockingOperation:YES];
-                
-                
+
+
                 if (handlerBlock) {
-                    
+
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        
-                        handlerBlock(PNSubscriptionProcessNotSubscribedState, channelObjects, subscriptionError);
+
+                        handlerBlock(PNSubscriptionProcessNotSubscribedState, channelObjects,
+                                subscriptionError);
                     });
                 }
             }
-        }
-               postponedExecutionBlock:^{
-                   
-                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                       
-                       return @[PNLoggerSymbols.api.postponeSubscription,
-                                [self humanReadableStateFrom:self.state]];
-                   }];
-                   
-                   [self postponeSubscribeOn:channelObjects withCatchUp:shouldCatchUp clientState:clientState
-                  andCompletionHandlingBlock:handlerBlock];
-               }];
+        }        postponedExecutionBlock:^{
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.postponeSubscription,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            [self postponeSubscribeOn:channelObjects withCatchUp:shouldCatchUp
+                          clientState:clientState andCompletionHandlingBlock:handlerBlock];
+        } burstExecutionLockingOperation:YES];
     }];
 }
 
@@ -426,8 +428,9 @@ andCompletionHandlingBlock:handlerBlock];
     [self postponeSelector:@selector(subscribeOn:withCatchUp:clientState:andCompletionHandlingBlock:)
                  forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:channelObjects], @(shouldCatchUp),
-                             [PNHelper nilifyIfNotSet:clientState], [PNHelper nilifyIfNotSet:handlerBlockCopy]]
-                outOfOrder:NO];
+                             [PNHelper nilifyIfNotSet:clientState],
+                             [PNHelper nilifyIfNotSet:handlerBlockCopy]]
+                outOfOrder:NO burstExecutionLock:YES];
 }
 
 - (void)unsubscribeFromChannel:(PNChannel *)channel {
@@ -438,7 +441,8 @@ andCompletionHandlingBlock:handlerBlock];
 - (void)unsubscribeFromChannel:(PNChannel *)channel
    withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
     
-    [self unsubscribeFromChannels:(channel ? @[channel] : nil) withCompletionHandlingBlock:handlerBlock];
+    [self unsubscribeFromChannels:(channel ? @[channel] : nil)
+      withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)unsubscribeFromChannels:(NSArray *)channels {
@@ -464,63 +468,68 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
             
-            return @[PNLoggerSymbols.api.unsubscribeAttempt, (channelObjects ? channelObjects : [NSNull null]),
+            return @[PNLoggerSymbols.api.unsubscribeAttempt,
+                     (channelObjects ? channelObjects : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
         
-        [self performAsyncLockingBlock:^{
-            
+        [self   performAsyncLockingBlock:^{
+
             [self.observationCenter removeClientAsSubscriptionObserver];
             [self.observationCenter removeClientAsUnsubscribeObserver];
-            
+
             // Check whether client is able to send request or not
             NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
             if (statusCode == 0) {
-                
+
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-                    
-                    return @[PNLoggerSymbols.api.unsubscribing, [self humanReadableStateFrom:self.state]];
+
+                    return @[PNLoggerSymbols.api.unsubscribing,
+                            [self humanReadableStateFrom:self.state]];
                 }];
-                
+
                 if (handlerBlock) {
-                    
+
                     [self.observationCenter addClientAsUnsubscribeObserverWithBlock:handlerBlock];
                 }
-                
+
                 [self.messagingChannel unsubscribeFromChannels:channelObjects];
             }
-            // Looks like client can't send request because of some reasons
+                // Looks like client can't send request because of some reasons
             else {
-                
+
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
-                    
-                    return @[PNLoggerSymbols.api.unsubscriptionImpossible, [self humanReadableStateFrom:self.state]];
+
+                    return @[PNLoggerSymbols.api.unsubscriptionImpossible,
+                            [self humanReadableStateFrom:self.state]];
                 }];
-                
+
                 PNError *unsubscriptionError = [PNError errorWithCode:statusCode];
                 unsubscriptionError.associatedObject = channelObjects;
-                
-                [self notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError completeLockingOperation:YES];
-                
-                
+
+                [self notifyDelegateAboutUnsubscriptionFailWithError:unsubscriptionError
+                                            completeLockingOperation:YES];
+
+
                 if (handlerBlock) {
-                    
+
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        
+
                         handlerBlock(channelObjects, unsubscriptionError);
                     });
                 }
             }
-        }
-               postponedExecutionBlock:^{
-                   
-                   [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                       
-                       return @[PNLoggerSymbols.api.postponeUnsubscription, [self humanReadableStateFrom:self.state]];
-                   }];
-                   
-                   [self postponeUnsubscribeFrom:channelObjects withCompletionHandlingBlock:handlerBlock];
-               }];
+        }        postponedExecutionBlock:^{
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                return @[PNLoggerSymbols.api.postponeUnsubscription,
+                        [self humanReadableStateFrom:self.state]];
+            }];
+
+            [self postponeUnsubscribeFrom:channelObjects
+              withCompletionHandlingBlock:handlerBlock];
+        } burstExecutionLockingOperation:YES];
     }];
 }
 
@@ -529,8 +538,9 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
     
     PNClientChannelUnsubscriptionHandlerBlock handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:@selector(unsubscribeFrom:withCompletionHandlingBlock:) forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:channelObjects], [PNHelper nilifyIfNotSet:handlerBlockCopy]]
-                outOfOrder:NO];
+            withParameters:@[[PNHelper nilifyIfNotSet:channelObjects],
+                             [PNHelper nilifyIfNotSet:handlerBlockCopy]]
+                outOfOrder:NO burstExecutionLock:YES];
 }
 
 #pragma mark - Misc methods
@@ -544,8 +554,9 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-                return @[PNLoggerSymbols.api.subscriptionFailed, (error.associatedObject ? error.associatedObject : [NSNull null]),
-                        (error ? error : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                return @[PNLoggerSymbols.api.subscriptionFailed,
+                         (error.associatedObject ? error.associatedObject : [NSNull null]),
+                         (error ? error : [NSNull null]), [self humanReadableStateFrom:self.state]];
             }];
 
             // Check whether delegate is able to handle subscription error or not
@@ -553,29 +564,32 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
                 dispatch_async(dispatch_get_main_queue(), ^{
 
-                    [self.clientDelegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:) withObject:self
-                                              withObject:(id) error];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:subscriptionDidFailWithError:)
+                                              withObject:self withObject:(id) error];
                 });
             }
 
-            [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error];
+            [self sendNotification:kPNClientSubscriptionDidFailNotification withObject:error
+                  andCallbackToken:nil];
         }
         else {
 
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
                 return @[PNLoggerSymbols.api.subscriptionOnClientIdentifierChangeFailed,
-                        (error.associatedObject ? error.associatedObject : [NSNull null]), (error ? error : [NSNull null]),
-                        [self humanReadableStateFrom:self.state]];
+                         (error.associatedObject ? error.associatedObject : [NSNull null]),
+                         (error ? error : [NSNull null]), [self humanReadableStateFrom:self.state]];
             }];
 
-            [self sendNotification:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification withObject:error];
+            [self sendNotification:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification
+                        withObject:error andCallbackToken:nil];
         }
     };
     
     if (shouldCompleteLockingOperation) {
         
-        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES
+                     burstExecutionLockingOperation:YES];
     }
     else {
         
@@ -621,7 +635,8 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                 }];
 
 
-                [self sendNotification:kPNClientSubscriptionWillRestoreNotification withObject:channels];
+                [self sendNotification:kPNClientSubscriptionWillRestoreNotification
+                            withObject:channels andCallbackToken:nil];
             }
         }];
     }
@@ -645,13 +660,14 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
                 dispatch_async(dispatch_get_main_queue(), ^{
 
-                    [self.clientDelegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:) withObject:self
-                                              withObject:(id) error];
+                    [self.clientDelegate performSelector:@selector(pubnubClient:unsubscriptionDidFailWithError:)
+                                              withObject:self withObject:error];
                 });
             }
 
 
-            [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error];
+            [self sendNotification:kPNClientUnsubscriptionDidFailNotification withObject:error
+                  andCallbackToken:nil];
         }
         else {
 
@@ -662,13 +678,15 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self sendNotification:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification withObject:error];
+            [self sendNotification:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification
+                        withObject:error andCallbackToken:nil];
         }
     };
     
     if (shouldCompleteLockingOperation) {
         
-        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES];
+        [self handleLockingOperationBlockCompletion:handlerBlock shouldStartNext:YES
+                     burstExecutionLockingOperation:YES];
     }
     else {
         
@@ -679,12 +697,13 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
 #pragma mark - Message channel delegate methods
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willSubscribeOnChannels:(NSArray *)channels
-               sequenced:(BOOL)isSequenced {
+- (void) messagingChannel:(PNMessagingChannel *)messagingChannel
+  willSubscribeOnChannels:(NSArray *)channels sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willSubscribe, (channels? channels : [NSNull null]), [self humanReadableStateFrom:self.state]];
+        return @[PNLoggerSymbols.api.willSubscribe, (channels? channels : [NSNull null]),
+                 [self humanReadableStateFrom:self.state]];
     }];
     
     [self pn_dispatchBlock:^{
@@ -708,8 +727,9 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-            return @[PNLoggerSymbols.api.didSubscribe, (channelObjects ? channelObjects : [NSNull null]),
-                    [self humanReadableStateFrom:self.state]];
+            return @[PNLoggerSymbols.api.didSubscribe,
+                     (channelObjects ? channelObjects : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
         }];
 
         if (shouldNotify) {
@@ -739,7 +759,8 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                     });
                 }
 
-                [self sendNotification:kPNClientSubscriptionDidCompleteNotification withObject:channelObjects];
+                [self sendNotification:kPNClientSubscriptionDidCompleteNotification
+                            withObject:channelObjects andCallbackToken:nil];
             }
             else {
 
@@ -751,7 +772,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                 }];
 
                 [self sendNotification:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification
-                            withObject:channelObjects];
+                            withObject:channelObjects andCallbackToken:nil];
             }
         }
     };
@@ -763,10 +784,9 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
             if (!isSequenced) {
                 
                 [self handleLockingOperationBlockCompletion:^{
-                    
+
                     handlingBlock(shouldNotify);
-                }
-                                            shouldStartNext:YES];
+                }                           shouldStartNext:YES burstExecutionLockingOperation:YES];
             }
             else {
                 
@@ -778,12 +798,13 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
     }];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willRestoreSubscriptionOn:(NSArray *)channelObjects
-               sequenced:(BOOL)isSequenced {
+- (void)   messagingChannel:(PNMessagingChannel *)messagingChannel
+  willRestoreSubscriptionOn:(NSArray *)channelObjects sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willRestoreSubscription, (channelObjects ? channelObjects : [NSNull null]),
+        return @[PNLoggerSymbols.api.willRestoreSubscription,
+                 (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
 
@@ -809,8 +830,8 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
     }
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didRestoreSubscriptionOn:(NSArray *)channelObjects
-               sequenced:(BOOL)isSequenced {
+- (void)  messagingChannel:(PNMessagingChannel *)messagingChannel
+  didRestoreSubscriptionOn:(NSArray *)channelObjects sequenced:(BOOL)isSequenced {
 
     [self pn_dispatchBlock:^{
         
@@ -820,8 +841,9 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                return @[PNLoggerSymbols.api.restoredSubscription, (channelObjects ? channelObjects : [NSNull null]),
-                        [self humanReadableStateFrom:self.state]];
+                return @[PNLoggerSymbols.api.restoredSubscription,
+                         (channelObjects ? channelObjects : [NSNull null]),
+                         [self humanReadableStateFrom:self.state]];
             }];
 
             if (shouldNotify) {
@@ -849,7 +871,8 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                     });
                 }
 
-                [self sendNotification:kPNClientSubscriptionDidRestoreNotification withObject:channelObjects];
+                [self sendNotification:kPNClientSubscriptionDidRestoreNotification
+                            withObject:channelObjects andCallbackToken:nil];
             }
         };
 
@@ -861,8 +884,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                 [self handleLockingOperationBlockCompletion:^{
 
                     handlingBlock(shouldNotify);
-                }
-                                            shouldStartNext:YES];
+                }                           shouldStartNext:YES burstExecutionLockingOperation:YES];
             }
             else {
 
@@ -883,12 +905,13 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
     [self launchHeartbeatTimer];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel willUnsubscribeFrom:(NSArray *)channelObjects
-               sequenced:(BOOL)isSequenced {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel
+     willUnsubscribeFrom:(NSArray *)channelObjects sequenced:(BOOL)isSequenced {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.willUnsubscribe, (channelObjects ? channelObjects : [NSNull null]),
+        return @[PNLoggerSymbols.api.willUnsubscribe,
+                 (channelObjects ? channelObjects : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
     
@@ -911,8 +934,9 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
-            return @[PNLoggerSymbols.api.didUnsubscribe, (channelObjects ? channelObjects : [NSNull null]),
-                    [self humanReadableStateFrom:self.state]];
+            return @[PNLoggerSymbols.api.didUnsubscribe,
+                     (channelObjects ? channelObjects : [NSNull null]),
+                     [self humanReadableStateFrom:self.state]];
         }];
 
         if (shouldNotify) {
@@ -942,17 +966,20 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                     });
                 }
 
-                [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification withObject:channelObjects];
+                [self sendNotification:kPNClientUnsubscriptionDidCompleteNotification
+                            withObject:channelObjects andCallbackToken:nil];
             }
             else {
 
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
                     return @[PNLoggerSymbols.api.didUnsubscribeDuringClientIdentifierChange,
-                            (channelObjects ? channelObjects : [NSNull null]), [self humanReadableStateFrom:self.state]];
+                             (channelObjects ? channelObjects : [NSNull null]),
+                             [self humanReadableStateFrom:self.state]];
                 }];
 
-                [self sendNotification:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification withObject:self];
+                [self sendNotification:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification
+                            withObject:self andCallbackToken:nil];
             }
         }
     };
@@ -966,8 +993,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
                 [self handleLockingOperationBlockCompletion:^{
 
                     handlingBlock(shouldNotify);
-                }
-                                            shouldStartNext:YES];
+                }                           shouldStartNext:YES burstExecutionLockingOperation:YES];
             }
             else {
 
@@ -979,20 +1005,24 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
     }];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)channel didFailUnsubscribeFrom:(NSArray *)channelObjects
-               withError:(PNError *)error sequenced:(BOOL)isSequenced {
+- (void)messagingChannel:(PNMessagingChannel *)channel
+  didFailUnsubscribeFrom:(NSArray *)channelObjects withError:(PNError *)error
+               sequenced:(BOOL)isSequenced {
     
     error.associatedObject = channelObjects;
-    [self notifyDelegateAboutUnsubscriptionFailWithError:error completeLockingOperation:!isSequenced];
+    [self notifyDelegateAboutUnsubscriptionFailWithError:error
+                                completeLockingOperation:!isSequenced];
     
     [self launchHeartbeatTimer];
 }
 
-- (void)messagingChannel:(PNMessagingChannel *)messagingChannel didReceiveMessage:(PNMessage *)message {
+- (void)messagingChannel:(PNMessagingChannel *)messagingChannel
+       didReceiveMessage:(PNMessage *)message {
     
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
         
-        return @[PNLoggerSymbols.api.didReceiveMessage, (message.message ? message.message : [NSNull null]),
+        return @[PNLoggerSymbols.api.didReceiveMessage,
+                 (message.message ? message.message : [NSNull null]),
                  (message.channel ? message.channel : [NSNull null]),
                  [self humanReadableStateFrom:self.state]];
     }];
@@ -1015,12 +1045,14 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
 
                     dispatch_async(dispatch_get_main_queue(), ^{
 
-                        [self.clientDelegate performSelector:@selector(pubnubClient:didReceiveMessage:) withObject:self
+                        [self.clientDelegate performSelector:@selector(pubnubClient:didReceiveMessage:)
+                                                  withObject:self
                                                   withObject:message];
                     });
                 }
 
-                [self sendNotification:kPNClientDidReceiveMessageNotification withObject:message];
+                [self sendNotification:kPNClientDidReceiveMessageNotification withObject:message
+                      andCallbackToken:nil];
             }
         }];
     }];

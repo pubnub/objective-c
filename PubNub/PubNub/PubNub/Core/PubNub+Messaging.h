@@ -1,5 +1,7 @@
 #import "PubNub.h"
 
+@class PNChannel;
+
 /**
  Base class extension which provide methods for messaging.
  
@@ -5915,6 +5917,80 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  */
 - (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
 withCompletionBlock:(PNClientMessageProcessingBlock)success;
+
+
+#pragma mark - Misc methods
+
+/**
+ @brief Calculate size of resulting message which will be created from Objective-C object.
+
+ @param message              Reference on Objective-C object which should be used during size
+                             calculation.
+ @param channel              Reference on \b PNChannel instance which represent target channel to
+                             which message should be sent.
+ @param calculationCompletionBlock Reference on calculation completion block which pass only one
+                                   parameter - size of resulting message.
+
+ @return Size of resulting message packet (including headers and body).
+
+ @since <#version number#>
+ */
+- (void)sizeOfMessage:(id)message toChannel:(PNChannel *)channel
+  withCompletionBlock:(void (^)(NSUInteger size))calculationCompletionBlock;
+
+/**
+ @brief Calculate size of resulting message which will be created from Objective-C object.
+
+ @param message              Reference on Objective-C object which should be used during size
+                             calculation.
+ @param channel              Reference on \b PNChannel instance which represent target channel to
+                             which message should be sent.
+ @param compressedMessage    Whether message should be treated as compressed pr not.
+ @param calculationCompletionBlock Reference on calculation completion block which pass only one
+                                   parameter - size of resulting message.
+
+ @return Size of resulting message packet (including headers and body).
+
+ @since <#version number#>
+ */
+- (void)sizeOfMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)compressedMessage
+  withCompletionBlock:(void (^)(NSUInteger size))calculationCompletionBlock;
+
+/**
+ @brief Calculate size of resulting message which will be created from Objective-C object.
+
+ @param message                    Reference on Objective-C object which should be used during size
+                                   calculation.
+ @param channel                    Reference on \b PNChannel instance which represent target channel
+                                   to which message should be sent.
+ @param shouldStoreInHistory       Whether message should be stored on server storage or not.
+ @param compressedMessage          Whether message should be treated as compressed pr not.
+ @param calculationCompletionBlock Reference on calculation completion block which pass only one
+                                   parameter - size of resulting message.
+
+ @since <#version number#>
+ */
+- (void)sizeOfMessage:(id)message toChannel:(PNChannel *)channel
+       storeInHistory:(BOOL)shouldStoreInHistory
+  withCompletionBlock:(void (^)(NSUInteger size))calculationCompletionBlock;
+
+/**
+ @brief Calculate size of resulting message which will be created from Objective-C object.
+
+ @param message                    Reference on Objective-C object which should be used during size
+                                   calculation.
+ @param channel                    Reference on \b PNChannel instance which represent target channel
+                                   to which message should be sent.
+ @param shouldStoreInHistory       Whether message should be stored on server storage or not.
+ @param compressedMessage          Whether message should be treated as compressed pr not.
+ @param calculationCompletionBlock Reference on calculation completion block which pass only one
+                                   parameter - size of resulting message.
+
+ @since <#version number#>
+ */
+- (void)sizeOfMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)compressedMessage
+       storeInHistory:(BOOL)shouldStoreInHistory
+  withCompletionBlock:(void (^)(NSUInteger size))calculationCompletionBlock;
 
 #pragma mark -
 

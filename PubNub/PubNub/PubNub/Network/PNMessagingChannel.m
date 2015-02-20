@@ -2053,7 +2053,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
-
+        
     [self stopChannelIdleTimer:YES];
 
     if (self.idleTimer == NULL || dispatch_source_testcancel(self.idleTimer) > 0) {

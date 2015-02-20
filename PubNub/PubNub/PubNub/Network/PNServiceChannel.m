@@ -168,7 +168,8 @@
                                 (parser ? [parser parsedData] : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didReceiveTimeToken:[parser parsedData]];
+                    [self.serviceDelegate serviceChannel:self didReceiveTimeToken:[parser parsedData]
+                                               onRequest:request];
                 }
                 else {
 
@@ -178,7 +179,8 @@
                                 (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:parsedData
+                                              forRequest:request];
                 }
             }
                 // Check whether request was sent for state retrieval
@@ -193,7 +195,8 @@
                                 (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didReceiveClientState:parsedData];
+                    [self.serviceDelegate serviceChannel:self didReceiveClientState:parsedData
+                                               onRequest:request];
                 }
                 else {
 
@@ -204,7 +207,8 @@
                     }];
 
                     [(PNError *) parsedData replaceAssociatedObject:response.additionalData];
-                    [self.serviceDelegate serviceChannel:self clientStateReceiveDidFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self clientStateReceiveDidFailWithError:parsedData
+                                              forRequest:request];
                 }
             }
                 // Check whether request was sent for state update
@@ -219,7 +223,8 @@
                                 (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didUpdateClientState:parsedData];
+                    [self.serviceDelegate serviceChannel:self didUpdateClientState:parsedData
+                                               onRequest:request];
                 }
                 else {
 
@@ -230,7 +235,8 @@
                     }];
 
                     [(PNError *) parsedData replaceAssociatedObject:response.additionalData];
-                    [self.serviceDelegate serviceChannel:self clientStateUpdateDidFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self clientStateUpdateDidFailWithError:parsedData
+                                              forRequest:request];
                 }
             }
                 // Check whether request was sent for channel groups list retrieval or not
@@ -247,7 +253,7 @@
                     }];
 
                     [self.serviceDelegate serviceChannel:self didReceiveChannelGroups:parsedData
-                                            forNamespace:response.additionalData];
+                                            forNamespace:response.additionalData onRequest:request];
                 }
                 else {
 
@@ -258,8 +264,9 @@
                                 (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self channelGroupsRequestForNamespace:response.additionalData
-                                        didFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self
+                        channelGroupsRequestForNamespace:response.additionalData
+                                        didFailWithError:parsedData forRequest:request];
                 }
             }
                 // Check whether request was sent for channel group namespaces retrieval or not
@@ -274,7 +281,8 @@
                                 (self.name ? self.name : self), (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didReceiveChannelGroupNamespaces:parsedData];
+                    [self.serviceDelegate serviceChannel:self
+                        didReceiveChannelGroupNamespaces:parsedData onRequest:request];
                 }
                 else {
 
@@ -284,7 +292,8 @@
                                 (self.name ? self.name : self), (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self channelGroupNamespacesRequestDidFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self
+           channelGroupNamespacesRequestDidFailWithError:parsedData forRequest:request];
                 }
             }
                 // Check whether request was sent for channel group namespace removal or not
@@ -299,7 +308,8 @@
                                 (self.name ? self.name : self), (response.additionalData ? response.additionalData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didRemoveNamespace:response.additionalData];
+                    [self.serviceDelegate serviceChannel:self
+                                      didRemoveNamespace:response.additionalData onRequest:request];
                 }
                 else {
 
@@ -310,7 +320,8 @@
                                 (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self namespace:response.additionalData removalDidFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self namespace:response.additionalData
+                                 removalDidFailWithError:parsedData forRequest:request];
                 }
             }
                 // Check whether request was sent for channel groups removal or not
@@ -325,7 +336,8 @@
                                 (self.name ? self.name : self), (response.additionalData ? response.additionalData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didRemoveChannelGroup:response.additionalData];
+                    [self.serviceDelegate serviceChannel:self
+                                   didRemoveChannelGroup:response.additionalData onRequest:request];
                 }
                 else {
 
@@ -336,7 +348,8 @@
                                 (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self channelGroup:response.additionalData removalDidFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self channelGroup:response.additionalData
+                                 removalDidFailWithError:parsedData forRequest:request];
                 }
             }
                 // Check whether request was sent for channels list for group retrieval or not
@@ -353,7 +366,8 @@
                     }];
 
                     [self.serviceDelegate serviceChannel:self didReceiveChannels:parsedData
-                                                forGroup:[request valueForKey:@"group"]];
+                                                forGroup:[request valueForKey:@"group"]
+                                               onRequest:request];
                 }
                 else {
 
@@ -365,7 +379,7 @@
                     }];
 
                     [self.serviceDelegate serviceChannel:self channelsForGroupRequest:[request valueForKey:@"group"]
-                                        didFailWithError:parsedData];
+                                        didFailWithError:parsedData forRequest:request];
                 }
             }
                 // Check whether request was sent for channels list change in target gorup
@@ -384,7 +398,8 @@
                                 (change.channels ? change.channels : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didChangeGroupChannels:change];
+                    [self.serviceDelegate serviceChannel:self didChangeGroupChannels:change
+                                               onRequest:request];
                 }
                 else {
 
@@ -397,7 +412,8 @@
                                 (change.group ? change.group : (id) [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self groupChannelsChange:change didFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self groupChannelsChange:change
+                                        didFailWithError:parsedData forRequest:request];
                 }
             }
                 // Check whether request was sent for message posting
@@ -421,7 +437,8 @@
                                 (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didFailMessageSend:message withError:parsedData];
+                    [self.serviceDelegate serviceChannel:self didFailMessageSend:message
+                                               withError:parsedData forRequest:request];
                 }
                 else {
 
@@ -437,7 +454,8 @@
                                 (message.message ? message.message : [NSNull null]), (message.channel ? message.channel : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didSendMessage:message];
+                    [self.serviceDelegate serviceChannel:self didSendMessage:message
+                                               onRequest:request];
                 }
             }
                 // Check whether request was sent for message history or not
@@ -461,7 +479,8 @@
                                 (history.messages ? history.messages : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didReceiveMessagesHistory:parsedData];
+                    [self.serviceDelegate serviceChannel:self didReceiveMessagesHistory:parsedData
+                                               onRequest:request];
                 }
                 else {
 
@@ -475,7 +494,8 @@
                                 (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:historyRequest.channel withError:parsedData];
+                    [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:historyRequest.channel
+                                               withError:parsedData forRequest:request];
                 }
             }
                 // Check whether request was sent for participants list or not
@@ -505,7 +525,8 @@
                                 @(hereNowRequest.shouldFetchClientState), (presenceInformation ? presenceInformation : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didReceiveParticipantsList:presenceInformation];
+                    [self.serviceDelegate serviceChannel:self didReceiveParticipantsList:presenceInformation
+                                               onRequest:request];
                 }
                 else {
 
@@ -516,8 +537,9 @@
                                 @(hereNowRequest.shouldFetchClientState), (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannels:response.additionalData
-                                               withError:parsedData];
+                    [self.serviceDelegate serviceChannel:self
+                  didFailParticipantsListLoadForChannels:response.additionalData withError:parsedData
+                                              forRequest:request];
                 }
             }
                 // Check whether request was sent for participant channels list or not
@@ -534,7 +556,8 @@
                                 (identifier ? identifier : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didReceiveParticipantChannelsList:parsedData];
+                    [self.serviceDelegate serviceChannel:self didReceiveParticipantChannelsList:parsedData
+                                               onRequest:request];
                 }
                 else {
 
@@ -545,7 +568,7 @@
                     }];
 
                     [self.serviceDelegate serviceChannel:self didFailParticipantChannelsListLoadForIdentifier:identifier
-                                               withError:parsedData];
+                                               withError:parsedData forRequest:request];
                 }
             }
             else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
@@ -561,27 +584,27 @@
                 // Check whether there is no error while processed push notifications state change
                 if (![parsedData isKindOfClass:[PNError class]]) {
 
-                    selector = @selector(serviceChannel:didEnablePushNotificationsOnChannels:);
+                    selector = @selector(serviceChannel:didEnablePushNotificationsOnChannels:onRequest:);
                     if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
 
                         symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestCompleted;
-                        selector = @selector(serviceChannel:didDisablePushNotificationsOnChannels:);
+                        selector = @selector(serviceChannel:didDisablePushNotificationsOnChannels:onRequest:);
                     }
 
-                    parameters = @[self, channels];
+                    parameters = @[self, channels, request];
                 }
                 else {
 
                     logLevel = PNLogCommunicationChannelLayerErrorLevel;
                     symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationEnableRequestFailed;
-                    selector = @selector(serviceChannel:didFailPushNotificationEnableForChannels:withError:);
+                    selector = @selector(serviceChannel:didFailPushNotificationEnableForChannels:withError:forRequest:);
                     if ([targetState isEqualToString:PNPushNotificationsState.disable]) {
 
                         symbolCode = PNLoggerSymbols.connectionChannel.service.pushNotificationDisableRequestFailed;
-                        selector = @selector(serviceChannel:didFailPushNotificationDisableForChannels:withError:);
+                        selector = @selector(serviceChannel:didFailPushNotificationDisableForChannels:withError:forRequest:);
                     }
 
-                    parameters = @[self, channels, parsedData];
+                    parameters = @[self, channels, parsedData, request];
                 }
                 if (logLevel == PNLogCommunicationChannelLayerInfoLevel) {
 
@@ -618,7 +641,8 @@
                                 (devicePushToken ? devicePushToken : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannelDidRemovePushNotifications:self];
+                    [self.serviceDelegate serviceChannelDidRemovePushNotifications:self
+                                                                         onRequest:request];
                 }
                 else {
 
@@ -628,7 +652,8 @@
                                 (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:parsedData
+                                              forRequest:request];
                 }
             }
             else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
@@ -645,7 +670,8 @@
                     }];
 
                     [self.serviceDelegate serviceChannel:self
-              didReceivePushNotificationsEnabledChannels:[PNChannel channelsWithNames:parsedData]];
+              didReceivePushNotificationsEnabledChannels:[PNChannel channelsWithNames:parsedData]
+                                               onRequest:request];
                 }
                 else {
 
@@ -655,7 +681,8 @@
                                 (devicePushToken ? devicePushToken : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:parsedData
+                                              forRequest:request];
                 }
             }
             else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
@@ -674,7 +701,8 @@
                     }];
 
                     [(PNAccessRightsCollection *) parsedData correlateAccessRightsWithOptions:options];
-                    [self.serviceDelegate serviceChannel:self didChangeAccessRights:parsedData];
+                    [self.serviceDelegate serviceChannel:self didChangeAccessRights:parsedData
+                                               onRequest:request];
                 }
                 else {
 
@@ -687,7 +715,8 @@
                                 (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self
+                      accessRightsChangeDidFailWithError:parsedData forRequest:request];
                 }
             }
             else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
@@ -705,7 +734,8 @@
                     }];
 
                     [(PNAccessRightsCollection *) parsedData correlateAccessRightsWithOptions:options];
-                    [self.serviceDelegate serviceChannel:self didAuditAccessRights:parsedData];
+                    [self.serviceDelegate serviceChannel:self didAuditAccessRights:parsedData
+                                               onRequest:request];
                 }
                 else {
 
@@ -717,7 +747,8 @@
                                 (options.channels ? options.channels : [NSNull null]), (parsedData ? parsedData : [NSNull null])];
                     }];
 
-                    [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:parsedData];
+                    [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:parsedData
+                                              forRequest:request];
                 }
             }
             else {
@@ -757,7 +788,8 @@
                     (error ? error : [NSNull null])];
         }];
 
-        [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error];
+        [self.serviceDelegate serviceChannel:self receiveTimeTokenDidFailWithError:error
+                                  forRequest:request];
     }
     // Check whether request was sent for state retrieval / update
     else if ([request isKindOfClass:[PNClientStateRequest class]] ||
@@ -773,22 +805,27 @@
         }
 
         NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed;
-        SEL errorSelector = @selector(serviceChannel:clientStateReceiveDidFailWithError:);
         if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
             symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateUpdateRequestFailed;
-            errorSelector = @selector(serviceChannel:clientStateUpdateDidFailWithError:);
         }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
-            return @[symbolCode, (self.name ? self.name : self), (error ? error : [NSNull null]), (client ? client : [NSNull null])];
+            return @[symbolCode, (self.name ? self.name : self), (error ? error : [NSNull null]),
+                     (client ? client : [NSNull null])];
         }];
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:errorSelector withObject:self withObject:error];
-        #pragma clang diagnostic pop
+        if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
+
+            [self.serviceDelegate serviceChannel:self clientStateUpdateDidFailWithError:error
+                                      forRequest:request];
+        }
+        else {
+
+            [self.serviceDelegate serviceChannel:self clientStateReceiveDidFailWithError:error
+                                      forRequest:request];
+        }
     }
     // Check whether request was sent for channel groups request / channels list for group request / remove
     else if ([request isKindOfClass:[PNChannelGroupsRequest class]] || [request isKindOfClass:[PNChannelsForGroupRequest class]] ||
@@ -836,22 +873,26 @@
             
             if ([request isKindOfClass:[PNChannelGroupsRequest class]]) {
                 
-                [self.serviceDelegate serviceChannel:self channelGroupsRequestForNamespace:object didFailWithError:error];
+                [self.serviceDelegate serviceChannel:self channelGroupsRequestForNamespace:object
+                                    didFailWithError:error forRequest:request];
             }
             else {
                 
-                [self.serviceDelegate serviceChannel:self channelsForGroupRequest:object didFailWithError:error];
+                [self.serviceDelegate serviceChannel:self channelsForGroupRequest:object
+                                    didFailWithError:error forRequest:request];
             }
         }
         else {
             
             if ([request isKindOfClass:[PNChannelGroupNamespaceRemoveRequest class]]) {
                 
-                [self.serviceDelegate serviceChannel:self namespace:object removalDidFailWithError:error];
+                [self.serviceDelegate serviceChannel:self namespace:object
+                             removalDidFailWithError:error forRequest:request];
             }
             else {
                 
-                [self.serviceDelegate serviceChannel:self channelGroup:object removalDidFailWithError:error];
+                [self.serviceDelegate serviceChannel:self channelGroup:object
+                             removalDidFailWithError:error forRequest:request];
             }
         }
     }
@@ -864,7 +905,8 @@
                      (self.name ? self.name : self), (error ? error : [NSNull null])];
         }];
         
-        [self.serviceDelegate serviceChannel:self channelGroupNamespacesRequestDidFailWithError:error];
+        [self.serviceDelegate serviceChannel:self channelGroupNamespacesRequestDidFailWithError:error
+                                  forRequest:request];
     }
     // Check whether request was sent for channels list change in target gorup
     else if ([request isKindOfClass:[PNChannelsListUpdateForChannelGroupRequest class]]) {
@@ -884,7 +926,8 @@
                      (change.group ? change.group : (id)[NSNull null]), (error ? error : [NSNull null])];
         }];
         
-        [self.serviceDelegate serviceChannel:self groupChannelsChange:change didFailWithError:error];
+        [self.serviceDelegate serviceChannel:self groupChannelsChange:change didFailWithError:error
+                                  forRequest:request];
     }
     // Check whether this is 'Post message' request or not
     else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
@@ -900,8 +943,8 @@
         }];
 
         // Notify delegate about that message can't be send
-        [self.serviceDelegate serviceChannel:self didFailMessageSend:((PNMessagePostRequest *)request).message
-                                   withError:error];
+        [self.serviceDelegate serviceChannel:self didFailMessageSend:((PNMessagePostRequest *) request).message
+                                   withError:error forRequest:request];
     }
     // Check whether this is 'Message history' request or not
     else if ([request isKindOfClass:[PNMessageHistoryRequest class]]) {
@@ -935,8 +978,8 @@
         }];
         
         // Notify delegate about message history download failed
-        [self.serviceDelegate serviceChannel:self
-             didFailHisoryDownloadForChannel:historyRequest.channel withError:error];
+        [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:historyRequest.channel
+                                   withError:error forRequest:request];
     }
     // Check whether this is 'Here now' request or not
     else if ([request isKindOfClass:[PNHereNowRequest class]]) {
@@ -958,7 +1001,7 @@
 
         // Notify delegate about participants list can't be downloaded
         [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannels:hereNowRequest.channels
-                                   withError:error];
+                                   withError:error forRequest:request];
     }
     // Check whether this is 'Where now' request or not
     else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
@@ -972,7 +1015,8 @@
 
         // Notify delegate about participant channels list can't be downloaded.
         [self.serviceDelegate serviceChannel:self
-                didFailParticipantChannelsListLoadForIdentifier:((PNWhereNowRequest *)request).identifier withError:error];
+                didFailParticipantChannelsListLoadForIdentifier:((PNWhereNowRequest *) request).identifier
+                withError:error forRequest:request];
     }
     // Check whether this is 'Push notification state change' request or not
     else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
@@ -993,7 +1037,8 @@
                          (error ? error : [NSNull null])];
             }];
 
-            [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels withError:error];
+            [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels
+                                       withError:error forRequest:request];
         }
         else {
 
@@ -1004,7 +1049,8 @@
                          (error ? error : [NSNull null])];
             }];
 
-            [self.serviceDelegate serviceChannel:self didFailPushNotificationDisableForChannels:channels withError:error];
+            [self.serviceDelegate serviceChannel:self didFailPushNotificationDisableForChannels:channels
+                                       withError:error forRequest:request];
         }
     }
     // Check whether this is 'Push notification remove' request or not
@@ -1022,7 +1068,8 @@
             
             [error replaceAssociatedObject:((PNPushNotificationsRemoveRequest *)request).devicePushToken];
         }
-        [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:error];
+        [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:error
+                                  forRequest:request];
     }
     // Check whether this is 'Push notification enabled channels' request or not
     else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
@@ -1039,7 +1086,8 @@
             
             [error replaceAssociatedObject:((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken];
         }
-        [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:error];
+        [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:error
+                                  forRequest:request];
     }
     // Check whether this is 'Access rights change' request or not
     else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
@@ -1058,7 +1106,8 @@
                      (error ? error : [NSNull null])];
         }];
 
-        [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:error];
+        [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:error
+                                  forRequest:request];
     }
     // Check whether this is 'Access rights audit' request or not
     else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
@@ -1076,7 +1125,8 @@
                      (options.channels ? options.channels : [NSNull null]), (error ? error : [NSNull null])];
         }];
 
-        [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:error];
+        [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:error
+                                  forRequest:request];
     }
 }
 
@@ -1206,29 +1256,33 @@
         errorMessage = @"Time token request failed by timeout";
 
         [self.serviceDelegate serviceChannel:self
-            receiveTimeTokenDidFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
+            receiveTimeTokenDidFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]
+                                  forRequest:request];
     }
     // Check whether request was sent for state retrieval / update
     else if ([request isKindOfClass:[PNClientStateRequest class]] ||
             [request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
         errorMessage = @"Client state request failed by timeout";
-
-        SEL errorSelector = @selector(serviceChannel:clientStateReceiveDidFailWithError:);
         if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
 
             errorMessage = @"Client state update failed by timeout";
-            errorSelector = @selector(serviceChannel:clientStateUpdateDidFailWithError:);
         }
         PNError *error = [PNError errorWithMessage:errorMessage code:errorCode];
         error.associatedObject = [PNClient clientForIdentifier:[request valueForKey:@"clientIdentifier"]
                                                        channel:[request valueForKey:@"channel"]
                                                        andData:nil];
 
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.delegate performSelector:errorSelector withObject:self withObject:error];
-        #pragma clang diagnostic pop
+        if ([request isKindOfClass:[PNClientStateUpdateRequest class]]) {
+
+            [self.serviceDelegate serviceChannel:self clientStateUpdateDidFailWithError:error
+                                      forRequest:request];
+        }
+        else {
+
+            [self.serviceDelegate serviceChannel:self clientStateReceiveDidFailWithError:error
+                                      forRequest:request];
+        }
     }
     // Check whether request was sent for channel groups request / channels list for group request / remove
     else if ([request isKindOfClass:[PNChannelGroupsRequest class]] || [request isKindOfClass:[PNChannelsForGroupRequest class]] ||
@@ -1266,22 +1320,26 @@
             
             if ([request isKindOfClass:[PNChannelGroupsRequest class]]) {
                 
-                [self.serviceDelegate serviceChannel:self channelGroupsRequestForNamespace:object didFailWithError:error];
+                [self.serviceDelegate serviceChannel:self channelGroupsRequestForNamespace:object
+                                    didFailWithError:error forRequest:request];
             }
             else {
                 
-                [self.serviceDelegate serviceChannel:self channelsForGroupRequest:object didFailWithError:error];
+                [self.serviceDelegate serviceChannel:self channelsForGroupRequest:object
+                                    didFailWithError:error forRequest:request];
             }
         }
         else {
             
             if ([request isKindOfClass:[PNChannelGroupNamespaceRemoveRequest class]]) {
                 
-                [self.serviceDelegate serviceChannel:self namespace:object removalDidFailWithError:error];
+                [self.serviceDelegate serviceChannel:self namespace:object
+                             removalDidFailWithError:error forRequest:request];
             }
             else {
                 
-                [self.serviceDelegate serviceChannel:self channelGroup:object removalDidFailWithError:error];
+                [self.serviceDelegate serviceChannel:self channelGroup:object
+                             removalDidFailWithError:error forRequest:request];
             }
         }
     }
@@ -1290,7 +1348,9 @@
         
         errorMessage = @"Channel group namespaces request failed by timeout";
         
-        [self.serviceDelegate serviceChannel:self channelGroupNamespacesRequestDidFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
+        [self.serviceDelegate serviceChannel:self
+                channelGroupNamespacesRequestDidFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]
+                forRequest:request];
     }
     // Check whether request was sent for channels list change in target gorup
     else if ([request isKindOfClass:[PNChannelsListUpdateForChannelGroupRequest class]]) {
@@ -1304,30 +1364,36 @@
         }
         
         [self.serviceDelegate serviceChannel:self groupChannelsChange:change
-                            didFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
+                            didFailWithError:[PNError errorWithMessage:errorMessage code:errorCode]
+                                  forRequest:request];
     }
     // Check whether this is 'Post message' request or not
     else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
         errorMessage = @"Message post failed by timeout";
 
-        [self.serviceDelegate serviceChannel:self didFailMessageSend:((PNMessagePostRequest *)request).message
-                                   withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+        [self.serviceDelegate serviceChannel:self
+                          didFailMessageSend:((PNMessagePostRequest *) request).message
+                                   withError:[PNError errorWithMessage:errorMessage code:errorCode]
+                                  forRequest:request];
     }
     else if ([request isKindOfClass:[PNHereNowRequest class]]) {
 
         errorMessage = @"\"Here now\" request failed by timeout";
 
-        [self.serviceDelegate serviceChannel:self didFailParticipantsListLoadForChannels:((PNHereNowRequest *)request).channels
-                                   withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+        [self.serviceDelegate serviceChannel:self
+      didFailParticipantsListLoadForChannels:((PNHereNowRequest *) request).channels
+                                   withError:[PNError errorWithMessage:errorMessage code:errorCode]
+                                  forRequest:request];
     }
     else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
 
         errorMessage = @"\"Where now\" request failed by timeout";
 
         [self.serviceDelegate serviceChannel:self
-                didFailParticipantChannelsListLoadForIdentifier:((PNWhereNowRequest *)request).identifier
-                withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+                didFailParticipantChannelsListLoadForIdentifier:((PNWhereNowRequest *) request).identifier
+                withError:[PNError errorWithMessage:errorMessage code:errorCode]
+                forRequest:request];
     }
     else if ([request isKindOfClass:[PNPushNotificationsStateChangeRequest class]]) {
 
@@ -1342,15 +1408,15 @@
 
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 
-            [self.serviceDelegate serviceChannel:self
-        didFailPushNotificationEnableForChannels:channels
-                                       withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+            [self.serviceDelegate serviceChannel:self didFailPushNotificationEnableForChannels:channels
+                                       withError:[PNError errorWithMessage:errorMessage code:errorCode]
+                                      forRequest:request];
         }
         else {
 
-            [self.serviceDelegate serviceChannel:self
-       didFailPushNotificationDisableForChannels:channels
-                                       withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+            [self.serviceDelegate serviceChannel:self didFailPushNotificationDisableForChannels:channels
+                                       withError:[PNError errorWithMessage:errorMessage code:errorCode]
+                                      forRequest:request];
         }
     }
     else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
@@ -1358,14 +1424,16 @@
         errorMessage = @"Push notification removal from all channels failed by timeout";
 
         [self.serviceDelegate serviceChannel:self
-     didFailPushNotificationsRemoveWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
+     didFailPushNotificationsRemoveWithError:[PNError errorWithMessage:errorMessage code:errorCode]
+                                  forRequest:request];
     }
     else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
 
         errorMessage = @"Push notification enabled channels retrieval failed by timeout";
 
-        [self.serviceDelegate           serviceChannel:self
-didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage:errorMessage code:errorCode]];
+        [self.serviceDelegate serviceChannel:self
+                didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage:errorMessage code:errorCode]
+                forRequest:request];
     }
     else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
 
@@ -1374,7 +1442,8 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
         PNError *error = [PNError errorWithMessage:errorMessage code:errorCode];
         error.associatedObject = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
 
-        [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:error];
+        [self.serviceDelegate serviceChannel:self accessRightsChangeDidFailWithError:error
+                                  forRequest:request];
     }
     else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
 
@@ -1383,12 +1452,15 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
         PNError *error = [PNError errorWithMessage:errorMessage code:errorCode];
         error.associatedObject = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
 
-        [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:error];
+        [self.serviceDelegate serviceChannel:self accessRightsAuditDidFailWithError:error
+                                  forRequest:request];
     }
     else {
         
-        [self.serviceDelegate serviceChannel:self didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *)request).channel
-                                   withError:[PNError errorWithMessage:errorMessage code:errorCode]];
+        [self.serviceDelegate serviceChannel:self
+             didFailHisoryDownloadForChannel:((PNMessageHistoryRequest *) request).channel
+                                   withError:[PNError errorWithMessage:errorMessage code:errorCode]
+                                  forRequest:request];
     }
 
     [self pn_dispatchBlock:^{
@@ -1432,7 +1504,8 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
             if ([request isKindOfClass:[PNMessagePostRequest class]]) {
 
                 // Notify delegate about that message post request will be sent now
-                [self.serviceDelegate serviceChannel:self willSendMessage:((PNMessagePostRequest *) request).message];
+                [self.serviceDelegate serviceChannel:self willSendMessage:((PNMessagePostRequest *) request).message
+                                           onRequest:request];
             }
 
             if (notifyCompletionBlock) {
@@ -1481,10 +1554,11 @@ didFailPushNotificationEnabledChannelsReceiveWithError:[PNError errorWithMessage
                 }];
 
                 // Notify delegate about that message post request will be sent now
-                [self.serviceDelegate serviceChannel:self didSendMessage:((PNMessagePostRequest *)request).message];
+                [self.serviceDelegate serviceChannel:self didSendMessage:((PNMessagePostRequest *) request).message
+                                           onRequest:request];
             }
-                // In case if this is any other request for which don't expect completion, we should clean it up from stored
-                // requests list.
+            // In case if this is any other request for which don't expect completion, we should clean it up from stored
+            // requests list.
             else {
 
                 [self removeStoredRequest:request];

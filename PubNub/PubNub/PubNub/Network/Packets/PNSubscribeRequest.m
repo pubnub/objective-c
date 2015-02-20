@@ -84,19 +84,21 @@
 + (PNSubscribeRequest *)subscribeRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest
                                     withClientState:(NSDictionary *)clientState {
     
-    return [[[self class] alloc] initForChannels:channels
-                                   byUserRequest:isSubscribingByUserRequest
-                                 withClientState:clientState];
+    return [[self alloc] initForChannels:channels byUserRequest:isSubscribingByUserRequest
+                         withClientState:clientState];
 }
 
 #pragma mark - Instance methods
 
-- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest withClientState:(NSDictionary *)clientState {
+- (id)initForChannel:(PNChannel *)channel byUserRequest:(BOOL)isSubscribingByUserRequest
+     withClientState:(NSDictionary *)clientState {
     
-    return [self initForChannels:@[channel] byUserRequest:isSubscribingByUserRequest withClientState:clientState];
+    return [self initForChannels:@[channel] byUserRequest:isSubscribingByUserRequest
+                 withClientState:clientState];
 }
 
-- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest withClientState:(NSDictionary *)clientState {
+- (id)initForChannels:(NSArray *)channels byUserRequest:(BOOL)isSubscribingByUserRequest
+      withClientState:(NSDictionary *)clientState {
     
     // Check whether initialization successful or not
     if((self = [super init])) {

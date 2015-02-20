@@ -91,6 +91,16 @@ typedef enum _PNPubNubClientState {
 @property (nonatomic, strong) PNCache *cache;
 
 /**
+ Stores reference on configuration which was used to perform initial PubNub client initialization.
+ */
+@property (nonatomic, strong) PNConfiguration *clientConfiguration;
+
+/**
+ Stores reference on current client identifier.
+ */
+@property (nonatomic, strong) NSString *uniqueClientIdentifier;
+
+/**
  Stores reference on client delegate
  */
 @property (nonatomic, pn_desired_weak) id<PNDelegate> clientDelegate;
@@ -166,23 +176,35 @@ typedef enum _PNPubNubClientState {
 #pragma mark - Handler methods
 
 /**
- Handle locking operation completion and pop new one from pending invocations list.
+ @brief Handle locking operation completion and pop new one from pending invocations list.
  
- @param shouldStartNext
- If set to \c YES next postponed method call will be executed.
+ @param shouldStartNext                  If set to \c YES next postponed method call will be
+                                         executed.
+ @param isBurstExecutionLockingOperation Whether one of burst execution locking operations has been
+                                         completed or not.
  */
-- (void)handleLockingOperationComplete:(BOOL)shouldStartNext;
+- (void)handleLockingOperationComplete:(BOOL)shouldStartNext
+        burstExecutionLockingOperation:(BOOL)isBurstExecutionLockingOperation;
 
 /**
- Handle locking operation completion and pop new one from pending invocations list.
+ @brief Handle locking operation completion and pop new one from pending invocations list.
  
- @param operationPostBlock
- Block which is called when locking operation completed.
- 
- @param shouldStartNext
- If set to \c YES next postponed method call will be executed.
+ @param operationPostBlock               Block which is called when locking operation completed.
+ @param shouldStartNext                  If set to \c YES next postponed method call will be
+                                         executed.
+ @param isBurstExecutionLockingOperation Whether one of burst execution locking operations has been
+                                         completed or not.
  */
-- (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext;
+- (void)handleLockingOperationBlockCompletion:(void (^)(void))operationPostBlock
+                              shouldStartNext:(BOOL)shouldStartNext
+               burstExecutionLockingOperation:(BOOL)isBurstExecutionLockingOperation;
+
+/**
+ @brief Process list of postponed method calls and execute next one in a row.
+
+ @since <#version number#>
+ */
+- (void)callNextPostponedMethod;
 
 
 #pragma mark - Misc methods
@@ -203,25 +225,30 @@ typedef enum _PNPubNubClientState {
  @param postponedCodeBlock
  Block of code which will be called if procedural lock is on and doesn't allow to run another operation,
  */
-- (void)performAsyncLockingBlock:(void(^)(void))codeBlock postponedExecutionBlock:(void(^)(void))postponedCodeBlock;
+- (void)performAsyncLockingBlock:(void (^)(void))codeBlock
+         postponedExecutionBlock:(void (^)(void))postponedCodeBlock
+  burstExecutionLockingOperation:(BOOL)isBurstExecutionLockingOperation;
 
 /**
  * Place selector into list of postponed calls with corresponding parameters If 'placeOutOfOrder' is specified,
  * selector will be placed first in FIFO queue and will be executed as soon as it will be possible.
  */
-- (void)postponeSelector:(SEL)calledMethodSelector forObject:(id)object withParameters:(NSArray *)parameters
-              outOfOrder:(BOOL)placeOutOfOrder;
+- (void)postponeSelector:(SEL)calledMethodSelector forObject:(id)object
+          withParameters:(NSArray *)parameters outOfOrder:(BOOL)placeOutOfOrder
+      burstExecutionLock:(BOOL)requiresBurstExecutionLock;
 
 /**
- Wrap around NSNotificationCenter to simplify notification sending.
+ @brief Wrap around NSNotificationCenter to simplify notification sending.
  
- @param notificationName
- Name of notificatino which should be sent.
- 
- @param object
- Reference on object along with which notification should be sent.
+ @param notificationName Name of notification which should be sent.
+ @param object           Reference on object along with which notification should be sent.
+ @param callbackToken    Reference on unique token which has been provided to observer along with
+                         callback block.
+
+ @since <#version number#>
  */
-- (void)sendNotification:(NSString *)notificationName withObject:(id)object;
+- (void)sendNotification:(NSString *)notificationName withObject:(id)object
+        andCallbackToken:(NSString *)callbackToken;
 
 /**
  Convert provided client state informatino into human-readable format.

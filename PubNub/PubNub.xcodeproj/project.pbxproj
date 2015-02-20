@@ -289,6 +289,10 @@
 		799776C41A2FF0060097A61C /* PNConnectionChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 799775B91A2FEFFA0097A61C /* PNConnectionChannel.h */; };
 		799776C51A2FF0060097A61C /* PNConnectionChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 799775BA1A2FEFFA0097A61C /* PNConnectionChannel.m */; };
 		799776C61A2FF2230097A61C /* PNLoggerSymbols.plist in Resources */ = {isa = PBXBuildFile; fileRef = 799775BC1A2FEFFA0097A61C /* PNLoggerSymbols.plist */; };
+		DD71B59CFF1405E2BE04BE53 /* PNTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = DD71B89F702C79C6C155EE8E /* PNTimer.h */; };
+		DD71B9ABB4A4632AC22B705A /* NSNotification+PNPrivateAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = DD71B922E31622996F01F2F8 /* NSNotification+PNPrivateAdditions.h */; };
+		DD71BA56BAB8F846C94129D3 /* PNTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71B7DDE5B3A1F8E1F2DD3B /* PNTimer.m */; };
+		DD71BE1739EDB0904AC6506A /* NSNotification+PNPrivateAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71B837F703421434E56C66 /* NSNotification+PNPrivateAdditions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -597,6 +601,10 @@
 		799775B91A2FEFFA0097A61C /* PNConnectionChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConnectionChannel.h; sourceTree = "<group>"; };
 		799775BA1A2FEFFA0097A61C /* PNConnectionChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectionChannel.m; sourceTree = "<group>"; };
 		799775BC1A2FEFFA0097A61C /* PNLoggerSymbols.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PNLoggerSymbols.plist; sourceTree = "<group>"; };
+		DD71B7DDE5B3A1F8E1F2DD3B /* PNTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimer.m; sourceTree = "<group>"; };
+		DD71B837F703421434E56C66 /* NSNotification+PNPrivateAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNotification+PNPrivateAdditions.m"; sourceTree = "<group>"; };
+		DD71B89F702C79C6C155EE8E /* PNTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTimer.h; sourceTree = "<group>"; };
+		DD71B922E31622996F01F2F8 /* NSNotification+PNPrivateAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotification+PNPrivateAdditions.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -762,6 +770,8 @@
 				799775281A2FEFF90097A61C /* PNError.m */,
 				799775241A2FEFF90097A61C /* PNDate.h */,
 				799775251A2FEFF90097A61C /* PNDate.m */,
+				DD71B89F702C79C6C155EE8E /* PNTimer.h */,
+				DD71B7DDE5B3A1F8E1F2DD3B /* PNTimer.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -915,6 +925,8 @@
 				799775561A2FEFF90097A61C /* NSString+PNAddition.m */,
 				799775531A2FEFF90097A61C /* NSSet+PNAdditions.h */,
 				799775541A2FEFF90097A61C /* NSSet+PNAdditions.m */,
+				DD71B837F703421434E56C66 /* NSNotification+PNPrivateAdditions.m */,
+				DD71B922E31622996F01F2F8 /* NSNotification+PNPrivateAdditions.h */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -1209,6 +1221,8 @@
 				799776781A2FF0000097A61C /* PNConnectionDelegate.h in Headers */,
 				799775DA1A2FEFFA0097A61C /* PNWriteBuffer.h in Headers */,
 				799776AB1A2FF0040097A61C /* PNPushNotificationsEnabledChannelsRequest.h in Headers */,
+				DD71B59CFF1405E2BE04BE53 /* PNTimer.h in Headers */,
+				DD71B9ABB4A4632AC22B705A /* NSNotification+PNPrivateAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1444,6 +1458,8 @@
 				799776B91A2FF0050097A61C /* PNMessagingChannel.m in Sources */,
 				799776631A2FEFFE0097A61C /* NSSet+PNAdditions.m in Sources */,
 				799776C51A2FF0060097A61C /* PNConnectionChannel.m in Sources */,
+				DD71BA56BAB8F846C94129D3 /* PNTimer.m in Sources */,
+				DD71BE1739EDB0904AC6506A /* NSNotification+PNPrivateAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

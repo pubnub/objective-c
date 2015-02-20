@@ -19,6 +19,7 @@
 #import "PubNub+PAM.h"
 
 
+#import "NSNotification+PNPrivateAdditions.h"
 #import "PNConnectionChannel+Protected.h"
 #import "PNPresenceEvent+Protected.h"
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -40,6 +41,7 @@
 #import "PNConstants.h"
 #import "PNHelper.h"
 #import "PNCache.h"
+#import "PNStructures.h"
 
 
 // ARC check
@@ -83,19 +85,9 @@ static dispatch_once_t onceToken;
 @property (nonatomic, assign) PNPubNubClientState state;
 
 /**
- Stores reference on current client identifier.
- */
-@property (nonatomic, strong) NSString *uniqueClientIdentifier;
-
-/**
  Stores reference on service reachability monitoring instance
  */
 @property (nonatomic, strong) PNReachability *reachability;
-
-/**
- Stores reference on configuration which was used to perform initial PubNub client initialization.
- */
-@property (nonatomic, strong) PNConfiguration *clientConfiguration;
 
 /**
  Stores reference on configuration which was used to perform initial PubNub client initialization
@@ -132,6 +124,16 @@ static dispatch_once_t onceToken;
  one method will be executed, all other possible method calls will be postponed.
  */
 @property (nonatomic, strong) NSDate *methodCallRescheduleDate;
+
+/**
+ Stores reference on configuration which was used to perform initial PubNub client initialization.
+ */
+@property (nonatomic, strong) PNConfiguration *clientConfiguration;
+
+/**
+ Stores reference on current client identifier.
+ */
+@property (nonatomic, strong) NSString *uniqueClientIdentifier;
 
 /**
  Stores reference on timer which is used with heartbeat logic
@@ -197,6 +199,15 @@ static dispatch_once_t onceToken;
 @property (nonatomic, assign, getter = isRestoringConnection) BOOL restoringConnection;
 
 /**
+ @brief Stores reference on counter which is updated each time when one of methods (which is allowed
+        to work in \c 'burst' mode) get started or report that data has been written into the
+        stream.
+
+ @since <#version number#>
+ */
+@property (nonatomic, assign) long long numberOfMethodsCalledInBurstMode;
+
+/**
  Stores reference on list of invocation instances which is used to support synchronous library methods call
  (connect/disconnect/subscribe/unsubscribe)
  */
@@ -218,6 +229,20 @@ static dispatch_once_t onceToken;
 
 
 #pragma mark - Instance methods
+
+/**
+ @brief      Burst command execution locking method.
+ @discussion Special method which is placed into queue of postponed methods to protect operations
+             which should have full control and don't allow operations called in burst mode
+             somehow interrupt.
+             Methods executed in burst mode increase special counter and if this method has been
+             placed into list of postponed requests, it will make sure to stop further postponed
+             methods execution till counter will reach 0 value.
+
+ @since <#version number#>
+ */
+- (void)burstExecutionLockingMethod;
+
 
 #pragma mark - Client identification
 
@@ -626,6 +651,13 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         self.pendingInvocations = [NSMutableArray array];
         self.reprioritizedPendingInvocations = [NSMutableArray array];
         self.observationCenter = [PNObservationCenter observationCenterWithDefaultObserver:self];
+
+        // Check whether user identifier was provided by user or not
+        if (self.uniqueClientIdentifier == nil) {
+
+            // Change user identifier before connect to the PubNub services
+            self.uniqueClientIdentifier = [PNHelper UUID];
+        }
         
         // Adding PubNub services availability observer
         __block __pn_desired_weak PubNub *weakSelf = self;
@@ -1149,141 +1181,142 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
         if (![self.uniqueClientIdentifier isEqualToString:identifier]) {
             
-            [self performAsyncLockingBlock:^{
-                
-                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
+            [self   performAsyncLockingBlock:^{
+
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
                     return @[PNLoggerSymbols.api.updatingClientIdentifier, [self humanReadableStateFrom:self.state]];
                 }];
-                
+
                 // Check whether identifier has been changed since last method call or not
                 if ([self isConnected]) {
-                    
+
                     self.userProvidedClientIdentifier = identifier != nil;
-                    
+
                     NSArray *allChannels = [self.messagingChannel fullSubscribedChannelsList];
                     if ([allChannels count]) {
-                        
+
                         self.asyncLockingOperationInProgress = NO;
                         if (shouldCatchup) {
-                            
+
                             [allChannels makeObjectsPerformSelector:@selector(lockTimeTokenChange)];
                         }
-                        
+
                         __block NSUInteger resubscribeRetryCount = 0;
                         __block __pn_desired_weak PubNub *weakSelf = self;
                         __block void(^retrySubscription)(PNError *);
                         __block void(^retryUnsubscription)(PNError *);
-                        
+
                         void(^resubscribeErrorBlock)(PNError *, void(^)(void)) = ^(PNError *resubscriptionError, void(^block)(void)) {
-                            
+
                             __strong __typeof__(self) strongSelf = weakSelf;
-                            
+
                             if (resubscribeRetryCount < kPNClientIdentifierUpdateRetryCount) {
-                                
+
                                 resubscribeRetryCount++;
                                 block();
                             }
                             else {
-                                
+
                                 strongSelf.updatingClientIdentifier = NO;
                                 [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
-                                
+
                                 [strongSelf notifyDelegateAboutSubscriptionFailWithError:resubscriptionError
-                                                              completeLockingOperation:YES];
+                                                                completeLockingOperation:YES];
                             }
                         };
-                        
+
                         void(^subscribeBlock)(void) = ^{
-                            
+
                             __strong __typeof__(self) strongSelf = weakSelf;
-                            
+
                             strongSelf.asyncLockingOperationInProgress = NO;
                             [strongSelf subscribeOn:allChannels withCatchUp:shouldCatchup clientState:nil
-                       andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
-                                                    PNError *subscribeError) {
-                           
-                           if (subscribeError == nil) {
-                               
-                               strongSelf.updatingClientIdentifier = NO;
-                               [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
-                               
-                               [strongSelf handleLockingOperationComplete:YES];
-                           }
-                           else {
-                               
-                               retrySubscription(subscribeError);
-                           }
-                       }];
+                         andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
+                                 PNError *subscribeError) {
+
+                             if (subscribeError == nil) {
+
+                                 strongSelf.updatingClientIdentifier = NO;
+                                 [allChannels makeObjectsPerformSelector:@selector(unlockTimeTokenChange)];
+
+                                 [strongSelf handleLockingOperationComplete:YES
+                                             burstExecutionLockingOperation:YES];
+                             }
+                             else {
+
+                                 retrySubscription(subscribeError);
+                             }
+                         }];
                         };
-                        
+
                         retrySubscription = ^(PNError *error) {
-                            
+
                             resubscribeErrorBlock(error, subscribeBlock);
                         };
-                        
+
                         void(^unsubscribeBlock)(void) = ^{
-                            
+
                             __strong __typeof__(self) strongSelf = weakSelf;
-                            
+
                             strongSelf.asyncLockingOperationInProgress = NO;
                             [strongSelf unsubscribeFrom:allChannels
-                          withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
-                              
-                              if (leaveError == nil) {
-                                  
-                                  // Check whether user identifier was provided by user or not
-                                  if (identifier == nil) {
-                                      
-                                      // Change user identifier before connect to the PubNub services
-                                      strongSelf.uniqueClientIdentifier = [PNHelper UUID];
-                                  }
-                                  else {
-                                      
-                                      strongSelf.uniqueClientIdentifier = identifier;
-                                  }
-                                  
-                                  resubscribeRetryCount = 0;
-                                  subscribeBlock();
-                              }
-                              else {
-                                  
-                                  retryUnsubscription(leaveError);
-                              }
-                          }];
+                            withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+
+                                if (leaveError == nil) {
+
+                                    // Check whether user identifier was provided by user or not
+                                    if (identifier == nil) {
+
+                                        // Change user identifier before connect to the PubNub services
+                                        strongSelf.uniqueClientIdentifier = [PNHelper UUID];
+                                    }
+                                    else {
+
+                                        strongSelf.uniqueClientIdentifier = identifier;
+                                    }
+
+                                    resubscribeRetryCount = 0;
+                                    subscribeBlock();
+                                }
+                                else {
+
+                                    retryUnsubscription(leaveError);
+                                }
+                            }];
                         };
-                        
+
                         retryUnsubscription = ^(PNError *error) {
-                            
+
                             resubscribeErrorBlock(error, unsubscribeBlock);
                         };
-                        
+
                         unsubscribeBlock();
                     }
                     else {
-                        
+
                         self.uniqueClientIdentifier = identifier;
                         self.userProvidedClientIdentifier = identifier != nil;
-                        [self handleLockingOperationComplete:YES];
+                        [self handleLockingOperationComplete:YES
+                              burstExecutionLockingOperation:YES];
                     }
                 }
                 else {
-                    
+
                     self.uniqueClientIdentifier = identifier;
                     self.userProvidedClientIdentifier = identifier != nil;
-                    [self handleLockingOperationComplete:YES];
+                    [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
                 }
-            }
-                   postponedExecutionBlock:^{
-                       
-                       [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                           
-                           return @[PNLoggerSymbols.api.postponeClientIdentifierUpdate,
-                                    [self humanReadableStateFrom:self.state]];
-                       }];
-                       
-                       [self postponeSetClientIdentifier:identifier];
-                   }];
+            }        postponedExecutionBlock:^{
+
+                [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+                    return @[PNLoggerSymbols.api.postponeClientIdentifierUpdate,
+                            [self humanReadableStateFrom:self.state]];
+                }];
+
+                [self postponeSetClientIdentifier:identifier];
+            } burstExecutionLockingOperation:YES];
         }
         else {
             
@@ -1298,7 +1331,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)postponeSetClientIdentifier:(NSString *)identifier {
 
     [self postponeSelector:@selector(setClientIdentifier:) forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:identifier]] outOfOrder:NO];
+            withParameters:@[[PNHelper nilifyIfNotSet:identifier]] outOfOrder:NO
+        burstExecutionLock:YES];
 }
 
 
@@ -1325,12 +1359,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)connectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
                      errorBlock:(PNClientConnectionFailureBlock)failure {
     
-    [self performAsyncLockingBlock:^{
-        
+    [self   performAsyncLockingBlock:^{
+
         if (success || failure) {
-            
-            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                
+
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
                 return @[PNLoggerSymbols.api.connectionAttemptHandlerBlock, [self humanReadableStateFrom:self.state]];
             }];
         }
@@ -1367,7 +1401,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
         // Check whether instance already connected or not
         if (self.state == PNPubNubClientStateConnected ||
-            self.state == PNPubNubClientStateConnecting) {
+                self.state == PNPubNubClientStateConnecting) {
 
             NSString *symbolCode = PNLoggerSymbols.api.alreadyConnected;
             if (self.state == PNPubNubClientStateConnecting) {
@@ -1396,7 +1430,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             // should be released
             if (self.state == PNPubNubClientStateConnected) {
 
-                [self handleLockingOperationComplete:YES];
+                [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
             }
             completionBlock();
         }
@@ -1428,7 +1462,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     });
                 }
 
-                [self handleLockingOperationComplete:YES];
+                [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
                 completionBlock();
             }
             else {
@@ -1457,13 +1491,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         // this moment (they will be send as soon as connection will be restored)
                         [self.messagingChannel disconnectWithEvent:NO];
                         [self.serviceChannel disconnectWithEvent:NO];
-                    }
-
-                    // Check whether user identifier was provided by user or not
-                    if (self.uniqueClientIdentifier == nil) {
-
-                        // Change user identifier before connect to the PubNub services
-                        self.uniqueClientIdentifier = [PNHelper UUID];
                     }
 
                     // Check whether services are available or not
@@ -1506,7 +1533,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                                     });
                                                 }
 
-                                                [self sendNotification:kPNClientWillConnectToOriginNotification withObject:self.clientConfiguration.origin];
+                                                [self sendNotification:kPNClientWillConnectToOriginNotification
+                                                            withObject:self.clientConfiguration.origin
+                                                      andCallbackToken:nil];
 
                                                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
@@ -1596,32 +1625,32 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                                 [self.observationCenter checkSubscribedOnClientStateChange:self
                                                                                                  withBlock:^(BOOL observing) {
 
-                                                     if (!observing) {
+                                                                                                     if (!observing) {
 
-                                                         if (failure) {
+                                                                                                         if (failure) {
 
-                                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                             dispatch_async(dispatch_get_main_queue(), ^{
 
-                                                                 failure(nil);
-                                                             });
-                                                         }
+                                                                                                                 failure(nil);
+                                                                                                             });
+                                                                                                         }
 
-                                                         shouldAddStateObservation = YES;
-                                                     }
+                                                                                                         shouldAddStateObservation = YES;
+                                                                                                     }
 
-                                                     // Returning execution flow back on private queue
-                                                     [self pn_dispatchBlock:^{
+                                                                                                     // Returning execution flow back on private queue
+                                                                                                     [self pn_dispatchBlock:^{
 
-                                                         completionBlock();
-                                                     }];
-                                                 }];
+                                                                                                         completionBlock();
+                                                                                                     }];
+                                                                                                 }];
                                             }
                                         }];
                                     }];
                                 }];
                             }
-                            // Looks like reachability manager was unable to check services reachability (user still not
-                            // configured client or just not enough time to check passed since client configuration)
+                                // Looks like reachability manager was unable to check services reachability (user still not
+                                // configured client or just not enough time to check passed since client configuration)
                             else {
 
                                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
@@ -1643,27 +1672,24 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 }];
             }
         }
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                   
-                   return @[PNLoggerSymbols.api.postponeConnection, [self humanReadableStateFrom:self.state]];
-               }];
-               
-               [self postponeConnectWithSuccessBlock:success errorBlock:failure];
-           }];
+    }        postponedExecutionBlock:^{
+
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+            return @[PNLoggerSymbols.api.postponeConnection, [self humanReadableStateFrom:self.state]];
+        }];
+
+        [self postponeConnectWithSuccessBlock:success errorBlock:failure];
+    } burstExecutionLockingOperation:YES];
 }
 
 - (void)postponeConnectWithSuccessBlock:(PNClientConnectionSuccessBlock)success
                              errorBlock:(PNClientConnectionFailureBlock)failure {
 
-    [self pn_dispatchBlock:^{
-
-        [self postponeSelector:@selector(connectWithSuccessBlock:errorBlock:) forObject:self
-                withParameters:@[[PNHelper nilifyIfNotSet:success], [PNHelper nilifyIfNotSet:failure]]
-                    outOfOrder:self.isRestoringConnection];
-    }];
+    [self postponeSelector:@selector(connectWithSuccessBlock:errorBlock:) forObject:self
+            withParameters:@[[PNHelper nilifyIfNotSet:success],
+                             [PNHelper nilifyIfNotSet:failure]]
+                outOfOrder:self.isRestoringConnection burstExecutionLock:YES];
 }
 
 - (void)disconnect {
@@ -1686,7 +1712,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                  [self humanReadableStateFrom:self.state]];
     }];
     
-    [self performAsyncLockingBlock:^{
+    [self   performAsyncLockingBlock:^{
 
         [self stopHeartbeatTimer];
 
@@ -1715,7 +1741,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             }];
 
             [self.cache purgeAllState];
-            
+
             [self unsubscribeFromAllEvents];
         }
         else {
@@ -1797,7 +1823,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     });
                 }
 
-                [self sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:self.clientConfiguration.origin];
+                [self sendNotification:kPNClientDidDisconnectFromOriginNotification
+                            withObject:self.clientConfiguration.origin andCallbackToken:nil];
 
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
@@ -1806,7 +1833,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 }];
 
                 [self flushPostponedMethods:YES];
-                [self handleLockingOperationComplete:YES];
+                [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
             }
             else {
 
@@ -1833,7 +1860,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 int64_t delayInSeconds = 1;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                 dispatch_after(popTime, [self pn_privateQueue], ^(void) {
-                    
+
                     __strong __typeof__(self) strongSelf = weakSelf;
 
                     strongSelf.asyncLockingOperationInProgress = NO;
@@ -1856,26 +1883,23 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 });
             }
         }];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                   
-                   return @[PNLoggerSymbols.api.postponeDisconnected, [self humanReadableStateFrom:self.state]];
-               }];
-               
-               [self postponeDisconnectByUser:isDisconnectedByUser];
-           }];
+    }        postponedExecutionBlock:^{
+
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+            return @[PNLoggerSymbols.api.postponeDisconnected, [self humanReadableStateFrom:self.state]];
+        }];
+
+        [self postponeDisconnectByUser:isDisconnectedByUser];
+    } burstExecutionLockingOperation:YES];
 }
 
 - (void)postponeDisconnectByUser:(BOOL)isDisconnectedByUser {
 
-    [self pn_dispatchBlock:^{
-
-        [self postponeSelector:@selector(disconnectByUser:) forObject:self
-                withParameters:@[@(isDisconnectedByUser)]
-                    outOfOrder:(self.state == PNPubNubClientStateDisconnectingOnConfigurationChange)];
-    }];
+    [self postponeSelector:@selector(disconnectByUser:) forObject:self
+            withParameters:@[@(isDisconnectedByUser)]
+                outOfOrder:(self.state == PNPubNubClientStateDisconnectingOnConfigurationChange)
+        burstExecutionLock:YES];
 }
 
 - (void)disconnectForConfigurationChange {
@@ -1889,10 +1913,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                  [self humanReadableStateFrom:self.state]];
     }];
     
-    [self performAsyncLockingBlock:^{
-        
-        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-            
+    [self   performAsyncLockingBlock:^{
+
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
             return @[PNLoggerSymbols.api.disconnectingForConfigurationChange,
                     [self humanReadableStateFrom:self.state]];
         }];
@@ -1911,23 +1935,22 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
         // Sumulate disconnection, because streams not capable for it at this moment
         [self connectionChannel:nil didDisconnectFromOrigin:self.clientConfiguration.origin];
-    }
-           postponedExecutionBlock:^{
-               
-               [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-                   
-                   return @[PNLoggerSymbols.api.postponeDisconnectionForConfigurationChange,
-                            [self humanReadableStateFrom:self.state]];
-               }];
-               
-               [self postponeDisconnectForConfigurationChange];
-           }];
+    }        postponedExecutionBlock:^{
+
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
+
+            return @[PNLoggerSymbols.api.postponeDisconnectionForConfigurationChange,
+                    [self humanReadableStateFrom:self.state]];
+        }];
+
+        [self postponeDisconnectForConfigurationChange];
+    } burstExecutionLockingOperation:YES];
 }
 
 - (void)postponeDisconnectForConfigurationChange {
     
     [self postponeSelector:@selector(disconnectForConfigurationChange) forObject:self
-            withParameters:nil outOfOrder:NO];
+            withParameters:nil outOfOrder:NO burstExecutionLock:YES];
 }
 
 - (void)setClientConnectionObservationWithSuccessBlock:(PNClientConnectionSuccessBlock)success
@@ -1983,6 +2006,32 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
+- (void)burstExecutionLockingMethod {
+
+    // Check whether client is able to send request or not
+    NSInteger statusCode = [self requestExecutionPossibilityStatusCode];
+    if (statusCode == 0) {
+
+        // Check whether there is still set of active tasks which has been launched in burst mode or
+        // not.
+        if (self.numberOfMethodsCalledInBurstMode > 0) {
+
+            [self postponeSelector:@selector(burstExecutionLockingMethod) forObject:self
+                    withParameters:nil outOfOrder:YES burstExecutionLock:NO];
+        }
+        else {
+
+            [self handleLockingOperationComplete:YES
+                  burstExecutionLockingOperation:YES];
+        }
+    }
+    else {
+
+        [self handleLockingOperationComplete:YES
+              burstExecutionLockingOperation:YES];
+    }
+}
+
 - (void)warmUpConnections {
 
     // This method should be launched only from within it's private queue
@@ -2014,8 +2063,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)sendRequest:(PNBaseRequest *)request shouldObserveProcessing:(BOOL)shouldObserveProcessing {
     
     BOOL shouldSendOnMessageChannel = YES;
-    
-    
+
     // Checking whether request should be sent on service
     // connection channel or not
     if ([request isKindOfClass:[PNLeaveRequest class]] ||
@@ -2028,7 +2076,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         [request isKindOfClass:[PNChannelGroupRemoveRequest class]] ||
         [request isKindOfClass:[PNChannelsForGroupRequest class]] ||
         [request isKindOfClass:[PNChannelsListUpdateForChannelGroupRequest class]] ||
+        [request isKindOfClass:[PNChangeAccessRightsRequest class]] ||
+        [request isKindOfClass:[PNAccessRightsAuditRequest class]] ||
         [request isKindOfClass:[PNMessageHistoryRequest class]] ||
+        [request isKindOfClass:[PNMessagePostRequest class]] ||
         [request isKindOfClass:[PNHereNowRequest class]] ||
         [request isKindOfClass:[PNWhereNowRequest class]] ||
         [request isKindOfClass:[PNLatencyMeasureRequest class]] ||
@@ -2101,7 +2152,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 [self notifyDelegateAboutConnectionToOrigin:host];
                 self.restoringConnection = NO;
 
-                [self handleLockingOperationComplete:YES];
+                [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
             }
         }];
     }];
@@ -2318,12 +2369,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                             [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
 
                                                 return @[PNLoggerSymbols.api.disconnected, (connectedToHost ? connectedToHost : [NSNull null]),
-                                                        [self humanReadableStateFrom:self.state]];
+                                                        [strongSelf humanReadableStateFrom:strongSelf.state]];
                                             }];
 
 
-                                            [strongSelf sendNotification:kPNClientDidDisconnectFromOriginNotification withObject:connectedToHost];
-                                            [self handleLockingOperationComplete:YES];
+                                            [strongSelf sendNotification:kPNClientDidDisconnectFromOriginNotification
+                                                              withObject:connectedToHost
+                                                        andCallbackToken:nil];
+
+                                            [strongSelf handleLockingOperationComplete:YES
+                                                        burstExecutionLockingOperation:YES];
                                         };
                                         if (channel == nil) {
 
@@ -2347,24 +2402,26 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                                                 [strongSelf handleLockingOperationBlockCompletion:^{
 
-                                                            if ([strongSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
+                                                    if ([strongSelf.clientDelegate respondsToSelector:@selector(pubnubClient:didDisconnectFromOrigin:withError:)]) {
 
-                                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                        dispatch_async(dispatch_get_main_queue(), ^{
 
-                                                                    [strongSelf.clientDelegate pubnubClient:strongSelf didDisconnectFromOrigin:connectedToHost withError:connectionError];
-                                                                });
-                                                            }
-                                                            [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
+                                                            [strongSelf.clientDelegate pubnubClient:strongSelf didDisconnectFromOrigin:connectedToHost withError:connectionError];
+                                                        });
+                                                    }
+                                                    [PNLogger logGeneralMessageFrom:strongSelf withParametersFromBlock:^NSArray * {
 
-                                                                return @[PNLoggerSymbols.api.disconnectedBecauseOfError,
-                                                                        (connectionError ? connectionError : [NSNull null]),
-                                                                        [self humanReadableStateFrom:self.state]];
-                                                            }];
+                                                        return @[PNLoggerSymbols.api.disconnectedBecauseOfError,
+                                                                (connectionError ? connectionError : [NSNull null]),
+                                                                [self humanReadableStateFrom:self.state]];
+                                                    }];
 
-                                                            connectionError.associatedObject = strongSelf.clientConfiguration.origin;
-                                                            [strongSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:connectionError];
-                                                        }
-                                                                                shouldStartNext:YES];
+                                                    connectionError.associatedObject = strongSelf.clientConfiguration.origin;
+                                                    [strongSelf sendNotification:kPNClientConnectionDidFailWithErrorNotification
+                                                                      withObject:connectionError
+                                                                andCallbackToken:nil];
+                                                }                                 shouldStartNext:YES
+                                                                   burstExecutionLockingOperation:YES];
                                             }
                                         };
 
@@ -2704,7 +2761,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         // Check whether on resume there is no async locking operation is running
         if (!self.asyncLockingOperationInProgress) {
 
-            [self handleLockingOperationComplete:YES];
+            [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
         }
 
         // Checking whether all communication channels connected or not
@@ -2757,7 +2814,20 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation checkCompletionBlock:(void(^)(BOOL))checkCompletionBlock {
+- (void)connectionChannel:(PNConnectionChannel *)channel didSendRequest:(PNBaseRequest *)request {
+
+    [self pn_dispatchBlock:^{
+
+        if ([self.serviceChannel isEqual:channel]) {
+
+            self.asyncLockingOperationInProgress = NO;
+            [self callNextPostponedMethod];
+        }
+    }];
+}
+
+- (void)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation
+            checkCompletionBlock:(void(^)(BOOL))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -3276,12 +3346,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }
 }
 
-- (void)handleLockingOperationComplete:(BOOL)shouldStartNext {
+- (void)handleLockingOperationComplete:(BOOL)shouldStartNext
+        burstExecutionLockingOperation:(BOOL)isBurstExecutionLockingOperation {
     
-    [self handleLockingOperationBlockCompletion:NULL shouldStartNext:shouldStartNext];
+    [self handleLockingOperationBlockCompletion:NULL shouldStartNext:shouldStartNext
+                 burstExecutionLockingOperation:isBurstExecutionLockingOperation];
 }
 
-- (void)handleLockingOperationBlockCompletion:(void(^)(void))operationPostBlock shouldStartNext:(BOOL)shouldStartNext {
+- (void)handleLockingOperationBlockCompletion:(void (^)(void))operationPostBlock
+                              shouldStartNext:(BOOL)shouldStartNext
+               burstExecutionLockingOperation:(BOOL)isBurstExecutionLockingOperation {
 
     [self pn_dispatchBlock:^{
 
@@ -3302,11 +3376,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if ([self.reprioritizedPendingInvocations count] > 0) {
 
             [self.reprioritizedPendingInvocations enumerateObjectsWithOptions:NSEnumerationReverse
-                                                                   usingBlock:^(id pendingInvocation, NSUInteger pendingInvocationIdx,
-                                                                           BOOL *pendingInvocationEnumeratorStop) {
+                                                                   usingBlock:^(id pendingInvocation,
+                                                                                NSUInteger pendingInvocationIdx,
+                                                                                BOOL *pendingInvocationEnumeratorStop) {
 
-                                                                       [self.pendingInvocations insertObject:pendingInvocation atIndex:0];
-                                                                   }];
+                [self.pendingInvocations insertObject:pendingInvocation atIndex:0];
+            }];
 
             [self.reprioritizedPendingInvocations removeAllObjects];
         }
@@ -3319,27 +3394,39 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             }
             else {
 
-                NSInvocation *methodInvocation = nil;
-                if ([self.pendingInvocations count] > 0) {
+                if (!isBurstExecutionLockingOperation) {
 
-                    // Retrieve reference on invocation instance at the start of the list
-                    // (oldest scheduled instance)
-                    methodInvocation = [self.pendingInvocations objectAtIndex:0];
-                    [self.pendingInvocations removeObjectAtIndex:0];
+                    self.numberOfMethodsCalledInBurstMode--;
                 }
 
-                if (methodInvocation) {
-
-                    [methodInvocation invoke];
-                }
+                [self callNextPostponedMethod];
             }
         }
     }];
 }
 
+- (void)callNextPostponedMethod {
+
+    NSInvocation *methodInvocation = nil;
+    if ([self.pendingInvocations count] > 0) {
+
+        // Retrieve reference on invocation instance at the start of the list
+        // (oldest scheduled instance)
+        methodInvocation = [self.pendingInvocations objectAtIndex:0];
+        [self.pendingInvocations removeObjectAtIndex:0];
+    }
+
+    if (methodInvocation) {
+
+        [methodInvocation invoke];
+    }
+}
+
 #pragma mark - Misc methods
 
-- (void)performAsyncLockingBlock:(void(^)(void))codeBlock postponedExecutionBlock:(void(^)(void))postponedCodeBlock {
+- (void)performAsyncLockingBlock:(void (^)(void))codeBlock
+         postponedExecutionBlock:(void (^)(void))postponedCodeBlock
+  burstExecutionLockingOperation:(BOOL)isBurstExecutionLockingOperation {
 
     [self pn_dispatchBlock:^{
         
@@ -3361,6 +3448,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             if (codeBlock) {
 
                 self.asyncLockingOperationInProgress = YES;
+                if (!isBurstExecutionLockingOperation) {
+
+                    self.numberOfMethodsCalledInBurstMode++;
+                }
 
                 codeBlock();
             }
@@ -3368,8 +3459,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)postponeSelector:(SEL)calledMethodSelector forObject:(id)object withParameters:(NSArray *)parameters
-              outOfOrder:(BOOL)placeOutOfOrder {
+- (void)postponeSelector:(SEL)calledMethodSelector forObject:(id)object
+          withParameters:(NSArray *)parameters outOfOrder:(BOOL)placeOutOfOrder
+      burstExecutionLock:(BOOL)requiresBurstExecutionLock {
     
     // Initialize variables required to perform postponed method call
     int signatureParameterOffset = 2;
@@ -3378,7 +3470,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     // Configure invocation instance
     methodInvocation.selector = calledMethodSelector;
-    [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger parameterIdx, BOOL *parametersEnumeratorStop) {
+    [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger parameterIdx,
+                                             BOOL *parametersEnumeratorStop) {
         
         NSUInteger parameterIndex = (parameterIdx + signatureParameterOffset);
         parameter = [parameter isKindOfClass:[NSNull class]] ? nil : parameter;
@@ -3424,28 +3517,57 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
     [self pn_dispatchBlock:^{
 
-        // Place invocation instance into mending invocations set for future usage
-        if (placeOutOfOrder) {
+        NSInvocation *burstExecutionLockingMethodInvocation = nil;
+        if (requiresBurstExecutionLock) {
 
-            // Placing method invocation at first index, so it will be called as soon
-            // as possible.
-            if (self.isAsyncOperationCompletionInProgress) {
+            SEL burstExecutionLockingMethodSelector = @selector(burstExecutionLockingMethod);
+            NSMethodSignature *burstExecutionLockingMethodSignature = [object methodSignatureForSelector:burstExecutionLockingMethodSelector];
+            burstExecutionLockingMethodInvocation = [NSInvocation invocationWithMethodSignature:burstExecutionLockingMethodSignature];
+            burstExecutionLockingMethodInvocation.selector = burstExecutionLockingMethodSelector;
+            burstExecutionLockingMethodInvocation.target = object;
+        }
+
+        // Placing method invocation at first index, so it will be called as soon
+        // as possible.
+        if (self.isAsyncOperationCompletionInProgress) {
+
+            // Place invocation instance into mending invocations set for future usage
+            if (placeOutOfOrder) {
 
                 [self.reprioritizedPendingInvocations insertObject:methodInvocation atIndex:0];
+                if (burstExecutionLockingMethodInvocation) {
+
+                    [self.reprioritizedPendingInvocations insertObject:burstExecutionLockingMethodInvocation
+                                                               atIndex:0];
+                }
             }
             else {
 
-                [self.pendingInvocations insertObject:methodInvocation atIndex:0];
+                if (burstExecutionLockingMethodInvocation) {
+
+                    [self.reprioritizedPendingInvocations addObject:burstExecutionLockingMethodInvocation];
+                }
+                [self.reprioritizedPendingInvocations addObject:methodInvocation];
             }
         }
         else {
 
-            if (self.isAsyncOperationCompletionInProgress) {
+            // Place invocation instance into mending invocations set for future usage
+            if (placeOutOfOrder) {
 
-                [self.reprioritizedPendingInvocations addObject:methodInvocation];
+                [self.pendingInvocations insertObject:methodInvocation atIndex:0];
+                if (burstExecutionLockingMethodInvocation) {
+
+                    [self.pendingInvocations insertObject:burstExecutionLockingMethodInvocation
+                                                  atIndex:0];
+                }
             }
             else {
 
+                if (burstExecutionLockingMethodInvocation) {
+
+                    [self.pendingInvocations addObject:burstExecutionLockingMethodInvocation];
+                }
                 [self.pendingInvocations addObject:methodInvocation];
             }
         }
@@ -3817,31 +3939,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 }
 
 - (void)unsubscribeFromAllEvents {
-    
-    [self.observationCenter removeClientAsPushNotificationsEnabledChannelsObserver];
-    [self.observationCenter removeClientAsParticipantChannelsListDownloadObserver];
-    [self.observationCenter removeClientAsChannelGroupNamespacesRequestObserver];
-    [self.observationCenter removeClientAsChannelGroupNamespaceRemovalObserver];
-    [self.observationCenter removeClientAsPushNotificationsDisableObserver];
-    [self.observationCenter removeClientAsParticipantsListDownloadObserver];
-    [self.observationCenter removeClientAsChannelsRemovalFromGroupObserver];
-    [self.observationCenter removeClientAsPushNotificationsRemoveObserver];
-    [self.observationCenter removeClientAsPushNotificationsEnableObserver];
-    [self.observationCenter removeClientAsChannelsAdditionToGroupObserver];
-    [self.observationCenter removeClientAsChannelsForGroupRequestObserver];
-    [self.observationCenter removeClientAsChannelGroupsRequestObserver];
-    [self.observationCenter removeClientAsChannelGroupRemovalObserver];
-    [self.observationCenter removeClientAsTimeTokenReceivingObserver];
-    [self.observationCenter removeClientAsAccessRightsChangeObserver];
-    [self.observationCenter removeClientAsAccessRightsAuditObserver];
-    [self.observationCenter removeClientAsMessageProcessingObserver];
-    [self.observationCenter removeClientAsHistoryDownloadObserver];
-    [self.observationCenter removeClientAsStateRequestObserver];
-    [self.observationCenter removeClientAsSubscriptionObserver];
-    [self.observationCenter removeClientAsStateUpdateObserver];
-    [self.observationCenter removeClientAsUnsubscribeObserver];
-    [self.observationCenter removeClientAsPresenceDisabling];
-    [self.observationCenter removeClientAsPresenceEnabling];
+
+    [self.observationCenter removeClientAsObserver];
 }
 
 - (void)flushPostponedMethods:(BOOL)shouldExecute {
@@ -3909,7 +4008,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
     
     
-    [self sendNotification:kPNClientDidConnectToOriginNotification withObject:originHostName];
+    [self sendNotification:kPNClientDidConnectToOriginNotification withObject:originHostName
+          andCallbackToken:nil];
 }
 
 - (void)notifyDelegateAboutError:(PNError *)error {
@@ -3928,7 +4028,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
     
     
-    [self sendNotification:kPNClientErrorNotification withObject:error];
+    [self sendNotification:kPNClientErrorNotification withObject:error
+          andCallbackToken:nil];
 }
 
 - (void)notifyDelegateClientWillDisconnectWithError:(PNError *)error {
@@ -3949,7 +4050,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 [self humanReadableStateFrom:self.state]];
     }];
     
-    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error
+          andCallbackToken:nil];
 }
 
 - (void)notifyDelegateClientDidDisconnectWithError:(PNError *)error {
@@ -3969,7 +4071,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 [self humanReadableStateFrom:self.state]];
     }];
     
-    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+    [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error
+          andCallbackToken:nil];
 }
 
 - (void)notifyDelegateClientConnectionFailedWithError:(PNError *)error {
@@ -3981,35 +4084,41 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     error.associatedObject = self.clientConfiguration.origin;
     
     [self handleLockingOperationBlockCompletion:^{
-        
+
         if ([self.clientDelegate respondsToSelector:@selector(pubnubClient:connectionDidFailWithError:)]) {
-            
+
             dispatch_async(dispatch_get_main_queue(), ^{
-                
+
                 [self.clientDelegate performSelector:@selector(pubnubClient:connectionDidFailWithError:) withObject:self
                                           withObject:error];
             });
         }
 
-        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
             return @[PNLoggerSymbols.api.connectedFailedBecauseOfError, (error ? error : [NSNull null]),
                     [self humanReadableStateFrom:self.state]];
         }];
 
-        [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error];
+        [self sendNotification:kPNClientConnectionDidFailWithErrorNotification withObject:error
+              andCallbackToken:nil];
         if (error.code != kPNClientTriedConnectWhileConnectedError) {
-            
+
             [self flushPostponedMethods:YES];
         }
-    }
-                                shouldStartNext:shouldStartNextPostponedOperation];
+    }                           shouldStartNext:shouldStartNextPostponedOperation
+                 burstExecutionLockingOperation:YES];
 }
 
-- (void)sendNotification:(NSString *)notificationName withObject:(id)object {
-    
+- (void)sendNotification:(NSString *)notificationName withObject:(id)object
+        andCallbackToken:(NSString *)callbackToken {
+
+    NSNotification *notification = [NSNotification pn_notificationWithName:notificationName
+                                                             callbackToken:callbackToken
+                                                                      data:object sender:self];
+
     // Send notification to all who is interested in it (observation center will track it as well)
-    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self userInfo:object];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -4063,7 +4172,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     return shouldRestoreSubscription;
 }
 
-- (void)checkShouldChannelNotifyAboutEvent:(PNConnectionChannel *)channel withBlock:(void (^)(BOOL shouldNotify))checkCompletionBlock {
+- (void)checkShouldChannelNotifyAboutEvent:(PNConnectionChannel *)channel
+                                 withBlock:(void (^)(BOOL shouldNotify))checkCompletionBlock {
     
     __block BOOL shouldChannelNotifyAboutEvent = NO;
     dispatch_block_t completionBlock = ^{
@@ -4260,7 +4370,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)messagingChannelDidReset:(PNMessagingChannel *)messagingChannel {
     
-    [self handleLockingOperationComplete:YES];
+    [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
 }
 
 

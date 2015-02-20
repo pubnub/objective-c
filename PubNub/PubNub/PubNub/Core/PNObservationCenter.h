@@ -38,26 +38,10 @@
 #pragma mark - Client state retrieval / update observation
 
 /**
- Add/remove observer which would like to know when \b PubNub client retrieve metadata.
-
- @warning Methods will be completely removed before feature release.
- */
-- (void)addClientMetadataRequestObserver:(id)observer withBlock:(PNClientStateRetrieveHandlingBlock)handleBlock DEPRECATED_MSG_ATTRIBUTE("Use '-addClientStateRequestObserver:withBlock:' instead.");
-- (void)removeClientMetadataRequestObserver:(id)observer DEPRECATED_MSG_ATTRIBUTE("Use '-removeClientStateRequestObserver:' instead.");
-
-/**
  Add/remove observer which would like to know when \b PubNub client retrieve state.
  */
 - (void)addClientStateRequestObserver:(id)observer withBlock:(PNClientStateRetrieveHandlingBlock)handleBlock;
 - (void)removeClientStateRequestObserver:(id)observer;
-
-/**
- Add/remove observer which would like to know when \b PubNub client update metadata.
-
- @warning Methods will be completely removed before feature release.
- */
-- (void)addClientMetadataUpdateObserver:(id)observer withBlock:(PNClientStateUpdateHandlingBlock)handleBlock DEPRECATED_MSG_ATTRIBUTE("Use '-addClientStateUpdateObserver:withBlock:' instead.");
-- (void)removeClientMetadataUpdateObserver:(id)observer DEPRECATED_MSG_ATTRIBUTE("Use '-removeClientStateUpdateObserver:withBlock:' instead.");
 
 /**
  Add/remove observer which would like to know when \b PubNub client update state.

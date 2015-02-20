@@ -57,14 +57,16 @@
 
 #pragma mark - Class methods
 
-+ (PNLeaveRequest *)leaveRequestForChannel:(PNChannel *)channel byUserRequest:(BOOL)isLeavingByUserRequest {
++ (PNLeaveRequest *)leaveRequestForChannel:(PNChannel *)channel
+                             byUserRequest:(BOOL)isLeavingByUserRequest {
     
     return [self leaveRequestForChannels:@[channel] byUserRequest:isLeavingByUserRequest];
 }
 
-+ (PNLeaveRequest *)leaveRequestForChannels:(NSArray *)channels byUserRequest:(BOOL)isLeavingByUserRequest {
++ (PNLeaveRequest *)leaveRequestForChannels:(NSArray *)channels
+                              byUserRequest:(BOOL)isLeavingByUserRequest {
     
-    return [[[self class] alloc] initForChannels:channels byUserRequest:isLeavingByUserRequest];
+    return [[self alloc] initForChannels:channels byUserRequest:isLeavingByUserRequest];
 }
 
 

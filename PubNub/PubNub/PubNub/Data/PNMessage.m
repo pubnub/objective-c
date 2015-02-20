@@ -17,6 +17,7 @@
 
 #import "PNMessage+Protected.h"
 #import "PNJSONSerialization.h"
+#import "NSString+PNAddition.h"
 #import "PNChannelGroup.h"
 #import "PNErrorCodes.h"
 #import "PNChannel.h"
@@ -98,9 +99,9 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     // Ensure that all parameters provided and they are valid or not
     if (isValidMessage && channel != nil) {
 
-        messageObject = [[[self class] alloc] initWithObject:object forChannel:channel
-                                                  compressed:shouldCompressMessage
-                                              storeInHistory:shouldStoreInHistory];
+        messageObject = [[self alloc] initWithObject:object forChannel:channel
+                                          compressed:shouldCompressMessage
+                                      storeInHistory:shouldStoreInHistory];
     }
     // Looks like some conditions not met
     else {

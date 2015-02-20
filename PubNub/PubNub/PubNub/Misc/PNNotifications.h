@@ -169,10 +169,6 @@ static NSString * const kPNClientGroupChannelsRemovalCompleteNotification = @"PN
  */
 static NSString * const kPNClientGroupChannelsRemovalDidFailWithErrorNotification = @"PNClientGroupChannelsRemovalDidFailWithErrorNotification";
 
-
-
-
-
 /**
  Sent when \b PubNub client was able to receive list of namespaces registered under current subscription key.
  
@@ -224,9 +220,6 @@ static NSString * const kPNClientChannelGroupRemovalCompleteNotification = @"PNC
  \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
  */
 static NSString * const kPNClientChannelGroupRemovalDidFailWithErrorNotification = @"PNClientChannelGroupRemovalDidFailWithErrorNotification";
-
-
-
 
 /**
  Sent when \b PubNub client was able to complete subscription on specified set of channels.

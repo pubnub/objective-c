@@ -12,6 +12,7 @@
 //
 
 #import "PNObservationCenter+Protected.h"
+#import "NSNotification+PNPrivateAdditions.h"
 #import "PNMessagesHistory+Protected.h"
 #import "PNChannelGroupChange.h"
 #import "NSObject+PNAdditions.h"
@@ -38,6 +39,13 @@
 
 #pragma mark Static
 
+/**
+ @brief Key under which stored all general callbacks w/o particular callback token.
+
+ @since <#version number#>
+ */
+static NSString * const kPNObserverGeneralCallbacks = @"general";
+
 // Stores reference on shared observation center instance
 static PNObservationCenter *_sharedInstance = nil;
 static dispatch_once_t onceToken;
@@ -46,8 +54,8 @@ static dispatch_once_t onceToken;
 struct PNObservationEventsStruct {
 
     __unsafe_unretained NSString *clientConnectionStateChange;
-    __unsafe_unretained NSString *clientMetadataRetrieval;
-    __unsafe_unretained NSString *clientMetadataUpdate;
+    __unsafe_unretained NSString *clientStateRetrieval;
+    __unsafe_unretained NSString *clientStateUpdate;
     __unsafe_unretained NSString *clientChannelGroupsRequest;
     __unsafe_unretained NSString *clientChannelGroupNamespacesRequest;
     __unsafe_unretained NSString *clientChannelGroupNamespaceRemoval;
@@ -83,8 +91,8 @@ struct PNObservationObserverDataStruct {
 static struct PNObservationEventsStruct PNObservationEvents = {
 
     .clientConnectionStateChange = @"clientConnectionStateChangeEvent",
-    .clientMetadataRetrieval = @"clientMetadataRetrieveEvent",
-    .clientMetadataUpdate = @"clientMedataUpdateEvent",
+    .clientStateRetrieval = @"clientStateRetrieveEvent",
+    .clientStateUpdate = @"clientStateUpdateEvent",
     .clientChannelGroupsRequest = @"clientChannelGroupsRequest",
     .clientChannelGroupNamespacesRequest = @"clientChannelGroupNamespacesRequest",
     .clientChannelGroupNamespaceRemoval = @"clientChannelGroupNamespaceRemoval",
@@ -141,6 +149,16 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
  */
 @property (nonatomic, pn_desired_weak) id defaultObserver;
 
+/**
+ @brief      Stores reference on list of object returned by NSNotificationCenter during subscription
+             on notifications.
+ @discussion Will be used to unsubscribe from notifications at the end of \b PNObservationCenter
+             life-cycle.
+
+ @since <#version number#>
+ */
+@property (nonatomic, strong) NSMutableArray *notifications;
+
 
 #pragma mark - Instance methods
 
@@ -149,22 +167,26 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
  * event name if it doesn't exist or return existing.
  */
 - (NSMutableArray *)persistentObserversForEvent:(NSString *)eventName;
-- (NSMutableArray *)oneTimeObserversForEvent:(NSString *)eventName;
 
-- (void)removeOneTimeObserversForEvent:(NSString *)eventName;
+- (id)oneTimeObserversForEvent:(NSString *)eventName withCallbackToken:(NSString *)callbackToken;
+
+- (void)removeOneTimeObserversForEvent:(NSString *)eventName
+                      andCallbackToken:(NSString *)callbackToken;
 
 /**
  * Managing observation list
  */
-- (void)addObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent withBlock:(id)block;
-- (void)removeObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent;
+- (void)addObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent
+          withBlock:(id)block andToken:(NSString *)callbackToken;
+
+- (void)removeObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent withCallbackToken:(NSString *)callbackToken;
 
 
 #pragma mark - Handler methods
 
 - (void)handleClientConnectionStateChange:(NSNotification *)notification;
-- (void)handleClientMetadataRetrieveProcess:(NSNotification *)notification;
-- (void)handleClientMetadataUpdateProcess:(NSNotification *)notification;
+- (void)handleClientStateRetrieveProcess:(NSNotification *)notification;
+- (void)handleClientStateUpdateProcess:(NSNotification *)notification;
 - (void)handleClientSubscriptionProcess:(NSNotification *)notification;
 - (void)handleClientChannelGroupsRequestProcess:(NSNotification *)notification;
 - (void)handleClientChannelGroupNamespacesRequestProcess:(NSNotification *)notification;
@@ -194,7 +216,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 /**
  * Retrieve full list of observers for specified event name
  */
-- (void)observersForEvent:(NSString *)eventName withBlock:(void (^)(NSMutableArray *observers))fetchCompletionBlock;
+- (void)observersForEvent:(NSString *)eventName withCallbackToken:(NSString *)callbackToken andBlock:(void (^)(NSMutableArray *observers))fetchCompletionBlock;
 
 
 @end
@@ -246,171 +268,123 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         
         self.observers = [NSMutableDictionary dictionary];
         self.oneTimeObservers = [NSMutableDictionary dictionary];
+        self.notifications = [NSMutableArray array];
         self.defaultObserver = (defaultObserver ? defaultObserver : [PubNub sharedInstance]);
         [self pn_setupPrivateSerialQueueWithIdentifier:@"observer" andPriority:DISPATCH_QUEUE_PRIORITY_DEFAULT];
-        
+
+        __block __pn_desired_weak __typeof__(self) weakSelf = self;
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        
-        [notificationCenter addObserver:self selector:@selector(handleClientConnectionStateChange:)
-                                   name:kPNClientDidConnectToOriginNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientConnectionStateChange:)
-                                   name:kPNClientDidDisconnectFromOriginNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientConnectionStateChange:)
-                                   name:kPNClientConnectionDidFailWithErrorNotification object:self.defaultObserver];
-        
-        [notificationCenter addObserver:self selector:@selector(handleClientMetadataRetrieveProcess:)
-                                   name:kPNClientDidReceiveClientStateNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientMetadataRetrieveProcess:)
-                                   name:kPNClientStateRetrieveDidFailWithErrorNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientMetadataUpdateProcess:)
-                                   name:kPNClientDidUpdateClientStateNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientMetadataUpdateProcess:)
-                                   name:kPNClientStateUpdateDidFailWithErrorNotification object:self.defaultObserver];
-        
+        void(^handleBlock)(SEL, NSNotification *) = ^(SEL handlerSelector,
+                                                      NSNotification *notification){
+
+            __strong __typeof__(self) strongSelf = weakSelf;
+            [strongSelf pn_dispatchBlock:^{
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [strongSelf performSelector:handlerSelector withObject:notification];
+                #pragma clang diagnostic pop
+            }];
+        };
+        void(^addObserver)(SEL, NSString *) = ^(SEL handlerSelector, NSString *notificationName) {
+
+            NSString *privateNotification = [NSNotification pn_privateNotificationNameFrom:notificationName];
+            id observer = [notificationCenter addObserverForName:privateNotification
+                                                          object:self.defaultObserver queue:nil
+                                                      usingBlock:^(NSNotification *notification) {
+
+                handleBlock(handlerSelector, (NSNotification *)notification);
+            }];
+
+            [self.notifications addObject:observer];
+        };
+
+        addObserver(@selector(handleClientConnectionStateChange:), kPNClientDidConnectToOriginNotification);
+        addObserver(@selector(handleClientConnectionStateChange:), kPNClientDidDisconnectFromOriginNotification);
+        addObserver(@selector(handleClientConnectionStateChange:), kPNClientConnectionDidFailWithErrorNotification);
+
+        addObserver(@selector(handleClientStateRetrieveProcess:), kPNClientDidReceiveClientStateNotification);
+        addObserver(@selector(handleClientStateRetrieveProcess:), kPNClientStateRetrieveDidFailWithErrorNotification);
+        addObserver(@selector(handleClientStateUpdateProcess:), kPNClientDidUpdateClientStateNotification);
+        addObserver(@selector(handleClientStateUpdateProcess:), kPNClientStateUpdateDidFailWithErrorNotification);
+
         // Handle channel registry events
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupsRequestProcess:)
-                                   name:kPNClientChannelGroupsRequestCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupsRequestProcess:)
-                                   name:kPNClientChannelGroupsRequestDidFailWithErrorNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupNamespacesRequestProcess:)
-                                   name:kPNClientChannelGroupNamespacesRequestCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupNamespacesRequestProcess:)
-                                   name:kPNClientChannelGroupNamespacesRequestDidFailWithErrorNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupNamespacesRemovalProcess:)
-                                   name:kPNClientChannelGroupNamespaceRemovalCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupNamespacesRemovalProcess:)
-                                   name:kPNClientChannelGroupNamespaceRemovalDidFailWithErrorNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupRemovalProcess:)
-                                   name:kPNClientChannelGroupRemovalCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelGroupRemovalProcess:)
-                                   name:kPNClientChannelGroupRemovalDidFailWithErrorNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelsForGroupRequestProcess:)
-                                   name:kPNClientChannelsForGroupRequestCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelsForGroupRequestProcess:)
-                                   name:kPNClientChannelsForGroupRequestDidFailWithErrorNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientGroupChannelsListModificationProcess:)
-                                   name:kPNClientGroupChannelsAdditionCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientGroupChannelsListModificationProcess:)
-                                   name:kPNClientGroupChannelsAdditionDidFailWithErrorNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientGroupChannelsListModificationProcess:)
-                                   name:kPNClientGroupChannelsRemovalCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientGroupChannelsListModificationProcess:)
-                                   name:kPNClientGroupChannelsRemovalDidFailWithErrorNotification object:self.defaultObserver];
+        addObserver(@selector(handleClientChannelGroupsRequestProcess:), kPNClientChannelGroupsRequestCompleteNotification);
+        addObserver(@selector(handleClientChannelGroupsRequestProcess:), kPNClientChannelGroupsRequestDidFailWithErrorNotification);
+        addObserver(@selector(handleClientChannelGroupNamespacesRequestProcess:), kPNClientChannelGroupNamespacesRequestCompleteNotification);
+        addObserver(@selector(handleClientChannelGroupNamespacesRequestProcess:), kPNClientChannelGroupNamespacesRequestDidFailWithErrorNotification);
+        addObserver(@selector(handleClientChannelGroupNamespacesRemovalProcess:), kPNClientChannelGroupNamespaceRemovalCompleteNotification);
+        addObserver(@selector(handleClientChannelGroupNamespacesRemovalProcess:), kPNClientChannelGroupNamespaceRemovalDidFailWithErrorNotification);
+        addObserver(@selector(handleClientChannelGroupRemovalProcess:), kPNClientChannelGroupRemovalCompleteNotification);
+        addObserver(@selector(handleClientChannelGroupRemovalProcess:), kPNClientChannelGroupRemovalDidFailWithErrorNotification);
+        addObserver(@selector(handleClientChannelsForGroupRequestProcess:), kPNClientChannelsForGroupRequestCompleteNotification);
+        addObserver(@selector(handleClientChannelsForGroupRequestProcess:), kPNClientChannelsForGroupRequestDidFailWithErrorNotification);
+        addObserver(@selector(handleClientGroupChannelsListModificationProcess:), kPNClientGroupChannelsAdditionCompleteNotification);
+        addObserver(@selector(handleClientGroupChannelsListModificationProcess:), kPNClientGroupChannelsAdditionDidFailWithErrorNotification);
+        addObserver(@selector(handleClientGroupChannelsListModificationProcess:), kPNClientGroupChannelsRemovalCompleteNotification);
+        addObserver(@selector(handleClientGroupChannelsListModificationProcess:), kPNClientGroupChannelsRemovalDidFailWithErrorNotification);
         
         // Handle subscription events
-        [notificationCenter addObserver:self selector:@selector(handleClientSubscriptionProcess:)
-                                   name:kPNClientSubscriptionDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientSubscriptionProcess:)
-                                   name:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification
-                                 object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientSubscriptionProcess:)
-                                   name:kPNClientSubscriptionWillRestoreNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientSubscriptionProcess:)
-                                   name:kPNClientSubscriptionDidRestoreNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientSubscriptionProcess:)
-                                   name:kPNClientSubscriptionDidFailNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientSubscriptionProcess:)
-                                   name:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification
-                                 object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientUnsubscriptionProcess:)
-                                   name:kPNClientUnsubscriptionDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientUnsubscriptionProcess:)
-                                   name:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification
-                                 object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientUnsubscriptionProcess:)
-                                   name:kPNClientUnsubscriptionDidFailNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientUnsubscriptionProcess:)
-                                   name:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification
-                                 object:self.defaultObserver];
-        
+        addObserver(@selector(handleClientSubscriptionProcess:), kPNClientSubscriptionDidCompleteNotification);
+        addObserver(@selector(handleClientSubscriptionProcess:), kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification);
+        addObserver(@selector(handleClientSubscriptionProcess:), kPNClientSubscriptionWillRestoreNotification);
+        addObserver(@selector(handleClientSubscriptionProcess:), kPNClientSubscriptionDidRestoreNotification);
+        addObserver(@selector(handleClientSubscriptionProcess:), kPNClientSubscriptionDidFailNotification);
+        addObserver(@selector(handleClientSubscriptionProcess:), kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification);
+        addObserver(@selector(handleClientUnsubscriptionProcess:), kPNClientUnsubscriptionDidCompleteNotification);
+        addObserver(@selector(handleClientUnsubscriptionProcess:), kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification);
+        addObserver(@selector(handleClientUnsubscriptionProcess:), kPNClientUnsubscriptionDidFailNotification);
+        addObserver(@selector(handleClientUnsubscriptionProcess:), kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification);
+
         // Handle presence events
-        [notificationCenter addObserver:self selector:@selector(handleClientPresenceObservationEnablingProcess:)
-                                   name:kPNClientPresenceEnablingDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientPresenceObservationEnablingProcess:)
-                                   name:kPNClientPresenceEnablingDidFailNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientPresenceObservationDisablingProcess:)
-                                   name:kPNClientPresenceDisablingDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientPresenceObservationDisablingProcess:)
-                                   name:kPNClientPresenceDisablingDidFailNotification object:self.defaultObserver];
-        
-        
+        addObserver(@selector(handleClientPresenceObservationEnablingProcess:), kPNClientPresenceEnablingDidCompleteNotification);
+        addObserver(@selector(handleClientPresenceObservationEnablingProcess:), kPNClientPresenceEnablingDidFailNotification);
+        addObserver(@selector(handleClientPresenceObservationDisablingProcess:), kPNClientPresenceDisablingDidCompleteNotification);
+        addObserver(@selector(handleClientPresenceObservationDisablingProcess:), kPNClientPresenceDisablingDidFailNotification);
+
         // Handle push notification state changing events
-        [notificationCenter addObserver:self selector:@selector(handleClientPushNotificationStateChange:)
-                                   name:kPNClientPushNotificationEnableDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientPushNotificationStateChange:)
-                                   name:kPNClientPushNotificationEnableDidFailNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientPushNotificationStateChange:)
-                                   name:kPNClientPushNotificationDisableDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientPushNotificationStateChange:)
-                                   name:kPNClientPushNotificationDisableDidFailNotification object:self.defaultObserver];
-        
-        
+        addObserver(@selector(handleClientPushNotificationStateChange:), kPNClientPushNotificationEnableDidCompleteNotification);
+        addObserver(@selector(handleClientPushNotificationStateChange:), kPNClientPushNotificationEnableDidFailNotification);
+        addObserver(@selector(handleClientPushNotificationStateChange:), kPNClientPushNotificationDisableDidCompleteNotification);
+        addObserver(@selector(handleClientPushNotificationStateChange:), kPNClientPushNotificationDisableDidFailNotification);
+
         // Handle push notification remove events
-        [notificationCenter addObserver:self selector:@selector(handleClientPushNotificationRemoveProcess:)
-                                   name:kPNClientPushNotificationRemoveDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientPushNotificationRemoveProcess:)
-                                   name:kPNClientPushNotificationRemoveDidFailNotification object:self.defaultObserver];
-        
-        
+        addObserver(@selector(handleClientPushNotificationRemoveProcess:), kPNClientPushNotificationRemoveDidCompleteNotification);
+        addObserver(@selector(handleClientPushNotificationRemoveProcess:), kPNClientPushNotificationRemoveDidFailNotification);
+
         // Handle push notification enabled channels retrieve events
-        [notificationCenter addObserver:self selector:@selector(handleClientPushNotificationEnabledChannels:)
-                                   name:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientPushNotificationEnabledChannels:)
-                                   name:kPNClientPushNotificationChannelsRetrieveDidFailNotification object:self.defaultObserver];
-        
-        
+        addObserver(@selector(handleClientPushNotificationEnabledChannels:), kPNClientPushNotificationChannelsRetrieveDidCompleteNotification);
+        addObserver(@selector(handleClientPushNotificationEnabledChannels:), kPNClientPushNotificationChannelsRetrieveDidFailNotification);
+
         // Handle access rights change events
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelAccessRightsChange:)
-                                   name:kPNClientAccessRightsChangeDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelAccessRightsChange:)
-                                   name:kPNClientAccessRightsChangeDidFailNotification object:self.defaultObserver];
-        
+        addObserver(@selector(handleClientChannelAccessRightsChange:), kPNClientAccessRightsChangeDidCompleteNotification);
+        addObserver(@selector(handleClientChannelAccessRightsChange:), kPNClientAccessRightsChangeDidFailNotification);
         
         // Handle access rights audit events
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelAccessRightsRequest:)
-                                   name:kPNClientAccessRightsAuditDidCompleteNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientChannelAccessRightsRequest:)
-                                   name:kPNClientAccessRightsAuditDidFailNotification object:self.defaultObserver];
-        
-        
+        addObserver(@selector(handleClientChannelAccessRightsRequest:), kPNClientAccessRightsAuditDidCompleteNotification);
+        addObserver(@selector(handleClientChannelAccessRightsRequest:), kPNClientAccessRightsAuditDidFailNotification);
+
         // Handle time token events
-        [notificationCenter addObserver:self selector:@selector(handleClientCompletedTimeTokenProcessing:)
-                                   name:kPNClientDidReceiveTimeTokenNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientCompletedTimeTokenProcessing:)
-                                   name:kPNClientDidFailTimeTokenReceiveNotification object:self.defaultObserver];
-        
-        
+        addObserver(@selector(handleClientCompletedTimeTokenProcessing:), kPNClientDidReceiveTimeTokenNotification);
+        addObserver(@selector(handleClientCompletedTimeTokenProcessing:), kPNClientDidFailTimeTokenReceiveNotification);
+
         // Handle message processing events
-        [notificationCenter addObserver:self selector:@selector(handleClientMessageProcessingStateChange:)
-                                   name:kPNClientWillSendMessageNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientMessageProcessingStateChange:)
-                                   name:kPNClientDidSendMessageNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientMessageProcessingStateChange:)
-                                   name:kPNClientMessageSendingDidFailNotification object:self.defaultObserver];
+        addObserver(@selector(handleClientMessageProcessingStateChange:), kPNClientWillSendMessageNotification);
+        addObserver(@selector(handleClientMessageProcessingStateChange:), kPNClientDidSendMessageNotification);
+        addObserver(@selector(handleClientMessageProcessingStateChange:), kPNClientMessageSendingDidFailNotification);
         
         // Handle messages/presence event arrival
-        [notificationCenter addObserver:self selector:@selector(handleClientDidReceiveMessage:)
-                                   name:kPNClientDidReceiveMessageNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientDidReceivePresenceEvent:)
-                                   name:kPNClientDidReceivePresenceEventNotification object:self.defaultObserver];
+        addObserver(@selector(handleClientDidReceiveMessage:), kPNClientDidReceiveMessageNotification);
+        addObserver(@selector(handleClientDidReceivePresenceEvent:), kPNClientDidReceivePresenceEventNotification);
         
         // Handle message history events arrival
-        [notificationCenter addObserver:self selector:@selector(handleClientMessageHistoryProcess:)
-                                   name:kPNClientDidReceiveMessagesHistoryNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientMessageHistoryProcess:)
-                                   name:kPNClientHistoryDownloadFailedWithErrorNotification object:self.defaultObserver];
+        addObserver(@selector(handleClientMessageHistoryProcess:), kPNClientDidReceiveMessagesHistoryNotification);
+        addObserver(@selector(handleClientMessageHistoryProcess:), kPNClientHistoryDownloadFailedWithErrorNotification);
         
         // Handle participants list arrival
-        [notificationCenter addObserver:self selector:@selector(handleClientHereNowProcess:)
-                                   name:kPNClientDidReceiveParticipantsListNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientHereNowProcess:)
-                                   name:kPNClientParticipantsListDownloadFailedWithErrorNotification
-                                 object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientWhereNowProcess:)
-                                   name:kPNClientDidReceiveParticipantChannelsListNotification object:self.defaultObserver];
-        [notificationCenter addObserver:self selector:@selector(handleClientWhereNowProcess:)
-                                   name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification
-                                 object:self.defaultObserver];
+        addObserver(@selector(handleClientHereNowProcess:), kPNClientDidReceiveParticipantsListNotification);
+        addObserver(@selector(handleClientHereNowProcess:), kPNClientParticipantsListDownloadFailedWithErrorNotification);
+        addObserver(@selector(handleClientWhereNowProcess:), kPNClientDidReceiveParticipantChannelsListNotification);
+        addObserver(@selector(handleClientWhereNowProcess:), kPNClientParticipantChannelsListDownloadFailedWithErrorNotification);
     }
     
     
@@ -422,26 +396,69 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     [self pn_dispatchBlock:^{
 
-        NSMutableArray *observersData = [self oneTimeObserversForEvent:PNObservationEvents.clientConnectionStateChange];
-        NSArray *observers = [observersData valueForKey:PNObservationObserverData.observer];
+        id observersData = [self oneTimeObserversForEvent:PNObservationEvents.clientConnectionStateChange
+                                        withCallbackToken:nil];
+        BOOL isSubscribed = NO;
+        id  eventObserver = [observersData valueForKey:PNObservationObserverData.observer];
+        if (observer) {
+
+            if ([observersData isKindOfClass:[NSDictionary class]]) {
+
+                isSubscribed = [eventObserver isEqualToString:observer];
+            }
+            else {
+
+                isSubscribed = [(NSArray *)eventObserver containsObject:observer];
+            }
+        }
 
         if (checkCompletionBlock) {
 
-            checkCompletionBlock([observers containsObject:observer]);
+            checkCompletionBlock(isSubscribed);
         }
     }];
 }
 
-- (void)removeOneTimeObserversForEvent:(NSString *)eventName {
+- (void)changeClientCallbackToken:(NSString *)oldCallbackToken to:(NSString *)callbackToken {
 
     [self pn_dispatchBlock:^{
 
-        [self.oneTimeObservers removeObjectForKey:eventName];
+        NSArray *allEvents = [self.oneTimeObservers allValues];
+        [allEvents enumerateObjectsUsingBlock:^(NSMutableDictionary *eventSubscribers,
+                                                NSUInteger eventSubscribersIdx,
+                                                BOOL *eventSubscribersEnumeratorStop) {
+
+            if ([eventSubscribers objectForKey:oldCallbackToken]) {
+
+                id callback = [eventSubscribers objectForKey:oldCallbackToken];
+                [eventSubscribers removeObjectForKey:oldCallbackToken];
+                [eventSubscribers setValue:callback forKey:callbackToken];
+                *eventSubscribersEnumeratorStop = YES;
+            }
+        }];
+    }];
+}
+
+- (void)removeClientAsObserver {
+
+    [self pn_dispatchBlock:^{
+
+        [self.oneTimeObservers removeAllObjects];
+    }];
+}
+
+- (void)removeOneTimeObserversForEvent:(NSString *)eventName
+                      andCallbackToken:(NSString *)callbackToken {
+
+    [self pn_dispatchBlock:^{
+
+        NSString *targetKey = (!callbackToken ? kPNObserverGeneralCallbacks : callbackToken);
+        [[self.oneTimeObservers valueForKey:eventName] removeObjectForKey:targetKey];
     }];
 }
 
 - (void)addObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent
-          withBlock:(id)block {
+          withBlock:(id)block andToken:(NSString *)callbackToken {
 
     [self pn_dispatchBlock:^{
 
@@ -449,46 +466,63 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         NSMutableDictionary *observerData = [@{PNObservationObserverData.observer : observer,
                                                PNObservationObserverData.observerCallbackBlock : blockCopy} mutableCopy];
 
-        // Retrieve reference on list of observers for specific event
-        SEL observersSelector = isOneTimeEvent ? @selector(oneTimeObserversForEvent:) : @selector(persistentObserversForEvent:);
+        if (isOneTimeEvent && callbackToken) {
 
-        // Turn off error warning on performSelector, because ARC
-        // can't understand what is going on there
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        NSMutableArray *observers = [self performSelector:observersSelector withObject:eventName];
-        #pragma clang diagnostic pop
+            [self oneTimeObserversForEvent:eventName withCallbackToken:callbackToken];
 
-        [observers addObject:observerData];
+            NSMutableDictionary *eventObservers = [self.oneTimeObservers valueForKey:eventName];
+            [eventObservers setValue:observerData forKey:callbackToken];
+        }
+        else {
+
+            NSMutableArray *observers = nil;
+            if (isOneTimeEvent) {
+
+                observers = [self oneTimeObserversForEvent:eventName withCallbackToken:nil];
+            }
+            else {
+
+                observers = [self persistentObserversForEvent:eventName];
+            }
+
+            [observers addObject:observerData];
+        }
     }];
 }
 
-- (void)removeObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent {
+- (void)removeObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent
+     withCallbackToken:(NSString *)callbackToken {
 
     [self pn_dispatchBlock:^{
 
-        // Retrieve reference on list of observers for specific event
-        SEL observersSelector = isOneTimeEvent ? @selector(oneTimeObserversForEvent:) : @selector(persistentObserversForEvent:);
+        if (isOneTimeEvent && callbackToken) {
 
-        // Turn off error warning on performSelector, because ARC
-        // can't understand what is going on there
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        NSMutableArray *observers = [self performSelector:observersSelector withObject:eventName];
-        #pragma clang diagnostic pop
-
-        // Retrieve list of observing requests with specified observer
-        NSString *filterFormat = [NSString stringWithFormat:@"%@ = %%@", PNObservationObserverData.observer];
-        NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:filterFormat, observer];
-
-        NSArray *filteredObservers = [observers filteredArrayUsingPredicate:filterPredicate];
-
-
-        if ([filteredObservers count] > 0) {
-
-            // Removing first occurrence of observer request in list
-            [observers removeObject:[filteredObservers objectAtIndex:0]];
+            [[self.oneTimeObservers valueForKey:eventName] removeObjectForKey:callbackToken];
         }
+        else {
+
+            // Retrieve list of observing requests with specified observer
+            NSString *filterFormat = [NSString stringWithFormat:@"%@ = %%@", PNObservationObserverData.observer];
+            NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:filterFormat, observer];
+
+            NSMutableArray *observers = nil;
+            if (isOneTimeEvent) {
+
+                observers = [self oneTimeObserversForEvent:eventName withCallbackToken:nil];
+            }
+            else {
+
+                observers = [self persistentObserversForEvent:eventName];
+            }
+            NSArray *filteredObservers = [observers filteredArrayUsingPredicate:filterPredicate];
+            if ([filteredObservers count] > 0) {
+
+                // Removing first occurrence of observer request in list
+                [observers removeObject:[filteredObservers objectAtIndex:0]];
+            }
+        }
+
+
     }];
 }
 
@@ -510,299 +544,257 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
                        withCallbackBlock:(PNClientConnectionStateChangeBlock)callbackBlock {
 
     [self addObserver:observer forEvent:PNObservationEvents.clientConnectionStateChange
-         oneTimeEvent:isOneTimeEventObserver withBlock:callbackBlock];
-
+         oneTimeEvent:isOneTimeEventObserver withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeClientConnectionStateObserver:(id)observer oneTimeEvent:(BOOL)isOneTimeEventObserver {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientConnectionStateChange
-            oneTimeEvent:isOneTimeEventObserver];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientConnectionStateChange oneTimeEvent:isOneTimeEventObserver withCallbackToken:nil];
 }
 
 
 #pragma mark - Client state retrieval / update observation
 
-- (void)addClientMetadataRequestObserver:(id)observer withBlock:(PNClientStateRetrieveHandlingBlock)handleBlock {
+- (void)addClientStateRequestObserver:(id)observer
+                            withBlock:(PNClientStateRetrieveHandlingBlock)handleBlock {
 
-    [self addClientStateRequestObserver:observer withBlock:handleBlock];
-}
-
-- (void)addClientStateRequestObserver:(id)observer withBlock:(PNClientStateRetrieveHandlingBlock)handleBlock {
-
-    [self addObserver:observer forEvent:PNObservationEvents.clientMetadataRetrieval oneTimeEvent:NO withBlock:handleBlock];
-}
-
-- (void)removeClientMetadataRequestObserver:(id)observer {
-
-    [self removeClientStateRequestObserver:observer];
+    [self addObserver:observer forEvent:PNObservationEvents.clientStateRetrieval
+         oneTimeEvent:NO withBlock:handleBlock andToken:nil];
 }
 
 - (void)removeClientStateRequestObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientMetadataRetrieval oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientStateRetrieval oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientMetadataUpdateObserver:(id)observer withBlock:(PNClientStateUpdateHandlingBlock)handleBlock {
+- (void)addClientStateUpdateObserver:(id)observer
+                           withBlock:(PNClientStateUpdateHandlingBlock)handleBlock {
 
-    [self addClientStateUpdateObserver:observer withBlock:handleBlock];
-}
-
-- (void)addClientStateUpdateObserver:(id)observer withBlock:(PNClientStateUpdateHandlingBlock)handleBlock {
-
-    [self addObserver:observer forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:NO withBlock:handleBlock];
-}
-
-- (void)removeClientMetadataUpdateObserver:(id)observer {
-
-    [self removeClientStateUpdateObserver:observer];
+    [self addObserver:observer forEvent:PNObservationEvents.clientStateUpdate
+         oneTimeEvent:NO withBlock:handleBlock andToken:nil];
 }
 
 - (void)removeClientStateUpdateObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientStateUpdate oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsStateRequestObserverWithBlock:(PNClientStateRetrieveHandlingBlock)handleBlock {
+- (void)addClientAsStateRequestObserverWithToken:(NSString *)callbackToken
+                                        andBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientMetadataRetrieval oneTimeEvent:YES
-            withBlock:handleBlock];
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientStateRetrieval
+         oneTimeEvent:YES withBlock:handlerBlock andToken:callbackToken];
 }
 
-- (void)removeClientAsStateRequestObserver {
+- (void)addClientAsStateUpdateObserverWithToken:(NSString *)callbackToken
+                                       andBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
 
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientMetadataRetrieval oneTimeEvent:YES];
-}
-
-- (void)addClientAsStateUpdateObserverWithBlock:(PNClientStateUpdateHandlingBlock)handleBlock {
-
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:YES
-            withBlock:handleBlock];
-}
-
-- (void)removeClientAsStateUpdateObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientMetadataUpdate oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientStateUpdate
+         oneTimeEvent:YES withBlock:handlerBlock andToken:callbackToken];
 }
 
 
 #pragma mark - Client channel groups observation
 
-- (void)addClientAsChannelGroupsRequestObserverWithCallbackBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupsRequest oneTimeEvent:YES
-            withBlock:callbackBlock];
-}
+- (void)addClientAsChannelGroupsRequestObserverWithToken:(NSString *)callbackToken
+                                                andBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock {
 
-- (void)removeClientAsChannelGroupsRequestObserver {
-    
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupsRequest oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupsRequest
+         oneTimeEvent:YES withBlock:callbackBlock andToken:callbackToken];
 }
 
 - (void)addChannelGroupsRequestObserver:(id)observer
                       withCallbackBlock:(PNClientChannelGroupsRequestHandlingBlock)callbackBlock {
     
-    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupsRequest oneTimeEvent:NO
-            withBlock:callbackBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupsRequest
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeChannelGroupsRequestObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupsRequest oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupsRequest
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsChannelGroupNamespacesRequestObserverWithCallbackBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:YES
-            withBlock:callbackBlock];
-}
+- (void)addClientAsChannelGroupNamespacesRequestObserverWithToken:(NSString *)callbackToken
+                                                         andBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock {
 
-- (void)removeClientAsChannelGroupNamespacesRequestObserver {
-    
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:YES
+            withBlock:callbackBlock andToken:callbackToken];
 }
 
 - (void)addChannelGroupNamespacesRequestObserver:(id)observer
                                withCallbackBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)callbackBlock {
     
-    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:NO
-            withBlock:callbackBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeChannelGroupNamespacesRequestObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespacesRequest
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsChannelGroupNamespaceRemovalObserverWithCallbackBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:YES
-            withBlock:callbackBlock];
-}
+- (void)addClientAsChannelGroupNamespaceRemovalObserverWithToken:(NSString *)callbackToken
+                                                        andBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock {
 
-- (void)removeClientAsChannelGroupNamespaceRemovalObserver {
-    
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:YES
+            withBlock:callbackBlock andToken:callbackToken];
 }
 
 - (void)addChannelGroupNamespaceRemovalObserver:(id)observer
                               withCallbackBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)callbackBlock {
     
-    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:NO
-            withBlock:callbackBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeChannelGroupNamespaceRemovalObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsChannelGroupRemovalObserverWithCallbackBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupRemoval oneTimeEvent:YES
-            withBlock:callbackBlock];
-}
+- (void)addClientAsChannelGroupRemovalObserverWithToken:(NSString *)callbackToken
+                                               andBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock {
 
-- (void)removeClientAsChannelGroupRemovalObserver {
-    
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupRemoval oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelGroupRemoval
+         oneTimeEvent:YES withBlock:callbackBlock andToken:callbackToken];
 }
 
 - (void)addChannelGroupRemovalObserver:(id)observer
                      withCallbackBlock:(PNClientChannelGroupRemoveHandlingBlock)callbackBlock {
     
-    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupRemoval oneTimeEvent:NO
-            withBlock:callbackBlock];
-    
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelGroupRemoval
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeChannelGroupRemovalObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupRemoval oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelGroupRemoval
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsChannelsForGroupRequestObserverWithCallbackBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:YES
-            withBlock:callbackBlock];
-}
+- (void)addClientAsChannelsForGroupRequestObserverWithToken:(NSString *)callbackToken
+                                                   andBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock {
 
-- (void)removeClientAsChannelsForGroupRequestObserver {
-    
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:YES
+            withBlock:callbackBlock andToken:callbackToken];
 }
 
 - (void)addChannelsForGroupRequestObserver:(id)observer
                          withCallbackBlock:(PNClientChannelsForGroupRequestHandlingBlock)callbackBlock {
     
-    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:NO
-            withBlock:callbackBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsForGroupRequest
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeChannelsForGroupRequestObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsForGroupRequest oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsForGroupRequest
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsChannelsAdditionToGroupObserverWithCallbackBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:YES
-            withBlock:callbackBlock];
-}
+- (void)addClientAsChannelsAdditionToGroupObserverWithToken:(NSString *)callbackToken
+                                                   andBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock {
 
-- (void)removeClientAsChannelsAdditionToGroupObserver {
-    
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:YES
+            withBlock:callbackBlock andToken:callbackToken];
 }
 
 - (void)addChannelsAdditionToGroupObserver:(id)observer
                          withCallbackBlock:(PNClientChannelsAdditionToGroupHandlingBlock)callbackBlock {
     
-    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:NO
-            withBlock:callbackBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsAdditionToGroup
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeChannelsAdditionToGroupObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsAdditionToGroup oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsAdditionToGroup
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsChannelsRemovalFromGroupObserverWithCallbackBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:YES
-            withBlock:callbackBlock];
-}
+- (void)addClientAsChannelsRemovalFromGroupObserverWithToken:(NSString *)callbackToken
+                                                    andBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock {
 
-- (void)removeClientAsChannelsRemovalFromGroupObserver {
-    
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:YES
+            withBlock:callbackBlock andToken:callbackToken];
 }
 
 - (void)addChannelsRemovalFromGroupObserver:(id)observer
                           withCallbackBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)callbackBlock {
     
-    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:NO
-            withBlock:callbackBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientChannelsRemovalFromGroup
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeChannelsRemovalFromGroupObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsRemovalFromGroup oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientChannelsRemovalFromGroup
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
 #pragma mark - Client channels action/event observation
 
+- (void)addClientAsSubscriptionObserverWithBlock:(PNClientChannelSubscriptionHandlerBlock)handleBlock {
+
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientSubscriptionOnChannels
+         oneTimeEvent:YES withBlock:handleBlock andToken:nil];
+}
+
 - (void)addClientChannelSubscriptionStateObserver:(id)observer
+                                withCallbackBlock:(PNClientChannelSubscriptionHandlerBlock)callbackBlock {
 
-                           withCallbackBlock:(PNClientChannelSubscriptionHandlerBlock)callbackBlock {
+    [self addObserver:observer forEvent:PNObservationEvents.clientSubscriptionOnChannels
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
+}
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientSubscriptionOnChannels oneTimeEvent:NO
-            withBlock:callbackBlock];
+- (void)removeClientAsSubscriptionObserver {
+
+    [self removeObserver:self.defaultObserver
+                forEvent:PNObservationEvents.clientSubscriptionOnChannels oneTimeEvent:YES
+       withCallbackToken:nil];
 }
 
 - (void)removeClientChannelSubscriptionStateObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientSubscriptionOnChannels oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientSubscriptionOnChannels
+            oneTimeEvent:NO withCallbackToken:nil];
+}
+
+- (void)addClientAsUnsubscribeObserverWithBlock:(PNClientChannelUnsubscriptionHandlerBlock)handleBlock {
+
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientUnsubscribeFromChannels oneTimeEvent:YES
+            withBlock:handleBlock andToken:nil];
 }
 
 - (void)addClientChannelUnsubscriptionObserver:(id)observer
                              withCallbackBlock:(PNClientChannelUnsubscriptionHandlerBlock)callbackBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientUnsubscribeFromChannels oneTimeEvent:NO
-            withBlock:callbackBlock];
-}
-
-- (void)removeClientChannelUnsubscriptionObserver:(id)observer {
-
-    [self removeObserver:observer forEvent:PNObservationEvents.clientUnsubscribeFromChannels oneTimeEvent:NO];
-}
-
-
-#pragma mark - Subscription observation
-
-- (void)addClientAsSubscriptionObserverWithBlock:(PNClientChannelSubscriptionHandlerBlock)handleBlock {
-
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientSubscriptionOnChannels oneTimeEvent:YES
-            withBlock:handleBlock];
-}
-
-- (void)removeClientAsSubscriptionObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientSubscriptionOnChannels
-            oneTimeEvent:YES];
-}
-
-- (void)addClientAsUnsubscribeObserverWithBlock:(PNClientChannelUnsubscriptionHandlerBlock)handleBlock {
-
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientUnsubscribeFromChannels oneTimeEvent:YES
-            withBlock:handleBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientUnsubscribeFromChannels
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeClientAsUnsubscribeObserver {
 
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientUnsubscribeFromChannels
-            oneTimeEvent:YES];
+    [self removeObserver:self.defaultObserver
+                forEvent:PNObservationEvents.clientUnsubscribeFromChannels oneTimeEvent:YES
+       withCallbackToken:nil];
+}
+
+- (void)removeClientChannelUnsubscriptionObserver:(id)observer {
+
+    [self removeObserver:observer forEvent:PNObservationEvents.clientUnsubscribeFromChannels
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
@@ -810,359 +802,335 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 - (void)addClientAsPresenceEnablingObserverWithBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientPresenceEnableOnChannels oneTimeEvent:YES
-            withBlock:handlerBlock];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientPresenceEnableOnChannels oneTimeEvent:YES
+            withBlock:handlerBlock andToken:nil];
+}
+
+- (void)addClientPresenceEnablingObserver:(id)observer
+                        withCallbackBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
+
+    [self addObserver:observer forEvent:PNObservationEvents.clientPresenceEnableOnChannels
+         oneTimeEvent:NO withBlock:handlerBlock andToken:nil];
 }
 
 - (void)removeClientAsPresenceEnabling {
 
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientPresenceEnableOnChannels
-            oneTimeEvent:YES];
-}
-
-- (void)addClientAsPresenceDisablingObserverWithBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
-
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientPresenceDisableOnChannels oneTimeEvent:YES
-            withBlock:handlerBlock];
-}
-
-- (void)removeClientAsPresenceDisabling {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientPresenceDisableOnChannels
-            oneTimeEvent:YES];
-}
-
-- (void)addClientPresenceEnablingObserver:(id)observer withCallbackBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
-
-    [self addObserver:observer forEvent:PNObservationEvents.clientPresenceEnableOnChannels oneTimeEvent:NO
-            withBlock:handlerBlock];
+    [self removeObserver:self.defaultObserver
+                forEvent:PNObservationEvents.clientPresenceEnableOnChannels oneTimeEvent:YES
+       withCallbackToken:nil];
 }
 
 - (void)removeClientPresenceEnablingObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientPresenceEnableOnChannels oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientPresenceEnableOnChannels
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientPresenceDisablingObserver:(id)observer withCallbackBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
+- (void)addClientAsPresenceDisablingObserverWithBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientPresenceDisableOnChannels oneTimeEvent:NO
-            withBlock:handlerBlock];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientPresenceDisableOnChannels oneTimeEvent:YES
+            withBlock:handlerBlock andToken:nil];
+}
+
+- (void)addClientPresenceDisablingObserver:(id)observer
+                         withCallbackBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
+
+    [self addObserver:observer forEvent:PNObservationEvents.clientPresenceDisableOnChannels
+         oneTimeEvent:NO withBlock:handlerBlock andToken:nil];
+}
+
+- (void)removeClientAsPresenceDisabling {
+
+    [self removeObserver:self.defaultObserver
+                forEvent:PNObservationEvents.clientPresenceDisableOnChannels oneTimeEvent:YES
+       withCallbackToken:nil];
 }
 
 - (void)removeClientPresenceDisablingObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientPresenceDisableOnChannels oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientPresenceDisableOnChannels
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
 #pragma mark - APNS interaction observation
 
-- (void)addClientAsPushNotificationsEnableObserverWithBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
+- (void)addClientAsPushNotificationsEnableObserverWithToken:(NSString *)callbackToken
+                                                   andBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientPushNotificationEnabling oneTimeEvent:YES
-            withBlock:handlerBlock];
-}
-
-- (void)removeClientAsPushNotificationsEnableObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientPushNotificationEnabling
-            oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientPushNotificationEnabling oneTimeEvent:YES
+            withBlock:handlerBlock andToken:callbackToken];
 }
 
 - (void)addClientPushNotificationsEnableObserver:(id)observer
                                withCallbackBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientPushNotificationEnabling oneTimeEvent:NO
-            withBlock:handlerBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientPushNotificationEnabling
+         oneTimeEvent:NO withBlock:handlerBlock andToken:nil];
 }
 
 - (void)removeClientPushNotificationsEnableObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientPushNotificationEnabling oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientPushNotificationEnabling
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsPushNotificationsDisableObserverWithBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
+- (void)addClientAsPushNotificationsDisableObserverWithToken:(NSString *)callbackToken
+                                                    andBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientPushNotificationDisabling oneTimeEvent:YES
-            withBlock:handlerBlock];
-}
-
-- (void)removeClientAsPushNotificationsDisableObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientPushNotificationDisabling
-            oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientPushNotificationDisabling oneTimeEvent:YES
+            withBlock:handlerBlock andToken:callbackToken];
 }
 
 - (void)addClientPushNotificationsDisableObserver:(id)observer
                                 withCallbackBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientPushNotificationDisabling oneTimeEvent:NO
-            withBlock:handlerBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientPushNotificationDisabling
+         oneTimeEvent:NO withBlock:handlerBlock andToken:nil];
 }
 
 - (void)removeClientPushNotificationsDisableObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientPushNotificationDisabling oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientPushNotificationDisabling
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsPushNotificationsEnabledChannelsObserverWithBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
+- (void)addClientAsPushNotificationsEnabledChannelsObserverWithToken:(NSString *)callbackToken
+                                                            andBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
-         oneTimeEvent:YES withBlock:handlerBlock];
-}
-
-- (void)removeClientAsPushNotificationsEnabledChannelsObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
-            oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
+         oneTimeEvent:YES withBlock:handlerBlock andToken:callbackToken];
 }
 
 - (void)addClientPushNotificationsEnabledChannelsObserver:(id)observer
                                         withCallbackBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
-         oneTimeEvent:NO withBlock:handlerBlock];
+    [self addObserver:observer
+             forEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
+         oneTimeEvent:NO withBlock:handlerBlock andToken:nil];
 }
 
 - (void)removeClientPushNotificationsEnabledChannelsObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
-            oneTimeEvent:NO];
+    [self removeObserver:observer
+                forEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsPushNotificationsRemoveObserverWithBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
+- (void)addClientAsPushNotificationsRemoveObserverWithToken:(NSString *)callbackToken
+                                                   andBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
-         oneTimeEvent:YES withBlock:handlerBlock];
-}
-
-- (void)removeClientAsPushNotificationsRemoveObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
-            oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
+         oneTimeEvent:YES withBlock:handlerBlock andToken:callbackToken];
 }
 
 - (void)addClientPushNotificationsRemoveObserver:(id)observer
                                withCallbackBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
-         oneTimeEvent:NO withBlock:handlerBlock];
+    [self addObserver:observer
+             forEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
+         oneTimeEvent:NO withBlock:handlerBlock andToken:nil];
 }
 
 - (void)removeClientPushNotificationsRemoveObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
-            oneTimeEvent:NO];
+    [self removeObserver:observer
+                forEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
 #pragma mark - Time token observation
 
-- (void)addClientAsTimeTokenReceivingObserverWithCallbackBlock:(PNClientTimeTokenReceivingCompleteBlock)callbackBlock {
+- (void)addClientAsTimeTokenReceivingObserverWithToken:(NSString *)callbackToken
+                                              andBlock:(PNClientTimeTokenReceivingCompleteBlock)callbackBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientTimeTokenReceivingComplete
-         oneTimeEvent:YES withBlock:callbackBlock];
-}
-
-- (void)removeClientAsTimeTokenReceivingObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientTimeTokenReceivingComplete
-            oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientTimeTokenReceivingComplete oneTimeEvent:YES
+            withBlock:callbackBlock andToken:callbackToken];
 }
 
 - (void)addTimeTokenReceivingObserver:(id)observer
                     withCallbackBlock:(PNClientTimeTokenReceivingCompleteBlock)callbackBlock {
 
     [self addObserver:observer forEvent:PNObservationEvents.clientTimeTokenReceivingComplete
-         oneTimeEvent:NO withBlock:callbackBlock];
+         oneTimeEvent:NO withBlock:callbackBlock andToken:nil];
 }
 
 - (void)removeTimeTokenReceivingObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientTimeTokenReceivingComplete oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientTimeTokenReceivingComplete
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
 #pragma mark - Message sending observers
 
-- (void)addClientAsMessageProcessingObserverWithBlock:(PNClientMessageProcessingBlock)handleBlock {
+- (void)addClientAsMessageProcessingObserverWithToken:(NSString *)callbackToken
+                                             andBlock:(PNClientMessageProcessingBlock)handleBlock {
 
-    [self addMessageProcessingObserver:self.defaultObserver withBlock:handleBlock oneTimeEvent:YES];
-
-}
-- (void)removeClientAsMessageProcessingObserver {
-
-    [self removeMessageProcessingObserver:self.defaultObserver oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientMessageSendCompletion
+         oneTimeEvent:YES withBlock:handleBlock andToken:callbackToken];
 }
 
-- (void)addMessageProcessingObserver:(id)observer withBlock:(PNClientMessageProcessingBlock)handleBlock {
+- (void)addMessageProcessingObserver:(id)observer
+                           withBlock:(PNClientMessageProcessingBlock)handleBlock {
 
-    [self addMessageProcessingObserver:observer withBlock:handleBlock oneTimeEvent:NO];
+    [self addObserver:observer forEvent:PNObservationEvents.clientMessageSendCompletion
+         oneTimeEvent:NO withBlock:handleBlock andToken:nil];
 }
 
 - (void)removeMessageProcessingObserver:(id)observer {
 
-    [self removeMessageProcessingObserver:observer oneTimeEvent:NO];
-}
-
-- (void)addMessageProcessingObserver:(id)observer withBlock:(PNClientMessageProcessingBlock)handleBlock
-                        oneTimeEvent:(BOOL)isOneTimeEventObserver {
-
-    [self addObserver:observer forEvent:PNObservationEvents.clientMessageSendCompletion
-         oneTimeEvent:isOneTimeEventObserver withBlock:handleBlock];
-}
-
-- (void)removeMessageProcessingObserver:(id)observer oneTimeEvent:(BOOL)isOneTimeEventObserver {
-
     [self removeObserver:observer forEvent:PNObservationEvents.clientMessageSendCompletion
-            oneTimeEvent:isOneTimeEventObserver];
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 - (void)addMessageReceiveObserver:(id)observer withBlock:(PNClientMessageHandlingBlock)handleBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientReceivedMessage oneTimeEvent:NO
-            withBlock:handleBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientReceivedMessage
+         oneTimeEvent:NO withBlock:handleBlock andToken:nil];
 }
 
 - (void)removeMessageReceiveObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientReceivedMessage oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientReceivedMessage
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
 #pragma mark - Presence observing
 
-- (void)addPresenceEventObserver:(id)observer withBlock:(PNClientPresenceEventHandlingBlock)handleBlock {
+- (void)addPresenceEventObserver:(id)observer
+                       withBlock:(PNClientPresenceEventHandlingBlock)handleBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientReceivedPresenceEvent oneTimeEvent:NO
-            withBlock:handleBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientReceivedPresenceEvent
+         oneTimeEvent:NO withBlock:handleBlock andToken:nil];
 }
 
 - (void)removePresenceEventObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientReceivedPresenceEvent oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientReceivedPresenceEvent
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
 #pragma mark - History observers
 
-- (void)addClientAsHistoryDownloadObserverWithBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
+- (void)addClientAsHistoryDownloadObserverWithToken:(NSString *)callbackToken
+                                           andBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientReceivedHistory oneTimeEvent:YES
-            withBlock:handleBlock];
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientReceivedHistory
+         oneTimeEvent:YES withBlock:handleBlock andToken:callbackToken];
 }
 
-- (void)removeClientAsHistoryDownloadObserver {
+- (void)addMessageHistoryProcessingObserver:(id)observer
+                                  withBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
 
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientReceivedHistory oneTimeEvent:YES];
-}
-
-- (void)addMessageHistoryProcessingObserver:(id)observer withBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
-
-    [self addObserver:observer forEvent:PNObservationEvents.clientReceivedHistory oneTimeEvent:NO withBlock:handleBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientReceivedHistory
+         oneTimeEvent:NO withBlock:handleBlock andToken:nil];
 }
 
 - (void)removeMessageHistoryProcessingObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientReceivedHistory oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientReceivedHistory
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
 #pragma mark - PAM observer
 
-- (void)addClientAsAccessRightsChangeObserverWithBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientAccessRightsChange oneTimeEvent:YES
-            withBlock:handlerBlock];
+- (void)addClientAsAccessRightsChangeObserverWithToken:(NSString *)callbackToken
+                                              andBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientAccessRightsChange
+         oneTimeEvent:YES withBlock:handlerBlock andToken:callbackToken];
 }
 
-- (void)removeClientAsAccessRightsChangeObserver {
+- (void)addAccessRightsChangeObserver:(id)observer
+                            withBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
     
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientAccessRightsChange oneTimeEvent:YES];
+    [self addObserver:observer forEvent:PNObservationEvents.clientAccessRightsChange
+         oneTimeEvent:NO withBlock:handlerBlock andToken:nil];
 }
 
-- (void)addAccessRightsChangeObserver:(id)observer withBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
-    
-    [self addObserver:observer forEvent:PNObservationEvents.clientAccessRightsChange oneTimeEvent:NO
-            withBlock:handlerBlock];
-}
 - (void)removeAccessRightsObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientAccessRightsChange oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientAccessRightsChange
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsAccessRightsAuditObserverWithBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
-    
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientAccessRightsAudit oneTimeEvent:YES
-            withBlock:handlerBlock];
+- (void)addClientAsAccessRightsAuditObserverWithToken:(NSString *)callbackToken
+                                             andBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientAccessRightsAudit
+         oneTimeEvent:YES withBlock:handlerBlock andToken:callbackToken];
     
 }
 
-- (void)removeClientAsAccessRightsAuditObserver {
-    
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientAccessRightsAudit oneTimeEvent:YES];
-}
-
-- (void)addAccessRightsAuditObserver:(id)observer withBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+- (void)addAccessRightsAuditObserver:(id)observer
+                           withBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
     
     [self addObserver:observer forEvent:PNObservationEvents.clientAccessRightsAudit oneTimeEvent:NO
-            withBlock:handlerBlock];
+            withBlock:handlerBlock andToken:nil];
 }
 
 - (void)removeAccessRightsAuditObserver:(id)observer {
     
-    [self removeObserver:observer forEvent:PNObservationEvents.clientAccessRightsAudit oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientAccessRightsAudit
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
 #pragma mark - Participants observer
 
+- (void)addClientAsParticipantsListDownloadObserverWithToken:(NSString *)callbackToken
+                                                    andBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientReceivedParticipantsList oneTimeEvent:YES
+            withBlock:handleBlock andToken:callbackToken];
+
+}
+
 - (void)addChannelParticipantsListProcessingObserver:(id)observer
                                            withBlock:(PNClientParticipantsHandlingBlock)handleBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientReceivedParticipantsList oneTimeEvent:NO
-            withBlock:handleBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientReceivedParticipantsList
+         oneTimeEvent:NO withBlock:handleBlock andToken:nil];
 }
 
 - (void)removeChannelParticipantsListProcessingObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientReceivedParticipantsList oneTimeEvent:NO];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientReceivedParticipantsList
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
-- (void)addClientAsParticipantsListDownloadObserverWithBlock:(PNClientParticipantsHandlingBlock)handleBlock {
+- (void)addClientAsParticipantChannelsListDownloadObserverWithToken:(NSString *)callbackToken
+                                                           andBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
 
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientReceivedParticipantsList oneTimeEvent:YES
-            withBlock:handleBlock];
-
-}
-
-- (void)removeClientAsParticipantsListDownloadObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientReceivedParticipantsList
-            oneTimeEvent:YES];
+    [self addObserver:self.defaultObserver
+             forEvent:PNObservationEvents.clientParticipantChannelsList oneTimeEvent:YES
+            withBlock:handleBlock andToken:callbackToken];
 }
 
 - (void)addClientParticipantChannelsListDownloadObserver:(id)observer
                                                withBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
 
-    [self addObserver:observer forEvent:PNObservationEvents.clientParticipantChannelsList oneTimeEvent:NO
-            withBlock:handleBlock];
+    [self addObserver:observer forEvent:PNObservationEvents.clientParticipantChannelsList
+         oneTimeEvent:NO withBlock:handleBlock andToken:nil];
 }
 
 - (void)removeClientParticipantChannelsListDownloadObserver:(id)observer {
 
-    [self removeObserver:observer forEvent:PNObservationEvents.clientParticipantChannelsList oneTimeEvent:NO];
-}
-
-- (void)addClientAsParticipantChannelsListDownloadObserverWithBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
-
-    [self addObserver:self.defaultObserver forEvent:PNObservationEvents.clientParticipantChannelsList oneTimeEvent:YES
-            withBlock:handleBlock];
-}
-
-- (void)removeClientAsParticipantChannelsListDownloadObserver {
-
-    [self removeObserver:self.defaultObserver forEvent:PNObservationEvents.clientParticipantChannelsList oneTimeEvent:YES];
+    [self removeObserver:observer forEvent:PNObservationEvents.clientParticipantChannelsList
+            oneTimeEvent:NO withCallbackToken:nil];
 }
 
 
@@ -1174,29 +1142,36 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     BOOL connected = YES;
     PNError *connectionError = nil;
     NSString *origin = nil;
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
     
-    if([notification.name isEqualToString:kPNClientDidConnectToOriginNotification] ||
-       [notification.name isEqualToString:kPNClientDidDisconnectFromOriginNotification]) {
+    if([notificationName isEqualToString:kPNClientDidConnectToOriginNotification] ||
+       [notificationName isEqualToString:kPNClientDidDisconnectFromOriginNotification]) {
         
-        origin = (NSString *)notification.userInfo;
-        connected = [notification.name isEqualToString:kPNClientDidConnectToOriginNotification];
+        origin = (NSString *)[notification pn_data];
+        connected = [notificationName isEqualToString:kPNClientDidConnectToOriginNotification];
     }
-    else if([notification.name isEqualToString:kPNClientConnectionDidFailWithErrorNotification]) {
+    else if([notificationName isEqualToString:kPNClientConnectionDidFailWithErrorNotification]) {
         
         connected = NO;
-        connectionError = (PNError *)notification.userInfo;
+        connectionError = (PNError *)[notification pn_data];
         origin = (NSString *)connectionError.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientConnectionStateChange withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientConnectionStateChange
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientConnectionStateChange];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientConnectionStateChange
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientConnectionStateChangeBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1209,29 +1184,37 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }];
 }
 
-- (void)handleClientMetadataRetrieveProcess:(NSNotification *)notification {
+- (void)handleClientStateRetrieveProcess:(NSNotification *)notification {
 
     PNError *error = nil;
     PNClient *client = nil;
-    if ([[notification name] isEqualToString:kPNClientDidReceiveClientStateNotification]) {
 
-        client = (PNClient *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientDidReceiveClientStateNotification]) {
+
+        client = (PNClient *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         client = (PNClient *)error.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientMetadataRetrieval withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientStateRetrieval
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientMetadataRetrieval];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientStateRetrieval
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientStateRetrieveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1244,29 +1227,37 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }];
 }
 
-- (void)handleClientMetadataUpdateProcess:(NSNotification *)notification {
+- (void)handleClientStateUpdateProcess:(NSNotification *)notification {
 
     PNError *error = nil;
     PNClient *client = nil;
-    if ([[notification name] isEqualToString:kPNClientDidUpdateClientStateNotification]) {
 
-        client = (PNClient *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientDidUpdateClientStateNotification]) {
+
+        client = (PNClient *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         client = (PNClient *)error.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientMetadataUpdate withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientStateUpdate
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientMetadataUpdate];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientStateUpdate
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientStateUpdateHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1284,38 +1275,45 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     NSArray *groups = nil;
     NSString *namespaceName = nil;
     PNError *error = nil;
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
     
     // Check whether arrived notification that channel groups retrieved or not
-    if ([notification.name isEqualToString:kPNClientChannelGroupsRequestCompleteNotification]) {
+    if ([notificationName isEqualToString:kPNClientChannelGroupsRequestCompleteNotification]) {
         
-        if ([notification.userInfo isKindOfClass:[NSDictionary class]]) {
+        if ([[notification pn_data] isKindOfClass:[NSDictionary class]]) {
             
-            namespaceName = [[notification.userInfo allKeys] lastObject];
+            namespaceName = [[[notification pn_data] allKeys] lastObject];
             if (namespaceName) {
                 
-                groups = [notification.userInfo valueForKey:namespaceName];
+                groups = [[notification pn_data] valueForKey:namespaceName];
             }
         }
         else {
             
-            groups = (NSArray *)notification.userInfo;
+            groups = (NSArray *)[notification pn_data];
         }
     }
     else {
         
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         namespaceName = error.associatedObject;
     }
     
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientChannelGroupsRequest withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientChannelGroupsRequest
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupsRequest];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupsRequest
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelGroupsRequestHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1332,26 +1330,33 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     
     NSArray *namespaces = nil;
     PNError *error = nil;
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
     
     // Check whether arrived notification that channel group namespaces retrieved or not
-    if ([notification.name isEqualToString:kPNClientChannelGroupNamespacesRequestCompleteNotification]) {
+    if ([notificationName isEqualToString:kPNClientChannelGroupNamespacesRequestCompleteNotification]) {
         
-        namespaces = (NSArray *)notification.userInfo;
+        namespaces = (NSArray *)[notification pn_data];
     }
     else {
         
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
     }
     
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientChannelGroupNamespacesRequest withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientChannelGroupNamespacesRequest
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupNamespacesRequest];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupNamespacesRequest
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelGroupNamespacesRequestHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1368,15 +1373,18 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     
     id namespace = nil;
     PNError *error = nil;
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
     
     // Check whether arrived notification that channel group namespace removed or not
-    if ([notification.name isEqualToString:kPNClientChannelGroupNamespaceRemovalCompleteNotification]) {
+    if ([notificationName isEqualToString:kPNClientChannelGroupNamespaceRemovalCompleteNotification]) {
         
-        namespace = (NSString *)notification.userInfo;
+        namespace = (NSString *)[notification pn_data];
     }
     else {
         
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         namespace = error.associatedObject;
         if ([namespace isKindOfClass:[NSArray class]]) {
             
@@ -1385,14 +1393,18 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }
     
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupNamespaceRemoval
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelGroupNamespaceRemoveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1409,15 +1421,18 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     
     id group = nil;
     PNError *error = nil;
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
     
     // Check whether arrived notification that channel group removed or not
-    if ([notification.name isEqualToString:kPNClientChannelGroupRemovalCompleteNotification]) {
+    if ([notificationName isEqualToString:kPNClientChannelGroupRemovalCompleteNotification]) {
         
-        group = (PNChannelGroup *)notification.userInfo;
+        group = (PNChannelGroup *)[notification pn_data];
     }
     else {
         
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         group = error.associatedObject;
         if ([group isKindOfClass:[NSArray class]]) {
             
@@ -1426,14 +1441,18 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     }
     
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientChannelGroupRemoval withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientChannelGroupRemoval
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupRemoval];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelGroupRemoval
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelGroupRemoveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1450,31 +1469,38 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     
     PNChannelGroup *group = nil;
     PNError *error = nil;
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
     
     // Check whether arrived notification that channels list for group retrieved or not
-    if ([notification.name isEqualToString:kPNClientChannelsForGroupRequestCompleteNotification]) {
+    if ([notificationName isEqualToString:kPNClientChannelsForGroupRequestCompleteNotification]) {
         
-        group = (PNChannelGroup *)notification.userInfo;
+        group = (PNChannelGroup *)[notification pn_data];
     }
     else {
         
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         group = (PNChannelGroup *)error.associatedObject;
-        if ([group isKindOfClass:[NSArray class]]) {
+        if ([error.associatedObject isKindOfClass:[NSArray class]]) {
             
-            group = [(NSArray *)group lastObject];
+            group = [(NSArray *)error.associatedObject lastObject];
         }
     }
     
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientChannelsForGroupRequest withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientChannelsForGroupRequest
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelsForGroupRequest];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientChannelsForGroupRequest
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelsForGroupRequestHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1492,35 +1518,41 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     PNChannelGroupChange *change = nil;
     BOOL addingChannels = YES;
     PNError *error = nil;
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
     
     NSString *eventName = PNObservationEvents.clientChannelsAdditionToGroup;
-    if ([notification.name isEqualToString:kPNClientGroupChannelsRemovalCompleteNotification] ||
-        [notification.name isEqualToString:kPNClientGroupChannelsRemovalDidFailWithErrorNotification]) {
+    if ([notificationName isEqualToString:kPNClientGroupChannelsRemovalCompleteNotification] ||
+        [notificationName isEqualToString:kPNClientGroupChannelsRemovalDidFailWithErrorNotification]) {
         
         addingChannels = NO;
         eventName = PNObservationEvents.clientChannelsRemovalFromGroup;
     }
-    if ([notification.name isEqualToString:kPNClientGroupChannelsAdditionCompleteNotification] ||
-        [notification.name isEqualToString:kPNClientGroupChannelsRemovalCompleteNotification]) {
+    if ([notificationName isEqualToString:kPNClientGroupChannelsAdditionCompleteNotification] ||
+        [notificationName isEqualToString:kPNClientGroupChannelsRemovalCompleteNotification]) {
         
-        change = (PNChannelGroupChange *)notification.userInfo;
+        change = (PNChannelGroupChange *)[notification pn_data];
     }
     else {
         
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         change = error.associatedObject;
     }
     
     
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:eventName withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:eventName withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:eventName];
+        [self removeOneTimeObserversForEvent:eventName
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Receive reference on handling block
                 id block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1528,11 +1560,11 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
                     if (addingChannels) {
 
-                        ((PNClientChannelsAdditionToGroupHandlingBlock)block)(change.group, change.channels, error);
+                        ((PNClientChannelsAdditionToGroupHandlingBlock) block)(change.group, change.channels, error);
                     }
                     else {
 
-                        ((PNClientChannelsRemovalFromGroupHandlingBlock)block)(change.group, change.channels, error);
+                        ((PNClientChannelsRemovalFromGroupHandlingBlock) block)(change.group, change.channels, error);
                     }
                 }
             }];
@@ -1546,26 +1578,29 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     PNError *error = nil;
     PNSubscriptionProcessState state = PNSubscriptionProcessNotSubscribedState;
 
-    // Check whether arrived notification that subscription failed or not
-    if ([notification.name isEqualToString:kPNClientSubscriptionDidFailNotification] ||
-        [notification.name isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
 
-        error = (PNError *)notification.userInfo;
+    // Check whether arrived notification that subscription failed or not
+    if ([notificationName isEqualToString:kPNClientSubscriptionDidFailNotification] ||
+        [notificationName isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
+
+        error = (PNError *)[notification pn_data];
         channels = error.associatedObject;
     }
     else {
 
         // Retrieve list of channels on which event is occurred
-        channels = (NSArray *)notification.userInfo;
+        channels = (NSArray *)[notification pn_data];
         state = PNSubscriptionProcessSubscribedState;
 
         // Check whether arrived notification that subscription will be restored
-        if ([notification.name isEqualToString:kPNClientSubscriptionWillRestoreNotification]) {
+        if ([notificationName isEqualToString:kPNClientSubscriptionWillRestoreNotification]) {
 
             state = PNSubscriptionProcessWillRestoreState;
         }
         // Check whether arrived notification that subscription restored
-        else if ([notification.name isEqualToString:kPNClientSubscriptionDidRestoreNotification]) {
+        else if ([notificationName isEqualToString:kPNClientSubscriptionDidRestoreNotification]) {
 
             state = PNSubscriptionProcessRestoredState;
         }
@@ -1573,40 +1608,59 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientSubscriptionOnChannels withBlock:^(NSMutableArray *allObservers) {
+    [self observersForEvent:PNObservationEvents.clientSubscriptionOnChannels
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *allObservers) {
 
         NSMutableArray *observers = [NSMutableArray arrayWithArray:allObservers];
-        if ([notification.name isEqualToString:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification] ||
-                [notification.name isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
+        if ([notificationName isEqualToString:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification] ||
+            [notificationName isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
 
-            NSArray *oneTimeEventObservers = [self oneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels];
-            if ([oneTimeEventObservers count]) {
+            id oneTimeEventObservers = [self oneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels
+                                                    withCallbackToken:[notification pn_callbackToken]];
 
-                [oneTimeEventObservers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                        BOOL *observerDataEnumeratorStop) {
+            BOOL(^oneTimeProcessingBlock)(NSMutableDictionary *) = ^BOOL(NSMutableDictionary *observerData){
 
-                    if ([[observerData valueForKey:PNObservationObserverData.observer] isEqual:self.defaultObserver]) {
+                BOOL foundObject = NO;
+                if ([[observerData valueForKey:PNObservationObserverData.observer] isEqual:self.defaultObserver]) {
 
-                        [observers removeAllObjects];
-                        [observers addObject:observerData];
-                        [self removeObserver:[observerData valueForKey:PNObservationObserverData.observer]
-                                    forEvent:PNObservationEvents.clientSubscriptionOnChannels
-                                oneTimeEvent:YES];
-                        *observerDataEnumeratorStop = YES;
-                    }
+                    [observers removeAllObjects];
+                    [observers addObject:observerData];
+                    [self removeObserver:[observerData valueForKey:PNObservationObserverData.observer]
+                                forEvent:PNObservationEvents.clientSubscriptionOnChannels
+                            oneTimeEvent:YES withCallbackToken:[notification pn_callbackToken]];
+                    foundObject = YES;
+                }
+
+                return foundObject;
+            };
+
+            if ([oneTimeEventObservers isKindOfClass:[NSMutableDictionary class]]) {
+
+                oneTimeProcessingBlock(oneTimeEventObservers);
+            }
+            else if ([(NSMutableArray *)oneTimeEventObservers count]) {
+
+                [(NSMutableArray *)oneTimeEventObservers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                                                      NSUInteger observerDataIdx,
+                                                                                      BOOL *observerDataEnumeratorStop) {
+
+                    *observerDataEnumeratorStop = oneTimeProcessingBlock(observerData);
                 }];
             }
         }
         else {
 
             // Clean one time observers for specific event
-            [self removeOneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels];
+            [self removeOneTimeObserversForEvent:PNObservationEvents.clientSubscriptionOnChannels
+                                andCallbackToken:[notification pn_callbackToken]];
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelSubscriptionHandlerBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1623,51 +1677,74 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientUnsubscriptionDidCompleteNotification] ||
-        [notification.name isEqualToString:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification]) {
 
-        channels = (NSArray *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientUnsubscriptionDidCompleteNotification] ||
+        [notificationName isEqualToString:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification]) {
+
+        channels = (NSArray *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         channels = (NSArray *)error.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientUnsubscribeFromChannels withBlock:^(NSMutableArray *allObservers) {
+    [self observersForEvent:PNObservationEvents.clientUnsubscribeFromChannels
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *allObservers) {
 
         NSMutableArray *observers = [NSMutableArray arrayWithArray:allObservers];
-        if ([notification.name isEqualToString:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification] ||
-                [notification.name isEqualToString:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification]) {
+        if ([notificationName isEqualToString:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification] ||
+            [notificationName isEqualToString:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification]) {
 
-            NSArray *oneTimeEventObservers = [self oneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
-            if ([oneTimeEventObservers count]) {
+            id oneTimeEventObservers = [self oneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels
+                                                    withCallbackToken:[notification pn_callbackToken]];
 
-                [oneTimeEventObservers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                        BOOL *observerDataEnumeratorStop) {
+            BOOL(^oneTimeProcessingBlock)(NSMutableDictionary *) = ^BOOL(NSMutableDictionary *observerData){
 
-                    if ([[observerData valueForKey:PNObservationObserverData.observer] isEqual:self.defaultObserver]) {
+                BOOL foundObject = NO;
+                if ([[observerData valueForKey:PNObservationObserverData.observer] isEqual:self.defaultObserver]) {
 
-                        [observers removeAllObjects];
-                        [observers addObject:observerData];
-                        [self removeObserver:[observerData valueForKey:PNObservationObserverData.observer]
-                                    forEvent:PNObservationEvents.clientUnsubscribeFromChannels
-                                oneTimeEvent:YES];
-                        *observerDataEnumeratorStop = YES;
-                    }
+                    [observers removeAllObjects];
+                    [observers addObject:observerData];
+                    [self removeObserver:[observerData valueForKey:PNObservationObserverData.observer]
+                                forEvent:PNObservationEvents.clientUnsubscribeFromChannels
+                            oneTimeEvent:YES withCallbackToken:[notification pn_callbackToken]];
+                    foundObject = YES;
+                }
+
+                return foundObject;
+            };
+
+            if ([oneTimeEventObservers isKindOfClass:[NSMutableDictionary class]]) {
+
+                oneTimeProcessingBlock(oneTimeEventObservers);
+            }
+            else if ([(NSMutableArray *)oneTimeEventObservers count]) {
+
+                [(NSMutableArray *)oneTimeEventObservers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                                                      NSUInteger observerDataIdx,
+                                                                                      BOOL *observerDataEnumeratorStop) {
+
+                    *observerDataEnumeratorStop = oneTimeProcessingBlock(observerData);
                 }];
             }
         }
         else {
 
             // Clean one time observers for specific event
-            [self removeOneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels];
+            [self removeOneTimeObserversForEvent:PNObservationEvents.clientUnsubscribeFromChannels
+                                andCallbackToken:[notification pn_callbackToken]];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelUnsubscriptionHandlerBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1684,25 +1761,33 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientPresenceEnablingDidCompleteNotification]) {
 
-        channels = (NSArray *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientPresenceEnablingDidCompleteNotification]) {
+
+        channels = (NSArray *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         channels = (NSArray *)error.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientPresenceEnableOnChannels withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientPresenceEnableOnChannels
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientPresenceEnableOnChannels];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientPresenceEnableOnChannels
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientPresenceEnableHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1719,25 +1804,33 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientPresenceDisablingDidCompleteNotification]) {
 
-        channels = (NSArray *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientPresenceDisablingDidCompleteNotification]) {
+
+        channels = (NSArray *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         channels = (NSArray *)error.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientPresenceDisableOnChannels withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientPresenceDisableOnChannels
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientPresenceDisableOnChannels];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientPresenceDisableOnChannels
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientPresenceDisableHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1754,35 +1847,42 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     BOOL isEnablingPushNotifications = YES;
     NSString *eventName = PNObservationEvents.clientPushNotificationEnabling;
-    if ([notification.name isEqualToString:kPNClientPushNotificationDisableDidCompleteNotification] ||
-        [notification.name isEqualToString:kPNClientPushNotificationDisableDidFailNotification]) {
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientPushNotificationDisableDidCompleteNotification] ||
+        [notificationName isEqualToString:kPNClientPushNotificationDisableDidFailNotification]) {
 
         isEnablingPushNotifications = NO;
         eventName = PNObservationEvents.clientPushNotificationDisabling;
     }
     NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientPushNotificationEnableDidCompleteNotification] ||
-        [notification.name isEqualToString:kPNClientPushNotificationDisableDidCompleteNotification]) {
+    if ([notificationName isEqualToString:kPNClientPushNotificationEnableDidCompleteNotification] ||
+        [notificationName isEqualToString:kPNClientPushNotificationDisableDidCompleteNotification]) {
 
-        channels = (NSArray *)notification.userInfo;
+        channels = (NSArray *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         channels = error.associatedObject;
     }
 
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:eventName withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:eventName withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:eventName];
+        [self removeOneTimeObserversForEvent:eventName
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Receive reference on handling block
                 id block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1790,11 +1890,11 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
                     if (isEnablingPushNotifications) {
 
-                        ((PNClientPushNotificationsEnableHandlingBlock)block)(channels, error);
+                        ((PNClientPushNotificationsEnableHandlingBlock) block)(channels, error);
                     }
                     else {
 
-                        ((PNClientPushNotificationsDisableHandlingBlock)block)(channels, error);
+                        ((PNClientPushNotificationsDisableHandlingBlock) block)(channels, error);
                     }
                 }
             }];
@@ -1805,21 +1905,28 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 - (void)handleClientPushNotificationRemoveProcess:(NSNotification *)notification {
 
     PNError *error = nil;
-    if (![notification.name isEqualToString:kPNClientPushNotificationRemoveDidCompleteNotification]) {
 
-        error = (PNError *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if (![notificationName isEqualToString:kPNClientPushNotificationRemoveDidCompleteNotification]) {
+
+        error = (PNError *)[notification pn_data];
     }
 
-
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientPushNotificationRemovalForAllChannels
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Receive reference on handling block
                 PNClientPushNotificationsRemoveHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1836,25 +1943,33 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification]) {
 
-        channels = (NSArray *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification]) {
+
+        channels = (NSArray *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
     }
 
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientPushNotificationEnabledChannelsRetrieval
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Receive reference on handling block
                 PNClientPushNotificationsEnabledChannelsHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1872,34 +1987,42 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     PNMessageState state = PNMessageSending;
     id processingData = nil;
     BOOL shouldUnsubscribe = NO;
-    if ([notification.name isEqualToString:kPNClientMessageSendingDidFailNotification]) {
+
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientMessageSendingDidFailNotification]) {
 
         state = PNMessageSendingError;
         shouldUnsubscribe = YES;
-        processingData = (PNError *)notification.userInfo;
+        processingData = (PNError *)[notification pn_data];
     }
     else {
 
-        shouldUnsubscribe = [notification.name isEqualToString:kPNClientDidSendMessageNotification];
+        shouldUnsubscribe = [notificationName isEqualToString:kPNClientDidSendMessageNotification];
         if (shouldUnsubscribe) {
 
             state = PNMessageSent;
         }
-        processingData = (PNMessage *)notification.userInfo;
+        processingData = (PNMessage *)[notification pn_data];
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientMessageSendCompletion withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientMessageSendCompletion
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         if (shouldUnsubscribe) {
 
             // Clean one time observers for specific event
-            [self removeOneTimeObserversForEvent:PNObservationEvents.clientMessageSendCompletion];
+            [self removeOneTimeObserversForEvent:PNObservationEvents.clientMessageSendCompletion
+                                andCallbackToken:[notification pn_callbackToken]];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientMessageProcessingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1915,14 +2038,18 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 - (void)handleClientDidReceiveMessage:(NSNotification *)notification {
 
     // Retrieve reference on message which was received
-    PNMessage *message = (PNMessage *)notification.userInfo;
+    PNMessage *message = (PNMessage *)[notification pn_data];
 
     // Retrieving list of observers
-    [self observersForEvent:PNObservationEvents.clientReceivedMessage withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientReceivedMessage
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
+
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientMessageHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1938,15 +2065,18 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
 
     // Retrieve reference on presence event which was received
-    PNPresenceEvent *presenceEvent = (PNPresenceEvent *)notification.userInfo;
+    PNPresenceEvent *presenceEvent = (PNPresenceEvent *)[notification pn_data];
 
     // Retrieving list of observers
-    [self observersForEvent:PNObservationEvents.clientReceivedPresenceEvent withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientReceivedPresenceEvent
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientPresenceEventHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -1965,26 +2095,38 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     PNMessagesHistory *history = nil;
     PNChannel *channel = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientDidReceiveMessagesHistoryNotification]) {
 
-        history = (PNMessagesHistory *)notification.userInfo;
-        channel = ([history.channel isKindOfClass:[NSArray class]] ? [(NSArray *)history.channel lastObject] : history.channel);
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientDidReceiveMessagesHistoryNotification]) {
+
+        history = (PNMessagesHistory *)[notification pn_data];
+        channel = ([history.channel isKindOfClass:[NSArray class]] ?
+                    [(NSArray *)history.channel lastObject] :
+                    history.channel);
     }
     else {
 
-        error = (PNError *)notification.userInfo;
-        channel = ([error.associatedObject isKindOfClass:[NSArray class]] ? [(NSArray *)error.associatedObject lastObject] : error.associatedObject);
+        error = (PNError *)[notification pn_data];
+        channel = ([error.associatedObject isKindOfClass:[NSArray class]] ?
+                    [(NSArray *)error.associatedObject lastObject] :
+                    error.associatedObject);
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientReceivedHistory withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientReceivedHistory
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedHistory];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedHistory
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientHistoryLoadHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -2001,24 +2143,32 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     PNAccessRightsCollection *collection = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientAccessRightsChangeDidCompleteNotification]) {
 
-        collection = (PNAccessRightsCollection *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientAccessRightsChangeDidCompleteNotification]) {
+
+        collection = (PNAccessRightsCollection *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientAccessRightsChange withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientAccessRightsChange
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientAccessRightsChange];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientAccessRightsChange
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelAccessRightsChangeBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -2035,24 +2185,32 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     PNAccessRightsCollection *collection = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientAccessRightsAuditDidCompleteNotification]) {
 
-        collection = (PNAccessRightsCollection *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientAccessRightsAuditDidCompleteNotification]) {
+
+        collection = (PNAccessRightsCollection *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientAccessRightsAudit withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientAccessRightsAudit
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientAccessRightsAudit];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientAccessRightsAudit
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientChannelAccessRightsAuditBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -2071,26 +2229,34 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     PNHereNow *participants = nil;
     NSArray *channels = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientDidReceiveParticipantsListNotification]) {
 
-        participants = (PNHereNow *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientDidReceiveParticipantsListNotification]) {
+
+        participants = (PNHereNow *)[notification pn_data];
         channels = [participants channels];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         channels = error.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientReceivedParticipantsList withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientReceivedParticipantsList
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedParticipantsList];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientReceivedParticipantsList
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientParticipantsHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -2109,26 +2275,34 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     PNWhereNow *channelsList = nil;
     NSString *identifier = nil;
     PNError *error = nil;
-    if ([notification.name isEqualToString:kPNClientDidReceiveParticipantChannelsListNotification]) {
 
-        channelsList = (PNWhereNow *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientDidReceiveParticipantChannelsListNotification]) {
+
+        channelsList = (PNWhereNow *)[notification pn_data];
         identifier = channelsList.identifier;
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
         identifier = error.associatedObject;
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientParticipantChannelsList withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientParticipantChannelsList
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientParticipantChannelsList];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientParticipantChannelsList
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientParticipantChannelsHandlingBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -2145,24 +2319,32 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     PNError *error = nil;
     NSNumber *timeToken = nil;
-    if ([[notification name] isEqualToString:kPNClientDidReceiveTimeTokenNotification]) {
 
-        timeToken = (NSNumber *)notification.userInfo;
+    // Retrieve reference on original notification name.
+    NSString *notificationName = [notification pn_notificationName];
+
+    if ([notificationName isEqualToString:kPNClientDidReceiveTimeTokenNotification]) {
+
+        timeToken = (NSNumber *)[notification pn_data];
     }
     else {
 
-        error = (PNError *)notification.userInfo;
+        error = (PNError *)[notification pn_data];
     }
 
     // Retrieving list of observers (including one time and persistent observers)
-    [self observersForEvent:PNObservationEvents.clientTimeTokenReceivingComplete withBlock:^(NSMutableArray *observers) {
+    [self observersForEvent:PNObservationEvents.clientTimeTokenReceivingComplete
+          withCallbackToken:[notification pn_callbackToken]
+                   andBlock:^(NSMutableArray *observers) {
 
         // Clean one time observers for specific event
-        [self removeOneTimeObserversForEvent:PNObservationEvents.clientTimeTokenReceivingComplete];
+        [self removeOneTimeObserversForEvent:PNObservationEvents.clientTimeTokenReceivingComplete
+                            andCallbackToken:[notification pn_callbackToken]];
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData, NSUInteger observerDataIdx,
-                    BOOL *observerDataEnumeratorStop) {
+            [observers enumerateObjectsUsingBlock:^(NSMutableDictionary *observerData,
+                                                    NSUInteger observerDataIdx,
+                                                    BOOL *observerDataEnumeratorStop) {
 
                 // Call handling blocks
                 PNClientTimeTokenReceivingCompleteBlock block = [observerData valueForKey:PNObservationObserverData.observerCallbackBlock];
@@ -2192,39 +2374,48 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     return [self.observers valueForKey:eventName];
 }
 
-- (NSMutableArray *)oneTimeObserversForEvent:(NSString *)eventName {
+- (id)oneTimeObserversForEvent:(NSString *)eventName withCallbackToken:(NSString *)callbackToken {
     
     if ([self.oneTimeObservers valueForKey:eventName] == nil) {
 
-        [self.oneTimeObservers setValue:[NSMutableArray array] forKey:eventName];
+        NSMutableDictionary *observersForEvent = [NSMutableDictionary dictionary];
+        [observersForEvent setValue:[NSMutableArray array] forKey:kPNObserverGeneralCallbacks];
+        [self.oneTimeObservers setValue:observersForEvent forKey:eventName];
     }
+
+    NSString *targetKey = (callbackToken ? callbackToken : kPNObserverGeneralCallbacks);
     
-    
-    return [self.oneTimeObservers valueForKey:eventName];
+
+    return [[self.oneTimeObservers valueForKey:eventName] valueForKey:targetKey];
 }
 
-- (void)observersForEvent:(NSString *)eventName withBlock:(void (^)(NSMutableArray *observers))fetchCompletionBlock {
+- (void)observersForEvent:(NSString *)eventName withCallbackToken:(NSString *)callbackToken
+                 andBlock:(void (^)(NSMutableArray *observers))fetchCompletionBlock {
     
     [self pn_dispatchBlock:^{
-        
-        // One-time events can be accessed outside of queue for reading.
-        NSMutableArray *oneTimeEventObservers = [self oneTimeObserversForEvent:eventName];
 
+        id oneTimeEventObservers = [self oneTimeObserversForEvent:eventName
+                                                withCallbackToken:callbackToken];
         NSMutableArray *persistentObservers = [self persistentObserversForEvent:eventName];
 
 
         // Composing full observers list depending on whether at least
         // one object exist in retrieved arrays
         NSMutableArray *allObservers = [NSMutableArray array];
-        if ([persistentObservers count] > 0) {
+        if ([oneTimeEventObservers isKindOfClass:[NSMutableDictionary class]]) {
+
+            [allObservers addObject:oneTimeEventObservers];
+        }
+        else if ([oneTimeEventObservers count]) {
+
+            [allObservers addObjectsFromArray:oneTimeEventObservers];
+        }
+
+        if ([persistentObservers count]) {
 
             [allObservers addObjectsFromArray:persistentObservers];
         }
 
-        if ([oneTimeEventObservers count] > 0) {
-
-            [allObservers addObjectsFromArray:oneTimeEventObservers];
-        }
 
         fetchCompletionBlock(allObservers);
     }];
@@ -2239,88 +2430,12 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Unsubscribe from all notifications
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self name:kPNClientDidConnectToOriginNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientDidDisconnectFromOriginNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientConnectionDidFailWithErrorNotification object:_defaultObserver];
+    [_notifications enumerateObjectsUsingBlock:^(id notification, NSUInteger notificationIdx,
+                                                 BOOL *notificationsEnumeratorStop) {
 
-    [notificationCenter removeObserver:self name:kPNClientDidReceiveClientStateNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientStateRetrieveDidFailWithErrorNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientDidUpdateClientStateNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientStateUpdateDidFailWithErrorNotification object:_defaultObserver];
-    
-    [notificationCenter removeObserver:self name:kPNClientChannelGroupsRequestCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientChannelGroupsRequestDidFailWithErrorNotification object:_defaultObserver];
-    
-    
-    [notificationCenter removeObserver:self name:kPNClientChannelGroupNamespacesRequestCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientChannelGroupNamespacesRequestDidFailWithErrorNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientChannelGroupNamespaceRemovalCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientChannelGroupNamespaceRemovalDidFailWithErrorNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientChannelGroupRemovalCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientChannelGroupRemovalDidFailWithErrorNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientChannelsForGroupRequestCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientChannelsForGroupRequestDidFailWithErrorNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientGroupChannelsAdditionCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientGroupChannelsAdditionDidFailWithErrorNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientGroupChannelsRemovalCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientGroupChannelsRemovalDidFailWithErrorNotification object:_defaultObserver];
-    
-    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification
-                                object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientSubscriptionWillRestoreNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidRestoreNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidFailNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification
-                                object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification
-                                object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidFailNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification
-                                object:_defaultObserver];
-
-    [notificationCenter removeObserver:self name:kPNClientPresenceEnablingDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPresenceEnablingDidFailNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPresenceDisablingDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPresenceDisablingDidFailNotification object:_defaultObserver];
-
-    [notificationCenter removeObserver:self name:kPNClientPushNotificationEnableDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPushNotificationEnableDidFailNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPushNotificationDisableDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPushNotificationDisableDidFailNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPushNotificationRemoveDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPushNotificationRemoveDidFailNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification
-                                object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientPushNotificationChannelsRetrieveDidFailNotification
-                                object:_defaultObserver];
-
-    [notificationCenter removeObserver:self name:kPNClientAccessRightsChangeDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientAccessRightsChangeDidFailNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientAccessRightsAuditDidCompleteNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientAccessRightsAuditDidFailNotification object:_defaultObserver];
-
-
-    [notificationCenter removeObserver:self name:kPNClientDidReceiveTimeTokenNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientDidFailTimeTokenReceiveNotification object:_defaultObserver];
-
-    [notificationCenter removeObserver:self name:kPNClientWillSendMessageNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientDidSendMessageNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientMessageSendingDidFailNotification object:_defaultObserver];
-
-    [notificationCenter removeObserver:self name:kPNClientDidReceiveMessageNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientDidReceivePresenceEventNotification object:_defaultObserver];
-
-    [notificationCenter removeObserver:self name:kPNClientDidReceiveMessagesHistoryNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientHistoryDownloadFailedWithErrorNotification object:_defaultObserver];
-
-    [notificationCenter removeObserver:self name:kPNClientDidReceiveParticipantsListNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientParticipantsListDownloadFailedWithErrorNotification
-                                object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientDidReceiveParticipantChannelsListNotification object:_defaultObserver];
-    [notificationCenter removeObserver:self name:kPNClientParticipantChannelsListDownloadFailedWithErrorNotification
-                                object:_defaultObserver];
+        [notificationCenter removeObserver:notification];
+    }];
+    _notifications = nil;
     
     _defaultObserver = nil;
 
