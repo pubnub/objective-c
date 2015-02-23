@@ -1,3 +1,8 @@
+02-23-2015 - 0359486 - 3.7.8.3
+
+. fixed issue cause by inappropriate place where private queue has been released for PubNub client
+
+
 02-14-2015 - 6518b765 - 3.7.8.2
 
 . changed removeChannelFromCache method behaviour

@@ -38,7 +38,7 @@ static NSString *kNamespaceSeparatorSymbol = @":";
 {
     NSArray *names = @[@"test", @"group_name_test", @"test:test", @"test_test:test", @"test_test:test:test"];
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kTestPNOriginHost publishKey:kTestPNPublishKey subscribeKey:kTestPNSubscriptionKey secretKey:nil];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
     
     _pubNub = [PubNub clientWithConfiguration:configuration];
     

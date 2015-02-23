@@ -51,11 +51,11 @@ PNDelegate
     
     _testConfiguration1 = [PNConfiguration defaultConfiguration];
     // Vadim's keys
-    _testConfiguration2 = [PNConfiguration configurationForOrigin:kTestPNOriginHost
+    _testConfiguration2 = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
                                                                        publishKey:@"pub-c-12b1444d-4535-4c42-a003-d509cc071e09" subscribeKey:@"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe"
                                                                         secretKey:@"sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz"];
     // SergeyK's keys
-    _testConfiguration3 = [PNConfiguration configurationForOrigin:kTestPNOriginHost
+    _testConfiguration3 = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
                                                                        publishKey:@"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6" subscribeKey:@"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe"
                                                                         secretKey:@"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw"];
 }

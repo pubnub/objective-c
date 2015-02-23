@@ -34,11 +34,9 @@
     _resGroup = [GCDGroup group];
     [_resGroup enter];
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                  publishKey:kTestPNPublishKey
-                                                                subscribeKey:kTestPNSubscriptionKey
-                                                                   secretKey:nil
-                                                                   cipherKey:nil];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
+    configuration.cipherKey = nil;
+    
     configuration.presenceHeartbeatTimeout = 30;
     configuration.presenceHeartbeatInterval = 7;
     
