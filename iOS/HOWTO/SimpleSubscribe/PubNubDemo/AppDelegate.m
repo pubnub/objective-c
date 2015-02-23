@@ -13,7 +13,7 @@
 @implementation AppDelegate
 
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
-    PNLog(PNLogGeneralLevel,self,@"PubNub client received message: %@", message);
+//    PNLog(PNLogGeneralLevel,self,@"PubNub client received message: %@", message);
 }
 
 

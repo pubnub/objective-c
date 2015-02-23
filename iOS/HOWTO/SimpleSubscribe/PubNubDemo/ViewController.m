@@ -35,7 +35,7 @@
                                                   
           __strong __typeof__(self) strongSelf = weakSelf;
 
-          NSLog(@"Text Length: %i", strongSelf.textView.text.length);
+          NSLog(@"Text Length: %lu", (unsigned long)strongSelf.textView.text.length);
 
           if (strongSelf.textView.text.length > 2000) {
               [strongSelf.textView setText:@""];
@@ -71,7 +71,7 @@
 
     [self.pubNub connectWithSuccessBlock:^(NSString *origin) {
 
-                PNLog(PNLogGeneralLevel, self, @"{BLOCK} PubNub client connected to: %@", origin);
+//                PNLog(PNLogGeneralLevel, self, @"{BLOCK} PubNub client connected to: %@", origin);
 
                 // wait 1 second
                 int64_t delayInSeconds = 1.0;
@@ -102,7 +102,7 @@
             // localizedRecoverySuggestion)
                          errorBlock:^(PNError *connectionError) {
                              if (connectionError.code == kPNClientConnectionFailedOnInternetFailureError) {
-                                 PNLog(PNLogGeneralLevel, self, @"Connection will be established as soon as internet connection will be restored");
+//                                 PNLog(PNLogGeneralLevel, self, @"Connection will be established as soon as internet connection will be restored");
                              }
 
                              UIAlertView *connectionErrorAlert = [UIAlertView new];

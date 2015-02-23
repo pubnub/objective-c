@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7923D8D41A35F3D600D27645 /* PubNub.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7923D8CF1A35E5D100D27645 /* PubNub.bundle */; };
 		7923D8D51A35F3DF00D27645 /* libPubNub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7923D8CD1A35E5D100D27645 /* libPubNub.a */; };
+		A57860AA1A8CB6D200C2FE1C /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A57860A91A8CB6D200C2FE1C /* libz.1.2.5.dylib */; };
 		A71C92E51851710C0039B5EC /* airb22.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A71C92E41851710C0039B5EC /* airb22.jpg */; };
 		A7E42835173AFA82000E5EE6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E42834173AFA82000E5EE6 /* UIKit.framework */; };
 		A7E42837173AFA82000E5EE6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E42836173AFA82000E5EE6 /* Foundation.framework */; };
@@ -23,7 +24,7 @@
 		A7E42851173AFA82000E5EE6 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E42850173AFA82000E5EE6 /* ViewController.m */; };
 		A7E42918173AFB07000E5EE6 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E42917173AFB07000E5EE6 /* CFNetwork.framework */; };
 		A7E4291A173AFB10000E5EE6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E42919173AFB10000E5EE6 /* SystemConfiguration.framework */; };
-		A7E4291C173AFB18000E5EE6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E4291B173AFB18000E5EE6 /* libz.dylib */; };
+		A7E4291C173AFB18000E5EE6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E4291B173AFB18000E5EE6 /* libz.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		7923D8C61A35E5D100D27645 /* PubNub.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PubNub.xcodeproj; path = ../../../../PubNub/PubNub.xcodeproj; sourceTree = "<group>"; };
+		A57860A91A8CB6D200C2FE1C /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		A71C92E41851710C0039B5EC /* airb22.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = airb22.jpg; sourceTree = "<group>"; };
 		A7E42831173AFA82000E5EE6 /* demo9.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo9.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7E42834173AFA82000E5EE6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -79,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A57860AA1A8CB6D200C2FE1C /* libz.1.2.5.dylib in Frameworks */,
 				7923D8D51A35F3DF00D27645 /* libPubNub.a in Frameworks */,
 				A7E4291C173AFB18000E5EE6 /* libz.dylib in Frameworks */,
 				A7E4291A173AFB10000E5EE6 /* SystemConfiguration.framework in Frameworks */,
@@ -124,6 +127,7 @@
 		A7E42833173AFA82000E5EE6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A57860A91A8CB6D200C2FE1C /* libz.1.2.5.dylib */,
 				7923D8C61A35E5D100D27645 /* PubNub.xcodeproj */,
 				A7E42834173AFA82000E5EE6 /* UIKit.framework */,
 				A7E42836173AFA82000E5EE6 /* Foundation.framework */,
