@@ -179,13 +179,10 @@ static NSObject *_synchronizationObject = nil;
 
 + (void)removeChannelFromCache:(PNChannel *)channel {
 
-    [_synchronizationObject pn_dispatchBlock:^{
+    if ([_channelsCache count] > 0 && channel) {
 
-        if ([_channelsCache count] > 0 && channel) {
-
-            [_channelsCache removeObjectForKey:channel.name];
-        }
-    }];
+        [_channelsCache removeObjectForKey:channel.name];
+    }
 }
 
 + (NSDictionary *)channelsCache {

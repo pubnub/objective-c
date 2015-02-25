@@ -51,11 +51,7 @@
     _resGroup = [GCDGroup group];
     [_resGroup enter];
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                  publishKey:kTestPNPublishKey
-                                                                subscribeKey:kTestPNSubscriptionKey
-                                                                   secretKey:nil
-                                                                   cipherKey:nil];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
     [PubNub setConfiguration:configuration];
     
     [PubNub connectWithSuccessBlock:^(NSString *origin) {

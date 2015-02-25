@@ -63,9 +63,7 @@ static NSUInteger const kTestPresenceHeartbeatTimeout = 20;
 	[PubNub setDelegate:self];
     
     // Vadim's keys
-	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kTestPNOriginHost publishKey:kTestPNPublishKey subscribeKey:kTestPNSubscriptionKey
-
-                                                                   secretKey:kTestPNSecretKey cipherKey: nil];
+	PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
     
     configuration.presenceHeartbeatTimeout = kTestPresenceHeartbeatTimeout;
     

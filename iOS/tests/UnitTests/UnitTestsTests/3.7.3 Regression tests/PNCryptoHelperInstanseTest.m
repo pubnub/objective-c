@@ -32,11 +32,8 @@
     [PubNub disconnect];
     _decodeString = nil;
     
-    _clientConfiguration = [PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                        publishKey:kTestPNPublishKey
-                                                      subscribeKey:kTestPNSubscriptionKey
-                                                         secretKey:nil
-                                                         cipherKey:@"enigma"];
+    _clientConfiguration = [PNConfiguration defaultTestConfiguration];
+    _clientConfiguration.cipherKey =  @"enigma";
     _testChannel = [PNChannel channelWithName:@"iosdev"];
 }
 

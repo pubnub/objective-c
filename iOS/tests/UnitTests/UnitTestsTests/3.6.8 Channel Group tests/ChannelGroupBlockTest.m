@@ -37,14 +37,7 @@
     [super setUp];
     [PubNub disconnect];
     
-//    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost
-//                                                                            publishKey:kTestPNPublishKey
-//                                                                          subscribeKey:kTestPNSubscriptionKey
-//                                                                             secretKey:
-//                                               kTestPNSecretKey
-//                                                                          andDelegate:self];
-//    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration]];
-    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration configurationForOrigin:kTestPNOriginHost publishKey:kTestPNPublishKey subscribeKey:kTestPNSubscriptionKey secretKey:kTestPNSecretKey] andDelegate:self];
+    _pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultTestConfiguration] andDelegate:self];
     
     [_pubNub connect];
     
