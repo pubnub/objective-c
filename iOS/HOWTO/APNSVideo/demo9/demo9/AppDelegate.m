@@ -71,6 +71,7 @@
 
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
     
+    
     NSLog(@"I got a message! : %@", message);
 }
 

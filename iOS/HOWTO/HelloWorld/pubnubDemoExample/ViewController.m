@@ -75,7 +75,7 @@
     
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
         
-        PNLog(PNLogGeneralLevel, self, @"{BLOCK} PubNub client connected to: %@", origin);
+        NSLog(@"{BLOCK} PubNub client connected to: %@", origin);
     }
      // In case of error you always can pull out error code and
      // identify what is happened and what you can do
@@ -89,7 +89,7 @@
                              ((UIButton *) sender).enabled = isControlsEnabled;
                              
                              if (connectionError.code == kPNClientConnectionFailedOnInternetFailureError) {
-                                 PNLog(PNLogGeneralLevel, self, @"Connection will be established as soon as internet connection will be restored");
+                                 NSLog(@"Connection will be established as soon as internet connection will be restored");
                              }
                              
                              UIAlertView *connectionErrorAlert = [UIAlertView new];

@@ -56,12 +56,12 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"master";
+static NSString * const kPNCodebaseBranch = @"feature-pt88355632";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"636d5d9649471dd534ef6a287c0416ed075fbc75";
+static NSString * const kPNCodeCommitIdentifier = @"483eca50666e59b9bc414eff1f6f9e401df33d94";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -4387,8 +4387,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)dealloc {
     
-    [self pn_destroyPrivateDispatchQueue];
-    
     [self stopHeartbeatTimer];
     [self unsubscribeFromNotifications];
     [self unsubscribeFromAllEvents];
@@ -4397,6 +4395,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [self.reachability stopServiceReachabilityMonitoring];
     self.reachability.reachabilityChangeHandleBlock = nil;
     self.reachability = nil;
+    
+    [self pn_destroyPrivateDispatchQueue];
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 

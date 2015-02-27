@@ -42,16 +42,21 @@
 
 - (void)configurePubNubClient {
     
-    NSString *subscriptionKey = @"sub-c-e0d8405a-b823-11e2-89ba-02ee2ddab7fe";
-    NSString *publishKey = @"pub-c-6d82cd87-cd15-461c-8de6-d0330419f439";
-    NSString *secretKey = @"sec-ODgxMDA0NWYtOThkNC00MjgyLWFlOWYtYzdiMGM5NTU2NTlk";
+//    NSString *subscriptionKey = @"sub-c-e0d8405a-b823-11e2-89ba-02ee2ddab7fe";
+//    NSString *publishKey = @"pub-c-6d82cd87-cd15-461c-8de6-d0330419f439";
+//    NSString *secretKey = @"sec-ODgxMDA0NWYtOThkNC00MjgyLWFlOWYtYzdiMGM5NTU2NTlk";
+    
+    NSString *subscriptionKey = @"demo";
+    NSString *publishKey = @"demo";
+    NSString *secretKey = @"demo";
     
     NSLog(@"Sub key: %@\nPub key: %@\nSec key: %@\n"
           "Dev Console URL: http://www.pubnub.com/console?channel=apns&pub=%@&sub=%@",
           subscriptionKey, publishKey, secretKey, publishKey, subscriptionKey);
     
-    
+
     __pn_desired_weak __typeof__(self) weakSelf = self;
+    
     AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
     PNConfiguration *myConfig = [PNConfiguration configurationWithPublishKey:publishKey
                                                                 subscribeKey:subscriptionKey

@@ -39,10 +39,7 @@ PNDelegate
     [super setUp];
     
     [PubNub disconnect];
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                  publishKey:kTestPNPublishKey
-                                                                subscribeKey:kTestPNSubscriptionKey
-                                                                   secretKey:kTestPNSecretKey];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
     
     [PubNub setupWithConfiguration:configuration andDelegate:self];
     [PubNub connect];

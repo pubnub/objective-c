@@ -24,10 +24,7 @@
 
 -(void)test10updateWithConfiguration {
     
-    PNConfiguration *testConfiguration = [PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                      publishKey:kTestPNPublishKey
-                                                                    subscribeKey:kTestPNSubscriptionKey secretKey:kTestPNSecretKey];
-    testConfiguration.cipherKey = kTestPNCipherKey;
+    PNConfiguration *testConfiguration = [PNConfiguration defaultTestConfiguration];
     
 	configurations = [NSMutableArray array];
     PNConfiguration *configuration = nil;

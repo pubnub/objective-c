@@ -54,7 +54,7 @@
                                                         withCallbackBlock:^(NSString *origin,
                                                                             BOOL connected,
                                                                             PNError *connectionError) {
-                                                            PNLog(PNLogGeneralLevel, self, @"{BLOCK} client identifier %@", [PubNub clientIdentifier]);
+                                                            NSLog(@"{BLOCK} client identifier %@", [PubNub clientIdentifier]);
                                                             weakSelf.sCustomUuid = [PubNub clientIdentifier];
                                                         }];
     
@@ -97,7 +97,8 @@
                                    shouldObservePresence:NO];
         NSLog(@"currentChannel:%p", self.currentChannel);
         
-        [PubNub subscribeOnChannel:self.currentChannel withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+        [PubNub subscribeOn:@[self.currentChannel]
+withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
             
             NSString *alertMessage = [NSString stringWithFormat:@"Subscribed on channel: %@",
                                       self.currentChannel.name];
@@ -150,7 +151,7 @@
     if([channel length]>0){
     
         PNChannel *channel = [PNChannel channelWithName:self.txtChannel.text];
-        [PubNub unsubscribeFromChannel:channel withCompletionHandlingBlock:^(NSArray *channels, PNError *subscriptionError){
+        [PubNub unsubscribeFrom:@[channel] withCompletionHandlingBlock:^(NSArray *channels, PNError *subscriptionError){
             NSString *alertMessage = [NSString stringWithFormat:@"Unsubscribed channel: %@",
                                       channel.name];
             if(subscriptionError != nil){

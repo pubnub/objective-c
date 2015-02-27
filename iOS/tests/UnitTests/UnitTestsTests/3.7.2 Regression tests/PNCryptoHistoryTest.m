@@ -36,8 +36,7 @@
     
     [PubNub disconnect];
     
-    _configuration = [PNConfiguration configurationForOrigin:kTestPNOriginHost
-                                                                  publishKey:kTestPNPublishKey subscribeKey:kTestPNSubscriptionKey secretKey:kTestPNSecretKey cipherKey:kTestPNCipherKey];
+    _configuration = [PNConfiguration defaultTestConfiguration];
     
     _pubNub = [PubNub clientWithConfiguration:_configuration andDelegate:self];
     _channel = [PNChannel channelWithName:@"test_history_crypto"];

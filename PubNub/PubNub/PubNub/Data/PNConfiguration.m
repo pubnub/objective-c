@@ -176,6 +176,7 @@
         self.resubscribeOnConnectionRestore = kPNShouldResubscribeOnConnectionRestore;
         self.restoreSubscriptionFromLastTimeToken = kPNShouldRestoreSubscriptionFromLastTimeToken;
         self.acceptCompressedResponse = kPNShouldAcceptCompressedResponse;
+        self.DNSCacheClearingEnabled = kPNShouldKillDNSCache;
         self.nonSubscriptionRequestTimeout = kPNNonSubscriptionRequestTimeout;
         self.subscriptionRequestTimeout = kPNSubscriptionRequestTimeout;
         self.presenceHeartbeatTimeout = kPNPresenceHeartbeatTimeout;
@@ -257,6 +258,7 @@
     self.resubscribeOnConnectionRestore = configuration.shouldResubscribeOnConnectionRestore;
     self.restoreSubscriptionFromLastTimeToken = configuration.shouldRestoreSubscriptionFromLastTimeToken;
     self.acceptCompressedResponse = configuration.shouldAcceptCompressedResponse;
+    self.DNSCacheClearingEnabled = configuration.isDNSCacheClearingEnabled;
     self.nonSubscriptionRequestTimeout = configuration.nonSubscriptionRequestTimeout;
     self.subscriptionRequestTimeout = configuration.subscriptionRequestTimeout;
     self.presenceHeartbeatTimeout = configuration.presenceHeartbeatTimeout;
@@ -302,6 +304,7 @@
     isEqual = (isEqual ? (self.shouldUseSecureConnection == configuration.shouldUseSecureConnection) : isEqual);
     isEqual = (isEqual ? (self.shouldAutoReconnectClient == configuration.shouldAutoReconnectClient) : isEqual);
     isEqual = (isEqual ? (self.shouldAcceptCompressedResponse == configuration.shouldAcceptCompressedResponse) : isEqual);
+    isEqual = (isEqual ? (self.isDNSCacheClearingEnabled == configuration.isDNSCacheClearingEnabled) : isEqual);
     
     
     return isEqual;
@@ -344,16 +347,15 @@
 
 - (void)shouldKillDNSCache:(BOOL)shouldKillDNSCache {
 
-    if (shouldKillDNSCache) {
-
+    if (shouldKillDNSCache && self.isDNSCacheClearingEnabled) {
+        
         NSString *subDomain = [self.realOrigin stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@",
                                                                                      kPNServiceMainDomain]
                                                                          withString:@""];
 
         self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
                         kPNServiceMainDomain];
-    }
-    else {
+    } else {
 
         self.origin = self.realOrigin;
     }

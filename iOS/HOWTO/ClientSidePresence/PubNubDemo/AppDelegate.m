@@ -9,11 +9,12 @@
 #import "AppDelegate.h"
 
 #import "ViewController.h"
+#import "PNImports.h"
 
 @implementation AppDelegate
 
 - (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message {
-    PNLog(PNLogGeneralLevel,self,@"PubNub client received message: %@", message);
+//    PNLog(PNLogGeneralLevel,self,@"PubNub client received message: %@", message);
 }
 
 
@@ -25,7 +26,7 @@
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
-    [PubNub setDelegate:self];
+//    [PubNub setDelegate:self];
     return YES;
 }
 
