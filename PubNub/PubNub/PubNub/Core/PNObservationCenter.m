@@ -449,11 +449,17 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
 - (void)removeOneTimeObserversForEvent:(NSString *)eventName
                       andCallbackToken:(NSString *)callbackToken {
-
+    
     [self pn_dispatchBlock:^{
-
-        NSString *targetKey = (!callbackToken ? kPNObserverGeneralCallbacks : callbackToken);
-        [[self.oneTimeObservers valueForKey:eventName] removeObjectForKey:targetKey];
+        
+        if (!callbackToken) {
+            
+            [[[self.oneTimeObservers valueForKey:eventName] valueForKey:kPNObserverGeneralCallbacks] removeAllObjects];
+        }
+        else {
+            
+            [[self.oneTimeObservers valueForKey:eventName] removeObjectForKey:callbackToken];
+        }
     }];
 }
 
