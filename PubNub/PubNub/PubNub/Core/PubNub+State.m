@@ -633,7 +633,8 @@ withCompletionHandlingBlock:nil];
     NSString *callbackToken = request.shortIdentifier;
     if (error.code != kPNRequestCantBeProcessedWithOutRescheduleError) {
         
-        [self notifyDelegateAboutStateRetrievalDidFailWithError:error andCallbackToken:nil];
+        [self notifyDelegateAboutStateRetrievalDidFailWithError:error
+                                               andCallbackToken:callbackToken];
     }
     else {
         
