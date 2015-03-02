@@ -10,8 +10,6 @@
 #import "PNBaseRequest.h"
 #import "PNBaseRequest+Protected.h"
 
-//#import <OCMock/OCMock.h>
-
 #import "PubNub.h"
 #import "PubNub+Protected.h"
 #import "PNConfiguration.h"
@@ -31,47 +29,20 @@
 @implementation CatchupTest
 
 - (void)tearDown {
-	[NSThread sleepForTimeInterval:0.1];
 	[super tearDown];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
-
 
 - (void)setUp
 {
     [super setUp];
+    
     [PubNub setDelegate:self];
 	pnChannels = [PNChannel channelsWithNames:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
 
-
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-	// Handle subscription events
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientSubscriptionProcess:)
-//							   name:kPNClientSubscriptionDidCompleteNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientSubscriptionProcess:)
-//							   name:kPNClientSubscriptionWillRestoreNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientSubscriptionProcess:)
-//							   name:kPNClientSubscriptionDidRestoreNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientSubscriptionProcess:)
-//							   name:kPNClientSubscriptionDidFailNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientUnsubscriptionProcess:)
-//							   name:kPNClientUnsubscriptionDidCompleteNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientUnsubscriptionProcess:)
-//							   name:kPNClientUnsubscriptionDidFailNotification
-//							 object:nil];
-//
-//	// Handle presence events
+
 	[notificationCenter addObserver:self
 						   selector:@selector(handleClientPresenceObservationEnablingProcess:)
 							   name:kPNClientPresenceEnablingDidCompleteNotification
@@ -80,111 +51,11 @@
 						   selector:@selector(handleClientPresenceObservationEnablingProcess:)
 							   name:kPNClientPresenceEnablingDidFailNotification
 							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientPresenceObservationDisablingProcess:)
-//							   name:kPNClientPresenceDisablingDidCompleteNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientPresenceObservationDisablingProcess:)
-//							   name:kPNClientPresenceDisablingDidFailNotification
-//							 object:nil];
-//
-//
-//	// Handle push notification state changing events
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationStateChange:)
-//												 name:kPNClientPushNotificationEnableDidCompleteNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationStateChange:)
-//												 name:kPNClientPushNotificationEnableDidFailNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationStateChange:)
-//												 name:kPNClientPushNotificationDisableDidCompleteNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationStateChange:)
-//												 name:kPNClientPushNotificationDisableDidFailNotification
-//											   object:nil];
-//
-//
-//	// Handle push notification remove events
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationRemoveProcess:)
-//												 name:kPNClientPushNotificationRemoveDidCompleteNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationRemoveProcess:)
-//												 name:kPNClientPushNotificationRemoveDidFailNotification
-//											   object:nil];
-//
-//
-//	// Handle push notification enabled channels retrieve events
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationEnabledChannels:)
-//												 name:kPNClientPushNotificationChannelsRetrieveDidCompleteNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(handleClientPushNotificationEnabledChannels:)
-//												 name:kPNClientPushNotificationChannelsRetrieveDidFailNotification
-//											   object:nil];
-
-
-	// Handle time token events
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientCompletedTimeTokenProcessing:)
-//							   name:kPNClientDidReceiveTimeTokenNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientCompletedTimeTokenProcessing:)
-//							   name:kPNClientDidFailTimeTokenReceiveNotification
-//							 object:nil];
-
-
-	// Handle message processing events
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientMessageProcessingStateChange:)
-//							   name:kPNClientWillSendMessageNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientMessageProcessingStateChange:)
-//							   name:kPNClientDidSendMessageNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientMessageProcessingStateChange:)
-//							   name:kPNClientMessageSendingDidFailNotification
-//							 object:nil];
-
-	// Handle messages/presence event arrival
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientDidReceiveMessage:)
-//							   name:kPNClientDidReceiveMessageNotification
-//							 object:nil];
 	[notificationCenter addObserver:self
 						   selector:@selector(handleClientDidReceivePresenceEvent:)
 							   name:kPNClientDidReceivePresenceEventNotification
 							 object:nil];
 
-//	// Handle message history events arrival
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientMessageHistoryProcess:)
-//							   name:kPNClientDidReceiveMessagesHistoryNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientMessageHistoryProcess:)
-//							   name:kPNClientHistoryDownloadFailedWithErrorNotification
-//							 object:nil];
-//
-//	// Handle participants list arrival
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientHereNowProcess:)
-//							   name:kPNClientDidReceiveParticipantsListNotification
-//							 object:nil];
-//	[notificationCenter addObserver:self
-//						   selector:@selector(handleClientHereNowProcess:)
-//							   name:kPNClientParticipantsListDownloadFailedWithErrorNotification
-//							 object:nil];
 }
 
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
@@ -207,9 +78,8 @@
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 
 		[PubNub setDelegate:self];
-		//		[PubNub setConfiguration: [PNConfiguration defaultConfiguration]];
-		PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: nil];
-		[PubNub setConfiguration: configuration];
+		PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
+		[PubNub setConfiguration:configuration];
 
 		[PubNub connectWithSuccessBlock:^(NSString *origin) {
 
@@ -228,12 +98,12 @@
 
 
     semaphore = dispatch_semaphore_create(0);
-	[PubNub subscribeOnChannels: pnChannels
+	[PubNub subscribeOn: pnChannels
 	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 	 {
 		 dispatch_semaphore_signal(semaphore);
 		 XCTAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
-		 XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %@, channels.count %@", @(pnChannels.count), @(channels.count));
+		 XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %lu, channels.count %lu", (unsigned long)pnChannels.count, (unsigned long)channels.count);
 	 }];
     // Run loop
     while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))

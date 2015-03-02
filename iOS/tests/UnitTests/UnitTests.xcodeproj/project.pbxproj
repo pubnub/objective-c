@@ -18,6 +18,7 @@
 		967882301A28DCA10042C82A /* PNSubscribeUnsubscribeChannelsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9678822F1A28DCA10042C82A /* PNSubscribeUnsubscribeChannelsTest.m */; };
 		967882321A28DCA90042C82A /* PNCryptoHelperInstanseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 967882311A28DCA90042C82A /* PNCryptoHelperInstanseTest.m */; };
 		9688151E1A03FEAE00BB548D /* PNCryptoInstanceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */; };
+		9697B42D1AA4C2E800D63BCB /* PNSizeOfMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9697B42C1AA4C2E800D63BCB /* PNSizeOfMessageTest.m */; };
 		96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A252F519DB3EB600C4CFCC /* PubNubTest.m */; };
 		96A5F8AB1A07D0DF004C92AA /* PNJSONSerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5F8AA1A07D0DF004C92AA /* PNJSONSerializationTest.m */; };
 		96CB66CA19CFE75D0093D64E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96CB66C919CFE75D0093D64E /* Foundation.framework */; };
@@ -225,6 +226,7 @@
 		9678822F1A28DCA10042C82A /* PNSubscribeUnsubscribeChannelsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeUnsubscribeChannelsTest.m; sourceTree = "<group>"; };
 		967882311A28DCA90042C82A /* PNCryptoHelperInstanseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHelperInstanseTest.m; sourceTree = "<group>"; };
 		9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoInstanceTest.m; sourceTree = "<group>"; };
+		9697B42C1AA4C2E800D63BCB /* PNSizeOfMessageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSizeOfMessageTest.m; sourceTree = "<group>"; };
 		96A252F519DB3EB600C4CFCC /* PubNubTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubNubTest.m; sourceTree = "<group>"; };
 		96A5F8AA1A07D0DF004C92AA /* PNJSONSerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNJSONSerializationTest.m; sourceTree = "<group>"; };
 		96CB66C619CFE75D0093D64E /* UnitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -658,6 +660,14 @@
 			path = "3.7.7 Regression tests";
 			sourceTree = "<group>";
 		};
+		9697B42B1AA4C2E800D63BCB /* 3.7.9 Regression tests */ = {
+			isa = PBXGroup;
+			children = (
+				9697B42C1AA4C2E800D63BCB /* PNSizeOfMessageTest.m */,
+			);
+			path = "3.7.9 Regression tests";
+			sourceTree = "<group>";
+		};
 		96A252F419DB3EA000C4CFCC /* 3.6.8 Instance version */ = {
 			isa = PBXGroup;
 			children = (
@@ -742,6 +752,7 @@
 		96CB66E819CFE75D0093D64E /* UnitTestsTests */ = {
 			isa = PBXGroup;
 			children = (
+				9697B42B1AA4C2E800D63BCB /* 3.7.9 Regression tests */,
 				9627E74A1A51F12F00D939FA /* 3.7.7 Regression tests */,
 				961B70EA1A40B86C0036C02B /* 3.7.5 Regression tests */,
 				96E28B9B1A3EEBF800DC39F4 /* 3.7.4 Regression tests */,
@@ -1572,6 +1583,7 @@
 				96CB6A7F19D19A6B0093D64E /* PNChannelHistoryParserTest.m in Sources */,
 				96CB6A9F19D19A6B0093D64E /* HugeCompressedMessageTest.m in Sources */,
 				96CB6A9719D19A6B0093D64E /* PNResponseTest.m in Sources */,
+				9697B42D1AA4C2E800D63BCB /* PNSizeOfMessageTest.m in Sources */,
 				96CB6A7719D19A6B0093D64E /* PNAccessRightOptionsTest.m in Sources */,
 				9606DE6E1A15EB6E00EF1934 /* PNConnectNegativeTest.m in Sources */,
 				96E0446719EC064500A4C18A /* ChannelGroupPAMTest.m in Sources */,

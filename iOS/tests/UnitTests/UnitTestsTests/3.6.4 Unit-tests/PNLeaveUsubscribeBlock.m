@@ -77,7 +77,6 @@
     [PubNub setConfiguration:configuration];
     
     dispatch_group_t resGroup = dispatch_group_create();
-    
     dispatch_group_enter(resGroup);
         
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
@@ -122,7 +121,7 @@
 //
     dispatch_group_enter(resGroup);
     
-    [PubNub unsubscribeFrom:channels[1]
+    [PubNub unsubscribeFrom:@[channels[1]]
        withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
            
            NSLog(@"Channels: %@", channels);
