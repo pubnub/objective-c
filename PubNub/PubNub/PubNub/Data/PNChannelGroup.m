@@ -42,8 +42,7 @@
 
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name shouldObservePresence:(BOOL)observePresence {
     
-    return [self channelGroupWithName:name inNamespace:nil shouldObservePresence:observePresence
-    shouldUpdatePresenceObservingFlag:YES];
+    return [self channelGroupWithName:name inNamespace:nil shouldObservePresence:observePresence];
 }
 
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace {
@@ -55,8 +54,13 @@
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace
                    shouldObservePresence:(BOOL)observePresence {
     
-    return [self channelGroupWithName:name inNamespace:nspace shouldObservePresence:observePresence
-    shouldUpdatePresenceObservingFlag:YES];
+    PNChannelGroup *group = [self channelGroupWithName:name inNamespace:nspace
+                                 shouldObservePresence:observePresence
+                     shouldUpdatePresenceObservingFlag:YES];
+    group.linkedWithPresenceObservationChannel = YES;
+    
+    
+    return group;
 }
 
 + (PNChannelGroup *)channelGroupWithName:(NSString *)name inNamespace:(NSString *)nspace
