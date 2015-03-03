@@ -14,6 +14,7 @@
 
 #import "PNReachability.h"
 #import <SystemConfiguration/SystemConfiguration.h>
+#import "PNContextInformation.h"
 #import "NSObject+PNAdditions.h"
 #import "PNLogger+Protected.h"
 #import "PNResponseParser.h"
@@ -251,11 +252,11 @@ static void PNReachabilityCallback(SCNetworkReachabilityRef reachability, SCNetw
 void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNetworkReachabilityFlags flags, void *info) {
     
     // Verify that reachability callback was called for correct client
-    NSCAssert([(__bridge NSObject *)info isKindOfClass:[PNReachability class]],
+    NSCAssert([(__bridge NSObject *)info isKindOfClass:[PNContextInformation class]],
               @"Wrong instance has been sent as reachability observer");
 
     // Retrieve reference on reachability monitor and update it's state
-    PNReachability *reachabilityMonitor = (__bridge PNReachability *)info;
+    PNReachability *reachabilityMonitor = ((__bridge PNContextInformation *)info).object;
 
     if ([reachabilityMonitor respondsToSelector:@selector(isServiceAvailableForStatus:)]) {
         
@@ -332,6 +333,11 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     }
 }
 
+void reachabilityContextInformationReleaseCallBack( const void *info ) {
+    
+    CFRelease(info);
+}
+
 - (void)startServiceReachabilityMonitoring {
 
     [self startServiceReachabilityMonitoring:YES];
@@ -352,7 +358,9 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
             // Prepare and configure reachability monitor
             self.serviceReachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, [self.serviceOrigin UTF8String]);
 
-            SCNetworkReachabilityContext context = {0, (__bridge void *)self, NULL, NULL, NULL};
+            PNContextInformation *information = [PNContextInformation contextWithObject:self];
+            SCNetworkReachabilityContext context = {0, (__bridge_retained void *)information, NULL,
+                                                    reachabilityContextInformationReleaseCallBack, NULL};
             if (SCNetworkReachabilitySetCallback(self.serviceReachability, PNReachabilityCallback, &context)) {
 
                 // Schedule service reachability monitoring on private queue
