@@ -1,3 +1,9 @@
+03-04-2015 - 47b7b6c3b - 3.7.9
+
+. fixed un-subscription from channel groups with enabled presence observation
+. fixed new callback mechanism for channel object state request error
+. fixed callbacks call logic which is passed along with API method
+
 02-23-2015 - 0359486 - 3.7.8.3
 
 . fixed issue cause by inappropriate place where private queue has been released for PubNub client

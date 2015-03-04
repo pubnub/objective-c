@@ -44,7 +44,11 @@
 	XCTAssertTrue( message != nil, @"");
 	XCTAssertTrue( error == nil, @"");
 	XCTAssertTrue( message.channel == channel, @"");
-	XCTAssertTrue( [message.message isEqualToString: [PNJSONSerialization stringFromJSONObject: @"object"]], @"");
+    
+    NSString *string1 = [NSString stringWithFormat:@"\"%@\"",message.message];
+    NSString *string2 = [NSString stringWithFormat:@"%@",[PNJSONSerialization stringFromJSONObject: @"object"]];
+    
+	XCTAssertTrue( [string1 isEqualToString:string2], @"");
 	XCTAssertTrue( message.compressMessage == YES, @"");
 
     message = [PNMessage messageWithObject:@"object" forChannel:nil compressed:YES storeInHistory:NO error:&error];
@@ -79,7 +83,11 @@
     
     XCTAssertTrue( message != nil, @"");
 	XCTAssertTrue( message.channel == channel, @"");
-	XCTAssertTrue( [message.message isEqualToString: [PNJSONSerialization stringFromJSONObject: @"message"]], @"");
+    
+    NSString *string1 = [NSString stringWithFormat:@"\"%@\"",message.message];
+    NSString *string2 = [NSString stringWithFormat:@"%@",[PNJSONSerialization stringFromJSONObject: @"message"]];
+    
+	XCTAssertTrue( [string1 isEqualToString:string2], @"");
 	XCTAssertTrue( message.compressMessage == YES, @"");
 }
 
