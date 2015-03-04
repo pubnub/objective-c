@@ -42,6 +42,8 @@
 }
 
 - (void)leave {
+    
+    NSAssert(_enterCount != 0, @"We try to leave group with zero enter count.");
     OSAtomicDecrement32(&(_enterCount));
     dispatch_group_leave(_gcdGroup);
 }
