@@ -1,3 +1,7 @@
+05-04-2015 - 67a3042e - 3.7.9.1
+
+. fixed general notification sending and crash on workspace sleep event on Mac OS
+
 03-04-2015 - 47b7b6c3b - 3.7.9
 
 . fixed un-subscription from channel groups with enabled presence observation
