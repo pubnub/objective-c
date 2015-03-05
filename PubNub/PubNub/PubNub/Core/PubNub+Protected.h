@@ -202,7 +202,7 @@ typedef enum _PNPubNubClientState {
 /**
  @brief Process list of postponed method calls and execute next one in a row.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)callNextPostponedMethod;
 
@@ -245,7 +245,7 @@ typedef enum _PNPubNubClientState {
  @param callbackToken    Reference on unique token which has been provided to observer along with
                          callback block.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)sendNotification:(NSString *)notificationName withObject:(id)object
         andCallbackToken:(NSString *)callbackToken;

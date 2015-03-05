@@ -61,7 +61,7 @@
  @param callbackToken    Reference on callback token which has been generated on method reschedule
                          and under which callback from previous call session should be placed.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)changeClientCallbackToken:(NSString *)oldCallbackToken to:(NSString *)callbackToken;
 
@@ -69,7 +69,7 @@
  @brief Ubsubscribe \b PubNub client instance which instantiated this observer from any
         notifications which may fire in future.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)removeClientAsObserver;
 

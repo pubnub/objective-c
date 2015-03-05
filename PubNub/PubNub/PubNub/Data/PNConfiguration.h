@@ -85,7 +85,7 @@
  @brief Stores property which allow to set whether in case of connection error to remote host,
         client should try to "kill" system's DNS cache or not.
  
- @since <#version number#>
+ @since 3.7.9
  */
 @property (nonatomic, assign, getter = isDNSCacheClearingEnabled) BOOL DNSCacheClearingEnabled;
 

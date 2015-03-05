@@ -203,7 +203,7 @@ static dispatch_once_t onceToken;
         to work in \c 'burst' mode) get started or report that data has been written into the
         stream.
 
- @since <#version number#>
+ @since 3.7.9
  */
 @property (nonatomic, assign) long long numberOfMethodsCalledInBurstMode;
 
@@ -239,7 +239,7 @@ static dispatch_once_t onceToken;
              placed into list of postponed requests, it will make sure to stop further postponed
              methods execution till counter will reach 0 value.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)burstExecutionLockingMethod;
 
@@ -3931,10 +3931,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
 #else
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWorkspaceDidWakeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWorkspaceSessionDidBecomeActiveNotification object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidWakeNotification object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceSessionDidBecomeActiveNotification object:nil];
 #endif
 }
 
@@ -4117,8 +4117,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                                              callbackToken:callbackToken
                                                                       data:object sender:self];
 
-    // Send notification to all who is interested in it (observation center will track it as well)
+    // Send notification to observer.
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
+    // Send notification to all who is interested in it (observation center will track it as well)
+    [[NSNotificationCenter defaultCenter] postNotification:[notification pn_notification]];
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED

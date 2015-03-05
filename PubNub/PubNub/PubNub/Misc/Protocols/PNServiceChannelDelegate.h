@@ -32,7 +32,7 @@
                 him on concrete channel.
  @param request Reference on \b PNBaseRequest instance which initiated this operation.
 
- @since <#version number#>
+ @since 3.6.2
  */
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveClientState:(PNClient *)client
              onRequest:(PNBaseRequest *)request;
@@ -51,7 +51,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.6.2
  */
 - (void)serviceChannel:(PNServiceChannel *)channel clientStateReceiveDidFailWithError:(PNError *)error
             forRequest:(PNBaseRequest *)request;
@@ -65,7 +65,7 @@
                 state on concrete channel.
  @param request Reference on \b PNBaseRequest instance which initiated this operation.
 
- @since <#version number#>
+ @since 3.6.2
  */
 - (void)serviceChannel:(PNServiceChannel *)channel didUpdateClientState:(PNClient *)client
              onRequest:(PNBaseRequest *)request;
@@ -84,7 +84,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.6.2
  */
 - (void)serviceChannel:(PNServiceChannel *)channel clientStateUpdateDidFailWithError:(PNError *)error
             forRequest:(PNBaseRequest *)request;
@@ -98,7 +98,7 @@
  @param nspace        Reference on namespace from which \b PubNub fetched channel groups.
  @param request       Reference on \b PNBaseRequest instance which initiated this operation.
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannelGroups:(NSArray *)channelGroups
           forNamespace:(NSString *)nspace onRequest:(PNBaseRequest *)request;
@@ -117,7 +117,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel channelGroupsRequestForNamespace:(NSString *)nspace
       didFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request;
@@ -132,7 +132,7 @@
                  should be pulled out.
  @param request  Reference on \b PNBaseRequest instance which initiated this operation.
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannels:(NSArray *)channels
               forGroup:(PNChannelGroup *)group onRequest:(PNBaseRequest *)request;
@@ -152,7 +152,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel channelsForGroupRequest:(PNChannelGroup *)group
       didFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request;
@@ -166,7 +166,7 @@
                 channels list change.
  @param request Reference on \b PNBaseRequest instance which initiated this operation.
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel didChangeGroupChannels:(PNChannelGroupChange *)change
              onRequest:(PNBaseRequest *)request;
@@ -186,7 +186,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel groupChannelsChange:(PNChannelGroupChange *)change
       didFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request;
@@ -200,7 +200,7 @@
                    with subscription current key.
  @param request    Reference on \b PNBaseRequest instance which initiated this operation.
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel didReceiveChannelGroupNamespaces:(NSArray *)namespaces
              onRequest:(PNBaseRequest *)request;
@@ -219,7 +219,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel channelGroupNamespacesRequestDidFailWithError:(PNError *)error
             forRequest:(PNBaseRequest *)request;
@@ -233,7 +233,7 @@
  @param nspace  Namespace name which has been removed from channels registry.
  @param request Reference on \b PNBaseRequest instance which initiated this operation.
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel didRemoveNamespace:(NSString *)nspace
              onRequest:(PNBaseRequest *)request;
@@ -254,7 +254,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)   serviceChannel:(PNServiceChannel *)channel namespace:(NSString *)nspace
   removalDidFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request;
@@ -269,7 +269,7 @@
                 removed.
  @param request Reference on \b PNBaseRequest instance which initiated this operation.
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)serviceChannel:(PNServiceChannel *)channel didRemoveChannelGroup:(PNChannelGroup *)group
              onRequest:(PNBaseRequest *)request;
@@ -290,7 +290,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.7.0
  */
 - (void)   serviceChannel:(PNServiceChannel *)channel channelGroup:(PNChannelGroup *)group
   removalDidFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request;
@@ -307,7 +307,7 @@
  @param request                 Reference on \b PNBaseRequest instance which initiated this
                                 operation.
 
- @since <#version number#>
+ @since 3.5.3
  */
 - (void) serviceChannel:(PNServiceChannel *)channel
   didChangeAccessRights:(PNAccessRightsCollection *)accessRightsCollection
@@ -328,7 +328,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.5.3
  */
 - (void)serviceChannel:(PNServiceChannel *)channel accessRightsChangeDidFailWithError:(PNError *)error
             forRequest:(PNBaseRequest *)request;
@@ -346,7 +346,7 @@
  @param request                 Reference on \b PNBaseRequest instance which initiated this
                                 operation.
 
- @since <#version number#>
+ @since 3.5.3
  */
 - (void)serviceChannel:(PNServiceChannel *)channel
   didAuditAccessRights:(PNAccessRightsCollection *)accessRightsCollection
@@ -366,7 +366,7 @@
        use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion
        to get human readable description for error).
 
- @since <#version number#>
+ @since 3.5.3
  */
 - (void)serviceChannel:(PNServiceChannel *)channel accessRightsAuditDidFailWithError:(PNError *)error
             forRequest:(PNBaseRequest *)request;

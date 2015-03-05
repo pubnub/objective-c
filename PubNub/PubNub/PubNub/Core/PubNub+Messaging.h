@@ -5933,7 +5933,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
  @return Size of resulting message packet (including headers and body).
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)sizeOfMessage:(id)message toChannel:(PNChannel *)channel
   withCompletionBlock:(void (^)(NSUInteger size))calculationCompletionBlock;
@@ -5951,7 +5951,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
  @return Size of resulting message packet (including headers and body).
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)sizeOfMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)compressedMessage
   withCompletionBlock:(void (^)(NSUInteger size))calculationCompletionBlock;
@@ -5968,7 +5968,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  @param calculationCompletionBlock Reference on calculation completion block which pass only one
                                    parameter - size of resulting message.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)sizeOfMessage:(id)message toChannel:(PNChannel *)channel
        storeInHistory:(BOOL)shouldStoreInHistory
@@ -5986,7 +5986,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  @param calculationCompletionBlock Reference on calculation completion block which pass only one
                                    parameter - size of resulting message.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)sizeOfMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)compressedMessage
        storeInHistory:(BOOL)shouldStoreInHistory

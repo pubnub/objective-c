@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version number#>
+ @since 3.7.9
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "NSNotification+PNPrivateAdditions.h"
@@ -13,21 +13,21 @@ struct PNPrivateNotificationDataStructure {
     /**
      @brief Stores reference on original notification name for which this instance has been created.
 
-     @since <#version number#>
+     @since 3.7.9
      */
     __unsafe_unretained NSString *notificationName;
 
     /**
      @brief Stores reference on data which should be sent along with notification.
 
-     @since <#version number#>
+     @since 3.7.9
      */
     __unsafe_unretained NSString *data;
 
     /**
      @brief Stores reference on token which allow to find correct callback block and call it.
 
-     @since <#version number#>
+     @since 3.7.9
      */
     __unsafe_unretained NSString *callbackToken;
 };

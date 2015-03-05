@@ -118,10 +118,6 @@
 
  @param channel Reference on connection channel which generated this event,
  @param request Reference on request which has been sent.
-
- @return <#return value description#>
-
- @since <#version number#>
  */
 - (void)connectionChannel:(PNConnectionChannel *)channel didSendRequest:(PNBaseRequest *)request;
 

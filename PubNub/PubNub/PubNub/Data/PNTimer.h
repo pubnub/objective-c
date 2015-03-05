@@ -6,7 +6,7 @@
  @discussion This timer allow to schedule many code blocks to fire after specific amount of time.
 
  @author Sergey Mamontov
- @since <#version number#>
+ @since 3.7.9
  @copyright © 2009-2015 PubNub, Inc.
  */
 @interface PNTimer : NSObject
@@ -22,7 +22,7 @@
 
  @return Constructed and ready to use timer.
 
- @since <#version number#>
+ @since 3.7.9
  */
 + (instancetype)timerWithTick:(NSTimeInterval)tick onQueue:(dispatch_queue_t)queue;
 
@@ -33,7 +33,7 @@
  @brief      Launch GCD timer.
  @discussion Start 'ticking' and code block execution time calculation.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)start;
 
@@ -42,7 +42,7 @@
  @discussion Pause previously created GCD timer to temporary suspend 'tick' handling.
              This can be useful in case if client should suspend for some period of time.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)resume;
 
@@ -51,7 +51,7 @@
  @discussion Resume previously created and paused GCD timer to resume 'ticking' and block execution
              date calculation.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)pause;
 
@@ -60,7 +60,7 @@
  @discussion This will destroy GCD timer source and release all objects which has been passed by
              user.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)stop;
 
@@ -74,7 +74,7 @@
  @param timeOutInterval Interval in seconds after which block will be executed. This interval should
                         be larger then timer's tick value.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)schedule:(dispatch_block_t)block withIdentifier:(NSString *)identifier
      toFireAfter:(NSTimeInterval)timeOutInterval;
@@ -85,7 +85,7 @@
  @param identifier Reference on unique identifier which has been passed during desired block
                    scheduling process.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)unscheduleBlockWithIdentifier:(NSString *)identifier;
 

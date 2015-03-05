@@ -42,7 +42,7 @@
 /**
  @brief Key under which stored all general callbacks w/o particular callback token.
 
- @since <#version number#>
+ @since 3.7.9
  */
 static NSString * const kPNObserverGeneralCallbacks = @"general";
 
@@ -155,7 +155,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
  @discussion Will be used to unsubscribe from notifications at the end of \b PNObservationCenter
              life-cycle.
 
- @since <#version number#>
+ @since 3.7.9
  */
 @property (nonatomic, strong) NSMutableArray *notifications;
 

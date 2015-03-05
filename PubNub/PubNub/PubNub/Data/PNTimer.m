@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version number#>
+ @since 3.7.9
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNTimer.h"
@@ -14,7 +14,7 @@
 /**
  @brief Structure describes dictionary which is stored as scheduled blocks.
 
- @since <#version number#>
+ @since 3.7.9
  */
 struct PNTimerScheduledDataStructure {
 
@@ -22,14 +22,14 @@ struct PNTimerScheduledDataStructure {
      @brief Reference on identifier which has been provided by user and can be used to unschedule
             particular block.
 
-     @since <#version number#>
+     @since 3.7.9
      */
     __unsafe_unretained NSString *identifier;
 
     /**
      @brief Reference on number which stores
 
-     @since <#version number#>
+     @since 3.7.9
      */
     __unsafe_unretained NSString *countDown;
     __unsafe_unretained NSString *block;
@@ -53,21 +53,21 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 /**
  @brief Stores reference on tick passed during initialization so it can be reused if required.
 
- @since <#version number#>
+ @since 3.7.9
  */
 @property (nonatomic, assign) NSTimeInterval tick;
 
 /**
  @brief Stores reference on GCD queue on which all actions should be serialized and executed.
 
- @since <#version number#>
+ @since 3.7.9
  */
 @property (nonatomic, pn_dispatch_property_ownership) dispatch_queue_t executionQueue;
 
 /**
  @brief Reference on GCD timer used to generate tick events.
 
- @since <#version number#>
+ @since 3.7.9
  */
 @property (nonatomic, pn_dispatch_property_ownership) dispatch_source_t timeoutTimer;
 
@@ -75,14 +75,14 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
  @brief Reference on list of dictionaries which hold information about unique block identifier,
         countdown field and block copy itself.
 
- @since <#version number#>
+ @since 3.7.9
  */
 @property (nonatomic, strong) NSMutableArray *scheduledBlocks;
 
 /**
  @brief Stores whether GCD timer currently suspended or not.
 
- @since <#version number#>
+ @since 3.7.9
  */
 @property (nonatomic, assign) BOOL suspended;
 
@@ -97,14 +97,14 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 
  @return Ready to use timer.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (instancetype)initWithTick:(NSTimeInterval)tick andQueue:(dispatch_queue_t)queue;
 
 /**
  @brief Construct actual GCD timer using user provided configuration.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)createGCDTimer;
 
@@ -114,7 +114,7 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 /**
  @brief Handle another time out timer tick phase.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (void)handleTick;
 

@@ -6,7 +6,7 @@
         along with default notification.
 
  @author Sergey Mamontov
- @since <#version number#>
+ @since 3.7.9
  @copyright © 2009-2015 PubNub, Inc.
  */
 @interface NSNotification (PNPrivateAdditions)
@@ -24,7 +24,7 @@
 
  @return Wrapped notification name which can be used internally.
 
- @since <#version number#>
+ @since 3.7.9
  */
 + (NSString *)pn_privateNotificationNameFrom:(NSString *)userNotification;
 
@@ -42,7 +42,7 @@
 
  @return Reference on constructed and ready to use private notification instance.
 
- @since <#version number#>
+ @since 3.7.9
  */
 + (instancetype)pn_notificationWithName:(NSString *)notificationName
                           callbackToken:(NSString *)callbackToken data:(id)userData
@@ -56,7 +56,7 @@
 
  @return Reference on object which should be sent along with default public notification object.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (id)pn_data;
 
@@ -66,7 +66,7 @@
 
  @return Reference on unique callback token.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (NSString *)pn_callbackToken;
 
@@ -75,7 +75,7 @@
 
  @return Original notification name which has been passed during private instance creation.
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (NSString *)pn_notificationName;
 
@@ -85,7 +85,7 @@
  @return Public notification which will use original notification name and data which is stored in
          private notification as userInfo
 
- @since <#version number#>
+ @since 3.7.9
  */
 - (NSNotification *)pn_notification;
 
