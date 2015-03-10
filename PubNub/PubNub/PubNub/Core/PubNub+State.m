@@ -389,7 +389,7 @@ withCompletionHandlingBlock:nil];
 }
 
 - (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-                     orObject:(id <PNChannelProtocol>)object rescheduledCallbackToken:(NSString *)callbackToken
+                    forObject:(id <PNChannelProtocol>)object rescheduledCallbackToken:(NSString *)callbackToken
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
 
     [self pn_dispatchBlock:^{
