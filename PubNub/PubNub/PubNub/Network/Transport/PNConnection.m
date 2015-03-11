@@ -18,6 +18,7 @@
 #import "PNConnection+Protected.h"
 #import "PNResponseDeserialize.h"
 #import "NSObject+PNAdditions.h"
+#import "PNContextInformation.h"
 #import "PNLogger+Protected.h"
 #import "PNResponseProtocol.h"
 #import "PubNub+Protected.h"
@@ -587,9 +588,9 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
 
 void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *clientCallBackInfo) {
 
-    NSCAssert([(__bridge id)clientCallBackInfo isKindOfClass:[PNConnection class]],
+    NSCAssert([(__bridge id)clientCallBackInfo isKindOfClass:[PNContextInformation class]],
               @"{ERROR}[READ] WRONG CLIENT INSTANCE HAS BEEN SENT AS CLIENT");
-    PNConnection *connection = (__bridge PNConnection *)clientCallBackInfo;
+    PNConnection *connection = ((__bridge PNContextInformation *)clientCallBackInfo).object;
 
     NSString *status = [connection stringifyStreamStatus:CFReadStreamGetStatus(stream)];
 
@@ -680,9 +681,9 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
 
 void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *clientCallBackInfo) {
 
-    NSCAssert([(__bridge id)clientCallBackInfo isKindOfClass:[PNConnection class]],
-              @"{ERROR}[WRITE] WRONG CLIENT INSTANCE HAS BEEN SENT AS CLIENT");
-    PNConnection *connection = (__bridge PNConnection *)clientCallBackInfo;
+    NSCAssert([(__bridge id)clientCallBackInfo isKindOfClass:[PNContextInformation class]],
+              @"{ERROR}[READ] WRONG CLIENT INSTANCE HAS BEEN SENT AS CLIENT");
+    PNConnection *connection = ((__bridge PNContextInformation *)clientCallBackInfo).object;
 
     NSString *status = [connection stringifyStreamStatus:CFWriteStreamGetStatus(stream)];
     
@@ -769,6 +770,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                 break;
         }
     }];
+}
+
+void connectionContextInformationReleaseCallBack( void *info ) {
+    
+    CFRelease(info);
 }
 
 
@@ -3921,7 +3927,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 
 - (CFStreamClientContext)streamClientContext {
 
-    return (CFStreamClientContext){0, (__bridge void *)(self), NULL, NULL, NULL};
+    PNContextInformation *information = [PNContextInformation contextWithObject:self];
+    
+    
+    return (CFStreamClientContext){0, (__bridge_retained void *)information, NULL,
+                                   connectionContextInformationReleaseCallBack, NULL};
 }
 
 - (CFMutableDictionaryRef)streamSecuritySettings {
