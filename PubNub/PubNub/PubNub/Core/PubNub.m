@@ -3680,16 +3680,21 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     [self pn_dispatchBlock:^{
         
-        if (self.heartbeatTimer != NULL && dispatch_source_testcancel(self.heartbeatTimer) == 0) {
-            
-            dispatch_source_cancel(self.heartbeatTimer);
-        }
-        
-        if (!forRelaunch) {
-            
-            self.heartbeatTimer = NULL;
-        }
+        [self stopHeartbeatTimer:!forRelaunch];
     }];
+}
+
+- (void)destroyHeartbeatTimer:(BOOL)shouldClearReference {
+    
+    if (self.heartbeatTimer != NULL && dispatch_source_testcancel(self.heartbeatTimer) == 0) {
+        
+        dispatch_source_cancel(self.heartbeatTimer);
+    }
+    
+    if (shouldClearReference) {
+        
+        self.heartbeatTimer = NULL;
+    }
 }
 
 - (void)checkResuming:(void (^)(BOOL resuming))checkCompletionBlock {
@@ -4390,7 +4395,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)dealloc {
     
-    [self stopHeartbeatTimer];
+    [self destroyHeartbeatTimer:YES];
     [self unsubscribeFromNotifications];
     [self unsubscribeFromAllEvents];
     [self.cache purgeAllState];

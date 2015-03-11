@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version number#>
+ @since 3.7.9.2
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNContextInformation.h"

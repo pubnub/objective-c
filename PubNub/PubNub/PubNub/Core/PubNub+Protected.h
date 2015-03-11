@@ -164,6 +164,17 @@ typedef enum _PNPubNubClientState {
  */
 - (void)stopHeartbeatTimer:(BOOL)forRelaunch;
 
+/**
+ @brief      Completely destroy GCD timer.
+ @discussion Mostly this method drops requirement to execute code on private queue and should be 
+             called as last possible action in client life-cycle.
+ 
+ @param shouldClearReference Whether reference on GCD timer should be destroyed or not.
+ 
+ @since 3.7.9.2
+ */
+- (void)destroyHeartbeatTimer:(BOOL)shouldClearReference;
+
 
 #pragma mark - Requests management methods
 

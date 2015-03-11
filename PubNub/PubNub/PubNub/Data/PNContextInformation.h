@@ -12,7 +12,7 @@
              reference which will protect code from accessing released object.
  
  @author Sergey Mamontov
- @since <#version number#>
+ @since 3.7.9.2
  @copyright © 2009-2015 PubNub, Inc.
  */
 @interface PNContextInformation : NSObject
@@ -23,7 +23,7 @@
 /**
  @brief Stores reference to object which is represented by this wrapper.
  
- @since <#version number#>
+ @since 3.7.9.2
  */
 @property (nonatomic, readonly, pn_desired_weak) id object;
 
@@ -38,7 +38,7 @@
  
  @return Constructed and ready to use context object wrapper.
  
- @since <#version number#>
+ @since 3.7.9.2
  */
 + (instancetype)contextWithObject:(id)object;
 
