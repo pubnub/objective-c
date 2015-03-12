@@ -528,7 +528,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             // Mark that client is in resetting state, so it won't be affected by callbacks from transport classes
             _sharedInstance.state = PNPubNubClientStateReset;
-            [_sharedInstance stopHeartbeatTimer];
+            [_sharedInstance destroyHeartbeatTimer:YES];
 
             onceToken = 0;
             [PNObservationCenter resetCenter];

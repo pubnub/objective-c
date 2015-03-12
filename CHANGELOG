@@ -1,4 +1,4 @@
-03-11-2015 - cee45ef7 - 3.7.9.2
+03-12-2015 - cee45ef7 - 3.7.9.2
 
 . adjustment in context objects used in CoreFoundation API to make sure that they will keep reference on object and nullify reference on it on release.
 . fix typo in method signature thanks to Sai Shenoy.
