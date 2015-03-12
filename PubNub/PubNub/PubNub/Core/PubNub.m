@@ -3680,7 +3680,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     [self pn_dispatchBlock:^{
         
-        [self stopHeartbeatTimer:!forRelaunch];
+        [self destroyHeartbeatTimer:!forRelaunch];
     }];
 }
 
