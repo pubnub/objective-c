@@ -129,8 +129,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 + (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode
            lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
     
-    return [[[self class] alloc] initWithContent:content size:responseSize code:statusCode
-                        lastResponseOnConnection:isLastResponseOnConnection];
+    return [[self alloc] initWithContent:content size:responseSize code:statusCode
+                lastResponseOnConnection:isLastResponseOnConnection];
 }
 
 + (PNResponse *)errorResponseWithMessage:(NSString *)errorMessage {
@@ -139,7 +139,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                                       options:(NSJSONWritingOptions)0 error:nil];
     
     
-    return [[[self class] alloc] initWithContent:message size:[message length] code:200 lastResponseOnConnection:NO];
+    return [[self alloc] initWithContent:message size:[message length] code:200
+                lastResponseOnConnection:NO];
 }
 
 
@@ -166,37 +167,37 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
             [PNJSONSerialization JSONObjectWithString:decodedResponse
                                       completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName){
 
-                                          if (isJSONP) {
+                  if (isJSONP) {
 
-                                              NSArray *callbackMethodElements = [callbackMethodName componentsSeparatedByString:@"_"];
+                      NSArray *callbackMethodElements = [callbackMethodName componentsSeparatedByString:@"_"];
 
-                                              if ([callbackMethodElements count] > 1) {
+                      if ([callbackMethodElements count] > 1) {
 
-                                                  weakSelf.callbackMethod = [callbackMethodElements objectAtIndex:kPNResponseCallbackMethodNameIndex];
-                                                  weakSelf.requestIdentifier = [callbackMethodElements objectAtIndex:kPNResponseRequestIdentifierIndex];
-                                              }
-                                              else {
+                          weakSelf.callbackMethod = [callbackMethodElements objectAtIndex:kPNResponseCallbackMethodNameIndex];
+                          weakSelf.requestIdentifier = [callbackMethodElements objectAtIndex:kPNResponseRequestIdentifierIndex];
+                      }
+                      else {
 
-                                                  weakSelf.callbackMethod = callbackMethodName;
-                                              }
+                          weakSelf.callbackMethod = callbackMethodName;
+                      }
 
-                                              weakSelf.response = result;
-                                          }
-                                          else {
+                      weakSelf.response = result;
+                  }
+                  else {
 
-                                              self.response = result;
-                                          }
+                      self.response = result;
+                  }
 
-                                          [weakSelf extractServiceData];
-                                      }
-                                           errorBlock:^(NSError *error) {
+                  [weakSelf extractServiceData];
+              }
+                   errorBlock:^(NSError *error) {
 
-                                               [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                       [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
 
-                                                   return @[PNLoggerSymbols.JSONserializer.JSONDecodeError, (error ? error : [NSNull null])];
-                                               }];
-                                               [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
-                                           }];
+                           return @[PNLoggerSymbols.JSONserializer.JSONDecodeError, (error ? error : [NSNull null])];
+                       }];
+                       [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
+                   }];
         }
         // Looks like message can't be decoded event from RAW response looks like malformed data arrived with
         // characters which can't be encoded.

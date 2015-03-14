@@ -624,6 +624,8 @@
 		<string>RECEIVED STRANGE RESPONSE WITH &apos;%@&apos; STATUS CODE\nCONTENT: %@</string>
 		<key>0500002</key>
 		<string>RAW RESPONSE DATA (STATUS CODE: %@): %@</string>
+		<key>0500003</key>
+		<string>GARBAGE RESPONSE DATA HAS BEEN FOUND (%@ BYTES)</string>
 	</dict>
 	<key>06</key>
 	<dict>

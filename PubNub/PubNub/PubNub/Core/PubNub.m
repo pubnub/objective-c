@@ -2883,9 +2883,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
+#define PN_APP_EXTENSION 1
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
 
+#if !PN_APP_EXTENSION
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
         return @[PNLoggerSymbols.api.handleEnteredBackground, [self humanReadableStateFrom:self.state]];
@@ -3068,10 +3071,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             });
         }
     }
+#endif
 }
 
 - (void)handleApplicationDidEnterForegroundState:(NSNotification *)__unused notification  {
 
+#if !PN_APP_EXTENSION
     [self pn_dispatchBlock:^{
 
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -3161,6 +3166,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             }];
         }];
     }];
+#endif
 }
 #else
 - (void)handleWorkspaceWillSleep:(NSNotification *)notification {
@@ -3896,6 +3902,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     [self unsubscribeFromNotifications];
     
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
+    #if !PN_APP_EXTENSION
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleApplicationDidEnterBackgroundState:)
                                                  name:UIApplicationDidEnterBackgroundNotification
@@ -3904,6 +3911,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                              selector:@selector(handleApplicationDidEnterForegroundState:)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
+    #endif
 #else
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
                                                            selector:@selector(handleWorkspaceWillSleep:)
@@ -3928,8 +3936,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 - (void)unsubscribeFromNotifications {
     
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
+    #if !PN_APP_EXTENSION
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    #endif
 #else
     [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
     [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification object:nil];

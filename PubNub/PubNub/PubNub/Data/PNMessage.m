@@ -290,7 +290,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
                                        (eitherDate ? [eitherDate performSelector:@selector(logDescription)] : [NSNull null])];
     if (self.message) {
         
-        [logDescription appendFormat:@"%@>",
+        [logDescription appendFormat:@"|%@>",
          ([self.message respondsToSelector:@selector(logDescription)] ?
           [self.message performSelector:@selector(logDescription)] : self.message)];
     }

@@ -929,6 +929,9 @@ struct PNLoggerSymbolsStructure {
         
         // Parameters requirements: [code, status code, raw response content]
         __unsafe_unretained NSString *rawResponseData;
+        
+        // Parameters requirements: [code, content length]
+        __unsafe_unretained NSString *garbageResponseData;
     } deserializer;
     
     // Cryptor symbols. Group code: 06xxyyy

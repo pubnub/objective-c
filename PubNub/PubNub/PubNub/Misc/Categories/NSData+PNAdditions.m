@@ -8,6 +8,7 @@
 
 
 #import "NSData+PNAdditions.h"
+#import "PNPrivateMacro.h"
 #include <zlib.h>
 
 
@@ -18,37 +19,8 @@
 #endif
 
 
-#pragma mark Structures
-
-/**
- This enumerator represents possible GZIP operation
- */
-typedef NS_OPTIONS(NSInteger , GZIPOperations) {
-    
-    /**
-     Decompress \b NSData instance content using GZIP and \c inflate algorithm.
-     */
-    GZIPDecompressInflateOperation,
-    
-    /**
-     Decompress \b NSData instance content using GZIP and simplified \c inflate algorithm.
-     */
-    DecompressInflateOperation,
-    
-    /**
-     Compress \b NSData instance content using GZIP and \c deflate algorithm.
-     */
-    GZIPCompressDeflateOperation
-};
-
-
 #pragma mark - Static
 
-static BOOL GZIPDeflateCompressionAlgorithmEnabled = NO;
-static NSUInteger GZIPDeflateChunkSize = 1024;
-static NSUInteger GZIPDeflateWindowBits = 31;
-static NSUInteger GZIPInflateWindowBits = 47;
-static NSUInteger DeflateWindowBits = -15;
 static const char encodeCharTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 static unsigned char decodeCharTable[256] =
@@ -70,21 +42,6 @@ static unsigned char decodeCharTable[256] =
     65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,
     65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,
 };
-
-
-#pragma mark - Private interface declaration
-
-@interface NSData (PNAdditionPrivate)
-
-
-#pragma mark - Instance methods
-
-- (NSData *)pn_dataUsingGZIPOperation:(GZIPOperations)operation;
-
-
-#pragma mark -
-
-@end
 
 
 #pragma mark - Public interface methods
@@ -209,115 +166,27 @@ static unsigned char decodeCharTable[256] =
 #pragma mark - Compression / Decompression methods
 
 - (NSData *)pn_GZIPDeflate {
+
+    NSUInteger size;
+    const void *deflatedData = pn_GZIPDeflate(self.bytes, self.length, &size);
     
-    return [self pn_dataUsingGZIPOperation:GZIPCompressDeflateOperation];
+    return (size > 0 ? [NSData dataWithBytes:deflatedData length:size] : nil);
 }
 
 - (NSData *)pn_GZIPInflate {
-    
-    return [self pn_dataUsingGZIPOperation:GZIPDecompressInflateOperation];
+
+    NSUInteger size;
+    const void *inflatedData = pn_GZIPInflate(self.bytes, self.length, &size);
+
+    return (size > 0 ? [NSData dataWithBytes:inflatedData length:size] : nil);
 }
 
 - (NSData *)pn_inflate {
-    
-    return [self pn_dataUsingGZIPOperation:DecompressInflateOperation];
-}
 
-- (NSData *)pn_dataUsingGZIPOperation:(GZIPOperations)operation {
-    
-    NSData *processedData = nil;
-    NSUInteger window = operation == GZIPDecompressInflateOperation ? GZIPInflateWindowBits : (operation == GZIPCompressDeflateOperation ? GZIPDeflateWindowBits : DeflateWindowBits);
-    if ([self length] == 0) {
-        
-        processedData = self;
-    }
-    else {
-        
-        NSMutableData *processedDataStorage = nil;
-        BOOL done = NO;
-        int status;
-        z_stream stream;
-        bzero(&stream, sizeof(stream));
-        stream.zalloc = Z_NULL;
-        stream.zfree = Z_NULL;
-        stream.opaque = Z_NULL;
-        stream.next_in = (Bytef *)[self bytes];
-        stream.avail_in = (uint)[self length];
-        stream.total_out = 0;
-        
-        NSUInteger fullLength = [self length];
-        NSUInteger halfLength = fullLength * 0.5f;
-        
-        if (operation != GZIPCompressDeflateOperation) {
-            
-            status = inflateInit2(&stream, window);
-        }
-        else {
-            
-            if (GZIPDeflateCompressionAlgorithmEnabled) {
-                
-                status = deflateInit(&stream, Z_DEFAULT_COMPRESSION);
-            }
-            else {
-                
-                status = deflateInit2(&stream, Z_DEFAULT_COMPRESSION, Z_DEFLATED, window, 8, Z_DEFAULT_STRATEGY);
-            }
-        }
-        
-        if (status == Z_OK) {
-            
-            BOOL isOperationCompleted = NO;
-            processedDataStorage = [NSMutableData dataWithLength:(operation != GZIPCompressDeflateOperation ? fullLength : GZIPDeflateChunkSize)];
-            
-            while (!isOperationCompleted) {
-                
-                // Make sure we have enough room and reset the lengths.
-                if ((status == Z_BUF_ERROR)  || stream.total_out >= [processedDataStorage length]) {
-                    
-                    [processedDataStorage increaseLengthBy:(operation != GZIPCompressDeflateOperation ? halfLength : GZIPDeflateChunkSize)];
-                }
-                stream.next_out = (Bytef*)[processedDataStorage mutableBytes] + stream.total_out;
-                stream.avail_out = (uInt)([processedDataStorage length] - stream.total_out);
-                
-                if (operation != GZIPCompressDeflateOperation) {
-                    
-                    // Inflate another chunk.
-                    status = inflate(&stream, Z_SYNC_FLUSH);
-                    isOperationCompleted = (stream.avail_in == 0);
-                }
-                else {
-                    
-                    // Deflate another chunk
-                    status = deflate(&stream, Z_FINISH);
-                    isOperationCompleted = ((status != Z_OK) && (status != Z_BUF_ERROR));
-                }
-            }
-            
-            if (operation != GZIPCompressDeflateOperation) {
-                
-                done = (status == Z_STREAM_END);
-                status = inflateEnd(&stream);
-            }
-            else {
-                
-                status = deflateEnd(&stream);
-                done = (status == Z_OK || status == Z_STREAM_END);
-            }
-            
-            if (status == Z_OK) {
-                
-                // Set real length.
-                if (done) {
-                    
-                    [processedDataStorage setLength:stream.total_out];
-                    processedData = [NSData dataWithData:processedDataStorage];
-                }
-            }
-        }
-    }
-    
-    
-    return processedData;
+    NSUInteger size;
+    const void *inflatedData = pn_inflate(self.bytes, self.length, &size);
+
+    return (size > 0 ? [NSData dataWithBytes:inflatedData length:size] : nil);
 }
 
 

@@ -23,11 +23,10 @@
 
 - (void)checkDeserializing:(void(^)(BOOL deserializing))checkCompletionBlock;
 
-/**
- * Will parse response which arrived from PubNub service
- * and update data holder to remove parsed data from it
- */
-- (void)parseResponseData:(NSMutableData *)data withBlock:(void (^)(NSArray *responses))parseCompletionBlock;
+- (void)parseBufferContent:(dispatch_data_t)buffer
+                 withBlock:(void(^)(NSArray *responses, NSUInteger processedBufferLength))parseCompletionBlock;
+
+#pragma mark -
 
 
 @end

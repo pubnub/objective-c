@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "798E02321A0103B200E8AFB7"
-               BuildableName = "Universal-iOS-Framework"
-               BlueprintName = "Universal-iOS-Framework"
-               ReferencedContainer = "container:PubNub.xcodeproj">
+               BlueprintIdentifier = "79C32227166DF847006DB535"
+               BuildableName = "pubnub.app"
+               BlueprintName = "pubnub"
+               ReferencedContainer = "container:../iOS/iPadDemoApp/pubnub.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -39,15 +39,16 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "798E02321A0103B200E8AFB7"
-            BuildableName = "Universal-iOS-Framework"
-            BlueprintName = "Universal-iOS-Framework"
-            ReferencedContainer = "container:PubNub.xcodeproj">
+            BlueprintIdentifier = "79C32227166DF847006DB535"
+            BuildableName = "pubnub.app"
+            BlueprintName = "pubnub"
+            ReferencedContainer = "container:../iOS/iPadDemoApp/pubnub.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

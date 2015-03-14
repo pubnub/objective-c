@@ -376,6 +376,7 @@ struct PNLoggerSymbolsStructure PNLoggerSymbols = {
         .unableToEncodeResponseData = @"0500000",
         .unexpectedResponseStatusCode = @"0500001",
         .rawResponseData = @"0500002",
+        .garbageResponseData = @"0500003",
     },
     .cryptor = {
 
@@ -789,12 +790,16 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
  @brief Store binary data received from remote server.
  
  @param isExpectedResponse Whether packet received under expected status code and it's content valid.
+ @param isGarbageData      Whether packet data is garbage (incomplete and there is more data from
+                           another server response after it).
+ @param dataDescription    Additional information about unexpected response (request URI for whic
+                           server provided unexpected data).
  @param httpPacketBlock    Block which is called to calculate data which should be stored.
- 
+
  @since 3.7.3
  */
-+ (void)storeRAWHTTPPacket:(BOOL)isExpectedResponse dataDescription:(NSString *)dataDescription
-                  withData:(NSData *(^)(void))httpPacketBlock;
++ (void)storeRAWHTTPPacket:(BOOL)isExpectedResponse garbageData:(BOOL)isGarbageData
+           dataDescription:(NSString *)dataDescription withData:(NSData *(^)(void))httpPacketBlock;
 
 
 #pragma mark - Instance methods
@@ -1081,18 +1086,25 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 + (void)storeHTTPPacketData:(NSData *(^)(void))httpPacketBlock {
 
     if ([self isDumpingHTTPResponse]) {
-        
-        [self storeRAWHTTPPacket:YES dataDescription:nil withData:httpPacketBlock];
+
+        [self storeRAWHTTPPacket:YES garbageData:NO dataDescription:nil withData:httpPacketBlock];
     }
 }
 
-+ (void)storeUnexpectedHTTPDescription:(NSString *)packetDescription packetData:(NSData *(^)(void))httpPacketBlock {
-    
-    [self storeRAWHTTPPacket:NO dataDescription:packetDescription withData:httpPacketBlock];
++ (void)storeGarbageHTTPPacketData:(NSData *(^)(void))httpPacketBlock {
+
+    [self storeRAWHTTPPacket:NO garbageData:YES dataDescription:nil withData:httpPacketBlock];
 }
 
-+ (void)storeRAWHTTPPacket:(BOOL)isExpectedResponse dataDescription:(NSString *)dataDescription
-                  withData:(NSData *(^)(void))httpPacketBlock {
++ (void)storeUnexpectedHTTPDescription:(NSString *)packetDescription
+                            packetData:(NSData *(^)(void))httpPacketBlock {
+
+    [self storeRAWHTTPPacket:NO garbageData:NO dataDescription:packetDescription
+                    withData:httpPacketBlock];
+}
+
++ (void)storeRAWHTTPPacket:(BOOL)isExpectedResponse garbageData:(BOOL)isGarbageData
+           dataDescription:(NSString *)dataDescription withData:(NSData *(^)(void))httpPacketBlock {
     
     if (httpPacketBlock) {
         
@@ -1114,18 +1126,21 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         #pragma clang diagnostic pop
         
         NSData *packetData = httpPacketBlock();
-        NSData *packetDescription = (dataDescription ? [dataDescription dataUsingEncoding:NSUTF8StringEncoding] : nil);
-        dispatch_async([self sharedInstance].httpProcessingQueue, ^{
+        if (packetData) {
 
-            if(packetData && ![packetData writeToFile:packetStorePath atomically:YES]){
-                
-                NSLog(@"CAN'T SAVE DUMP: %@\nTO: %@", packetData, packetStorePath);
-            }
-            if(packetDescription && ![packetDescription writeToFile:detailsStorePath atomically:YES]){
-                
-                NSLog(@"CAN'T SAVE DUMP INFORMATION: %@\nTO: %@", packetDescription, detailsStorePath);
-            }
-        });
+            NSData *packetDescription = (dataDescription ? [dataDescription dataUsingEncoding:NSUTF8StringEncoding] : nil);
+            dispatch_async([self sharedInstance].httpProcessingQueue, ^{
+
+                if(packetData && ![packetData writeToFile:packetStorePath atomically:YES]){
+
+                    NSLog(@"CAN'T SAVE DUMP: %@\nTO: %@", packetData, packetStorePath);
+                }
+                if(packetDescription && ![packetDescription writeToFile:detailsStorePath atomically:YES]){
+
+                    NSLog(@"CAN'T SAVE DUMP INFORMATION: %@\nTO: %@", packetDescription, detailsStorePath);
+                }
+            });
+        }
     }
 }
 
