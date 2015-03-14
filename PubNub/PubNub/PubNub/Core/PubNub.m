@@ -61,7 +61,7 @@ static NSString * const kPNCodebaseBranch = @"master";
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"1692c6bc347cb215a6adfaef6b0d772167a3042e";
+static NSString * const kPNCodeCommitIdentifier = @"ccc25929cb9268c2178687a8659b1f24cee45ef7";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -528,7 +528,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             // Mark that client is in resetting state, so it won't be affected by callbacks from transport classes
             _sharedInstance.state = PNPubNubClientStateReset;
-            [_sharedInstance stopHeartbeatTimer];
+            [_sharedInstance destroyHeartbeatTimer:YES];
 
             onceToken = 0;
             [PNObservationCenter resetCenter];
@@ -3686,16 +3686,21 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     
     [self pn_dispatchBlock:^{
         
-        if (self.heartbeatTimer != NULL && dispatch_source_testcancel(self.heartbeatTimer) == 0) {
-            
-            dispatch_source_cancel(self.heartbeatTimer);
-        }
-        
-        if (!forRelaunch) {
-            
-            self.heartbeatTimer = NULL;
-        }
+        [self destroyHeartbeatTimer:!forRelaunch];
     }];
+}
+
+- (void)destroyHeartbeatTimer:(BOOL)shouldClearReference {
+    
+    if (self.heartbeatTimer != NULL && dispatch_source_testcancel(self.heartbeatTimer) == 0) {
+        
+        dispatch_source_cancel(self.heartbeatTimer);
+    }
+    
+    if (shouldClearReference) {
+        
+        self.heartbeatTimer = NULL;
+    }
 }
 
 - (void)checkResuming:(void (^)(BOOL resuming))checkCompletionBlock {
@@ -4400,7 +4405,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)dealloc {
     
-    [self stopHeartbeatTimer];
+    [self destroyHeartbeatTimer:YES];
     [self unsubscribeFromNotifications];
     [self unsubscribeFromAllEvents];
     [self.cache purgeAllState];

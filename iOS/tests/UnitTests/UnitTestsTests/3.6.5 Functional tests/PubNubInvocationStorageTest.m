@@ -57,7 +57,7 @@ PNDelegate
             [blockIds addObject:[NSNumber numberWithInt:0]];
         }
         
-        [PubNub subscribeOnChannel:channel
+        [PubNub subscribeOn:@[channel]
        withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
            
            if (state == PNSubscriptionProcessSubscribedState) {

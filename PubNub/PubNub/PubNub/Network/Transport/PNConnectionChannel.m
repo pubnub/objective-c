@@ -2107,7 +2107,9 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
             [self startTimeoutTimerForRequest:request];
         }
 
-        [self.delegate connectionChannel:self didSendRequest:request];
+        if (request.isSendingByUserRequest) {
+            [self.delegate connectionChannel:self didSendRequest:request];
+        }
 
         if (notifyCompletionBlock) {
 

@@ -27,7 +27,7 @@
 	XCTAssertTrue( info.level == PNApplicationAccessRightsLevel, @"");
 	XCTAssertTrue( info.rights == (PNReadAccessRight | PNWriteAccessRight), @"");
 	XCTAssertTrue( [info.subscriptionKey isEqualToString: @"applicationKey"] == YES, @"");
-	XCTAssertTrue( [info.channel.name isEqualToString: @"channel"] == YES, @"");
+	XCTAssertTrue( [info.object.name isEqualToString: @"channel"] == YES, @"");
 	XCTAssertTrue( [info.authorizationKey isEqualToString: @"client"] == YES, @"");
 	XCTAssertTrue( info.accessPeriodDuration == 123, @"");
 

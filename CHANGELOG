@@ -1,4 +1,15 @@
-05-04-2015 - 67a3042e - 3.7.9.1
+03-12-2015 - c379c6d4 - 3.7.9.3
+
+. fixed heartbeat timer.
+
+
+03-12-2015 - cee45ef7 - 3.7.9.2
+
+. adjustment in context objects used in CoreFoundation API to make sure that they will keep reference on object and nullify reference on it on release.
+. fix typo in method signature thanks to Sai Shenoy.
+
+
+03-04-2015 - 67a3042e - 3.7.9.1
 
 . fixed general notification sending and crash on workspace sleep event on Mac OS
 
