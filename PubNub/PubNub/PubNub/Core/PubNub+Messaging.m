@@ -646,8 +646,8 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
             }
             messageObject.contentEncrypted = encrypted;
         }
-            // Even w/o encryption message should be translated to string for further processinf with
-            // PubNub API.
+        // Even w/o encryption message should be translated to string for further processinf with
+        // PubNub API.
         else {
 
 #ifndef CRYPTO_BACKWARD_COMPATIBILITY_MODE

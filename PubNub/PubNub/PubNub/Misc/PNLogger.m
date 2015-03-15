@@ -1112,7 +1112,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         #pragma clang diagnostic ignored "-Wundeclared-selector"
         NSString *entryTimeToken = [[NSDate date] performSelector:@selector(logDescription)];
         NSString *baseFileName = [NSString stringWithFormat:@"%@response-%@",
-                                  (!isExpectedResponse ? [NSString stringWithFormat:@"unexpected-"] : @""),
+                                  (!isExpectedResponse ? @"unexpected-" : (isGarbageData ? @"garbage-" : @"")),
                                   entryTimeToken];
         NSString *packetName = [baseFileName stringByAppendingPathExtension:@"dmp"];
         NSString *packetDetailsName = [baseFileName stringByAppendingString:@"-details.dmp"];

@@ -450,9 +450,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
             if ([firstRequest isKindOfClass:[PNLeaveRequest class]]) {
 
                 NSSet *leaveChannelsSet = [NSSet setWithArray:((PNLeaveRequest *)firstRequest).channels];
-                [[sortedRequestsList copy] enumerateObjectsUsingBlock:^(NSDictionary * requestInformation,
-                                                                        NSUInteger requestInformationIdx,
-                                                                        BOOL *requestInformationEnumeratorStop) {
+                [sortedRequestsList enumerateObjectsUsingBlock:^(NSDictionary * requestInformation,
+                                                                 NSUInteger requestInformationIdx,
+                                                                 BOOL *requestInformationEnumeratorStop) {
 
                     PNBaseRequest *request = [requestInformation valueForKey:PNRequestForReschedule.request];
                     if ([request isKindOfClass:[PNSubscribeRequest class]]) {
@@ -914,7 +914,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                     }
 
                     if ([self hasRequestsWithClass:[PNSubscribeRequest class]]) {
-
+                        
                         shouldSendUpdateSubscriptionRequest = NO;
                     }
                 }
@@ -2723,6 +2723,47 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                 // Mark that we don't need to close connection after next time this request will be
                 // scheduled for processing (this will happen right after connection will be restored)
                 request.closeConnection = NO;
+                
+                // Check whether there is many occurance of request of the same type or not.
+                NSArray *requestsOfSameType = [self requestsWithClass:request.class];
+                if ([requestsOfSameType count] > 1) {
+                    
+                    if ([[requestsOfSameType lastObject] isKindOfClass:[PNSubscribeRequest class]]) {
+                        
+                        // Sort array of subscribe request to make sure that
+                        NSSortDescriptor *subscribeRequestSort = [[NSSortDescriptor alloc]initWithKey:@"updateTimeToken" ascending:YES];
+                        requestsOfSameType = [requestsOfSameType sortedArrayUsingDescriptors:@[subscribeRequestSort]];
+                        PNSubscribeRequest *targetRequest = [requestsOfSameType objectAtIndex:0];
+                        PNSubscribeRequest *lastRequest = [requestsOfSameType lastObject];
+                        
+                        // Looks like there is no subsciption request for new channels and
+                        // client should fix this state.
+                        if (![targetRequest.updateTimeToken isEqualToString:@"0"]) {
+                            
+                            targetRequest = lastRequest;
+                        }
+                        
+                        [requestsOfSameType enumerateObjectsUsingBlock:^(PNSubscribeRequest *subscribeRequest,
+                                                                         NSUInteger subscribeRequestIdx,
+                                                                         BOOL *subscribeRequestEnumeratorStop) {
+                            
+                            // Don't touch request which should preserve in the list.
+                            if (![subscribeRequest isEqual:targetRequest]) {
+                                
+                                if ([subscribeRequest isEqual:lastRequest]) {
+                                    
+                                    // Updating time token value to the last one from previous
+                                    // request (it may be subscription update request).
+                                    NSString *timeToken = [PNChannel largestTimetokenFromChannels:[subscribeRequest channels]];
+                                    [[targetRequest channels] makeObjectsPerformSelector:@selector(setUpdateTimeToken:)
+                                                                              withObject:timeToken];
+                                }
+                                
+                                [self destroyRequest:subscribeRequest];
+                            }
+                        }];
+                    }
+                }
 
                 // Reconnect communication channel
                 [self reconnectWithBlock:notifyCompletionBlock];

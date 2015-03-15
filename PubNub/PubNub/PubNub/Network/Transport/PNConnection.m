@@ -1959,91 +1959,75 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-        return @[PNLoggerSymbols.connection.stream.read.readingArrivedData,
-                 (self.name ? self.name : self), @(self.state)];
-    }];
-
-    // Read raw data from stream
-    UInt8 buffer[kPNStreamBufferSize];
-    
-    CFIndex readedBytesCount = CFReadStreamRead(stream, buffer, kPNStreamBufferSize);
-
-    // Checking whether client was able to read out some data from stream or not
-    if (readedBytesCount > 0) {
+    // Check whether there is really some data available right now or not.
+    if (CFReadStreamHasBytesAvailable(stream)) {
         
-        // Append filled buffer to current read buffer.
-        [self appendToReadBuffer:dispatch_data_create(buffer, readedBytesCount,
-                                                      [self pn_privateQueue],
-                                                      DISPATCH_DATA_DESTRUCTOR_DEFAULT)];
-
         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-            return @[PNLoggerSymbols.connection.stream.read.readedPortionOfArrivedData,
-                     (self.name ? self.name : self), @(readedBytesCount), @(self.state)];
-        }];
-
-        if ([PNLogger isDumpingHTTPResponse] || [PNLogger isLoggerEnabled]) {
-
-            NSData *tempData = [NSData dataWithBytes:buffer length:(NSUInteger)readedBytesCount];
-
-            [PNLogger storeHTTPPacketData:^NSData * {
-
-                return tempData;
-            }];
-
-            [PNLogger logConnectionHTTPPacketFrom:self withParametersFromBlock:^NSArray *{
-
-                NSString *responseString = [[NSString alloc] initWithData:tempData encoding:NSUTF8StringEncoding];
-                if (!responseString) {
-
-                    responseString = [[NSString alloc] initWithData:tempData encoding:NSASCIIStringEncoding];
-                }
-                if (!responseString) {
-
-                    responseString = @"Can't stringify response. Try check response dump on file system (if enabled)";
-                }
-
-                return @[PNLoggerSymbols.connection.stream.read.rawHTTPResponse, (self.name ? self.name : self),
-                        responseString, @(self.state)];
-            }];
-        }
-
-        // Check whether working on data deserialization or not
-        [self.deserializer checkDeserializing:^(BOOL deserializing) {
-
-            [self pn_dispatchBlock:^{
-
-                if (deserializing) {
-
-                    [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                        return @[PNLoggerSymbols.connection.stream.read.deserializerIsBusy, (self.name ? self.name : self),
-                                @(self.state)];
-                    }];
-                }
-                else {
-                    
-                    [self processResponse];
-                }
-            }];
-        }];
-    }
-    // Looks like there is no data or error occurred while tried to read out stream content
-    else if (readedBytesCount < 0) {
-
-        [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
-
-            return @[PNLoggerSymbols.connection.stream.read.readingError,
+            
+            return @[PNLoggerSymbols.connection.stream.read.readingArrivedData,
                      (self.name ? self.name : self), @(self.state)];
         }];
-
-        CFErrorRef error = CFReadStreamCopyError(stream);
-        [PNBitwiseHelper addTo:&_state bit:PNReadStreamError];
-        [self handleStreamError:error];
         
-        [PNHelper releaseCFObject:&error];
+        // Read raw data from stream
+        UInt8 buffer[kPNStreamBufferSize];
+        CFIndex readedBytesCount = CFReadStreamRead(stream, buffer, kPNStreamBufferSize);
+        
+        // Checking whether client was able to read out some data from stream or not
+        if (readedBytesCount > 0) {
+            
+            // Append filled buffer to current read buffer.
+            [self appendToReadBuffer:dispatch_data_create(buffer, readedBytesCount, NULL,
+                                                          DISPATCH_DATA_DESTRUCTOR_DEFAULT)];
+            
+            [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
+                
+                return @[PNLoggerSymbols.connection.stream.read.readedPortionOfArrivedData,
+                         (self.name ? self.name : self), @(readedBytesCount), @(self.state)];
+            }];
+            
+            if ([PNLogger isDumpingHTTPResponse] || [PNLogger isLoggerEnabled]) {
+                
+                NSData *tempData = [NSData dataWithBytes:buffer length:(NSUInteger)readedBytesCount];
+                
+                [PNLogger storeHTTPPacketData:^NSData * {
+                    
+                    return tempData;
+                }];
+                
+                [PNLogger logConnectionHTTPPacketFrom:self withParametersFromBlock:^NSArray *{
+                    
+                    NSString *responseString = [[NSString alloc] initWithData:tempData encoding:NSUTF8StringEncoding];
+                    if (!responseString) {
+                        
+                        responseString = [[NSString alloc] initWithData:tempData encoding:NSASCIIStringEncoding];
+                    }
+                    if (!responseString) {
+                        
+                        responseString = @"Can't stringify response. Try check response dump on file system (if enabled)";
+                    }
+                    
+                    return @[PNLoggerSymbols.connection.stream.read.rawHTTPResponse, (self.name ? self.name : self),
+                             responseString, @(self.state)];
+                }];
+            }
+            
+            [self processResponse];
+        }
+        // Looks like there is no data or error occurred while tried to read out stream content
+        else if (readedBytesCount < 0) {
+            
+            [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
+                
+                return @[PNLoggerSymbols.connection.stream.read.readingError,
+                         (self.name ? self.name : self), @(self.state)];
+            }];
+            
+            CFErrorRef error = CFReadStreamCopyError(stream);
+            [PNBitwiseHelper addTo:&_state bit:PNReadStreamError];
+            [self handleStreamError:error];
+            
+            [PNHelper releaseCFObject:&error];
+        }
     }
 }
 
@@ -2052,27 +2036,26 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    // Store reference on original read buffer size before it has been before de-serialization.
-    NSUInteger originalReadBufferSize = dispatch_data_get_size(self.readBuffer);
-
             // Retrieve response objects from server response
     [self.deserializer parseBufferContent:self.readBuffer
-                                withBlock:^(NSArray *responses, NSUInteger processedBufferLength) {
+                                withBlock:^(NSArray *responses, NSUInteger fullBufferLength,
+                                            NSUInteger processedBufferLength,
+                                            void(^readBufferPostProcessing)(void)) {
 
         [self pn_dispatchBlock:^{
 
             // Check whether buffer size has been altered while de-serializer parsed it's content
             // or not.
-            BOOL isReadBufferChanged = (originalReadBufferSize != dispatch_data_get_size(self.readBuffer));
+            NSUInteger readBufferSize = dispatch_data_get_size(self.readBuffer);
+            BOOL isReadBufferChanged = (fullBufferLength != readBufferSize);
 
             // Check whether some data has been processed or not.
             if (processedBufferLength > 0){
 
                 // Update read buffer content by removing from it number of bytes which has been
                 // processed.
-                NSUInteger readBufferSize = dispatch_data_get_size(self.readBuffer);
                 self.readBuffer = dispatch_data_create_subrange(self.readBuffer, processedBufferLength,
-                        (readBufferSize - processedBufferLength));
+                                                                (readBufferSize - processedBufferLength));
             }
 
             [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -2107,22 +2090,24 @@ void connectionContextInformationReleaseCallBack( void *info ) {
                         [self.delegate connection:self didReceiveResponse:response withBlock:NULL];
                     }
                 }];
-
-                if (isReadBufferChanged) {
-
-                    // Try to process retrieved data once more (maybe some full response arrived
-                    // from remote server)
-                    [self processResponse];
-                }
-                else {
-
-                    // Check whether client is still connected and there is request from server side to close connection.
-                    // Connection will be restored after full disconnection
-                    if ([self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
-                        [PNBitwiseHelper is:self.state containsBit:PNByServerRequest]) {
-
-                        [self disconnectByInternalRequest];
-                    }
+            }
+            
+            readBufferPostProcessing();
+            
+            if (isReadBufferChanged) {
+                
+                // Try to process retrieved data once more (maybe some full response arrived
+                // from remote server)
+                [self processResponse];
+            }
+            else {
+                
+                // Check whether client is still connected and there is request from server side to close connection.
+                // Connection will be restored after full disconnection
+                if ([self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
+                    [PNBitwiseHelper is:self.state containsBit:PNByServerRequest]) {
+                    
+                    [self disconnectByInternalRequest];
                 }
             }
         }];
@@ -4012,8 +3997,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     
     if (_readBuffer == NULL) {
         
-        _readBuffer = dispatch_data_create(NULL, 0, [self pn_privateQueue],
-                                           DISPATCH_DATA_DESTRUCTOR_DEFAULT);
+        _readBuffer = dispatch_data_create(NULL, 0, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT);
         [PNDispatchHelper retain:_readBuffer];
     }
     

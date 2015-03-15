@@ -36,12 +36,12 @@
 
 		[PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
 		[PubNub connect];
-		[PubNub subscribeOn:[PNChannel channelWithName:@"my-channel" shouldObservePresence:NO]
+		[PubNub subscribeOn:@[[PNChannel channelWithName:@"my-channel" shouldObservePresence:NO]]
 	   withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error){
 
 		   if (state == PNSubscriptionProcessSubscribedState) {
 
-			   [PubNub subscribeOn:[PNChannel channelWithName:@"my-channel" shouldObservePresence:YES]];
+			   [PubNub subscribeOn:@[[PNChannel channelWithName:@"my-channel" shouldObservePresence:YES]]];
 
 			   /*PNMessage *helloMessage = */[PubNub sendMessage:@"Hello PubNub"
 													   toChannel: [PNChannel channelWithName:@"my-channel"]

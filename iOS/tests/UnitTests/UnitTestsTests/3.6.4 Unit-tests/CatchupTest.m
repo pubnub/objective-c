@@ -39,7 +39,18 @@
     [super setUp];
     
     [PubNub setDelegate:self];
-	pnChannels = [PNChannel channelsWithNames:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
+    NSMutableArray *channelNames = [NSMutableArray arrayWithArray:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
+    [[channelNames copy] enumerateObjectsUsingBlock:^(NSString *channelName,
+                                                      NSUInteger channelNameIdx,
+                                                      BOOL *channelNameEnumeratorStop) {
+        
+        if ([channelName rangeOfString:@":"].location != NSNotFound) {
+            
+            [channelNames replaceObjectAtIndex:channelNameIdx
+                                    withObject:[channelName stringByReplacingOccurrencesOfString:@":" withString:@"-"]];
+        }
+    }];
+	pnChannels = [PNChannel channelsWithNames:channelNames];
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 

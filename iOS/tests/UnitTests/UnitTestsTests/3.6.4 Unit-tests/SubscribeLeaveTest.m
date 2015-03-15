@@ -114,24 +114,26 @@
 }
 
 - (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event {
-	NSLog(@"pubnubClient didReceivePresenceEvent %@", event);
-	if( event.type == PNPresenceEventJoin )
-		joinNotificationCount++;
-	if( event.type == PNPresenceEventLeave )
-		leaveNotificationCount++;
-	if( event.type == PNPresenceEventTimeout )
-		timeoutDelegateCount++;
+    
+    NSLog(@"\n\npubnubClient didReceivePresenceEvent %@\n\n", event);
+    if( event.type == PNPresenceEventJoin )
+        joinDelegateCount++;
+    if( event.type == PNPresenceEventLeave )
+        leaveDelegateCount++;
+    if( event.type == PNPresenceEventTimeout )
+        timeoutDelegateCount++;
 }
 
 -(void)kPNClientDidReceivePresenceEventNotification:(NSNotification*)notification {
-	NSLog(@"kPNClientDidReceivePresenceEventNotification %@", notification.object);
-	PNPresenceEvent *event = (PNPresenceEvent*)notification.userInfo;
-	if( event.type == PNPresenceEventJoin )
-		joinDelegateCount++;
-	if( event.type == PNPresenceEventLeave )
-		leaveDelegateCount++;
-	if( event.type == PNPresenceEventTimeout )
-		timeoutNotificationCount++;
+    
+	NSLog(@"\n\nkPNClientDidReceivePresenceEventNotification %@\n\n", notification.userInfo);
+    PNPresenceEvent *event = (PNPresenceEvent*)notification.userInfo;
+    if( event.type == PNPresenceEventJoin )
+        joinNotificationCount++;
+    if( event.type == PNPresenceEventLeave )
+        leaveNotificationCount++;
+    if( event.type == PNPresenceEventTimeout )
+        timeoutNotificationCount++;
 }
 
 -(void)kPNClientSubscriptionDidCompleteNotification:(NSNotification*)notificaton {

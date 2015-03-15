@@ -215,6 +215,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		79E7E3F61AB3C50C00F6E175 /* PNPrivateMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateMacro.h; sourceTree = "<group>"; };
 		960063281A027789002063CF /* PNCryptoHistoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHistoryTest.m; sourceTree = "<group>"; };
 		9606DE6D1A15EB6E00EF1934 /* PNConnectNegativeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConnectNegativeTest.m; sourceTree = "<group>"; };
 		961B70EB1A40B86C0036C02B /* MessageToUnsubChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageToUnsubChannelTest.m; sourceTree = "<group>"; };
@@ -899,6 +900,7 @@
 				964111E31AB096200062EF03 /* PNLogger.h */,
 				964111E41AB096200062EF03 /* PNLogger.m */,
 				964111E51AB096200062EF03 /* PNLoggerSymbols.h */,
+				79E7E3F61AB3C50C00F6E175 /* PNPrivateMacro.h */,
 				964111E61AB096200062EF03 /* PNMacro.h */,
 				964111E71AB096200062EF03 /* PNNotifications.h */,
 				964111E81AB096200062EF03 /* PNPrivateImports.h */,

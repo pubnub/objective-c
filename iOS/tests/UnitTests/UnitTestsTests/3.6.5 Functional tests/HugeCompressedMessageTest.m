@@ -37,7 +37,7 @@
     XCTAssertTrue([self subscribeOnChannels:@[@"test_a"]]);
     
     //  The maximum allowable message - 30000 digits
-    XCTAssertTrue([self sendMessageToChannel:@"test_a" message:[self creatMessageOfSize:25000]]);
+    XCTAssertTrue([self sendMessageToChannel:@"test_a" message:[self creatMessageOfSize:18000]]);
     
     //  The message > 30000 digits is not allowable (limit from PubNub)
     XCTAssertFalse([self sendMessageToChannel:@"test_a" message:[self creatMessageOfSize:40000]]);
