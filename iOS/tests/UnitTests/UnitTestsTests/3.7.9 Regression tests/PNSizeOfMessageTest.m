@@ -139,7 +139,7 @@ PNDelegate
         return;
     }
     
-    XCTAssertTrue(messageSize == 312);
+    XCTAssertTrue(messageSize == 314);
 }
 
 - (void)testSaveMesssageInHistory {

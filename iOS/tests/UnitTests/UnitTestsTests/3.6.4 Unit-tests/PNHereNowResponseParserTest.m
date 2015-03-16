@@ -56,26 +56,28 @@
 	[response.response setObject: uuids forKey: @"uuids"];
 	[response.response setObject: @(2) forKey: @"occupancy"];
 	PNChannel *channel = [PNChannel channelWithName:@"channel"];
-	response.additionalData = channel;
+	response.additionalData = @[channel];
 
 	PNHereNowResponseParser *parser = [[PNHereNowResponseParser alloc] initWithResponse: response];
 	XCTAssertTrue( parser != nil, @"");
+    
 	XCTAssertTrue( [parser parsedData] == parser.hereNow, @"");
-	XCTAssertTrue( [(PNHereNow*)[parser parsedData] participantsCount] == 2, @"");
-	NSLog(@"arrays %@\n%@", uuids, [(PNHereNow*)[parser parsedData] participants]);
-//	XCTAssertTrue( [[(PNHereNow*)[parser parsedData] participants] isEqualToArray: uuids], @"");
+	XCTAssertTrue( [(PNHereNow*)[parser parsedData] participantsCountForChannel:channel] == 2, @"");
+    NSArray *arr = [NSArray arrayWithArray:[(PNHereNow*)[parser parsedData] participantsForChannel:channel]];
+    PNClient *client = arr[0];
+	XCTAssertTrue( [client.identifier isEqualToString:uuids[0]], @"");
 
 	response = [[PNResponse alloc] init];
 	response.response = [NSMutableDictionary dictionary];
 	[response.response setObject: uuids forKey: @"uuids"];
 	[response.response setObject: @(10) forKey: @"occupancy"];
 	channel = [PNChannel channelWithName:@"channel"];
-	response.additionalData = channel;
+	response.additionalData = @[channel];
 
 	parser = [[PNHereNowResponseParser alloc] initWithResponse: response];
 	XCTAssertTrue( parser != nil, @"");
 	XCTAssertTrue( [parser parsedData] == parser.hereNow, @"");
-	XCTAssertTrue( [(PNHereNow*)[parser parsedData] participantsCount] == 10, @"");
+	XCTAssertTrue( [(PNHereNow*)[parser parsedData] participantsCountForChannel:channel] == 10, @"");
 }
 
 @end

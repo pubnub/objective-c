@@ -163,7 +163,7 @@ touch Podfile
 ```
 <a/>4. Using your favorite text editor add next line into **Podfile**:  
 ```bash
-pod 'PubNub', ‘3.7.9.1’
+pod 'PubNub', '3.7.9.1'
 ```
 <a/>5. Install dependencies using _Terminal_:  
 ```bash

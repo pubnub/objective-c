@@ -16,6 +16,7 @@
 
 #import <OCMock/OCMock.h>
 
+#import <XCTest/XCTextCase+AsynchronousTesting.h>
 
 @interface PNServiceChannelTest : XCTestCase
 
@@ -71,51 +72,8 @@ PNConnectionChannelDelegate
     
     XCTAssertNotNil(channel, @"Channel is not available");
     
-    
     channel = [[PNServiceChannel alloc] initWithConfiguration:_configuration type:PNConnectionChannelMessaging andDelegate:self];
     XCTAssertNotNil(channel, @"Channel is not available");
-}
-
-#pragma mark - Interaction tests
-
-- (void)testSendMessage {
-    /*
-     Test scenario:
-     - initService with some delegate object
-     - send a message
-     - expect scheduleRequest method of channel ivoked
-    */
-    
-    PNServiceChannel *channel = [PNServiceChannel serviceChannelWithConfiguration:_configuration andDelegate:self];
-    
-    id mock = [OCMockObject partialMockForObject:channel];
-    
-    [[[[mock expect] ignoringNonObjectArgs] andReturn:nil] sendMessage: [OCMArg any] toChannel:[OCMArg any] compressed:NO storeInHistory:NO];
-
-    [mock sendMessage:[PNMessage new]];
-    
-    [mock verify];
-}
-
-- (void)testSendMessageToChannel {
-    /*
-     Test scenario:
-     - initService with some delegate object
-     - send a message to specific channel
-     - expect scheduleRequest method of channel ivoked
-     */
-    PNServiceChannel *channel = [PNServiceChannel serviceChannelWithConfiguration:_configuration andDelegate:self];
-    
-    id mockChannel = [OCMockObject partialMockForObject:channel];
-    
-    [[[mockChannel expect] ignoringNonObjectArgs] sendMessage:[OCMArg any] toChannel:[OCMArg any]
-                                                   compressed:NO storeInHistory:NO];
-    
-    [mockChannel sendMessage:[PNMessage new]
-                   toChannel:mockChannel
-                  compressed:NO
-     storeInHistory:NO];
-    [mockChannel verify];
 }
 
 #pragma mark - PNConnectionDelegates
@@ -158,6 +116,21 @@ withError:(PNError *)error{
 }
 
 - (void)connectionChannel:(PNConnectionChannel *)channel checkCanConnect:(void (^)(BOOL))checkCompletionBlock {
+    
+}
+
+- (void)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation checkCompletionBlock:(void (^)(BOOL))checkCompletionBlock {
+}
+
+- (void)connectionChannel:(PNConnectionChannel *)channel didSendRequest:(PNBaseRequest *)request {
+    
+}
+
+- (void)connectionChannel:(PNConnectionChannel *)channel checkShouldRestoreConnection:(void (^)(BOOL))checkCompletionBlock {
+    
+}
+
+- (void)connectionChannelWillReschedulePendingRequests:(PNConnectionChannel *)channel {
     
 }
 
