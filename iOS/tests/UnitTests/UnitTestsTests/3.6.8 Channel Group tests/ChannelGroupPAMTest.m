@@ -8,14 +8,6 @@
 
 #import <XCTest/XCTest.h>
 
-static NSString *kOriginPath = @"pubsub.pubnub.com";
-
-static NSString * const kPNPublishKey = @"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6";
-static NSString * const kPNSubscriptionKey = @"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe";
-static NSString * const kPNSecretKey = @"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw";
-static NSString * const kPNCipherKey = nil;
-static NSString * const kPNAuthorizationKey = nil;
-
 @interface ChannelGroupPAMTest : XCTestCase <PNDelegate>
 
 @end
@@ -32,14 +24,12 @@ static NSString * const kPNAuthorizationKey = nil;
 - (void)setUp
 {
     [super setUp];
+    
     [PubNub disconnect];
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kOriginPath
-                                                                  publishKey:kPNPublishKey
-                                                                subscribeKey:kPNSubscriptionKey
-                                                                   secretKey:kPNSecretKey];
+    PNConfiguration *configuration = [PNConfiguration accessManagerTestConfiguration];
     
-    configuration.authorizationKey = kPNAuthorizationKey;
+    configuration.authorizationKey = nil;
     
     [PubNub setupWithConfiguration:configuration andDelegate:self];
     [PubNub connect];
@@ -132,7 +122,11 @@ static NSString * const kPNAuthorizationKey = nil;
     [super tearDown];
 }
 
+#pragma mark - Tests
+
 - (void)testAuditAccessRightsForGroup {
+    
+    // check impossible to access groups without permissions
     
     _resGroup = [GCDGroup group];
     [_resGroup enter];
