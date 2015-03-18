@@ -161,7 +161,6 @@
     
     _resGroup = [GCDGroup group];
     [_resGroup enter];
-
     
     [[PubNub sharedInstance] addChannels:_channels toGroup:_group withCompletionHandlingBlock:^(PNChannelGroup *group, NSArray *channels, PNError *error) {
         if (!error) {

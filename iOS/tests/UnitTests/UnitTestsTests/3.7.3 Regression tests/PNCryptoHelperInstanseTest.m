@@ -29,9 +29,9 @@
 
 - (void)setUp {
     [super setUp];
+    
     [PubNub disconnect];
     _decodeString = nil;
-    
     _clientConfiguration = [PNConfiguration defaultTestConfiguration];
     _clientConfiguration.cipherKey =  @"enigma";
     _testChannel = [PNChannel channelWithName:@"iosdev"];
@@ -39,10 +39,11 @@
 
 - (void)tearDown {
     _clientConfiguration = nil;
-    _pubNubClient1= nil;
-    _pubNubClient2= nil;
-    _decodeString=nil;
+    _pubNubClient1 = nil;
+    _pubNubClient2 = nil;
+    _decodeString = nil;
     [PubNub disconnect];
+    
     [super tearDown];
 }
 
@@ -60,7 +61,7 @@
     
     if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:5]) {
         dispatch_group_leave(_resGroup);
-        _resGroup= NULL;
+        _resGroup = NULL;
         XCTFail(@"Timeout is fired. PubNub client does't connected");
         return nil;
     } else {
@@ -107,7 +108,6 @@
     PNError *processingError = nil;
     NSString *encryptedMessage = [_cryptoHelper encryptedStringFromString:message error:&processingError];
     
-//    [client setDelegate:self];
     [client sendMessage:encryptedMessage
                         toChannel:_testChannel
                        compressed:YES
@@ -219,9 +219,8 @@
 // Message5 !!! @"" -  does not work
     // Client1 sends encrypting message to channel, Client2 receive and decodes message, then we comparison with the original
     XCTAssertTrue(([self sendClientEncryptingMessage:_pubNubClient1 encryptingMessage:@""]));
-    XCTAssertEqualObjects(_decodeString, @"", @"wrong decoding %@", _decodeString);
-
-
+    
+    XCTAssertEqualObjects(_decodeString, @"", @"wrong decoding <%@>", _decodeString);
 }
 
 @end
