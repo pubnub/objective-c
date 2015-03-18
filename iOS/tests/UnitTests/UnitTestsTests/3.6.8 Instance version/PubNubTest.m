@@ -56,6 +56,8 @@ PNDelegate
     
     // check different identifiers
     
+    [GCDWrapper sleepForSeconds:1];
+    
     XCTAssertEqualObjects([PubNub clientIdentifier], kIdentifier1, @"Client identifiers inconsistent.");
     XCTAssertEqualObjects([pubNub2 clientIdentifier], kIdentifier2, @"Client identifiers inconsistent.");
     XCTAssertEqualObjects([pubNub3 clientIdentifier], kIdentifier3, @"Client identifiers inconsistent.");
@@ -88,6 +90,8 @@ PNDelegate
                                           andDelegate:self];
     
     // check different identifiers
+    
+    [GCDWrapper sleepForSeconds:1];
     
     XCTAssertEqualObjects([PubNub configuration], configuration1, @"Client identifiers inconsistent.");
     XCTAssertEqualObjects([pubNub2 configuration], configuration2, @"Client identifiers inconsistent.");
