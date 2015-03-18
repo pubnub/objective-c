@@ -91,7 +91,7 @@
 		<key>0100041</key>
 		<string>UNSCHEDULE REQUEST SENDING (%@) (STATE: %@)</string>
 		<key>0100042</key>
-		<string>HANDLE &apos;TIMEOUT&apos; TIMER EVENT (STATE: %@)</string>
+		<string>HANDLE &apos;TIMEOUT&apos; TIMER EVENT FOR REQUEST %@ (STATE: %@)</string>
 		<key>0100043</key>
 		<string>HANDLE &apos;WAKE UP&apos; TIMER EVENT (STATE: %@)</string>
 		<key>0100044</key>

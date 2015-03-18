@@ -1280,6 +1280,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
                     return @[PNLoggerSymbols.connection.handleTimeoutTimer,
                              (strongSelf.name ? strongSelf.name : strongSelf),
+                             (request.shortIdentifier ? request.shortIdentifier : [NSNull null]),
                              @(strongSelf.state)];
                 }];
                 [strongSelf handleTimeoutTimer:request];

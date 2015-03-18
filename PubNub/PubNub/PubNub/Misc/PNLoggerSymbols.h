@@ -147,7 +147,7 @@ struct PNLoggerSymbolsStructure {
         // Parameters requirements: [code, connection name, request identifier, connection bit field with state]
         __unsafe_unretained NSString *unscheduleRequestProcessing;
         
-        // Parameters requirements: [code, connection name, connection bit field with state]
+        // Parameters requirements: [code, connection name, request identifier, connection bit field with state]
         __unsafe_unretained NSString *handleTimeoutTimer;
         
         // Parameters requirements: [code, connection name, connection bit field with state]
