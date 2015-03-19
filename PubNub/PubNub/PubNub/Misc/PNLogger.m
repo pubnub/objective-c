@@ -1333,7 +1333,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
     NSString *symbolsPath = [[NSBundle mainBundle] pathForResource:@"PNLoggerSymbols" ofType:@"plist"];
     if (!symbolsPath) {
         
-        NSBundle *frameworkResources = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"PubNub"
+        NSBundle *frameworkResources = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"PubNub"
                                                                                                 ofType:@"bundle"]];
         symbolsPath = [frameworkResources pathForResource:@"PNLoggerSymbols" ofType:@"plist"];;
     }
