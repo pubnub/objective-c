@@ -9,6 +9,7 @@
 #import "PNWhereNowResponseParser+Protected.h"
 #import "PNResponse+Protected.h"
 #import "PNWhereNow+Protected.h"
+#import "PNChannel+Protected.h"
 #import "PNChannel.h"
 
 

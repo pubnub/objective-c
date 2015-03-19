@@ -8,15 +8,6 @@
 
 #import "PNWhereNowResponseParser.h"
 
-
-#pragma mark Static
-
-/**
- Stores reference on key under which list of channels is stored.
- */
-static NSString * const kPNResponseChannelsKey = @"channels";
-
-
 #pragma mark - Class forward
 
 @class PNWhereNow;
