@@ -156,7 +156,7 @@
  @param httpPacketBlock Block which is used by logger to receive \b NSData instance which contains
                         garbage data which has been received from server.
 
- @since <#version number#>
+ @since 3.7.10
  */
 + (void)storeGarbageHTTPPacketData:(NSData *(^)(void))httpPacketBlock;
 

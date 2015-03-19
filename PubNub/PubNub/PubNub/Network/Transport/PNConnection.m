@@ -272,7 +272,7 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
  @discussion Data stored in this buffer till de-serializer will be able to pull completed packet
              from it and notify about amount of data which it processed.
  
- @since <#version number#>
+ @since 3.7.10
  */
 @property (nonatomic, pn_dispatch_property_ownership) dispatch_data_t readBuffer;
 
@@ -426,7 +426,7 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
  
  @param data Update read buffer content with value received from read stream.
  
- @since <#version number#>
+ @since 3.7.10
  */
 - (void)appendToReadBuffer:(dispatch_data_t)data;
 

@@ -83,7 +83,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
  @return \c NSNotFound in case if there is no more packets in specified buffer.
 
- @since <#version number#>
+ @since 3.7.10
  */
 - (NSUInteger)HTTPResponseLocationIn:(const void *)buffer withSize:(NSUInteger)bufferSize;
 
@@ -99,7 +99,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
  @return \c NSNotFound in case if there is no more packets in specified buffer.
 
- @since <#version number#>
+ @since 3.7.10
  */
 - (NSUInteger)nextHTTPResponseLocationIn:(const void *)buffer withSize:(NSUInteger)bufferSize
                                andOffset:(NSUInteger)searchOffset;

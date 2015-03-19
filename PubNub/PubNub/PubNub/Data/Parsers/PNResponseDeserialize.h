@@ -34,7 +34,7 @@
                              processing block which should be called by caller to notify about
                              de-serialization completion.
  
- @since <#version number#>
+ @since 3.7.10
  */
 - (void)parseBufferContent:(dispatch_data_t)buffer
                  withBlock:(void(^)(NSArray *responses, NSUInteger fullBufferLength,
