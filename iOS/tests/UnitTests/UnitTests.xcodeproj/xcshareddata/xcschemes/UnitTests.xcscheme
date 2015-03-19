@@ -53,6 +53,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "AbbreviatedPresenceTest">
+               </Test>
+               <Test
                   Identifier = "ChangingChannels">
                </Test>
                <Test
@@ -60,6 +63,9 @@
                </Test>
                <Test
                   Identifier = "ChannelGroupSubscriptionTest">
+               </Test>
+               <Test
+                  Identifier = "Configuration">
                </Test>
                <Test
                   Identifier = "MessageToUnsubChannelTest">
@@ -111,6 +117,9 @@
                </Test>
                <Test
                   Identifier = "SubscribeLeaveTest">
+               </Test>
+               <Test
+                  Identifier = "TimeCommand">
                </Test>
             </SkippedTests>
          </TestableReference>
