@@ -152,9 +152,10 @@
 		[self subscribeOnChannels: @[[PNChannel channelWithName: channelNames[i] shouldObservePresence: YES]] withPresenceEvent: YES];
 		[PubNub sendMessage: @"message" toChannel: [PNChannel channelWithName: channelNames[i]] ];
 	}
-	for( int i=0; i<10; i++ )
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-	XCTAssertTrue( didReceiveMessageCount == channelNames.count, @"");
+    
+    [GCDWrapper sleepForSeconds:15];
+    
+    XCTAssertTrue( didReceiveMessageCount == channelNames.count, @"");
 
 	XCTAssertTrue( joinDelegateCount == channelNames.count, @"joinDelegateCount %d, channelNames.count %d", joinNotificationCount, channelNames.count);
 	XCTAssertTrue( leaveDelegateCount == 0, @"leaveDelegateCount %d, channelNames.count %d", joinNotificationCount, channelNames.count);

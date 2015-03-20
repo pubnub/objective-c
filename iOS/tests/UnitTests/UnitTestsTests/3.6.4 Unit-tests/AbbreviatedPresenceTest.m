@@ -79,53 +79,7 @@ static NSString * const kPNAuthorizationKey = @"iko19740905";
     [super tearDown];
 }
 
-
 #pragma mark - < Scenarios >
-
-- (void)testManagementGroups {
-    
-    // Connect client
-    PubNub *client;
-    XCTAssertTrue([self connectClient:&client withConfiguration:_configuration1]);
-
-    // Change access right for group
-    XCTAssertTrue(([self grantAccessRightsClient:client forGroup:@"g1" inNamespace:@"s1"]));
-    PNAccessRightsInformation *accessRightsForGroup = [self auditAccessRightsClient:client forGroup:@"g1" inNamespace:@"s1"];
-    XCTAssertTrue(accessRightsForGroup.rights == (PNReadAccessRight | PNWriteAccessRight | PNManagementRight));
-    
-    // Add channels to group
-    XCTAssertTrue(([self addClient:client channels:@[@"iostest1",@"iostest2",@"iostest3"] toGroup:@"g1" inNamespace:@"s1"]));
-    XCTAssertEqual([self requestChannelsClient:client forGroup:@"g1" inNamespace:@"s1"].count, 3);
-    XCTAssertEqual([self requestGroupsClient:client forNamespace:@"s1"].count, 1);
-
-    // Subscribe to group
-    XCTAssertTrue(([self subscribeClient:client toGroup:@"g1" inNamespace:@"s1"]));
-    XCTAssertTrue(([self isSubscribedClient:client onGroup:@"g1" inNamespace:@"s1"]));
-    
-    // Unsubscribe from group
-    XCTAssertTrue(([self unsubscribeClient:client fromGroup:@"g1" inNamespace:@"s1"]));
-    XCTAssertFalse(([self isSubscribedClient:client onGroup:@"g1" inNamespace:@"s1"]));
-   
-    // Remove channels from group
-    XCTAssertTrue(([self removeClient:client channels:@[@"iostest1",@"iostest2",@"iostest3"] fromGroup:@"g1" inNamespace:@"s1"]));
-    XCTAssertEqual([self requestChannelsClient:client forGroup:@"g1" inNamespace:@"s1"].count, 0);
-
-    // Remove group
-    XCTAssertTrue(([self removeClient:client group:@"g1" fromNamespace:@"s1"]));
-    XCTAssertEqual([self requestGroupsClient:client forNamespace:@"s1"].count, 0);
-    
-    // Remove namespace
-    XCTAssertTrue(([self grantAccessRightsClient:client forNamespace:@"s1"]));
-    XCTAssertTrue(([self removeClient:client namespace:@"s1"]));
-    
-    // Remove grant from group
-    XCTAssertTrue(([self removeAccessRightsClient:client forGroup:@"g1" inNamespace:@"s1"]));
-    accessRightsForGroup = [self auditAccessRightsClient:client forGroup:@"g1" inNamespace:@"s1"];
-    XCTAssertTrue(accessRightsForGroup.rights == PNNoAccessRights);
-
-    // Disconnect client
-    XCTAssertTrue([self disconnectClient:client]);
-}
 
 - (void)testManagementChannels {
     

@@ -27,6 +27,8 @@
 - (void)setUp {
     [super setUp];
     [PubNub disconnect];
+    [PubNub resetClient];
+    
     [PubNub setDelegate:self];
 }
 
@@ -151,20 +153,6 @@
     
 }
 
-- (void)t1estScenario1 {
-    
-    XCTAssertTrue([self connectToPubNub]);
-    
-    XCTAssertTrue(([self subscribeOnChannels:@[@"iosdev1",@"iosdev2",@"iosdev3",@"iosdev4"]]));
- 
-    XCTAssertTrue([self sendMessageToChannel:@"iosdev3" message:@"Hello world #1"]);
-    
-    XCTAssertTrue([self unsubscribeFromChannels:@[@"iosdev2"]]);
-    
-    XCTAssertTrue([self sendMessageToChannel:@"iosdev4" message:@"Hello world #2"]);
-    
-}
-
 - (void)t2estScenario {
     
     [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
@@ -244,7 +232,7 @@
     _resGroup7 = [GCDGroup group];
     [_resGroup7 enterTimes:2];
     
-    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
+    [PubNub setConfiguration:[PNConfiguration defaultTestConfiguration]];
     [PubNub setDelegate:self];
     [PubNub connect];
     [PubNub subscribeOn:[PNChannel channelsWithNames:@[@"iosdev1",@"iosdev2",@"iosdev3",@"iosdev4"]]];

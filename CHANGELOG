@@ -1,3 +1,13 @@
+03-20-2015 - 189923b7 - 3.7.10
+
+. added additional debug informatino for timeout log entry
+. fixed subscription on new channel during subscription time token update process
+. adjusted de-serializer
+. updated soe tests which used old API
+. migrated read buffer to GCD data objects and changed raw bytes parsing mechanism
+. added PN_APP_EXTENSION macro to exclude from client's code on compile time code which is not compatible with extensions
+
+
 03-12-2015 - c379c6d4 - 3.7.9.3
 
 . fixed heartbeat timer.

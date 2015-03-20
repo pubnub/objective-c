@@ -9,14 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-static NSString *kOrigin = @"pubsub.pubnub.com";
-static NSString *kPublishKey = @"demo";
-static NSString *kSubscribeKey = @"demo";
-static NSString *kSecretKey = @"mySecret";
-
 @interface PNConnectSuccessBlockTest : XCTestCase <PNDelegate> {
-    dispatch_group_t _resGroup1;
-    dispatch_group_t _resGroup2;
+    GCDGroup *_resGroup1;
+    GCDGroup *_resGroup2;
+    
     PubNub *_pubNub;
 }
 @end
@@ -27,6 +23,7 @@ static NSString *kSecretKey = @"mySecret";
 - (void)setUp {
     [super setUp];
     [PubNub disconnect];
+//    [PubNub resetClient];
 }
 
 - (void)tearDown {
@@ -34,22 +31,21 @@ static NSString *kSecretKey = @"mySecret";
     [super tearDown];
 }
 
+#pragma mark - Tests
+
 // Instance connection
 - (void)testInstanceConnectSuccessBlock {
     
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kOrigin
-                                                                  publishKey:kPublishKey
-                                                                subscribeKey:kSubscribeKey
-                                                                   secretKey:nil];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
     
     _pubNub = [PubNub clientWithConfiguration:configuration andDelegate:self];
     
-    _resGroup1 = dispatch_group_create();
-    dispatch_group_enter(_resGroup1);
+    _resGroup1 = [GCDGroup group];
+    [_resGroup1 enter];
     
     [_pubNub connectWithSuccessBlock:^(NSString *origin){
-        dispatch_group_leave(_resGroup1);
+        [_resGroup1 leave];
     }
                          errorBlock:^(PNError *connectionError){
                              
@@ -60,34 +56,39 @@ static NSString *kSecretKey = @"mySecret";
                              else {
                                  XCTFail(@"Happened something really bad and PubNub client can't establish connection");
                              }
+                             [_resGroup1 leave];
 
    }];
     
-    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup1 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Instance connection passed unsuccessfully");
     }
-    else {
-        NSLog(@"Instance connection with success block went well");
-        _resGroup1 = nil;
-    }
     
+    _resGroup1 = nil;
 }
 
 // PubNub connection
 - (void)testPubNubConnectSuccessBlock {
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kOrigin
-                                                                  publishKey:kPublishKey
-                                                                subscribeKey:kSubscribeKey
-                                                                   secretKey:nil];
+    
+    [PubNub resetClient];
+    
+#warning  Investigate why we need it there?
+    /*
+     We have a fail like: configuration is invalid, if we try to remove sleep 1 here
+     */
+    
+    [GCDWrapper sleepForSeconds:1];
+    
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
 
     [PubNub setConfiguration:configuration];
     
-    _resGroup2 = dispatch_group_create();
-    dispatch_group_enter(_resGroup2);
+    _resGroup2 = [GCDGroup group];
+    [_resGroup2 enter];
     
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
-        dispatch_group_leave(_resGroup2);
+        [_resGroup2 leave];
         }
                          errorBlock:^(PNError *connectionError) {
                             
@@ -99,9 +100,10 @@ static NSString *kSecretKey = @"mySecret";
                               XCTFail(@"Happened something really bad and PubNub can't establish connection: %@", connectionError);
                           }
 
+                             [_resGroup2 leave];
                       }];
     
-    if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup2 timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. PubNub connection passed unsuccessfully");
     }
     
