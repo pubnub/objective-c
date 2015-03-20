@@ -32,7 +32,6 @@
     [super setUp];
     
     [PubNub disconnect];
-//    [PubNub resetClient];
 }
 
 - (void)tearDown {
@@ -47,7 +46,7 @@
 
 - (void)test10Connection {
     
-//    [PubNub resetClient];
+    [PubNub resetClient];
     
     [GCDWrapper sleepForSeconds:1];
     [PubNub setDelegate:self];

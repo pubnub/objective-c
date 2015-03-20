@@ -530,9 +530,10 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             _sharedInstance.state = PNPubNubClientStateReset;
             [_sharedInstance destroyHeartbeatTimer:YES];
 
-            onceToken = 0;
+
             [PNObservationCenter resetCenter];
             [PNChannel purgeChannelsCache];
+            onceToken = 0;
             _sharedInstance.cryptoHelper = nil;
             
             _sharedInstance.clientConfiguration = nil;
