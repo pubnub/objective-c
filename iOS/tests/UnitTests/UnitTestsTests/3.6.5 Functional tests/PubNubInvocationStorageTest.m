@@ -33,6 +33,8 @@ PNDelegate
 
 - (void)tearDown
 {
+    [PubNub disconnect];
+    
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
@@ -43,7 +45,7 @@ PNDelegate
     
     __block NSMutableArray *blockIds = [NSMutableArray new];
     
-    PNConfiguration *config = [PNConfiguration defaultConfiguration];
+    PNConfiguration *config = [PNConfiguration defaultTestConfiguration];
     [PubNub setConfiguration:config];
     
     _resultGroup = dispatch_group_create();

@@ -56,16 +56,7 @@
                   Identifier = "AbbreviatedPresenceTest">
                </Test>
                <Test
-                  Identifier = "ChangingChannels">
-               </Test>
-               <Test
-                  Identifier = "ChannelGroupPAMTest">
-               </Test>
-               <Test
                   Identifier = "ChannelGroupSubscriptionTest">
-               </Test>
-               <Test
-                  Identifier = "Configuration">
                </Test>
                <Test
                   Identifier = "MessageToUnsubChannelTest">
@@ -110,6 +101,9 @@
                   Identifier = "PNSubscribeUnsubscribeTest">
                </Test>
                <Test
+                  Identifier = "PubNubInvocationStorageTest">
+               </Test>
+               <Test
                   Identifier = "PubNubTest">
                </Test>
                <Test
@@ -117,9 +111,6 @@
                </Test>
                <Test
                   Identifier = "SubscribeLeaveTest">
-               </Test>
-               <Test
-                  Identifier = "TimeCommand">
                </Test>
             </SkippedTests>
          </TestableReference>

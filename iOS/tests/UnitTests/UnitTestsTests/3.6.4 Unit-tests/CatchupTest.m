@@ -19,7 +19,7 @@
 
 
 @interface CatchupTest : XCTestCase <PNDelegate> {
-	NSArray *pnChannels;
+	NSArray *_pnChannels;
 	BOOL isPNClientDidReceivePresenceEventNotification;
 	BOOL isHandleClientPresenceObservationEnablingProcess;
 }
@@ -29,9 +29,12 @@
 @implementation CatchupTest
 
 - (void)tearDown {
-	[super tearDown];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [PubNub disconnect];
+    
+    [super tearDown];
 }
 
 - (void)setUp
@@ -50,7 +53,8 @@
                                     withObject:[channelName stringByReplacingOccurrencesOfString:@":" withString:@"-"]];
         }
     }];
-	pnChannels = [PNChannel channelsWithNames:channelNames];
+    
+	_pnChannels = [PNChannel channelsWithNames:channelNames];
 
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
@@ -82,73 +86,58 @@
 
 - (void)test10Connect
 {
-	[PubNub disconnect];
-	int64_t delayInSeconds = 2;
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-	dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+    GCDGroup *resGroup = [GCDGroup group];
+    
+    [resGroup enter];
+    
+    [PubNub setDelegate:self];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
+    [PubNub setConfiguration:configuration];
+    
+    [PubNub connectWithSuccessBlock:^(NSString *origin) {
+        [resGroup leave];
+    } errorBlock:^(PNError *connectionError) {
+        XCTFail(@"connectionError %@", connectionError);
+    }];
+    
+    if ([GCDWrapper isGCDGroup:resGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout fired during connect");
+        resGroup = nil;
+        
+        return;
+    }
+    
+    [resGroup enter];
 
-		[PubNub setDelegate:self];
-		PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
-		[PubNub setConfiguration:configuration];
-
-		[PubNub connectWithSuccessBlock:^(NSString *origin) {
-
-			NSLog(@"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
-			dispatch_semaphore_signal(semaphore);
-		}
-							 errorBlock:^(PNError *connectionError) {
-								 NSLog(@"connectionError %@", connectionError);
-								 dispatch_semaphore_signal(semaphore);
-								 XCTFail(@"connectionError %@", connectionError);
-							 }];
-	});
-	while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-								 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-
-
-    semaphore = dispatch_semaphore_create(0);
-	[PubNub subscribeOn: pnChannels
+	[PubNub subscribeOn:_pnChannels
 	withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError)
 	 {
-		 dispatch_semaphore_signal(semaphore);
+         [resGroup leave];
 		 XCTAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
-		 XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %lu, channels.count %lu", (unsigned long)pnChannels.count, (unsigned long)channels.count);
+		 XCTAssertEqualObjects( @(_pnChannels.count), @(channels.count), @"pnChannels.count %lu, channels.count %lu", (unsigned long)_pnChannels.count, (unsigned long)channels.count);
 	 }];
-    // Run loop
-    while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+    
+    if ([GCDWrapper isGCDGroup:resGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout fired during connect");
+    }
+    
+    resGroup = nil;
 }
 
 -(void)test20Catchup {
 	NSString *clientIdentifier = [NSString stringWithFormat: @"%@", [NSDate date]];
+    
 	isPNClientDidReceivePresenceEventNotification = NO;
 	isHandleClientPresenceObservationEnablingProcess = NO;
+    
+    [PubNub setClientIdentifier:clientIdentifier shouldCatchup:YES];
 
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-
-	int64_t delayInSeconds = 2;
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-
-        [PubNub setClientIdentifier: clientIdentifier shouldCatchup:YES];
-    });
-
-	delayInSeconds = 15;
-	popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-		dispatch_semaphore_signal(semaphore);
-		XCTAssertFalse( isPNClientDidReceivePresenceEventNotification, @"notification DidReceivePresence must should not come");
-		XCTAssertFalse( isHandleClientPresenceObservationEnablingProcess, @"notification HandleClientPresence must should not come");
-		NSString *newIdentifier = [PubNub clientIdentifier];
-		XCTAssertEqualObjects( clientIdentifier, newIdentifier, @"identifires must be equla");
-    });
-    while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+    [GCDWrapper sleepForSeconds:5];
+    
+    XCTAssertFalse( isPNClientDidReceivePresenceEventNotification, @"notification DidReceivePresence must should not come");
+    XCTAssertFalse( isHandleClientPresenceObservationEnablingProcess, @"notification HandleClientPresence must should not come");
+    NSString *newIdentifier = [PubNub clientIdentifier];
+    XCTAssertEqualObjects( clientIdentifier, newIdentifier, @"identifiers must be equal");
 }
-
 
 @end

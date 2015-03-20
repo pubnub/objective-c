@@ -47,7 +47,7 @@
     
     [client1 setClientIdentifier:@"pubnub-user"];
 
-    sleep(1);
+    [GCDWrapper sleepForSeconds:1];
     XCTAssertEqualObjects([client1 clientIdentifier], @"pubnub-user", @"Client identifiers inconsistent.");
     
     XCTAssertTrue(([client1 isConnected]));

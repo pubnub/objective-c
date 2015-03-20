@@ -73,7 +73,7 @@ PNDelegate
         [PubNub unsubscribeFrom:@[[PNChannel channelWithName:[NSString stringWithFormat:@"iosdev%d",i]]]];
     }
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:n * 1.2]) {
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:n * 1.5]) {
         XCTFail(@"Timeout is fired. Didn't subscribe on channels");
     }
     _resGroup = nil;

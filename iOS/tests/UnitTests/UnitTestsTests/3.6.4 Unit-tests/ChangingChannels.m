@@ -48,7 +48,7 @@ static const NSUInteger kAmountOfChannels = 15;
     
     [resGroup enter];
     
-    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
     [PubNub setConfiguration:configuration];
 
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
@@ -105,9 +105,10 @@ static const NSUInteger kAmountOfChannels = 15;
             NSDate *finishDate = [NSDate date];
             
             NSTimeInterval interval = [finishDate timeIntervalSinceDate:startDate];
+            NSNumber *intervalNumber = [NSNumber numberWithDouble:interval];
             NSLog(@"Subscribed %f, %@", interval, channels);
             
-            XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+            XCTAssertTrue( [intervalNumber integerValue] < [PubNub sharedInstance].configuration.subscriptionRequestTimeout, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
             
             [_resGroup leave];
         }

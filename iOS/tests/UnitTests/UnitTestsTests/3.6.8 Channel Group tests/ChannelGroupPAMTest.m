@@ -208,16 +208,4 @@
     _resGroup = nil;
 }
 
-    
-    
-- (void)t1estChangeAccessRightsForGroup
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
-}
-
-- (void)t1estRevokeAccessRightsForGroup
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
-}
-
 @end
