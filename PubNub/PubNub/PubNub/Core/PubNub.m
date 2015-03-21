@@ -61,7 +61,7 @@ static NSString * const kPNCodebaseBranch = @"master";
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"ccc25929cb9268c2178687a8659b1f24cee45ef7";
+static NSString * const kPNCodeCommitIdentifier = @"bf440fad30dc7c21b24ce222902c51e42143a11e";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -2883,8 +2883,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         }];
     }];
 }
-
-#define PN_APP_EXTENSION 1
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
