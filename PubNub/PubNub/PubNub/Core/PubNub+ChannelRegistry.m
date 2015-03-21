@@ -1642,11 +1642,6 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                               PNLoggerSymbols.api.channelsAdditionToGroupCompleted :
                               PNLoggerSymbols.api.channelsRemovalFromGroupCompleted);
 
-        [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
-
-            return @[symbol, [self humanReadableStateFrom:self.state]];
-        }];
-
         if (shouldNotify) {
 
             NSString *notification = kPNClientGroupChannelsAdditionCompleteNotification;
@@ -1657,6 +1652,11 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                 notification = kPNClientGroupChannelsRemovalCompleteNotification;
                 selector = @selector(pubnubClient:didRemoveChannels:fromGroup:);
             }
+            
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                
+                return @[symbol, [self humanReadableStateFrom:self.state]];
+            }];
 
             // Check whether delegate can response on group channels list manipulation or not
             if ([self.clientDelegate respondsToSelector:selector]) {
@@ -1679,6 +1679,13 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
 
             [self sendNotification:notification withObject:change
                   andCallbackToken:request.shortIdentifier];
+        }
+        else {
+            
+            [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
+                
+                return @[symbol, [self humanReadableStateFrom:self.state]];
+            }];
         }
     };
 

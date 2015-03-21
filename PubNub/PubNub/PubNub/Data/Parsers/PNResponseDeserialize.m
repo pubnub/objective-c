@@ -458,7 +458,6 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
             // Fetch HTTP status code from response
             NSInteger statusCode = CFHTTPMessageGetResponseStatusCode(message);
-            CFRelease(message);
 
 
             // Check whether response is chunked or not
@@ -573,7 +572,9 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                 *isMalformedResponse = !isResponseChunked;
             }
         }
+        CFRelease(message);
     }
+    
 
     return response;
 }
