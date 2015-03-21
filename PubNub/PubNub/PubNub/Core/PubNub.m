@@ -2888,8 +2888,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-#define PN_APP_EXTENSION 1
-
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 - (void)handleApplicationDidEnterBackgroundState:(NSNotification *)__unused notification {
 
