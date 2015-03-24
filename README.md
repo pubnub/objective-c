@@ -1566,40 +1566,13 @@ There is API to manage channel group and namespaces:
 - (void)removeChannelGroup:(PNChannelGroup *)group
   withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock;
 
-- (void)requestChannelGroupNamespaces;
-- (void)requestChannelGroupNamespacesWithCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock;
 - (void)removeChannelGroupNamespace:(NSString *)nspace;
 - (void)removeChannelGroupNamespace:(NSString *)nspace 
         withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock
 ```
 Methods above allow to fetch list of groups and namespaces as well as remove them. When namespace is removed, it will unregister all channels in channel groups and remove them along with channel groups from deleted namespace. When channel group removed, all registered channels will be removed from it.  
 
-Fetch list of namespaces for whole application subscribe key:  
-```objc
-PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] 
-                                     andDelegate:self];
-[pubNub connect];
-[pubNub requestChannelGroupsWithCompletionHandlingBlock:^(NSString *nspace, NSArray *groups, 
-                                                          PNError *error) {
- 
-   if (!error) {
-   
-       // PubNub client received list of channel groups inside specified namespace or application
-       // wide.
-   }
-   else {
-       
-       // PubNub client did fail to retrieve list of channel groups inside specified namespace or
-       // application wide.
-       //
-       // Always check 'error.code' to find out what caused error (check PNErrorCodes header file
-       // and use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion
-       // to get human readable description for error). 'error.associatedObject' contains name of
-       // namespace for which channel groups has been requested (will be nil in case if request
-       // has been application wide).
-   }
-}];
-```
+
 Also there is API to manage channel group content (list of registered channels):  
 ```objc
 - (void)requestChannelsForGroup:(PNChannelGroup *)group;
@@ -2006,7 +1979,6 @@ This object is subclass of [**PNChannelGroup**](#pnchannelgroup-object) but have
 
 Also it provide few constructor methods:
 ```objc
-+ (PNChannelGroupNamespace *)allNamespaces;
 + (PNChannelGroupNamespace *)namespaceWithName:(NSString *)name;
 ```
 First method is useful if you need to address all namespaces which is registered for your application keys (publish/subscribe key pair).
