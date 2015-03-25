@@ -1898,15 +1898,18 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     [PNBitwiseHelper removeFrom:&_state bits:PNReadStreamConnecting, PNReadStreamCleanDisconnection, BITS_LIST_TERMINATOR];
     [PNBitwiseHelper addTo:&_state bit:PNReadStreamDisconnecting];
 
-    // Check whether there is some data received from server and try to parse it
-    if (_readBuffer != NULL && dispatch_data_get_size(_readBuffer) > 0) {
+    if (_readBuffer != NULL) {
         
-        [self processResponse];
+        // Check whether there is some data received from server and try to parse it
+        if (dispatch_data_get_size(_readBuffer) > 0) {
+            
+            [self processResponse];
+        }
+        
+        // Destroying input buffer
+        [PNDispatchHelper release:_readBuffer];
+        _readBuffer = NULL;
     }
-
-    // Destroying input buffer
-    [PNDispatchHelper release:_readBuffer];
-    _readBuffer = NULL;
 
     BOOL streamHasError = [PNBitwiseHelper is:self.state containsBit:PNReadStreamError];
     [self destroyReadStream:readStream];
@@ -2054,8 +2057,11 @@ void connectionContextInformationReleaseCallBack( void *info ) {
 
                 // Update read buffer content by removing from it number of bytes which has been
                 // processed.
-                self.readBuffer = dispatch_data_create_subrange(self.readBuffer, processedBufferLength,
-                                                                (readBufferSize - processedBufferLength));
+                dispatch_data_t updatedBuffer = dispatch_data_create_subrange(self.readBuffer, processedBufferLength,
+                                                                              (readBufferSize - processedBufferLength));
+                [PNDispatchHelper release:_readBuffer];
+                _readBuffer = updatedBuffer;
+                [PNDispatchHelper retain:updatedBuffer];
             }
 
             [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
