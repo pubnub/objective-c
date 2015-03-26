@@ -2080,14 +2080,14 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 #pragma mark - Requests queue delegate methods
 
 - (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request
-            withBlock:(dispatch_block_t)notifyCompletionBlock {
+            withBlock:(void (^)(BOOL))notifyCompletionBlock {
 
     // Updating request state
     request.processing = YES;
 
     if (notifyCompletionBlock) {
 
-        notifyCompletionBlock();
+        notifyCompletionBlock(YES);
     }
 }
 
