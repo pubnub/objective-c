@@ -155,7 +155,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
             @autoreleasepool {
                 
                 self.deserializing = YES;
-                __block dispatch_data_t normalizedBuffer = dispatch_data_create(NULL, 0, [self pn_privateQueue],
+                __block dispatch_data_t normalizedBuffer = dispatch_data_create(NULL, 0, NULL,
                                                                                 DISPATCH_DATA_DESTRUCTOR_DEFAULT);
                 NSUInteger bufferSize = dispatch_data_get_size(buffer);
                 __block NSUInteger processedLength = 0;
