@@ -1,3 +1,8 @@
+03-26-2015 - d0367a49 - 3.7.10.3
+
+. adjusted read buffer behavior
+. changed destruction queue for read buffer internals
+
 03-25-2015 - 5549d1e4 - 3.7.10.2
 
 . fixed crash caused by incomplete network layer configuration (only for deployment target lower then 6.x)
