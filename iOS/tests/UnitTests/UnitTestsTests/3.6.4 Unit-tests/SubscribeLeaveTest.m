@@ -15,7 +15,10 @@
 #import "PNNotifications.h"
 #import "PNPresenceEvent.h"
 
-static const NSUInteger kNumberOfTestChannels = 1;
+// TODO: Investigate why test fails when we
+// increase number of channels to more than 5.
+
+static const NSUInteger kNumberOfTestChannels = 5;
 
 @interface SubscribeLeaveTest : XCTestCase <PNDelegate> {
     
@@ -161,12 +164,6 @@ withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channel
 
     // unsubscribe case
     
-    joinDelegateCount = 0;
-    leaveDelegateCount = 0;
-    joinNotificationCount = 0;
-    leaveNotificationCount = 0;
-    timeoutDelegateCount = 0;
-    
     _unsubscribeGroup = [GCDGroup group];
     
     [_unsubscribeGroup enterTimes:2];
@@ -180,13 +177,10 @@ withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channel
         return;
     }
     
-#warning Investigate all conditions
-    
-//    XCTAssertTrue( joinDelegateCount == 0, @"joinDelegateCount:%@ channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
-//    XCTAssertTrue( leaveDelegateCount == 0, @"leaveDelegateCount:%@ channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
-//    
-//    XCTAssertTrue( joinNotificationCount == 0, @"joinNotificationCount: %@, channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
-//    XCTAssertTrue( leaveNotificationCount == 0, @"leaveNotificationCount:%@ channelNames.count %@", @(joinNotificationCount), @(_channels.count));
+   XCTAssertTrue( joinDelegateCount == kNumberOfTestChannels, @"joinDelegateCount:%@ channelNames.count: %@", @(joinDelegateCount), @(_channels.count));
+    XCTAssertTrue( leaveDelegateCount == kNumberOfTestChannels, @"leaveDelegateCount:%@ channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
+    XCTAssertTrue( joinNotificationCount == kNumberOfTestChannels, @"joinNotificationCount: %@, channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
+    XCTAssertTrue( leaveNotificationCount == kNumberOfTestChannels, @"leaveNotificationCount:%@ channelNames.count %@", @(joinNotificationCount), @(_channels.count));
     
     XCTAssertTrue( timeoutDelegateCount == 0, @"timeoutCount %@", @(timeoutDelegateCount));
     
@@ -196,7 +190,6 @@ withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channel
 - (void)testSubscribeUnsubscribe {
     
     PNChannel *channel = [PNChannel channelWithName:@"ch0" shouldObservePresence:YES];
-    
     
     PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
     [PubNub setConfiguration:configuration];
@@ -366,11 +359,11 @@ withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
 - (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event {
     
     NSLog(@"\n\npubnubClient didReceivePresenceEvent %@\n\n", event);
-    if( event.type == PNPresenceEventJoin ) {
+    if( event.type == PNPresenceEventJoin && [event.client.identifier isEqualToString:[PubNub clientIdentifier]]) {
         joinDelegateCount++;
     }
     
-    if( event.type == PNPresenceEventLeave ) {
+    if( event.type == PNPresenceEventLeave  && [event.client.identifier isEqualToString:[PubNub clientIdentifier]]) {
         leaveDelegateCount++;
         
         if (_unsubscribeGroup && leaveDelegateCount == [_channels count]) {
@@ -378,7 +371,7 @@ withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
         }
     }
     
-    if( event.type == PNPresenceEventTimeout ) {
+    if( event.type == PNPresenceEventTimeout  && [event.client.identifier isEqualToString:[PubNub clientIdentifier]]) {
         timeoutDelegateCount++;
     }
 }
@@ -390,17 +383,17 @@ withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
     NSLog(@"\n\nkPNClientDidReceivePresenceEventNotification %@\n\n", notification.userInfo);
     
     PNPresenceEvent *event = (PNPresenceEvent*)notification.userInfo;
-    if( event.type == PNPresenceEventJoin ) {
+    if( event.type == PNPresenceEventJoin  && [event.client.identifier isEqualToString:[PubNub clientIdentifier]]) {
         joinNotificationCount++;
     }
-    if( event.type == PNPresenceEventLeave ) {
+    if( event.type == PNPresenceEventLeave  && [event.client.identifier isEqualToString:[PubNub clientIdentifier]]) {
         leaveNotificationCount++;
         
         if (_unsubscribeGroup && leaveNotificationCount == [_channels count]) {
             [_unsubscribeGroup leave];
         }
     }
-    if( event.type == PNPresenceEventTimeout ) {
+    if( event.type == PNPresenceEventTimeout  && [event.client.identifier isEqualToString:[PubNub clientIdentifier]]) {
         timeoutNotificationCount++;
     }
 }
