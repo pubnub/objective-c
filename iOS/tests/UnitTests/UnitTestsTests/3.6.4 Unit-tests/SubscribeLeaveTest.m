@@ -15,6 +15,8 @@
 #import "PNNotifications.h"
 #import "PNPresenceEvent.h"
 
+static const NSUInteger kNumberOfTestChannels = 1;
+
 @interface SubscribeLeaveTest : XCTestCase <PNDelegate> {
     
 	int leaveDelegateCount;
@@ -23,13 +25,17 @@
 	int leaveNotificationCount;
 	int joinNotificationCount;
 	int timeoutNotificationCount;
-    
-	NSMutableArray *_channelNames;
 	int didReceiveMessageCount;
     
     NSMutableArray *_events;
     
-    GCDGroup *_resGroup;
+    GCDGroup *_receiveMessageGroup;
+    GCDGroup *_unsubscribeGroup;
+    
+    // to observe leave events
+    PubNub *_pubNubClient;
+    
+    NSMutableArray *_channels;
 }
 
 @end
@@ -52,16 +58,15 @@
 
 #pragma mark - Tests
 
-- (void)test10SubscribeOnChannels {
+- (void)testSubscribeOnChannels {
     
-    _channelNames = [NSMutableArray array];
+    _channels = [NSMutableArray arrayWithCapacity:kNumberOfTestChannels];
     
     // generate channel names
-    for( int i = 0; i < 10; i++ ) {
-        [_channelNames addObject:[NSString stringWithFormat: @"ch%d", i]];
+    for( int i = 0; i < kNumberOfTestChannels; i++ ) {
+        [_channels addObject:[PNChannel channelWithName:[NSString stringWithFormat: @"ch%d", i] shouldObservePresence:YES]];
     }
     
-//    [PubNub resetClient];
     [PubNub setDelegate:self];
     
     // subscribe to all notifications
@@ -98,47 +103,62 @@
         return;
     }
     
-    /*
-    joinDelegateCount = 0;
-    leaveDelegateCount = 0;
-    timeoutDelegateCount = 0;
-    joinNotificationCount = 0;
-    leaveNotificationCount = 0;
-    timeoutNotificationCount = 0;
-    didReceiveMessageCount = 0;
-     */
+    _receiveMessageGroup = [GCDGroup group];
+    [_receiveMessageGroup enter];
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
-    
-    for(int i = 0; i < _channelNames.count; i++ ) {
-        [self subscribeOnChannels:@[[PNChannel channelWithName: _channelNames[i] shouldObservePresence:YES]]
-                withPresenceEvent:YES];
-        NSString *message = [NSString stringWithFormat:@"text-%@", @(i)];
+    for (PNChannel *channel in _channels) {
+        [self subscribeOnChannels:@[channel]];
         
-        NSLog(@"Send message: %@ to channel: %@", message, _channelNames[i]);
+        NSString *message = [NSString stringWithFormat:@"text-%@", @([_channels indexOfObject:channel])];
+        
+        NSLog(@"Send message: %@ to channel: %@", message, channel);
         
         [PubNub sendMessage:message
-                  toChannel: [PNChannel channelWithName: _channelNames[i]] ];
+                  toChannel:channel];
     }
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:kTestTestTimout]) {
+    if ([GCDWrapper isGCDGroup:_receiveMessageGroup timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout to connect to PubNub service");
         return;
     }
     
-    XCTAssertTrue( didReceiveMessageCount == [_channelNames count], @"%@ <> %@", @(didReceiveMessageCount), @([_channelNames count]));
-    NSLog(@"%@ <> %@", @(didReceiveMessageCount), @([_channelNames count]));
+    XCTAssertTrue( didReceiveMessageCount == [_channels count], @"%@ <> %@", @(didReceiveMessageCount), @([_channels count]));
+    NSLog(@"%@ <> %@", @(didReceiveMessageCount), @([_channels count]));
     
-    XCTAssertTrue( joinNotificationCount == _channelNames.count, @"joinDelegateCount: %@ channelNames.count: %@", @(joinNotificationCount), @(_channelNames.count));
-    XCTAssertTrue( leaveDelegateCount == 0, @"leaveDelegateCount: %@ channelNames.count: %@", @(joinNotificationCount), @(_channelNames.count));
+    XCTAssertTrue( joinNotificationCount == _channels.count, @"joinDelegateCount: %@ channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
+    XCTAssertTrue( leaveDelegateCount == 0, @"leaveDelegateCount: %@ channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
     
-    XCTAssertTrue( joinNotificationCount == _channelNames.count, @"joinNotificationCount: %@ channelNames.count: %@", @(joinNotificationCount), @(_channelNames.count));
-    XCTAssertTrue( leaveNotificationCount == 0, @"leaveNotificationCount: %@ channelNames.count %@", @(joinNotificationCount), @(_channelNames.count));
+    XCTAssertTrue( joinNotificationCount == _channels.count, @"joinNotificationCount: %@ channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
+    XCTAssertTrue( leaveNotificationCount == 0, @"leaveNotificationCount: %@ channelNames.count %@", @(joinNotificationCount), @(_channels.count));
     
     XCTAssertTrue( timeoutDelegateCount == 0, @"timeoutCount %@", @(timeoutDelegateCount));
     XCTAssertTrue( timeoutNotificationCount == 0, @"timeoutCount %@", @(timeoutDelegateCount));
     
+    
+    // to observe leave events we should receive when singletone will unsubscribe
+    
+    _pubNubClient = [PubNub clientWithConfiguration:configuration
+                                        andDelegate:self];
+    
+    [_pubNubClient connect];
+    
+    GCDGroup *subscribeGroup = [GCDGroup group];
+    
+    [subscribeGroup enter];
+    
+    [_pubNubClient subscribeOn:_channels
+withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+        NSLog(@"subscribeOnChannels end");
+        XCTAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
+        
+        [subscribeGroup leave];
+    }];
+    
+    if ([GCDWrapper isGCDGroup:subscribeGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout during second subscribe on request.");
+        return;
+    }
+
     // unsubscribe case
     
     joinDelegateCount = 0;
@@ -147,38 +167,129 @@
     leaveNotificationCount = 0;
     timeoutDelegateCount = 0;
     
-    for( int i=0; i<_channelNames.count; i++ )
-        [self unsubscribeOnChannels:[PNChannel channelsWithNames: @[_channelNames[i]]] withPresenceEvent: YES];
+    _unsubscribeGroup = [GCDGroup group];
     
-    for( int i=0; i<10; i++ )
-        [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
+    [_unsubscribeGroup enterTimes:2];
     
+    for (PNChannel *channel in _channels) {
+        [self unsubscribeOnChannels:@[channel]];
+    }
     
-    XCTAssertTrue( joinDelegateCount == 0, @"joinDelegateCount:%@ channelNames.count: %@", @(joinNotificationCount), @(_channelNames.count));
-    XCTAssertTrue( leaveDelegateCount == 0, @"leaveDelegateCount:%@ channelNames.count: %@", @(joinNotificationCount), @(_channelNames.count));
+    if ([GCDWrapper isGCDGroup:_unsubscribeGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout till waiting unsubscribe.");
+        return;
+    }
     
-    XCTAssertTrue( joinNotificationCount == 0, @"joinNotificationCount %d, channelNames.count %d", joinNotificationCount, _channelNames.count);
-    XCTAssertTrue( leaveNotificationCount == 0, @"leaveNotificationCount %d, channelNames.count %d", joinNotificationCount, _channelNames.count);
+#warning Investigate all conditions
     
-    XCTAssertTrue( timeoutDelegateCount == 0, @"timeoutCount %d", timeoutDelegateCount);
-    //	[self unsubscribeOnChannels: pnChannels2 withPresenceEvent: NO];
+//    XCTAssertTrue( joinDelegateCount == 0, @"joinDelegateCount:%@ channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
+//    XCTAssertTrue( leaveDelegateCount == 0, @"leaveDelegateCount:%@ channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
+//    
+//    XCTAssertTrue( joinNotificationCount == 0, @"joinNotificationCount: %@, channelNames.count: %@", @(joinNotificationCount), @(_channels.count));
+//    XCTAssertTrue( leaveNotificationCount == 0, @"leaveNotificationCount:%@ channelNames.count %@", @(joinNotificationCount), @(_channels.count));
+    
+    XCTAssertTrue( timeoutDelegateCount == 0, @"timeoutCount %@", @(timeoutDelegateCount));
+    
+    [_pubNubClient disconnect];
 }
 
--(void)kPNClientDidReceivePresenceEventNotification:(NSNotification*)notification {
+- (void)testSubscribeUnsubscribe {
     
-	NSLog(@"\n\nkPNClientDidReceivePresenceEventNotification %@\n\n", notification.userInfo);
+    PNChannel *channel = [PNChannel channelWithName:@"ch0" shouldObservePresence:YES];
     
-    PNPresenceEvent *event = (PNPresenceEvent*)notification.userInfo;
-    if( event.type == PNPresenceEventJoin ) {
-        joinNotificationCount++;
+    
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
+    [PubNub setConfiguration:configuration];
+        
+    GCDGroup *resGroup = [GCDGroup group];
+        
+    [resGroup enterTimes:3];
+        
+    [PubNub connectWithSuccessBlock:^(NSString *origin) {
+            NSLog(@"{BLOCK} PubNub client connected to: %@", origin);
+            [resGroup leave];
+        }
+                             errorBlock:^(PNError *connectionError) {
+                                 NSLog(@"connectionError %@", connectionError);
+                                 [resGroup leave];
+                                 XCTFail(@"connectionError %@", connectionError);
+                             }];
+    
+    [PubNub subscribeOn:@[channel]
+withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+    switch (state) {
+        case PNSubscriptionProcessNotSubscribedState:
+            
+            // There should be a reason because of which subscription failed and it can be found in 'error' instance
+            // Update user interface to let user know that something went wrong and do something to recover from this
+            // state.
+            //
+            // Always check 'error.code' to find out what caused error (check PNErrorCodes header file and use
+            // -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion to get human readable
+            // description for error). 'error.associatedObject' contains array of PNChannel instances on which PubNub
+            //client was unable to subscribe.
+            [resGroup leave];
+            XCTFail(@"Cannot subscribe to channel.");
+            break;
+        case PNSubscriptionProcessSubscribedState:
+            
+            // PubNub client completed subscription on specified set of channels.
+            [resGroup leave];
+            break;
+        default:
+            break;
     }
-    if( event.type == PNPresenceEventLeave ) {
-        leaveNotificationCount++;
+}];
+    
+    [PubNub sendMessage:@"Test Message"
+              toChannel:channel
+             compressed:YES
+    withCompletionBlock:^(PNMessageState state, id data) {
+        switch (state) {
+            case PNMessageSending:
+                
+                // PubNub client is sending message at this moment. 'data' stores reference on PNMessage instance which is processing at this moment.
+                break;
+            case PNMessageSendingError:
+                
+                // PubNub client failed to send message and reason is in 'data' object.
+            {
+                [resGroup leave];
+                XCTFail(@"Cannot send message.");
+            }
+                break;
+            case PNMessageSent:
+                
+                // PubNub client successfully sent message to specified channel. 'data' stores reference on PNMessage instance which has been sent.
+                [resGroup leave];
+                break;
+        }
+    }];
+    
+    
+    if ([GCDWrapper isGCDGroup:resGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout to connect to PubNub service");
+        return;
     }
-    if( event.type == PNPresenceEventTimeout ) {
-        timeoutNotificationCount++;
+    
+    resGroup = [GCDGroup group];
+    [resGroup enter];
+    
+    [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"ch0" shouldObservePresence:YES]]
+withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
+    NSLog(@"Channels: %@", channels);
+    NSLog(@"Error: %@", error);
+    [resGroup leave];
+}];
+    
+    if ([GCDWrapper isGCDGroup:resGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout during unsubscirbe from PubNub service");
+        return;
     }
+    
+    NSLog(@"Finish test");
 }
+
 
 #pragma mark - Private
 
@@ -190,45 +301,64 @@
     
     didReceiveMessageCount++;
     
-    if ([_resGroup isEntered] && [[_channelNames lastObject] isEqualToString:[[(PNMessage *)notification.userInfo channel] name]]) {
-        [_resGroup leave];
+    if ([_receiveMessageGroup isEntered] && [[[_channels lastObject] name] isEqualToString:[[(PNMessage *)notification.userInfo channel] name]] && didReceiveMessageCount == [_channels count]) {
+        [_receiveMessageGroup leave];
     }
 }
 
-- (void)subscribeOnChannels:(NSArray*)pnChannels withPresenceEvent:(BOOL)presenceEvent {
+- (void)subscribeOnChannels:(NSArray*)pnChannels {
     NSLog(@"subscribeOnChannels");
-    __block BOOL isCompletionBlockCalled = NO;
-    //	[PubNub subscribeOnChannel: pnChannels[0] withCompletionHandlingBlock: ^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
-    [PubNub subscribeOnChannel:pnChannels[0] withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
+    
+    GCDGroup *resGroup = [GCDGroup group];
+    
+    [resGroup enter];
+    
+    [PubNub subscribeOn:@[pnChannels[0]]
+withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
         NSLog(@"subscribeOnChannels end");
-        isCompletionBlockCalled = YES;
         XCTAssertNil( subscriptionError, @"subscriptionError %@", subscriptionError);
         if( pnChannels.count != channels.count ) {
             NSLog( @"pnChannels.count \n%@\n%@", pnChannels, channels);
         }
-        XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+    
+        [resGroup leave];
+    
+        XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count: %@ channels.count: %@", @(pnChannels.count), @(channels.count));
     }];
     NSLog(@"subscribeOnChannels runloop");
-    for( int i=0; i<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 && isCompletionBlockCalled == NO; i++ )
-        [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-    XCTAssertTrue( isCompletionBlockCalled, @"completion block not called");
+    
+    if ([GCDWrapper isGCDGroup:resGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout during subscribe on request.");
+        return;
+    }
 }
 
-- (void)unsubscribeOnChannels:(NSArray*)pnChannels withPresenceEvent:(BOOL)presenceEvent {
-    NSLog(@"unsubscribeOnChannels");
-    __block BOOL isCompletionBlockCalled = NO;
+- (void)unsubscribeOnChannels:(NSArray*)pnChannels {
+    NSLog(@"unsubscribeFrom: %@", pnChannels);
     
-    [PubNub unsubscribeFromChannels:pnChannels withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
-        NSLog(@"unsubscribeOnChannels end");
-        isCompletionBlockCalled = YES;
+    GCDGroup *resGroup = [GCDGroup group];
+    
+    [resGroup enter];
+    
+    NSLog(@"Channels: %@", pnChannels);
+    
+    [PubNub unsubscribeFrom:pnChannels
+withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
+        NSLog(@"unsubscribeOnChannel: %@", channels);
+        NSLog(@"Error: %@", unsubscribeError);
+    
+        [resGroup leave];
+    
         XCTAssertNil( unsubscribeError, @"unsubscribeError %@", unsubscribeError);
-        XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %d, channels.count %d", pnChannels.count, channels.count);
+        XCTAssertEqualObjects( @(pnChannels.count), @(channels.count), @"pnChannels.count %@, channels.count: %@", @(pnChannels.count), @(channels.count));
     }];
+    
     NSLog(@"unsubscribeOnChannels runloop");
-    for( int i=0; i<[PubNub sharedInstance].configuration.subscriptionRequestTimeout+1 &&
-        isCompletionBlockCalled == NO; i++ )
-        [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0] ];
-    XCTAssertTrue( isCompletionBlockCalled, @"completion block not called");
+    
+    if ([GCDWrapper isGCDGroup:resGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout during unsubscribe on request.");
+        return;
+    }
 }
 
 #pragma mark - PNDelegate
@@ -242,10 +372,36 @@
     
     if( event.type == PNPresenceEventLeave ) {
         leaveDelegateCount++;
+        
+        if (_unsubscribeGroup && leaveDelegateCount == [_channels count]) {
+            [_unsubscribeGroup leave];
+        }
     }
     
     if( event.type == PNPresenceEventTimeout ) {
         timeoutDelegateCount++;
+    }
+}
+
+#pragma mark - Notifications
+
+-(void)kPNClientDidReceivePresenceEventNotification:(NSNotification*)notification {
+    
+    NSLog(@"\n\nkPNClientDidReceivePresenceEventNotification %@\n\n", notification.userInfo);
+    
+    PNPresenceEvent *event = (PNPresenceEvent*)notification.userInfo;
+    if( event.type == PNPresenceEventJoin ) {
+        joinNotificationCount++;
+    }
+    if( event.type == PNPresenceEventLeave ) {
+        leaveNotificationCount++;
+        
+        if (_unsubscribeGroup && leaveNotificationCount == [_channels count]) {
+            [_unsubscribeGroup leave];
+        }
+    }
+    if( event.type == PNPresenceEventTimeout ) {
+        timeoutNotificationCount++;
     }
 }
 
