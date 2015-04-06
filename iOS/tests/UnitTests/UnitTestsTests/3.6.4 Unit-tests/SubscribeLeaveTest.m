@@ -38,8 +38,10 @@
 - (void)setUp {
     [super setUp];
 	channelNames = [NSMutableArray array];
-	for( int i=0; i<10; i++ )
-		[channelNames addObject: [NSString stringWithFormat: @"ch%d", i]];
+    for( int i=0; i<10; i++ ) {
+        
+		[channelNames addObject: [NSString stringWithFormat: @"ch%d-%ld", i, (10 + (random() % (100000 - 10)))]];
+    }
 
 	[PubNub resetClient];
 	//[PubNub disconnect];
@@ -116,24 +118,31 @@
 - (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event {
     
     NSLog(@"\n\npubnubClient didReceivePresenceEvent %@\n\n", event);
-    if( event.type == PNPresenceEventJoin )
-        joinDelegateCount++;
-    if( event.type == PNPresenceEventLeave )
-        leaveDelegateCount++;
-    if( event.type == PNPresenceEventTimeout )
-        timeoutDelegateCount++;
+    
+    if ([event.client.identifier isEqual:[PubNub clientIdentifier]]) {
+        
+        if( event.type == PNPresenceEventJoin )
+            joinDelegateCount++;
+        if( event.type == PNPresenceEventLeave )
+            leaveDelegateCount++;
+        if( event.type == PNPresenceEventTimeout )
+            timeoutDelegateCount++;
+    }
 }
 
 -(void)kPNClientDidReceivePresenceEventNotification:(NSNotification*)notification {
     
 	NSLog(@"\n\nkPNClientDidReceivePresenceEventNotification %@\n\n", notification.userInfo);
     PNPresenceEvent *event = (PNPresenceEvent*)notification.userInfo;
-    if( event.type == PNPresenceEventJoin )
-        joinNotificationCount++;
-    if( event.type == PNPresenceEventLeave )
-        leaveNotificationCount++;
-    if( event.type == PNPresenceEventTimeout )
-        timeoutNotificationCount++;
+    if ([event.client.identifier isEqual:[PubNub clientIdentifier]]) {
+        
+        if( event.type == PNPresenceEventJoin )
+            joinNotificationCount++;
+        if( event.type == PNPresenceEventLeave )
+            leaveNotificationCount++;
+        if( event.type == PNPresenceEventTimeout )
+            timeoutNotificationCount++;
+    }
 }
 
 -(void)kPNClientSubscriptionDidCompleteNotification:(NSNotification*)notificaton {
@@ -149,8 +158,10 @@
 	timeoutNotificationCount = 0;
 	didReceiveMessageCount = 0;
 	for( int i=0; i<channelNames.count; i++ ) {
+        
 		[self subscribeOnChannels: @[[PNChannel channelWithName: channelNames[i] shouldObservePresence: YES]] withPresenceEvent: YES];
-		[PubNub sendMessage: @"message" toChannel: [PNChannel channelWithName: channelNames[i]] ];
+		[PubNub sendMessage:[NSString stringWithFormat:@"message-%@", channelNames[i]]
+                  toChannel:[PNChannel channelWithName: channelNames[i]] ];
 	}
     
     [GCDWrapper sleepForSeconds:15];

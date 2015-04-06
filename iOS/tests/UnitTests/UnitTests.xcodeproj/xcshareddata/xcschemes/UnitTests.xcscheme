@@ -56,6 +56,9 @@
                   Identifier = "CatchupTest">
                </Test>
                <Test
+                  Identifier = "ChangingChannels">
+               </Test>
+               <Test
                   Identifier = "ChannelGroupSubscriptionTest">
                </Test>
                <Test

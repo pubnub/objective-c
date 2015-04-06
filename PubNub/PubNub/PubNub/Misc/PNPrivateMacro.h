@@ -201,6 +201,10 @@ const void* pn_bufferUsingGZIPOperation(GZIPOperations operation, const void* bu
 
         *extractedSize = processedDataStorage.length;
     }
+    else {
+        
+        *extractedSize = 0;
+    }
 
 
     return (processedDataStorage ? processedDataStorage.bytes : buffer);

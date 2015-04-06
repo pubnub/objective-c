@@ -110,7 +110,8 @@ typedef enum _PNReachabilityStatus {
 #pragma mark - Instance methods
 
 - (BOOL)isSuspended;
-- (BOOL)isServiceAvailable;
+
+- (BOOL)isServiceAvailable:(BOOL)useCachedState;
 
 - (void)startServiceReachabilityMonitoring:(BOOL)shouldStopPrevious;
 
@@ -204,7 +205,8 @@ static PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFl
 PNReachabilityStatus PNReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     
     PNReachabilityStatus status = PNReachabilityStatusNotReachable;
-    BOOL isServiceReachable = [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsReachable];
+    BOOL isServiceReachable = ([PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsReachable] &&
+                               [PNNetworkHelper networkAddress]);
     if (isServiceReachable) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
         status = [PNBitwiseHelper is:flags containsBit:kSCNetworkReachabilityFlagsIsWWAN] ? PNReachabilityStatusReachableViaCellular : status;
@@ -957,14 +959,38 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
 
         if (checkCompletionBlock) {
 
-            checkCompletionBlock([self isServiceAvailable]);
+            checkCompletionBlock([self isServiceAvailable:NO]);
         }
     }];
 }
 
-- (BOOL)isServiceAvailable {
+- (BOOL)isServiceAvailable:(BOOL)useCachedState {
 
-    return [self isServiceAvailableForStatus:self.status];
+    PNReachabilityStatus status = self.status;
+    if (!useCachedState && self.status != PNReachabilityStatusUnknown) {
+
+        status = PNReachabilityStatusForFlags(self.reachabilityFlags);
+
+        // In case if reachability report that connection is available (not on cellular) we should
+        // launch additional lookup service which will allow to check network state for sure
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+        BOOL shouldSuspectWrongState = status != PNReachabilityStatusReachableViaCellular;
+#else
+    BOOL shouldSuspectWrongState = YES;
+#endif
+
+        if (shouldSuspectWrongState && self.lookupStatus != PNReachabilityStatusUnknown) {
+
+            if ([self isServiceAvailableForStatus:status] &&
+                    ![self isServiceAvailableForStatus:self.lookupStatus]) {
+
+                status = self.lookupStatus;
+            }
+        }
+    }
+
+
+    return [self isServiceAvailableForStatus:status];
 }
 
 - (BOOL)isServiceAvailableForStatus:(PNReachabilityStatus)status {
@@ -1172,7 +1198,7 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
     [self pn_dispatchBlock:^{
         
         // Check whether service was available before error arrived or not
-        if ([self isServiceAvailable]) {
+        if ([self isServiceAvailable:NO]) {
             
             switch (error.code) {
                     
@@ -1334,7 +1360,7 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
                     }
                     
                     
-                    BOOL isServiceConnected = [self isServiceAvailable];
+                BOOL isServiceConnected = [self isServiceAvailable:YES];
                     
                     // Check whether reachability should be forced to update it's state to disconnected and then update state
                     // after some delay or not
@@ -1383,8 +1409,9 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
                         
                         [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
                             
-                            return @[PNLoggerSymbols.reachability.reachabilityFlagsChangedOnSet, [self humanReadableStatus:newStatus],
-                                     @([self isServiceAvailable]), (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
+                        return @[PNLoggerSymbols.reachability.reachabilityFlagsChangedOnSet,
+                                 [self humanReadableStatus:newStatus], @([self isServiceAvailable:YES]),
+                                 (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
                                      @(self.reachabilityFlags)];
                         }];
                     }
@@ -1400,7 +1427,8 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
                         
                         return @[PNLoggerSymbols.reachability.unknownReachabilityFlagsOnSet,
                                  [self humanReadableStatus:newStatus], [self humanReadableStatus:oldStatus],
-                                 @([self isServiceAvailable]), (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
+                             @([self isServiceAvailable:YES]),
+                             (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
                                  @(self.reachabilityFlags)];
                     }];
                     
