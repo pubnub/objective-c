@@ -24,7 +24,7 @@
  * Will notify delegate every time when request which delegate scheduled went for processing
  */
 - (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request
-            withBlock:(dispatch_block_t)notifyCompletionBlock;
+            withBlock:(void (^)(BOOL shouldContinue))notifyCompletionBlock;
 
 /**
  * Will notify delegate that particular request processing  has been canceled (in most cases this will be caused by
