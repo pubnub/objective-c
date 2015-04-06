@@ -2514,11 +2514,19 @@ void connectionContextInformationReleaseCallBack( void *info ) {
                             // Notify data source that we started request processing
                             [self.dataSource connection:self
                         processingRequestWithIdentifier:self.writeBuffer.requestIdentifier
-                                              withBlock:^{
+                                              withBlock:^(BOOL shouldContinue){
 
                                 [self pn_dispatchBlock:^{
 
-                                    bufferProcessingBlock();
+                                    if (shouldContinue) {
+                                        
+                                        bufferProcessingBlock();
+                                    }
+                                    else {
+                                        
+                                        // Mark that buffer content sending not started yet
+                                        self.writeBuffer.sendingBytes = NO;
+                                    }
                                 }];
                             }];
                         }
