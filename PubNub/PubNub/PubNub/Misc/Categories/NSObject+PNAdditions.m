@@ -12,7 +12,7 @@
 #import "PNHelper.h"
 
 
-#define DEBUG_QUEUE 1
+#define DEBUG_QUEUE 0
 #if DEBUG_QUEUE
     #warning Queue assertion is ON. Turn OFF before deployment.
 #endif
