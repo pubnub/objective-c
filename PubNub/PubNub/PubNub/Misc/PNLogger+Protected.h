@@ -158,7 +158,7 @@
 
  @since 3.7.10
  */
-+ (void)storeGarbageHTTPPacketData:(NSData *(^)(void))httpPacketBlock;
++ (void)storeGarbageHTTPPacketData:(dispatch_data_t (^)(void))httpPacketBlock;
 
 /**
  Store data passed through \c httpPacketBlock block into separate file which will represent unexpected HTTP packet.

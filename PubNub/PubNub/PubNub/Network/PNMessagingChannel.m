@@ -30,12 +30,13 @@
 #import "PNRequestsImport.h"
 #import "PNRequestsQueue.h"
 #import "PNLoggerSymbols.h"
+#import "PNConfiguration.h"
 #import "PNErrorCodes.h"
+#import "PNConnection.h"
 #import "PNResponse.h"
 #import "PNHelper.h"
 #import "PNCache.h"
 #import "PNError.h"
-#import "PNConnection.h"
 
 
 // ARC check
@@ -2061,7 +2062,6 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         self.idleTimerSuspended = YES;
         dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                                                                [self pn_privateQueue]);
-        [PNDispatchHelper retain:timerSource];
         self.idleTimer = timerSource;
 
         __pn_desired_weak __typeof__(self) weakSelf = self;
@@ -2153,8 +2153,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (void)resetChannelIdleTimer {
 
-    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPNConnectionIdleTimeout * NSEC_PER_SEC));
-    dispatch_source_set_timer(self.idleTimer, start, (uint64_t)(kPNConnectionIdleTimeout * NSEC_PER_SEC), NSEC_PER_SEC);
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.configuration.subscriptionMaximumIdleTime * NSEC_PER_SEC));
+    dispatch_source_set_timer(self.idleTimer, start, (uint64_t)(self.configuration.subscriptionMaximumIdleTime * NSEC_PER_SEC), NSEC_PER_SEC);
 }
 
 - (NSSet *)channelsWithPresenceFromList:(NSArray *)channelsList forSubscribe:(BOOL)listForSubscribe {

@@ -62,9 +62,9 @@ NSUInteger pn_str_location(const void* buffer, NSUInteger size, NSUInteger offse
     
     // Use strlen to calculate length of the string before \0 (strlen stop size calculation if it
     // find \0 in target string).
-    size_t countableBufferLength = strlen(buffer);
+    size_t countableBufferLength = strnlen(buffer, size);
     bool containNullTermination = (countableBufferLength < size);
-    const void *needlePointer = strstr(buffer, needle);
+    const void *needlePointer = strnstr(buffer, needle, size);
     if (needlePointer) {
         
         location = (needlePointer - buffer) + offset;
@@ -72,8 +72,11 @@ NSUInteger pn_str_location(const void* buffer, NSUInteger size, NSUInteger offse
     else if (containNullTermination) {
         
         NSUInteger currentChunkSize = (countableBufferLength + 1);
-        location = pn_str_location((buffer + currentChunkSize), (size - currentChunkSize),
-                                   (offset + currentChunkSize), needle);
+        if (size > currentChunkSize) {
+            
+            location = pn_str_location((buffer + currentChunkSize), (size - currentChunkSize),
+                                       (offset + currentChunkSize), needle);
+        }
     }
     
     

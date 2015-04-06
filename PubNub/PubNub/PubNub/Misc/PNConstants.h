@@ -67,6 +67,7 @@ static int const kPNMinimumHeartbeatTimeout = 5;
 // This interval is used by timer which is triggered in specified time interval to help reachability determine real connection state by sending
 // small request to the target server
 static NSTimeInterval const kPNReachabilityOriginLookupInterval = 10.0f;
+static NSTimeInterval const kPNReachabilityOriginLookupFastInterval = 2.0f;
 static NSTimeInterval const kPNReachabilityOriginLookupTimeout = 5.0f;
 
 // This is the channel which is used by latency meter to measure network latency (prefix from unique client session will be added)

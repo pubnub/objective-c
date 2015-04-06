@@ -72,6 +72,15 @@ typedef enum _PNReachabilityStatus {
 // When reachability detects switch between WiFi <-> Cellular interfaces, it won't report that
 @property (nonatomic, assign, getter = isSimulatingNetworkSwitchEvent) BOOL simulatingNetworkSwitchEvent;
 
+/**
+ @brief In some cases after reachability report about network not available reachability may
+        decide to verify on whether it is true or not. In case if look up initate verification at
+        the end if connection actually alive it will mark to restart reachability.
+ 
+ @since <#version number#>
+ */
+@property (nonatomic, assign, getter = shouldRestartReachabilityOnLookupComplete) BOOL restartReachabilityOnLookupComplete;
+
 @property (nonatomic, assign) SCNetworkReachabilityRef serviceReachability;
 @property (nonatomic, assign) SCNetworkConnectionFlags reachabilityFlags;
 @property (nonatomic, strong) NSString *currentNetworkAddress;
@@ -105,8 +114,8 @@ typedef enum _PNReachabilityStatus {
 
 - (void)startServiceReachabilityMonitoring:(BOOL)shouldStopPrevious;
 
-- (void)startOriginLookup;
-- (void)startOriginLookup:(BOOL)shouldStopPrevious;
+- (void)startOriginLookup:(BOOL)shouldSartImmediately;
+- (void)startOriginLookup:(BOOL)shouldSartImmediately stopPrevious:(BOOL)shouldStopPrevious;
 - (void)stopOriginLookup;
 - (void)stopOriginLookup:(BOOL)forRelaunch;
 
@@ -274,26 +283,36 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                              [reachabilityMonitor humanReadableStatus:status], @(available)];
                 }];
                 
-                [reachabilityMonitor pn_dispatchBlock:^{
+                reachabilityMonitor.restartReachabilityOnLookupComplete = NO;
+                
+                // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
+                // connection state in non appropriate state
+                reachabilityMonitor.simulatingNetworkSwitchEvent = NO;
+                
+                // Updating reachability information
+                reachabilityMonitor.reachabilityFlags = flags;
+                reachabilityMonitor.reachabilityStatus = status;
+                
+                #if __IPHONE_OS_VERSION_MIN_REQUIRED
+                BOOL addressAssigned = NO;
+                BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+                if (!available) {
+
+                    addressAssigned = ([PNNetworkHelper networkAddress] != nil);
+                    shouldSuspectWrongState = addressAssigned;
+                }
+                #else
+                BOOL addressAssigned = NO;
+                BOOL shouldSuspectWrongState = YES;
+                #endif
+                
+                if (shouldSuspectWrongState && (available || addressAssigned)) {
                     
-                    // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
-                    // connection state in non appropriate state
-                    reachabilityMonitor.simulatingNetworkSwitchEvent = NO;
-                    
-                    // Updating reachability information
-                    reachabilityMonitor.reachabilityFlags = flags;
-                    reachabilityMonitor.reachabilityStatus = status;
-                    
-                    #if __IPHONE_OS_VERSION_MIN_REQUIRED
-                    BOOL shouldSuspectWrongState = reachabilityMonitor.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
-                    #else
-                    BOOL shouldSuspectWrongState = YES;
-                    #endif
-                    
-                    if (available && shouldSuspectWrongState) {
-                        
-                        [reachabilityMonitor startOriginLookup];
-                    }
+                    reachabilityMonitor.restartReachabilityOnLookupComplete = !available;
+                    [reachabilityMonitor startOriginLookup:(!available)];
+                }
+                
+                if (!reachabilityMonitor.shouldRestartReachabilityOnLookupComplete) {
                     
                     if (!available || (available && !shouldSuspectWrongState)) {
                         
@@ -306,7 +325,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                     }
                     
                     if (![reachabilityMonitor isServiceAvailableForStatus:status] ||
-                        ([reachabilityMonitor isServiceAvailableForStatus:reachabilityMonitor.status] && [reachabilityMonitor isServiceAvailableForStatus:status])) {
+                        ([reachabilityMonitor isServiceAvailableForStatus:reachabilityMonitor.status] &&
+                         [reachabilityMonitor isServiceAvailableForStatus:status])) {
                         
                         reachabilityMonitor.status = status;
                     }
@@ -319,7 +339,7 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
                                      [reachabilityMonitor humanReadableStatus:reachabilityMonitor.lookupStatus], @(available)];
                         }];
                     }
-                }];
+                }
             }
             else {
                 
@@ -398,12 +418,12 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
     }];
 }
 
-- (void)startOriginLookup {
+- (void)startOriginLookup:(BOOL)shouldSartImmediately {
     
-    [self startOriginLookup:YES];
+    [self startOriginLookup:shouldSartImmediately stopPrevious:YES];
 }
 
-- (void)startOriginLookup:(BOOL)shouldStopPrevious {
+- (void)startOriginLookup:(BOOL)shouldSartImmediately stopPrevious:(BOOL)shouldStopPrevious {
 
     [self pn_dispatchBlock:^{
 
@@ -412,29 +432,39 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
             [self stopOriginLookup:YES];
         }
 
-        if (self.originLookupTimer == NULL || dispatch_source_testcancel(self.originLookupTimer) > 0) {
+        if (!shouldSartImmediately) {
 
-            dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
-                                                                   [self pn_privateQueue]);
-            [PNDispatchHelper retain:timerSource];
-            self.originLookupTimer = timerSource;
+            if (self.originLookupTimer == NULL || dispatch_source_testcancel(self.originLookupTimer) > 0) {
 
-            __pn_desired_weak __typeof__(self) weakSelf = self;
-            dispatch_source_set_event_handler(timerSource, ^{
+                dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
+                                                                       [self pn_privateQueue]);
+                self.originLookupTimer = timerSource;
+
+                __pn_desired_weak __typeof__(self) weakSelf = self;
+                dispatch_source_set_event_handler(timerSource, ^{
+
+                    __strong __typeof__(self) strongSelf = weakSelf;
+
+                    [strongSelf stopOriginLookup];
+                    [strongSelf handleOriginLookupTimer];
+                });
+                dispatch_source_set_cancel_handler(timerSource, ^{
+
+                    [PNDispatchHelper release:timerSource];
+                });
+
+                dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC));
+                dispatch_source_set_timer(timerSource, start, (uint64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC), NSEC_PER_SEC);
+                dispatch_resume(timerSource);
+            }
+        }
+        else {
+
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPNReachabilityOriginLookupFastInterval * NSEC_PER_SEC));
+            dispatch_after(popTime, [self pn_privateQueue], ^(void){
                 
-                __strong __typeof__(self) strongSelf = weakSelf;
-
-                [strongSelf stopOriginLookup];
-                [strongSelf handleOriginLookupTimer];
+                [self handleOriginLookupTimer];
             });
-            dispatch_source_set_cancel_handler(timerSource, ^{
-
-                [PNDispatchHelper release:timerSource];
-            });
-
-            dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC));
-            dispatch_source_set_timer(timerSource, start, (uint64_t) (kPNReachabilityOriginLookupInterval * NSEC_PER_SEC), NSEC_PER_SEC);
-            dispatch_resume(timerSource);
         }
     }];
 }
@@ -463,6 +493,8 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
 - (void)restartServiceReachabilityMonitoring {
 
     [self pn_dispatchBlock:^{
+        
+        self.restartReachabilityOnLookupComplete = NO;
 
         // Check whether reachability instance crated before destroy it
         if (self.serviceReachability) {
@@ -520,7 +552,7 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
     // Make sure that simulation block won't be called after reachability observation has been suspended
     self.simulatingNetworkSwitchEvent = NO;
 
-    // Check whether reachability instance crated before destroy it
+    // Check whether reachability instance crated before.
     if (self.serviceReachability) {
 
         [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -560,7 +592,7 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
                 return @[PNLoggerSymbols.reachability.resumedReachabilityObservation];
             }];
             self.notificationsSuspended = NO;
-            [self startOriginLookup];
+            [self startOriginLookup:NO];
         }
     }];
 }
@@ -576,12 +608,18 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
         // allow to check network state for sure
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
         BOOL shouldSuspectWrongState = self.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+        if (!shouldSuspectWrongState) {
+            
+            shouldSuspectWrongState = self.shouldRestartReachabilityOnLookupComplete;
+        }
 #else
-    BOOL shouldSuspectWrongState = YES;
+        BOOL shouldSuspectWrongState = YES;
 #endif
 
         // In case if server report that there is connection
-        if ([self isServiceAvailableForStatus:self.reachabilityStatus] && shouldSuspectWrongState) {
+        if (shouldSuspectWrongState &&
+            ([self isServiceAvailableForStatus:self.reachabilityStatus] ||
+             self.shouldRestartReachabilityOnLookupComplete)) {
 
             __block __pn_desired_weak __typeof(self) weakSelf = self;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -610,11 +648,15 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
                     }
                 }
 
-                dispatch_async([strongSelf pn_privateQueue], ^{
-
-                    [strongSelf handleOriginLookupCompletionWithData:downloadedTimeTokenData
-                                                            response:response error:requestError];
-                });
+                dispatch_queue_t targetQueue = [strongSelf pn_privateQueue];
+                if (targetQueue != NULL) {
+                    
+                    dispatch_async(targetQueue, ^{
+                        
+                        [strongSelf handleOriginLookupCompletionWithData:downloadedTimeTokenData
+                                                                response:response error:requestError];
+                    });
+                }
             });
         }
     }];
@@ -629,11 +671,15 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
     // allow to check network state for sure
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     BOOL shouldSuspectWrongState = self.reachabilityStatus != PNReachabilityStatusReachableViaCellular;
+    if (!shouldSuspectWrongState) {
+        
+        shouldSuspectWrongState = self.shouldRestartReachabilityOnLookupComplete;
+    }
 #else
     BOOL shouldSuspectWrongState = YES;
 #endif
 
-    if(shouldSuspectWrongState && !self.isNotificationsSuspended) {
+    if(shouldSuspectWrongState && !self.isNotificationsSuspended && self.serviceReachability) {
         
         // Make sure that delayed simulation won't fire after updated reachability information arrived and not set
         // connection state in non appropriate state
@@ -698,30 +744,43 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
             [self startOriginLookup:NO];
         }
         
+        if (!isConnectionAvailable && self.shouldRestartReachabilityOnLookupComplete) {
+            
+            self.restartReachabilityOnLookupComplete = NO;
+        }
+        
         // Check whether connection still available or not
         if (isConnectionAvailable) {
             
-            BOOL wasDisconnectedBefore = (self.lookupStatus != PNReachabilityStatusUnknown && ![self isServiceAvailableForStatus:self.lookupStatus]) ||
-                                         ![self isServiceAvailableForStatus:self.reachabilityStatus];
-            self.lookupStatus = PNReachabilityStatusForFlags([self synchronousStatusFlags]);
-            if (wasDisconnectedBefore) {
-
-                [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
-
-                    return @[PNLoggerSymbols.reachability.uplinkRestored, [self humanReadableInterfaceFromStatus:self.lookupStatus]];
-                }];
-            }
-            
-            // If after check reachability we find out that it has been changed from the moment of last reachability callback/refresh we trigger
-            // overall reachability instance state update
-            if (self.lookupStatus != self.reachabilityStatus || wasDisconnectedBefore) {
+            if (!self.shouldRestartReachabilityOnLookupComplete) {
                 
-                self.status = self.lookupStatus;
+                BOOL wasDisconnectedBefore = (self.lookupStatus != PNReachabilityStatusUnknown && ![self isServiceAvailableForStatus:self.lookupStatus]) ||
+                                             ![self isServiceAvailableForStatus:self.reachabilityStatus];
+                self.lookupStatus = PNReachabilityStatusForFlags([self synchronousStatusFlags]);
+                if (wasDisconnectedBefore) {
+
+                    [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
+
+                        return @[PNLoggerSymbols.reachability.uplinkRestored, [self humanReadableInterfaceFromStatus:self.lookupStatus]];
+                    }];
+                }
+                
+                // If after check reachability we find out that it has been changed from the moment of last reachability callback/refresh we trigger
+                // overall reachability instance state update
+                if (self.lookupStatus != self.reachabilityStatus || wasDisconnectedBefore) {
+                    
+                    self.status = self.lookupStatus;
+                }
+            }
+            else if (![self isServiceAvailableForStatus:self.reachabilityStatus]) {
+                
+                [self restartServiceReachabilityMonitoring];
             }
         }
         // Looks like "ping" request failed because of network, so we should check on whether reachability API thinks that there is
         // network connection around or not
-        else if ([self isServiceAvailableForStatus:self.reachabilityStatus]) {
+        else if ([self isServiceAvailableForStatus:self.reachabilityStatus] &&
+                 !self.shouldRestartReachabilityOnLookupComplete) {
             
             if (self.lookupStatus != PNReachabilityStatusNotReachable) {
 
@@ -742,7 +801,8 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
             }
         }
         // Looks like both routes reported that there is no connection
-        else if (self.lookupStatus != PNReachabilityStatusNotReachable) {
+        else if (self.lookupStatus != PNReachabilityStatusNotReachable &&
+                 !self.shouldRestartReachabilityOnLookupComplete) {
 
             [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -752,7 +812,7 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
             self.lookupStatus = PNReachabilityStatusNotReachable;
         }
     }
-    else if (self.isNotificationsSuspended) {
+    else if (self.isNotificationsSuspended && !self.shouldRestartReachabilityOnLookupComplete) {
 
         [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -972,11 +1032,11 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
         BOOL shouldSuspectWrongState = updatedStatus != PNReachabilityStatusReachableViaCellular;
 #else
-    BOOL shouldSuspectWrongState = YES;
+        BOOL shouldSuspectWrongState = YES;
 #endif
 
         if (![self isServiceAvailableForStatus:updatedStatus] ||
-                ([self isServiceAvailableForStatus:self.status] && [self isServiceAvailableForStatus:updatedStatus])) {
+            ([self isServiceAvailableForStatus:self.status] && [self isServiceAvailableForStatus:updatedStatus])) {
 
             if (oldStatus != updatedStatus) {
 
@@ -1175,175 +1235,179 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
     
     [self pn_dispatchBlock:^{
         
-        // Retrieved changed values (old/new)
-        PNReachabilityStatus oldStatus = _status;
-        PNReachabilityStatus newStatus = status;
-        _status = status;
+        if (self.serviceReachability) {
         
-        // Checking whether service reachability really changed or not
-        if(oldStatus != newStatus) {
+            // Retrieved changed values (old/new)
+            PNReachabilityStatus oldStatus = _status;
+            PNReachabilityStatus newStatus = status;
+            _status = status;
             
-            if (newStatus != PNReachabilityStatusUnknown) {
+            // Checking whether service reachability really changed or not
+            if(oldStatus != newStatus) {
                 
-                BOOL isSimulationNetworkSwitchRequired = NO;
-                if (!self.isSimulatingNetworkSwitchEvent) {
+                if (newStatus != PNReachabilityStatusUnknown) {
                     
-                    // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
-                    // allow to check network state for sure
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-                    BOOL shouldSuspectWrongState = newStatus != PNReachabilityStatusReachableViaCellular;
-#else
-                    BOOL shouldSuspectWrongState = YES;
-#endif
-                    if ([self isServiceAvailableForStatus:newStatus] && shouldSuspectWrongState) {
+                    BOOL isSimulationNetworkSwitchRequired = NO;
+                    if (!self.isSimulatingNetworkSwitchEvent) {
                         
-                        [self startOriginLookup:NO];
-                    }
-                    
-                    
-                    BOOL available = [self isServiceAvailableForStatus:newStatus];
-                    NSString *currentNetworkAddress = available ? [PNNetworkHelper networkAddress] : nil;
-                    if (!currentNetworkAddress) {
-                        
-                        currentNetworkAddress = @"'not assigned'";
-                    }
-                    
-                    if (![self isInterfaceChangedFrom:oldStatus to:newStatus] &&
-                        [self isServiceAvailableForStatus:oldStatus] && [self isServiceAvailableForStatus:newStatus]) {
-                        
-                        isSimulationNetworkSwitchRequired = [self isNetworkAddressChanged];
-                        if (isSimulationNetworkSwitchRequired) {
+                        // In case if reachability report that connection is available (not on
+                        // cellular) we should launch additional lookup service which will
+                        // allow to check network state for sure
+    #if __IPHONE_OS_VERSION_MIN_REQUIRED
+                        BOOL shouldSuspectWrongState = newStatus != PNReachabilityStatusReachableViaCellular;
+    #else
+                        BOOL shouldSuspectWrongState = YES;
+    #endif
+                        if ([self isServiceAvailableForStatus:newStatus] && shouldSuspectWrongState) {
                             
-                            [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
-                                
-                                return @[PNLoggerSymbols.reachability.reachabilityNetworkAddressChangedOnSet,
-                                         (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
-                                         (currentNetworkAddress ? currentNetworkAddress : @"'not assigned'"),
-                                         @(available), @(self.reachabilityFlags)];
-                            }];
+                            [self startOriginLookup:NO];
                         }
-                        else if (newStatus == PNReachabilityStatusReachableViaWiFi) {
+                        
+                        
+                        BOOL available = [self isServiceAvailableForStatus:newStatus];
+                        NSString *currentNetworkAddress = available ? [PNNetworkHelper networkAddress] : nil;
+                        if (!currentNetworkAddress) {
                             
-                            isSimulationNetworkSwitchRequired = [self isWiFiAccessPointChanged];
+                            currentNetworkAddress = @"'not assigned'";
+                        }
+                        
+                        if (![self isInterfaceChangedFrom:oldStatus to:newStatus] &&
+                            [self isServiceAvailableForStatus:oldStatus] && [self isServiceAvailableForStatus:newStatus]) {
                             
-                            NSString *updatedWLANSSID = [PNNetworkHelper WLANServiceSetIdentifier];
+                            isSimulationNetworkSwitchRequired = [self isNetworkAddressChanged];
                             if (isSimulationNetworkSwitchRequired) {
                                 
                                 [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
                                     
-                                    return @[PNLoggerSymbols.reachability.reachabilityHotspotChangedOnSet,
-                                             (self.currentWLANSSID ? self.currentWLANSSID : [NSNull null]),
-                                             (updatedWLANSSID ? updatedWLANSSID : [NSNull null]), @(available),
-                                             @(self.reachabilityFlags)];
+                                    return @[PNLoggerSymbols.reachability.reachabilityNetworkAddressChangedOnSet,
+                                             (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
+                                             (currentNetworkAddress ? currentNetworkAddress : @"'not assigned'"),
+                                             @(available), @(self.reachabilityFlags)];
                                 }];
                             }
+                            else if (newStatus == PNReachabilityStatusReachableViaWiFi) {
+                                
+                                isSimulationNetworkSwitchRequired = [self isWiFiAccessPointChanged];
+                                
+                                NSString *updatedWLANSSID = [PNNetworkHelper WLANServiceSetIdentifier];
+                                if (isSimulationNetworkSwitchRequired) {
+                                    
+                                    [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
+                                        
+                                        return @[PNLoggerSymbols.reachability.reachabilityHotspotChangedOnSet,
+                                                 (self.currentWLANSSID ? self.currentWLANSSID : [NSNull null]),
+                                                 (updatedWLANSSID ? updatedWLANSSID : [NSNull null]), @(available),
+                                                 @(self.reachabilityFlags)];
+                                    }];
+                                }
+                            }
                         }
-                    }
-                    
-                    if (!isSimulationNetworkSwitchRequired && [self isInterfaceChangedFrom:oldStatus to:newStatus]) {
                         
-                        isSimulationNetworkSwitchRequired = YES;
-                        
-                        [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
+                        if (!isSimulationNetworkSwitchRequired && [self isInterfaceChangedFrom:oldStatus to:newStatus]) {
                             
-                            return @[PNLoggerSymbols.reachability.reachabilityInterfaceChangedOnSet,
-                                     [self humanReadableInterfaceFromStatus:oldStatus], [self humanReadableInterfaceFromStatus:newStatus],
-                                     @(available), (currentNetworkAddress ? currentNetworkAddress : @"'not assigned'"),
-                                     @(self.reachabilityFlags)];
-                        }];
-                    }
-                }
-                
-                self.currentNetworkAddress = [PNNetworkHelper networkAddress];
-                
-                
-                // In case if reachability reported that it is available on wifi
-                if (newStatus == PNReachabilityStatusReachableViaWiFi) {
-                    
-                    self.currentWLANSSID = [PNNetworkHelper WLANServiceSetIdentifier];
-                    self.currentWLANBSSID = [PNNetworkHelper WLANBasicServiceSetIdentifier];
-                }
-                else {
-                    
-                    // Clear cached WiFi information
-                    self.currentWLANSSID = nil;
-                    self.currentWLANBSSID = nil;
-                }
-                
-                
-                BOOL isServiceConnected = [self isServiceAvailable];
-                
-                // Check whether reachability should be forced to update it's state to disconnected and then update state
-                // after some delay or not
-                if (isSimulationNetworkSwitchRequired) {
-                    
-                    BOOL available = [self isServiceAvailableForStatus:newStatus];
-                    
-                    [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
-                        
-                        return @[PNLoggerSymbols.reachability.reachabilityForcedFlagsChangeOnSet, @(available),
-                                 (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"), @(self.reachabilityFlags)];
-                    }];
-                    
-                    // Simulate disconnected event (disconnected from previous interface, WiFi point or old IP address)
-                    isServiceConnected = NO;
-                    self.currentNetworkAddress = nil;
-                    PNReachabilityStatus originalReachabilityStatus = self.reachabilityStatus;
-                    self.reachabilityStatus = PNReachabilityStatusNotReachable;
-                    _status = self.reachabilityStatus;
-                    self.simulatingNetworkSwitchEvent = YES;
-                    
-                    __block __pn_desired_weak __typeof(self) weakSelf = self;
-                    int64_t delayInSeconds = kPNReachabilityNetworkSwitchSimulationDelay;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                    dispatch_after(popTime, [self pn_privateQueue], ^(void) {
-                        
-                        __strong __typeof__(self) strongSelf = weakSelf;
-                        
-                        // Check whether there is no new events arrived while simulated network change event
-                        if (strongSelf.isSimulatingNetworkSwitchEvent) {
+                            isSimulationNetworkSwitchRequired = YES;
                             
                             [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
                                 
-                                return @[PNLoggerSymbols.reachability.reachabilityFlagsChangeEventGeneratedOnSet, @(available),
-                                         (strongSelf.currentNetworkAddress ? strongSelf.currentNetworkAddress : @"'not assigned'"),
-                                         @(strongSelf.reachabilityFlags)];
+                                return @[PNLoggerSymbols.reachability.reachabilityInterfaceChangedOnSet,
+                                         [self humanReadableInterfaceFromStatus:oldStatus], [self humanReadableInterfaceFromStatus:newStatus],
+                                         @(available), (currentNetworkAddress ? currentNetworkAddress : @"'not assigned'"),
+                                         @(self.reachabilityFlags)];
                             }];
-                            
-                            strongSelf.simulatingNetworkSwitchEvent = NO;
-                            strongSelf.reachabilityStatus = originalReachabilityStatus;
-                            strongSelf.status = newStatus;
                         }
-                    });
+                    }
+                    
+                    self.currentNetworkAddress = [PNNetworkHelper networkAddress];
+                    
+                    
+                    // In case if reachability reported that it is available on wifi
+                    if (newStatus == PNReachabilityStatusReachableViaWiFi) {
+                        
+                        self.currentWLANSSID = [PNNetworkHelper WLANServiceSetIdentifier];
+                        self.currentWLANBSSID = [PNNetworkHelper WLANBasicServiceSetIdentifier];
+                    }
+                    else {
+                        
+                        // Clear cached WiFi information
+                        self.currentWLANSSID = nil;
+                        self.currentWLANBSSID = nil;
+                    }
+                    
+                    
+                    BOOL isServiceConnected = [self isServiceAvailable];
+                    
+                    // Check whether reachability should be forced to update it's state to disconnected and then update state
+                    // after some delay or not
+                    if (isSimulationNetworkSwitchRequired) {
+                        
+                        BOOL available = [self isServiceAvailableForStatus:newStatus];
+                        
+                        [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
+                            
+                            return @[PNLoggerSymbols.reachability.reachabilityForcedFlagsChangeOnSet, @(available),
+                                     (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"), @(self.reachabilityFlags)];
+                        }];
+                        
+                        // Simulate disconnected event (disconnected from previous interface, WiFi point or old IP address)
+                        isServiceConnected = NO;
+                        self.currentNetworkAddress = nil;
+                        PNReachabilityStatus originalReachabilityStatus = self.reachabilityStatus;
+                        self.reachabilityStatus = PNReachabilityStatusNotReachable;
+                        _status = self.reachabilityStatus;
+                        self.simulatingNetworkSwitchEvent = YES;
+                        
+                        __block __pn_desired_weak __typeof(self) weakSelf = self;
+                        int64_t delayInSeconds = kPNReachabilityNetworkSwitchSimulationDelay;
+                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                        dispatch_after(popTime, [self pn_privateQueue], ^(void) {
+                            
+                            __strong __typeof__(self) strongSelf = weakSelf;
+                            
+                            // Check whether there is no new events arrived while simulated network change event
+                            if (strongSelf.isSimulatingNetworkSwitchEvent) {
+                                
+                                [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
+                                    
+                                    return @[PNLoggerSymbols.reachability.reachabilityFlagsChangeEventGeneratedOnSet, @(available),
+                                             (strongSelf.currentNetworkAddress ? strongSelf.currentNetworkAddress : @"'not assigned'"),
+                                             @(strongSelf.reachabilityFlags)];
+                                }];
+                                
+                                strongSelf.simulatingNetworkSwitchEvent = NO;
+                                strongSelf.reachabilityStatus = originalReachabilityStatus;
+                                strongSelf.status = newStatus;
+                            }
+                        });
+                    }
+                    else {
+                        
+                        [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
+                            
+                            return @[PNLoggerSymbols.reachability.reachabilityFlagsChangedOnSet, [self humanReadableStatus:newStatus],
+                                     @([self isServiceAvailable]), (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
+                                     @(self.reachabilityFlags)];
+                        }];
+                    }
+                    
+                    if (self.reachabilityChangeHandleBlock) {
+                        
+                        self.reachabilityChangeHandleBlock(isServiceConnected);
+                    }
                 }
-                else {
+                else if (_serviceReachability){
                     
                     [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
                         
-                        return @[PNLoggerSymbols.reachability.reachabilityFlagsChangedOnSet, [self humanReadableStatus:newStatus],
+                        return @[PNLoggerSymbols.reachability.unknownReachabilityFlagsOnSet,
+                                 [self humanReadableStatus:newStatus], [self humanReadableStatus:oldStatus],
                                  @([self isServiceAvailable]), (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
                                  @(self.reachabilityFlags)];
                     }];
-                }
-                
-                if (self.reachabilityChangeHandleBlock) {
                     
-                    self.reachabilityChangeHandleBlock(isServiceConnected);
+                    // Reset reachability status to old
+                    self.reachabilityStatus = oldStatus;
+                    _status = self.reachabilityStatus;
                 }
-            }
-            else if (_serviceReachability){
-                
-                [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
-                    
-                    return @[PNLoggerSymbols.reachability.unknownReachabilityFlagsOnSet,
-                             [self humanReadableStatus:newStatus], [self humanReadableStatus:oldStatus],
-                             @([self isServiceAvailable]), (self.currentNetworkAddress ? self.currentNetworkAddress : @"'not assigned'"),
-                             @(self.reachabilityFlags)];
-                }];
-                
-                // Reset reachability status to old
-                self.reachabilityStatus = oldStatus;
-                _status = self.reachabilityStatus;
             }
         }
     }];

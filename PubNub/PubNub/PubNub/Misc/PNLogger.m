@@ -799,7 +799,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
  @since 3.7.3
  */
 + (void)storeRAWHTTPPacket:(BOOL)isExpectedResponse garbageData:(BOOL)isGarbageData
-           dataDescription:(NSString *)dataDescription withData:(NSData *(^)(void))httpPacketBlock;
+           dataDescription:(NSString *)dataDescription withData:(id(^)(void))httpPacketBlock;
 
 
 #pragma mark - Instance methods
@@ -1091,9 +1091,52 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
     }
 }
 
-+ (void)storeGarbageHTTPPacketData:(NSData *(^)(void))httpPacketBlock {
-
-    [self storeRAWHTTPPacket:NO garbageData:YES dataDescription:nil withData:httpPacketBlock];
++ (void)storeGarbageHTTPPacketData:(dispatch_data_t(^)(void))httpPacketBlock {
+    
+    if (httpPacketBlock) {
+        
+        [self storeRAWHTTPPacket:NO garbageData:YES dataDescription:nil withData:^id{
+            
+            dispatch_data_t data = httpPacketBlock();
+            if (data) {
+                
+                NSUInteger bufferSize = dispatch_data_get_size(data);
+                if (bufferSize) {
+                    
+                    NSMutableArray *dataBlocks = [NSMutableArray array];
+                    
+                    // Iterate over chunks of data stored in buffer.
+                    dispatch_data_apply(data, ^bool(dispatch_data_t region, size_t offset,
+                                                    const void *bytes, size_t size) {
+                        
+                        NSData *dataBlock = [[NSData alloc] initWithBytes:bytes length:size];
+                        if (dataBlock) {
+                            
+                            [dataBlocks addObject:dataBlock];
+                        }
+                        
+                        return true;
+                    });
+                    
+                    [PNDispatchHelper release:data];
+                    
+                    
+                    return dataBlocks;
+                }
+                else {
+                    
+                    [PNDispatchHelper release:data];
+                    
+                    
+                    return nil;
+                }
+            }
+            else {
+                
+                return nil;
+            }
+        }];
+    }
 }
 
 + (void)storeUnexpectedHTTPDescription:(NSString *)packetDescription
@@ -1104,7 +1147,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 }
 
 + (void)storeRAWHTTPPacket:(BOOL)isExpectedResponse garbageData:(BOOL)isGarbageData
-           dataDescription:(NSString *)dataDescription withData:(NSData *(^)(void))httpPacketBlock {
+           dataDescription:(NSString *)dataDescription withData:(id(^)(void))httpPacketBlock {
     
     if (httpPacketBlock) {
         
@@ -1112,7 +1155,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         #pragma clang diagnostic ignored "-Wundeclared-selector"
         NSString *entryTimeToken = [[NSDate date] performSelector:@selector(logDescription)];
         NSString *baseFileName = [NSString stringWithFormat:@"%@response-%@",
-                                  (!isExpectedResponse ? @"unexpected-" : (isGarbageData ? @"garbage-" : @"")),
+                                  (!isExpectedResponse ? (isGarbageData ? @"garbage-" : @"unexpected-") : @""),
                                   entryTimeToken];
         NSString *packetName = [baseFileName stringByAppendingPathExtension:@"dmp"];
         NSString *packetDetailsName = [baseFileName stringByAppendingString:@"-details.dmp"];
@@ -1125,19 +1168,37 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         }
         #pragma clang diagnostic pop
         
-        NSData *packetData = httpPacketBlock();
-        if (packetData) {
-
+        id data = httpPacketBlock();
+        if (data) {
+            
             NSData *packetDescription = (dataDescription ? [dataDescription dataUsingEncoding:NSUTF8StringEncoding] : nil);
             dispatch_async([self sharedInstance].httpProcessingQueue, ^{
-
-                if(packetData && ![packetData writeToFile:packetStorePath atomically:YES]){
-
-                    NSLog(@"CAN'T SAVE DUMP: %@\nTO: %@", packetData, packetStorePath);
+                
+                void(^dataStoreBlock)(NSString *, NSData *) = ^(NSString *path, NSData *dumpData) {
+                    
+                    if(dumpData && ![dumpData writeToFile:path atomically:YES]){
+                        
+                        NSLog(@"CAN'T SAVE DUMP: %@\nTO: %@", dumpData, path);
+                    }
+                };
+                if ([data isKindOfClass:[NSData class]]) {
+                    
+                    dataStoreBlock(packetStorePath, data);
+                    if(packetDescription && ![packetDescription writeToFile:detailsStorePath atomically:YES]){
+                        
+                        NSLog(@"CAN'T SAVE DUMP INFORMATION: %@\nTO: %@", packetDescription, detailsStorePath);
+                    }
                 }
-                if(packetDescription && ![packetDescription writeToFile:detailsStorePath atomically:YES]){
-
-                    NSLog(@"CAN'T SAVE DUMP INFORMATION: %@\nTO: %@", packetDescription, detailsStorePath);
+                else {
+                    
+                    [(NSArray *)data enumerateObjectsUsingBlock:^(NSData *dumpData, NSUInteger dumpDataIdx,
+                                                                  BOOL *dumpDataEnumeratorStop) {
+                        
+                        NSString *pathSuffix = [NSString stringWithFormat:@"-%@.dmp", @(dumpDataIdx)];
+                        NSString *dumpDataStorePath = [packetStorePath stringByReplacingOccurrencesOfString:@".dmp"
+                                                                                                 withString:pathSuffix];
+                        dataStoreBlock(dumpDataStorePath, dumpData);
+                    }];
                 }
             });
         }
@@ -1295,12 +1356,10 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
     self.consoleDump = [NSMutableData data];
     dispatch_queue_t dumpProcessingQueue = dispatch_queue_create("com.pubnub.logger-dump-processing", DISPATCH_QUEUE_SERIAL);
     dispatch_set_target_queue(dumpProcessingQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0));
-    [PNDispatchHelper retain:dumpProcessingQueue];
     self.dumpProcessingQueue = dumpProcessingQueue;
     [self openConsoleDumpChannel];
     
     dispatch_queue_t httpProcessingQueue = dispatch_queue_create("com.pubnub.logger-http-processing", DISPATCH_QUEUE_SERIAL);
-    [PNDispatchHelper retain:httpProcessingQueue];
     self.httpProcessingQueue = httpProcessingQueue;
 }
 
@@ -1317,7 +1376,6 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                    [self closeConsoleDumpChannel];
                }
            });
-        [PNDispatchHelper retain:consoleDumpStoringChannel];
         self.consoleDumpStoringChannel = consoleDumpStoringChannel;
     });
 }
@@ -1488,16 +1546,27 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
             
             if (self.consoleDumpStoringChannel) {
                 
-                dispatch_data_t data = dispatch_data_create([self.consoleDump bytes], [self.consoleDump length],
-                                                            self.dumpProcessingQueue, NULL);
+                __block dispatch_data_t data = dispatch_data_create([self.consoleDump bytes], [self.consoleDump length],
+                                                                    self.dumpProcessingQueue, NULL);
                 [self.consoleDump setLength:0];
                 dispatch_io_write(self.consoleDumpStoringChannel, 0, data, self.dumpProcessingQueue,
                                   ^(bool done, dispatch_data_t data, int error) {
                                       
                                       if (!done && error != 0) {
                                           
+                                          if (data) {
+                                              
+                                              [PNDispatchHelper release:data];
+                                              data = NULL;
+                                          }
+                                          
                                           NSLog(@"PNLog: Can't write into file (%@)", [self dumpFilePath]);
                                           [self closeConsoleDumpChannel];
+                                      }
+                                      else if (done && data) {
+                                          
+                                          [PNDispatchHelper release:data];
+                                          data = NULL;
                                       }
                                   });
             }
