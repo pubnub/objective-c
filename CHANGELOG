@@ -1,3 +1,9 @@
+04-06-2015 - d0367a49 - 3.7.10.4
+
+. fixed memory issues
+. added new subscriptionMaximumIdleTime PNConfiguration property which allow to alter time after which subscription stream shoul re-initialize
+. updated PNReachability to re-launch SCNetworkReachability in case if it reported 'not reachable' and at the same time interface has assigned address and time API completed successfully
+
 03-26-2015 - d0367a49 - 3.7.10.3
 
 . adjusted read buffer behavior
