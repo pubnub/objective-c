@@ -29,7 +29,8 @@ static const NSUInteger kAmountOfChannels = 15;
 - (void)setUp
 {
     [super setUp];
-    [PubNub setDelegate:self];
+    
+    NSLog(@"Delegate test: %@", self);
     
     [PubNub disconnect];
 }
@@ -49,6 +50,7 @@ static const NSUInteger kAmountOfChannels = 15;
     [resGroup enter];
     
     PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
+    [PubNub setDelegate:self];
     [PubNub setConfiguration:configuration];
 
     [PubNub connectWithSuccessBlock:^(NSString *origin) {

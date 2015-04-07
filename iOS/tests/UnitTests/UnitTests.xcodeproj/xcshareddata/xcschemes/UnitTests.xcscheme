@@ -103,9 +103,6 @@
                <Test
                   Identifier = "PubNubInvocationStorageTest">
                </Test>
-               <Test
-                  Identifier = "ResetDeallocTest">
-               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

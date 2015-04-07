@@ -245,7 +245,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 }
 
 - (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier
-         withBlock:(dispatch_block_t)notifyCompletionBlock {
+         withBlock:(void (^)(BOOL))notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -259,7 +259,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
             if (notifyCompletionBlock) {
 
-                notifyCompletionBlock();
+                notifyCompletionBlock(YES);
             }
         }
     }];

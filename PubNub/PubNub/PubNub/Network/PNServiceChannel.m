@@ -1486,10 +1486,10 @@
 #pragma mark - Requests queue delegate methods
 
 - (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request
-            withBlock:(dispatch_block_t)notifyCompletionBlock {
+            withBlock:(void(^)(BOOL))notifyCompletionBlock {
 
     // Forward to the super class
-    [super requestsQueue:queue willSendRequest:request withBlock:^{
+    [super requestsQueue:queue willSendRequest:request withBlock:^(BOOL shouldContinue) {
 
         [self pn_dispatchBlock:^{
 
@@ -1510,7 +1510,7 @@
 
             if (notifyCompletionBlock) {
 
-                notifyCompletionBlock();
+                notifyCompletionBlock(shouldContinue);
             }
         }];
     }];
