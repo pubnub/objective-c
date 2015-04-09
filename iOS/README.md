@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-# PubNub 3.7.10.3 for iOS 5.1+ (iPhone, iPad, iPod)
+# PubNub 3.7.10.4 for iOS 5.1+ (iPhone, iPad, iPod)
 Provides iOS ARC support in Objective-C for the [PubNub.com](http://www.pubnub.com/) real-time messaging network.  
 ### Example app with complete PubNub API integration available in iPadDemoApp directory
 ### Lighter-weight samples available in the HOWTO directory
@@ -51,7 +51,7 @@ By far the easiest, quickest way to add PubNub.
 +   Add the following to your project's Podfile:
 
 ```
-pod 'PubNub', ‘3.7.10.3’
+pod 'PubNub', ‘3.7.10.4’
 ```
 
 +   Run
