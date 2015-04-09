@@ -1,8 +1,9 @@
-04-06-2015 - d0367a49 - 3.7.10.4
+04-08-2015 - 441b66f3 - 3.7.10.4
 
 . fixed memory issues
-. added new subscriptionMaximumIdleTime PNConfiguration property which allow to alter time after which subscription stream shoul re-initialize
+. added new subscriptionMaximumIdleTime PNConfiguration property which allow to alter time after which subscription stream should re-initialise
 . updated PNReachability to re-launch SCNetworkReachability in case if it reported 'not reachable' and at the same time interface has assigned address and time API completed successfully
+. fix participants method related to pull request
 
 03-26-2015 - d0367a49 - 3.7.10.3
 
