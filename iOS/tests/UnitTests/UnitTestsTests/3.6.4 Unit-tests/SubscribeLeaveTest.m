@@ -359,6 +359,7 @@ withCompletionHandlingBlock:^(NSArray *channels, PNError *unsubscribeError) {
 - (void)pubnubClient:(PubNub *)client didReceivePresenceEvent:(PNPresenceEvent *)event {
     
     NSLog(@"\n\npubnubClient didReceivePresenceEvent %@\n\n", event);
+    
     if( event.type == PNPresenceEventJoin && [event.client.identifier isEqualToString:[PubNub clientIdentifier]]) {
         joinDelegateCount++;
     }

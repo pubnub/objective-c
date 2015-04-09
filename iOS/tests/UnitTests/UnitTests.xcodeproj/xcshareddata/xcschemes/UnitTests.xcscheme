@@ -56,10 +56,25 @@
                   Identifier = "CatchupTest">
                </Test>
                <Test
+                  Identifier = "ChangingChannels">
+               </Test>
+               <Test
                   Identifier = "ChannelGroupSubscriptionTest">
                </Test>
                <Test
+                  Identifier = "ChannelGroupTest">
+               </Test>
+               <Test
+                  Identifier = "ClientStateTest">
+               </Test>
+               <Test
+                  Identifier = "Configuration">
+               </Test>
+               <Test
                   Identifier = "MessageToUnsubChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PAMCatchupTest">
                </Test>
                <Test
                   Identifier = "PAMTestError">
@@ -102,6 +117,9 @@
                </Test>
                <Test
                   Identifier = "PubNubInvocationStorageTest">
+               </Test>
+               <Test
+                  Identifier = "SubscribeLeaveTest">
                </Test>
             </SkippedTests>
          </TestableReference>

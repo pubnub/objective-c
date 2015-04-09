@@ -1979,8 +1979,11 @@ void connectionContextInformationReleaseCallBack( void *info ) {
         if (readedBytesCount > 0) {
             
             // Append filled buffer to current read buffer.
-            [self appendToReadBuffer:dispatch_data_create(buffer, readedBytesCount, NULL,
-                                                          DISPATCH_DATA_DESTRUCTOR_DEFAULT)];
+            dispatch_data_t bufferContent = dispatch_data_create(buffer, readedBytesCount,
+                                                                 DISPATCH_TARGET_QUEUE_DEFAULT,
+                                                                 DISPATCH_DATA_DESTRUCTOR_DEFAULT);
+            [self appendToReadBuffer:bufferContent];
+            [PNDispatchHelper release:bufferContent];
             
             [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -2061,7 +2064,6 @@ void connectionContextInformationReleaseCallBack( void *info ) {
                                                                               (readBufferSize - processedBufferLength));
                 [PNDispatchHelper release:_readBuffer];
                 _readBuffer = updatedBuffer;
-                [PNDispatchHelper retain:updatedBuffer];
             }
 
             [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -3766,7 +3768,6 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     dispatch_data_t updatedBuffer = dispatch_data_create_concat(self.readBuffer, data);
     [PNDispatchHelper release:_readBuffer];
     _readBuffer = updatedBuffer;
-    [PNDispatchHelper retain:updatedBuffer];
 }
 
 - (void)startTimeoutTimer {
@@ -3780,7 +3781,6 @@ void connectionContextInformationReleaseCallBack( void *info ) {
 
         dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                                                                [self pn_privateQueue]);
-        [PNDispatchHelper retain:timerSource];
         self.connectionTimeoutTimer = timerSource;
 
         __pn_desired_weak __typeof__(self) weakSelf = self;
@@ -3840,7 +3840,6 @@ void connectionContextInformationReleaseCallBack( void *info ) {
 
         dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                                                                [self pn_privateQueue]);
-        [PNDispatchHelper retain:timerSource];
         self.wakeUpTimer = timerSource;
         
         __pn_desired_weak __typeof__(self) weakSelf = self;
@@ -4011,8 +4010,9 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     
     if (_readBuffer == NULL) {
         
-        _readBuffer = dispatch_data_create(NULL, 0, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT);
-        [PNDispatchHelper retain:_readBuffer];
+        _readBuffer = dispatch_data_create(NULL, 0,
+                                           DISPATCH_TARGET_QUEUE_DEFAULT,
+                                           DISPATCH_DATA_DESTRUCTOR_DEFAULT);
     }
     
     

@@ -2042,7 +2042,6 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
                 }
                 else {
 
-                    shouldResendRequest = NO;
                     [self requestsQueue:nil didFailRequestSend:request error:response.error
                               withBlock:responseProcessingCompletionBlock];
                 }

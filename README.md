@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-This is Objective-C client (current version **3.7.10.2**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
+This is Objective-C client (current version **3.7.10.4**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
 
 Table of Contents
 =================
@@ -163,7 +163,7 @@ touch Podfile
 ```
 <a/>4. Using your favorite text editor add next line into **Podfile**:  
 ```bash
-pod 'PubNub', '3.7.10.3'
+pod 'PubNub', '3.7.10.4'
 ```
 <a/>5. Install dependencies using _Terminal_:  
 ```bash
@@ -365,6 +365,12 @@ You can use few class methods to initialize and update instance properties:
 ```
 <a/>3. Update the configuration instance using this next set of parameters:  
 
+  - Maximum subscription channels idle time. Used by internal timers to ensure subscription streams still responsible. Before changing this property please contact support@pubnub.com
+  ```objc
+  subscriptionMaximumIdleTime  
+  ```
+  __Default:__ 310 seconds (_kPNConnectionIdleTimeout_ key in [__PNDefaultConfiguration.h__](PubNub/PubNub/PubNub/Misc/PNDefaultConfiguration.h))
+
   - Timeout after which the library will report any ***non-subscription-related*** request (here now, leave, message history, message post, time token) or execution failure.
   ```objc
   nonSubscriptionRequestTimeout  
@@ -376,7 +382,7 @@ You can use few class methods to initialize and update instance properties:
   ```objc
   subscriptionRequestTimeout  
   ```
-  __Default:__ 310 seconds (_kPNSubscriptionRequestTimeout_ key in [__PNDefaultConfiguration.h__](PubNub/PubNub/PubNub/Misc/PNDefaultConfiguration.h))  
+  __Default:__ 10 seconds (_kPNSubscriptionRequestTimeout_ key in [__PNDefaultConfiguration.h__](PubNub/PubNub/PubNub/Misc/PNDefaultConfiguration.h))  
   ***Please consult with PubNub support before setting this value lower than the default to avoid incurring additional charges.***
     
   - Client will pass this value during subscription to inform it after which period of inactivity (when client will stop send ping to the server) it should mark client and __timed out__.

@@ -278,10 +278,14 @@ static NSObject *_synchronizationObject = nil;
 - (NSArray *)participants {
     
     __block NSArray *participants = nil;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create( 0 );
     [_synchronizationObject pn_dispatchBlock:^{
-
+        
         participants = [self.participantsList allValues];
+        dispatch_semaphore_signal(semaphore);
     }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [PNDispatchHelper release:semaphore];
     
     
     return participants;
