@@ -52,7 +52,7 @@
 /**
  Stores user-provided state which should be appended to the client subscription.
  */
-@property (nonatomic, strong) NSDictionary *state;
+@property (nonatomic, copy) NSDictionary *state;
 
 // Stores whether leave request was sent to subscribe on new channels or as result of user request
 @property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;

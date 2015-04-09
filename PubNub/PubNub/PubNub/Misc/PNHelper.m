@@ -239,7 +239,7 @@
     dispatch_once(&dispatchOnceToken, ^{
         
         // Retrieve application information Property List
-        NSDictionary *applicationInformation = [[NSBundle mainBundle] infoDictionary];
+        NSDictionary *applicationInformation = [[NSBundle bundleForClass:self] infoDictionary];
         
         if ([applicationInformation objectForKey:@"UIBackgroundModes"]) {
             

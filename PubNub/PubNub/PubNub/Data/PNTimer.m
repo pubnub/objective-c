@@ -160,7 +160,6 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 
         dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                 self.executionQueue);
-        [PNDispatchHelper retain:timerSource];
         self.timeoutTimer = timerSource;
 
         __pn_desired_weak __typeof__(self) weakSelf = self;

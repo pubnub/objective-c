@@ -684,7 +684,7 @@
 - (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights onPeriod:(NSInteger)accessPeriodDuration
              andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
-    [self changeAccessRightsFor:nil accessRights:accessRights clients:nil onPeriod:0
+    [self changeAccessRightsFor:nil accessRights:accessRights clients:nil onPeriod:accessPeriodDuration
        rescheduledCallbackToken:nil withCompletionHandlingBlock:handlerBlock];
 }
 
