@@ -115,7 +115,7 @@ NSString* PNStringFromUnsignedLongLongNumber(id timeToken) {
 
     if ([timeToken isKindOfClass:[NSNumber class]]) {
 
-        timeToken = [NSString stringWithFormat:@"%llu", [timeToken unsignedLongLongValue]];
+        timeToken = [[NSString alloc] initWithFormat:@"%llu", [timeToken unsignedLongLongValue]];
     }
 
 
@@ -144,7 +144,7 @@ NSString *PNObfuscateString(NSString *string) {
     NSUInteger stringWidth = (NSUInteger)([string length]/2);
     if (stringWidth >= minimumWidth) {
 
-        obfuscatedString = [NSString stringWithFormat:@"%@*****%@", [string substringToIndex:minimumWidth],
+        obfuscatedString = [[NSString alloc] initWithFormat:@"%@*****%@", [string substringToIndex:minimumWidth],
                             [string substringFromIndex:([string length] - minimumWidth)]];
     }
     else if([obfuscatedString length]) {

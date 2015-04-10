@@ -41,7 +41,7 @@
     NSString *channelName = channel.name;
     if (![channelName hasSuffix:kPNPresenceObserverChannelSuffix]) {
 
-        channelName = [channelName stringByAppendingString:kPNPresenceObserverChannelSuffix];
+        channelName = [[channelName stringByAppendingString:kPNPresenceObserverChannelSuffix] copy];
     }
     PNChannelPresence *presenceChannel = [super channelWithName:channelName shouldObservePresence:NO];
     presenceChannel.channelGroup = channel.isChannelGroup;
@@ -54,7 +54,7 @@
 
     if (![channelName hasSuffix:kPNPresenceObserverChannelSuffix]) {
 
-        channelName = [channelName stringByAppendingString:kPNPresenceObserverChannelSuffix];
+        channelName = [[channelName stringByAppendingString:kPNPresenceObserverChannelSuffix] copy];
     }
 
 

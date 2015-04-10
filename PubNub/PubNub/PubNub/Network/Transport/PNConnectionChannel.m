@@ -136,7 +136,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
  */
 @property (nonatomic, assign) unsigned long state;
 
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, copy) NSString *name;
 
 
 #pragma mark - Instance methods
@@ -253,9 +253,9 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
         self.delegate = delegate;
         self.configuration = configuration;
         [PNBitwiseHelper clear:&_state];
-        self.observedRequests = [NSMutableDictionary dictionary];
-        self.storedRequests = [NSMutableDictionary dictionary];
-        self.storedRequestsList = [NSMutableArray array];
+        self.observedRequests = [NSMutableDictionary new];
+        self.storedRequests = [NSMutableDictionary new];
+        self.storedRequestsList = [NSMutableArray new];
 
         
         // Retrieve connection identifier based on connection channel type
@@ -945,7 +945,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    NSMutableArray *requests = [NSMutableArray array];
+    NSMutableArray *requests = [NSMutableArray new];
     [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
             BOOL *requestIdentifierEnumeratorStop) {
 
@@ -988,7 +988,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    NSMutableArray *requests = [NSMutableArray array];
+    NSMutableArray *requests = [NSMutableArray new];
     [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
                                                           BOOL *requestIdentifierEnumeratorStop) {
 
@@ -1008,7 +1008,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    NSMutableArray *requests = [NSMutableArray array];
+    NSMutableArray *requests = [NSMutableArray new];
     [requestIdentifiers enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
                                                      BOOL *requestIdentifierEnumeratorStop) {
 
@@ -1043,8 +1043,8 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
             [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
                 
                 return @[PNLoggerSymbols.connectionChannel.resourceLinkage, (self.name ? self.name : self),
-                         (self.requestsQueue ? [NSString stringWithFormat:@"%p", self.requestsQueue] : [NSNull null]),
-                         (self.connection ? [NSString stringWithFormat:@"%p", self.connection] : [NSNull null])];
+                         (self.requestsQueue ? [[NSString alloc] initWithFormat:@"%p", self.requestsQueue] : [NSNull null]),
+                         (self.connection ? [[NSString alloc] initWithFormat:@"%p", self.connection] : [NSNull null])];
             }];
         }
     }];
@@ -1071,7 +1071,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
 - (NSString *)stateDescription {
 
-    NSMutableString *connectionState = [NSMutableString stringWithFormat:@"\n[CHANNEL::%@ STATE DESCRIPTION", self.name];
+    NSMutableString *connectionState = [[NSMutableString alloc] initWithFormat:@"\n[CHANNEL::%@ STATE DESCRIPTION", self.name];
     if ([PNBitwiseHelper is:self.state containsBit:PNConnectionChannelConnecting]) {
 
         [connectionState appendFormat:@"\n- CONNECTING..."];
@@ -1719,7 +1719,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
                         errorForRequests = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
                     }
-                    [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList]
+                    [self makeScheduledRequestsFail:[[NSArray alloc] initWithArray:self.storedRequestsList copyItems:NO]
                                           withError:errorForRequests];
                 }
 
@@ -1778,7 +1778,8 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
                         error = [PNError errorWithCode:kPNRequestExecutionFailedClientNotReadyError];
                     }
-                    [self makeScheduledRequestsFail:[NSArray arrayWithArray:self.storedRequestsList] withError:error];
+                    [self makeScheduledRequestsFail:[[NSArray alloc] initWithArray:self.storedRequestsList copyItems:NO]
+                                          withError:error];
                 }
 
 
@@ -2199,7 +2200,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     [PNLogger logCommunicationChannelInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
         return @[PNLoggerSymbols.connectionChannel.connectionReset, (self.name ? self.name : self),
-                (self.connection ? [NSString stringWithFormat:@"%p", self.connection] : [NSNull null]),
+                (self.connection ? [[NSString alloc] initWithFormat:@"%p", self.connection] : [NSNull null]),
                 (self.connection ? self.connection : [NSNull null]), @(self.state)];
     }];
 

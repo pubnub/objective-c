@@ -91,8 +91,8 @@
 
 - (NSString *)description {
 
-    NSMutableString *description = [NSMutableString stringWithFormat:@"%@ (%p) <",
-                                                    NSStringFromClass([self class]), self];
+    NSMutableString *description = [[NSMutableString alloc] initWithFormat:@"%@ (%p) <",
+                                    NSStringFromClass([self class]), self];
 
     NSString *level = @"application";
     if (self.level == PNChannelGroupAccessRightsLevel) {
@@ -162,7 +162,8 @@
         
         level = @"user";
     }
-    NSMutableString *logDescription = [NSMutableString stringWithFormat:@"<%@|%@|%@|%lu", level, PNObfuscateString(self.subscriptionKey),
+    NSMutableString *logDescription = [[NSMutableString alloc] initWithFormat:@"<%@|%@|%@|%lu",
+                                       level, PNObfuscateString(self.subscriptionKey),
                                        @(self.rights), (unsigned long)self.accessPeriodDuration];
     if (self.level == PNChannelGroupAccessRightsLevel || self.level == PNChannelAccessRightsLevel) {
         

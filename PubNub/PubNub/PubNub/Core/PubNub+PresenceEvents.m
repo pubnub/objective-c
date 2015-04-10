@@ -279,8 +279,8 @@
 
                 // Enumerate over the list of channels and mark that it should observe for presence
                 [channelObjects enumerateObjectsUsingBlock:^(PNChannel *channel,
-                        NSUInteger channelIdx,
-                        BOOL *channelEnumeratorStop) {
+                                                             NSUInteger channelIdx,
+                                                             BOOL *channelEnumeratorStop) {
 
                     channel.observePresence = YES;
                     channel.linkedWithPresenceObservationChannel = NO;

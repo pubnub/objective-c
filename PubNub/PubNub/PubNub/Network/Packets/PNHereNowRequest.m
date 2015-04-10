@@ -69,6 +69,11 @@
     return self;
 }
 
+- (void)setChannels:(NSArray *)channels {
+    
+    _channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+}
+
 - (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
     
     [super finalizeWithConfiguration:configuration clientIdentifier:clientIdentifier];
@@ -104,13 +109,13 @@
         }
     }
 
-    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@%@?callback=%@_%@&disable_uuids=%@&state=%@%@%@&pnsdk=%@",
+    return [[NSString alloc] initWithFormat:@"/v2/presence/sub-key/%@%@?callback=%@_%@&disable_uuids=%@&state=%@%@%@&pnsdk=%@",
                                       [self.subscriptionKey pn_percentEscapedString],
-                                      (channelsList ? [NSString stringWithFormat:@"/channel/%@", channelsList] : @""),
+                                      (channelsList ? [[NSString alloc] initWithFormat:@"/channel/%@", channelsList] : @""),
                                       [self callbackMethodName], self.shortIdentifier, (self.isClientIdentifiersRequired ? @"0" : @"1"),
                                       (self.shouldFetchClientState ? @"1" : @"0"),
-                                      (groupsList ? [NSString stringWithFormat:@"&channel-group=%@", groupsList] : @""),
-                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+                                      (groupsList ? [[NSString alloc] initWithFormat:@"&channel-group=%@", groupsList] : @""),
+                                      ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@", [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
@@ -122,7 +127,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

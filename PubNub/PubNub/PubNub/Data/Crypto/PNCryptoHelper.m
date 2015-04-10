@@ -47,13 +47,13 @@ typedef enum _PNCryptorType {
 /**
  Stores reference on prepared cipher key.
  */
-@property (nonatomic, strong) NSData *cryptorKeyData;
-@property (nonatomic, strong) NSData *backedUpCryptorKeyData;
+@property (nonatomic, copy) NSData *cryptorKeyData;
+@property (nonatomic, copy) NSData *backedUpCryptorKeyData;
 
 /**
  Stores reference on cryptor initialization vector.
  */
-@property (nonatomic, strong) NSData *cryptorInitializationVectorData;
+@property (nonatomic, copy) NSData *cryptorInitializationVectorData;
 
 
 #pragma mark - Instance methods
@@ -188,7 +188,7 @@ typedef enum _PNCryptorType {
     // error message
     if (initStatus != kCCSuccess && cryptorInitError == nil) {
 
-        NSString *errorMessage = [NSString stringWithFormat:@"%@ initalization error",
+        NSString *errorMessage = [[NSString alloc] initWithFormat:@"%@ initalization error",
                                                             isEncryptorCreated ? @"Decryptor" : @"Encryptor"];
         cryptorInitError = [PNError errorWithMessage:errorMessage code:[self errorCodeFromStatus:initStatus]];
     }
@@ -240,7 +240,7 @@ typedef enum _PNCryptorType {
 
 - (NSArray *)arrayOfEnryptedValues:(NSArray *)arrayForEncryption error:(PNError *__strong *)error {
 
-    NSMutableArray *messages = [NSMutableArray arrayWithCapacity:[arrayForEncryption count]];
+    NSMutableArray *messages = [[NSMutableArray alloc] initWithCapacity:[arrayForEncryption count]];
     [arrayForEncryption enumerateObjectsUsingBlock:^(id objectForEncryption, NSUInteger objectIndex,
                                                      BOOL *objectEnumeratorStop) {
 
@@ -261,7 +261,7 @@ typedef enum _PNCryptorType {
 
 - (NSDictionary *)dictionaryOfEnryptedValues:(NSDictionary *)dictionaryForEncryption error:(PNError *__strong *)error {
 
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[dictionaryForEncryption count]];
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithCapacity:[dictionaryForEncryption count]];
     [dictionaryForEncryption enumerateKeysAndObjectsUsingBlock:^(id key,
                                                                  id objectForEncryption,
                                                                  BOOL *objectEnumeratorStop) {
@@ -284,6 +284,7 @@ typedef enum _PNCryptorType {
 
 - (NSString *)decryptedStringFromString:(NSString *)encodedString error:(PNError *__strong *)error {
 
+    
     return [self processString:encodedString cryptorType:PNCryptorDecrypt error:error];
 }
 
@@ -313,7 +314,7 @@ typedef enum _PNCryptorType {
 
 - (NSArray *)arrayOfDecryptedValues:(NSArray *)arrayForDecryption error:(PNError *__strong *)error {
 
-    NSMutableArray *messages = [NSMutableArray arrayWithCapacity:[arrayForDecryption count]];
+    NSMutableArray *messages = [[NSMutableArray alloc] initWithCapacity:[arrayForDecryption count]];
     [arrayForDecryption enumerateObjectsUsingBlock:^(id objectForDecryption,
                                                      NSUInteger objectIndex,
                                                      BOOL *objectEnumeratorStop) {
@@ -335,7 +336,7 @@ typedef enum _PNCryptorType {
 
 - (NSDictionary *)dictionaryOfDecryptedValues:(NSDictionary *)dictionaryForDecryption error:(PNError *__strong *)error {
 
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[dictionaryForDecryption count]];
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithCapacity:[dictionaryForDecryption count]];
     [dictionaryForDecryption enumerateKeysAndObjectsUsingBlock:^(id key, id objectForDecryption,
                                                                  BOOL *objectEnumeratorStop) {
 
@@ -370,7 +371,7 @@ typedef enum _PNCryptorType {
 
             // Prepare storage for processed data
             size_t processedDataLength = CCCryptorGetOutputLength(cryptor, [inputData length], true);
-            NSMutableData *processedData = [NSMutableData dataWithLength:processedDataLength];
+            NSMutableData *processedData = [[NSMutableData alloc] initWithLength:processedDataLength];
 
             // Perform processing and response data size adjustment calculation
             size_t updatedProcessedDataLength;
@@ -453,7 +454,7 @@ typedef enum _PNCryptorType {
                 }
                 else {
 
-                    processedString = [NSString stringWithUTF8String:[processedData bytes]];
+                    processedString = [[NSString alloc] initWithUTF8String:[processedData bytes]];
                 }
             }
         }

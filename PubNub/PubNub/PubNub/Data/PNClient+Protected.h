@@ -19,7 +19,7 @@
 @property (nonatomic, strong) PNChannel *channel;
 @property (nonatomic, strong) PNChannelGroup *group;
 @property (nonatomic, copy) NSString *identifier;
-@property (nonatomic, strong) NSDictionary *data;
+@property (nonatomic, copy) NSDictionary *data;
 
 /**
  @brief Stores reference on list for which there is client's state data avaialable.
@@ -40,7 +40,7 @@
  
  @since 3.7.0
  */
-@property (nonatomic, strong) NSDictionary *unboundData;
+@property (nonatomic, copy) NSDictionary *unboundData;
 
 
 #pragma mark - Class methods

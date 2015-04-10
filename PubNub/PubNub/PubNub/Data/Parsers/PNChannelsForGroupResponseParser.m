@@ -50,6 +50,11 @@
     return self;
 }
 
+- (void)setChannels:(NSArray *)channels {
+    
+    _channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+}
+
 - (id)parsedData {
     
     return self.channels;

@@ -99,7 +99,7 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <time token: %@>",
+    return [[NSString alloc] initWithFormat:@"%@ (%p): <time token: %@>",
                     NSStringFromClass([self class]),
                     self,
                     self.timeToken];

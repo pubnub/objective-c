@@ -41,11 +41,11 @@ extern struct PNPushNotificationsStateStruct PNPushNotificationsState;
 @property (nonatomic, readonly, strong) NSArray *channels;
 
 // Stores reference on stringified push notification token
-@property (nonatomic, readonly, strong) NSData *devicePushToken;
+@property (nonatomic, readonly, copy) NSData *devicePushToken;
 
 // Stores reference on state which should be set for specified
 // channel(s)
-@property (nonatomic, readonly, strong) NSString *targetState;
+@property (nonatomic, readonly, copy) NSString *targetState;
 
 
 #pragma mark - Class methods

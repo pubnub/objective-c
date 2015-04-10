@@ -75,7 +75,7 @@ struct PNServiceResponseServiceDataKeysStruct {
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) NSData *content;
+@property (nonatomic, copy) NSData *content;
 @property (nonatomic, strong) id additionalData;
 @property (nonatomic, assign) NSInteger statusCode;
 @property (nonatomic, assign) NSUInteger size;

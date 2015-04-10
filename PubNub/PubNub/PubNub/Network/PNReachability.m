@@ -83,7 +83,7 @@ typedef enum _PNReachabilityStatus {
 
 @property (nonatomic, assign) SCNetworkReachabilityRef serviceReachability;
 @property (nonatomic, assign) SCNetworkConnectionFlags reachabilityFlags;
-@property (nonatomic, strong) NSString *currentNetworkAddress;
+@property (nonatomic, copy) NSString *currentNetworkAddress;
 
 // Stores final network reachability status which is based on whether reachability was right about network availability or not
 @property (nonatomic, assign) PNReachabilityStatus status;
@@ -93,8 +93,8 @@ typedef enum _PNReachabilityStatus {
 
 // Stores network reachability status which was received from origin lookup sequence
 @property (nonatomic, assign) PNReachabilityStatus lookupStatus;
-@property (nonatomic, strong) NSString *currentWLANBSSID;
-@property (nonatomic, strong) NSString *currentWLANSSID;
+@property (nonatomic, copy) NSString *currentWLANBSSID;
+@property (nonatomic, copy) NSString *currentWLANSSID;
 
 @property (nonatomic, pn_dispatch_property_ownership) dispatch_source_t originLookupTimer;
 

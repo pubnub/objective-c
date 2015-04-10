@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "798E02321A0103B200E8AFB7"
-               BuildableName = "Universal-iOS-Framework"
+               BuildableName = "Framework"
                BlueprintName = "Universal-iOS-Framework"
                ReferencedContainer = "container:PubNub.xcodeproj">
             </BuildableReference>

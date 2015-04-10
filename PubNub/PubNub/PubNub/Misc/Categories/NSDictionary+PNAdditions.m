@@ -74,7 +74,7 @@
 
 - (NSString *)logDescription {
     
-    NSMutableString *logDescription = [NSMutableString stringWithString:@"<{"];
+    NSMutableString *logDescription = [[NSMutableString alloc] initWithString:@"<{"];
     __block NSUInteger entryIdx = 0;
     
     [self enumerateKeysAndObjectsUsingBlock:^(NSString *entryKey, id entry, BOOL *entryEnumeratorStop) {

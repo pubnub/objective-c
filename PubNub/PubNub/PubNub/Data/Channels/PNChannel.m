@@ -96,7 +96,7 @@ static NSObject *_synchronizationObject = nil;
 
 + (NSArray *)channelsWithNames:(NSArray *)channelsName {
 
-    NSMutableArray *channels = [NSMutableArray arrayWithCapacity:[channelsName count]];
+    NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity:[channelsName count]];
 
     [channelsName enumerateObjectsUsingBlock:^(NSString *channelName, NSUInteger channelNameIdx,
                                                BOOL *channelNamesEnumerator) {
@@ -190,7 +190,7 @@ static NSObject *_synchronizationObject = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        _channelsCache = [NSMutableDictionary dictionary];
+        _channelsCache = [NSMutableDictionary new];
     });
     
     
@@ -220,7 +220,7 @@ static NSObject *_synchronizationObject = nil;
         self.ableToResetTimeToken = YES;
 		self.updateTimeToken = @"0";
         self.name = channelName;
-        self.participantsList = [NSMutableDictionary dictionary];
+        self.participantsList = [NSMutableDictionary new];
     }
     
     
@@ -319,7 +319,7 @@ static NSObject *_synchronizationObject = nil;
 
         self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
         self.participantsCount = participantsCount;
-        self.participantsList = [NSMutableDictionary dictionary];
+        self.participantsList = [NSMutableDictionary new];
         [participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
 
             NSString *clientStoreIdentifier = client.identifier;
@@ -340,12 +340,13 @@ static NSObject *_synchronizationObject = nil;
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@(%p) %@", NSStringFromClass([self class]), self, self.name];
+    return [[NSString alloc] initWithFormat:@"%@(%p) %@", NSStringFromClass([self class]), self,
+            self.name];
 }
 
 - (NSString *)logDescription {
     
-    return [NSString stringWithFormat:@"<%@>", self.name];
+    return [[NSString alloc] initWithFormat:@"<%@>", self.name];
 }
 
 - (BOOL)isPresenceObserver {

@@ -171,7 +171,7 @@
             }
             else {
 
-                JSONString = [NSString stringWithFormat:@"\"%@\"", object];
+                JSONString = [[NSString alloc] initWithFormat:@"\"%@\"", object];
             }
         }
         else if ([self isJSONKitAvailable]) {
@@ -231,7 +231,7 @@
     [scanner scanUpToString:@"(" intoString:NULL];
     
     NSString *JSONWrappedInParens = [[scanner string] substringFromIndex:[scanner scanLocation]];
-    NSCharacterSet *parens = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"%@();",
+    NSCharacterSet *parens = [NSCharacterSet characterSetWithCharactersInString:[[NSString alloc] initWithFormat:@"%@();",
                                                                                  callbackMethodName?callbackMethodName:@""]];
     
     

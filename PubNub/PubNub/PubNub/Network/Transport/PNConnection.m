@@ -299,7 +299,7 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
 @property (nonatomic, assign) BOOL fetchingDataForSending;
 
 // Socket streams configuration and security
-@property (nonatomic, strong) NSDictionary *proxySettings;
+@property (nonatomic, copy) NSDictionary *proxySettings;
 @property (nonatomic, assign) CFMutableDictionaryRef streamSecuritySettings;
 @property (nonatomic, assign) PNConnectionSSLConfigurationLevel sslConfigurationLevel;
 
@@ -512,7 +512,7 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
         [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
             
             return @[PNLoggerSymbols.connection.resourceLinkage, (self.name ? self.name : self),
-                     (self.deserializer ? [NSString stringWithFormat:@"%p", self.deserializer] : [NSNull null])];
+                     (self.deserializer ? [[NSString alloc] initWithFormat:@"%p", self.deserializer] : [NSNull null])];
         }];
 
         // Set initial connection state
@@ -600,188 +600,195 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
 
 void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *clientCallBackInfo) {
 
-    NSCAssert([(__bridge id)clientCallBackInfo isKindOfClass:[PNContextInformation class]],
-              @"{ERROR}[READ] WRONG CLIENT INSTANCE HAS BEEN SENT AS CLIENT");
-    PNConnection *connection = ((__bridge PNContextInformation *)clientCallBackInfo).object;
+    if (CFReadStreamGetStatus(stream) != kCFStreamStatusClosed) {
+        
+        NSCAssert([(__bridge id)clientCallBackInfo isKindOfClass:[PNContextInformation class]],
+                  @"{ERROR}[READ] WRONG CLIENT INSTANCE HAS BEEN SENT AS CLIENT");
+        PNConnection *connection = ((__bridge PNContextInformation *)clientCallBackInfo).object;
+        [connection pn_scheduleOnPrivateQueueAssert];
 
-    NSString *status = [connection stringifyStreamStatus:CFReadStreamGetStatus(stream)];
+        NSString *status = [connection stringifyStreamStatus:CFReadStreamGetStatus(stream)];
 
-    CFReadStreamRef retainedStream = (CFReadStreamRef)CFRetain(stream);
-    [connection pn_dispatchBlock:^{
+        CFReadStreamRef retainedStream = (CFReadStreamRef)CFRetain(stream);
+        [connection pn_dispatchBlock:^{
 
-        switch (type) {
+            switch (type) {
 
-            // Stream successfully opened
-            case kCFStreamEventOpenCompleted:
-                {
-                    [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
+                // Stream successfully opened
+                case kCFStreamEventOpenCompleted:
+                    {
+                        [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                        return @[PNLoggerSymbols.connection.stream.read.opened,
-                                 (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
-                                 (status ? status : [NSNull null]), @(connection.state)];
-                    }];
+                            return @[PNLoggerSymbols.connection.stream.read.opened,
+                                     (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                                     (status ? status : [NSNull null]), @(connection.state)];
+                        }];
 
-                    [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanDisconnection];
-                    [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamConnected];
+                        [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanDisconnection];
+                        [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamConnected];
 
-                    [connection handleStreamConnection];
-                    CFRelease(retainedStream);
-                }
-                break;
-
-            // Read stream has some data which arrived from remote server
-            case kCFStreamEventHasBytesAvailable:
-                {
-                    [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
-
-                        return @[PNLoggerSymbols.connection.stream.read.hasData,
-                                 (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
-                                 (status ? status : [NSNull null]), @(connection.state)];
-                    }];
-                    
-                    [connection handleReadStreamHasData:retainedStream];
-                    CFRelease(retainedStream);
-                }
-                break;
-
-            // Some error occurred on read stream
-            case kCFStreamEventErrorOccurred:
-                {
-                    [PNLogger logConnectionErrorMessageFrom:connection withParametersFromBlock:^NSArray *{
-
-                        return @[PNLoggerSymbols.connection.stream.read.error,
-                                 (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
-                                 (status ? status : [NSNull null]), @(connection.state)];
-                    }];
-
-                    [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef {
-
-                        CFErrorRef cfError = CFReadStreamCopyError(retainedStream);
+                        [connection handleStreamConnection];
                         CFRelease(retainedStream);
+                    }
+                    break;
+
+                // Read stream has some data which arrived from remote server
+                case kCFStreamEventHasBytesAvailable:
+                    {
+                        [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.connection.stream.read.hasData,
+                                     (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                                     (status ? status : [NSNull null]), @(connection.state)];
+                        }];
+                        
+                        [connection handleReadStreamHasData:retainedStream];
+                        CFRelease(retainedStream);
+                    }
+                    break;
+
+                // Some error occurred on read stream
+                case kCFStreamEventErrorOccurred:
+                    {
+                        [PNLogger logConnectionErrorMessageFrom:connection withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.connection.stream.read.error,
+                                     (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                                     (status ? status : [NSNull null]), @(connection.state)];
+                        }];
+
+                        [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef {
+
+                            CFErrorRef cfError = CFReadStreamCopyError(retainedStream);
+                            CFRelease(retainedStream);
 
 
-                        return cfError;
-                    }];
-                }
-                break;
+                            return cfError;
+                        }];
+                    }
+                    break;
 
-            // Server disconnected socket probably because of timeout
-            case kCFStreamEventEndEncountered:
-                {
-                    [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
+                // Server disconnected socket probably because of timeout
+                case kCFStreamEventEndEncountered:
+                    {
+                        [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                        return @[PNLoggerSymbols.connection.stream.read.cantAcceptDataAnymore,
-                                 (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
-                                 (status ? status : [NSNull null]), @(connection.state)];
-                    }];
+                            return @[PNLoggerSymbols.connection.stream.read.cantAcceptDataAnymore,
+                                     (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                                     (status ? status : [NSNull null]), @(connection.state)];
+                        }];
 
-                    [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanAll];
-                    [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamDisconnected];
+                        [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNReadStreamCleanAll];
+                        [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamDisconnected];
 
-                    [connection handleStreamTimeout];
+                        [connection handleStreamTimeout];
+                        CFRelease(retainedStream);
+                    }
+                    break;
+
+                default:
+                    
                     CFRelease(retainedStream);
-                }
-                break;
-
-            default:
-                
-                CFRelease(retainedStream);
-                break;
-        }
-    }];
+                    break;
+            }
+        }];
+    }
 }
 
 void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *clientCallBackInfo) {
-
-    NSCAssert([(__bridge id)clientCallBackInfo isKindOfClass:[PNContextInformation class]],
-              @"{ERROR}[READ] WRONG CLIENT INSTANCE HAS BEEN SENT AS CLIENT");
-    PNConnection *connection = ((__bridge PNContextInformation *)clientCallBackInfo).object;
-
-    NSString *status = [connection stringifyStreamStatus:CFWriteStreamGetStatus(stream)];
     
-    CFWriteStreamRef retainedStream = (CFWriteStreamRef)CFRetain(stream);
-    [connection pn_dispatchBlock:^{
+    if (CFWriteStreamGetStatus(stream) != kCFStreamStatusClosed) {
 
-        switch (type) {
+        NSCAssert([(__bridge id)clientCallBackInfo isKindOfClass:[PNContextInformation class]],
+                  @"{ERROR}[READ] WRONG CLIENT INSTANCE HAS BEEN SENT AS CLIENT");
+        PNConnection *connection = ((__bridge PNContextInformation *)clientCallBackInfo).object;
 
-            // Stream successfully opened
-            case kCFStreamEventOpenCompleted:
-                {
-                    [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
+        NSString *status = [connection stringifyStreamStatus:CFWriteStreamGetStatus(stream)];
+        
+        CFWriteStreamRef retainedStream = (CFWriteStreamRef)CFRetain(stream);
+        [connection pn_dispatchBlock:^{
 
-                        return @[PNLoggerSymbols.connection.stream.write.opened,
-                                 (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
-                                 (status ? status : [NSNull null]), @(connection.state)];
-                    }];
+            switch (type) {
 
-                    [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNWriteStreamCleanDisconnection];
-                    [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamConnected];
+                // Stream successfully opened
+                case kCFStreamEventOpenCompleted:
+                    {
+                        [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                    [connection handleStreamConnection];
-                    CFRelease(retainedStream);
-                }
-                break;
+                            return @[PNLoggerSymbols.connection.stream.write.opened,
+                                     (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                                     (status ? status : [NSNull null]), @(connection.state)];
+                        }];
 
-            // Write stream is ready to accept data from data source
-            case kCFStreamEventCanAcceptBytes:
-                {
-                    [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
+                        [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNWriteStreamCleanDisconnection];
+                        [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamConnected];
 
-                        return @[PNLoggerSymbols.connection.stream.write.canSendData,
-                                 (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
-                                 (status ? status : [NSNull null]), @(connection.state)];
-                    }];
-
-                    [connection handleWriteStreamCanAcceptData];
-                    CFRelease(retainedStream);
-                }
-                break;
-
-            // Some error occurred on write stream
-            case kCFStreamEventErrorOccurred:
-                {
-                    [PNLogger logConnectionErrorMessageFrom:connection withParametersFromBlock:^NSArray *{
-
-                        return @[PNLoggerSymbols.connection.stream.write.error,
-                                 (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
-                                 (status ? status : [NSNull null]), @(connection.state)];
-                    }];
-
-                    [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef {
-
-                        CFErrorRef cfError = CFWriteStreamCopyError(retainedStream);
+                        [connection handleStreamConnection];
                         CFRelease(retainedStream);
+                    }
+                    break;
+
+                // Write stream is ready to accept data from data source
+                case kCFStreamEventCanAcceptBytes:
+                    {
+                        [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.connection.stream.write.canSendData,
+                                     (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                                     (status ? status : [NSNull null]), @(connection.state)];
+                        }];
+
+                        [connection handleWriteStreamCanAcceptData];
+                        CFRelease(retainedStream);
+                    }
+                    break;
+
+                // Some error occurred on write stream
+                case kCFStreamEventErrorOccurred:
+                    {
+                        [PNLogger logConnectionErrorMessageFrom:connection withParametersFromBlock:^NSArray *{
+
+                            return @[PNLoggerSymbols.connection.stream.write.error,
+                                     (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                                     (status ? status : [NSNull null]), @(connection.state)];
+                        }];
+
+                        [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef {
+
+                            CFErrorRef cfError = CFWriteStreamCopyError(retainedStream);
+                            CFRelease(retainedStream);
 
 
-                        return cfError;
-                    }];
-                }
-                break;
+                            return cfError;
+                        }];
+                    }
+                    break;
 
-            // Server disconnected socket probably because of timeout
-            case kCFStreamEventEndEncountered:
-                {
-                    [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
+                // Server disconnected socket probably because of timeout
+                case kCFStreamEventEndEncountered:
+                    {
+                        [PNLogger logConnectionInfoMessageFrom:connection withParametersFromBlock:^NSArray *{
 
-                        return @[PNLoggerSymbols.connection.stream.write.cantSendDataAnymore,
-                                 (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
-                                 (status ? status : [NSNull null]), @(connection.state)];
-                    }];
+                            return @[PNLoggerSymbols.connection.stream.write.cantSendDataAnymore,
+                                     (connection ? (connection.name ? connection.name : connection) : [NSNull null]),
+                                     (status ? status : [NSNull null]), @(connection.state)];
+                        }];
 
-                    [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNWriteStreamCleanAll];
-                    [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamDisconnected];
+                        [PNBitwiseHelper removeFrom:&(connection->_state) bit:PNWriteStreamCleanAll];
+                        [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamDisconnected];
 
-                    [connection handleStreamTimeout];
+                        [connection handleStreamTimeout];
+                        CFRelease(retainedStream);
+                    }
+                    break;
+
+                default:
+                    
                     CFRelease(retainedStream);
-                }
-                break;
-
-            default:
-                
-                CFRelease(retainedStream);
-                break;
-        }
-    }];
+                    break;
+            }
+        }];
+    }
 }
 
 void connectionContextInformationReleaseCallBack( void *info ) {
@@ -1874,7 +1881,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
             CFRunLoopRun();
         }
         
-        [PNHelper releaseCFObject:&error];
+        CFRelease(error);
     }
     else {
 
@@ -1936,11 +1943,15 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     }
 
     if (isStreamExists) {
-
-        CFReadStreamSetClient(readStream, kCFStreamEventNone, NULL, NULL);
-        CFReadStreamClose(readStream);
-        [PNHelper releaseCFObject:&readStream];
+        
         self.socketReadStream = NULL;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            CFReadStreamSetClient(readStream, kCFStreamEventNone, NULL, NULL);
+            CFReadStreamClose(readStream);
+            CFRelease(readStream);
+        });
     }
 
     [PNBitwiseHelper removeFrom:&_state bit:PNReadStreamCleanConfiguration];
@@ -1993,7 +2004,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
             
             if ([PNLogger isDumpingHTTPResponse] || [PNLogger isLoggerEnabled]) {
                 
-                NSData *tempData = [NSData dataWithBytes:buffer length:(NSUInteger)readedBytesCount];
+                NSData *tempData = [[NSData alloc] initWithBytes:buffer length:(NSUInteger)readedBytesCount];
                 
                 [PNLogger storeHTTPPacketData:^NSData * {
                     
@@ -2031,8 +2042,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
             CFErrorRef error = CFReadStreamCopyError(stream);
             [PNBitwiseHelper addTo:&_state bit:PNReadStreamError];
             [self handleStreamError:error];
-            
-            [PNHelper releaseCFObject:&error];
+            CFRelease(error);
         }
     }
 }
@@ -2211,7 +2221,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
             CFRunLoopRun();
         }
         
-        [PNHelper releaseCFObject:&error];
+        CFRelease(error);
     }
     else {
 
@@ -2264,11 +2274,14 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     }
 
     if (isStreamExists) {
-
-        CFWriteStreamSetClient(writeStream, kCFStreamEventNone, NULL, NULL);
-        CFWriteStreamClose(writeStream);
-        [PNHelper releaseCFObject:&writeStream];
+        
         self.socketWriteStream = NULL;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            CFWriteStreamSetClient(writeStream, kCFStreamEventNone, NULL, NULL);
+            CFWriteStreamClose(writeStream);
+            CFRelease(writeStream);
+        });
     }
 
     [PNBitwiseHelper removeFrom:&_state bit:PNWriteStreamCleanConfiguration];
@@ -2444,10 +2457,10 @@ void connectionContextInformationReleaseCallBack( void *info ) {
                                     [PNBitwiseHelper addTo:&_state bit:PNWriteStreamError];
 
                                     [self handleRequestProcessingError:writeError withBlock:^{
+                                        
+                                        CFRelease(writeError);
 
                                         [self pn_dispatchBlock:^{
-
-                                            [PNHelper releaseCFObject:(void *)&writeError];
                                             isWriteBufferIsEmpty = YES;
                                             emptyBufferHandleBlock();
                                         }];
@@ -3284,11 +3297,11 @@ void connectionContextInformationReleaseCallBack( void *info ) {
                 [self handleStreamError:streamError shouldCloseConnection:YES];
                 isErrorProcessed = YES;
 
-                [PNHelper releaseCFObject:&errorReference];
+                CFRelease(errorReference);
             }
             else if (errorReference != NULL) {
-
-                [PNHelper releaseCFObject:&errorReference];
+                
+                CFRelease(errorReference);
             }
         }];
     };
@@ -3960,8 +3973,9 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     }
     else if (!self.configuration.shouldUseSecureConnection ||
             self.sslConfigurationLevel == PNConnectionSSLConfigurationInsecure) {
-
-        [PNHelper releaseCFObject:&_streamSecuritySettings];
+        
+        CFRelease(_streamSecuritySettings);
+        _streamSecuritySettings = NULL;
     }
 
 
@@ -4063,7 +4077,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
 
 - (NSString *)stateDescription {
 
-    NSMutableString *connectionState = [NSMutableString stringWithFormat:@"\n[CONNECTION::%@ STATE DESCRIPTION",
+    NSMutableString *connectionState = [[NSMutableString alloc] initWithFormat:@"\n[CONNECTION::%@ STATE DESCRIPTION",
                                         self.name ? self.name : self];
     if ([PNBitwiseHelper is:self.state containsBit:PNReadStreamConfiguring]) {
 
@@ -4219,7 +4233,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
                  @(self->_state)];
     }];
     
-    [PNHelper releaseCFObject:&_streamSecuritySettings];
+    CFRelease(_streamSecuritySettings);
 }
 
 #pragma mark -

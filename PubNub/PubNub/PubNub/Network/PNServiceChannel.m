@@ -952,9 +952,9 @@
         PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:@{
-                                               @"limit":@(historyRequest.limit), @"revertMessages":@(historyRequest.shouldRevertMessages),
-                                               @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)}];
+            NSMutableDictionary *options = [@{@"limit":@(historyRequest.limit),
+                                     @"revertMessages":@(historyRequest.shouldRevertMessages),
+                                   @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)} copy];
             if (historyRequest.startDate) {
                 
                 [options setValue:historyRequest.startDate forKey:@"startDate"];
@@ -1404,7 +1404,7 @@
 
             state = @"disabling";
         }
-        errorMessage = [NSString stringWithFormat:@"Push notification '%@' failed by timeout", state];
+        errorMessage = [[NSString alloc] initWithFormat:@"Push notification '%@' failed by timeout", state];
 
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 

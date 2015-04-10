@@ -56,12 +56,12 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v1/channel-registration/sub-key/%@/%@channel-group/%@/remove?callback=%@_%@%@&pnsdk=%@",
+    return [[NSString alloc] initWithFormat:@"/v1/channel-registration/sub-key/%@/%@channel-group/%@/remove?callback=%@_%@%@&pnsdk=%@",
             [self.subscriptionKey pn_percentEscapedString],
-            ([self.group.nspace length] ? [NSString stringWithFormat:@"namespace/%@/",
+            ([self.group.nspace length] ? [[NSString alloc] initWithFormat:@"namespace/%@/",
                                            [self.group.nspace pn_percentEscapedString]] : @""),
             [self.group.groupName pn_percentEscapedString], [self callbackMethodName], self.shortIdentifier,
-            ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+            ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@", [self authorizationField]] : @""),
             [self clientInformationField]];
 }
 
@@ -73,7 +73,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 

@@ -46,7 +46,7 @@ struct PNChannelListModificationTypeStruct PNChannelListModificationType = {
 /**
  Stores reference on type of action which should be performed on channel group
  */
-@property (nonatomic, strong) NSString *targetAction;
+@property (nonatomic, copy) NSString *targetAction;
 
 /**
  Storing configuration dependant parameters
@@ -138,13 +138,13 @@ struct PNChannelListModificationTypeStruct PNChannelListModificationType = {
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"/v1/channel-registration/sub-key/%@/%@channel-group/%@?%@=%@&callback=%@_%@%@&pnsdk=%@",
+    return [[NSString alloc] initWithFormat:@"/v1/channel-registration/sub-key/%@/%@channel-group/%@?%@=%@&callback=%@_%@%@&pnsdk=%@",
             [self.subscriptionKey pn_percentEscapedString],
-            ([self.change.group.nspace length] ? [NSString stringWithFormat:@"namespace/%@/",
+            ([self.change.group.nspace length] ? [[NSString alloc] initWithFormat:@"namespace/%@/",
                                                   [self.change.group.nspace pn_percentEscapedString]] : @""),
             [self.change.group.groupName pn_percentEscapedString], self.targetAction,
             [[self.change.channels valueForKey:@"escapedName"] componentsJoinedByString:@","], [self callbackMethodName],
-            self.shortIdentifier, ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+            self.shortIdentifier, ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@", [self authorizationField]] : @""),
             [self clientInformationField]];
 }
 
@@ -156,7 +156,7 @@ struct PNChannelListModificationTypeStruct PNChannelListModificationType = {
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

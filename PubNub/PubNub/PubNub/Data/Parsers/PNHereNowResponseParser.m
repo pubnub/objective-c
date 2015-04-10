@@ -132,20 +132,17 @@
         }
         [channels enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelParticipantsInformation,
                                                       BOOL *channelNamesEnumeratorStop) {
-
-            @autoreleasepool {
                 
-                PNChannel *targetChannel = [PNChannel channelWithName:channelName];
-                NSUInteger participantsCount = [[channelParticipantsInformation objectForKey:kPNResponseOccupancyKey] unsignedIntValue];
-                NSArray *participantsInChannel = [self clientsFromData:[channelParticipantsInformation objectForKey:kPNResponseUUIDKey]
-                                                            forChannel:targetChannel];
-                [participantsInChannel enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
-                    
-                    [self.hereNow addParticipant:client forChannel:targetChannel];
-                }];
+            PNChannel *targetChannel = [PNChannel channelWithName:channelName];
+            NSUInteger participantsCount = [[channelParticipantsInformation objectForKey:kPNResponseOccupancyKey] unsignedIntValue];
+            NSArray *participantsInChannel = [self clientsFromData:[channelParticipantsInformation objectForKey:kPNResponseUUIDKey]
+                                                        forChannel:targetChannel];
+            [participantsInChannel enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
                 
-                [self.hereNow setParticipantsCount:MAX([participantsInChannel count], participantsCount) forChannel:targetChannel];
-            }
+                [self.hereNow addParticipant:client forChannel:targetChannel];
+            }];
+            
+            [self.hereNow setParticipantsCount:MAX([participantsInChannel count], participantsCount) forChannel:targetChannel];
         }];
     }
 
@@ -162,7 +159,7 @@
 
 - (NSArray *)clientsFromData:(NSArray *)clientsInformation forChannel:(PNChannel *)channel {
 
-    NSMutableArray *clients = [NSMutableArray array];
+    NSMutableArray *clients = [NSMutableArray new];
     [clientsInformation enumerateObjectsUsingBlock:^(id clientInformation, NSUInteger clientInformationIdx,
                                                      BOOL *clientInformationEnumerator) {
 
@@ -196,7 +193,7 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <presence information: %@>", NSStringFromClass([self class]), self,
+    return [[NSString alloc] initWithFormat:@"%@ (%p): <presence information: %@>", NSStringFromClass([self class]), self,
             self.hereNow];
 }
 

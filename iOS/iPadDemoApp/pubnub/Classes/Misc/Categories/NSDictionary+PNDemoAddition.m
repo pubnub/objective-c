@@ -85,7 +85,8 @@
             entry = [entry performSelector:@selector(logDescription)];
             entry = (entry ? entry : @"");
         }
-        logDescription = [logDescription stringByAppendingFormat:@"%@:%@%@", entryKey, entry, (entryIdx + 1 != [self count] ? @"|" : @"}>")];
+        logDescription = [logDescription stringByAppendingFormat:@"%@:%@%@", entryKey, entry,
+                          (entryIdx + 1 != [self count] ? @"|" : @"}>")];
         entryIdx++;
     }];
     

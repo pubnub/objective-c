@@ -98,7 +98,7 @@ typedef enum _PNPubNubClientState {
 /**
  Stores reference on current client identifier.
  */
-@property (nonatomic, strong) NSString *uniqueClientIdentifier;
+@property (nonatomic, copy) NSString *uniqueClientIdentifier;
 
 /**
  Stores reference on client delegate

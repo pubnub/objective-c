@@ -86,28 +86,28 @@ NSUInteger pn_str_location(const void* buffer, NSUInteger size, NSUInteger offse
 
 #pragma mark - GZIP helpers
 
-static const void* pn_bufferUsingGZIPOperation(GZIPOperations operation, const void* buffer,
+static NSData* pn_bufferUsingGZIPOperation(GZIPOperations operation, const void* buffer,
                                                NSUInteger size, NSUInteger *extractedSize);
-static const void* pn_GZIPDeflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize);
-static const void* pn_GZIPInflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize);
-static const void* pn_inflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize);
+static NSData* pn_GZIPDeflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize);
+static NSData* pn_GZIPInflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize);
+static NSData* pn_inflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize);
 
-const void* pn_GZIPDeflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize) {
+NSData* pn_GZIPDeflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize) {
 
     return pn_bufferUsingGZIPOperation(GZIPCompressDeflateOperation, buffer, size, extractedSize);
 }
 
-const void* pn_GZIPInflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize) {
+NSData* pn_GZIPInflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize) {
 
     return pn_bufferUsingGZIPOperation(GZIPDecompressInflateOperation, buffer, size, extractedSize);
 }
 
-const void* pn_inflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize) {
+NSData* pn_inflate(const void* buffer, NSUInteger size, NSUInteger *extractedSize) {
 
     return pn_bufferUsingGZIPOperation(DecompressInflateOperation, buffer, size, extractedSize);
 }
 
-const void* pn_bufferUsingGZIPOperation(GZIPOperations operation, const void* buffer,
+NSData* pn_bufferUsingGZIPOperation(GZIPOperations operation, const void* buffer,
                                         NSUInteger size, NSUInteger *extractedSize) {
 
     NSMutableData *processedDataStorage = nil;
@@ -149,7 +149,7 @@ const void* pn_bufferUsingGZIPOperation(GZIPOperations operation, const void* bu
         if (status == Z_OK) {
 
             BOOL isOperationCompleted = NO;
-            processedDataStorage = [NSMutableData dataWithLength:(operation != GZIPCompressDeflateOperation ? fullLength : GZIPDeflateChunkSize)];
+            processedDataStorage = [[NSMutableData alloc] initWithLength:(operation != GZIPCompressDeflateOperation ? fullLength : GZIPDeflateChunkSize)];
 
             while (!isOperationCompleted) {
                 
@@ -207,7 +207,7 @@ const void* pn_bufferUsingGZIPOperation(GZIPOperations operation, const void* bu
     }
 
 
-    return (processedDataStorage ? processedDataStorage.bytes : buffer);
+    return processedDataStorage;
 }
 
 

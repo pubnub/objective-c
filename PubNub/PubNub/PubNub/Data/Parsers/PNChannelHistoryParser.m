@@ -102,7 +102,7 @@
                                               andEndDate:[PNDate dateWithToken:endTimeToken]];
 
         NSArray *messages = [responseData objectAtIndex:PNChannelHistoryResponseMessagesList];
-        NSMutableArray *historyMessages = [NSMutableArray arrayWithCapacity:[messages count]];
+        NSMutableArray *historyMessages = [[NSMutableArray alloc] initWithCapacity:[messages count]];
         [messages enumerateObjectsUsingBlock:^(id message, NSUInteger messageIdx, BOOL *messageEnumerator) {
 
             PNMessage *messageObject = [PNMessage messageFromServiceResponse:message onChannel:nil atDate:nil];
@@ -123,12 +123,9 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p) <channel: %@, from: %@, to: %@, messages: %@>",
-                                      NSStringFromClass([self class]), self,
-                                      self.history.channel,
-                                      self.history.startDate,
-                                      self.history.endDate,
-                                      self.history.messages];
+    return [[NSString alloc] initWithFormat:@"%@ (%p) <channel: %@, from: %@, to: %@, messages: %@>",
+            NSStringFromClass([self class]), self, self.history.channel, self.history.startDate,
+            self.history.endDate, self.history.messages];
 }
 
 #pragma mark -

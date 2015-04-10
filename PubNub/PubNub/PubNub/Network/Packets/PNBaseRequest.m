@@ -174,7 +174,8 @@
     NSString *authorizationKey = self.authorizationKey;
     if ([authorizationKey length] > 0) {
 
-		authorizationKey = [NSString stringWithFormat:@"auth=%@", [authorizationKey pn_percentEscapedString]];
+		authorizationKey = [[NSString alloc] initWithFormat:@"auth=%@",
+                            [authorizationKey pn_percentEscapedString]];
     }
     else {
 
@@ -191,7 +192,8 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        clientInformation = [NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion];
+        clientInformation = [[NSString alloc] initWithFormat:@"PubNub-%@%%2F%@", kPNClientName,
+                             kPNLibraryVersion];
     });
     
     
@@ -200,7 +202,7 @@
 
 - (NSString *)requestPath {
     
-    return [NSString stringWithFormat:@"http://%@%@", self.origin, [self resourcePath]];
+    return [[NSString alloc] initWithFormat:@"http://%@%@", self.origin, [self resourcePath]];
 }
 
 - (PNRequestHTTPMethod)HTTPMethod {
@@ -220,8 +222,8 @@
 
 - (NSData *)HTTPPayload {
 
-    NSMutableString *plainPayload = [NSMutableString string];
-    NSMutableData *payloadData = [NSMutableData data];
+    NSMutableString *plainPayload = [NSMutableString new];
+    NSMutableData *payloadData = [NSMutableData new];
     NSString *acceptEncoding = @"";
     if (self.shouldAcceptCompressedResponse || [self shouldCompressPOSTBody]) {
 
@@ -272,7 +274,8 @@
                               [self performSelector:@selector(debugResourcePath)] : [self resourcePath]);
     #pragma clang diagnostic pop
     
-    return [NSString stringWithFormat:@"<%@|%@|%@>", ([self HTTPMethod] == PNRequestPOSTMethod ? @"POST" :@"GET"),
+    return [[NSString alloc] initWithFormat:@"<%@|%@|%@>",
+            ([self HTTPMethod] == PNRequestPOSTMethod ? @"POST" :@"GET"),
             resourcePath, @([self shouldCompressPOSTBody])];
 }
 

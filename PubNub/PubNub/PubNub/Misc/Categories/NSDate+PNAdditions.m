@@ -22,7 +22,7 @@
 
 - (NSString *)logDescription {
     
-    return [NSString stringWithFormat:@"<%@>", @([self timeIntervalSince1970] * 1000)];
+    return [[NSString alloc] initWithFormat:@"<%@>", @([self timeIntervalSince1970] * 1000)];
 }
 
 #pragma mark -

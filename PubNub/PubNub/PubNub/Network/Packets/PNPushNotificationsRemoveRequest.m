@@ -35,8 +35,8 @@
 #pragma mark - Properties
 
 // Stores reference on stringified push notification token
-@property (nonatomic, strong) NSString *pushToken;
-@property (nonatomic, strong) NSData *devicePushToken;
+@property (nonatomic, copy) NSString *pushToken;
+@property (nonatomic, copy) NSData *devicePushToken;
 
 /**
  Storing configuration dependant parameters
@@ -93,11 +93,11 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@/remove?callback=%@_%@&uuid=%@%@&pnsdk=%@",
+    return [[NSString alloc] initWithFormat:@"/v1/push/sub-key/%@/devices/%@/remove?callback=%@_%@&uuid=%@%@&pnsdk=%@",
                                       [self.subscriptionKey pn_percentEscapedString],
                                       self.pushToken, [self callbackMethodName], self.shortIdentifier,
                                       [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+                                      ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@", [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
@@ -109,7 +109,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

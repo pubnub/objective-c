@@ -839,7 +839,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
     PNMessage *messageObject = nil;
-    NSMutableDictionary *messageForSending = (!message ? [NSMutableDictionary dictionary] : nil);
+    NSMutableDictionary *messageForSending = (!message ? [NSMutableDictionary new] : nil);
     if (message) {
         
         if ([message isKindOfClass:[NSDictionary class]]) {
@@ -848,7 +848,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
             if ([(NSDictionary *)message valueForKey:@"aps"]) {
                 
                 // Recompose APNS payload to use newer JSON format.
-                messageForSending = [NSMutableDictionary dictionaryWithDictionary:@{@"pn_apns":message}];
+                messageForSending = [@{@"pn_apns":message} copy];
             }
             else if (apnsPayload || gcmPayload) {
                 
@@ -867,7 +867,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
         }
         else if (apnsPayload || gcmPayload) {
             
-            messageForSending = [NSMutableDictionary dictionaryWithDictionary:@{@"pn_other":message}];
+            messageForSending = [@{@"pn_other":message} copy];
         }
         else {
             

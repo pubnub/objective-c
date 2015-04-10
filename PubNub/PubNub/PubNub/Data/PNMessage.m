@@ -276,7 +276,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <message: %@, date: %@, channel: %@>", NSStringFromClass([self class]),
+    return [[NSString alloc] initWithFormat:@"%@ (%p): <message: %@, date: %@, channel: %@>", NSStringFromClass([self class]),
             self, self.message, (self.receiveDate ? self.receiveDate : self.date), self.channel.name];
 }
 
@@ -285,7 +285,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
     PNDate *eitherDate = (self.receiveDate ? self.receiveDate : self.date);
-    NSMutableString *logDescription = [NSMutableString stringWithFormat:@"<%@|%@",
+    NSMutableString *logDescription = [[NSMutableString alloc] initWithFormat:@"<%@|%@",
                                        (self.channel.name ? self.channel.name : [NSNull null]),
                                        (eitherDate ? [eitherDate performSelector:@selector(logDescription)] : [NSNull null])];
     if (self.message) {

@@ -266,9 +266,9 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     // Check whether initialization was successful or not
     if((self = [super init])) {
         
-        self.observers = [NSMutableDictionary dictionary];
-        self.oneTimeObservers = [NSMutableDictionary dictionary];
-        self.notifications = [NSMutableArray array];
+        self.observers = [NSMutableDictionary new];
+        self.oneTimeObservers = [NSMutableDictionary new];
+        self.notifications = [NSMutableArray new];
         self.defaultObserver = (defaultObserver ? defaultObserver : [PubNub sharedInstance]);
         [self pn_setupPrivateSerialQueueWithIdentifier:@"observer" andPriority:DISPATCH_QUEUE_PRIORITY_DEFAULT];
 
@@ -432,7 +432,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
                 id callback = [eventSubscribers objectForKey:oldCallbackToken];
                 [eventSubscribers removeObjectForKey:oldCallbackToken];
-                [eventSubscribers setValue:callback forKey:callbackToken];
+                [eventSubscribers setValue:callback forKey:[callbackToken copy]];
                 *eventSubscribersEnumeratorStop = YES;
             }
         }];
@@ -466,70 +466,75 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 - (void)addObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent
           withBlock:(id)block andToken:(NSString *)callbackToken {
 
-    [self pn_dispatchBlock:^{
-
-        id blockCopy = [block copy];
-        NSMutableDictionary *observerData = [@{PNObservationObserverData.observer : observer,
-                                               PNObservationObserverData.observerCallbackBlock : blockCopy} mutableCopy];
-
-        if (isOneTimeEvent && callbackToken) {
-
-            [self oneTimeObserversForEvent:eventName withCallbackToken:callbackToken];
-
-            NSMutableDictionary *eventObservers = [self.oneTimeObservers valueForKey:eventName];
-            [eventObservers setValue:observerData forKey:callbackToken];
-        }
-        else {
-
-            NSMutableArray *observers = nil;
-            if (isOneTimeEvent) {
-
-                observers = [self oneTimeObserversForEvent:eventName withCallbackToken:nil];
+    if (observer) {
+        
+        [self pn_dispatchBlock:^{
+            
+            id blockCopy = [block copy];
+            NSMutableDictionary *observerData = [@{PNObservationObserverData.observer : observer,
+                                                   PNObservationObserverData.observerCallbackBlock : blockCopy} mutableCopy];
+            
+            if (isOneTimeEvent && callbackToken) {
+                
+                [self oneTimeObserversForEvent:eventName withCallbackToken:callbackToken];
+                
+                NSMutableDictionary *eventObservers = [self.oneTimeObservers valueForKey:eventName];
+                [eventObservers setValue:observerData forKey:[callbackToken copy]];
             }
             else {
-
-                observers = [self persistentObserversForEvent:eventName];
+                
+                NSMutableArray *observers = nil;
+                if (isOneTimeEvent) {
+                    
+                    observers = [self oneTimeObserversForEvent:eventName withCallbackToken:nil];
+                }
+                else {
+                    
+                    observers = [self persistentObserversForEvent:eventName];
+                }
+                
+                [observers addObject:observerData];
             }
-
-            [observers addObject:observerData];
-        }
-    }];
+        }];
+    }
 }
 
 - (void)removeObserver:(id)observer forEvent:(NSString *)eventName oneTimeEvent:(BOOL)isOneTimeEvent
      withCallbackToken:(NSString *)callbackToken {
 
-    [self pn_dispatchBlock:^{
+    if (observer) {
+        
+        [self pn_dispatchBlock:^{
 
-        if (isOneTimeEvent && callbackToken) {
+            if (isOneTimeEvent && callbackToken) {
 
-            [[self.oneTimeObservers valueForKey:eventName] removeObjectForKey:callbackToken];
-        }
-        else {
-
-            // Retrieve list of observing requests with specified observer
-            NSString *filterFormat = [NSString stringWithFormat:@"%@ = %%@", PNObservationObserverData.observer];
-            NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:filterFormat, observer];
-
-            NSMutableArray *observers = nil;
-            if (isOneTimeEvent) {
-
-                observers = [self oneTimeObserversForEvent:eventName withCallbackToken:nil];
+                [[self.oneTimeObservers valueForKey:eventName] removeObjectForKey:callbackToken];
             }
             else {
 
-                observers = [self persistentObserversForEvent:eventName];
+                // Retrieve list of observing requests with specified observer
+                NSString *filterFormat = [[NSString alloc] initWithFormat:@"%@ = %%@", PNObservationObserverData.observer];
+                NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:filterFormat, observer];
+
+                NSMutableArray *observers = nil;
+                if (isOneTimeEvent) {
+
+                    observers = [self oneTimeObserversForEvent:eventName withCallbackToken:nil];
+                }
+                else {
+
+                    observers = [self persistentObserversForEvent:eventName];
+                }
+                
+                NSArray *filteredObservers = [observers filteredArrayUsingPredicate:filterPredicate];
+                if ([filteredObservers count] > 0) {
+
+                    // Removing first occurrence of observer request in list
+                    [observers removeObject:[filteredObservers objectAtIndex:0]];
+                }
             }
-            NSArray *filteredObservers = [observers filteredArrayUsingPredicate:filterPredicate];
-            if ([filteredObservers count] > 0) {
-
-                // Removing first occurrence of observer request in list
-                [observers removeObject:[filteredObservers objectAtIndex:0]];
-            }
-        }
-
-
-    }];
+        }];
+    }
 }
 
 
@@ -1618,7 +1623,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
           withCallbackToken:[notification pn_callbackToken]
                    andBlock:^(NSMutableArray *allObservers) {
 
-        NSMutableArray *observers = [NSMutableArray arrayWithArray:allObservers];
+        NSMutableArray *observers = [[NSMutableArray alloc] initWithArray:allObservers copyItems:NO];
         if ([notificationName isEqualToString:kPNClientSubscriptionDidCompleteOnClientIdentifierUpdateNotification] ||
             [notificationName isEqualToString:kPNClientSubscriptionDidFailOnClientIdentifierUpdateNotification]) {
 
@@ -1703,7 +1708,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
           withCallbackToken:[notification pn_callbackToken]
                    andBlock:^(NSMutableArray *allObservers) {
 
-        NSMutableArray *observers = [NSMutableArray arrayWithArray:allObservers];
+        NSMutableArray *observers = [[NSMutableArray alloc] initWithArray:allObservers copyItems:NO];
         if ([notificationName isEqualToString:kPNClientUnsubscriptionDidCompleteOnClientIdentifierUpdateNotification] ||
             [notificationName isEqualToString:kPNClientUnsubscriptionDidFailOnClientIdentifierUpdateNotification]) {
 
@@ -2373,7 +2378,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     if ([self.observers valueForKey:eventName] == nil) {
 
-        [self.observers setValue:[NSMutableArray array] forKey:eventName];
+        [self.observers setValue:[NSMutableArray new] forKey:eventName];
     }
     
     
@@ -2384,8 +2389,8 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
     
     if ([self.oneTimeObservers valueForKey:eventName] == nil) {
 
-        NSMutableDictionary *observersForEvent = [NSMutableDictionary dictionary];
-        [observersForEvent setValue:[NSMutableArray array] forKey:kPNObserverGeneralCallbacks];
+        NSMutableDictionary *observersForEvent = [NSMutableDictionary new];
+        [observersForEvent setValue:[NSMutableArray new] forKey:kPNObserverGeneralCallbacks];
         [self.oneTimeObservers setValue:observersForEvent forKey:eventName];
     }
 
@@ -2407,7 +2412,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
         // Composing full observers list depending on whether at least
         // one object exist in retrieved arrays
-        NSMutableArray *allObservers = [NSMutableArray array];
+        NSMutableArray *allObservers = [NSMutableArray new];
         if ([oneTimeEventObservers isKindOfClass:[NSMutableDictionary class]]) {
 
             [allObservers addObject:oneTimeEventObservers];

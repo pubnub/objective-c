@@ -21,6 +21,14 @@
 @implementation PNChannelEvents
 
 
+#pragma mark - Inctanse methods
+
+- (void)setEvents:(NSArray *)events {
+    
+    _events = [[NSArray alloc] initWithArray:events copyItems:NO];
+}
+
+
 #pragma mark -
 
 

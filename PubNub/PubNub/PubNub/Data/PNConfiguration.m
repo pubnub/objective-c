@@ -352,11 +352,11 @@
 
     if (shouldKillDNSCache && self.isDNSCacheClearingEnabled) {
         
-        NSString *subDomain = [self.realOrigin stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@",
+        NSString *subDomain = [self.realOrigin stringByReplacingOccurrencesOfString:[[NSString alloc] initWithFormat:@".%@",
                                                                                      kPNServiceMainDomain]
                                                                          withString:@""];
 
-        self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
+        self.origin = [[NSString alloc] initWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
                         kPNServiceMainDomain];
     } else {
 
@@ -371,7 +371,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"\n(%p) Configuration for: %@ (secured: %@)\n"
+    return [[NSString alloc] initWithFormat:@"\n(%p) Configuration for: %@ (secured: %@)\n"
                                        "Publish key (optional for read-only application): %@\n"
                                        "Subscription key (optional for write-only application): %@\n"
                                        "Secret key (required for PAM): %@\n"

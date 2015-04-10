@@ -131,7 +131,7 @@ static NSUInteger const kPNResponseStatusTimeTokenElementIndexForStatus = 2;
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <successful: %@, message: %@, time token: %@, error: %@>",
+    return [[NSString alloc] initWithFormat:@"%@ (%p): <successful: %@, message: %@, time token: %@, error: %@>",
                     NSStringFromClass([self class]),
                     self,
                     self.operationStatus.isSuccessful?@"YES":@"NO",

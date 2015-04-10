@@ -57,12 +57,12 @@
 
 - (NSString *)resourcePath {
     
-    return [NSString stringWithFormat:@"/time/%@_%@%@%@",
+    return [[NSString alloc] initWithFormat:@"/time/%@_%@%@%@",
             [self callbackMethodName],
             self.shortIdentifier,
-            ([self authorizationField] ? [NSString stringWithFormat:@"?%@", [self authorizationField]] : @""),
-            ([self authorizationField] ? [NSString stringWithFormat:@"&pnsdk=%@", [self clientInformationField]] :
-                                         [NSString stringWithFormat:@"?pnsdk=%@", [self clientInformationField]])];
+            ([self authorizationField] ? [[NSString alloc] initWithFormat:@"?%@", [self authorizationField]] : @""),
+            ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&pnsdk=%@", [self clientInformationField]] :
+                                         [[NSString alloc] initWithFormat:@"?pnsdk=%@", [self clientInformationField]])];
 }
 
 - (NSString *)debugResourcePath {
@@ -72,7 +72,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

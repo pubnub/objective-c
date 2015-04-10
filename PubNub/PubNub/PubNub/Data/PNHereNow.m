@@ -55,7 +55,7 @@ NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
     // Check whether initialization has been successful or not.
     if ((self = [super init])) {
         
-        self.participantsMap = [NSMutableDictionary dictionary];
+        self.participantsMap = [NSMutableDictionary new];
     }
     
     
@@ -98,7 +98,7 @@ NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
         information = [self.participantsMap valueForKey:channel.name];
         if (!information) {
             
-            information = [@{PNChannelParticipantsEntry.participants:[NSMutableArray array],
+            information = [@{PNChannelParticipantsEntry.participants:[NSMutableArray new],
                              PNChannelParticipantsEntry.participantsCount:@(0)} mutableCopy];
             
             [self.participantsMap setValue:information forKey:channel.name];
@@ -111,14 +111,14 @@ NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"%@", self.participantsMap];
+    return [[NSString alloc] initWithFormat:@"%@", self.participantsMap];
 }
 
 - (NSString *)logDescription {
     
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wundeclared-selector"
-    return [NSString stringWithFormat:@"<%@>", 
+    return [[NSString alloc] initWithFormat:@"<%@>", 
             (self.participantsMap ? [self.participantsMap performSelector:@selector(logDescription)] : [NSNull null])];
     #pragma clang diagnostic pop
 }

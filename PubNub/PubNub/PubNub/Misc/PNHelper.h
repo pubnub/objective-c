@@ -304,14 +304,6 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
 #pragma mark - Class methods
 
 /**
- Perform correct CoreFoundation object release with pointer nullify.
- 
- @param CFObject
- Reference on CF object which should be released and pointer set to \c NULL.
- */
-+ (void)releaseCFObject:(CF_RELEASES_ARGUMENT void *)CFObject;
-
-/**
  In case if receiver value not specified, it will return reference on \b NSNull instance.
  
  @param object

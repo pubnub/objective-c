@@ -108,7 +108,7 @@ static NSString * kPNWLANServiceSetIdentifierKey = @"SSID";
 
                 if (isActive) {
 
-                    NSString *interfaceNameString = [NSString stringWithUTF8String:interfaceName];
+                    NSString *interfaceNameString = [[NSString alloc] initWithUTF8String:interfaceName];
 
                     if ([interfaceNameString hasPrefix:kPNNetworkWirelessCableInterfaceName] ||
                         [interfaceNameString hasPrefix:kPNNetworkCellularInterfaceName]) {
@@ -116,7 +116,7 @@ static NSString * kPNWLANServiceSetIdentifierKey = @"SSID";
                         // Check on whether interface has assigned address or not
                         if (strcmp(interfaceAddress, kPNNetworkDefaultAddress) != 0) {
 
-                            address = [NSString stringWithUTF8String:interfaceAddress];
+                            address = [[NSString alloc] initWithUTF8String:interfaceAddress];
 
                             break;
                         }

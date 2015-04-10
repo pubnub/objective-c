@@ -146,7 +146,7 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 
         self.tick = tick;
         self.executionQueue = queue;
-        self.scheduledBlocks = [NSMutableArray array];
+        self.scheduledBlocks = [NSMutableArray new];
         [self createGCDTimer];
     }
 

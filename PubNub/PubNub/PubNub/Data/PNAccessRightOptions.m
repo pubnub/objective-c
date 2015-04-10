@@ -68,8 +68,18 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
     }
 
 
-
     return self;
+}
+
+- (void)setChannels:(NSArray *)channels {
+    
+    _channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+}
+
+- (void)setClientsAuthorizationKeys:(NSArray *)clientsAuthorizationKeys {
+    
+    _clientsAuthorizationKeys = [[NSArray alloc] initWithArray:clientsAuthorizationKeys
+                                                     copyItems:NO];
 }
 
 - (BOOL)isEnablingReadAccessRight {
@@ -94,8 +104,8 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
 
 - (NSString *)description {
 
-    NSMutableString *description = [NSMutableString stringWithFormat:@"%@ (%p) <",
-                                                    NSStringFromClass([self class]), self];
+    NSMutableString *description = [[NSMutableString alloc] initWithFormat:@"%@ (%p) <",
+                                    NSStringFromClass([self class]), self];
 
     NSString *level = @"application";
     if (self.level == PNChannelAccessRightsLevel) {
@@ -155,7 +165,8 @@ static NSUInteger const kPNDefaulfAccessPeriodDuration = 1440;
         
         level = @"user";
     }
-    NSMutableString *logDescription = [NSMutableString stringWithFormat:@"<%@|%@|%@|%lu", level, PNObfuscateString(self.applicationKey),
+    NSMutableString *logDescription = [[NSMutableString alloc] initWithFormat:@"<%@|%@|%@|%lu",
+                                       level, PNObfuscateString(self.applicationKey),
                                        @(self.rights), (unsigned long)self.accessPeriodDuration];
     if (self.level == PNChannelGroupAccessRightsLevel || self.level == PNChannelAccessRightsLevel) {
         

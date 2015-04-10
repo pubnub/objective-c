@@ -98,7 +98,7 @@ static unsigned char decodeCharTable[256] =
 
     decodedDataLength = j;
 
-    NSData *decodedData = [NSData dataWithBytes:decodedDataBuffer length:decodedDataLength];
+    NSData *decodedData = [[NSData alloc] initWithBytes:decodedDataBuffer length:decodedDataLength];
     free(decodedDataBuffer);
 
 
@@ -149,7 +149,7 @@ static unsigned char decodeCharTable[256] =
 - (NSString *)pn_HEXString {
 
     NSUInteger capacity = [self length];
-    NSMutableString *stringBuffer = [NSMutableString stringWithCapacity:capacity];
+    NSMutableString *stringBuffer = [[NSMutableString alloc] initWithCapacity:capacity];
     const unsigned char *dataBuffer = [self bytes];
 
     // Iterate over the bytes
@@ -168,25 +168,25 @@ static unsigned char decodeCharTable[256] =
 - (NSData *)pn_GZIPDeflate {
 
     NSUInteger size;
-    const void *deflatedData = pn_GZIPDeflate(self.bytes, self.length, &size);
+    NSData *deflatedData = pn_GZIPDeflate(self.bytes, self.length, &size);
     
-    return (size > 0 ? [NSData dataWithBytes:deflatedData length:size] : nil);
+    return (size > 0 ? [[NSData alloc] initWithData:deflatedData] : nil);
 }
 
 - (NSData *)pn_GZIPInflate {
 
     NSUInteger size;
-    const void *inflatedData = pn_GZIPInflate(self.bytes, self.length, &size);
+    NSData *inflatedData = pn_GZIPInflate(self.bytes, self.length, &size);
 
-    return (size > 0 ? [NSData dataWithBytes:inflatedData length:size] : nil);
+    return (size > 0 ? [[NSData alloc] initWithData:inflatedData] : nil);
 }
 
 - (NSData *)pn_inflate {
 
     NSUInteger size;
-    const void *inflatedData = pn_inflate(self.bytes, self.length, &size);
+    NSData *inflatedData = pn_inflate(self.bytes, self.length, &size);
 
-    return (size > 0 ? [NSData dataWithBytes:inflatedData length:size] : nil);
+    return (size > 0 ? [[NSData alloc] initWithData:inflatedData] : nil);
 }
 
 
@@ -195,7 +195,7 @@ static unsigned char decodeCharTable[256] =
 - (NSString *)pn_HEXPushToken {
 
     NSUInteger capacity = [self length];
-    NSMutableString *stringBuffer = [NSMutableString stringWithCapacity:capacity];
+    NSMutableString *stringBuffer = [[NSMutableString alloc] initWithCapacity:capacity];
     const unsigned char *dataBuffer = [self bytes];
 
     // Iterate over the bytes
@@ -210,7 +210,7 @@ static unsigned char decodeCharTable[256] =
 
 - (NSString *)logDescription {
     
-    return [NSString stringWithFormat:@"<%@>", [self pn_HEXPushToken]];
+    return [[NSString alloc] initWithFormat:@"<%@>", [self pn_HEXPushToken]];
 }
 
 #pragma mark -

@@ -976,20 +976,20 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                 if ([self isLoggerEnabled] && [self isDebuggerAttached]) {
                     
                     // Composing initial entry prefix
-                    message = [NSString stringWithFormat:@"%@ (%p) %@%@", NSStringFromClass([sender class]), sender,
+                    message = [[NSString alloc] initWithFormat:@"%@ (%p) %@%@", NSStringFromClass([sender class]), sender,
                                (symbolPrefix ? symbolPrefix : @""), [[self sharedInstance] logEntryMessageForSymbol:symbolCode]];
                     message = [NSString pn_stringWithFormat:message argumentsArray:parameters];
                 }
                 
                 if ([self isDumpingToFile]) {
                     
-                    NSMutableArray *parametersForLog = [NSMutableArray arrayWithCapacity:([parameters count] + 1)];
+                    NSMutableArray *parametersForLog = [[NSMutableArray alloc] initWithCapacity:([parameters count] + 1)];
                     
                     // Storing initial symbol code value
                     [parametersForLog addObject:symbolCode];
                     
                     // Storing sender address
-                    [parametersForLog addObject:[NSString stringWithFormat:@"%p", sender]];
+                    [parametersForLog addObject:[[NSString alloc] initWithFormat:@"%p", sender]];
                     
                     // Transform parameters using description suitable for log
                     [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger idx, BOOL *stop) {
@@ -1103,7 +1103,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                 NSUInteger bufferSize = dispatch_data_get_size(data);
                 if (bufferSize) {
                     
-                    NSMutableArray *dataBlocks = [NSMutableArray array];
+                    NSMutableArray *dataBlocks = [NSMutableArray new];
                     
                     // Iterate over chunks of data stored in buffer.
                     dispatch_data_apply(data, ^bool(dispatch_data_t region, size_t offset,
@@ -1154,7 +1154,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wundeclared-selector"
         NSString *entryTimeToken = [[NSDate date] performSelector:@selector(logDescription)];
-        NSString *baseFileName = [NSString stringWithFormat:@"%@response-%@",
+        NSString *baseFileName = [[NSString alloc] initWithFormat:@"%@response-%@",
                                   (!isExpectedResponse ? (isGarbageData ? @"garbage-" : @"unexpected-") : @""),
                                   entryTimeToken];
         NSString *packetName = [baseFileName stringByAppendingPathExtension:@"dmp"];
@@ -1194,7 +1194,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                     [(NSArray *)data enumerateObjectsUsingBlock:^(NSData *dumpData, NSUInteger dumpDataIdx,
                                                                   BOOL *dumpDataEnumeratorStop) {
                         
-                        NSString *pathSuffix = [NSString stringWithFormat:@"-%@.dmp", @(dumpDataIdx)];
+                        NSString *pathSuffix = [[NSString alloc] initWithFormat:@"-%@.dmp", @(dumpDataIdx)];
                         NSString *dumpDataStorePath = [packetStorePath stringByReplacingOccurrencesOfString:@".dmp"
                                                                                                  withString:pathSuffix];
                         dataStoreBlock(dumpDataStorePath, dumpData);
@@ -1353,7 +1353,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
 - (void)prepareForAsynchronousFileProcessing {
 
-    self.consoleDump = [NSMutableData data];
+    self.consoleDump = [NSMutableData new];
     dispatch_queue_t dumpProcessingQueue = dispatch_queue_create("com.pubnub.logger-dump-processing", DISPATCH_QUEUE_SERIAL);
     dispatch_set_target_queue(dumpProcessingQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0));
     self.dumpProcessingQueue = dumpProcessingQueue;
@@ -1410,11 +1410,11 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                                                                                                                  ofType:@"bundle"]];
         symbolsPath = [frameworkResources pathForResource:@"PNLoggerSymbols" ofType:@"plist"];;
     }
-    NSDictionary *symbolsTree = [NSDictionary dictionaryWithContentsOfFile:symbolsPath];
+    NSDictionary *symbolsTree = [[NSDictionary alloc] initWithContentsOfFile:symbolsPath];
     if (symbolsTree) {
 
-        NSMutableDictionary *flattenedTree = [NSMutableDictionary dictionary];
-        NSMutableDictionary *symbolsSectionName = [NSMutableDictionary dictionary];
+        NSMutableDictionary *flattenedTree = [NSMutableDictionary new];
+        NSMutableDictionary *symbolsSectionName = [NSMutableDictionary new];
         
         __block __pn_desired_weak void(^symbolsFlatteningBlockWeak)(NSString *, NSString *, id, BOOL *);
         void(^symbolsFlatteningBlock)(NSString *, NSString *, id, BOOL *);
@@ -1451,8 +1451,8 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         }];
         
         // Storing processed tree with immutable container.
-        self.symbolsTable = [NSDictionary dictionaryWithDictionary:flattenedTree];
-        self.symbolsSectionName = [NSDictionary dictionaryWithDictionary:symbolsSectionName];
+        self.symbolsTable = [flattenedTree copy];
+        self.symbolsSectionName = [symbolsSectionName copy];
     }
     else {
         
@@ -1504,12 +1504,12 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         
         if ([baseGroupName rangeOfString:@"CONNECTION"].location != NSNotFound) {
             
-            prefix = [NSString stringWithFormat:@"[%@::%%@%@", baseGroupName,
-                      (subGroupName ? [NSString stringWithFormat:@"::%@] ", subGroupName] : @"] ")];
+            prefix = [[NSString alloc] initWithFormat:@"[%@::%%@%@", baseGroupName,
+                      (subGroupName ? [[NSString alloc] initWithFormat:@"::%@] ", subGroupName] : @"] ")];
         }
         else if ([baseGroupName rangeOfString:@"CHANNEL"].location != NSNotFound) {
             
-            prefix = [NSString stringWithFormat:@"[%@::%%@] ", baseGroupName];
+            prefix = [[NSString alloc] initWithFormat:@"[%@::%%@] ", baseGroupName];
         }
     }
     
@@ -1537,7 +1537,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
             
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wundeclared-selector"
-            [self.consoleDump appendData:[[NSString stringWithFormat:@";ls;%@;sp;%@;le;\n", [[NSDate date] performSelector:@selector(logDescription)], output]
+            [self.consoleDump appendData:[[[NSString alloc] initWithFormat:@";ls;%@;sp;%@;le;\n", [[NSDate date] performSelector:@selector(logDescription)], output]
                                           dataUsingEncoding:NSUTF8StringEncoding]];
             #pragma clang diagnostic pop
         }

@@ -108,7 +108,7 @@
 
 - (NSString *)pn_ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes {
 
-    NSMutableString *asciiString = [NSMutableString stringWithCapacity:([self length]*2.0f)];
+    NSMutableString *asciiString = [[NSMutableString alloc] initWithCapacity:([self length]*2.0f)];
     NSUInteger charIdx, charsCount = [self length];
     for (charIdx = 0; charIdx < charsCount; charIdx++) {
 
@@ -134,7 +134,7 @@
 
                         index++;
                     }
-                    truncatedString = [NSString stringWithFormat:@"…%@", [self substringFromIndex:index]];
+                    truncatedString = [[NSString alloc] initWithFormat:@"…%@", [self substringFromIndex:index]];
                 }
                 break;
                 
@@ -146,7 +146,7 @@
                         maximumHalfLength = MAX(maximumHalfLength - 2, MAX(maximumHalfLength - 1, 0));
                     }
 
-                    truncatedString = [NSString stringWithFormat:@"%@…%@", [self substringToIndex:maximumHalfLength],
+                    truncatedString = [[NSString alloc] initWithFormat:@"%@…%@", [self substringToIndex:maximumHalfLength],
                                        [self substringFromIndex:(self.length - maximumHalfLength)]];
                 }
                 break;
@@ -158,7 +158,7 @@
 
                         index--;
                     }
-                    truncatedString = [NSString stringWithFormat:@"%@…", [self substringToIndex:index]];
+                    truncatedString = [[NSString alloc] initWithFormat:@"%@…", [self substringToIndex:index]];
                 }
                 break;
 
@@ -186,7 +186,7 @@
     CC_SHA256([data bytes], (CC_LONG)[data length], hashedData);
 
 
-    return [NSData dataWithBytes:hashedData length:CC_SHA256_DIGEST_LENGTH];
+    return [[NSData alloc] initWithBytes:hashedData length:CC_SHA256_DIGEST_LENGTH];
 }
 
 - (NSString *)pn_sha256HEXString {
@@ -196,7 +196,7 @@
 
 - (NSString *)pn_base64DecodedString {
 
-    return [NSString stringWithUTF8String:[[NSData pn_dataFromBase64String:self] bytes]];
+    return [[NSString alloc] initWithUTF8String:[[NSData pn_dataFromBase64String:self] bytes]];
 }
 
 #ifdef CRYPTO_BACKWARD_COMPATIBILITY_MODE
@@ -207,7 +207,7 @@
     CC_MD5(src, strlen(src), result);
 
 
-    return [NSData dataWithBytes:result length:CC_MD5_DIGEST_LENGTH];
+    return [[NSData alloc] initWithBytes:result length:CC_MD5_DIGEST_LENGTH];
 }
 #endif
 
