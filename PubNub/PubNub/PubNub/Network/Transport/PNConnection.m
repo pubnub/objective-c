@@ -3932,6 +3932,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
         }
         self.wakeUpTimerSuspended = NO;
         dispatch_source_cancel(self.wakeUpTimer);
+        self.wakeUpTimer = NULL;
     }
 }
 
