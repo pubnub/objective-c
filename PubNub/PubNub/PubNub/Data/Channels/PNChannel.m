@@ -362,14 +362,6 @@ static OSSpinLock _channelsCacheSpinlock = OS_SPINLOCK_INIT;
     return NO;
 }
 
-- (void)dealloc {
-    
-    OSSpinLockLock(&_channelsCacheSpinlock);
-    [_synchronizationObject pn_destroyPrivateDispatchQueue];
-    _synchronizationObject = nil;
-    OSSpinLockUnlock(&_channelsCacheSpinlock);
-}
-
 #pragma mark -
 
 
