@@ -11,6 +11,7 @@
 //
 
 #import "PNChannel+Protected.h"
+#import <libkern/OSAtomic.h>
 #import "PNChannelPresence+Protected.h"
 #import "NSObject+PNAdditions.h"
 #import "NSString+PNAddition.h"
@@ -37,6 +38,7 @@
 
 static NSMutableDictionary *_channelsCache = nil;
 static NSObject *_synchronizationObject = nil;
+static OSSpinLock _channelsCacheSpinlock = OS_SPINLOCK_INIT;
 
 #pragma mark - Private interface methods
 
@@ -143,6 +145,7 @@ static NSObject *_synchronizationObject = nil;
 + (id)              channelWithName:(NSString *)channelName shouldObservePresence:(BOOL)observePresence
   shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
+    OSSpinLockLock(&_channelsCacheSpinlock);
     PNChannel *channel = [[self channelsCache] valueForKey:channelName];
     if (channel == nil && [channelName length] > 0) {
 
@@ -161,28 +164,33 @@ static NSObject *_synchronizationObject = nil;
 
         channel.observePresence = observePresence;
     }
+    OSSpinLockUnlock(&_channelsCacheSpinlock);
 
 
     return channel;
 }
 
 + (void)purgeChannelsCache {
-
+    
     [_synchronizationObject pn_dispatchBlock:^{
-
+        
+        OSSpinLockLock(&_channelsCacheSpinlock);
         if ([_channelsCache count] > 0) {
 
             [_channelsCache removeAllObjects];
         }
+        OSSpinLockUnlock(&_channelsCacheSpinlock);
     }];
 }
 
 + (void)removeChannelFromCache:(PNChannel *)channel {
 
+    OSSpinLockLock(&_channelsCacheSpinlock);
     if ([_channelsCache count] > 0 && channel) {
 
         [_channelsCache removeObjectForKey:channel.name];
     }
+    OSSpinLockUnlock(&_channelsCacheSpinlock);
 }
 
 + (NSDictionary *)channelsCache {
@@ -356,8 +364,10 @@ static NSObject *_synchronizationObject = nil;
 
 - (void)dealloc {
     
+    OSSpinLockLock(&_channelsCacheSpinlock);
     [_synchronizationObject pn_destroyPrivateDispatchQueue];
     _synchronizationObject = nil;
+    OSSpinLockUnlock(&_channelsCacheSpinlock);
 }
 
 #pragma mark -
