@@ -58,7 +58,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 @property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
 @property (nonatomic, assign, getter = shouldStoreInHistory) BOOL storeInHistory;
 @property (nonatomic, assign, getter = isContentEncrypted) BOOL contentEncrypted;
-@property (nonatomic, strong) id message;
+@property (nonatomic, copy) id<NSCopying> message;
 @property (nonatomic, strong) id encryptedMessage;
 @property (nonatomic, strong) PNDate *receiveDate;
 @property (nonatomic, strong) PNDate *date;
@@ -77,7 +77,8 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
 #pragma mark - Class methods
 
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
++ (PNMessage *)messageWithObject:(id <NSCopying>)object forChannel:(PNChannel *)channel
+                      compressed:(BOOL)shouldCompressMessage
                   storeInHistory:(BOOL)shouldStoreInHistory error:(PNError **)error {
 
     PNMessage *messageObject = nil;
@@ -127,14 +128,14 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     return messageObject;
 }
 
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel
++ (PNMessage *)messageFromServiceResponse:(id <NSCopying>)messageBody onChannel:(PNChannel *)channel
                                    atDate:(PNDate *)messagePostDate {
     
     return [self messageFromServiceResponse:messageBody onChannel:channel channelGroup:nil
                                      atDate:messagePostDate];
 }
 
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel
++ (PNMessage *)messageFromServiceResponse:(id <NSCopying>)messageBody onChannel:(PNChannel *)channel
                              channelGroup:(PNChannelGroup *)group atDate:(PNDate *)messagePostDate {
     
     PNMessage *message = [self new];
@@ -220,7 +221,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     return self;
 }
 
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+- (id)initWithObject:(id <NSCopying>)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
       storeInHistory:(BOOL)shouldStoreInHistory {
 
     // Check whether initialization was successful or not

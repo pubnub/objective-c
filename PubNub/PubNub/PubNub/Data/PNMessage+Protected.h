@@ -82,7 +82,7 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
 #pragma mark - Properties
 
 // Stores reference on message body
-@property (nonatomic, strong) id message;
+@property (nonatomic, copy) id<NSCopying> message;
 
 // Stores whether message should be compressed or not
 @property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
@@ -118,14 +118,16 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
  * object object and target channel
  * Message should be in stringified JSON format
  */
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
++ (PNMessage *)messageWithObject:(id <NSCopying>)object forChannel:(PNChannel *)channel
+                      compressed:(BOOL)shouldCompressMessage
                   storeInHistory:(BOOL)shouldStoreInHistory error:(PNError **)error;
 
 /**
  * Return reference on message data object which will represent
  * message received from PubNub service
  */
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel atDate:(PNDate *)messagePostDate;
++ (PNMessage *)messageFromServiceResponse:(id <NSCopying>)messageBody onChannel:(PNChannel *)channel
+                                   atDate:(PNDate *)messagePostDate;
 
 /**
  @brief Construct message instance from \b PubNub service response.
@@ -143,7 +145,7 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
  
  @since 3.7.0
  */
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel
++ (PNMessage *)messageFromServiceResponse:(id <NSCopying>)messageBody onChannel:(PNChannel *)channel
                              channelGroup:(PNChannelGroup *)group atDate:(PNDate *)messagePostDate;
 
 
@@ -152,8 +154,8 @@ extern struct PNMessageDataKeysStruct PNMessageDataKeys;
 /**
  * Initialize object instance with text and channel
  */
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
-      storeInHistory:(BOOL)shouldStoreInHistory;
+- (id)initWithObject:(id <NSCopying>)object forChannel:(PNChannel *)channel
+          compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 - (void)setReceiveDate:(PNDate *)receiveDate;
 
 

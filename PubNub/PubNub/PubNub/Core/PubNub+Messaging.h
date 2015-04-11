@@ -84,7 +84,8 @@
  Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods
  for this purpose.
  */
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -156,7 +157,8 @@
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Same as +sendMessage:toChannel:withCompletionBlock: but allow to specify whether message should be stored in history or not.
@@ -164,7 +166,8 @@
  @param shouldStoreInHistory
  \c YES in case if message should be stored on \b PubNub service side and become available with History API.
  */
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
++ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -238,7 +241,8 @@
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -333,7 +337,8 @@
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -410,8 +415,8 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-            storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -509,8 +514,9 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-            storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -583,7 +589,8 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel;
++ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -678,8 +685,8 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-       withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -755,8 +762,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-            storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -854,8 +861,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-            storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -932,8 +940,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1032,8 +1040,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1113,8 +1122,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1216,8 +1226,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1288,14 +1299,15 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
++ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
  
  @code
  @endcode
- This method extendeds \a +sendMessage:toChannel:withCompletionBlock: and allow to specify whether message should be GZIPed before sending to the 
+ This method extendeds \a +sendMessage:toChannel:withCompletionBlock: and allow to specify whether message should be GZIPed before sending to the
  \b PubNub service or not.
  
  @code
@@ -1382,7 +1394,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
++ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -1457,7 +1470,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1548,7 +1562,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
++ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -1625,8 +1640,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1707,8 +1722,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1787,8 +1803,9 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1889,9 +1906,10 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory 
-       withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory
+        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -1967,7 +1985,8 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
++ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -2048,8 +2067,9 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -2128,8 +2148,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -2230,9 +2251,10 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory 
-       withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory
+        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -2312,8 +2334,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -2398,8 +2421,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -2482,8 +2506,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -2588,9 +2613,10 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory 
-       withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
+        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Asynchronously send configured message object to PubNub service.
@@ -2676,7 +2702,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  @param shouldStoreInHistory
  \c YES in case if message should be stored on \b PubNub service side and become available with History API.
  */
-+ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (void)sendMessage:(PNMessage *)message storeInHistory:(BOOL)shouldStoreInHistory
+withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
@@ -2819,7 +2846,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  Object which should be sent to the channel. It can be any object which can be serialized into JSON: \c NSString, \c NSNumber, \c NSArray,
  \c NSDictionary.
  */
-+ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage
+withCompletionBlock:(PNClientMessageProcessingBlock)success;
 /**
  Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
  
@@ -2886,7 +2914,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  @param shouldStoreInHistory
  \c YES in case if message should be stored on \b PubNub service side and become available with History API.
  */
-+ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
++ (void)sendMessage:(PNMessage *)message compressed:(BOOL)shouldCompressMessage
+     storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send configured \b PNMessage instance. All messages will be placed into queue and will be send in the same order as they were scheduled.
@@ -3039,7 +3068,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel;
 
 /**
  Same as -sendMessage:toChannel: but allow to specify completion block which will be called when message will be sent or in case of error.
@@ -3047,7 +3076,8 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods
  for this purpose.
  */
-- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -3119,7 +3149,8 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Same as -sendMessage:toChannel:withCompletionBlock: but allow to specify whether message should be stored in history or not.
@@ -3127,7 +3158,8 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  @param shouldStoreInHistory
  \c YES in case if message should be stored on \b PubNub service side and become available with History API.
  */
-- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -3201,7 +3233,8 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -3296,7 +3329,8 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -3373,8 +3407,8 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-            storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -3472,8 +3506,9 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-            storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -3546,7 +3581,8 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -3641,7 +3677,8 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -3718,8 +3755,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-            storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -3817,8 +3854,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-            storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -3895,8 +3933,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -3995,8 +4033,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4076,8 +4115,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4179,8 +4219,10 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+            storeInHistory:(BOOL)shouldStoreInHistory
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4251,7 +4293,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
+- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4344,7 +4387,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -4419,7 +4463,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4509,7 +4554,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
+- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -4585,8 +4631,8 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4666,8 +4712,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4745,8 +4792,9 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4846,9 +4894,10 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory 
-       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory
+        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -4923,7 +4972,8 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
+- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -5003,8 +5053,9 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -5082,8 +5133,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -5183,9 +5235,10 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
-                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory 
-       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+            storeInHistory:(BOOL)shouldStoreInHistory
+        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -5264,8 +5317,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -5349,8 +5403,10 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage
+       withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -5432,8 +5488,9 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
  Send \c message to the \c channel. All messages placed into queue and will be sent in the same order as they were scheduled.
@@ -5537,9 +5594,10 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id)message applePushNotification:(NSDictionary *)apnsPayload googleCloudNotification:(NSDictionary *)gcmPayload
-                 toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory 
-       withCompletionBlock:(PNClientMessageProcessingBlock)success;
+- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+   googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
+                compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
+        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
  Asynchronously send configured message object to PubNub service.
