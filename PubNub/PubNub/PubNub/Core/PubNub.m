@@ -61,7 +61,7 @@ static NSString * const kPNCodebaseBranch = @"hotfix-pt92168578";
 /**
  SHA of the commit which stores actual changes in this codebase.
  */
-static NSString * const kPNCodeCommitIdentifier = @"08f17f33d6ec4e38763cdad2324c93298ccfa6e3";
+static NSString * const kPNCodeCommitIdentifier = @"5a9330ff1173b44d5a7c84bdd8e408961e16105b";
 
 /**
  Stores reference on singleton PubNub instance and dispatch once token.
@@ -1180,7 +1180,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             return @[PNLoggerSymbols.api.clientIdentifierUpdateAttempt, [self humanReadableStateFrom:self.state]];
         }];
         
-        if (![self.uniqueClientIdentifier isEqualToString:identifier]) {
+        NSString *clientIdentifier = [identifier copy];
+        if (![self.uniqueClientIdentifier isEqualToString:clientIdentifier]) {
             
             [self   performAsyncLockingBlock:^{
 
@@ -1192,7 +1193,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                 // Check whether identifier has been changed since last method call or not
                 if ([self isConnected]) {
 
-                    self.userProvidedClientIdentifier = identifier != nil;
+                    self.userProvidedClientIdentifier = clientIdentifier != nil;
 
                     NSArray *allChannels = [self.messagingChannel fullSubscribedChannelsList];
                     if ([allChannels count]) {
@@ -1274,7 +1275,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                     }
                                     else {
 
-                                        strongSelf.uniqueClientIdentifier = identifier;
+                                        strongSelf.uniqueClientIdentifier = clientIdentifier;
                                     }
 
                                     resubscribeRetryCount = 0;
@@ -1296,16 +1297,16 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                     }
                     else {
 
-                        self.uniqueClientIdentifier = identifier;
-                        self.userProvidedClientIdentifier = identifier != nil;
+                        self.uniqueClientIdentifier = clientIdentifier;
+                        self.userProvidedClientIdentifier = clientIdentifier != nil;
                         [self handleLockingOperationComplete:YES
                               burstExecutionLockingOperation:YES];
                     }
                 }
                 else {
 
-                    self.uniqueClientIdentifier = identifier;
-                    self.userProvidedClientIdentifier = identifier != nil;
+                    self.uniqueClientIdentifier = clientIdentifier;
+                    self.userProvidedClientIdentifier = clientIdentifier != nil;
                     [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
                 }
             }        postponedExecutionBlock:^{
@@ -1316,14 +1317,15 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                             [self humanReadableStateFrom:self.state]];
                 }];
 
-                [self postponeSetClientIdentifier:identifier];
+                [self postponeSetClientIdentifier:clientIdentifier];
             } burstExecutionLockingOperation:YES];
         }
         else {
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
-                return @[PNLoggerSymbols.api.sameClientIdentifierProvided, [self humanReadableStateFrom:self.state]];
+                return @[PNLoggerSymbols.api.sameClientIdentifierProvided,
+                         [self humanReadableStateFrom:self.state]];
             }];
         }
     }];
