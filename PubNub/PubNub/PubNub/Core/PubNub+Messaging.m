@@ -53,7 +53,7 @@
                               / \a -localizedFailureReason and \a -localizedRecoverySuggestion to
                               get human readable description for error).
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
           alreadyEncrypted:(BOOL)alreadyEncrypted compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
   rescheduledCallbackToken:(NSString *)callbackToken
@@ -84,7 +84,7 @@
                               / \a -localizedFailureReason and \a -localizedRecoverySuggestion to
                               get human readable description for error).
  */
-- (void)postponeSendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (void)postponeSendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
            alreadyEncrypted:(BOOL)alreadyEncrypted compressed:(BOOL)shouldCompressMessage
              storeInHistory:(BOOL)shouldStoreInHistory
    rescheduledCallbackToken:(NSString *)callbackToken
@@ -126,21 +126,21 @@
     return [self sendMessage:message toChannel:channel withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
     return [self sendMessage:message toChannel:channel storeInHistory:YES
          withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory {
     
     return [self sendMessage:message toChannel:channel storeInHistory:shouldStoreInHistory
          withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -148,14 +148,14 @@
               storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel {
     
     return [self sendMessage:message applePushNotification:apnsPayload toChannel:channel
          withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -163,14 +163,14 @@
               storeInHistory:YES withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory {
     
     return [self sendMessage:message applePushNotification:apnsPayload toChannel:channel
               storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -178,14 +178,14 @@
                   compressed:NO storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel {
     
     return [self sendMessage:message googleCloudNotification:gcmPayload toChannel:channel
          withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -193,14 +193,14 @@
               storeInHistory:YES withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory {
     
     return [self sendMessage:message googleCloudNotification:gcmPayload toChannel:channel
               storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -208,14 +208,14 @@
                   compressed:NO storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel {
     
     return [self sendMessage:message applePushNotification:apnsPayload
      googleCloudNotification:gcmPayload toChannel:channel withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -224,7 +224,7 @@
          withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory {
     
@@ -233,7 +233,7 @@
          withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -243,14 +243,14 @@
               storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage {
     
     return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage
          withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -258,14 +258,14 @@
               storeInHistory:YES withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory {
     
     return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage
               storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -274,14 +274,14 @@
                                storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
     
     return [self sendMessage:message applePushNotification:apnsPayload toChannel:channel
                   compressed:shouldCompressMessage withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -289,7 +289,7 @@
                   compressed:shouldCompressMessage storeInHistory:YES withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory {
     
@@ -298,7 +298,7 @@
          withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -308,14 +308,14 @@
               storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
     
     return [self sendMessage:message googleCloudNotification:gcmPayload toChannel:channel
                   compressed:shouldCompressMessage withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -323,7 +323,7 @@
                   compressed:shouldCompressMessage storeInHistory:YES withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory {
     
@@ -332,7 +332,7 @@
          withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -342,7 +342,7 @@
               storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage {
     
@@ -351,7 +351,7 @@
          withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -361,7 +361,7 @@
               storeInHistory:YES withCompletionBlock:success];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory {
     
@@ -370,7 +370,7 @@
               storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -433,26 +433,26 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
 #pragma mark - Instance methods
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel {
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel {
     
     return [self sendMessage:message toChannel:channel withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
     return [self sendMessage:message toChannel:channel storeInHistory:YES
          withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory {
     
     return [self sendMessage:message toChannel:channel storeInHistory:shouldStoreInHistory
          withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -460,14 +460,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel {
     
     return [self sendMessage:message applePushNotification:apnsPayload toChannel:channel
          withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -475,14 +475,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:YES withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory {
     
     return [self sendMessage:message applePushNotification:apnsPayload toChannel:channel
               storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -490,14 +490,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
                   compressed:NO storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel {
     
     return [self sendMessage:message googleCloudNotification:gcmPayload toChannel:channel
          withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -505,14 +505,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:YES withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory {
     
     return [self sendMessage:message googleCloudNotification:gcmPayload toChannel:channel
               storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -520,14 +520,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
                   compressed:NO storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel {
     
     return [self sendMessage:message applePushNotification:apnsPayload
      googleCloudNotification:gcmPayload toChannel:channel withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -536,7 +536,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
          withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory {
     
@@ -545,7 +545,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
          withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -555,14 +555,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage {
     
     return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage
          withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -570,14 +570,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:YES withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory {
     
     return [self sendMessage:message toChannel:channel compressed:shouldCompressMessage
               storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
@@ -586,7 +586,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
     rescheduledCallbackToken:nil withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
           alreadyEncrypted:(BOOL)alreadyEncrypted compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
   rescheduledCallbackToken:(NSString *)callbackToken
@@ -723,7 +723,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
     return messageObject;
 }
 
-- (void)postponeSendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (void)postponeSendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
            alreadyEncrypted:(BOOL)alreadyEncrypted compressed:(BOOL)shouldCompressMessage
              storeInHistory:(BOOL)shouldStoreInHistory
    rescheduledCallbackToken:(NSString *)callbackToken
@@ -740,14 +740,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
     
     return [self sendMessage:message applePushNotification:apnsPayload toChannel:channel
                   compressed:shouldCompressMessage withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -755,7 +755,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
                   compressed:shouldCompressMessage storeInHistory:YES withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory {
     
@@ -764,7 +764,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
          withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -774,14 +774,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage {
     
     return [self sendMessage:message googleCloudNotification:gcmPayload toChannel:channel
                   compressed:shouldCompressMessage withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
@@ -789,7 +789,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
                   compressed:shouldCompressMessage storeInHistory:YES withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory {
     
@@ -798,7 +798,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
          withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -808,7 +808,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:shouldStoreInHistory withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage {
     
@@ -817,7 +817,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 }
 
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
@@ -827,7 +827,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:YES withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory {
     
@@ -836,7 +836,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
               storeInHistory:shouldStoreInHistory withCompletionBlock:nil];
 }
 
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success {

@@ -84,7 +84,7 @@
  Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods
  for this purpose.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -157,7 +157,7 @@
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
@@ -166,7 +166,7 @@
  @param shouldStoreInHistory
  \c YES in case if message should be stored on \b PubNub service side and become available with History API.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -241,7 +241,7 @@
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel;
 
 /**
@@ -337,7 +337,7 @@
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -415,7 +415,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
@@ -514,7 +514,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -589,7 +589,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel;
 
 /**
@@ -685,7 +685,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -762,7 +762,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
@@ -861,7 +861,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -940,7 +940,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel;
 
 /**
@@ -1040,7 +1040,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -1122,7 +1122,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory;
 
@@ -1226,7 +1226,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -1299,7 +1299,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage;
 
 /**
@@ -1394,7 +1394,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -1470,7 +1470,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
@@ -1562,7 +1562,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -1640,7 +1640,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
@@ -1722,7 +1722,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -1803,7 +1803,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory;
 
@@ -1906,7 +1906,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
         withCompletionBlock:(PNClientMessageProcessingBlock)success;
@@ -1985,7 +1985,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
@@ -2067,7 +2067,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -2148,7 +2148,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory;
 
@@ -2251,7 +2251,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
         withCompletionBlock:(PNClientMessageProcessingBlock)success;
@@ -2334,7 +2334,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage;
 
@@ -2421,7 +2421,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -2506,7 +2506,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 
@@ -2613,7 +2613,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
         withCompletionBlock:(PNClientMessageProcessingBlock)success;
@@ -3068,7 +3068,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel;
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel;
 
 /**
  Same as -sendMessage:toChannel: but allow to specify completion block which will be called when message will be sent or in case of error.
@@ -3076,7 +3076,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  Only last call of this method will call completion block. If you need to track message sending from many places, use PNObservationCenter methods
  for this purpose.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -3149,7 +3149,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
@@ -3158,7 +3158,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  @param shouldStoreInHistory
  \c YES in case if message should be stored on \b PubNub service side and become available with History API.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -3233,7 +3233,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel;
 
 /**
@@ -3329,7 +3329,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -3407,7 +3407,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
@@ -3506,7 +3506,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -3581,7 +3581,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel;
 
 /**
@@ -3677,7 +3677,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -3755,7 +3755,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
@@ -3854,7 +3854,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -3933,7 +3933,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel;
 
 /**
@@ -4033,7 +4033,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -4115,7 +4115,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory;
 
@@ -4219,7 +4219,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
             storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
@@ -4293,7 +4293,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage;
 
 /**
@@ -4387,7 +4387,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -4463,7 +4463,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 
 /**
@@ -4554,7 +4554,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -4631,7 +4631,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
@@ -4712,7 +4712,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -4792,7 +4792,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory;
 
@@ -4894,7 +4894,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
         withCompletionBlock:(PNClientMessageProcessingBlock)success;
@@ -4972,7 +4972,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage;
 
 /**
@@ -5053,7 +5053,7 @@ applePushNotification:@{@"aps":@{@"alert":@"Someone sent array of strings"}}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
@@ -5133,7 +5133,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory;
 
@@ -5235,7 +5235,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message googleCloudNotification:(NSDictionary *)gcmPayload
                  toChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
         withCompletionBlock:(PNClientMessageProcessingBlock)success;
@@ -5317,7 +5317,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage;
 
@@ -5403,7 +5403,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
@@ -5488,7 +5488,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory;
 
@@ -5594,7 +5594,7 @@ googleCloudNotification:@{@"data":@{@"summary":@"Someone sent array of strings"}
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-- (PNMessage *)sendMessage:(id <NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
+- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message applePushNotification:(NSDictionary *)apnsPayload
    googleCloudNotification:(NSDictionary *)gcmPayload toChannel:(PNChannel *)channel
                 compressed:(BOOL)shouldCompressMessage storeInHistory:(BOOL)shouldStoreInHistory
         withCompletionBlock:(PNClientMessageProcessingBlock)success;
