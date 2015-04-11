@@ -1,9 +1,16 @@
-04-08-2015 - 441b66f3 - 3.7.10.4
+04-11-2015 - cd5870bb - 3.7.10.4
 
 . fixed memory issues
 . added new subscriptionMaximumIdleTime PNConfiguration property which allow to alter time after which subscription stream should re-initialise
 . updated PNReachability to re-launch SCNetworkReachability in case if it reported 'not reachable' and at the same time interface has assigned address and time API completed successfully
 . fix participants method related to pull request
+. allocation on stack for some resources
+. added spin lock to protect PNChannel cache from changes on different threads
+. fixed wake up time crash inside of PNConnection
+. storing copy of identifier passed to async operation
+. moved copy outside of asynchronous block
+. changed message publish API method signature to request compliance with NSCopying protocol
+. PNMessage instance will copy passed object (which should be posted)
 
 03-26-2015 - d0367a49 - 3.7.10.3
 

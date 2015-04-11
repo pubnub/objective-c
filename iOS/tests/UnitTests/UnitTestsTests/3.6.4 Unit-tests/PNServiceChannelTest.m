@@ -16,8 +16,6 @@
 
 #import <OCMock/OCMock.h>
 
-#import <XCTest/XCTextCase+AsynchronousTesting.h>
-
 @interface PNServiceChannelTest : XCTestCase
 
 <

@@ -51,6 +51,11 @@
                BlueprintName = "UnitTestsTests"
                ReferencedContainer = "container:UnitTests.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AbbreviatedPresenceTest">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

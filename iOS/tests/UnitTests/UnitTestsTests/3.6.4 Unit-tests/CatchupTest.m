@@ -41,7 +41,6 @@
 {
     [super setUp];
     
-    [PubNub setDelegate:self];
     NSMutableArray *channelNames = [NSMutableArray arrayWithArray:@[[NSString stringWithFormat: @"%@", [NSDate date]]]];
     [[channelNames copy] enumerateObjectsUsingBlock:^(NSString *channelName,
                                                       NSUInteger channelNameIdx,
@@ -86,6 +85,8 @@
 
 - (void)test10Connect
 {
+    [PubNub setDelegate:self];
+    
     GCDGroup *resGroup = [GCDGroup group];
     
     [resGroup enter];
@@ -125,6 +126,9 @@
 }
 
 -(void)test20Catchup {
+    
+    [PubNub setDelegate:self];
+    
 	NSString *clientIdentifier = [NSString stringWithFormat: @"%@", [NSDate date]];
     
 	isPNClientDidReceivePresenceEventNotification = NO;

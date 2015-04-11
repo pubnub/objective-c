@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import <XCTest/XCTextCase+AsynchronousTesting.h>
 
 @interface ClientStateTest : XCTestCase <PNDelegate>
 
