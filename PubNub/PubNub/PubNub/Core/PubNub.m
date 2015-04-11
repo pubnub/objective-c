@@ -1173,6 +1173,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 - (void)setClientIdentifier:(NSString *)identifier shouldCatchup:(BOOL)shouldCatchup {
     
+    NSString *clientIdentifier = [identifier copy];
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -1180,7 +1181,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             return @[PNLoggerSymbols.api.clientIdentifierUpdateAttempt, [self humanReadableStateFrom:self.state]];
         }];
         
-        NSString *clientIdentifier = [identifier copy];
         if (![self.uniqueClientIdentifier isEqualToString:clientIdentifier]) {
             
             [self   performAsyncLockingBlock:^{
