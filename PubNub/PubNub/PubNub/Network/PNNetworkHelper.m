@@ -18,12 +18,12 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     #import <SystemConfiguration/CaptiveNetwork.h>
 #else
-    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
 
         #import <CoreWLAN/CoreWLAN.h>
 
         #ifndef _CORE_WLAN_INTERFACE_H_
-            #error PubNub library must be linked agains CoreWLAN framework
+            #error PubNub library must be linked against CoreWLAN framework
         #endif
     #endif
 #endif
@@ -148,26 +148,36 @@ static NSString * kPNWLANServiceSetIdentifierKey = @"SSID";
     id information = nil;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
-    NSArray *interfaces = CFBridgingRelease(CNCopySupportedInterfaces());
 
-    NSDictionary *interfaceInformation = nil;
+    CFArrayRef interfaces = CNCopySupportedInterfaces();
+    if (interfaces != NULL){
+        
+        CFIndex interfacesCount = CFArrayGetCount(interfaces);
+        for (CFIndex interfaceIdx = 0; interfaceIdx < interfacesCount; interfaceIdx++) {
 
-    // Iterate over list of available interfaces
-    for (NSString *interfaceName in interfaces) {
+            CFStringRef interfaceName = CFArrayGetValueAtIndex(interfaces, interfaceIdx);
+            CFDictionaryRef interfaceInformation = CNCopyCurrentNetworkInfo(interfaceName);
+            if (interfaceInformation != NULL) {
 
-        interfaceInformation = CFBridgingRelease(CNCopyCurrentNetworkInfo((__bridge CFStringRef)interfaceName));
+                if (CFDictionaryGetValue(interfaceInformation, kCNNetworkInfoKeySSID) != NULL ||
+                    CFDictionaryGetValue(interfaceInformation, kCNNetworkInfoKeyBSSID) != NULL) {
 
-        // Check whether interface contain some information or not
-        if (interfaceInformation && [interfaceInformation count]) {
+                    information = [(__bridge NSDictionary*)interfaceInformation copy];
+                }
+                CFRelease(interfaceInformation);
+            }
+            if (information != nil) {
 
-            break;
+                break;
+            }
         }
+        CFRelease(interfaces);
     }
-
-    information = interfaceInformation;
 #else
-    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6 && MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_10
         information = [CWInterface interface];
+    #elif MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
+        information = [[CWWiFiClient sharedWiFiClient] interface];
     #endif
 #endif
 
@@ -176,7 +186,7 @@ static NSString * kPNWLANServiceSetIdentifierKey = @"SSID";
 
 + (NSString *)WLANBasicServiceSetIdentifier {
 
-    NSString *WLANBSSID = nil;
+    id WLANBSSID = nil;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     WLANBSSID = [[self fetchWLANInformation] valueForKey:kPNWLANBasicServiceSetIdentifierKey];
@@ -187,7 +197,7 @@ static NSString * kPNWLANServiceSetIdentifierKey = @"SSID";
         WLANBSSID = @"si:mu:la:to:r0";
     }
 #else
-    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
         WLANBSSID = ((CWInterface *)[self fetchWLANInformation]).bssid;
     #endif
 #endif
@@ -203,7 +213,7 @@ static NSString * kPNWLANServiceSetIdentifierKey = @"SSID";
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
     WLANSSID = [[self fetchWLANInformation] valueForKey:kPNWLANServiceSetIdentifierKey];
 #else
-    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
         WLANSSID = ((CWInterface *)[self fetchWLANInformation]).ssid;
     #endif
 #endif

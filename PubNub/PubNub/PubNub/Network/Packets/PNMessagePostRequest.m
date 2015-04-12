@@ -70,7 +70,7 @@
 
 + (PNMessagePostRequest *)postMessageRequestWithMessage:(PNMessage *)message; {
 
-    return [[[self class] alloc] initWithMessage:message];
+    return [[self alloc] initWithMessage:message];
 }
 
 

@@ -141,8 +141,8 @@
                                subscribeKey:(NSString *)subscribeKey secretKey:(NSString *)secretKey
                                   cipherKey:(NSString *)cipherKey authorizationKey:(NSString *)authorizationKey {
 
-    return [[[self class] alloc] initWithOrigin:originHostName publishKey:publishKey subscribeKey:subscribeKey
-                                      secretKey:secretKey cipherKey:cipherKey authorizationKey:authorizationKey];
+    return [[self alloc] initWithOrigin:originHostName publishKey:publishKey subscribeKey:subscribeKey
+                              secretKey:secretKey cipherKey:cipherKey authorizationKey:authorizationKey];
 }
 
 

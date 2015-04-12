@@ -236,8 +236,17 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 - (NSString *)decodedResponse {
 
-    NSString *encodedString = [[NSString alloc] initWithData:self.content encoding:NSUTF8StringEncoding];
-    return [encodedString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    static NSCharacterSet *trimmingSet = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        trimmingSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    });
+    NSString *encodedString = [[NSString alloc] initWithData:self.content
+                                                    encoding:NSUTF8StringEncoding];
+    
+    
+    return [encodedString stringByTrimmingCharactersInSet:trimmingSet];
 }
 
 - (void)extractServiceData {

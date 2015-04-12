@@ -77,7 +77,7 @@
 /**
  Stores reference on response body object (array in most of cases).
  */
-@property (nonatomic, readonly, strong) id response;
+@property (nonatomic, readonly, copy) id response;
 
 
 #pragma mark - Class methods

@@ -891,13 +891,13 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
     SCNetworkConnectionFlags reachabilityFlags;
     
     // Fetch cellular data reachability status
-    SCNetworkReachabilityRef internetReachability = [[self class] newReachabilityForWiFi:NO];
+    SCNetworkReachabilityRef internetReachability = [PNReachability newReachabilityForWiFi:NO];
     SCNetworkReachabilityGetFlags(internetReachability, &reachabilityFlags);
     PNReachabilityStatus reachabilityStatus = PNReachabilityStatusForFlags(reachabilityFlags);
     if (reachabilityStatus == PNReachabilityStatusUnknown || reachabilityStatus == PNReachabilityStatusNotReachable) {
         
         // Fetch WiFi reachability status
-        SCNetworkReachabilityRef wifiReachability = [[self class] newReachabilityForWiFi:YES];
+        SCNetworkReachabilityRef wifiReachability = [PNReachability newReachabilityForWiFi:YES];
         SCNetworkReachabilityGetFlags(wifiReachability, &reachabilityFlags);
         CFRelease(wifiReachability);
     }

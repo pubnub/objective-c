@@ -506,6 +506,8 @@ static NSUInteger const kPNMaximumConnectionRetryCount = 3;
         // Perform connection initialization
         self.configuration = configuration;
         self.name = identifier;
+        self.socketReadStream = NULL;
+        self.socketWriteStream = NULL;
 
         [self pn_setupPrivateSerialQueueWithIdentifier:@"connection" andPriority:DISPATCH_QUEUE_PRIORITY_DEFAULT];
         self.deserializer = [PNResponseDeserialize new];
@@ -1099,13 +1101,16 @@ void connectionContextInformationReleaseCallBack( void *info ) {
 
         // Retrieve connection proxy configuration
         [self retrieveSystemProxySettings];
-
-
+        
         // Create stream pair on socket which is connected to specified remote host
+        CFReadStreamRef socketReadStream;
+        CFWriteStreamRef socketWriteStream;
         CFStreamCreatePairWithSocketToHost(CFAllocatorGetDefault(), (__bridge CFStringRef)(self.configuration.origin),
-                                           targetPort, &_socketReadStream, &_socketWriteStream);
-        [self configureReadStream:_socketReadStream];
-        [self configureWriteStream:_socketWriteStream];
+                                           targetPort, &socketReadStream, &socketWriteStream);
+        [self configureReadStream:socketReadStream];
+        [self configureWriteStream:socketWriteStream];
+        _socketReadStream = socketReadStream;
+        _socketWriteStream = socketWriteStream;
 
         // Check whether at least one of the streams was unable to complete configuration
         if (![PNBitwiseHelper is:self.state containsBit:PNConnectionConfigured]) {
@@ -1880,8 +1885,10 @@ void connectionContextInformationReleaseCallBack( void *info ) {
 
             CFRunLoopRun();
         }
-        
-        CFRelease(error);
+        if (error != NULL) {
+            
+            CFRelease(error);
+        }
     }
     else {
 
@@ -1945,11 +1952,13 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     if (isStreamExists) {
         
         self.socketReadStream = NULL;
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             
             CFReadStreamSetClient(readStream, kCFStreamEventNone, NULL, NULL);
-            CFReadStreamClose(readStream);
+            if (CFReadStreamGetStatus(readStream) != kCFStreamStatusClosed) {
+
+                CFReadStreamClose(readStream);
+            }
             CFRelease(readStream);
         });
     }
@@ -1983,18 +1992,22 @@ void connectionContextInformationReleaseCallBack( void *info ) {
         }];
         
         // Read raw data from stream
-        UInt8 buffer[kPNStreamBufferSize];
+        UInt8 *buffer = malloc(kPNStreamBufferSize);
         CFIndex readedBytesCount = CFReadStreamRead(stream, buffer, kPNStreamBufferSize);
         
         // Checking whether client was able to read out some data from stream or not
         if (readedBytesCount > 0) {
             
+            // Check whether readed packet is smaller when default buffer size
+            if (readedBytesCount < kPNStreamBufferSize) {
+                
+                // Shrink buffer in size to amount of readed buffer.
+                buffer = realloc(buffer, readedBytesCount);
+            }
             // Append filled buffer to current read buffer.
-            dispatch_data_t bufferContent = dispatch_data_create(buffer, readedBytesCount,
+            dispatch_data_t bufferContent = dispatch_data_create(buffer, (size_t)readedBytesCount,
                                                                  DISPATCH_TARGET_QUEUE_DEFAULT,
-                                                                 DISPATCH_DATA_DESTRUCTOR_DEFAULT);
-            [self appendToReadBuffer:bufferContent];
-            [PNDispatchHelper release:bufferContent];
+                                                                 DISPATCH_DATA_DESTRUCTOR_FREE);
             
             [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -2003,9 +2016,9 @@ void connectionContextInformationReleaseCallBack( void *info ) {
             }];
             
             if ([PNLogger isDumpingHTTPResponse] || [PNLogger isLoggerEnabled]) {
-                
+
                 NSData *tempData = [[NSData alloc] initWithBytes:buffer length:(NSUInteger)readedBytesCount];
-                
+
                 [PNLogger storeHTTPPacketData:^NSData * {
                     
                     return tempData;
@@ -2027,11 +2040,15 @@ void connectionContextInformationReleaseCallBack( void *info ) {
                              responseString, @(self.state)];
                 }];
             }
+            [self appendToReadBuffer:bufferContent];
+            [PNDispatchHelper release:bufferContent];
             
             [self processResponse];
         }
         // Looks like there is no data or error occurred while tried to read out stream content
         else if (readedBytesCount < 0) {
+            
+            free(buffer);
             
             [PNLogger logConnectionErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -2043,6 +2060,10 @@ void connectionContextInformationReleaseCallBack( void *info ) {
             [PNBitwiseHelper addTo:&_state bit:PNReadStreamError];
             [self handleStreamError:error];
             CFRelease(error);
+        }
+        else {
+            
+            free(buffer);
         }
     }
 }
@@ -2221,7 +2242,10 @@ void connectionContextInformationReleaseCallBack( void *info ) {
             CFRunLoopRun();
         }
         
-        CFRelease(error);
+        if (error != NULL) {
+            
+            CFRelease(error);
+        }
     }
     else {
 
@@ -2277,9 +2301,12 @@ void connectionContextInformationReleaseCallBack( void *info ) {
         
         self.socketWriteStream = NULL;
         dispatch_async(dispatch_get_main_queue(), ^{
-            
+
             CFWriteStreamSetClient(writeStream, kCFStreamEventNone, NULL, NULL);
-            CFWriteStreamClose(writeStream);
+            if (CFWriteStreamGetStatus(writeStream) != kCFStreamStatusClosed){
+
+                CFWriteStreamClose(writeStream);
+            }
             CFRelease(writeStream);
         });
     }
@@ -2365,8 +2392,11 @@ void connectionContextInformationReleaseCallBack( void *info ) {
 
     BOOL(^writeStreamIsAbleToSend)(void) = ^{
 
-        return (BOOL)([self isConnected] && ![self isReconnecting] && ![self isDisconnecting] &&
-                      ![PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR] &&
+        return (BOOL)(self.socketWriteStream && [self isConnected] && ![self isReconnecting] &&
+                      ![self isDisconnecting] && ![PNBitwiseHelper is:self.state strictly:YES
+                                                         containsBits:PNConnectionDisconnect,
+                                                                      PNByServerRequest,
+                                                                      BITS_LIST_TERMINATOR] &&
                       self.isWriteStreamCanHandleData && ![self isResuming]);
     };
 
@@ -2582,7 +2612,8 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     }
     else if ([PNBitwiseHelper is:self.state strictly:YES containsBit:PNConnectionConnected]) {
 
-        if ([PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect, PNByServerRequest, BITS_LIST_TERMINATOR]) {
+        if ([PNBitwiseHelper is:self.state strictly:YES containsBits:PNConnectionDisconnect,
+             PNByServerRequest, BITS_LIST_TERMINATOR]) {
 
             [PNLogger logConnectionInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -3972,8 +4003,8 @@ void connectionContextInformationReleaseCallBack( void *info ) {
             CFDictionarySetValue(_streamSecuritySettings, kCFStreamSSLValidatesCertificateChain, kCFBooleanFalse);
         }
     }
-    else if (!self.configuration.shouldUseSecureConnection ||
-            self.sslConfigurationLevel == PNConnectionSSLConfigurationInsecure) {
+    else if (_streamSecuritySettings != NULL && (!self.configuration.shouldUseSecureConnection ||
+            self.sslConfigurationLevel == PNConnectionSSLConfigurationInsecure)) {
         
         CFRelease(_streamSecuritySettings);
         _streamSecuritySettings = NULL;

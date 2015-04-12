@@ -453,7 +453,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
     CFHTTPMessageRef message = NULL;
     NSUInteger httpHeadersEndMarkerLocation = [self HTTPHeadersEndMarkerIn:buffer withSize:bufferSize];
     NSUInteger responseBodyOffset = 0;
-    if (httpHeadersEndMarkerLocation != NSNotFound) {
+    if (httpHeadersEndMarkerLocation != NSNotFound && bufferSize >= httpHeadersEndMarkerLocation) {
 
         responseBodyOffset = (httpHeadersEndMarkerLocation + strlen(kHTTPHeaderEndMarker));
 

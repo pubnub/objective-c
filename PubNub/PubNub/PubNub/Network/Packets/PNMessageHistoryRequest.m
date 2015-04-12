@@ -69,9 +69,9 @@
                                                        limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessagesInResponse
                                           includingTimeToken:(BOOL)shouldIncludeTimeToken {
 
-    return [[[self class] alloc] initForChannel:channel from:startDate to:endDate limit:limit
-                                 reverseHistory:shouldReverseMessagesInResponse
-                             includingTimeToken:shouldIncludeTimeToken];
+    return [[self alloc] initForChannel:channel from:startDate to:endDate limit:limit
+                         reverseHistory:shouldReverseMessagesInResponse
+                     includingTimeToken:shouldIncludeTimeToken];
 }
 
 

@@ -206,7 +206,7 @@
 
 + (PNError *)errorWithMessage:(NSString *)errorMessage code:(NSInteger)errorCode {
     
-    return [[[self class] alloc] initWithMessage:errorMessage code:errorCode];
+    return [[self alloc] initWithMessage:errorMessage code:errorCode];
 }
 
 

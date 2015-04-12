@@ -87,13 +87,13 @@
 
     NSString *escapedString = CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
                                                 (__bridge CFStringRef)self, NULL,
-                                                (CFStringRef)stringWithCharsForEscape,
+                                                (__bridge CFStringRef)stringWithCharsForEscape,
                                                 kCFStringEncodingUTF8));
     NSString *newlineEscapedString = [escapedString stringByReplacingOccurrencesOfString:@"%0A" withString:@"%5Cn"];
     newlineEscapedString = [newlineEscapedString stringByReplacingOccurrencesOfString:@"%0D" withString:@"%5Cr"];
 
 
-    return newlineEscapedString;
+    return [newlineEscapedString copy];
 }
 
 - (NSString *)pn_ASCIIString {
@@ -108,7 +108,7 @@
 
 - (NSString *)pn_ASCIIStringHEXEncodedString:(BOOL)shouldUseHEXCodes {
 
-    NSMutableString *asciiString = [[NSMutableString alloc] initWithCapacity:([self length]*2.0f)];
+    NSMutableString *asciiString = [[NSMutableString alloc] initWithCapacity:([self length]*2)];
     NSUInteger charIdx, charsCount = [self length];
     for (charIdx = 0; charIdx < charsCount; charIdx++) {
 

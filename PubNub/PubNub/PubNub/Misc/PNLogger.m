@@ -1546,27 +1546,29 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
             
             if (self.consoleDumpStoringChannel) {
                 
-                __block dispatch_data_t data = dispatch_data_create([self.consoleDump bytes], [self.consoleDump length],
-                                                                    self.dumpProcessingQueue, NULL);
+                __block dispatch_data_t dumpData = dispatch_data_create([self.consoleDump bytes],
+                                                                        [self.consoleDump length],
+                                                                        self.dumpProcessingQueue,
+                                                                        DISPATCH_DATA_DESTRUCTOR_DEFAULT);
                 [self.consoleDump setLength:0];
-                dispatch_io_write(self.consoleDumpStoringChannel, 0, data, self.dumpProcessingQueue,
+                dispatch_io_write(self.consoleDumpStoringChannel, 0, dumpData, self.dumpProcessingQueue,
                                   ^(bool done, dispatch_data_t data, int error) {
                                       
                                       if (!done && error != 0) {
                                           
-                                          if (data) {
+                                          if (dumpData) {
                                               
-                                              [PNDispatchHelper release:data];
-                                              data = NULL;
+                                              [PNDispatchHelper release:dumpData];
+                                              dumpData = NULL;
                                           }
                                           
                                           NSLog(@"PNLog: Can't write into file (%@)", [self dumpFilePath]);
                                           [self closeConsoleDumpChannel];
                                       }
-                                      else if (done && data) {
+                                      else if (done && dumpData) {
                                           
-                                          [PNDispatchHelper release:data];
-                                          data = NULL;
+                                          [PNDispatchHelper release:dumpData];
+                                          dumpData = NULL;
                                       }
                                   });
             }

@@ -212,8 +212,13 @@
                 ([jsonString characterAtIndex:(parenthesisRange.location+parenthesisRange.length)] == '[' ||
                         [jsonString characterAtIndex:(parenthesisRange.location+parenthesisRange.length)] == '{')) {
 
-            NSScanner *scanner = [NSScanner scannerWithString:jsonString];
-            [scanner scanUpToString:@"(" intoString:callbackMethodName];
+            NSString *name = nil;
+            NSScanner *scanner = [[NSScanner alloc] initWithString:jsonString];
+            [scanner scanUpToString:@"(" intoString:&name];
+            if ([name length]) {
+                
+                *callbackMethodName = [name copy];
+            }
         }
     }
     else {
@@ -227,7 +232,7 @@
 
 + (NSString *)JSONStringFromJSONPString:(NSString *)jsonpString callbackMethodName:(NSString *)callbackMethodName {
     
-    NSScanner *scanner = [NSScanner scannerWithString:jsonpString];
+    NSScanner *scanner = [[NSScanner alloc] initWithString:jsonpString];
     [scanner scanUpToString:@"(" intoString:NULL];
     
     NSString *JSONWrappedInParens = [[scanner string] substringFromIndex:[scanner scanLocation]];

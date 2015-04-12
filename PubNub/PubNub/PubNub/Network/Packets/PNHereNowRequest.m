@@ -46,8 +46,8 @@
 + (PNHereNowRequest *)whoNowRequestForChannels:(NSArray *)channels clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                                    clientState:(BOOL)shouldFetchClientState {
 
-    return [[[self class] alloc] initWithChannels:channels clientIdentifiersRequired:isClientIdentifiersRequired
-                                      clientState:shouldFetchClientState];
+    return [[self alloc] initWithChannels:channels clientIdentifiersRequired:isClientIdentifiersRequired
+                              clientState:shouldFetchClientState];
 }
 
 

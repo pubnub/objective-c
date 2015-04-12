@@ -17,16 +17,16 @@
 
         #if __IPHONE_OS_VERSION_MIN_REQUIRED
             // Only starting from iOS 6.x GCD structures treated as objects and handled by ARC
-            #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
+            #if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_6_0
                 #undef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
                 #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 1
-            #endif // __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
+            #endif // __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_6_0
         #else
             // Only starting from Mac OS X 10.8.x GCD structures treated as objects and handled by ARC
-            #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1080
+            #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_8
                 #undef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
                 #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 1
-            #endif // MAC_OS_X_VERSION_MIN_REQUIRED >= 1080
+            #endif // MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_8
         #endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 
         #ifdef OS_OBJECT_USE_OBJC

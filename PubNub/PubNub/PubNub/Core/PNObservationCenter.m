@@ -150,12 +150,7 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 @property (nonatomic, pn_desired_weak) id defaultObserver;
 
 /**
- @brief      Stores reference on list of object returned by NSNotificationCenter during subscription
-             on notifications.
- @discussion Will be used to unsubscribe from notifications at the end of \b PNObservationCenter
-             life-cycle.
-
- @since 3.7.9
+ @breif Stores list of notifications on which observer subscribed.
  */
 @property (nonatomic, strong) NSMutableArray *notifications;
 
@@ -272,30 +267,14 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
         self.defaultObserver = (defaultObserver ? defaultObserver : [PubNub sharedInstance]);
         [self pn_setupPrivateSerialQueueWithIdentifier:@"observer" andPriority:DISPATCH_QUEUE_PRIORITY_DEFAULT];
 
-        __block __pn_desired_weak __typeof__(self) weakSelf = self;
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        void(^handleBlock)(SEL, NSNotification *) = ^(SEL handlerSelector,
-                                                      NSNotification *notification){
-
-            __strong __typeof__(self) strongSelf = weakSelf;
-            [strongSelf pn_dispatchBlock:^{
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                [strongSelf performSelector:handlerSelector withObject:notification];
-                #pragma clang diagnostic pop
-            }];
-        };
         void(^addObserver)(SEL, NSString *) = ^(SEL handlerSelector, NSString *notificationName) {
 
             NSString *privateNotification = [NSNotification pn_privateNotificationNameFrom:notificationName];
-            id observer = [notificationCenter addObserverForName:privateNotification
-                                                          object:self.defaultObserver queue:nil
-                                                      usingBlock:^(NSNotification *notification) {
+            [notificationCenter addObserver:self selector:handlerSelector name:privateNotification
+                                     object:self.defaultObserver];
 
-                handleBlock(handlerSelector, (NSNotification *)notification);
-            }];
-
-            [self.notifications addObject:observer];
+            [self.notifications addObject:privateNotification];
         };
 
         addObserver(@selector(handleClientConnectionStateChange:), kPNClientDidConnectToOriginNotification);
@@ -2441,13 +2420,14 @@ static struct PNObservationObserverDataStruct PNObservationObserverData = {
 
     // Unsubscribe from all notifications
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [_notifications enumerateObjectsUsingBlock:^(id notification, NSUInteger notificationIdx,
-                                                 BOOL *notificationsEnumeratorStop) {
+    [_notifications enumerateObjectsUsingBlock:^(NSString *notificationName, NSUInteger notificationNameIdx,
+                                                 BOOL *notificationNamesEnumeratorStop) {
 
-        [notificationCenter removeObserver:notification];
+        if (_defaultObserver) {
+            
+            [notificationCenter removeObserver:self name:notificationName object:_defaultObserver];
+        }
     }];
-    _notifications = nil;
-    
     _defaultObserver = nil;
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
