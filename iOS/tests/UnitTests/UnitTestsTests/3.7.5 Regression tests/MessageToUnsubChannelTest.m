@@ -27,13 +27,9 @@
 - (void)setUp {
     [super setUp];
     [PubNub disconnect];
-    [PubNub resetClient];
-    
-    [PubNub setDelegate:self];
 }
 
 - (void)tearDown {
-    [PubNub setDelegate:nil];
     [PubNub disconnect];
     [super tearDown];
 }
@@ -240,7 +236,7 @@
     [PubNub unsubscribeFrom:@[[PNChannel channelWithName:@"iosdev2"]]];
     [PubNub sendMessage:@"Hello world #2" toChannel:[PNChannel channelWithName:@"iosdev4"]];
     
-    if ([GCDWrapper isGCDGroup:_resGroup7 timeoutFiredValue:30]) {
+    if ([GCDWrapper isGCDGroup:_resGroup7 timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. Couldn't send message to channel");
     }
     

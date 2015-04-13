@@ -23,7 +23,6 @@
 - (void)setUp {
     [super setUp];
     [PubNub disconnect];
-//    [PubNub resetClient];
 }
 
 - (void)tearDown {
@@ -69,16 +68,6 @@
 
 // PubNub connection
 - (void)testPubNubConnectSuccessBlock {
-    
-    
-    [PubNub resetClient];
-    
-#warning  Investigate why we need it there?
-    /*
-     We have a fail like: configuration is invalid, if we try to remove sleep 1 here
-     */
-    
-    [GCDWrapper sleepForSeconds:1];
     
     PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
 

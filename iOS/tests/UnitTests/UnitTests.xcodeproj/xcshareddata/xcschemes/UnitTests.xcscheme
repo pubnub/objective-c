@@ -53,7 +53,49 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "AbbreviatedPresenceTest">
+                  Identifier = "CatchupTest">
+               </Test>
+               <Test
+                  Identifier = "ChangingChannels">
+               </Test>
+               <Test
+                  Identifier = "ChannelGroupPAMTest">
+               </Test>
+               <Test
+                  Identifier = "ChaosSubscribeUnsubscribeTest">
+               </Test>
+               <Test
+                  Identifier = "ClientStateTest">
+               </Test>
+               <Test
+                  Identifier = "Configuration">
+               </Test>
+               <Test
+                  Identifier = "HugeCompressedMessageTest">
+               </Test>
+               <Test
+                  Identifier = "MessageToUnsubChannelTest">
+               </Test>
+               <Test
+                  Identifier = "PAMCatchupTest">
+               </Test>
+               <Test
+                  Identifier = "PAMFunctionTest">
+               </Test>
+               <Test
+                  Identifier = "PAMSimpleTest">
+               </Test>
+               <Test
+                  Identifier = "PAMTestError">
+               </Test>
+               <Test
+                  Identifier = "PNAccessRightOptionsTest">
+               </Test>
+               <Test
+                  Identifier = "PNAccessRightsAuditRequestTest">
+               </Test>
+               <Test
+                  Identifier = "PNConfigurationChangeTest">
                </Test>
             </SkippedTests>
          </TestableReference>
