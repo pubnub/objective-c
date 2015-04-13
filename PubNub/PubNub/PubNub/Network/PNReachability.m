@@ -1174,7 +1174,7 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
 
             if ([self isServiceAvailableForStatus:updatedStatus] && shouldSuspectWrongState) {
 
-                [self startOriginLookup:NO];
+                [self startOriginLookup:YES stopPrevious:NO];
             }
 
             [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
