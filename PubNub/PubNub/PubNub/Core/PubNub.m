@@ -243,6 +243,35 @@ static dispatch_once_t onceToken;
  */
 - (void)burstExecutionLockingMethod;
 
+#pragma mark - Client configuration
+
+/**
+ @brief Perform initial configuration or update existing one.
+ 
+ @param synchronously \c NO in case if configuration should be done asynchronously and access to
+                      resources should be serialized on private queue.
+ @param configuration \b PNConfiguration instance which specify \b PubNub client behaviour and 
+                      operation routes.
+ @param delegate      Instance which conforms to \b PNDelegate protocol and will receive events 
+                      from \b PubNub client via delegate callbacks.
+
+ @since <#version number#>
+ */
+- (void)setupSynchronously:(BOOL)synchronously withConfiguration:(PNConfiguration *)configuration
+               andDelegate:(id<PNDelegate>)delegate;
+
+/**
+ @brief Specify \b PubNub client delegate for event callbacks.
+ 
+ @param delegate      Instance which conforms to \b PNDelegate protocol and will receive events 
+                      from \b PubNub client via delegate callbacks.
+ @param synchronously \c NO in case if configuration should be done asynchronously and access to
+                      resources should be serialized on private queue.
+ 
+ @since <#version number#>
+ */
+- (void)setDelegate:(id<PNDelegate>)delegate synchronously:(BOOL)synchronously;
+
 
 #pragma mark - Client identification
 
@@ -1015,8 +1044,14 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 }
 
 - (void)setupWithConfiguration:(PNConfiguration *)configuration andDelegate:(id<PNDelegate>)delegate {
+    
+    [self setupSynchronously:NO withConfiguration:configuration andDelegate:delegate];
+}
 
-    [self pn_dispatchBlock:^{
+- (void)setupSynchronously:(BOOL)synchronously withConfiguration:(PNConfiguration *)configuration
+               andDelegate:(id<PNDelegate>)delegate {
+    
+    dispatch_block_t configurationBlock = ^{
 
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
 
@@ -1064,8 +1099,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         [self.reachability restartServiceReachabilityMonitoring];
                     }
                 };
-
-                [self setDelegate:delegate];
+                
+                [self setDelegate:delegate synchronously:synchronously];
 
                 BOOL isInitialConfiguration = self.clientConfiguration == nil;
 
@@ -1152,15 +1187,38 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             // Notify delegate about client configuration error
             [self notifyDelegateAboutError:[PNError errorWithCode:kPNClientConfigurationError]];
         }
-    }];
+    };
+
+    if (synchronously) {
+        
+        configurationBlock();
+    }
+    else {
+        
+        [self pn_dispatchBlock:configurationBlock];
+    }
 }
 
 - (void)setDelegate:(id<PNDelegate>)delegate {
     
-    [self pn_dispatchBlock:^{
+    [self setDelegate:delegate synchronously:NO];
+}
+
+- (void)setDelegate:(id<PNDelegate>)delegate synchronously:(BOOL)synchronously {
     
+    dispatch_block_t delegateUpdateBlock = ^{
+        
         self.clientDelegate = delegate;
-    }];
+    };
+    
+    if (synchronously) {
+        
+        delegateUpdateBlock();
+    }
+    else {
+        
+        [self pn_dispatchBlock:delegateUpdateBlock];
+    }
 }
 
 
