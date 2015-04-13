@@ -97,6 +97,9 @@
                <Test
                   Identifier = "PNConfigurationChangeTest">
                </Test>
+               <Test
+                  Identifier = "PubNubInvocationStorageTest">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

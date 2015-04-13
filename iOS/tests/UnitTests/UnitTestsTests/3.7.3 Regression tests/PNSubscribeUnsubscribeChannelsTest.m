@@ -77,7 +77,7 @@
         }
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:5]) {
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. Didn't subscribe on channels");
         
         _resGroup = nil;

@@ -46,12 +46,15 @@
 
 -(void)testInit {
 	PNResponse *response = [[PNResponse alloc] init];
-	response.response = [NSMutableDictionary dictionary];
-	[response.response setObject: @[@"channel"] forKey: @"payload.channels"];
-	[response.response setObject: @"errorMessage" forKey: @"message"];
-	[response.response setObject: @"payload" forKey: @"payload"];
-	[response.response setObject: @"service" forKey: @"service"];
+    
+    NSMutableDictionary *rawResponse = [NSMutableDictionary dictionary];
+	[rawResponse setObject: @[@"channel"] forKey: @"payload.channels"];
+	[rawResponse setObject: @"errorMessage" forKey: @"message"];
+	[rawResponse setObject: @"payload" forKey: @"payload"];
+	[rawResponse setObject: @"service" forKey: @"service"];
 	response.statusCode = 402;
+    
+    response.response = rawResponse;
 
 	PNErrorResponseParser *parser = [[PNErrorResponseParser alloc] initWithResponse: response];
 	XCTAssertTrue( parser != nil, @"");
@@ -62,9 +65,13 @@
 
 
 	response = [[PNResponse alloc] init];
-	response.response = [NSMutableDictionary dictionary];
-	[response.response setObject: @[@"channel"] forKey: @"payload.channels"];
-	[response.response setObject: @"errorMessage" forKey: @"message"];
+    
+    rawResponse = [NSMutableDictionary dictionary];
+    
+	[rawResponse setObject: @[@"channel"] forKey: @"payload.channels"];
+	[rawResponse setObject: @"errorMessage" forKey: @"message"];
+    
+    response.response = rawResponse;
 
 	parser = [[PNErrorResponseParser alloc] initWithResponse: response];
 	XCTAssertTrue( parser != nil, @"");

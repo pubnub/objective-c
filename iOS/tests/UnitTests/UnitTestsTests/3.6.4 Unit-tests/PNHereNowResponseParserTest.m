@@ -51,10 +51,15 @@
 
 -(void)testInit {
 	PNResponse *response = [[PNResponse alloc] init];
-	response.response = [NSMutableDictionary dictionary];
 	NSArray *uuids = @[@"u1", @"u2"];
-	[response.response setObject: uuids forKey: @"uuids"];
-	[response.response setObject: @(2) forKey: @"occupancy"];
+    
+    NSMutableDictionary *rawResponse = [NSMutableDictionary dictionary];
+    
+	[rawResponse setObject: uuids forKey: @"uuids"];
+	[rawResponse setObject: @(2) forKey: @"occupancy"];
+    
+    response.response = rawResponse;
+    
 	PNChannel *channel = [PNChannel channelWithName:@"channel"];
 	response.additionalData = @[channel];
 
@@ -68,9 +73,13 @@
 	XCTAssertTrue( [client.identifier isEqualToString:uuids[0]], @"");
 
 	response = [[PNResponse alloc] init];
-	response.response = [NSMutableDictionary dictionary];
-	[response.response setObject: uuids forKey: @"uuids"];
-	[response.response setObject: @(10) forKey: @"occupancy"];
+	rawResponse = [NSMutableDictionary dictionary];
+    
+	[rawResponse setObject: uuids forKey: @"uuids"];
+	[rawResponse setObject: @(10) forKey: @"occupancy"];
+    
+    response.response = rawResponse;
+    
 	channel = [PNChannel channelWithName:@"channel"];
 	response.additionalData = @[channel];
 
