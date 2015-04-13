@@ -33,20 +33,12 @@
 #import "PNPresenceEvent.h"
 #import "GCDWrapper.h"
 
-
-static NSString *kOriginPath = @"pubsub.pubnub.com";
-
-static NSString * const kPNPublishKey = @"pub-c-12b1444d-4535-4c42-a003-d509cc071e09";
-static NSString * const kPNSubscriptionKey = @"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe";
-static NSString * const kPNSecretKey = @"sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz";
-static NSString * const kPNCipherKey = nil;
-static NSString * const kPNAuthorizationKey = @"iko19740905";
-
-
 @interface AbbreviatedPresenceTest : XCTestCase <PNDelegate> {
 	GCDGroup *_resGroup;
     PNConfiguration *_configuration;
     PNConfiguration *_configuration1;
+    
+    GCDGroup *_unsubscribeClientGroup;
 }
 
 @end
@@ -100,7 +92,10 @@ static NSString * const kPNAuthorizationKey = @"iko19740905";
 
     // Unsubscribe from channels
     XCTAssertTrue(([self unsubscribeClient:client fromChannelObjects:@[@"iostest1",@"iostest2"]]));
-    XCTAssertTrue(([self unsubscribeClient:client fromChannelObjects:@[@"iostest1"]]));
+    
+    
+#warning - Investigate why we need to unsubscribe again???
+//    XCTAssertTrue(([self unsubscribeClient:client fromChannelObjects:@[@"iostest1"]]));
     XCTAssertEqual([client subscribedObjectsList].count, 0);
     
     // Remove grant on application and group
@@ -236,8 +231,8 @@ static NSString * const kPNAuthorizationKey = @"iko19740905";
 - (BOOL)unsubscribeClient:(PubNub *)client
        fromChannelObjects:(NSArray *)сhannels {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enterTimes:2];
+    _unsubscribeClientGroup = [GCDGroup group];
+    [_unsubscribeClientGroup enterTimes:2];
     
     NSArray *_channels = [PNChannel channelsWithNames:сhannels];
     
@@ -249,17 +244,17 @@ static NSString * const kPNAuthorizationKey = @"iko19740905";
             XCTFail(@"Error unsubscribing from channels %@", error);
         } else {
             setSubscribedChannels = [[NSSet alloc] initWithArray:[client subscribedObjectsList]];
-            [_resGroup leave];
+            [_unsubscribeClientGroup leave];
         }
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:5]) {
+    if ([GCDWrapper isGCDGroup:_unsubscribeClientGroup timeoutFiredValue:10]) {
         XCTFail(@"Timeout is fired. Didn't unsubscribing from channels");
-        _resGroup = nil;
+        _unsubscribeClientGroup = nil;
         return NO;
     }
     
-    _resGroup = nil;
+    _unsubscribeClientGroup = nil;
     return ![setChannels isSubsetOfSet:setSubscribedChannels];
 }
 
@@ -836,68 +831,6 @@ PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
     return accessRights;
 }
 
-#warning It seems should be removed
-
-- (void)t1estAbbreviatedPresence
-{
-	[PubNub disconnect];
-	[PubNub setDelegate:self];
-    
-    // Vadim's keys
-    
-	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kOriginPath
-                                                                  publishKey:kPNPublishKey
-                                                                subscribeKey:kPNSubscriptionKey
-                                                                   secretKey:kPNCipherKey
-                                                                   cipherKey: nil];
-    
-    configuration.presenceHeartbeatTimeout = 20;
-	[PubNub setConfiguration:configuration];
-    
-    _resGroup = [GCDGroup group];
-    [_resGroup enterTimes:3];
-
-	[PubNub connectWithSuccessBlock:^(NSString *origin) {
-  
-		NSLog(@"\n\n\n\n\n\n\n{BLOCK} PubNub client connected to: %@", origin);
-        
-        [_resGroup leave];
-	} errorBlock:^(PNError *connectionError) {
-							 XCTFail(@"connectionError %@", connectionError);
-     }];
-
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
-        XCTFail(@"Timeout received");
-        _resGroup = nil;
-    }
- 
-    _resGroup = nil;
-    
-	BOOL isConnect = [[PubNub sharedInstance] isConnected];
-	XCTAssertTrue( isConnect, @"not connected");
-    
-    // we are expecting two presence events: join and timeout
-    [_resGroup enterTimes:2];
-    
-	[PubNub subscribeOn: @[[PNChannel channelWithName: @"zzz" shouldObservePresence: YES shouldUpdatePresenceObservingFlag: YES]]
-		withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *subscriptionError) {
-            
-            NSLog(@"channels: %@", channels);
-            [_resGroup leave];
-	 }];
-
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
-        XCTFail(@"Timeout received");
-        _resGroup = nil;
-    }
-    
-    _resGroup = nil;
-}
-
-
-
-
-
 - (void)handleClientDidReceivePresenceEvent:(NSNotification *)notification {
     // Retrieve reference on presence event which was received
 	NSLog(@"clientDidReceivePresenceEvent %@", notification);
@@ -958,8 +891,8 @@ PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
 
 // Unsubscribe from did
 - (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects {
-    if (_resGroup) {
-        [_resGroup leave];
+    if (_unsubscribeClientGroup) {
+        [_unsubscribeClientGroup leave];
     }
 }
 
@@ -967,8 +900,8 @@ PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
 - (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
     XCTFail(@"Did fail unsubscription: %@", error);
     
-    if (_resGroup) {
-        [_resGroup leave];
+    if (_unsubscribeClientGroup) {
+        [_unsubscribeClientGroup leave];
     }
 }
 

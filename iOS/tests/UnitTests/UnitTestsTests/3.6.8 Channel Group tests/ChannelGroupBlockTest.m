@@ -2,8 +2,8 @@
 //  ChannelGroupBlockTest.m
 //  UnitTests
 //
-//  Created by Sergey on 10/9/14.
-//  Copyright (c) 2014 Vadim Osovets. All rights reserved.
+//  Created by Sergey Kazanskiy on 10/9/14.
+//  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -74,7 +74,7 @@
         dispatch_group_leave(_resGroup1);
     }];
     
-    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. Didn't add channels to the group");
     }
 }
@@ -204,7 +204,7 @@
         }
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup4 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup4 timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. Didn't receive list of all groups with completion block");
     }
     
@@ -245,7 +245,7 @@
 
     }];
     
-    if ([GCDWrapper isGroup:_resGroup5 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGroup:_resGroup5 timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. Didn't receive list channel for group with completion block");
     }
 }
@@ -280,7 +280,7 @@ withCompletionHandlingBlock:^(PNChannelGroup *group, NSArray *channels, PNError 
             dispatch_group_leave(_resGroup6);
         }
     }];
-    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:5]) {
+    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. Didn't remove channel from the group with completion block");
     }
 }
@@ -306,7 +306,7 @@ withCompletionHandlingBlock:^(PNChannelGroup *group, NSArray *channels, PNError 
          }
      }];
     
-    if ([GCDWrapper isGroup:_resGroup7 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGroup:_resGroup7 timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. Didn't remove group with completion block");
         dispatch_group_leave(_resGroup7);
     }
@@ -332,7 +332,7 @@ withCompletionHandlingBlock:^(PNChannelGroup *group, NSArray *channels, PNError 
         }
     }];
     
-    if ([GCDWrapper isGroup:_resGroup8 timeoutFiredValue:5]) {
+    if ([GCDWrapper isGroup:_resGroup8 timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. Didn't remove namespace with completion block");
     }
 }

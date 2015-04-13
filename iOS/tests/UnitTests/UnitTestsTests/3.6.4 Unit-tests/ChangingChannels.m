@@ -74,6 +74,8 @@ static const NSUInteger kAmountOfChannels = 15;
     NSMutableArray *channelNames = [NSMutableArray arrayWithCapacity:amountOfChannels];
     _resGroup = [GCDGroup group];
     
+    __block NSDate *startDate = [NSDate date];
+    
 	for(int i = 0; i < amountOfChannels; i++) {
         
 		NSString *channelName = [NSString stringWithFormat: @"channel%d", i];
@@ -82,8 +84,6 @@ static const NSUInteger kAmountOfChannels = 15;
 		NSArray *channels = [PNChannel channelsWithNames:@[channelName]];
         
         [_resGroup enter];
-        
-        NSDate *startDate = [NSDate date];
         
         [PubNub subscribeOn:channels
     withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
@@ -110,11 +110,14 @@ static const NSUInteger kAmountOfChannels = 15;
             NSNumber *intervalNumber = [NSNumber numberWithDouble:interval];
             NSLog(@"Subscribed %f, %@", interval, channels);
             
-            XCTAssertTrue( [intervalNumber integerValue] < [PubNub sharedInstance].configuration.subscriptionRequestTimeout, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+            XCTAssertTrue( [intervalNumber integerValue] < [PubNub sharedInstance].configuration.subscriptionRequestTimeout, @"Timeout error for %@, %f instead of %f", channelName,interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
             
             [_resGroup leave];
+            
+            startDate = [NSDate date];
         }
     }];
+        
     }
     
     if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {

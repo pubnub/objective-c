@@ -46,7 +46,7 @@
                              
                          }];
     
-    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:kTestTestTimout]) {
         XCTFail(@"Timeout is fired. PubNub connection passed unsuccessfully");
     }
     
