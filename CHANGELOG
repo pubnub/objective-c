@@ -1,3 +1,13 @@
+04-14-2015 - 37efc2dc - 3.7.10.5
+
+. fixed access rights population from upper layers to channel groups
+. adjusted +connectingClientWithConfiguration: constructor methods to synchronise delegate assignment
+. removed race of conditions with look up timer in PNReachability
+. streams configuration done through local variables to make sure what till full configuration complete class properties will be intact
+. returned back to target action behaviour in notification handling.
+. fixed potential memory issues
+. optimised memory allocation for read amount of data (will be reduced in size if required)
+
 04-11-2015 - cd5870bb - 3.7.10.4
 
 . fixed memory issues
