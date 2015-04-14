@@ -1057,6 +1057,11 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             return @[PNLoggerSymbols.api.configurationUpdateAttempt, [self humanReadableStateFrom:self.state]];
         }];
+        
+        if (delegate) {
+            
+            [self setDelegate:delegate synchronously:synchronously];
+        }
 
         // Ensure that configuration is valid before update/set client configuration to it
         if ([configuration isValid]) {
@@ -1099,8 +1104,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                         [self.reachability restartServiceReachabilityMonitoring];
                     }
                 };
-                
-                [self setDelegate:delegate synchronously:synchronously];
 
                 BOOL isInitialConfiguration = self.clientConfiguration == nil;
 
