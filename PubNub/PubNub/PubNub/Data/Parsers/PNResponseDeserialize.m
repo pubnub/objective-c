@@ -149,6 +149,11 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                                     NSUInteger processedBufferLength,
                                     void(^readBufferPostProcessing)(void)))parseCompletionBlock {
     
+    // "retain" passed buffer by creating sub-range from it at full size.
+    // Doing to trying to prevent ARC from generating code outisde of this method which will
+    // release last reference on object after which it will get deallocasted.
+    dispatch_data_t retainedBuffer = dispatch_data_create_subrange(buffer, 0, dispatch_data_get_size(buffer));
+    
     [self pn_dispatchBlock:^{
         
         if (!self.deserializing) {
@@ -157,7 +162,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
             __block dispatch_data_t normalizedBuffer = dispatch_data_create(NULL, 0,
                                                                             DISPATCH_TARGET_QUEUE_DEFAULT,
                                                                             DISPATCH_DATA_DESTRUCTOR_DEFAULT);
-            NSUInteger bufferSize = dispatch_data_get_size(buffer);
+            NSUInteger bufferSize = dispatch_data_get_size(retainedBuffer);
             __block NSUInteger processedLength = 0;
             __block NSUInteger packetsCount = 0;
             __block NSUInteger httpPacketStart = NSNotFound;
@@ -170,7 +175,9 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     
                     packetsCount++;
                     processedLength = (normalizedBufferOffset + normalizedBufferLength);
-                    dispatch_data_t packetData = dispatch_data_create_subrange(buffer, normalizedBufferOffset, normalizedBufferLength);
+                    dispatch_data_t packetData = dispatch_data_create_subrange(retainedBuffer,
+                                                                               normalizedBufferOffset,
+                                                                               normalizedBufferLength);
                     dispatch_data_t mappedData = dispatch_data_create_map(packetData, NULL, NULL);
                     dispatch_data_t updatedNormalizedBuffer = dispatch_data_create_concat(normalizedBuffer, mappedData);
                     [PNDispatchHelper release:normalizedBuffer];
@@ -224,7 +231,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                             
                             [PNLogger storeGarbageHTTPPacketData:^dispatch_data_t {
                                 
-                                return dispatch_data_create_subrange(buffer, 0, bufferSize);
+                                return dispatch_data_create_subrange(retainedBuffer, 0, bufferSize);
                             }];
                         }
                         // Looks like potentionally we have read buffer which may haave more content in next portion.
@@ -273,8 +280,8 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
             };
             
             // Iterate over chunks of data stored in buffer.
-            dispatch_data_apply(buffer, ^bool(dispatch_data_t region, size_t offset,
-                                              const void *bytes, size_t size) {
+            dispatch_data_apply(retainedBuffer, ^bool(dispatch_data_t region, size_t offset,
+                                                      const void *bytes, size_t size) {
                 
                 bufferProcessingBlock(bytes, size, offset);
                 
@@ -347,7 +354,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                                 
                                 [PNLogger storeGarbageHTTPPacketData:^dispatch_data_t {
                                     
-                                    return dispatch_data_create_subrange(buffer, 0, bufferSize);
+                                    return dispatch_data_create_subrange(retainedBuffer, 0, bufferSize);
                                 }];
                             }
                         }
@@ -367,11 +374,12 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     processedLength = bufferSize;
                     [PNLogger storeGarbageHTTPPacketData:^dispatch_data_t {
                         
-                        return dispatch_data_create_subrange(buffer, 0, bufferSize);
+                        return dispatch_data_create_subrange(retainedBuffer, 0, bufferSize);
                     }];
                 }
             }
             
+            [PNDispatchHelper release:retainedBuffer];
             parseCompletionBlock([parsedResponses copy], bufferSize, processedLength, ^{
                 
                 [self pn_dispatchBlock:^{
@@ -379,6 +387,10 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     self.deserializing = NO;
                 }];
             });
+        }
+        else {
+            
+            [PNDispatchHelper release:retainedBuffer];
         }
     }];
 }
