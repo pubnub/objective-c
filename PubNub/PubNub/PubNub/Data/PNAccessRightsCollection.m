@@ -241,6 +241,11 @@
         if ([sourceAccessRightsInformation hasAllRights]) {
 
             rights = (PNReadAccessRight | PNWriteAccessRight);
+            if ([targetAccessRightsInformation hasManagementRight]) {
+                
+                [PNBitwiseHelper removeFrom:&rights bit:PNWriteAccessRight];
+                [PNBitwiseHelper addTo:&rights bit:PNManagementRight];
+            }
         }
 
         
@@ -251,7 +256,10 @@
 
         if ([sourceAccessRightsInformation hasWriteRight] && ![PNBitwiseHelper is:rights containsBit:PNWriteAccessRight]) {
             
-            [PNBitwiseHelper addTo:&rights bit:PNWriteAccessRight];
+            if (![targetAccessRightsInformation hasManagementRight]) {
+                
+                [PNBitwiseHelper addTo:&rights bit:PNWriteAccessRight];
+            }
         }
 
         targetAccessRightsInformation.rights = (PNAccessRights)rights;
