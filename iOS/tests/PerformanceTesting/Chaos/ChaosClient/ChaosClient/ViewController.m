@@ -117,22 +117,25 @@ static NSString *const kTestGroupName = @"ChaosTest";
                                   //  - unsubscribe & disconnect
                                   //  - remove instance
                                   
-                                  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                                      if ([GCDWrapper isGCDGroup:group timeoutFiredValue:30]) {
-                                          NSAssert(NO, @"Timeout fired");
-                                      }
-                                      
-                                      NSLog(@"Finished");
-                                      
-                                      [self.clients removeObject:pubNubClient];
-                                      
-                                      // run more client if needed
-                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                          [self updateInstancePool];
-                                      });
-                                      
-                                      NSLog(@"Removed");
-                                  });
+                                  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(30 * NSEC_PER_SEC)),
+                                                 dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                     
+                                                     if (![group wait:dispatch_time(DISPATCH_TIME_NOW, (int64_t)(160 * NSEC_PER_SEC))]) {
+                                                         NSAssert(NO, @"Timeout fired");
+                                                     }
+                                                     
+                                                     NSLog(@"Finished");
+                                                     
+                                                     [self.clients removeObject:pubNubClient];
+                                                     
+                                                     // run more client if needed
+                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                         [self updateInstancePool];
+                                                     });
+                                                     
+                                                     NSLog(@"Removed");
+                                                 });
+                                  
                                  
                                   // remove instance in some autorelease pool?
                                 }

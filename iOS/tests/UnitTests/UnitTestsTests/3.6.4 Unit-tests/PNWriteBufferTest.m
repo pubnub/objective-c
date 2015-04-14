@@ -37,7 +37,7 @@
     
 }
 
-- (void)writeBufferForRequest {
+- (void)testWriteBufferForRequest {
 	buffer = [PNWriteBuffer writeBufferForRequest: request];
     XCTAssertNotNil( buffer, @"");
 
