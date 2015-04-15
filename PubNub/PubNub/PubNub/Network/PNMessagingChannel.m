@@ -2121,11 +2121,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
         self.idleTimerSuspended = NO;
         dispatch_source_cancel(self.idleTimer);
     }
-    
-    if (!forRelaunch) {
-        
-        self.idleTimer = NULL;
-    }
+    self.idleTimer = NULL;
 }
 
 - (void)pauseChannelIdleTimer {

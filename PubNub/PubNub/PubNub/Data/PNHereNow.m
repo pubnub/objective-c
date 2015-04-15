@@ -64,7 +64,9 @@ NSString * const kPNAnonymousParticipantIdentifier = @"unknown";
 
 - (NSArray *)channels {
     
-    return ([self.participantsMap count] ? [PNChannel channelsWithNames:[self.participantsMap allKeys]] : @[]);
+    return ([self.participantsMap count] ?
+            [PNChannel channelsWithNames:[self.participantsMap allKeys]] :
+            [NSArray new]);
 }
 
 - (NSArray *)participantsForChannel:(PNChannel *)channel {

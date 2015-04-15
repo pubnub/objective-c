@@ -1020,8 +1020,9 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
             // Check whether client is waiting for request completion
             BOOL isWaitingForCompletion = [self isWaitingRequestCompletion:request.shortIdentifier];
 
-            [requests addObject:@{PNRequestForReschedule.request:request,
-                   PNRequestForReschedule.isWaitingForCompletion:@(isWaitingForCompletion)}];
+            NSDictionary *information = @{PNRequestForReschedule.request:request,
+                                          PNRequestForReschedule.isWaitingForCompletion:@(isWaitingForCompletion)};
+            [requests addObject:[information copy]];
         }
     }];
 
@@ -1154,8 +1155,9 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
                                 [self.storedRequestsList addObject:request.shortIdentifier];
                             }
-                            [self.storedRequests setValue:@{PNStoredRequestKeys.request : request,
-                                            PNStoredRequestKeys.isObserved : @(shouldObserveProcessing)}
+                            NSDictionary *information = @{PNStoredRequestKeys.request : request,
+                                                          PNStoredRequestKeys.isObserved : @(shouldObserveProcessing)};
+                            [self.storedRequests setValue:[information copy]
                                                    forKey:request.shortIdentifier];
                         }
 

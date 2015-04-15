@@ -3762,11 +3762,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         
         dispatch_source_cancel(self.heartbeatTimer);
     }
-    
-    if (shouldClearReference) {
-        
-        self.heartbeatTimer = NULL;
-    }
+    self.heartbeatTimer = NULL;
 }
 
 - (void)checkResuming:(void (^)(BOOL resuming))checkCompletionBlock {

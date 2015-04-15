@@ -484,11 +484,8 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
             
             dispatch_source_cancel(self.originLookupTimer);
         }
-        
-        if (!forRelaunch) {
             
-            self.originLookupTimer = NULL;
-        }
+        self.originLookupTimer = NULL;
     }];
 }
 

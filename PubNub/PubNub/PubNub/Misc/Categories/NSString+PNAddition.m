@@ -68,7 +68,8 @@
     });
     
     
-    return [[[self stringByReplacingOccurrencesOfString:@" " withString:@""] stringByTrimmingCharactersInSet:nonNewlineCharSet] length] == 0;
+    return [[[self stringByReplacingOccurrencesOfString:@" " withString:@""]
+             stringByTrimmingCharactersInSet:nonNewlineCharSet] length] == 0;
 }
 
 - (NSString *)pn_percentEscapedString {

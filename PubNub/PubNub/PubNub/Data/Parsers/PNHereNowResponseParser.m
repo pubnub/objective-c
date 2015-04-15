@@ -126,7 +126,7 @@
                     participantsCount = [[responseData objectForKey:kPNResponseOccupancyKey] unsignedIntegerValue];
                 }
                 
-                channels = @{channel.name:@{kPNResponseUUIDKey:(participantsList ? participantsList : @[]),
+                channels = @{channel.name:@{kPNResponseUUIDKey:(participantsList ? participantsList : [NSArray new]),
                                             kPNResponseOccupancyKey: @(participantsCount)}};
             }
         }

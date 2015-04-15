@@ -61,12 +61,13 @@
 
         NSDictionary *responseData = response.response;
 
-        NSArray *channels = @[];
+        NSArray *channels = [NSArray new];
         if ([[responseData objectForKey:kPNResponseChannelsKey] count]) {
 
             channels = [PNChannel channelsWithNames:[responseData objectForKey:kPNResponseChannelsKey]];
         }
-        self.whereNow = [PNWhereNow whereNowForClientIdentifier:response.additionalData andChannels:channels];
+        self.whereNow = [PNWhereNow whereNowForClientIdentifier:response.additionalData
+                                                    andChannels:[channels copy]];
     }
 
 

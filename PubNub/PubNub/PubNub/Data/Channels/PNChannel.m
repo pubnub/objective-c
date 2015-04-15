@@ -207,13 +207,16 @@ static OSSpinLock _channelsCacheSpinlock = OS_SPINLOCK_INIT;
 
 + (NSString *)largestTimetokenFromChannels:(NSArray *)channels {
 
-    NSSortDescriptor *tokenSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updateTimeToken" ascending:YES];
-    NSArray *timeTokens = [[channels sortedArrayUsingDescriptors:@[tokenSortDescriptor]] valueForKey:@"updateTimeToken"];
+    static NSArray *_tokenSortDescriptors;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        _tokenSortDescriptors = [@[[[NSSortDescriptor alloc] initWithKey:@"updateTimeToken" ascending:YES]] copy];
+    });
+    NSArray *timeTokens = [channels sortedArrayUsingDescriptors:_tokenSortDescriptors];
 
-    NSString *token = [timeTokens lastObject];
 
-
-    return token ? token : @"0";
+    return ([timeTokens count] ? ((PNChannel *)[timeTokens lastObject]).updateTimeToken : @"0");
 }
 
 

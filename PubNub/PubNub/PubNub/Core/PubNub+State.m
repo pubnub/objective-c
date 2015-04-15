@@ -266,6 +266,10 @@ withCompletionHandlingBlock:nil];
      rescheduledCallbackToken:(NSString *)callbackToken
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    clientIdentifier = [clientIdentifier copy];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -392,6 +396,11 @@ withCompletionHandlingBlock:nil];
                      forObject:(id <PNChannelProtocol>)object rescheduledCallbackToken:(NSString *)callbackToken
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
 
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    clientIdentifier = [clientIdentifier copy];
+    clientState = [clientState copy];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -403,7 +412,7 @@ withCompletionHandlingBlock:nil];
         
         [self   performAsyncLockingBlock:^{
 
-            __block NSDictionary *mergedClientState = @{object.name : clientState};
+            __block NSDictionary *mergedClientState = [@{object.name : clientState} copy];
 
             dispatch_block_t completionBlock = ^{
 

@@ -469,6 +469,10 @@
           rescheduledCallbackToken:(NSString *)callbackToken
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock; {
 
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channelObjects = [[NSArray alloc] initWithArray:channelObjects copyItems:NO];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -575,6 +579,10 @@
 - (void)requestParticipantChannelsList:(NSString *)clientIdentifier
               rescheduledCallbackToken:(NSString *)callbackToken
                    withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    clientIdentifier = [clientIdentifier copy];
 
     [self pn_dispatchBlock:^{
         

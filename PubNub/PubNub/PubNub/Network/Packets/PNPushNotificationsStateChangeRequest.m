@@ -78,7 +78,8 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
                                                               toState:(NSString *)pushNotificationState
                                                            forChannel:(PNChannel *)channel {
 
-    return [self requestWithDevicePushToken:pushToken toState:pushNotificationState forChannels:@[channel]];
+    return [self requestWithDevicePushToken:pushToken toState:pushNotificationState
+                                forChannels:@[channel]];
 }
 
 + (PNPushNotificationsStateChangeRequest *)requestWithDevicePushToken:(NSData *)pushToken

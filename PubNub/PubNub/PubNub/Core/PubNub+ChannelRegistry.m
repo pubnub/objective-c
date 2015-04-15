@@ -454,7 +454,11 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
 - (void)requestChannelGroupsForNamespace:(NSString *)nspace
                 rescheduledCallbackToken:(NSString *)callbackToken
              withCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock {
-    
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    nspace = [nspace copy];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -652,7 +656,11 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
 - (void)removeChannelGroupNamespace:(NSString *)nspace
            rescheduledCallbackToken:(NSString *)callbackToken
         withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock {
-    
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    nspace = [nspace copy];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -751,7 +759,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
 
 - (void) removeChannelGroup:(PNChannelGroup *)group rescheduledCallbackToken:(NSString *)callbackToken
 withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock {
-    
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -956,7 +964,11 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
 - (void)        addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
    rescheduledCallbackToken:(NSString *)callbackToken
 withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock {
-    
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -1060,7 +1072,11 @@ withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handle
 - (void)     removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
    rescheduledCallbackToken:(NSString *)callbackToken
 withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock {
-    
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -1344,7 +1360,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
             id notificationObject = channelGroups;
             if (nspace) {
 
-                notificationObject = @{nspace:channelGroups};
+                notificationObject = [@{nspace:channelGroups} copy];
             }
 
             [self sendNotification:kPNClientChannelGroupsRequestCompleteNotification

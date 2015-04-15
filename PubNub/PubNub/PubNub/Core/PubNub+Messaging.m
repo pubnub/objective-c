@@ -851,7 +851,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
             if ([(NSDictionary *)message valueForKey:@"aps"]) {
                 
                 // Recompose APNS payload to use newer JSON format.
-                messageForSending = [@{@"pn_apns":message} copy];
+                messageForSending = [@{@"pn_apns":message} mutableCopy];
             }
             else if (apnsPayload || gcmPayload) {
                 
@@ -870,7 +870,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
         }
         else if (apnsPayload || gcmPayload) {
             
-            messageForSending = [@{@"pn_other":message} copy];
+            messageForSending = [@{@"pn_other":message} mutableCopy];
         }
         else {
             

@@ -3865,12 +3865,8 @@ void connectionContextInformationReleaseCallBack( void *info ) {
     if (self.connectionTimeoutTimer != NULL && dispatch_source_testcancel(self.connectionTimeoutTimer) == 0) {
         
         dispatch_source_cancel(self.connectionTimeoutTimer);
-    }
-    
-    if (!forRelaunch) {
-        
-        self.connectionTimeoutTimer = NULL;
-    }
+    }   
+    self.connectionTimeoutTimer = NULL;
 }
 
 - (void)startWakeUpTimer {
@@ -3963,8 +3959,8 @@ void connectionContextInformationReleaseCallBack( void *info ) {
         }
         self.wakeUpTimerSuspended = NO;
         dispatch_source_cancel(self.wakeUpTimer);
-        self.wakeUpTimer = NULL;
     }
+    self.wakeUpTimer = NULL;
 }
 
 - (void)resetWakeUpTimer {

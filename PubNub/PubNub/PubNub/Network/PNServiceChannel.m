@@ -951,10 +951,10 @@
         
         PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
+
             NSMutableDictionary *options = [@{@"limit":@(historyRequest.limit),
                                      @"revertMessages":@(historyRequest.shouldRevertMessages),
-                                   @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)} copy];
+                                   @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)} mutableCopy];
             if (historyRequest.startDate) {
                 
                 [options setValue:historyRequest.startDate forKey:@"startDate"];
@@ -987,8 +987,8 @@
         PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            [error replaceAssociatedObject:@{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
-                                             @"fetchClientState":@(hereNowRequest.shouldFetchClientState)}];
+            [error replaceAssociatedObject:[@{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
+                                              @"fetchClientState":@(hereNowRequest.shouldFetchClientState)} copy]];
         }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
