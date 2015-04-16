@@ -37,27 +37,13 @@ PNDelegate
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
-    /*
-     [9/8/14, 11:00:58 AM] Vadim Osovets: Product 	Sandbox
-     Subscribe Key 	sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe
-     Publish Key 	pub-c-12b1444d-4535-4c42-a003-d509cc071e09
-     Secret Key 	sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz
-     Key Status 	Enabled Disable
-     
-     [9/8/14, 4:39:01 PM] Sergey Kazanskiy: static NSString * const kPNPublishKey = @"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6";
-     static NSString * const kPNSubscriptionKey = @"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe";
-     static NSString * const kPNSecretKey = @"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw";
-     */
-    
     _testConfiguration1 = [PNConfiguration defaultConfiguration];
     // Vadim's keys
     _testConfiguration2 = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
                                                                        publishKey:@"pub-c-12b1444d-4535-4c42-a003-d509cc071e09" subscribeKey:@"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe"
                                                                         secretKey:@"sec-c-YjIzMWEzZmEtYWVlYS00MzMzLTkyZGItNWJkMjRlZGQ4MjAz"];
     // SergeyK's keys
-    _testConfiguration3 = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
-                                                                       publishKey:@"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6" subscribeKey:@"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe"
-                                                                        secretKey:@"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw"];
+    _testConfiguration3 = [PNConfiguration accessManagerTestConfiguration];
 }
 
 - (void)tearDown {
