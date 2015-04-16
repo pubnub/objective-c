@@ -1954,6 +1954,7 @@ void connectionContextInformationReleaseCallBack( void *info ) {
         self.socketReadStream = NULL;
         dispatch_async(dispatch_get_main_queue(), ^{
             
+            CFReadStreamUnscheduleFromRunLoop(readStream, CFRunLoopGetMain(), kCFRunLoopCommonModes);
             CFReadStreamSetClient(readStream, kCFStreamEventNone, NULL, NULL);
             if (CFReadStreamGetStatus(readStream) != kCFStreamStatusClosed) {
 
@@ -2301,7 +2302,8 @@ void connectionContextInformationReleaseCallBack( void *info ) {
         
         self.socketWriteStream = NULL;
         dispatch_async(dispatch_get_main_queue(), ^{
-
+            
+            CFWriteStreamUnscheduleFromRunLoop(writeStream, CFRunLoopGetMain(), kCFRunLoopCommonModes);
             CFWriteStreamSetClient(writeStream, kCFStreamEventNone, NULL, NULL);
             if (CFWriteStreamGetStatus(writeStream) != kCFStreamStatusClosed){
 
