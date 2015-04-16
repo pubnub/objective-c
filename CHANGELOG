@@ -1,3 +1,9 @@
+04-16-2015 - d171ec50 - 3.7.10.6
+
+. unschedule streams from run-loop and let streamClose function only release resources
+. additinal memory protection
+. created additional reference on dispatch_data_t object from inside of PNResponseDeserialize -parseBufferContent:withBlock: method with attempt to prevent ARC from releasing last reference on passed buffer from outside of the method
+
 04-14-2015 - 37efc2dc - 3.7.10.5
 
 . fixed access rights population from upper layers to channel groups
