@@ -14,16 +14,6 @@
 @class PNClient;
 
 
-#pragma mark - Static
-
-/**
- @brief Reference on key under which stored client's state for each channel of channel group
- 
- @since 3.7.0
- */
-static NSString * const kPNResponseChannelsKey = @"channels";
-
-
 #pragma mark - Private interface declaration
 
 @interface PNClientStateResponseParser ()
