@@ -49,12 +49,12 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 @property (nonatomic, strong) NSArray *channels;
 
 // Stores reference on stringified push notification token
-@property (nonatomic, strong) NSString *pushToken;
-@property (nonatomic, strong) NSData *devicePushToken;
+@property (nonatomic, copy) NSString *pushToken;
+@property (nonatomic, copy) NSData *devicePushToken;
 
 // Stores reference on state which should be set for specified
 // channel(s)
-@property (nonatomic, strong) NSString *targetState;
+@property (nonatomic, copy) NSString *targetState;
 
 /**
  Storing configuration dependant parameters
@@ -78,7 +78,8 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
                                                               toState:(NSString *)pushNotificationState
                                                            forChannel:(PNChannel *)channel {
 
-    return [self requestWithDevicePushToken:pushToken toState:pushNotificationState forChannels:@[channel]];
+    return [self requestWithDevicePushToken:pushToken toState:pushNotificationState
+                                forChannels:@[channel]];
 }
 
 + (PNPushNotificationsStateChangeRequest *)requestWithDevicePushToken:(NSData *)pushToken
@@ -102,7 +103,7 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
     if ((self = [super init])) {
 
         self.sendingByUserRequest = YES;
-        self.channels = [NSArray arrayWithArray:channels];
+        self.channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
         self.targetState = state;
         self.devicePushToken = pushToken;
         self.pushToken = [[pushToken pn_HEXPushToken] lowercaseString];
@@ -110,6 +111,11 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 
 
     return self;
+}
+
+- (void)setChannels:(NSArray *)channels {
+    
+    _channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
 }
 
 - (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
@@ -134,12 +140,12 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@?%@=%@&callback=%@_%@&uuid=%@%@&pnsdk=%@",
+    return [[NSString alloc] initWithFormat:@"/v1/push/sub-key/%@/devices/%@?%@=%@&callback=%@_%@&uuid=%@%@&pnsdk=%@",
                                       [self.subscriptionKey pn_percentEscapedString],
                                       self.pushToken, self.targetState, [[self.channels valueForKey:@"escapedName"] componentsJoinedByString:@","],
                                       [self callbackMethodName], self.shortIdentifier,
                                       [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+                                      ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@", [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
 
@@ -151,7 +157,7 @@ struct PNPushNotificationsStateStruct PNPushNotificationsState = {
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

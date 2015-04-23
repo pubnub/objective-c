@@ -78,7 +78,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     // Check whether initialization successful or not
     if((self = [super init])) {
         
-        self.query = [NSMutableArray array];
+        self.query = [NSMutableArray new];
         [self pn_setupPrivateSerialQueueWithIdentifier:@"request-queue" andPriority:DISPATCH_QUEUE_PRIORITY_DEFAULT];
     }
     
@@ -245,7 +245,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 }
 
 - (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier
-         withBlock:(dispatch_block_t)notifyCompletionBlock {
+         withBlock:(void (^)(BOOL))notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -259,7 +259,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
             if (notifyCompletionBlock) {
 
-                notifyCompletionBlock();
+                notifyCompletionBlock(YES);
             }
         }
     }];

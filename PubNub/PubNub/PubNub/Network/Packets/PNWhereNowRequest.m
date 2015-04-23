@@ -74,11 +74,11 @@
 
 - (NSString *)resourcePath {
 
-    return [NSString stringWithFormat:@"/v2/presence/sub-key/%@/uuid/%@?callback=%@_%@%@&pnsdk=%@",
+    return [[NSString alloc] initWithFormat:@"/v2/presence/sub-key/%@/uuid/%@?callback=%@_%@%@&pnsdk=%@",
                                       [self.subscriptionKey pn_percentEscapedString],
                                       [self.clientIdentifier pn_percentEscapedString], [self callbackMethodName],
                                       self.shortIdentifier,
-                                      ([self authorizationField] ? [NSString stringWithFormat:@"&%@",
+                                      ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@",
                                                                                               [self authorizationField]] : @""),
                                       [self clientInformationField]];
 }
@@ -91,7 +91,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

@@ -17,16 +17,16 @@
 
         #if __IPHONE_OS_VERSION_MIN_REQUIRED
             // Only starting from iOS 6.x GCD structures treated as objects and handled by ARC
-            #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
+            #if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_6_0
                 #undef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
                 #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 1
-            #endif // __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
+            #endif // __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_6_0
         #else
             // Only starting from Mac OS X 10.8.x GCD structures treated as objects and handled by ARC
-            #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1080
+            #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_8
                 #undef PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS
                 #define PN_DISPATCH_STRUCTURES_TREATED_AS_OBJECTS 1
-            #endif // MAC_OS_X_VERSION_MIN_REQUIRED >= 1080
+            #endif // MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_8
         #endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 
         #ifdef OS_OBJECT_USE_OBJC
@@ -302,14 +302,6 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
 
 
 #pragma mark - Class methods
-
-/**
- Perform correct CoreFoundation object release with pointer nullify.
- 
- @param CFObject
- Reference on CF object which should be released and pointer set to \c NULL.
- */
-+ (void)releaseCFObject:(CF_RELEASES_ARGUMENT void *)CFObject;
 
 /**
  In case if receiver value not specified, it will return reference on \b NSNull instance.

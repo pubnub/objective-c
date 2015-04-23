@@ -129,8 +129,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 + (PNResponse *)responseWithContent:(NSData *)content size:(NSUInteger)responseSize code:(NSInteger)statusCode
            lastResponseOnConnection:(BOOL)isLastResponseOnConnection {
     
-    return [[[self class] alloc] initWithContent:content size:responseSize code:statusCode
-                        lastResponseOnConnection:isLastResponseOnConnection];
+    return [[self alloc] initWithContent:content size:responseSize code:statusCode
+                lastResponseOnConnection:isLastResponseOnConnection];
 }
 
 + (PNResponse *)errorResponseWithMessage:(NSString *)errorMessage {
@@ -139,7 +139,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
                                                       options:(NSJSONWritingOptions)0 error:nil];
     
     
-    return [[[self class] alloc] initWithContent:message size:[message length] code:200 lastResponseOnConnection:NO];
+    return [[self alloc] initWithContent:message size:[message length] code:200
+                lastResponseOnConnection:NO];
 }
 
 
@@ -154,8 +155,8 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         self.content = content;
         self.size = responseSize;
         self.statusCode = statusCode;
-        self.privateData = [NSMutableDictionary dictionary];
-        self.unknownData = [NSMutableDictionary dictionary];
+        self.privateData = [NSMutableDictionary new];
+        self.unknownData = [NSMutableDictionary new];
         self.lastResponseOnConnection = isLastResponseOnConnection;
 
         
@@ -166,37 +167,37 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
             [PNJSONSerialization JSONObjectWithString:decodedResponse
                                       completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName){
 
-                                          if (isJSONP) {
+                  if (isJSONP) {
 
-                                              NSArray *callbackMethodElements = [callbackMethodName componentsSeparatedByString:@"_"];
+                      NSArray *callbackMethodElements = [callbackMethodName componentsSeparatedByString:@"_"];
 
-                                              if ([callbackMethodElements count] > 1) {
+                      if ([callbackMethodElements count] > 1) {
 
-                                                  weakSelf.callbackMethod = [callbackMethodElements objectAtIndex:kPNResponseCallbackMethodNameIndex];
-                                                  weakSelf.requestIdentifier = [callbackMethodElements objectAtIndex:kPNResponseRequestIdentifierIndex];
-                                              }
-                                              else {
+                          weakSelf.callbackMethod = [callbackMethodElements objectAtIndex:kPNResponseCallbackMethodNameIndex];
+                          weakSelf.requestIdentifier = [callbackMethodElements objectAtIndex:kPNResponseRequestIdentifierIndex];
+                      }
+                      else {
 
-                                                  weakSelf.callbackMethod = callbackMethodName;
-                                              }
+                          weakSelf.callbackMethod = callbackMethodName;
+                      }
 
-                                              weakSelf.response = result;
-                                          }
-                                          else {
+                      weakSelf.response = result;
+                  }
+                  else {
 
-                                              self.response = result;
-                                          }
+                      self.response = result;
+                  }
 
-                                          [weakSelf extractServiceData];
-                                      }
-                                           errorBlock:^(NSError *error) {
+                  [weakSelf extractServiceData];
+              }
+                   errorBlock:^(NSError *error) {
 
-                                               [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
+                       [PNLogger logGeneralMessageFrom:weakSelf withParametersFromBlock:^NSArray *{
 
-                                                   return @[PNLoggerSymbols.JSONserializer.JSONDecodeError, (error ? error : [NSNull null])];
-                                               }];
-                                               [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
-                                           }];
+                           return @[PNLoggerSymbols.JSONserializer.JSONDecodeError, (error ? error : [NSNull null])];
+                       }];
+                       [weakSelf handleJSONDecodeErrorWithCode:kPNResponseMalformedJSONError];
+                   }];
         }
         // Looks like message can't be decoded event from RAW response looks like malformed data arrived with
         // characters which can't be encoded.
@@ -235,8 +236,17 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 - (NSString *)decodedResponse {
 
-    NSString *encodedString = [[NSString alloc] initWithData:self.content encoding:NSUTF8StringEncoding];
-    return [encodedString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    static NSCharacterSet *trimmingSet = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        trimmingSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    });
+    NSString *encodedString = [[NSString alloc] initWithData:self.content
+                                                    encoding:NSUTF8StringEncoding];
+    
+    
+    return [encodedString stringByTrimmingCharactersInSet:trimmingSet];
 }
 
 - (void)extractServiceData {
@@ -278,7 +288,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         if ([[processedData objectForKey:PNServiceResponseServiceDataKeys.warningState] boolValue]) {
 
             [PNLogger logGeneralMessageFrom:self message:^NSString *{
-                return [NSString stringWithFormat:@"\n\n==================== PubNub PAM ====================\n%@\n====================================================\n\n",
+                return [[NSString alloc] initWithFormat:@"\n\n==================== PubNub PAM ====================\n%@\n====================================================\n\n",
                         self.message];
             }];
             [processedData removeObjectForKey:PNServiceResponseServiceDataKeys.warningState];
@@ -326,7 +336,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
             }
             else {
 
-                self.response = [NSDictionary dictionaryWithDictionary:processedData];
+                self.response = [processedData copy];
             }
         }
     }
@@ -377,7 +387,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"\nHTTP STATUS CODE: %ld\nSTATUS MESSAGE: %@\nIS ERROR RESPONSE? %@"
+    return [[NSString alloc] initWithFormat:@"\nHTTP STATUS CODE: %ld\nSTATUS MESSAGE: %@\nIS ERROR RESPONSE? %@"
                                        "\nCONNECTION WILL BE CLOSE? %@\nRESPONSE SIZE: %ld\nRESPONSE CONTENT SIZE: %ld"
                                        "\nIS JSONP: %@\nCALLBACK METHOD: %@\nSERVICE NAME: %@\nREQUEST IDENTIFIER: %@"
                                        "\nRESPONSE: %@\nADDITIONAL DATA: %@\n",
@@ -397,7 +407,7 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         response = (response ? response : @"");
     }
     
-    return [NSString stringWithFormat:@"<%ld|%@|%@|%@|%ld|%ld|%@|%@|%@|%@>", (long)self.statusCode, (self.message ? self.message : [NSNull null]),
+    return [[NSString alloc] initWithFormat:@"<%ld|%@|%@|%@|%ld|%ld|%@|%@|%@|%@>", (long)self.statusCode, (self.message ? self.message : [NSNull null]),
             @(self.isErrorResponse), @(self.isLastResponseOnConnection), (unsigned long)[self.content length],
             (unsigned long)self.size, (self.callbackMethod ? self.callbackMethod : [NSNull null]),
             (self.serviceName ? self.serviceName : [NSNull null]), (self.requestIdentifier ? self.requestIdentifier : [NSNull null]),

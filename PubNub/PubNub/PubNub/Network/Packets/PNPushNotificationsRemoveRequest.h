@@ -20,7 +20,7 @@
 #pragma mark - Properties
 
 // Stores reference on stringified push notification token
-@property (nonatomic, readonly, strong) NSData *devicePushToken;
+@property (nonatomic, readonly, copy) NSData *devicePushToken;
 
 
 #pragma mark Class methods

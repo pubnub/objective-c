@@ -25,7 +25,7 @@
 
 - (NSString *)logDescription {
     
-    return [NSString stringWithFormat:@"<%@|%ld>", self.domain, (long)self.code];
+    return [[NSString alloc] initWithFormat:@"<%@|%ld>", self.domain, (long)self.code];
 }
 
 #pragma mark -

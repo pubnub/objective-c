@@ -141,8 +141,8 @@
                                subscribeKey:(NSString *)subscribeKey secretKey:(NSString *)secretKey
                                   cipherKey:(NSString *)cipherKey authorizationKey:(NSString *)authorizationKey {
 
-    return [[[self class] alloc] initWithOrigin:originHostName publishKey:publishKey subscribeKey:subscribeKey
-                                      secretKey:secretKey cipherKey:cipherKey authorizationKey:authorizationKey];
+    return [[self alloc] initWithOrigin:originHostName publishKey:publishKey subscribeKey:subscribeKey
+                              secretKey:secretKey cipherKey:cipherKey authorizationKey:authorizationKey];
 }
 
 
@@ -177,6 +177,7 @@
         self.restoreSubscriptionFromLastTimeToken = kPNShouldRestoreSubscriptionFromLastTimeToken;
         self.acceptCompressedResponse = kPNShouldAcceptCompressedResponse;
         self.DNSCacheClearingEnabled = kPNShouldKillDNSCache;
+        self.subscriptionMaximumIdleTime = kPNConnectionIdleTimeout;
         self.nonSubscriptionRequestTimeout = kPNNonSubscriptionRequestTimeout;
         self.subscriptionRequestTimeout = kPNSubscriptionRequestTimeout;
         self.presenceHeartbeatTimeout = kPNPresenceHeartbeatTimeout;
@@ -259,6 +260,7 @@
     self.restoreSubscriptionFromLastTimeToken = configuration.shouldRestoreSubscriptionFromLastTimeToken;
     self.acceptCompressedResponse = configuration.shouldAcceptCompressedResponse;
     self.DNSCacheClearingEnabled = configuration.isDNSCacheClearingEnabled;
+    self.subscriptionMaximumIdleTime = configuration.subscriptionMaximumIdleTime;
     self.nonSubscriptionRequestTimeout = configuration.nonSubscriptionRequestTimeout;
     self.subscriptionRequestTimeout = configuration.subscriptionRequestTimeout;
     self.presenceHeartbeatTimeout = configuration.presenceHeartbeatTimeout;
@@ -294,6 +296,7 @@
     }
     isEqual = (isEqual ? (self.presenceHeartbeatTimeout == configuration.presenceHeartbeatTimeout) : isEqual);
     isEqual = (isEqual ? (self.presenceHeartbeatInterval == configuration.presenceHeartbeatInterval) : isEqual);
+    isEqual = (isEqual ? (self.subscriptionMaximumIdleTime == configuration.subscriptionMaximumIdleTime) : isEqual);
     isEqual = (isEqual ? (self.nonSubscriptionRequestTimeout == configuration.nonSubscriptionRequestTimeout) : isEqual);
     isEqual = (isEqual ? (self.subscriptionRequestTimeout == configuration.subscriptionRequestTimeout) : isEqual);
     isEqual = (isEqual ? (self.shouldKeepTimeTokenOnChannelsListChange == configuration.shouldKeepTimeTokenOnChannelsListChange) : isEqual);
@@ -349,11 +352,11 @@
 
     if (shouldKillDNSCache && self.isDNSCacheClearingEnabled) {
         
-        NSString *subDomain = [self.realOrigin stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@".%@",
+        NSString *subDomain = [self.realOrigin stringByReplacingOccurrencesOfString:[[NSString alloc] initWithFormat:@".%@",
                                                                                      kPNServiceMainDomain]
                                                                          withString:@""];
 
-        self.origin = [NSString stringWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
+        self.origin = [[NSString alloc] initWithFormat:@"%@-%ld.%@", subDomain, (long)[PNHelper randomInteger],
                         kPNServiceMainDomain];
     } else {
 
@@ -368,7 +371,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"\n(%p) Configuration for: %@ (secured: %@)\n"
+    return [[NSString alloc] initWithFormat:@"\n(%p) Configuration for: %@ (secured: %@)\n"
                                        "Publish key (optional for read-only application): %@\n"
                                        "Subscription key (optional for write-only application): %@\n"
                                        "Secret key (required for PAM): %@\n"

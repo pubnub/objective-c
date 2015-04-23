@@ -56,6 +56,11 @@
     return self;
 }
 
+- (void)setNamespaces:(NSArray *)namespaces {
+    
+    _namespaces = [[NSArray alloc] initWithArray:namespaces copyItems:NO];
+}
+
 - (id)parsedData {
     
     return self.namespaces;

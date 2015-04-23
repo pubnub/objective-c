@@ -58,7 +58,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 @property (nonatomic, assign, getter = shouldCompressMessage) BOOL compressMessage;
 @property (nonatomic, assign, getter = shouldStoreInHistory) BOOL storeInHistory;
 @property (nonatomic, assign, getter = isContentEncrypted) BOOL contentEncrypted;
-@property (nonatomic, strong) id message;
+@property (nonatomic, copy) id<NSObject, NSCopying> message;
 @property (nonatomic, strong) id encryptedMessage;
 @property (nonatomic, strong) PNDate *receiveDate;
 @property (nonatomic, strong) PNDate *date;
@@ -77,7 +77,8 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
 #pragma mark - Class methods
 
-+ (PNMessage *)messageWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
++ (PNMessage *)messageWithObject:(id<NSObject, NSCopying>)object forChannel:(PNChannel *)channel
+                      compressed:(BOOL)shouldCompressMessage
                   storeInHistory:(BOOL)shouldStoreInHistory error:(PNError **)error {
 
     PNMessage *messageObject = nil;
@@ -127,14 +128,14 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     return messageObject;
 }
 
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel
++ (PNMessage *)messageFromServiceResponse:(id<NSObject, NSCopying>)messageBody onChannel:(PNChannel *)channel
                                    atDate:(PNDate *)messagePostDate {
     
     return [self messageFromServiceResponse:messageBody onChannel:channel channelGroup:nil
                                      atDate:messagePostDate];
 }
 
-+ (PNMessage *)messageFromServiceResponse:(id)messageBody onChannel:(PNChannel *)channel
++ (PNMessage *)messageFromServiceResponse:(id<NSObject, NSCopying>)messageBody onChannel:(PNChannel *)channel
                              channelGroup:(PNChannelGroup *)group atDate:(PNDate *)messagePostDate {
     
     PNMessage *message = [self new];
@@ -142,15 +143,15 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     // Check whether message body contains time token included from history API or not
     if ([messageBody isKindOfClass:[NSDictionary class]]) {
         
-        if ([messageBody objectForKey:kPNMessageTimeTokenKey])  {
+        if ([(NSDictionary *)messageBody objectForKey:kPNMessageTimeTokenKey])  {
             
-            messagePostDate = [PNDate dateWithToken:[messageBody objectForKey:kPNMessageTimeTokenKey]];
+            messagePostDate = [PNDate dateWithToken:[(NSDictionary *)messageBody objectForKey:kPNMessageTimeTokenKey]];
         }
         
         // Extract real message
-        if ([messageBody objectForKey:kPNMessageTimeTokenKey]) {
+        if ([(NSDictionary *)messageBody objectForKey:kPNMessageTimeTokenKey]) {
             
-            messageBody = [messageBody valueForKey:kPNMessageBodyKey];
+            messageBody = [(NSDictionary *)messageBody valueForKey:kPNMessageBodyKey];
         }
     }
     
@@ -220,7 +221,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
     return self;
 }
 
-- (id)initWithObject:(id)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
+- (id)initWithObject:(id<NSObject, NSCopying>)object forChannel:(PNChannel *)channel compressed:(BOOL)shouldCompressMessage
       storeInHistory:(BOOL)shouldStoreInHistory {
 
     // Check whether initialization was successful or not
@@ -276,7 +277,7 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <message: %@, date: %@, channel: %@>", NSStringFromClass([self class]),
+    return [[NSString alloc] initWithFormat:@"%@ (%p): <message: %@, date: %@, channel: %@>", NSStringFromClass([self class]),
             self, self.message, (self.receiveDate ? self.receiveDate : self.date), self.channel.name];
 }
 
@@ -285,12 +286,12 @@ struct PNMessageDataKeysStruct PNMessageDataKeys = {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
     PNDate *eitherDate = (self.receiveDate ? self.receiveDate : self.date);
-    NSMutableString *logDescription = [NSMutableString stringWithFormat:@"<%@|%@",
+    NSMutableString *logDescription = [[NSMutableString alloc] initWithFormat:@"<%@|%@",
                                        (self.channel.name ? self.channel.name : [NSNull null]),
                                        (eitherDate ? [eitherDate performSelector:@selector(logDescription)] : [NSNull null])];
     if (self.message) {
         
-        [logDescription appendFormat:@"%@>",
+        [logDescription appendFormat:@"|%@>",
          ([self.message respondsToSelector:@selector(logDescription)] ?
           [self.message performSelector:@selector(logDescription)] : self.message)];
     }

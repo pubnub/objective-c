@@ -49,7 +49,7 @@
 /**
  Stores data which has been assigned to the client.
  */
-@property (nonatomic, readonly, strong) NSDictionary *data
+@property (nonatomic, readonly, copy) NSDictionary *data
           DEPRECATED_MSG_ATTRIBUTE(" Use '-stateForChannel:' to get client's state for concrete channel");
 
 

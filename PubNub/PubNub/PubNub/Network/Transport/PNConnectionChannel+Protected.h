@@ -44,7 +44,8 @@ extern struct PNRequestForRescheduleStructure PNRequestForReschedule;
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, readonly, pn_desired_weak) PNConfiguration *configuration;
+@property (nonatomic, copy) NSString *name;
 
 
 #pragma mark - Instance methods

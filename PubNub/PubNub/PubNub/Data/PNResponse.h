@@ -22,7 +22,7 @@
 /**
  Stores RAW response from \b PubNub services.
  */
-@property (nonatomic, readonly, strong) NSData *content;
+@property (nonatomic, readonly, copy) NSData *content;
 
 /**
  Stores HTTP status code which was returned on sent request.
@@ -77,7 +77,7 @@
 /**
  Stores reference on response body object (array in most of cases).
  */
-@property (nonatomic, readonly, strong) id response;
+@property (nonatomic, readonly, copy) id response;
 
 
 #pragma mark - Class methods

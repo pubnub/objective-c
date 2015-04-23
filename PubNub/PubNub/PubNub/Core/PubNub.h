@@ -208,6 +208,8 @@
  
  @warning Because everything will be reset, you will have to configure \b PubNub client again and subscribe on all
  notifications.
+ 
+ @warning This method has async nature, also we need to give some time to system to clean up resources. Before you configure client again you need to use delay in about 5 seconds.
 
  @since 3.4.2
 

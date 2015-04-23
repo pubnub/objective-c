@@ -11,6 +11,7 @@
 //
 
 #import "PNChannel+Protected.h"
+#import <libkern/OSAtomic.h>
 #import "PNChannelPresence+Protected.h"
 #import "NSObject+PNAdditions.h"
 #import "NSString+PNAddition.h"
@@ -37,6 +38,7 @@
 
 static NSMutableDictionary *_channelsCache = nil;
 static NSObject *_synchronizationObject = nil;
+static OSSpinLock _channelsCacheSpinlock = OS_SPINLOCK_INIT;
 
 #pragma mark - Private interface methods
 
@@ -96,7 +98,7 @@ static NSObject *_synchronizationObject = nil;
 
 + (NSArray *)channelsWithNames:(NSArray *)channelsName {
 
-    NSMutableArray *channels = [NSMutableArray arrayWithCapacity:[channelsName count]];
+    NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity:[channelsName count]];
 
     [channelsName enumerateObjectsUsingBlock:^(NSString *channelName, NSUInteger channelNameIdx,
                                                BOOL *channelNamesEnumerator) {
@@ -143,6 +145,7 @@ static NSObject *_synchronizationObject = nil;
 + (id)              channelWithName:(NSString *)channelName shouldObservePresence:(BOOL)observePresence
   shouldUpdatePresenceObservingFlag:(BOOL)shouldUpdatePresenceObservingFlag {
 
+    OSSpinLockLock(&_channelsCacheSpinlock);
     PNChannel *channel = [[self channelsCache] valueForKey:channelName];
     if (channel == nil && [channelName length] > 0) {
 
@@ -161,28 +164,33 @@ static NSObject *_synchronizationObject = nil;
 
         channel.observePresence = observePresence;
     }
+    OSSpinLockUnlock(&_channelsCacheSpinlock);
 
 
     return channel;
 }
 
 + (void)purgeChannelsCache {
-
+    
     [_synchronizationObject pn_dispatchBlock:^{
-
+        
+        OSSpinLockLock(&_channelsCacheSpinlock);
         if ([_channelsCache count] > 0) {
 
             [_channelsCache removeAllObjects];
         }
+        OSSpinLockUnlock(&_channelsCacheSpinlock);
     }];
 }
 
 + (void)removeChannelFromCache:(PNChannel *)channel {
 
+    OSSpinLockLock(&_channelsCacheSpinlock);
     if ([_channelsCache count] > 0 && channel) {
 
         [_channelsCache removeObjectForKey:channel.name];
     }
+    OSSpinLockUnlock(&_channelsCacheSpinlock);
 }
 
 + (NSDictionary *)channelsCache {
@@ -190,7 +198,7 @@ static NSObject *_synchronizationObject = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        _channelsCache = [NSMutableDictionary dictionary];
+        _channelsCache = [NSMutableDictionary new];
     });
     
     
@@ -199,13 +207,16 @@ static NSObject *_synchronizationObject = nil;
 
 + (NSString *)largestTimetokenFromChannels:(NSArray *)channels {
 
-    NSSortDescriptor *tokenSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updateTimeToken" ascending:YES];
-    NSArray *timeTokens = [[channels sortedArrayUsingDescriptors:@[tokenSortDescriptor]] valueForKey:@"updateTimeToken"];
+    static NSArray *_tokenSortDescriptors;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        _tokenSortDescriptors = [@[[[NSSortDescriptor alloc] initWithKey:@"updateTimeToken" ascending:YES]] copy];
+    });
+    NSArray *timeTokens = [channels sortedArrayUsingDescriptors:_tokenSortDescriptors];
 
-    NSString *token = [timeTokens lastObject];
 
-
-    return token ? token : @"0";
+    return ([timeTokens count] ? ((PNChannel *)[timeTokens lastObject]).updateTimeToken : @"0");
 }
 
 
@@ -220,7 +231,7 @@ static NSObject *_synchronizationObject = nil;
         self.ableToResetTimeToken = YES;
 		self.updateTimeToken = @"0";
         self.name = channelName;
-        self.participantsList = [NSMutableDictionary dictionary];
+        self.participantsList = [NSMutableDictionary new];
     }
     
     
@@ -278,10 +289,14 @@ static NSObject *_synchronizationObject = nil;
 - (NSArray *)participants {
     
     __block NSArray *participants = nil;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create( 0 );
     [_synchronizationObject pn_dispatchBlock:^{
-
+        
         participants = [self.participantsList allValues];
+        dispatch_semaphore_signal(semaphore);
     }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [PNDispatchHelper release:semaphore];
     
     
     return participants;
@@ -315,7 +330,7 @@ static NSObject *_synchronizationObject = nil;
 
         self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
         self.participantsCount = participantsCount;
-        self.participantsList = [NSMutableDictionary dictionary];
+        self.participantsList = [NSMutableDictionary new];
         [participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
 
             NSString *clientStoreIdentifier = client.identifier;
@@ -336,23 +351,18 @@ static NSObject *_synchronizationObject = nil;
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@(%p) %@", NSStringFromClass([self class]), self, self.name];
+    return [[NSString alloc] initWithFormat:@"%@(%p) %@", NSStringFromClass([self class]), self,
+            self.name];
 }
 
 - (NSString *)logDescription {
     
-    return [NSString stringWithFormat:@"<%@>", self.name];
+    return [[NSString alloc] initWithFormat:@"<%@>", self.name];
 }
 
 - (BOOL)isPresenceObserver {
 
     return NO;
-}
-
-- (void)dealloc {
-    
-    [_synchronizationObject pn_destroyPrivateDispatchQueue];
-    _synchronizationObject = nil;
 }
 
 #pragma mark -

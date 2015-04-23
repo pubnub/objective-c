@@ -151,6 +151,16 @@
 + (void)storeHTTPPacketData:(NSData *(^)(void))httpPacketBlock;
 
 /**
+ @brief Dump garbage packet data on filesystem for future investigation.
+
+ @param httpPacketBlock Block which is used by logger to receive \b NSData instance which contains
+                        garbage data which has been received from server.
+
+ @since 3.7.10
+ */
++ (void)storeGarbageHTTPPacketData:(dispatch_data_t (^)(void))httpPacketBlock;
+
+/**
  Store data passed through \c httpPacketBlock block into separate file which will represent unexpected HTTP packet.
  
  @param httpPacketBlock

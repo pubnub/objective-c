@@ -28,10 +28,13 @@
 @property (nonatomic, strong) NSArray *channelsForPresenceEnabling;
 @property (nonatomic, strong) NSArray *channelsForPresenceDisabling;
 
+// Stores recent channels/presence state update time (token)
+@property (nonatomic, copy) NSString *updateTimeToken;
+
 /**
  Stores user-provided state which should be appended to the client subscription.
  */
-@property (nonatomic, strong) NSDictionary *state;
+@property (nonatomic, copy) NSDictionary *state;
 
 /**
  Storing configuration dependant parameters

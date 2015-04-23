@@ -59,8 +59,8 @@ struct PNPrivateNotificationDataStructure PNPrivateNotificationData = {
                           callbackToken:(NSString *)callbackToken data:(id)userData
                                  sender:(id)senderObject {
 
-    NSMutableDictionary *data = [NSMutableDictionary dictionaryWithObject:notificationName
-                                                                   forKey:PNPrivateNotificationData.notificationName];
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] initWithObjectsAndKeys:notificationName,
+                                 PNPrivateNotificationData.notificationName, nil];
     if (userData) {
 
         [data setValue:userData forKey:PNPrivateNotificationData.data];

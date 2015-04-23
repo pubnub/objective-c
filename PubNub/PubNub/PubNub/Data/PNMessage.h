@@ -41,7 +41,7 @@
 @property (nonatomic, readonly, strong) PNChannelGroup *channelGroup;
 
 // Stores reference on message body
-@property (nonatomic, readonly, strong) id message;
+@property (nonatomic, readonly, copy) id<NSObject, NSCopying> message;
 
 // Stores reference on date when this message was received
 @property (nonatomic, readonly, strong) PNDate *receiveDate;

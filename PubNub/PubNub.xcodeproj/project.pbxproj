@@ -291,6 +291,7 @@
 		799776C61A2FF2230097A61C /* PNLoggerSymbols.plist in Resources */ = {isa = PBXBuildFile; fileRef = 799775BC1A2FEFFA0097A61C /* PNLoggerSymbols.plist */; };
 		79D424971AA6686000A3A80B /* PNContextInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79D424951AA6686000A3A80B /* PNContextInformation.h */; };
 		79D424981AA6686000A3A80B /* PNContextInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79D424961AA6686000A3A80B /* PNContextInformation.m */; };
+		79E7E3F51AB3C45A00F6E175 /* PNPrivateMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E7E3F41AB3C45A00F6E175 /* PNPrivateMacro.h */; };
 		DD71B59CFF1405E2BE04BE53 /* PNTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = DD71B89F702C79C6C155EE8E /* PNTimer.h */; };
 		DD71B9ABB4A4632AC22B705A /* NSNotification+PNPrivateAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = DD71B922E31622996F01F2F8 /* NSNotification+PNPrivateAdditions.h */; };
 		DD71BA56BAB8F846C94129D3 /* PNTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71B7DDE5B3A1F8E1F2DD3B /* PNTimer.m */; };
@@ -605,6 +606,7 @@
 		799775BC1A2FEFFA0097A61C /* PNLoggerSymbols.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PNLoggerSymbols.plist; sourceTree = "<group>"; };
 		79D424951AA6686000A3A80B /* PNContextInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PNContextInformation.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		79D424961AA6686000A3A80B /* PNContextInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PNContextInformation.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		79E7E3F41AB3C45A00F6E175 /* PNPrivateMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateMacro.h; sourceTree = "<group>"; };
 		DD71B7DDE5B3A1F8E1F2DD3B /* PNTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimer.m; sourceTree = "<group>"; };
 		DD71B837F703421434E56C66 /* NSNotification+PNPrivateAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNotification+PNPrivateAdditions.m"; sourceTree = "<group>"; };
 		DD71B89F702C79C6C155EE8E /* PNTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTimer.h; sourceTree = "<group>"; };
@@ -884,6 +886,7 @@
 		7997753F1A2FEFF90097A61C /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				799775671A2FEFF90097A61C /* Protocols */,
 				799775401A2FEFF90097A61C /* Categories */,
 				799775651A2FEFF90097A61C /* PNServiceResponseCallbacks.h */,
 				799775581A2FEFF90097A61C /* PNDefaultConfiguration.h */,
@@ -900,8 +903,8 @@
 				7997755F1A2FEFF90097A61C /* PNLogger.m */,
 				7997755A1A2FEFF90097A61C /* PNHelper.h */,
 				7997755B1A2FEFF90097A61C /* PNHelper.m */,
+				79E7E3F41AB3C45A00F6E175 /* PNPrivateMacro.h */,
 				799775611A2FEFF90097A61C /* PNMacro.h */,
-				799775671A2FEFF90097A61C /* Protocols */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -1113,6 +1116,7 @@
 				799776951A2FF0020097A61C /* PNClientStateRequest+Protected.h in Headers */,
 				799775D31A2FEFFA0097A61C /* PubNub+Subscription.h in Headers */,
 				7997766F1A2FEFFF0097A61C /* PNLoggerSymbols.h in Headers */,
+				79E7E3F51AB3C45A00F6E175 /* PNPrivateMacro.h in Headers */,
 				7997761C1A2FEFFB0097A61C /* PNAccessRightsCollection+Protected.h in Headers */,
 				7997762B1A2FEFFC0097A61C /* PNChannelGroupChange.h in Headers */,
 				799775C81A2FEFFA0097A61C /* PubNub+Messaging.h in Headers */,
@@ -1622,20 +1626,26 @@
 		798EFB841A00F14B00E8AFB7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
 		798EFB851A00F14B00E8AFB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};

@@ -68,12 +68,12 @@
 
 	XCTAssertTrue( message != nil, @"");
 	XCTAssertTrue( [[message.receiveDate timeToken] intValue] == 123, @"");
-	XCTAssertTrue( [message.message isEqualToString: @"message"] == YES, @"");
+	XCTAssertTrue([(NSString *)message.message isEqualToString: @"message"] == YES, @"");
 	XCTAssertTrue( message.channel == channel, @"");
 
 	message = [PNMessage messageFromServiceResponse: @{@"message": @"message"} onChannel: channel atDate: postDate];
 	XCTAssertTrue( [[message.receiveDate timeToken] intValue] == 200, @"");
-	XCTAssertTrue( [message.message isEqualToDictionary:@{@"message": @"message"}] == YES, @"");
+	XCTAssertTrue( [(NSDictionary *)message.message isEqualToDictionary:@{@"message": @"message"}] == YES, @"");
 	XCTAssertTrue( message.channel == channel, @"");
 }
 

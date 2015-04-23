@@ -29,7 +29,8 @@ static const NSUInteger kAmountOfChannels = 15;
 - (void)setUp
 {
     [super setUp];
-    [PubNub setDelegate:self];
+    
+    NSLog(@"Delegate test: %@", self);
     
     [PubNub disconnect];
 }
@@ -48,7 +49,8 @@ static const NSUInteger kAmountOfChannels = 15;
     
     [resGroup enter];
     
-    PNConfiguration *configuration = [PNConfiguration defaultConfiguration];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
+    [PubNub setDelegate:self];
     [PubNub setConfiguration:configuration];
 
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
@@ -72,6 +74,8 @@ static const NSUInteger kAmountOfChannels = 15;
     NSMutableArray *channelNames = [NSMutableArray arrayWithCapacity:amountOfChannels];
     _resGroup = [GCDGroup group];
     
+    __block NSDate *startDate = [NSDate date];
+    
 	for(int i = 0; i < amountOfChannels; i++) {
         
 		NSString *channelName = [NSString stringWithFormat: @"channel%d", i];
@@ -80,8 +84,6 @@ static const NSUInteger kAmountOfChannels = 15;
 		NSArray *channels = [PNChannel channelsWithNames:@[channelName]];
         
         [_resGroup enter];
-        
-        NSDate *startDate = [NSDate date];
         
         [PubNub subscribeOn:channels
     withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
@@ -105,13 +107,17 @@ static const NSUInteger kAmountOfChannels = 15;
             NSDate *finishDate = [NSDate date];
             
             NSTimeInterval interval = [finishDate timeIntervalSinceDate:startDate];
+            NSNumber *intervalNumber = [NSNumber numberWithDouble:interval];
             NSLog(@"Subscribed %f, %@", interval, channels);
             
-            XCTAssertTrue( interval < [PubNub sharedInstance].configuration.subscriptionRequestTimeout, @"Timeout error, %f instead of %f", interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
+            XCTAssertTrue( [intervalNumber integerValue] < [PubNub sharedInstance].configuration.subscriptionRequestTimeout, @"Timeout error for %@, %f instead of %f", channelName,interval, [PubNub sharedInstance].configuration.subscriptionRequestTimeout);
             
             [_resGroup leave];
+            
+            startDate = [NSDate date];
         }
     }];
+        
     }
     
     if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {

@@ -29,7 +29,7 @@
 /**
  Stores reference on state dictionary which will be pushed to the channel in bound to client identifier,
  */
-@property (nonatomic, strong) NSDictionary *state;
+@property (nonatomic, copy) NSDictionary *state;
 
 /**
  Storing configuration dependant parameters

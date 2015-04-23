@@ -180,8 +180,8 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     }
 
 
-    return [NSString stringWithFormat:@"%@\nEVENT: %@%@\nDATE: %@\nOCCUPANCY: %ld\nCHANNEL: %@",
-                    NSStringFromClass([self class]), action, [NSString stringWithFormat:@"\nCLIENT: %@", self.client],
+    return [[NSString alloc] initWithFormat:@"%@\nEVENT: %@%@\nDATE: %@\nOCCUPANCY: %ld\nCHANNEL: %@",
+                    NSStringFromClass([self class]), action, [[NSString alloc] initWithFormat:@"\nCLIENT: %@", self.client],
                     self.date, (unsigned long)self.occupancy, self.channel];
 }
 
@@ -207,7 +207,7 @@ struct PNPresenceEventDataKeysStruct PNPresenceEventDataKeys = {
     
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wundeclared-selector"
-    return [NSString stringWithFormat:@"<%@|%@|%@|%ld|%@>", action, (self.date ? [self.date performSelector:@selector(logDescription)] : [NSNull null]),
+    return [[NSString alloc] initWithFormat:@"<%@|%@|%@|%ld|%@>", action, (self.date ? [self.date performSelector:@selector(logDescription)] : [NSNull null]),
             (self.channel ? [self.channel performSelector:@selector(logDescription)] : [NSNull null]), (unsigned long)self.occupancy,
             (self.client ? [self.client performSelector:@selector(logDescription)] : [NSNull null])];
     #pragma clang diagnostic pop

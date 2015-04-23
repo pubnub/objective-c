@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-This is Objective-C client (current version **3.7.9.3**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
+This is Objective-C client (current version **3.7.10.6**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
 
 Table of Contents
 =================
@@ -163,7 +163,7 @@ touch Podfile
 ```
 <a/>4. Using your favorite text editor add next line into **Podfile**:  
 ```bash
-pod 'PubNub', ‘3.7.9.1’
+pod 'PubNub', '3.7.10.6’
 ```
 <a/>5. Install dependencies using _Terminal_:  
 ```bash
@@ -365,6 +365,12 @@ You can use few class methods to initialize and update instance properties:
 ```
 <a/>3. Update the configuration instance using this next set of parameters:  
 
+  - Maximum subscription channels idle time. Used by internal timers to ensure subscription streams still responsible. Before changing this property please contact support@pubnub.com
+  ```objc
+  subscriptionMaximumIdleTime  
+  ```
+  __Default:__ 310 seconds (_kPNConnectionIdleTimeout_ key in [__PNDefaultConfiguration.h__](PubNub/PubNub/PubNub/Misc/PNDefaultConfiguration.h))
+
   - Timeout after which the library will report any ***non-subscription-related*** request (here now, leave, message history, message post, time token) or execution failure.
   ```objc
   nonSubscriptionRequestTimeout  
@@ -376,7 +382,7 @@ You can use few class methods to initialize and update instance properties:
   ```objc
   subscriptionRequestTimeout  
   ```
-  __Default:__ 310 seconds (_kPNSubscriptionRequestTimeout_ key in [__PNDefaultConfiguration.h__](PubNub/PubNub/PubNub/Misc/PNDefaultConfiguration.h))  
+  __Default:__ 10 seconds (_kPNSubscriptionRequestTimeout_ key in [__PNDefaultConfiguration.h__](PubNub/PubNub/PubNub/Misc/PNDefaultConfiguration.h))  
   ***Please consult with PubNub support before setting this value lower than the default to avoid incurring additional charges.***
     
   - Client will pass this value during subscription to inform it after which period of inactivity (when client will stop send ping to the server) it should mark client and __timed out__.
@@ -1566,40 +1572,13 @@ There is API to manage channel group and namespaces:
 - (void)removeChannelGroup:(PNChannelGroup *)group
   withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock;
 
-- (void)requestChannelGroupNamespaces;
-- (void)requestChannelGroupNamespacesWithCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock;
 - (void)removeChannelGroupNamespace:(NSString *)nspace;
 - (void)removeChannelGroupNamespace:(NSString *)nspace 
         withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock
 ```
 Methods above allow to fetch list of groups and namespaces as well as remove them. When namespace is removed, it will unregister all channels in channel groups and remove them along with channel groups from deleted namespace. When channel group removed, all registered channels will be removed from it.  
 
-Fetch list of namespaces for whole application subscribe key:  
-```objc
-PubNub *pubNub = [PubNub clientWithConfiguration:[PNConfiguration defaultConfiguration] 
-                                     andDelegate:self];
-[pubNub connect];
-[pubNub requestChannelGroupsWithCompletionHandlingBlock:^(NSString *nspace, NSArray *groups, 
-                                                          PNError *error) {
- 
-   if (!error) {
-   
-       // PubNub client received list of channel groups inside specified namespace or application
-       // wide.
-   }
-   else {
-       
-       // PubNub client did fail to retrieve list of channel groups inside specified namespace or
-       // application wide.
-       //
-       // Always check 'error.code' to find out what caused error (check PNErrorCodes header file
-       // and use -localizedDescription / -localizedFailureReason and -localizedRecoverySuggestion
-       // to get human readable description for error). 'error.associatedObject' contains name of
-       // namespace for which channel groups has been requested (will be nil in case if request
-       // has been application wide).
-   }
-}];
-```
+
 Also there is API to manage channel group content (list of registered channels):  
 ```objc
 - (void)requestChannelsForGroup:(PNChannelGroup *)group;
@@ -2006,7 +1985,6 @@ This object is subclass of [**PNChannelGroup**](#pnchannelgroup-object) but have
 
 Also it provide few constructor methods:
 ```objc
-+ (PNChannelGroupNamespace *)allNamespaces;
 + (PNChannelGroupNamespace *)namespaceWithName:(NSString *)name;
 ```
 First method is useful if you need to address all namespaces which is registered for your application keys (publish/subscribe key pair).

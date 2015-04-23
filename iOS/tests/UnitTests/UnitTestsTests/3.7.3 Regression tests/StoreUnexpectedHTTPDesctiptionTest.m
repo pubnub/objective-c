@@ -79,7 +79,7 @@ typedef struct __CFHTTPMessageTest* CFHTTPMessageRefTest;
 
 - (void)t1estResponseDeserialization
 {
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kTestPNOriginHost publishKey:kTestPNPublishKey subscribeKey:kTestPNSubscriptionKey secretKey:nil];
+    PNConfiguration *configuration = [PNConfiguration defaultTestConfiguration];
     
     _pubNub = [PubNub clientWithConfiguration:configuration];
     

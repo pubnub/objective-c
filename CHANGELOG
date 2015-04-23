@@ -1,3 +1,58 @@
+04-16-2015 - d171ec50 - 3.7.10.6
+
+. unschedule streams from run-loop and let streamClose function only release resources
+. additinal memory protection
+. created additional reference on dispatch_data_t object from inside of PNResponseDeserialize -parseBufferContent:withBlock: method with attempt to prevent ARC from releasing last reference on passed buffer from outside of the method
+
+04-14-2015 - 37efc2dc - 3.7.10.5
+
+. fixed access rights population from upper layers to channel groups
+. adjusted +connectingClientWithConfiguration: constructor methods to synchronise delegate assignment
+. removed race of conditions with look up timer in PNReachability
+. streams configuration done through local variables to make sure what till full configuration complete class properties will be intact
+. returned back to target action behaviour in notification handling.
+. fixed potential memory issues
+. optimised memory allocation for read amount of data (will be reduced in size if required)
+
+04-11-2015 - cd5870bb - 3.7.10.4
+
+. fixed memory issues
+. added new subscriptionMaximumIdleTime PNConfiguration property which allow to alter time after which subscription stream should re-initialise
+. updated PNReachability to re-launch SCNetworkReachability in case if it reported 'not reachable' and at the same time interface has assigned address and time API completed successfully
+. fix participants method related to pull request
+. allocation on stack for some resources
+. added spin lock to protect PNChannel cache from changes on different threads
+. fixed wake up time crash inside of PNConnection
+. storing copy of identifier passed to async operation
+. moved copy outside of asynchronous block
+. changed message publish API method signature to request compliance with NSCopying protocol
+. PNMessage instance will copy passed object (which should be posted)
+
+03-26-2015 - d0367a49 - 3.7.10.3
+
+. adjusted read buffer behavior
+. changed destruction queue for read buffer internals
+
+03-25-2015 - 5549d1e4 - 3.7.10.2
+
+. fixed crash caused by incomplete network layer configuration (only for deployment target lower then 6.x)
+
+
+03-22-2015 - 56584a01 - 3.7.10.1
+
+. removed debug PN_APP_EXTENSION macro from code
+
+
+03-20-2015 - 189923b7 - 3.7.10
+
+. added additional debug informatino for timeout log entry
+. fixed subscription on new channel during subscription time token update process
+. adjusted de-serializer
+. updated soe tests which used old API
+. migrated read buffer to GCD data objects and changed raw bytes parsing mechanism
+. added PN_APP_EXTENSION macro to exclude from client's code on compile time code which is not compatible with extensions
+
+
 03-12-2015 - c379c6d4 - 3.7.9.3
 
 . fixed heartbeat timer.

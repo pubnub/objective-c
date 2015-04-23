@@ -684,7 +684,7 @@
 - (void)changeApplicationAccessRightsTo:(PNAccessRights)accessRights onPeriod:(NSInteger)accessPeriodDuration
              andCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
 
-    [self changeAccessRightsFor:nil accessRights:accessRights clients:nil onPeriod:0
+    [self changeAccessRightsFor:nil accessRights:accessRights clients:nil onPeriod:accessPeriodDuration
        rescheduledCallbackToken:nil withCompletionHandlingBlock:handlerBlock];
 }
 
@@ -951,6 +951,14 @@
                      onPeriod:(NSInteger)accessPeriodDuration
      rescheduledCallbackToken:(NSString *)callbackToken
   withCompletionHandlingBlock:(PNClientChannelAccessRightsChangeBlock)handlerBlock {
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channelObjects = (channelObjects ? [[NSArray alloc] initWithArray:channelObjects copyItems:NO] :
+                                       [NSArray new]);
+    clientsAuthorizationKeys = (clientsAuthorizationKeys ?
+                                [[NSArray alloc] initWithArray:clientsAuthorizationKeys copyItems:NO] :
+                                [NSArray new]);
     
     [self pn_dispatchBlock:^{
         
@@ -964,8 +972,6 @@
         }];
         
         // Initialize arrays in case if used specified \a 'nil' for \a 'channels' and/or \a 'clientsAuthorizationKeys'
-        NSArray *objects = (channelObjects ? channelObjects : @[]);
-        NSArray *authorizationKeys = (clientsAuthorizationKeys ? clientsAuthorizationKeys : @[]);
         
         [self   performAsyncLockingBlock:^{
 
@@ -978,8 +984,8 @@
                     return @[PNLoggerSymbols.api.changeAccessRights, [self humanReadableStateFrom:self.state]];
                 }];
 
-                PNChangeAccessRightsRequest *request = [PNChangeAccessRightsRequest changeAccessRightsRequestForChannels:objects
-                                                                                                            accessRights:accessRights clients:authorizationKeys
+                PNChangeAccessRightsRequest *request = [PNChangeAccessRightsRequest changeAccessRightsRequestForChannels:channelObjects
+                                                                                                            accessRights:accessRights clients:clientsAuthorizationKeys
                                                                                                                forPeriod:accessPeriodDuration];
                 if (handlerBlock && !callbackToken) {
 
@@ -1005,8 +1011,8 @@
 
                 PNAccessRightOptions *options = [PNAccessRightOptions accessRightOptionsForApplication:self.configuration.subscriptionKey
                                                                                             withRights:accessRights
-                                                                                              channels:objects
-                                                                                               clients:authorizationKeys
+                                                                                              channels:channelObjects
+                                                                                               clients:clientsAuthorizationKeys
                                                                                           accessPeriod:accessPeriodDuration];
                 if (![self.configuration.secretKey length]) {
 
@@ -1034,8 +1040,8 @@
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeChangeAccessRightsFor:objects accessRights:accessRights
-                                        clients:authorizationKeys
+            [self postponeChangeAccessRightsFor:channelObjects accessRights:accessRights
+                                        clients:clientsAuthorizationKeys
                                        onPeriod:accessPeriodDuration
                        rescheduledCallbackToken:callbackToken
                     withCompletionHandlingBlock:handlerBlock];
@@ -1151,6 +1157,14 @@
 - (void)auditAccessRightsFor:(NSArray *)channelObjects clients:(NSArray *)clientsAuthorizationKeys
     rescheduledCallbackToken:(NSString *)callbackToken
  withCompletionHandlingBlock:(PNClientChannelAccessRightsAuditBlock)handlerBlock {
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channelObjects = (channelObjects ? [[NSArray alloc] initWithArray:channelObjects copyItems:NO] :
+                                       [NSArray new]);
+    clientsAuthorizationKeys = (clientsAuthorizationKeys ?
+                                [[NSArray alloc] initWithArray:clientsAuthorizationKeys copyItems:NO] :
+                                [NSArray new]);
     
     [self pn_dispatchBlock:^{
         
@@ -1161,10 +1175,6 @@
                      (clientsAuthorizationKeys ? clientsAuthorizationKeys : [NSNull null]),
                      [self humanReadableStateFrom:self.state]];
         }];
-        
-        // Initialize arrays in case if used specified \a 'nil' for \a 'channels' and/or \a 'clientsAuthorizationKeys'
-        NSArray *objects = (channelObjects ? channelObjects : @[]);
-        NSArray *authorizationKeys = (clientsAuthorizationKeys ? clientsAuthorizationKeys : @[]);
         
         [self   performAsyncLockingBlock:^{
 
@@ -1178,8 +1188,8 @@
                             [self humanReadableStateFrom:self.state]];
                 }];
 
-                PNAccessRightsAuditRequest *request = [PNAccessRightsAuditRequest accessRightsAuditRequestForChannels:objects
-                                                                                                           andClients:authorizationKeys];
+                PNAccessRightsAuditRequest *request = [PNAccessRightsAuditRequest accessRightsAuditRequestForChannels:channelObjects
+                                                                                                           andClients:clientsAuthorizationKeys];
                 if (handlerBlock && !callbackToken) {
 
                     [self.observationCenter addClientAsAccessRightsAuditObserverWithToken:request.shortIdentifier
@@ -1204,8 +1214,8 @@
 
                 PNAccessRightOptions *options = [PNAccessRightOptions accessRightOptionsForApplication:self.configuration.subscriptionKey
                                                                                             withRights:PNUnknownAccessRights
-                                                                                              channels:objects
-                                                                                               clients:authorizationKeys
+                                                                                              channels:channelObjects
+                                                                                               clients:clientsAuthorizationKeys
                                                                                           accessPeriod:0];
                 if (![self.configuration.secretKey length]) {
 
@@ -1233,7 +1243,7 @@
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeAuditAccessRightsFor:objects clients:authorizationKeys
+            [self postponeAuditAccessRightsFor:channelObjects clients:clientsAuthorizationKeys
                       rescheduledCallbackToken:callbackToken
                    withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];

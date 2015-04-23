@@ -73,6 +73,11 @@
     return self;
 }
 
+- (void)setMessages:(NSArray *)messages {
+    
+    _messages = [[NSArray alloc] initWithArray:messages copyItems:NO];
+}
+
 #pragma mark -
 
 

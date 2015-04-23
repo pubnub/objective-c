@@ -73,7 +73,53 @@ PNDelegate
         [PubNub unsubscribeFrom:@[[PNChannel channelWithName:[NSString stringWithFormat:@"iosdev%d",i]]]];
     }
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:n * 1.2]) {
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:n * 1.5]) {
+        XCTFail(@"Timeout is fired. Didn't subscribe on channels");
+    }
+    _resGroup = nil;
+}
+
+- (void)testSubscribeInARow {
+    
+    [PubNub setConfiguration:[PNConfiguration defaultTestConfiguration]];
+    [PubNub setDelegate:self];
+    
+    // Connect
+    _resGroup = [GCDGroup group];
+    [_resGroup enter];
+    
+    [PubNub connect];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:5]) {
+        XCTFail(@"Timeout is fired. Didn't connect to PubNub");
+        [_resGroup leave];
+        _resGroup = nil;
+        return;
+    }
+    
+    // Number of channels
+    int n = 30;
+    
+    NSMutableArray *channelsArray = [NSMutableArray new];
+    for (int i = 1; i < n + 1; i++) {
+        [channelsArray addObject:[NSString stringWithFormat:@"iosdev%d",i]];
+    }
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:n * 3];
+    
+    // Subscribe on channels
+    for (NSString *channelName in channelsArray) {
+        [PubNub subscribeOn:[PNChannel channelsWithNames:@[channelName]]];
+    }
+    
+    // Send message and unsubscribe from channel in loop
+    for (int i = 1; i < n + 1; i++) {
+        [PubNub sendMessage:@"Hello iosdev" toChannel:[PNChannel channelWithName:[NSString stringWithFormat:@"iosdev%d",i]]];
+        [PubNub unsubscribeFrom:@[[PNChannel channelWithName:[NSString stringWithFormat:@"iosdev%d",i]]]];
+    }
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:n * 4]) {
         XCTFail(@"Timeout is fired. Didn't subscribe on channels");
     }
     _resGroup = nil;

@@ -58,7 +58,7 @@
 	[eventDic setObject: @"leave" forKey: @"action"];
 
 	PNResponse *response = [[PNResponse alloc] init];
-	response.response = @[ @[eventDic], @"123", @"ch1,ch2" ];
+	response.response = @[ @[eventDic], @"123", @"ch1-pnpres,ch2" ];
 	PNChannelEventsResponseParser *parser = [[PNChannelEventsResponseParser alloc] initWithResponse: response];
 
 	XCTAssertTrue( [parser.events.timeToken intValue] == 123, @"");

@@ -40,6 +40,18 @@
 @property (nonatomic, assign) NSTimeInterval subscriptionRequestTimeout;
 
 /**
+ @brief      Stores reference on value used by timer to verify subscription stream is still
+             responsible.
+ @discussion By default value is set to \b 310 seconds. If stream is responsible, there will be 
+             service response on subscribed channels (simple ping, if there is no other traffic)
+             and let know what it is still alive. If service won't send \a ping in time, stream
+             will be terminated and re-established connection and catch up on subscription.
+ 
+ @since <#version number#>
+ */
+@property (nonatomic, assign) NSTimeInterval subscriptionMaximumIdleTime;
+
+/**
  Stores whether connection should be restored if it failed in previous session or not.
  */
 @property (nonatomic, assign, getter = shouldAutoReconnectClient) BOOL autoReconnectClient;

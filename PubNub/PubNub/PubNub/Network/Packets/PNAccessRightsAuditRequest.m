@@ -102,8 +102,9 @@
 
 - (NSString *)PAMSignature {
 
-    NSMutableArray *parameters = [NSMutableArray array];
-    NSMutableString *signature = [NSMutableString stringWithFormat:@"%@\n%@\naudit\n", self.subscriptionKey, self.publishKey];
+    NSMutableArray *parameters = [NSMutableArray new];
+    NSMutableString *signature = [[NSMutableString alloc] initWithFormat:@"%@\n%@\naudit\n",
+                                  self.subscriptionKey, self.publishKey];
 
     if ([self.accessRightOptions.clientsAuthorizationKeys count] > 0) {
 
@@ -113,9 +114,9 @@
             authorizationKey = [self.accessRightOptions.clientsAuthorizationKeys componentsJoinedByString:@","];
         }
 
-        [parameters addObject:[NSString stringWithFormat:@"auth=%@", [authorizationKey pn_percentEscapedString]]];
+        [parameters addObject:[[NSString alloc] initWithFormat:@"auth=%@", [authorizationKey pn_percentEscapedString]]];
     }
-    [parameters addObject:[NSString stringWithFormat:@"callback=%@_%@", [self callbackMethodName], self.shortIdentifier]];
+    [parameters addObject:[[NSString alloc] initWithFormat:@"callback=%@_%@", [self callbackMethodName], self.shortIdentifier]];
 
     if ([self.accessRightOptions.channels count] > 0) {
 
@@ -125,12 +126,12 @@
 
             channel = [[self.accessRightOptions.channels valueForKey:@"name"] componentsJoinedByString:@","];
         }
-        [parameters addObject:[NSString stringWithFormat:@"%@=%@", (!isChannelGroupProvided ? @"channel" : @"channel-group"),
+        [parameters addObject:[[NSString alloc] initWithFormat:@"%@=%@", (!isChannelGroupProvided ? @"channel" : @"channel-group"),
                                [channel pn_percentEscapedString]]];
     }
     
-    [parameters addObject:[NSString stringWithFormat:@"pnsdk=%@", [self clientInformationField]]];
-    [parameters addObject:[NSString stringWithFormat:@"timestamp=%lu", (unsigned long)[self requestTimestamp]]];
+    [parameters addObject:[[NSString alloc] initWithFormat:@"pnsdk=%@", [self clientInformationField]]];
+    [parameters addObject:[[NSString alloc] initWithFormat:@"timestamp=%lu", (unsigned long)[self requestTimestamp]]];
 
     [signature appendString:[parameters componentsJoinedByString:@"&"]];
     [signature setString:[PNEncryptionHelper HMACSHA256FromString:signature withKey:self.secretKey]];
@@ -175,11 +176,11 @@
     }
 
 
-    return [NSString stringWithFormat:@"/v1/auth/audit/sub-key/%@?%@callback=%@_%@%@&pnsdk=%@&timestamp=%lu&signature=%@",
+    return [[NSString alloc] initWithFormat:@"/v1/auth/audit/sub-key/%@?%@callback=%@_%@%@&pnsdk=%@&timestamp=%lu&signature=%@",
             [self.subscriptionKey pn_percentEscapedString],
-            (authorizationKey ? [NSString stringWithFormat:@"auth=%@&", [authorizationKey pn_percentEscapedString]] : @""),
+            (authorizationKey ? [[NSString alloc] initWithFormat:@"auth=%@&", [authorizationKey pn_percentEscapedString]] : @""),
             [self callbackMethodName], self.shortIdentifier,
-            (channel ? [NSString stringWithFormat:@"&%@=%@", (!isChannelGroupProvided ? @"channel" : @"channel-group"),
+            (channel ? [[NSString alloc] initWithFormat:@"&%@=%@", (!isChannelGroupProvided ? @"channel" : @"channel-group"),
                        [channel pn_percentEscapedString]] : @""),
             [self clientInformationField], (unsigned long)[self requestTimestamp], [self PAMSignature]];
 }
@@ -192,7 +193,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

@@ -44,7 +44,7 @@
 @property (nonatomic, strong) PNMessage *message;
 
 // Stores reference on prepared message
-@property (nonatomic, strong) NSString *preparedMessage;
+@property (nonatomic, copy) NSString *preparedMessage;
 
 @property (nonatomic, copy) NSString *subscriptionKey;
 @property (nonatomic, copy) NSString *publishKey;
@@ -70,7 +70,7 @@
 
 + (PNMessagePostRequest *)postMessageRequestWithMessage:(PNMessage *)message; {
 
-    return [[[self class] alloc] initWithMessage:message];
+    return [[self alloc] initWithMessage:message];
 }
 
 
@@ -146,7 +146,7 @@
 
 - (NSString *)resourcePath {
     
-    NSMutableString *resourcePath = [NSMutableString stringWithFormat:@"/publish/%@/%@/%@/%@/%@_%@",
+    NSMutableString *resourcePath = [[NSMutableString alloc] initWithFormat:@"/publish/%@/%@/%@/%@/%@_%@",
                                                                       [self.publishKey pn_percentEscapedString],
                                                                       [self.subscriptionKey pn_percentEscapedString],
                                                                       [self signature],
@@ -160,7 +160,7 @@
     }
     
     [resourcePath appendFormat:@"?uuid=%@%@&pnsdk=%@", [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-                               ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+                               ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@", [self authorizationField]] : @""),
                                [self clientInformationField]];
     
     if (!self.message.shouldStoreInHistory) {
@@ -189,11 +189,11 @@
     NSString *secretKey = self.secretKey;
     if ([secretKey length] > 0) {
 
-        NSString *signedRequestPath = [NSString stringWithFormat:@"%@/%@/%@/%@/%@%@", self.publishKey, self.subscriptionKey,
+        NSString *signedRequestPath = [[NSString alloc] initWithFormat:@"%@/%@/%@/%@/%@%@", self.publishKey, self.subscriptionKey,
                                        secretKey, [self.message.channel escapedName], self.message.message,
-                        ([self authorizationField] ? [NSString stringWithFormat:@"?%@", [self authorizationField]] : @""),
-                        ([self authorizationField] ? [NSString stringWithFormat:@"&pnsdk=%@", [self clientInformationField]] :
-                                                     [NSString stringWithFormat:@"?pnsdk=%@", [self clientInformationField]])];
+                        ([self authorizationField] ? [[NSString alloc] initWithFormat:@"?%@", [self authorizationField]] : @""),
+                        ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&pnsdk=%@", [self clientInformationField]] :
+                                                     [[NSString alloc] initWithFormat:@"?pnsdk=%@", [self clientInformationField]])];
         
         signature = [PNEncryptionHelper HMACSHA256FromString:signedRequestPath withKey:secretKey];
     }
@@ -204,7 +204,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

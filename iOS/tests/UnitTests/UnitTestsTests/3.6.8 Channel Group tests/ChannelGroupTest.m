@@ -9,411 +9,812 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-static NSString *kOriginPath = @"pubsub-emea.pubnub.com";
-static NSString *kPublishKey = @"demo";
-static NSString *kSubscribeKey = @"demo";
-static NSString *kSecretKey = @"mySecret";
-
 @interface ChannelGroupTest : XCTestCase <PNDelegate> {
-    dispatch_group_t _resGroup1;
-    dispatch_group_t _resGroup2;
-    dispatch_group_t _resGroup3;
-    dispatch_group_t _resGroup4;
-    dispatch_group_t _resGroup5;
-    dispatch_group_t _resGroup6;
     
-    NSString *_namespaceName;
-    NSString *_groupName;
-    
-    NSArray *_channels;
-    PNChannelGroup *_group1;
-    
-    PubNub *_pubNub;
-   }
+    GCDGroup *_resGroup;
+    PNConfiguration *_configuration1;
+}
 @end
 
 @implementation ChannelGroupTest
 
 - (void)setUp {
-    [super setUp];
     
+    [super setUp];
     [PubNub disconnect];
     
-    PNConfiguration *config = [PNConfiguration configurationForOrigin:kOriginPath
-                                                           publishKey:kPublishKey
-                                                         subscribeKey:kSubscribeKey
-                                                            secretKey:nil];
-    [config setUseSecureConnection:YES];
-    
-    _pubNub = [PubNub clientWithConfiguration:config andDelegate:self];
-    [_pubNub connect];
-    
-    _namespaceName = @"namespace_test";
-    _groupName = @"group_test";
-    
-    _group1 = [PNChannelGroup channelGroupWithName:_groupName
-                                       inNamespace:_namespaceName
-                             shouldObservePresence:NO];
-    
-    _channels = [PNChannel channelsWithNames:@[@"test_ios_channel_1", @"test_ios_channel_2"]];
+    _configuration1 = [PNConfiguration accessManagerTestConfiguration];
+    _configuration1.authorizationKey = @"testios19740905";
 }
 
 - (void)tearDown {
-    [PubNub disconnect];
     
+    [PubNub disconnect];
     [super tearDown];
 }
 
-#pragma mark - Tests
 
-// 2. Add namespace, group, channels with delegate
-- (void)testAddChannelGroups {
+#pragma mark - Test
+
+- (void)testManagementGroups {
     
-    _resGroup1 = dispatch_group_create();
+    // Connect client
+    PubNub *client;
+    XCTAssertTrue([self connectClient:&client withConfiguration:_configuration1]);
     
-    // 2.1 Add next namespase or group (the same as creat)
-    dispatch_group_enter(_resGroup1);
+    // Change access right for group
+    XCTAssertTrue(([self grantAccessRightsClient:client forGroup:@"g1" inNamespace:@"s1"]));
+    PNAccessRightsInformation *accessRightsForGroup = [self auditAccessRightsClient:client forGroup:@"g1" inNamespace:@"s1"];
+    XCTAssertTrue(accessRightsForGroup.rights == (PNReadAccessRight | PNWriteAccessRight | PNManagementRight));
     
-    [_pubNub addChannels:_channels toGroup:_group1];
+    // Add channels to group
+    XCTAssertTrue(([self addClient:client channels:@[@"iostest1",@"iostest2",@"iostest3"] toGroup:@"g1" inNamespace:@"s1"]));
+    XCTAssertEqual([self requestChannelsClient:client forGroup:@"g1" inNamespace:@"s1"].count, 3);
+    XCTAssertEqual([self requestGroupsClient:client forNamespace:@"s1"].count, 1);
     
-    if ([GCDWrapper isGroup:_resGroup1 timeoutFiredValue:30]) {
-        XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
-    }
+    // Subscribe to group
+    XCTAssertTrue(([self subscribeClient:client toGroup:@"g1" inNamespace:@"s1"]));
+    XCTAssertTrue(([self isSubscribedClient:client onGroup:@"g1" inNamespace:@"s1"]));
+    
+    // Unsubscribe from group
+    XCTAssertTrue(([self unsubscribeClient:client fromGroup:@"g1" inNamespace:@"s1"]));
+    XCTAssertFalse(([self isSubscribedClient:client onGroup:@"g1" inNamespace:@"s1"]));
+    
+    // Remove channels from group
+    XCTAssertTrue(([self removeClient:client channels:@[@"iostest1",@"iostest2",@"iostest3"] fromGroup:@"g1" inNamespace:@"s1"]));
+    XCTAssertEqual([self requestChannelsClient:client forGroup:@"g1" inNamespace:@"s1"].count, 0);
+    
+    // Remove group
+    XCTAssertTrue(([self removeClient:client group:@"g1" fromNamespace:@"s1"]));
+    XCTAssertEqual([self requestGroupsClient:client forNamespace:@"s1"].count, 0);
+    
+    // Remove namespace
+    XCTAssertTrue(([self grantAccessRightsClient:client forNamespace:@"s1"]));
+    XCTAssertTrue(([self removeClient:client namespace:@"s1"]));
+    
+    // Remove grant from group
+    XCTAssertTrue(([self removeAccessRightsClient:client forGroup:@"g1" inNamespace:@"s1"]));
+    accessRightsForGroup = [self auditAccessRightsClient:client forGroup:@"g1" inNamespace:@"s1"];
+    XCTAssertTrue(accessRightsForGroup.rights == PNNoAccessRights);
+    
+    // Disconnect client
+    XCTAssertTrue([self disconnectClient:client]);
 }
 
-// 3. Request namespace, group, channels with delegate
-- (void)testRequestChannelGroupNamespaces {
-    
-    _resGroup2 = dispatch_group_create();
-    
-    // add test channels to group
-    [_pubNub addChannels:_channels toGroup:_group1];
-    
-    // 3.1 Request list of namespaces
-    dispatch_group_enter(_resGroup2);
-    
-    [_pubNub requestChannelGroupNamespaces];
-    
-    if ([GCDWrapper isGroup:_resGroup2 timeoutFiredValue:30]) {
-        XCTFail(@"Timeout is fired. Didn't receive list of namespases with delegates");
-    }
-}
 
-- (void)testRequestChannelGroupNamespace {
-    
-    _resGroup3 = dispatch_group_create();
-    
-    // add test channels to group
-    [_pubNub addChannels:_channels toGroup:_group1];
-    
-    [GCDWrapper sleepForSeconds:5];
-    
-    dispatch_group_enter(_resGroup3);
-    
-    [_pubNub requestChannelGroupsForNamespace:_namespaceName];
-    
-    if ([GCDWrapper isGroup:_resGroup3 timeoutFiredValue:30]) {
-        XCTFail(@"Timeout is fired. Didn't receive list of group channels with delegates");
-        dispatch_group_leave(_resGroup3);
-    }
-    
-    _resGroup3 = NULL;
-}
+#pragma mark - < Private methods >
+#pragma mark - Connect
 
-- (void)testRequestDefaultChannelGroups {
+- (BOOL)connectClient:(PubNub **)pubNubClient
+    withConfiguration:(PNConfiguration *)configuration {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    *pubNubClient = [PubNub connectingClientWithConfiguration:configuration delegate:self andSuccessBlock:^(NSString *res) {
         
-    _resGroup4 = dispatch_group_create();
+        [_resGroup leave];
+    } errorBlock:^(PNError *error) {
+        
+        XCTFail(@"Error occurs during connection, %@", error);
+        [_resGroup leave];
+    }];
     
-    _group1 = [PNChannelGroup channelGroupWithName:_groupName
-                                       inNamespace:nil
-                             shouldObservePresence:NO];
-    
-    _channels = [PNChannel channelsWithNames:@[@"test_ios_channel_1", @"test_ios_channel_2"]];
-    
-    // add test channels to group
-    [_pubNub addChannels:_channels toGroup:_group1];
-    
-    // 3.2.2 Request list of all groups
-    dispatch_group_enter(_resGroup4);
-    
-    [_pubNub requestDefaultChannelGroups];
-    
-    if ([GCDWrapper isGroup:_resGroup4 timeoutFiredValue:5]) {
-        XCTFail(@"Timeout fired. Didn't receive list of channel groups with delegates");
-        dispatch_group_leave(_resGroup4);
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
+        
+        XCTFail(@"Timeout is fired. Didn't connect client to PubNub");
+        _resGroup = nil;
+        return NO;
     }
     
-    _resGroup4 = NULL;
-}
-    
-- (void)testRequestChannelsForGroup {
-    
-    _resGroup5 = dispatch_group_create();
-    
-    // add test channels to group
-    [_pubNub addChannels:_channels toGroup:_group1];
-    
-    // 3.2.2 Request list of all groups
-    dispatch_group_enter(_resGroup5);
-
-    [_pubNub requestChannelsForGroup:_group1];
-    
-    if ([GCDWrapper isGroup:_resGroup5 timeoutFiredValue:5]) {
-        XCTFail(@"Timeout fired. Didn't receive list of channels for group with delegates");
-        dispatch_group_leave(_resGroup5);
-    }
-    
-    _resGroup5 = NULL;
+    _resGroup = nil;
+    return [*pubNubClient isConnected];
 }
 
-// 4. Remove channels, group, namespace with delegate
-- (void)testRemoveChannelGroups {
+- (BOOL)disconnectClient:(PubNub *)pubNubClient {
     
-    _resGroup6 = dispatch_group_create();
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:1];
     
-    // 4.1 Remove channels from group (have to started delegate method)
-    _channels = [PNChannel channelsWithNames:@[@"test_channel_ios1", @"test_channel_ios2"]];
+    [pubNubClient disconnect];
     
-    dispatch_group_enter(_resGroup6);
-    
-    [_pubNub removeChannels:_channels
-                  fromGroup:_group1];
-    
-    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:5]) {
-        XCTFail(@"!!! Timeout fired. Didn't receive delegates call about remove channels from group");
-        dispatch_group_leave(_resGroup6);
-        return;
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:5]) {
+        
+        XCTFail(@"Timeout is fired. Didn't disconnect from PubNub");
+        _resGroup = nil;
+        return NO;
     }
     
-//    // 4.2 Remove group with delegate (have to started delegate method)
-//    dispatch_group_enter(_resGroup);
-//    [_pubNub removeChannelGroup:_group1];
-//    if ([GCDWrapper isGroup:_resGroup timeoutFiredValue:5]) {
-//        XCTFail(@"!!! Timeout fired. Didn't receive delegates call about remove group");
-//    }
-
-    // 4.3 Remove namespace with delegate (have to started delegate method)
-    dispatch_group_enter(_resGroup6);
-    
-    [_pubNub removeChannelGroupNamespace:_namespaceName];
-    if ([GCDWrapper isGroup:_resGroup6 timeoutFiredValue:5]) {
-        XCTFail(@"!!! Timeout fired. Didn't receive delegates call about remove nameSpace");
-        dispatch_group_leave(_resGroup6);
-    }
-    
-    _resGroup6 = NULL;
+    _resGroup = nil;
+    return ![pubNubClient isConnected];
 }
 
-#pragma mark - PubNub Delegate
 
-// _2.1.1 Add channels in group (did)
+#pragma mark - Group add
+
+- (BOOL)addClient:(PubNub *)client
+         channels:(NSArray *)channelsNames
+          toGroup:(NSString *)groupName
+      inNamespace:(NSString *)namespace {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    NSSet *uniqChannelsNames = [[NSSet alloc] initWithArray:[PNChannel channelsWithNames:channelsNames]];
+    __block NSArray *addedChannelsToGroup = nil;
+    
+    PNChannelGroup *group = [PNChannelGroup channelGroupWithName:groupName
+                                                     inNamespace:namespace
+                                           shouldObservePresence:NO];
+    
+    [client addChannels:[PNChannel channelsWithNames:channelsNames]
+                toGroup:group
+withCompletionHandlingBlock:^(PNChannelGroup *channelGroup, NSArray *channels, PNError *error) {
+    
+    if (error) {
+        
+        XCTFail(@"Error adding channels to the group %@", error);
+    } else {
+        
+        addedChannelsToGroup = channels;
+    }
+    [_resGroup leave];
+}];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:15]) {
+        
+        XCTFail(@"PubNub client did fail to add channels to the group");
+        _resGroup = nil;
+        return NO;
+    }
+    _resGroup = nil;
+    
+    NSSet *uniqAddedChannelsNames = [[NSSet alloc] initWithArray:addedChannelsToGroup];
+    return [uniqChannelsNames isSubsetOfSet:uniqAddedChannelsNames];
+}
+
+
+#pragma mark - Group remove
+
+- (BOOL)removeClient:(PubNub *)client
+            channels:(NSArray *)channels
+           fromGroup:(NSString *)group
+         inNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    NSSet *setChannels = [[NSSet alloc] initWithArray:[PNChannel channelsWithNames:channels]];
+    __block NSSet *setSubscribedChannels;
+    
+    PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
+                                                      inNamespace:space
+                                            shouldObservePresence:NO];
+    NSArray *_channels = [PNChannel channelsWithNames:channels];
+    
+    [client removeChannels:_channels
+                 fromGroup:_group withCompletionHandlingBlock:^(PNChannelGroup *channelGroup, NSArray *channels, PNError *error) {
+                     
+                     if (error) {
+                         
+                         XCTFail(@"Error adding channels to the group %@", error);
+                     } else {
+                         
+                         setSubscribedChannels = [[NSSet alloc] initWithArray:channels];
+                     }
+                     [_resGroup leave];
+                 }];
+    
+    BOOL rez;
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:15]) {
+        
+        XCTFail(@"PubNub client did fail to remove channels from the group");
+        _resGroup = nil;
+        return NO;
+    }
+    _resGroup = nil;
+    
+    return rez = [setChannels isSubsetOfSet:setSubscribedChannels];
+}
+
+- (BOOL)removeClient:(PubNub *)client
+               group:(NSString *)group
+       fromNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
+                                                      inNamespace:space
+                                            shouldObservePresence:NO];
+    
+    [client removeChannelGroup:_group withCompletionHandlingBlock:^(PNChannelGroup *channelGroup, PNError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Error adding channels to the group %@", error);
+        } else {
+            
+            [_resGroup leave];
+        }
+    }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:15]) {
+        
+        XCTFail(@"PubNub client did fail to remove group");
+        _resGroup = nil;
+        return NO;
+    }
+    
+    _resGroup = nil;
+    return YES;
+}
+
+- (BOOL)removeClient:(PubNub *)client
+           namespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    [client removeChannelGroupNamespace:space withCompletionHandlingBlock:^(NSString *namespaceName, PNError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Error adding channels to the group %@", error);
+        }
+        
+        [_resGroup leave];
+    }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:15]) {
+        
+        XCTFail(@"PubNub client did fail to remove namespace");
+        _resGroup = nil;
+        return NO;
+    }
+    
+    _resGroup = nil;
+    return YES;
+}
+
+
+#pragma mark - Group request
+
+- (NSArray *)requestChannelsClient:(PubNub *)client
+                          forGroup:(NSString *)group
+                       inNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
+                                                      inNamespace:space
+                                            shouldObservePresence:NO];
+    
+    __block NSArray *groupsChannels;
+    
+    [client requestChannelsForGroup:_group withCompletionHandlingBlock:^(PNChannelGroup *channelGroup, PNError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Error receiving list of channels for group %@", error);
+        } else {
+            
+            groupsChannels = [NSArray arrayWithArray:channelGroup.channels];
+        }
+        
+        [_resGroup leave];
+    }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:15]) {
+        
+        XCTFail(@"PubNub client didn't receive list of channels for group");
+        _resGroup = nil;
+        return nil;
+    }
+    
+    _resGroup = nil;
+    return groupsChannels;
+}
+
+- (NSArray *)requestGroupsClient:(PubNub *)client
+                    forNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    __block NSArray *groupsOfspace;
+    
+    [client requestChannelGroupsForNamespace:space withCompletionHandlingBlock:^(NSString *namespaceName, NSArray *channelGroups, PNError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Error receiving list of channels for group %@", error);
+        } else {
+            
+            groupsOfspace = [NSArray arrayWithArray:channelGroups];
+        }
+        
+        [_resGroup leave];
+    }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:15]) {
+        
+        XCTFail(@"PubNub client didn't receive list of channels for group");
+        _resGroup = nil;
+        return nil;
+    }
+    
+    _resGroup = nil;
+    return groupsOfspace;
+}
+
+
+#pragma mark - Group subscribe
+
+- (BOOL)subscribeClient:(PubNub *)client
+                toGroup:(NSString *)group
+            inNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
+                                                      inNamespace:space
+                                            shouldObservePresence:NO];
+    __block BOOL rez = NO;
+    
+    [client subscribeOn:@[_group] withClientState:nil andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Error when subscribing on channels %@", error);
+        } else if (state == PNSubscriptionProcessSubscribedState) {
+            
+            rez = YES;
+        }
+        
+        [_resGroup leave];
+    }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:20]) {
+        
+        XCTFail(@"Timeout is fired. Didn't subscribe on channels");
+        rez = NO;
+    }
+    
+    _resGroup = nil;
+    return rez;
+}
+
+
+- (BOOL)unsubscribeClient:(PubNub *)client
+                fromGroup:(NSString *)group
+              inNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:2];
+    
+    PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
+                                                      inNamespace:space
+                                            shouldObservePresence:NO];
+    __block BOOL rez = NO;
+    
+    [client unsubscribeFrom:@[_group] withCompletionHandlingBlock:^(NSArray *channels, PNError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Error unsubscribing from channels %@", error);
+        } else {
+            
+            rez = YES;
+        }
+        
+        [_resGroup leave];
+    }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
+        
+        XCTFail(@"Timeout is fired. Didn't subscribe on channels");
+        rez = NO;
+    }
+    
+    _resGroup = nil;
+    return rez;
+}
+
+
+- (BOOL)isSubscribedClient:(PubNub *)client
+                   onGroup:(NSString *)group
+               inNamespace:(NSString *)space {
+    
+    PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
+                                                      inNamespace:space
+                                            shouldObservePresence:NO];
+    
+    return [client isSubscribedOn:_group];
+}
+
+
+#pragma mark - Group grant
+
+- (BOOL)grantAccessRightsClient:(PubNub *)client
+                       forGroup:(NSString *)groupName
+                    inNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:1];
+    
+    PNChannelGroup *group = [PNChannelGroup channelGroupWithName:groupName
+                                                     inNamespace:space
+                                           shouldObservePresence:NO];
+    __block PNAccessRightsCollection *collection = nil;
+    PNAccessRightsInformation *accessRights = nil;
+    
+    [client changeAccessRightsFor:@[group]
+                               to:(PNReadAccessRight | PNWriteAccessRight | PNManagementRight)
+                         onPeriod:10000
+      withCompletionHandlingBlock:^(PNAccessRightsCollection *accessRightsCollection, PNError *error) {
+          
+          if (error) {
+              
+              XCTFail(@"Error change access rights for group %@", error);
+          } else {
+              
+              collection = accessRightsCollection;
+          }
+          
+          [_resGroup leave];
+      }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
+        
+        XCTFail(@"Timeout is fired. Did fail change access rights for group");
+        _resGroup = nil;
+        return NO;
+    }
+    
+    _resGroup = nil;
+    accessRights = [collection accessRightsInformationFor:group];
+    return (accessRights.rights == (PNAccessRights)(PNReadAccessRight | PNWriteAccessRight | PNManagementRight));
+}
+
+- (BOOL)grantAccessRightsClient:(PubNub *)client
+                   forNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:1];
+    
+    PNChannelGroupNamespace *nameSpace = [PNChannelGroupNamespace namespaceWithName:space];
+    __block PNAccessRightsCollection *collection = nil;
+    
+    [client changeAccessRightsFor:@[nameSpace]
+                               to:(PNReadAccessRight | PNWriteAccessRight | PNManagementRight)
+                         onPeriod:10000
+      withCompletionHandlingBlock:^(PNAccessRightsCollection *accessRightsCollection, PNError *error) {
+          
+          if (error) {
+              
+              XCTFail(@"Error change access rights for group %@", error);
+          } else {
+              
+              collection = accessRightsCollection;
+          }
+          
+          [_resGroup leave];
+      }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
+        
+        XCTFail(@"Timeout is fired. Did fail change access rights for group");
+        _resGroup = nil;
+        return NO;
+    }
+    
+    _resGroup = nil;
+    PNAccessRightsInformation *accessRights = [collection accessRightsInformationFor:nameSpace];
+    return (accessRights.rights == (PNAccessRights)(PNReadAccessRight | PNWriteAccessRight | PNManagementRight));
+}
+
+- (BOOL)removeAccessRightsClient:(PubNub *)client
+                        forGroup:(NSString *)group
+                     inNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:1];
+    
+    PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
+                                                      inNamespace:space
+                                            shouldObservePresence:NO];
+    __block PNAccessRightsCollection *coll = nil;
+    
+    [client changeAccessRightsFor:@[_group]
+                               to:PNNoAccessRights
+                         onPeriod:0
+      withCompletionHandlingBlock:^(PNAccessRightsCollection *accessRightsCollection, PNError *error) {
+          
+          if (error) {
+              
+              XCTFail(@"Error change access rights for group %@", error);
+          } else {
+              
+              coll = accessRightsCollection;
+          }
+          
+          [_resGroup leave];
+      }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
+        
+        XCTFail(@"Timeout is fired. Did fail change access rights for group");
+        _resGroup = nil;
+        return NO;
+    }
+    
+    _resGroup = nil;
+    PNAccessRightsInformation *accessRights = [coll accessRightsInformationFor:_group];
+    return (accessRights.rights == (PNAccessRights)PNNoAccessRights);
+}
+
+- (PNAccessRightsInformation *)auditAccessRightsClient:(PubNub *)client
+                                              forGroup:(NSString *)group
+                                           inNamespace:(NSString *)space {
+    
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:1];
+    
+    PNChannelGroup *_group = [PNChannelGroup channelGroupWithName:group
+                                                      inNamespace:space
+                                            shouldObservePresence:NO];
+    __block PNAccessRightsCollection *coll = nil;
+    
+    [client auditAccessRightsFor:@[_group] withCompletionHandlingBlock:^(PNAccessRightsCollection *accessRightsCollection, PNError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Error audit access rights for group %@", error);
+        } else {
+            
+            coll = accessRightsCollection;
+        }
+        
+        [_resGroup leave];
+    }];
+    
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:10]) {
+        
+        XCTFail(@"Timeout is fired. Did fail change access rights for group");
+        _resGroup = nil;
+        return nil;
+    }
+    _resGroup = nil;
+    
+    if (!coll) {
+        
+        return nil;
+    }
+    
+    PNAccessRightsInformation *accessRights = [coll accessRightsInformationFor:_group];
+    return accessRights;
+}
+
+
+#pragma mark - < Delegate methods >
+#pragma mark - Connect
+
+// Connect did
+- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin {
+    
+    if (_resGroup) {
+        [_resGroup leave];
+    }
+}
+
+// Connect fail
+- (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
+    
+    XCTFail(@"Did fail connection: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+// Disconnected did
+- (void)pubnubClient:(PubNub *)client didDisconnectFromOrigin:(NSString *)origin {
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+
+#pragma mark - Group subscribe
+
+// Subscribe on did
+- (void)pubnubClient:(PubNub *)client didSubscribeOn:(NSArray *)channelObjects {
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+// Subscribe on fail
+- (void)pubnubClient:(PubNub *)client subscriptionDidFailWithError:(NSError *)error {
+    
+    XCTFail(@"Did fail subscription: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+// Unsubscribe from did
+- (void)pubnubClient:(PubNub *)client didUnsubscribeFrom:(NSArray *)channelObjects {
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+// Unsubscribe from fail
+- (void)pubnubClient:(PubNub *)client unsubscriptionDidFailWithError:(PNError *)error {
+    
+    XCTFail(@"Did fail unsubscription: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+
+#pragma mark - Group add
+
+// Add channels in group (did)
 - (void)pubnubClient:(PubNub *)client didAddChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group {
     
-    if (_resGroup1 != NULL) {
-        dispatch_group_leave(_resGroup1);
+    if (_resGroup) {
+        
+        [_resGroup leave];
     }
-    
-//    for(NSArray *channel in channels){
-//        NSLog(@"!!! Did receive channel: %@ in group: %@", channel, group);
-//    }
-//    
-//    dispatch_group_leave(_resGroup);
 }
-
-// _2.1.2 Add channels to group (fail)
+// Add channels to group (fail)
 - (void)pubnubClient:(PubNub *)client channelsAdditionToGroupDidFailWithError:(PNError *)error {
     
-    if (_resGroup1 != NULL) {
-        dispatch_group_leave(_resGroup1);
-    }
+    XCTFail(@"PubNub client did fail to add channels from the group: %@", error);
     
-    if (error) {
-        XCTFail(@"PubNub client did fail to add channels from the group: %@", error);
+    if (_resGroup) {
+        
+        [_resGroup leave];
     }
 }
 
-// _3.1.1 Request namespaces
-- (void)pubnubClient:(PubNub *)client didReceiveChannelGroupNamespaces:(NSArray *)namespaces {
-    
-    if (_resGroup2 != NULL) {
-    
-        BOOL res = NO;
-        for (NSString *namespaceName in namespaces) {
-            if ([namespaceName isEqualToString:_namespaceName]) {
-                res = YES;
-                break;
-            }
-        }
-        
-        if (!res) {
-            XCTFail(@"Cannot find test namespace.");
-        }
-        
-            dispatch_group_leave(_resGroup2);
-        }
-}
 
-// _3.1.2 Request namespaces (fail)
-- (void)pubnubClient:(PubNub *)client channelGroupNamespacesRequestDidFailWithError:(PNError *)error {
-    if (error) {
-        XCTFail(@"!!! PubNub client did fail to resive namespaces: %@", error);
-    }
-    dispatch_group_leave(_resGroup1);
-}
-
-
-// _3.2.1 Request groups (did)
-- (void)pubnubClient:(PubNub *)client didReceiveChannelGroups:(NSArray *)groups forNamespace:(NSString *)nspace {
-    
-    if (_resGroup2 != NULL) {
-        XCTAssert([nspace isEqualToString:_namespaceName], @"Received namepsace is wrong: %@ <> %@", nspace, _namespaceName);
-        
-        BOOL res = NO;
-        for (PNChannelGroup *group in groups) {
-            if ([group.name isEqualToString:_groupName]) {
-                res = YES;
-                break;
-            }
-        }
-        
-        if (!res) {
-            XCTFail(@"Cannot find test group in test namespace.");
-        }
-        
-        dispatch_group_leave(_resGroup2);
-    }
-    
-    if (_resGroup4 != NULL) {
-        
-        BOOL res = NO;
-        for (PNChannelGroup *group in groups) {
-            if ([group.name isEqualToString:_groupName]) {
-                res = YES;
-                break;
-            }
-        }
-        
-        if (!res) {
-            XCTFail(@"Cannot find test group in test namespace.");
-        }
-        
-        dispatch_group_leave(_resGroup4);
-    }
-    
-    if (_resGroup3 != NULL) {
-        
-        BOOL res = NO;
-        NSString *fullGroupName = [NSString stringWithFormat:@"%@:%@", _namespaceName, _groupName];
-        for (PNChannelGroup *group in groups) {
-            if ([group.name isEqualToString:fullGroupName]) {
-                res = YES;
-                break;
-            }
-        }
-        
-        if (!res) {
-            XCTFail(@"Cannot find test group in test namespace.");
-        }
-        
-        dispatch_group_leave(_resGroup3);
-    }
-}
-
-// _3.2.2 Request groups (fail)
-- (void)pubnubClient:(PubNub *)client channelGroupsRequestDidFailWithError:(PNError *)error {
-    if (error) {
-        XCTFail(@"!!! PubNub client did fail to resive groups: %@", error);
-    }
-    dispatch_group_leave(_resGroup1);
-}
-
-
-// _3.3.1 Request channels for group (did) ???
-- (void)pubnubClient:(PubNub *)client didReceiveChannelsForGroup:(PNChannelGroup *)group {
-    
-    if (_resGroup1 != NULL) {
-        dispatch_group_leave(_resGroup1);
-    }
-    
-    if (_resGroup5 != NULL) {
-        dispatch_group_leave(_resGroup5);
-    }
-}
-
-// _3.3.2 Request channels for group
-- (void)pubnubClient:(PubNub *)client channelsForGroupRequestDidFailWithError:(PNError *)error {
-    
-    if (_resGroup1 != NULL) {
-        XCTFail(@"PubNub client did fail to receive channels for group: %@", error);
-        dispatch_group_leave(_resGroup1);
-    }
-    
-    if (_resGroup5 != NULL) {
-        XCTFail(@"PubNub client did fail to receive channels for group: %@", error);
-        dispatch_group_leave(_resGroup5);
-    }
-}
-
-#pragma mark - Remove calls
-
-// _4.1.1 Remove channels from group (did)
+#pragma mark - Group remove
+// Remove channels from group (did)
 - (void)pubnubClient:(PubNub *)client didRemoveChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group {
     
-    if (_resGroup6 != NULL) {
-        dispatch_group_leave(_resGroup6);
-    }
-    
-    if (_resGroup1 != NULL) {
-        dispatch_group_leave(_resGroup1);
+    if (_resGroup) {
+        
+        [_resGroup leave];
     }
 }
-
-// _4.1.2 Remove channels from group (fail)
+// Remove channels from group (fail)
 - (void)pubnubClient:(PubNub *)client channelsRemovalFromGroupDidFailWithError:(PNError *)error {
-    if (error) {
-        XCTFail(@"!!! PubNub client did fail to remove channels from the group: %@", error);
+    
+    XCTFail(@" PubNub client did fail to remove channels from the group: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
     }
-    dispatch_group_leave(_resGroup1);
 }
 
-// _4.2.1 Remove group (did) do not work !!!
+// Remove group (did)
 - (void)pubnubClient:(PubNub *)client didRemoveChannelGroup:(PNChannelGroup *)group {
-    NSLog(@"!!! Did remove group: %@", group);
-    dispatch_group_leave(_resGroup1);
-}
-
-// _4.2.2 Remove group (fail)
-- (void)pubnubClient:(PubNub *)client groupRemovalDidFailWithError:(PNError *)error {
-    if (error) {
-        XCTFail(@"!!! PubNub client did fail to remove group: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
     }
-    dispatch_group_leave(_resGroup1);
+}
+// Remove group (fail)
+- (void)pubnubClient:(PubNub *)client groupRemovalDidFailWithError:(PNError *)error {
+    
+    XCTFail(@" PubNub client did fail to remove group: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
 }
 
-
-// 4.3.1 Remove namespace (did)
+// Remove namespace (did)
 - (void)pubnubClient:(PubNub *)client didRemoveNamespace:(NSString *)nspace {
     
-    if (_resGroup1 != NULL) {
-        dispatch_group_leave(_resGroup1);
-    }
-    
-    if (_resGroup6 != NULL) {
-        dispatch_group_leave(_resGroup6);
+    if (_resGroup) {
+        
+        [_resGroup leave];
     }
 }
 
-// 4.3.2 Remove namespace (fail)
+// Remove namespace (fail)
 - (void)pubnubClient:(PubNub *)client namespaceRemovalDidFailWithError:(PNError *)error {
     
-    if (_resGroup1 != NULL) {
-        XCTFail(@"PubNub client did fail to remove namespace: %@", error);
-        dispatch_group_leave(_resGroup1);
-    }
+    XCTFail(@"PubNub client did fail to remove namespace: %@", error);
     
-    if (_resGroup6 != NULL) {
-        XCTFail(@"PubNub client did fail to remove namespace: %@", error);
-        dispatch_group_leave(_resGroup6);
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+
+#pragma mark - Group request
+
+// Request channels for group (did) ???
+- (void)pubnubClient:(PubNub *)client didReceiveChannelsForGroup:(PNChannelGroup *)group {
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+// Request channels for group (fail)
+- (void)pubnubClient:(PubNub *)client channelsForGroupRequestDidFailWithError:(PNError *)error {
+    
+    XCTFail(@"PubNub client did fail to receive channels for group: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+// Request groups (did)
+- (void)pubnubClient:(PubNub *)client didReceiveChannelGroups:(NSArray *)groups forNamespace:(NSString *)nspace {
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+// Request groups (fail)
+- (void)pubnubClient:(PubNub *)client channelGroupsRequestDidFailWithError:(PNError *)error {
+    
+    XCTFail(@" PubNub client did fail to resive groups: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+// Request namespaces (did)
+- (void)pubnubClient:(PubNub *)client didReceiveChannelGroupNamespaces:(NSArray *)namespaces {
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
+    }
+}
+
+// Request namespaces (fail)
+- (void)pubnubClient:(PubNub *)client channelGroupNamespacesRequestDidFailWithError:(PNError *)error {
+    
+    XCTFail(@" PubNub client did fail to resive namespaces: %@", error);
+    
+    if (_resGroup) {
+        
+        [_resGroup leave];
     }
 }
 

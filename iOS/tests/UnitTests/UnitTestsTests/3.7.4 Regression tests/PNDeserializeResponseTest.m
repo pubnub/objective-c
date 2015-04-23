@@ -54,20 +54,23 @@
         [storedResponses addObject:data];
     }
     
-    // get deserializer
-    id deserializer = [NSClassFromString(@"PNResponseDeserialize") new];
-    
     GCDGroup *group = [GCDGroup group];
     
     [group enterTimes:[storedResponses count]];
     
     // check that we have only one response in all batches
     for (NSData *data in storedResponses) {
-        [deserializer performSelector:@selector(parseResponseData:withBlock:)
-                           withObject:data
-                           withObject:^(NSArray *responses) {
+        
+        // get deserializer
+        id deserializer = [NSClassFromString(@"PNResponseDeserialize") new];
+        [deserializer performSelector:@selector(parseBufferContent:withBlock:)
+                           withObject:dispatch_data_create(data.bytes, data.length, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT)
+                           withObject:^(NSArray *responses, NSUInteger fullBufferLength,
+                                        NSUInteger processedBufferLength,
+                                        void(^readBufferPostProcessing)(void)) {
                                
-                               NSLog(@"RESPONSE: %d", [responses count]);
+                               NSLog(@"RESPONSE: %@", @([responses count]));
+                               readBufferPostProcessing();
                                
                                XCTAssert([responses count] == 1, @"More than one response in batch");
                                
@@ -99,20 +102,22 @@
         [storedResponses addObject:data];
     }
     
-    // get deserializer
-    deserializer = [NSClassFromString(@"PNResponseDeserialize") new];
-    
     group = [GCDGroup group];
     
     [group enterTimes:[storedResponses count]];
     
     // check that we have only one response in all batches
     for (NSData *data in storedResponses) {
-        [deserializer performSelector:@selector(parseResponseData:withBlock:)
-                           withObject:data
-                           withObject:^(NSArray *responses) {
+        
+        // get deserializer
+        id deserializer = [NSClassFromString(@"PNResponseDeserialize") new];
+        [deserializer performSelector:@selector(parseBufferContent:withBlock:)
+                           withObject:dispatch_data_create(data.bytes, data.length, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT)
+                           withObject:^(NSArray *responses, NSUInteger fullBufferLength,
+                                        NSUInteger processedBufferLength,
+                                        void(^readBufferPostProcessing)(void)) {
                                
-                               NSLog(@"RESPONSE: %d", [responses count]);
+                               NSLog(@"RESPONSE: %@", @([responses count]));
                                
                                // TODO: now we have example with only 2 response in the case chunk,
                                // in future we need to improve it

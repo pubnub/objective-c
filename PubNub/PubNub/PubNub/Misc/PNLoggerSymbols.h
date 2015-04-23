@@ -147,7 +147,7 @@ struct PNLoggerSymbolsStructure {
         // Parameters requirements: [code, connection name, request identifier, connection bit field with state]
         __unsafe_unretained NSString *unscheduleRequestProcessing;
         
-        // Parameters requirements: [code, connection name, connection bit field with state]
+        // Parameters requirements: [code, connection name, request identifier, connection bit field with state]
         __unsafe_unretained NSString *handleTimeoutTimer;
         
         // Parameters requirements: [code, connection name, connection bit field with state]
@@ -929,6 +929,9 @@ struct PNLoggerSymbolsStructure {
         
         // Parameters requirements: [code, status code, raw response content]
         __unsafe_unretained NSString *rawResponseData;
+        
+        // Parameters requirements: [code, content length]
+        __unsafe_unretained NSString *garbageResponseData;
     } deserializer;
     
     // Cryptor symbols. Group code: 06xxyyy

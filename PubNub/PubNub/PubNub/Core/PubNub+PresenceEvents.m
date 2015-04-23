@@ -248,6 +248,10 @@
 - (void)enablePresenceObservationFor:(NSArray *)channelObjects
          withCompletionHandlingBlock:(PNClientPresenceEnableHandlingBlock)handlerBlock {
 
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channelObjects = [[NSArray alloc] initWithArray:channelObjects copyItems:NO];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -279,8 +283,8 @@
 
                 // Enumerate over the list of channels and mark that it should observe for presence
                 [channelObjects enumerateObjectsUsingBlock:^(PNChannel *channel,
-                        NSUInteger channelIdx,
-                        BOOL *channelEnumeratorStop) {
+                                                             NSUInteger channelIdx,
+                                                             BOOL *channelEnumeratorStop) {
 
                     channel.observePresence = YES;
                     channel.linkedWithPresenceObservationChannel = NO;
@@ -366,6 +370,10 @@
 
 - (void)disablePresenceObservationFor:(NSArray *)channelObjects
           withCompletionHandlingBlock:(PNClientPresenceDisableHandlingBlock)handlerBlock {
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channelObjects = [[NSArray alloc] initWithArray:channelObjects copyItems:NO];
 
     [self pn_dispatchBlock:^{
         

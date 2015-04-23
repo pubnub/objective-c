@@ -59,7 +59,7 @@ static NSUInteger const kPNWriteBufferSize = 4096;
 
 + (PNWriteBuffer *)writeBufferForRequest:(PNBaseRequest *)request {
     
-    return [[[self class] alloc] initWithRequest:request];
+    return [[self alloc] initWithRequest:request];
 }
 
 
@@ -111,7 +111,7 @@ static NSUInteger const kPNWriteBufferSize = 4096;
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"WRITE BUFFER CONTENT: %@", [[NSString alloc] initWithBytes:buffer
+    return [[NSString alloc] initWithFormat:@"WRITE BUFFER CONTENT: %@", [[NSString alloc] initWithBytes:buffer
                                                                                             length:(NSUInteger)self.length
                                                                                           encoding:NSUTF8StringEncoding]];
 }

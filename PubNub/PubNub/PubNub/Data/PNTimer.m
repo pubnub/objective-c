@@ -146,7 +146,7 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 
         self.tick = tick;
         self.executionQueue = queue;
-        self.scheduledBlocks = [NSMutableArray array];
+        self.scheduledBlocks = [NSMutableArray new];
         [self createGCDTimer];
     }
 
@@ -160,7 +160,6 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 
         dispatch_source_t timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                 self.executionQueue);
-        [PNDispatchHelper retain:timerSource];
         self.timeoutTimer = timerSource;
 
         __pn_desired_weak __typeof__(self) weakSelf = self;
@@ -215,9 +214,9 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
     if (self.timeoutTimer != NULL && dispatch_source_testcancel(self.timeoutTimer) == 0) {
 
         dispatch_source_cancel(self.timeoutTimer);
-        self.timeoutTimer = NULL;
         self.suspended = YES;
     }
+    self.timeoutTimer = NULL;
 
     [self.scheduledBlocks removeAllObjects];
 }
@@ -228,9 +227,9 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
     NSArray *identifiers = [self.scheduledBlocks valueForKey:PNTimerScheduledData.identifier];
     if (![identifiers containsObject:identifier]) {
 
-        NSMutableDictionary *scheduledBlockData = [@{PNTimerScheduledData.identifier: identifier,
-                                                      PNTimerScheduledData.countDown: @(timeOutInterval),
-                                                          PNTimerScheduledData.block: [block copy]} mutableCopy];
+        NSMutableDictionary *scheduledBlockData = [@{PNTimerScheduledData.identifier:identifier,
+                                                      PNTimerScheduledData.countDown:@(timeOutInterval),
+                                                          PNTimerScheduledData.block:[block copy]} mutableCopy];
         [self.scheduledBlocks addObject:scheduledBlockData];
     }
 }

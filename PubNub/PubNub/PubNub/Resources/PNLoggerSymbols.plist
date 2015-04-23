@@ -91,7 +91,7 @@
 		<key>0100041</key>
 		<string>UNSCHEDULE REQUEST SENDING (%@) (STATE: %@)</string>
 		<key>0100042</key>
-		<string>HANDLE &apos;TIMEOUT&apos; TIMER EVENT (STATE: %@)</string>
+		<string>HANDLE &apos;TIMEOUT&apos; TIMER EVENT FOR REQUEST %@ (STATE: %@)</string>
 		<key>0100043</key>
 		<string>HANDLE &apos;WAKE UP&apos; TIMER EVENT (STATE: %@)</string>
 		<key>0100044</key>
@@ -624,6 +624,8 @@
 		<string>RECEIVED STRANGE RESPONSE WITH &apos;%@&apos; STATUS CODE\nCONTENT: %@</string>
 		<key>0500002</key>
 		<string>RAW RESPONSE DATA (STATUS CODE: %@): %@</string>
+		<key>0500003</key>
+		<string>GARBAGE RESPONSE DATA HAS BEEN FOUND (%@ BYTES)</string>
 	</dict>
 	<key>06</key>
 	<dict>

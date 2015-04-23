@@ -38,11 +38,16 @@
     return self;
 }
 
+- (void)setChannels:(NSArray *)channels {
+    
+    _channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+}
+
 - (NSString *)logDescription {
     
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wundeclared-selector"
-    return [NSString stringWithFormat:@"<%@|%@|%@>",
+    return [[NSString alloc] initWithFormat:@"<%@|%@|%@>",
             (self.group ? [self.group performSelector:@selector(logDescription)] : [NSNull null]),
             (self.channels ? [self.channels performSelector:@selector(logDescription)] : [NSNull null]),
             @(self.addingChannels)];

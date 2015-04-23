@@ -147,7 +147,7 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <error: %@>", NSStringFromClass([self class]), self, self.error];
+    return [[NSString alloc] initWithFormat:@"%@ (%p): <error: %@>", NSStringFromClass([self class]), self, self.error];
 }
 
 #pragma mark -

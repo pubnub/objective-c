@@ -151,7 +151,7 @@
     // Checking whether client state for channel has been provided in correct format or not.
     if (channel && clientState && ![[clientState valueForKey:channel.name] isKindOfClass:[NSDictionary class]]) {
         
-        clientState = @{channel.name: clientState};
+        clientState = [@{channel.name: clientState} copy];
     }
     
     [self subscribeOnChannels:(channel ? @[channel] : @[]) withClientState:clientState
@@ -290,7 +290,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
     // Checking whether client state for channel has been provided in correct format or not.
     if (channel && clientState && ![[clientState valueForKey:channel.name] isKindOfClass:[NSDictionary class]]) {
         
-        clientState = @{channel.name: clientState};
+        clientState = [@{channel.name: clientState} copy];
     }
     
     [self subscribeOnChannels:(channel ? @[channel] : nil) withClientState:clientState
@@ -345,7 +345,12 @@ andCompletionHandlingBlock:handlerBlock];
 - (void)         subscribeOn:(NSArray *)channelObjects withCatchUp:(BOOL)shouldCatchUp
                  clientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock {
-    
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channelObjects = [[NSArray alloc] initWithArray:channelObjects copyItems:NO];
+    clientState = [clientState copy];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -463,7 +468,11 @@ andCompletionHandlingBlock:handlerBlock];
 
 - (void)    unsubscribeFrom:(NSArray *)channelObjects
 withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBlock {
-    
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channelObjects = [[NSArray alloc] initWithArray:channelObjects copyItems:NO];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{

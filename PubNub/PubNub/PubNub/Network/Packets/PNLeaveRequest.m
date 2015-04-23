@@ -39,10 +39,6 @@
 // be closed before sending this message or not
 @property (nonatomic, assign, getter = shouldCloseConnection) BOOL closeConnection;
 
-// Stores whether leave request was sent to subscribe
-// on new channels or as result of user request
-@property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;
-
 /**
  Storing configuration dependant parameters
  */
@@ -79,11 +75,16 @@
 
         self.sendingByUserRequest = isLeavingByUserRequest;
         self.closeConnection = YES;
-        self.channels = [NSArray arrayWithArray:channels];
+        self.channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
     }
     
     
     return self;
+}
+
+- (void)setChannels:(NSArray *)channels {
+    
+    _channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
 }
 
 - (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
@@ -121,12 +122,12 @@
     }
 
 
-    return [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@%@&pnsdk=%@",
+    return [[NSString alloc] initWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave?uuid=%@&callback=%@_%@%@%@&pnsdk=%@",
             [self.subscriptionKey pn_percentEscapedString], (channelsListParameter ? channelsListParameter : @","),
             [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
             [self callbackMethodName], self.shortIdentifier,
-            (groupsListParameter ? [NSString stringWithFormat:@"&channel-group=%@", groupsListParameter] : @""),
-            ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+            (groupsListParameter ? [[NSString alloc] initWithFormat:@"&channel-group=%@", groupsListParameter] : @""),
+            ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@", [self authorizationField]] : @""),
             [self clientInformationField]];
 }
 
@@ -138,7 +139,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

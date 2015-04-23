@@ -75,6 +75,11 @@
     return self;
 }
 
+- (void)setChannels:(NSArray *)channels {
+    
+    _channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+}
+
 - (id)parsedData {
 
     return self.channels;
@@ -82,7 +87,7 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"%@ (%p): <channels: %@>",
+    return [[NSString alloc] initWithFormat:@"%@ (%p): <channels: %@>",
                     NSStringFromClass([self class]),
                     self,
                     self.channels];

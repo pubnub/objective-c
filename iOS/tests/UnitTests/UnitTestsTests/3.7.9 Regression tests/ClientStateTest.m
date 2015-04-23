@@ -2,13 +2,12 @@
 //  ClientStateTest.m
 //  UnitTests
 //
-//  Created by Vadim Osovets on 3/11/15.
-//  Copyright (c) 2015 Vadim Osovets. All rights reserved.
+//  Created by Sergey Kazanskiy on 3/11/15.
+//  Copyright (c) 2015 PubNub Ltd. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import <XCTest/XCTextCase+AsynchronousTesting.h>
 
 @interface ClientStateTest : XCTestCase <PNDelegate>
 
@@ -21,10 +20,15 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    [PubNub disconnect];
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    
+    [PubNub disconnect];
+    
     [super tearDown];
 }
 

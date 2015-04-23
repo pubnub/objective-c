@@ -26,6 +26,22 @@
     dispatch_group_t _resGroup;
 }
 
+- (void)setUp {
+    [super setUp];
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    [PubNub disconnect];
+}
+
+- (void)tearDown {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    [PubNub disconnect];
+    
+    [super tearDown];
+}
+
+#pragma mark - Tests
+
 -(void)resetConnection {
     
     dispatch_group_t resetGroup = dispatch_group_create();

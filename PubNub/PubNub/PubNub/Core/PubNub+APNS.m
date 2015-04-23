@@ -364,6 +364,11 @@
                  rescheduledCallbackToken:(NSString *)callbackToken
                andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
 
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+    pushToken = [pushToken copy];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -489,6 +494,11 @@
                   rescheduledCallbackToken:(NSString *)callbackToken
                 andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
 
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+    pushToken = [pushToken copy];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -596,6 +606,10 @@
                             rescheduledCallbackToken:(NSString *)callbackToken
                          withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
 
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    pushToken = [pushToken copy];
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -693,6 +707,10 @@
 - (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
                                         rescheduledCallbackToken:(NSString *)callbackToken
                                      withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
+
+    // Create additional references on objects passed from outside to ensure what objects will
+    // survive till asynchronous operation will complete.
+    pushToken = [pushToken copy];
 
     [self pn_dispatchBlock:^{
 

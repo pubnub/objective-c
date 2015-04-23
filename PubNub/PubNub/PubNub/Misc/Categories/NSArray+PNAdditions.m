@@ -25,7 +25,7 @@
 
 + (NSArray *)pn_arrayWithVarietyList:(va_list)list {
 
-    NSMutableArray *array = [NSMutableArray array];
+    NSMutableArray *array = [NSMutableArray new];
     id argument;
     while ((argument = va_arg(list, id))) {
         if (argument == nil)
@@ -42,7 +42,7 @@
 
 - (NSString *)logDescription {
     
-    NSMutableString *logDescription = [NSMutableString stringWithString:@"<["];
+    NSMutableString *logDescription = [[NSMutableString alloc] initWithString:@"<["];
     
     [self enumerateObjectsUsingBlock:^(id entry, NSUInteger entryIdx, BOOL *entryEnumeratorStop) {
         

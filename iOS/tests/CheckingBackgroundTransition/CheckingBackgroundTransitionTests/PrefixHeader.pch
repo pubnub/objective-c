@@ -1,0 +1,19 @@
+//
+//  PrefixHeader.pch
+//  CheckingBackgroundTransition
+//
+//  Created by Sergey Kazanskiy on 3/24/15.
+//  Copyright (c) 2015 PubNub. All rights reserved.
+//
+
+#ifndef CheckingBackgroundTransition_PrefixHeader_pch
+#define CheckingBackgroundTransition_PrefixHeader_pch
+
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "PNImports.h"
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif

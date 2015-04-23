@@ -52,10 +52,7 @@
 /**
  Stores user-provided state which should be appended to the client subscription.
  */
-@property (nonatomic, strong) NSDictionary *state;
-
-// Stores whether leave request was sent to subscribe on new channels or as result of user request
-@property (nonatomic, assign, getter = isSendingByUserRequest) BOOL sendingByUserRequest;
+@property (nonatomic, copy) NSDictionary *state;
 
 @property (nonatomic, assign, getter = isPerformingMultipleActions) BOOL performingMultipleActions;
 
@@ -69,6 +66,11 @@
 #pragma mark Public interface methods
 
 @implementation PNSubscribeRequest
+
+
+#pragma mark - Synthesize
+
+@synthesize channels = _channels;
 
 
 #pragma mark - Class methods
@@ -104,7 +106,7 @@
     if((self = [super init])) {
         
         self.sendingByUserRequest = isSubscribingByUserRequest;
-        self.channels = [NSArray arrayWithArray:channels];
+        self.channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
         self.state = ([clientState count] ? clientState : nil);
         
         
@@ -153,7 +155,7 @@
     // Check whether presence enabling / disabling channels specified or not
     if ([self.channelsForPresenceEnabling count] > 0 || [self.channelsForPresenceDisabling count] > 0) {
         
-        NSMutableSet *updatedSet = [NSMutableSet setWithArray:channels];
+        NSMutableSet *updatedSet = [[NSMutableSet alloc] initWithArray:channels];
         
         // In case if user specified set of channels for which presence is enabled, add them to the channels list
         if ([self.channelsForPresenceEnabling count] > 0) {
@@ -181,6 +183,11 @@
     return channels;
 }
 
+- (void)setChannels:(NSArray *)channels {
+    
+    _channels = [[NSArray alloc] initWithArray:channels copyItems:NO];
+}
+
 - (NSArray *)channelsForSubscription {
     
     return _channels;
@@ -193,8 +200,8 @@
 
 - (void)prepareToSend {
 
-    NSMutableSet *channels = [NSMutableSet setWithArray:_channels];
-    NSSet *forPresenceDisabling = [NSSet setWithArray:self.channelsForPresenceDisabling];
+    NSMutableSet *channels = [[NSMutableSet alloc] initWithArray:_channels];
+    NSSet *forPresenceDisabling = [[NSSet alloc] initWithArray:self.channelsForPresenceDisabling];
     if ([channels intersectsSet:forPresenceDisabling]) {
 
         [forPresenceDisabling enumerateObjectsUsingBlock:^(PNChannel *channel, BOOL *channelEnumeratorStop) {
@@ -206,12 +213,18 @@
         }];
     }
 }
+
+- (void)setChannelsForPresenceEnabling:(NSArray *)channelsForPresenceEnabling {
+    
+    _channelsForPresenceEnabling = [[NSArray alloc] initWithArray:channelsForPresenceEnabling copyItems:NO];
+}
+
 - (void)setChannelsForPresenceDisabling:(NSArray *)channelsForPresenceDisabling {
     
-    _channelsForPresenceDisabling = channelsForPresenceDisabling;
+    _channelsForPresenceDisabling = [[NSArray alloc] initWithArray:channelsForPresenceDisabling copyItems:NO];
     
-    NSMutableSet *channels = [NSMutableSet setWithArray:_channels];
-    NSMutableSet *channelsForRemoval = [NSMutableSet set];
+    NSMutableSet *channels = [[NSMutableSet alloc] initWithArray:_channels];
+    NSMutableSet *channelsForRemoval = [NSMutableSet new];
     
     [_channelsForPresenceDisabling enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
                                                                 BOOL *channelEnumeratorStop) {
@@ -257,12 +270,12 @@
     NSString *heartbeatValue = @"";
     if (self.presenceHeartbeatTimeout > 0.0f) {
         
-        heartbeatValue = [NSString stringWithFormat:@"&heartbeat=%d", (int)self.presenceHeartbeatTimeout];
+        heartbeatValue = [[NSString alloc] initWithFormat:@"&heartbeat=%d", (int)self.presenceHeartbeatTimeout];
     }
     NSString *state = @"";
     if (self.state) {
         
-        state = [NSString stringWithFormat:@"&state=%@",
+        state = [[NSString alloc] initWithFormat:@"&state=%@",
                                            [[PNJSONSerialization stringFromJSONObject:self.state] pn_percentEscapedString]];
     }
     
@@ -283,12 +296,12 @@
         }
     }
     
-    return [NSString stringWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@%@&pnsdk=%@",
+    return [[NSString alloc] initWithFormat:@"/subscribe/%@/%@/%@_%@/%@?uuid=%@%@%@%@%@&pnsdk=%@",
             [self.subscriptionKey pn_percentEscapedString], (channelsListParameter ? channelsListParameter : @","),
             [self callbackMethodName], self.shortIdentifier, self.updateTimeToken,
             [self.clientIdentifier stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], heartbeatValue,
-            state, (groupsListParameter ? [NSString stringWithFormat:@"&channel-group=%@", groupsListParameter] : @""),
-            ([self authorizationField] ? [NSString stringWithFormat:@"&%@", [self authorizationField]] : @""),
+            state, (groupsListParameter ? [[NSString alloc] initWithFormat:@"&channel-group=%@", groupsListParameter] : @""),
+            ([self authorizationField] ? [[NSString alloc] initWithFormat:@"&%@", [self authorizationField]] : @""),
             [self clientInformationField]];
 }
 
@@ -300,7 +313,7 @@
 
 - (NSString *)description {
     
-    return [NSString stringWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
+    return [[NSString alloc] initWithFormat:@"<%@|%@>", NSStringFromClass([self class]), [self debugResourcePath]];
 }
 
 #pragma mark -

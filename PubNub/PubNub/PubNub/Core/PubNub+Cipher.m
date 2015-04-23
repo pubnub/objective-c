@@ -190,12 +190,12 @@
             object = object ? [PNJSONSerialization stringFromJSONObject:object] : @"";
             NSString *encryptedData = [self.cryptoHelper encryptedStringFromString:object error:&processingError];
             
-            encryptedObjectHash = [NSString stringWithFormat:@"\"%@\"", encryptedData];
+            encryptedObjectHash = [[NSString alloc] initWithFormat:@"\"%@\"", encryptedData];
         #else
             id encryptedMessage = [self.cryptoHelper encryptedObjectFromObject:object error:&processingError];
             NSString *encryptedData = [PNJSONSerialization stringFromJSONObject:encryptedMessage];
             
-            encryptedObjectHash = [NSString stringWithFormat:@"%@", encryptedData];
+            encryptedObjectHash = [[NSString alloc] initWithFormat:@"%@", encryptedData];
         #endif
         
         if (processingError != nil) {

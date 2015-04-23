@@ -158,7 +158,7 @@
  * Sent when connection started request processing (sending payload via sockets)
  */
 - (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier
-         withBlock:(dispatch_block_t)notifyCompletionBlock;
+         withBlock:(void (^)(BOOL shouldContinue))notifyCompletionBlock;
 
 /**
  * Notify data source that request with specified identifier has been sent, so it should be removed from queue

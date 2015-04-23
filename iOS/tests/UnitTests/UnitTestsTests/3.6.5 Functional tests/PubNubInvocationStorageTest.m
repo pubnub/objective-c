@@ -22,7 +22,8 @@ PNDelegate
 @end
 
 @implementation PubNubInvocationStorageTest {
-    dispatch_group_t _resultGroup;
+    
+    GCDGroup *_resGroup;
 }
 
 - (void)setUp
@@ -33,6 +34,8 @@ PNDelegate
 
 - (void)tearDown
 {
+    [PubNub disconnect];
+    
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
@@ -42,13 +45,13 @@ PNDelegate
     [PubNub setDelegate:self];
     
     __block NSMutableArray *blockIds = [NSMutableArray new];
+    __block int callBackCounter = 0;
     
-    PNConfiguration *config = [PNConfiguration defaultConfiguration];
+    PNConfiguration *config = [PNConfiguration defaultTestConfiguration];
     [PubNub setConfiguration:config];
     
-    _resultGroup = dispatch_group_create();
-    
-    dispatch_group_enter(_resultGroup);
+    _resGroup = [GCDGroup group];
+    [_resGroup enterTimes:1];
     
     [PubNub connectWithSuccessBlock:^(NSString *result) {
         PNChannel *channel = [PNChannel channelWithName:@"vadimTestDev"];
@@ -75,23 +78,29 @@ PNDelegate
                                [blockIds addObject:[NSNumber numberWithInt:i]];
                            }
                            
-                           for (int i = 20; i < 40; i++) {
+                           if (i == 19) {
                                
-                               [PubNub sendMessage:[NSString stringWithFormat:@"dev test message: %d", i] toChannel:channel withCompletionBlock:^(PNMessageState state, id message) {
+                               for (int j = 20; j < 40; j++) {
                                    
-                                   if (PNMessageSent == state) {
-                                   
-                                       @synchronized(self) {
-                                           [blockIds addObject:[NSNumber numberWithInt:i]];
-                                       }
+                                   [PubNub sendMessage:[NSString stringWithFormat:@"dev test message: %d", i] toChannel:channel withCompletionBlock:^(PNMessageState state, id message) {
                                        
-                                       // leave first enter
-                                       if (i == 39) {
-                                           dispatch_group_leave(_resultGroup);
+                                       if (PNMessageSent == state) {
+                                           
+                                           @synchronized(self) {
+                                               [blockIds addObject:[NSNumber numberWithInt:i]];
+                                           }
+                                           
+                                           // leave first enter
+                                           if (j == 39) {
+                                               callBackCounter++;
+                                               if (callBackCounter == 1) {
+                                                   [_resGroup leave];
+                                               };
+                                           }
                                        }
-                                   }
-                               }];
-                           }
+                                   }];
+                               }
+                           };
                        }
                    }];
                }
@@ -102,8 +111,14 @@ PNDelegate
         XCTFail(@"Connect is failed");
     }];
 
-    [GCDWrapper waitGroup:_resultGroup];
     
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:kTestTestTimout]) {
+        
+        XCTFail(@"Timeout fired during sent message");
+    }
+    
+    XCTAssertTrue(callBackCounter == 1, @"callBackCounter = %d", callBackCounter);
+
     // check correct of invocation order
     
     [blockIds enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

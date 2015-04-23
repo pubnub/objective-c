@@ -85,7 +85,7 @@
 
 + (dispatch_queue_t)serialQueueWithIdentifier:(NSString *)identifier {
 
-    NSString *queueIdentifier = [NSString stringWithFormat:@"com.pubnub.%@.%@", identifier, [PNHelper UUID]];
+    NSString *queueIdentifier = [[NSString alloc] initWithFormat:@"com.pubnub.%@.%@", identifier, [PNHelper UUID]];
     const char *cQueueIdentifier = [queueIdentifier UTF8String];
 
 
@@ -239,12 +239,13 @@
     dispatch_once(&dispatchOnceToken, ^{
         
         // Retrieve application information Property List
-        NSDictionary *applicationInformation = [[NSBundle mainBundle] infoDictionary];
+        NSDictionary *applicationInformation = [[NSBundle bundleForClass:self] infoDictionary];
         
         if ([applicationInformation objectForKey:@"UIBackgroundModes"]) {
             
             NSArray *backgroundModes = [applicationInformation valueForKey:@"UIBackgroundModes"];
-            NSArray *suitableModes = @[@"audio", @"location", @"voip", @"bluetooth-central", @"bluetooth-peripheral"];
+            NSArray *suitableModes = [@[@"audio", @"location", @"voip", @"bluetooth-central",
+                                        @"bluetooth-peripheral"] copy];
             [backgroundModes enumerateObjectsUsingBlock:^(id mode, NSUInteger modeIdx, BOOL *modeEnumeratorStop) {
                 
                 canRunInBackground = [suitableModes containsObject:mode];
@@ -295,19 +296,6 @@
 
 #pragma mark - Class methods
 
-+ (void)releaseCFObject:(CF_RELEASES_ARGUMENT void *)CFObject {
-    
-    if (CFObject != NULL) {
-        
-        if (*((CFTypeRef*)CFObject) != NULL) {
-            
-            CFRelease(*((CFTypeRef*)CFObject));
-        }
-        
-        *((CFTypeRef*)CFObject) = NULL;
-    }
-}
-
 + (id)nilifyIfNotSet:(id)object {
     
     return (object ? object : [NSNull null]);
@@ -333,12 +321,12 @@
     CFRelease(uuid);
     
     
-    return [(NSString *)CFBridgingRelease(cfUUID) lowercaseString];
+    return [[NSString alloc] initWithString:[(NSString *)CFBridgingRelease(cfUUID) lowercaseString]];
 }
 
 + (NSString *)shortenedUUIDFromUUID:(NSString *)originalUUID {
     
-    NSMutableString *shortenedUUID = [NSMutableString string];
+    NSMutableString *shortenedUUID = [NSMutableString new];
     
     NSArray *components = [originalUUID componentsSeparatedByString:@"-"];
     [components enumerateObjectsUsingBlock:^(NSString *group, NSUInteger groupIdx, BOOL *groupEnumeratorStop) {

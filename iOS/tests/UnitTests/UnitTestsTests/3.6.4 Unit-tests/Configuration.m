@@ -18,19 +18,23 @@
 
 @interface Configuration : XCTestCase <PNDelegate> {
      GCDGroup *_resGroup;
+     GCDGroup *_resGroupNegative;
 }
 @end
 
 @implementation Configuration
 
 - (void)tearDown {
+    [PubNub disconnect];
+    
 	[super tearDown];
 }
 
 - (void)setUp {
     [super setUp];
+    
+    [PubNub disconnect];
 }
-
 
 #pragma mark - Scenario
 
@@ -47,7 +51,7 @@
     
     [client1 setClientIdentifier:@"pubnub-user"];
 
-    sleep(1);
+    [GCDWrapper sleepForSeconds:1];
     XCTAssertEqualObjects([client1 clientIdentifier], @"pubnub-user", @"Client identifiers inconsistent.");
     
     XCTAssertTrue(([client1 isConnected]));
@@ -88,9 +92,25 @@
                                                                     secretKey:nil
                                                                     cipherKey:nil];
     
-    PubNub *client4 = [self connectClientWithConfiguration:configuration4];
-    XCTAssertFalse(([client4 isConnected])); // False test
+    _resGroup = nil;
+    _resGroupNegative = [GCDGroup group];
     
+    [_resGroupNegative enterTimes:2];
+    
+    __block PubNub *client4 = [PubNub connectingClientWithConfiguration:configuration4 delegate:self andSuccessBlock:^(NSString *res) {
+        [_resGroupNegative leave];
+    } errorBlock:^(PNError *error) {
+        NSLog(@"Error occurs during connection: %@", error);
+        [_resGroupNegative leave];
+    }];
+    
+#warning - Failed right now, it seems delegate wasn't set before we notify about error. That is why we don't receive connectionDidFailWithError during this test.
+    if ([GCDWrapper isGCDGroup:_resGroupNegative timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout is fired. Didn't connect client to PubNub");
+    }
+    _resGroupNegative = nil;
+    
+    XCTAssertFalse(([client4 isConnected])); // False test
 }
 
 
@@ -101,22 +121,20 @@
     _resGroup = [GCDGroup group];
     [_resGroup enterTimes:2];
     
-    PubNub *client = [PubNub connectingClientWithConfiguration:configuration delegate:self andSuccessBlock:^(NSString *res) {
+    __block PubNub *client = [PubNub connectingClientWithConfiguration:configuration delegate:self andSuccessBlock:^(NSString *res) {
         [_resGroup leave];
     } errorBlock:^(PNError *error) {
         NSLog(@"Error occurs during connection: %@", error);
+        [_resGroup leave];
+        client = nil;
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:5]) {
-        NSLog(@"Timeout is fired. Didn't connect client to PubNub");
-        [_resGroup leave];
-        [_resGroup leave];
-        _resGroup = nil;
-        return nil;
-    } else {
-        _resGroup = nil;
-        return client;
+    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:kTestTestTimout]) {
+        XCTFail(@"Timeout is fired. Didn't connect client to PubNub");
     }
+    
+    _resGroup = nil;
+    return client;
 }
 
 
@@ -132,6 +150,10 @@
 // Connect fail
 - (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error {
     NSLog(@"Did fail connection: %@", error);
+    
+    if (_resGroupNegative) {
+        [_resGroupNegative leave];
+    }
 }
 
 @end

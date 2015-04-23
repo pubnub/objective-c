@@ -9,11 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-static NSString *kOriginPath = @"pubsub-emea.pubnub.com";
-static NSString * const kPublishKey = @"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6";
-static NSString * const kSubscriptionKey = @"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe";
-static NSString * const kSecretKey = @"sec-c-NDA1YjYyYjktZTA0NS00YmIzLWJmYjQtZjI4MGZmOGY0MzIw";
-static NSString * const kCipherKey = nil;
 static NSString * const kAuthorizationKey = nil;
 
 @interface PNConnectClientWithConfigTest : XCTestCase <PNDelegate> {
@@ -40,10 +35,7 @@ static NSString * const kAuthorizationKey = nil;
 // Test
 - (void)testConfiguration {
     
-    PNConfiguration *configuration = [PNConfiguration configurationForOrigin:kOriginPath
-                                                                  publishKey:kPublishKey
-                                                                subscribeKey:kSubscriptionKey
-                                                                   secretKey:kSecretKey];
+    PNConfiguration *configuration = [PNConfiguration accessManagerTestConfiguration];
     
     configuration.authorizationKey = kAuthorizationKey;
 

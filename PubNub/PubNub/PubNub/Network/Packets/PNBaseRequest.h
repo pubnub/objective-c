@@ -24,7 +24,7 @@
 
 #pragma mark Properties
 
-@property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, copy) NSString *identifier;
 
 /**
  Timeout value which is used for non-subscription requests
@@ -34,7 +34,7 @@
 /**
  Short identifier is hash from original one which will be used to identify request from response JSONP callback method name
  */
-@property (nonatomic, strong) NSString *shortIdentifier;
+@property (nonatomic, copy) NSString *shortIdentifier;
 
 /**
  Stores whether this request is currently processed by connection or not

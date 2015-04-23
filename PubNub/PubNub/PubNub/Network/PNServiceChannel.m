@@ -951,10 +951,10 @@
         
         PNMessageHistoryRequest *historyRequest = (PNMessageHistoryRequest *)request;
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:@{
-                                               @"limit":@(historyRequest.limit), @"revertMessages":@(historyRequest.shouldRevertMessages),
-                                               @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)}];
+
+            NSMutableDictionary *options = [@{@"limit":@(historyRequest.limit),
+                                     @"revertMessages":@(historyRequest.shouldRevertMessages),
+                                   @"includeTimeToken":@(historyRequest.shouldIncludeTimeToken)} mutableCopy];
             if (historyRequest.startDate) {
                 
                 [options setValue:historyRequest.startDate forKey:@"startDate"];
@@ -987,8 +987,8 @@
         PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            [error replaceAssociatedObject:@{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
-                                             @"fetchClientState":@(hereNowRequest.shouldFetchClientState)}];
+            [error replaceAssociatedObject:[@{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
+                                              @"fetchClientState":@(hereNowRequest.shouldFetchClientState)} copy]];
         }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -1404,7 +1404,7 @@
 
             state = @"disabling";
         }
-        errorMessage = [NSString stringWithFormat:@"Push notification '%@' failed by timeout", state];
+        errorMessage = [[NSString alloc] initWithFormat:@"Push notification '%@' failed by timeout", state];
 
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 
@@ -1486,10 +1486,10 @@
 #pragma mark - Requests queue delegate methods
 
 - (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request
-            withBlock:(dispatch_block_t)notifyCompletionBlock {
+            withBlock:(void(^)(BOOL))notifyCompletionBlock {
 
     // Forward to the super class
-    [super requestsQueue:queue willSendRequest:request withBlock:^{
+    [super requestsQueue:queue willSendRequest:request withBlock:^(BOOL shouldContinue) {
 
         [self pn_dispatchBlock:^{
 
@@ -1510,7 +1510,7 @@
 
             if (notifyCompletionBlock) {
 
-                notifyCompletionBlock();
+                notifyCompletionBlock(shouldContinue);
             }
         }];
     }];

@@ -114,8 +114,9 @@ void objectReleaseCallBack( void *info ) {
 
 - (void)pn_destroyPrivateDispatchQueue {
     
-    [PNDispatchHelper release:[self pn_privateQueue]];
+    dispatch_queue_t privateQueue = [self pn_privateQueue];
     objc_setAssociatedObject(self, "privateQueue", nil, OBJC_ASSOCIATION_RETAIN);
+    [PNDispatchHelper release:privateQueue];
 }
 
 - (void)pn_dispatchBlock:(dispatch_block_t)block {

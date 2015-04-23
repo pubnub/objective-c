@@ -206,7 +206,7 @@
 
 + (PNError *)errorWithMessage:(NSString *)errorMessage code:(NSInteger)errorCode {
     
-    return [[[self class] alloc] initWithMessage:errorMessage code:errorCode];
+    return [[self alloc] initWithMessage:errorMessage code:errorCode];
 }
 
 
@@ -793,7 +793,7 @@
 
 - (NSString *)description {
 
-    return [NSString stringWithFormat:@"Domain=%@; Code=%ld; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\";"
+    return [[NSString alloc] initWithFormat:@"Domain=%@; Code=%ld; Description=\"%@\"; Reason=\"%@\"; Fix suggestion=\"%@\";"
                                       " Associated object=%@", self.domain, (long)self.code, [self localizedDescription],
                                       [self localizedFailureReason], [self localizedRecoverySuggestion],
                                       self.associatedObject];
@@ -801,7 +801,7 @@
 
 - (NSString *)logDescription {
     
-    return [NSString stringWithFormat:@"<%@|%ld>", self.domain, (long)self.code];
+    return [[NSString alloc] initWithFormat:@"<%@|%ld>", self.domain, (long)self.code];
 }
 
 - (NSString *)domainForError:(NSInteger)errorCode {

@@ -14,20 +14,25 @@
 
 @implementation PNChannelConstructor
 
+
+- (void)setUp
+{
+    [super setUp];
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    [PubNub disconnect];
+}
+
 - (void)tearDown {
-	[NSThread sleepForTimeInterval:0.1];
+    [PubNub disconnect];
+    
     [super tearDown];
 }
 
 - (void)test10Connect
 {
 	[PubNub disconnect];
-	//    [PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
-	//	PNConfiguration *configuration = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com" publishKey:@"demo" subscribeKey:@"demo" secretKey: nil cipherKey: @"key"];
-	////	//	configuration.autoReconnectClient = NO;
-	//	[PubNub setConfiguration: configuration];
-
-//	handleClientConnectionStateChange = NO;
+    
 	__block BOOL isMessageSended = NO;
 	int64_t delayInSeconds = 2;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
@@ -36,23 +41,21 @@
 
 		[PubNub setConfiguration:[PNConfiguration defaultConfiguration]];
 		[PubNub connect];
-		[PubNub subscribeOn:[PNChannel channelWithName:@"my-channel" shouldObservePresence:NO]
+		[PubNub subscribeOn:@[[PNChannel channelWithName:@"my-channel" shouldObservePresence:NO]]
 	   withCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error){
 
 		   if (state == PNSubscriptionProcessSubscribedState) {
 
-			   [PubNub subscribeOn:[PNChannel channelWithName:@"my-channel" shouldObservePresence:YES]];
+			   [PubNub subscribeOn:@[[PNChannel channelWithName:@"my-channel" shouldObservePresence:YES]]];
 
-			   /*PNMessage *helloMessage = */[PubNub sendMessage:@"Hello PubNub"
+			   [PubNub sendMessage:@"Hello PubNub"
 													   toChannel: [PNChannel channelWithName:@"my-channel"]
 											 withCompletionBlock:^(PNMessageState messageSendingState, id data)
 											  {
-//												  dispatch_semaphore_signal(semaphore);
 												  if( messageSendingState == PNMessageSent )
 													  isMessageSended = YES;
 											  }];
 
-//			   [PubNub sendMessage:@"Hi there" toChannel:[PNChannel channelWithName:@"my-channel"]];
 		   }
 	   }];
 	});

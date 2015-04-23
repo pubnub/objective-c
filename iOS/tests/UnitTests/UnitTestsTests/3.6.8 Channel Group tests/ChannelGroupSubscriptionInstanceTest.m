@@ -70,7 +70,7 @@ PNDelegate
     [_resGroup1 enter];
     [_pubNub addChannels:_channels toGroup:_group];
     
-    if ([GCDWrapper isGCDGroup:_resGroup1 timeoutFiredValue:10]) {
+    if ([GCDWrapper isGCDGroup:_resGroup1 timeoutFiredValue:20]) {
         XCTFail(@"Timeout is fired. Didn't receive delegates call about adding/failing channels");
         _resGroup1 = nil;
         return;
