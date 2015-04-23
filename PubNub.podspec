@@ -29,6 +29,8 @@ Pod::Spec.new do |s|
    'PubNub/PubNub/PubNub/Data/Channels/Presence',
    'PubNub/PubNub/PubNub/Data/Parsers'
 
+  s.private_header_files = "PubNub/PubNub/PubNub/Misc/PNPrivateMacro.h"
+
    s.resource_bundle = { 'PubNub' => 'PubNub/PubNub/PubNub/Resources/*' }
 
   s.ios.deployment_target = '5.1'
