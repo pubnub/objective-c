@@ -3056,6 +3056,22 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         }
         else {
             
+            __block UIBackgroundTaskIdentifier identifier = UIBackgroundTaskInvalid;
+            
+            void(^backgroundTaskCompletionBlock)(void) = ^{
+                
+                if (identifier != UIBackgroundTaskInvalid) {
+                    
+                    [[UIApplication sharedApplication] endBackgroundTask:identifier];
+                }
+                identifier = UIBackgroundTaskInvalid;
+            };
+            
+            // Requesting additional time for execution in background
+            // This must be done before the async block because it may never get called otherwise
+            // as we may enter the background at the end of this runloop iteration.
+            identifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:backgroundTaskCompletionBlock];
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 // Informing delegate that PubNub client will suspend soon.
@@ -3072,19 +3088,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                          // This variable is used to provide enough time to complete suspension process.
                          __block NSUInteger suspensionDelay = 3;
-                         __block UIBackgroundTaskIdentifier identifier = UIBackgroundTaskInvalid;
                          __block BOOL shouldKeepAliveInBackground = YES;
                          __block BOOL isFirstWhileCycle = YES;
                          __block BOOL isSuspending = NO;
-
-                         void(^backgroundTaskCompletionBlock)(void) = ^{
-
-                             if (identifier != UIBackgroundTaskInvalid) {
-
-                                 [[UIApplication sharedApplication] endBackgroundTask:identifier];
-                             }
-                             identifier = UIBackgroundTaskInvalid;
-                         };
 
                          dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
@@ -3115,9 +3121,6 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                              dispatch_async(dispatch_get_main_queue(), backgroundTaskCompletionBlock);
                          });
-
-                         // Requesting additional time for execution in background
-                         identifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:backgroundTaskCompletionBlock];
 
                          actionsBlock(^{
 
