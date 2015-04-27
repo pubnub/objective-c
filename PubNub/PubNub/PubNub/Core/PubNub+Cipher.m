@@ -75,8 +75,9 @@
         if ([object isKindOfClass:[NSString class]]) {
             
             __block id decodedJSONObject = nil;
-            [PNJSONSerialization JSONObjectWithString:object completionBlock:^(id result, BOOL isJSONP,
-                                                                               NSString *callbackMethodName) {
+            [PNJSONSerialization JSONObjectWithString:object completionBlock:^(id result,
+                                                                               __unused BOOL isJSONP,
+                                                                               __unused NSString *callbackMethodName) {
                                           
                                           decodedJSONObject = result;
                                       }
@@ -129,7 +130,8 @@
                 if (processingError == nil && processingErrorCode < 0) {
                     
                     [PNJSONSerialization JSONObjectWithString:decodedMessage
-                                              completionBlock:^(id result, BOOL isJSONP, NSString *callbackMethodName) {
+                                              completionBlock:^(id result, __unused BOOL isJSONP,
+                                                                __unused NSString *callbackMethodName) {
                                                   
                                                   decryptedObject = result;
                                               }

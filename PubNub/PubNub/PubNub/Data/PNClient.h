@@ -68,14 +68,6 @@
  @discussion \b PNClient can receive it's state for multiple channels at once (from channel group) and this method allow
  to get state for concrete channel (list of channels with data stored in \c channels property).
  
- @since 3.7.0
- */
-/**
- @brief Retrieve client's data inside concrete channel.
- 
- @discussion \b PNClient can receive it's state for multiple channels at once (from channel group) and this method allow
- to get state for concrete channel (list of channels with data stored in \c channels property).
- 
  @param channel Reference on \b PNChannel for which \b PNClient should look for state.
  
  @return \a NSDictionary or \c nil in case if there is no state information for specified channel.

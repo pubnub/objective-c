@@ -746,7 +746,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
                                BITS_LIST_TERMINATOR];
 }
 
-- (void)processResponse:(PNResponse *)response forRequest:(PNBaseRequest *)request {
+- (void)processResponse:(PNResponse *)__unused response forRequest:(PNBaseRequest *)__unused request {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
@@ -761,17 +761,17 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
            [self isWaitingStoredRequestCompletion:requestIdentifier];
 }
 
-- (BOOL)shouldScheduleRequest:(PNBaseRequest *)request {
+- (BOOL)shouldScheduleRequest:(PNBaseRequest *)__unused request {
 
     return YES;
 }
 
-- (void)handleRequestProcessingDidFail:(PNBaseRequest *)request withError:(PNError *)error {
+- (void)handleRequestProcessingDidFail:(PNBaseRequest *)__unused request withError:(PNError *)__unused error {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
 
-- (void)makeScheduledRequestsFail:(NSArray *)requestsList withError:(PNError *)processingError {
+- (void)makeScheduledRequestsFail:(NSArray *)__unused requestsList withError:(PNError *)__unused processingError {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
@@ -885,7 +885,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
 - (PNBaseRequest *)lastStoredRequest {
 
-    return [self storedRequestAtIndex:MAX([self.storedRequestsList count] - 1, 0)];
+    return [self storedRequestAtIndex:MAX([self.storedRequestsList count] - 1, (NSUInteger)0)];
 }
 
 - (PNBaseRequest *)storedRequestAtIndex:(NSUInteger)requestIndex {
@@ -946,8 +946,9 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     [self pn_scheduleOnPrivateQueueAssert];
 
     NSMutableArray *requests = [NSMutableArray new];
-    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
-            BOOL *requestIdentifierEnumeratorStop) {
+    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier,
+                                                          __unused NSUInteger requestIdentifierIdx,
+                                                          __unused BOOL *requestIdentifierEnumeratorStop) {
 
         PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
         if ([request isKindOfClass:requestClass]) {
@@ -956,7 +957,8 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
         }
     }];
 
-    [requests enumerateObjectsUsingBlock:^(id request, NSUInteger requestIdx, BOOL *requestEnumeratorStop) {
+    [requests enumerateObjectsUsingBlock:^(id request, __unused NSUInteger requestIdx,
+                                           __unused BOOL *requestEnumeratorStop) {
 
         [self destroyRequest:request];
     }];
@@ -968,7 +970,8 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     [self pn_scheduleOnPrivateQueueAssert];
 
     __block BOOL hasRequestsWithClass = NO;
-    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
+    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier,
+                                                          __unused NSUInteger requestIdentifierIdx,
                                                           BOOL *requestIdentifierEnumeratorStop) {
 
         PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
@@ -989,8 +992,9 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     [self pn_scheduleOnPrivateQueueAssert];
 
     NSMutableArray *requests = [NSMutableArray new];
-    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                          BOOL *requestIdentifierEnumeratorStop) {
+    [self.storedRequestsList enumerateObjectsUsingBlock:^(id requestIdentifier,
+                                                          __unused NSUInteger requestIdentifierIdx,
+                                                          __unused BOOL *requestIdentifierEnumeratorStop) {
 
         PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
         if ([request isKindOfClass:requestClass]) {
@@ -1009,8 +1013,9 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     [self pn_scheduleOnPrivateQueueAssert];
 
     NSMutableArray *requests = [NSMutableArray new];
-    [requestIdentifiers enumerateObjectsUsingBlock:^(id requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                     BOOL *requestIdentifierEnumeratorStop) {
+    [requestIdentifiers enumerateObjectsUsingBlock:^(id requestIdentifier,
+                                                     __unused NSUInteger requestIdentifierIdx,
+                                                     __unused BOOL *requestIdentifierEnumeratorStop) {
 
         // Fetch actual request from storage
         PNBaseRequest *request = [self storedRequestWithIdentifier:requestIdentifier];
@@ -1054,12 +1059,12 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
 #pragma mark - Handler methods
 
-- (void)handleTimeoutTimer:(PNBaseRequest *)request {
+- (void)handleTimeoutTimer:(PNBaseRequest *)__unused request {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
 
-- (BOOL)shouldStoreRequest:(PNBaseRequest *)request {
+- (BOOL)shouldStoreRequest:(PNBaseRequest *)__unused request {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
     
@@ -1235,13 +1240,13 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
                    resetRetryCount:YES andBlock:rescheduleCompletionBlock];
 }
 
-- (void)rescheduleStoredRequests:(NSArray *)requestsList resetRetryCount:(BOOL)shouldResetRequestsRetryCount
-                        andBlock:(dispatch_block_t)rescheduleCompletionBlock {
+- (void)rescheduleStoredRequests:(NSArray *)__unused requestsList resetRetryCount:(BOOL)__unused shouldResetRequestsRetryCount
+                        andBlock:(dispatch_block_t)__unused rescheduleCompletionBlock {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 }
 
-- (BOOL)shouldHandleResponse:(PNResponse *)response {
+- (BOOL)shouldHandleResponse:(PNResponse *)__unused response {
 
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
 
@@ -1309,7 +1314,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
 #pragma mark - Connection delegate methods
 
-- (void)connectionConfigurationDidFail:(PNConnection *)connection {
+- (void)connectionConfigurationDidFail:(PNConnection *)__unused connection {
 
     [self pn_dispatchBlock:^{
 
@@ -1337,7 +1342,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connectionDidReset:(PNConnection *)connection withBlock:(dispatch_block_t)notifyCompletionBlock {
+- (void)connectionDidReset:(PNConnection *)__unused connection withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -1368,7 +1373,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection didConnectToHost:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection didConnectToHost:(NSString *)hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1422,7 +1427,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connectionDidSuspend:(PNConnection *)connection withBlock:(dispatch_block_t)notifyCompletionBlock {
+- (void)connectionDidSuspend:(PNConnection *)__unused connection withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -1460,7 +1465,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connectionDidResume:(PNConnection *)connection withBlock:(dispatch_block_t)notifyCompletionBlock {
+- (void)connectionDidResume:(PNConnection *)__unused connection withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -1514,17 +1519,17 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection checkCanConnect:(void(^)(BOOL))checkCompletionBlock; {
+- (void)connection:(PNConnection *)__unused connection checkCanConnect:(void(^)(BOOL))checkCompletionBlock; {
 
     [self.delegate connectionChannel:self checkCanConnect:checkCompletionBlock];
 }
 
-- (void)connection:(PNConnection *)connection checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock; {
+- (void)connection:(PNConnection *)__unused connection checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock; {
 
     [self.delegate connectionChannel:self checkShouldRestoreConnection:checkCompletionBlock];
 }
 
-- (void)connection:(PNConnection *)connection willReconnectToHost:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection willReconnectToHost:(NSString *)__unused hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1550,7 +1555,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection didReconnectToHost:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection didReconnectToHost:(NSString *)hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1606,7 +1611,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection willReconnectToHostAfterError:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection willReconnectToHostAfterError:(NSString *)__unused hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1631,7 +1636,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection didReconnectToHostAfterError:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection didReconnectToHostAfterError:(NSString *)hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1687,7 +1692,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 }
 
 
-- (void)connection:(PNConnection *)connection willDisconnectFromHost:(NSString *)host
+- (void)connection:(PNConnection *)__unused connection willDisconnectFromHost:(NSString *)host
          withError:(PNError *)error andBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1745,7 +1750,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection didDisconnectFromHost:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection didDisconnectFromHost:(NSString *)hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1805,7 +1810,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection didRestoreAfterServerCloseConnectionToHost:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection didRestoreAfterServerCloseConnectionToHost:(NSString *)__unused hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1838,7 +1843,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection willDisconnectByServerRequestFromHost:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection willDisconnectByServerRequestFromHost:(NSString *)__unused hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1863,7 +1868,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection didDisconnectByServerRequestFromHost:(NSString *)hostName
+- (void)connection:(PNConnection *)__unused connection didDisconnectByServerRequestFromHost:(NSString *)__unused hostName
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -1940,7 +1945,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)connection:(PNConnection *)connection didReceiveResponse:(PNResponse *)response
+- (void)connection:(PNConnection *)__unused connection didReceiveResponse:(PNResponse *)response
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -2081,7 +2086,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
 
 #pragma mark - Requests queue delegate methods
 
-- (void)requestsQueue:(PNRequestsQueue *)queue willSendRequest:(PNBaseRequest *)request
+- (void)requestsQueue:(PNRequestsQueue *)__unused queue willSendRequest:(PNBaseRequest *)request
             withBlock:(void (^)(BOOL))notifyCompletionBlock {
 
     // Updating request state
@@ -2093,7 +2098,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }
 }
 
-- (void)requestsQueue:(PNRequestsQueue *)queue didSendRequest:(PNBaseRequest *)request
+- (void)requestsQueue:(PNRequestsQueue *)__unused queue didSendRequest:(PNBaseRequest *)request
             withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -2121,8 +2126,8 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)requestsQueue:(PNRequestsQueue *)queue didFailRequestSend:(PNBaseRequest *)request
-                error:(PNError *)error withBlock:(dispatch_block_t)notifyCompletionBlock {
+- (void)requestsQueue:(PNRequestsQueue *)__unused queue didFailRequestSend:(PNBaseRequest *)request
+                error:(PNError *)__unused error withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     // Updating request state
     request.processing = NO;
@@ -2149,7 +2154,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)requestsQueue:(PNRequestsQueue *)queue didCancelRequest:(PNBaseRequest *)request
+- (void)requestsQueue:(PNRequestsQueue *)__unused queue didCancelRequest:(PNBaseRequest *)request
             withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     // Updating request state
@@ -2168,7 +2173,7 @@ struct PNRequestForRescheduleStructure PNRequestForReschedule = {
     }];
 }
 
-- (void)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request
+- (void)shouldRequestsQueue:(PNRequestsQueue *)__unused queue removeCompletedRequest:(PNBaseRequest *)__unused request
             checkCompletion:(void(^)(BOOL))checkCompletionBlock {
 
     checkCompletionBlock(YES);

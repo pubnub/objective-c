@@ -20,7 +20,7 @@
     
     __block NSString *logDescription = @"<[";
     __block NSUInteger entryIdx = 0;
-    [self enumerateObjectsUsingBlock:^(id entry, BOOL *entryEnumeratorStop) {
+    [self enumerateObjectsUsingBlock:^(id entry, __unused BOOL *entryEnumeratorStop) {
         
         // Check whether parameter can be transformed for log or not
         if ([entry respondsToSelector:@selector(logDescription)]) {

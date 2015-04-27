@@ -29,7 +29,7 @@
 // Stores reference on maximum write TCP
 // packet size which will be sent over the
 // socket (Default: 4kb)
-static NSUInteger const kPNWriteBufferSize = 4096;
+static NSInteger const kPNWriteBufferSize = 4096;
 
 
 #pragma mark - Private interface methods

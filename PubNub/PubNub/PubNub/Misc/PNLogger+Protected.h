@@ -22,131 +22,119 @@
 + (void)prepare;
 
 /**
- Log out message for specified level using data returned from \c messageBlock block.
+ @brief Log out message for specified level using data returned from \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logFrom:(id)sender forLevel:(PNLogLevel)level withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'general' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'general' level log message using data returned from \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logGeneralMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'reachability' level log message using data returned from \c messageBlock block.
- K
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @brief Log out \c 'reachability' level log message using data returned from \c parametersBlock
+        block.
+
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logReachabilityMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'deserializer info' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'deserializer info' level log message using data returned from \c messageBlock
+        block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logDeserializerInfoMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'deserializer error' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'deserializer error' level log message using data returned from
+        \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logDeserializerErrorMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'connection HTTP packet' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'connection HTTP packet' level log message using data returned from 
+        \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param parametersBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logConnectionHTTPPacketFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'connection info' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'connection info' level log message using data returned from 
+        \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logConnectionInfoMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'connection error' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'connection error' level log message using data returned from
+        \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logConnectionErrorMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'communication channel error' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'communication channel error' level log message using data returned from
+        \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logCommunicationChannelErrorMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'communication channel warn' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'communication channel warn' level log message using data returned from
+        \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logCommunicationChannelWarnMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Log out \c 'communication channel info' level log message using data returned from \c messageBlock block.
+ @brief Log out \c 'communication channel info' level log message using data returned from 
+        \c parametersBlock block.
  
- @param sender
- Reference on instance from the name of which message will be logged.
- 
- @param messageBlock
- Block which is used by logger to receive message which should be processed and shown in Xcode console and device logs.
+ @param sender          Reference on instance from the name of which message will be logged.
+ @param parametersBlock Block which is used by logger to receive message which should be 
+                        processed and shown in Xcode console and device logs.
  */
 + (void)logCommunicationChannelInfoMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock;
 
 /**
- Store data passed through \c httpPacketBlock block into separate file which will represent single HTTP packet.
+ @brief Store data passed through \c httpPacketBlock block into separate file which will 
+        represent single HTTP packet.
  
- @param httpPacketBlock
- Block which is used by logger to receive \b NSData instance which contains all payload which has been received from server.
+ @param httpPacketBlock Block which is used by logger to receive \b NSData instance which
+                        contains all payload which has been received from server.
  */
 + (void)storeHTTPPacketData:(NSData *(^)(void))httpPacketBlock;
 
@@ -158,7 +146,7 @@
 
  @since 3.7.10
  */
-+ (void)storeGarbageHTTPPacketData:(dispatch_data_t (^)(void))httpPacketBlock;
++ (void)storeGarbageHTTPPacketData:(NSData *(^)(void))httpPacketBlock;
 
 /**
  Store data passed through \c httpPacketBlock block into separate file which will represent unexpected HTTP packet.

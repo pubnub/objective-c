@@ -76,7 +76,7 @@
  
  @return \b PNMessage instance if message payload is correct or \c nil if not.
  */
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel;
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel;
 
 /**
  Same as +sendMessage:toChannel: but allow to specify completion block which will be called when message will be sent or in case of error.
@@ -5982,14 +5982,12 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
 /**
  @brief Calculate size of resulting message which will be created from Objective-C object.
 
- @param message              Reference on Objective-C object which should be used during size
-                             calculation.
- @param channel              Reference on \b PNChannel instance which represent target channel to
-                             which message should be sent.
+ @param message                    Reference on Objective-C object which should be used during 
+                                   size calculation.
+ @param channel                    Reference on \b PNChannel instance which represent target 
+                                   channel to which message should be sent.
  @param calculationCompletionBlock Reference on calculation completion block which pass only one
                                    parameter - size of resulting message.
-
- @return Size of resulting message packet (including headers and body).
 
  @since 3.7.9
  */
@@ -5999,15 +5997,13 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
 /**
  @brief Calculate size of resulting message which will be created from Objective-C object.
 
- @param message              Reference on Objective-C object which should be used during size
-                             calculation.
- @param channel              Reference on \b PNChannel instance which represent target channel to
-                             which message should be sent.
- @param compressedMessage    Whether message should be treated as compressed pr not.
+ @param message                    Reference on Objective-C object which should be used during
+                                   size calculation.
+ @param channel                    Reference on \b PNChannel instance which represent target 
+                                   channel to which message should be sent.
+ @param compressedMessage          Whether message should be treated as compressed pr not.
  @param calculationCompletionBlock Reference on calculation completion block which pass only one
                                    parameter - size of resulting message.
-
- @return Size of resulting message packet (including headers and body).
 
  @since 3.7.9
  */
@@ -6021,8 +6017,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success;
                                    calculation.
  @param channel                    Reference on \b PNChannel instance which represent target channel
                                    to which message should be sent.
- @param shouldStoreInHistory       Whether message should be stored on server storage or not.
- @param compressedMessage          Whether message should be treated as compressed pr not.
+ @param shouldStoreInHistory       Whether message should be stored on server storage or not.s
  @param calculationCompletionBlock Reference on calculation completion block which pass only one
                                    parameter - size of resulting message.
 

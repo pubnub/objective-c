@@ -1295,8 +1295,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                             strongSelf.asyncLockingOperationInProgress = NO;
                             [strongSelf subscribeOn:allChannels withCatchUp:shouldCatchup clientState:nil
-                         andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *subscribedChannels,
-                                 PNError *subscribeError) {
+                         andCompletionHandlingBlock:^(__unused PNSubscriptionProcessState state,
+                                                      __unused NSArray *subscribedChannels,
+                                                      PNError *subscribeError) {
 
                              if (subscribeError == nil) {
 
@@ -1324,7 +1325,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
                             strongSelf.asyncLockingOperationInProgress = NO;
                             [strongSelf unsubscribeFrom:allChannels
-                            withCompletionHandlingBlock:^(NSArray *leavedChannels, PNError *leaveError) {
+                            withCompletionHandlingBlock:^(__unused NSArray *leavedChannels,
+                                                          PNError *leaveError) {
 
                                 if (leaveError == nil) {
 
@@ -1570,7 +1572,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
                                 }];
 
                                 // Forcibly refresh reachability information
-                                [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
+                                [self.reachability refreshReachabilityState:^(__unused BOOL willGenerateReachabilityChangeEvent) {
 
                                     // Checking whether remote PubNub services is reachable or not (if they are not reachable,
                                     // this mean that probably there is no connection)
@@ -2171,7 +2173,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 #pragma mark - Connection channel delegate methods
 
-- (void)connectionChannelConfigurationDidFail:(PNConnectionChannel *)channel {
+- (void)connectionChannelConfigurationDidFail:(PNConnectionChannel *)__unused channel {
 
     [self pn_dispatchBlock:^{
 
@@ -2731,7 +2733,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void) connectionChannel:(PNConnectionChannel *)channel willDisconnectFromOrigin:(NSString *)host
+- (void) connectionChannel:(PNConnectionChannel *)__unused channel willDisconnectFromOrigin:(NSString *)host
                  withError:(PNError *)error {
 
     [self pn_dispatchBlock:^{
@@ -2792,12 +2794,12 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)connectionChannelWillSuspend:(PNConnectionChannel *)channel {
+- (void)connectionChannelWillSuspend:(PNConnectionChannel *)__unused channel {
     
     //
 }
 
-- (void)connectionChannelDidSuspend:(PNConnectionChannel *)channel {
+- (void)connectionChannelDidSuspend:(PNConnectionChannel *)__unused channel {
 
     [self checkConnectionChannelsSuspendedState:^(BOOL messageChannelSuspended, BOOL serviceChannelSuspended) {
 
@@ -2811,7 +2813,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)connectionChannelWillResume:(PNConnectionChannel *)channel {
+- (void)connectionChannelWillResume:(PNConnectionChannel *)__unused channel {
     
     //
 }
@@ -2847,24 +2849,26 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)connectionChannel:(PNConnectionChannel *)channel checkCanConnect:(void(^)(BOOL))checkCompletionBlock {
+- (void)connectionChannel:(PNConnectionChannel *)__unused channel
+          checkCanConnect:(void(^)(BOOL))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
         // Help reachability instance update it's state our of schedule
-        [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
+        [self.reachability refreshReachabilityState:^(__unused BOOL willGenerateReachabilityChangeEvent) {
 
             [self.reachability checkServiceAvailable:checkCompletionBlock];
         }];
     }];
 }
 
-- (void)connectionChannel:(PNConnectionChannel *)channel checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock {
+- (void)connectionChannel:(PNConnectionChannel *)__unused channel
+checkShouldRestoreConnection:(void(^)(BOOL))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{
         
         // Help reachability instance update it's state our of schedule
-        [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
+        [self.reachability refreshReachabilityState:^(__unused BOOL willGenerateReachabilityChangeEvent) {
 
             BOOL isSimulatingReachability = [self.reachability isSimulatingNetworkSwitchEvent];
             BOOL shouldRestoreConnection = (self.state == PNPubNubClientStateConnecting ||
@@ -2882,7 +2886,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)connectionChannel:(PNConnectionChannel *)channel didSendRequest:(PNBaseRequest *)request {
+- (void)connectionChannel:(PNConnectionChannel *)channel didSendRequest:(PNBaseRequest *)__unused request {
 
     [self pn_dispatchBlock:^{
 
@@ -2909,7 +2913,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
         if (shouldUpdateInformation) {
 
             // Help reachability instance update it's state our of schedule
-            [self.reachability refreshReachabilityState:^(BOOL willGenerateReachabilityChangeEvent) {
+            [self.reachability refreshReachabilityState:^(__unused BOOL willGenerateReachabilityChangeEvent) {
 
                 completionBlock();
             }];
@@ -3449,8 +3453,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
             [self.reprioritizedPendingInvocations enumerateObjectsWithOptions:NSEnumerationReverse
                                                                    usingBlock:^(id pendingInvocation,
-                                                                                NSUInteger pendingInvocationIdx,
-                                                                                BOOL *pendingInvocationEnumeratorStop) {
+                                                                                __unused NSUInteger pendingInvocationIdx,
+                                                                                __unused BOOL *pendingInvocationEnumeratorStop) {
 
                 [self.pendingInvocations insertObject:pendingInvocation atIndex:0];
             }];
@@ -3543,7 +3547,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     // Configure invocation instance
     methodInvocation.selector = calledMethodSelector;
     [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger parameterIdx,
-                                             BOOL *parametersEnumeratorStop) {
+                                             __unused BOOL *parametersEnumeratorStop) {
         
         NSUInteger parameterIndex = (parameterIdx + signatureParameterOffset);
         parameter = [parameter isKindOfClass:[NSNull class]] ? nil : parameter;
@@ -3756,7 +3760,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)destroyHeartbeatTimer:(BOOL)shouldClearReference {
+- (void)destroyHeartbeatTimer:(BOOL)__unused shouldClearReference {
     
     if (self.heartbeatTimer != NULL && dispatch_source_testcancel(self.heartbeatTimer) == 0) {
         
@@ -4042,8 +4046,9 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
             }
             [self.pendingInvocations removeAllObjects];
 
-            [invocationsForFlush enumerateObjectsUsingBlock:^(NSInvocation *postponedInvocation, NSUInteger postponedInvocationIdx,
-                    BOOL *postponedInvocationEnumeratorStop) {
+            [invocationsForFlush enumerateObjectsUsingBlock:^(NSInvocation *postponedInvocation,
+                                                              __unused NSUInteger postponedInvocationIdx,
+                                                              __unused BOOL *postponedInvocationEnumeratorStop) {
 
                 self.asyncLockingOperationInProgress = NO;
                 if (postponedInvocation && shouldExecute) {
@@ -4377,7 +4382,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 #pragma mark - Message channel delegate methods
 
-- (void)checkShouldKeepTimeTokenOnChannelsListChange:(PNMessagingChannel *)messagingChannel
+- (void)checkShouldKeepTimeTokenOnChannelsListChange:(PNMessagingChannel *)__unused messagingChannel
                                            withBlock:(void (^)(BOOL shouldKeepTimeToken))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -4386,7 +4391,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)checkShouldMessagingChannelRestoreSubscription:(PNMessagingChannel *)messagingChannel
+- (void)checkShouldMessagingChannelRestoreSubscription:(PNMessagingChannel *)__unused messagingChannel
                                              withBlock:(void (^)(BOOL restoreSubscription))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -4395,7 +4400,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)checkShouldMessagingChannelRestoreWithLastTimeToken:(PNMessagingChannel *)messagingChannel
+- (void)checkShouldMessagingChannelRestoreWithLastTimeToken:(PNMessagingChannel *)__unused messagingChannel
                                                   withBlock:(void (^)(BOOL restoreWithLastTimeToken))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -4448,7 +4453,7 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
     }];
 }
 
-- (void)messagingChannelDidReset:(PNMessagingChannel *)messagingChannel {
+- (void)messagingChannelDidReset:(PNMessagingChannel *)__unused messagingChannel {
     
     [self handleLockingOperationComplete:YES burstExecutionLockingOperation:YES];
 }
@@ -4456,8 +4461,8 @@ shouldObserveProcessing:(BOOL)shouldObserveProcessing;
 
 #pragma mark - Service channel delegate methods
 
-- (void)  serviceChannel:(PNServiceChannel *)channel didReceiveNetworkLatency:(double)latency
-     andNetworkBandwidth:(double)bandwidth {
+- (void)  serviceChannel:(PNServiceChannel *)__unused channel didReceiveNetworkLatency:(double)__unused latency
+     andNetworkBandwidth:(double)__unused bandwidth {
     
     // TODO: NOTIFY NETWORK METER INSTANCE ABOUT ARRIVED DATA
 }

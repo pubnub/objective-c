@@ -24,8 +24,7 @@
 /**
  @brief De-serialize HTTP raw data from provided read buffer.
  
- @param buffer               Reference on GCD based read buffer from which data should be 
-                             de-serialized.
+ @param buffer               Reference on read buffer from which data should be de-serialized.
  @param parseCompletionBlock Data processing completion block. Block pass four parameters:
                              \c responses - list of response objects retrieved from read buffer;
                              \c fullBufferLength - full read buffer size; 
@@ -36,7 +35,7 @@
  
  @since 3.7.10
  */
-- (void)parseBufferContent:(dispatch_data_t)buffer
+- (void)parseBufferContent:(NSData *)buffer
                  withBlock:(void(^)(NSArray *responses, NSUInteger fullBufferLength,
                                     NSUInteger processedBufferLength,
                                     void(^readBufferPostProcessing)(void)))parseCompletionBlock;

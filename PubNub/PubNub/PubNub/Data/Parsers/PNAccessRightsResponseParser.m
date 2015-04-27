@@ -101,10 +101,10 @@ struct PNAccessLevelsStruct PNAccessLevels = {
   accessInformationFromDictionary:(NSDictionary *)objectInformationDictionary;
 
 /**
- Parse \a 'user' access rights information from provided dictionary.
+ @brief Parse \a 'user' access rights information from provided dictionary.
 
- @param channelInformationDictionary
- \a NSDictionary instance which hold information from server about access rights configuration for user(s).
+ @param clientsInformationDictionary \a NSDictionary instance which hold information from server 
+                                     about access rights configuration for user(s).
  */
 - (void)parseClientAccessInformationFromDictionary:(NSDictionary *)clientsInformationDictionary;
 
@@ -124,7 +124,7 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 
 #pragma mark - Class methods
 
-+ (id)parserForResponse:(PNResponse *)response {
++ (id)parserForResponse:(PNResponse *)__unused response {
     
     NSAssert1(0, @"%s SHOULD BE CALLED ONLY FROM PARENT CLASS", __PRETTY_FUNCTION__);
     
@@ -317,7 +317,7 @@ struct PNAccessLevelsStruct PNAccessLevels = {
     
     NSDictionary *objectsInformation = [objectInformationDictionary valueForKeyPath:objectTypeHolderKey];
     [objectsInformation enumerateKeysAndObjectsUsingBlock:^(NSString *objectName, NSDictionary *objectInformation,
-                                                            BOOL *objectInformationEnumeratorStop) {
+                                                            __unused BOOL *objectInformationEnumeratorStop) {
         
         id<PNChannelProtocol> object = nil;
         objectName = [objectName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -351,7 +351,7 @@ struct PNAccessLevelsStruct PNAccessLevels = {
             NSDictionary *clients = (NSDictionary *)[objectInformation valueForKeyPath:kPNAccessChannelsAuthorizationKey];
             [clients enumerateKeysAndObjectsUsingBlock:^(NSString *clientAuthorizationKey,
                                                          NSDictionary *clientAccessInformation,
-                                                         BOOL *clientsAuthorizationKeysEnumeratorStop) {
+                                                         __unused BOOL *clientsAuthorizationKeysEnumeratorStop) {
                 
                 // Fetch access period.
                 accessPeriod = [[clientAccessInformation valueForKey:kPNAccessRightsPeriodKey] unsignedIntegerValue];
@@ -382,7 +382,9 @@ struct PNAccessLevelsStruct PNAccessLevels = {
 
     NSDictionary *clients = [clientsInformationDictionary valueForKeyPath:kPNAccessClientAuthorizationKey];
     
-    [clients enumerateKeysAndObjectsUsingBlock:^(NSString *clientAuthorizationKey, NSDictionary *clientInformation, BOOL *clientInformationEnumeratorStop) {
+    [clients enumerateKeysAndObjectsUsingBlock:^(NSString *clientAuthorizationKey,
+                                                 NSDictionary *clientInformation,
+                                                 __unused BOOL *clientInformationEnumeratorStop) {
         
         // Fetch access period.
         if ([clientInformation valueForKey:kPNAccessRightsPeriodKey]) {

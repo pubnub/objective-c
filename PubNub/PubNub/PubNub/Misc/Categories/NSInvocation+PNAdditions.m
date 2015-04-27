@@ -49,7 +49,8 @@
 
     // Configure invocation instance
     methodInvocation.selector = selector;
-    [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger parameterIdx, BOOL *parametersEnumeratorStop) {
+    [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger parameterIdx,
+                                             __unused BOOL *parametersEnumeratorStop) {
 
         NSUInteger parameterIndex = (parameterIdx + signatureParameterOffset);
         parameter = [parameter isKindOfClass:[NSNull class]] ? nil : parameter;

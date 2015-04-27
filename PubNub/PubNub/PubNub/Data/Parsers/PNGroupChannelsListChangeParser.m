@@ -34,7 +34,7 @@
 
 #pragma mark - Class methods
 
-+ (id)parserForResponse:(PNResponse *)response {
++ (id)parserForResponse:(PNResponse *)__unused response {
     
     NSAssert1(0, @"%s SHOULD BE CALLED ONLY FROM PARENT CLASS", __PRETTY_FUNCTION__);
     
@@ -42,7 +42,7 @@
     return nil;
 }
 
-+ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)__unused response {
 
     return YES;
 }

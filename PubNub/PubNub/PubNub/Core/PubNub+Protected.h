@@ -134,14 +134,16 @@ typedef enum _PNPubNubClientState {
 - (void)rescheduleMethodCall:(void(^)(void))methodBlock;
 
 /**
- Check whether delegate should be notified about some runtime event (errors will be notified w/o regard to this flag)
+ @brief Check whether delegate should be notified about some runtime event (errors will be 
+        notified w/o regard to this flag)
  
- @param channel
- Reference on connection channel at which callback is fired.
- 
- @return \c YES in case if reporting channel is in correct state and it's callback should be taken into account.
+ @param channel              Reference on connection channel at which callback is fired.
+ @param checkCompletionBlock Check completion block which pass only one parameter - \c YES in 
+                             case if reporting channel is in correct state and it's callback 
+                             should be taken into account.
  */
-- (void)checkShouldChannelNotifyAboutEvent:(PNConnectionChannel *)channel withBlock:(void (^)(BOOL shouldNotify))checkCompletionBlock;
+- (void)checkShouldChannelNotifyAboutEvent:(PNConnectionChannel *)channel
+                                 withBlock:(void (^)(BOOL shouldNotify))checkCompletionBlock;
 
 /**
  Launch heartbeat timer if possible (if client connected and there is channels on which client subscribed at this

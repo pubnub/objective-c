@@ -197,7 +197,8 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
 
 #pragma mark - Connection data source methods
 
-- (void)checkHasDataForConnection:(PNConnection *)connection withBlock:(void (^)(BOOL hasData))checkCompletionBlock {
+- (void)checkHasDataForConnection:(PNConnection *)__unused connection
+                        withBlock:(void (^)(BOOL hasData))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{
 
@@ -208,7 +209,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     }];
 }
 
-- (void)nextRequestIdentifierForConnection:(PNConnection *)connection
+- (void)nextRequestIdentifierForConnection:(PNConnection *)__unused connection
                                  withBlock:(void (^)(NSString *identifier))fetchCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -220,7 +221,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     }];
 }
 
-- (void)connection:(PNConnection *)connection requestDataForIdentifier:(NSString *)requestIdentifier
+- (void)connection:(PNConnection *)__unused connection requestDataForIdentifier:(NSString *)requestIdentifier
          withBlock:(void (^)(PNWriteBuffer *buffer))fetchCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -244,7 +245,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     }];
 }
 
-- (void)connection:(PNConnection *)connection processingRequestWithIdentifier:(NSString *)requestIdentifier
+- (void)connection:(PNConnection *)__unused connection processingRequestWithIdentifier:(NSString *)requestIdentifier
          withBlock:(void (^)(BOOL))notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -265,7 +266,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     }];
 }
 
-- (void)connection:(PNConnection *)connection didSendRequestWithIdentifier:(NSString *)requestIdentifier
+- (void)connection:(PNConnection *)__unused connection didSendRequestWithIdentifier:(NSString *)requestIdentifier
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -314,7 +315,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
     }];
 }
 
-- (void)connection:(PNConnection *)connection didCancelRequestWithIdentifier:(NSString *)requestIdentifier
+- (void)connection:(PNConnection *)__unused connection didCancelRequestWithIdentifier:(NSString *)requestIdentifier
          withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{
@@ -339,7 +340,7 @@ static NSUInteger const kPNRequestQueueNextRequestIndex = 0;
  * Handle request send failure event to reset request state. Maybe this error occurred because of network error, so we
  * should resend request right after connection is up again
  */
-- (void)connection:(PNConnection *)connection didFailToProcessRequestWithIdentifier:(NSString *)requestIdentifier
+- (void)connection:(PNConnection *)__unused connection didFailToProcessRequestWithIdentifier:(NSString *)requestIdentifier
              error:(PNError *)error withBlock:(dispatch_block_t)notifyCompletionBlock {
 
     [self pn_dispatchBlock:^{

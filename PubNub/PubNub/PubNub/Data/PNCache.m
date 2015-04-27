@@ -64,7 +64,7 @@
         NSMutableDictionary *cleanedState = (self.stateCache ? [self.stateCache mutableCopy] : [NSMutableDictionary new]);
 
         [state enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelState,
-                BOOL *channelStateEnumeratorStop) {
+                                                   __unused BOOL *channelStateEnumeratorStop) {
 
             if ([cleanedState valueForKey:channelName] != nil) {
 
@@ -74,7 +74,7 @@
 
                     NSMutableDictionary *oldChannelState = [[cleanedState valueForKey:channelName] mutableCopy];
                     [channelState enumerateKeysAndObjectsUsingBlock:^(NSString *stateName, id stateData,
-                            BOOL *stateDataEnumeratorStop) {
+                                                                      __unused BOOL *stateDataEnumeratorStop) {
 
                         // In case if provided data is 'nil' it should be removed from previous state dictionary.
                         if ([stateData isKindOfClass:[NSNull class]]) {
@@ -117,8 +117,9 @@
             }
             else {
 
-                [clientState enumerateKeysAndObjectsUsingBlock:^(NSString *channelName, NSDictionary *channelState,
-                        BOOL *channelsStateEnumeratorStop) {
+                [clientState enumerateKeysAndObjectsUsingBlock:^(NSString *channelName,
+                                                                 NSDictionary *channelState,
+                                                                 __unused BOOL *channelsStateEnumeratorStop) {
 
                     [self.stateCache setValue:channelState forKey:channelName];
                 }];
@@ -140,7 +141,9 @@
             NSArray *channelNames = [channels valueForKey:@"name"];
             NSArray *channelsWithState = [clientState allKeys];
 
-            [channelsWithState enumerateObjectsUsingBlock:^(NSString *channelName, NSUInteger idx, BOOL *stop) {
+            [channelsWithState enumerateObjectsUsingBlock:^(NSString *channelName,
+                                                            __unused NSUInteger idx,
+                                                            __unused BOOL *stop) {
 
                 if ([channelNames containsObject:channelName] || [self.stateCache valueForKey:channelName] != nil) {
 

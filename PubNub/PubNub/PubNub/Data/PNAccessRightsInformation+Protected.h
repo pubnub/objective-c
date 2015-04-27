@@ -29,33 +29,29 @@
 #pragma mark - Class methods
 
 /**
- Construct data object which will be used to represent access rights with specified set of options.
+ @brief Construct data object which will be used to represent access rights with specified set of options.
 
  @code
  @endcode
  Depending on access rights level there maybe no \c channel or \c authorizationKey.
 
- @param level
- Access rights level: PNApplicationAccessRightsLevel, PNChannelAccessRightsLevel, PNUserAccessRightsLevel.
- This is level for which access rights has been granted or retrieved.
-
- @param rights
- This is bit mask which describe what exactly access rights has been granted: PNUnknownAccessRights,
- PNReadAccessRight, PNWriteAccessRight, PNNoAccessRights.
-
- @param subscriptionKey
- This is the key which identify application for which access rights has been granted.
-
- @param channel
- If \c level is set to \a PNChannelAccessRightsLevel or \a PNUserAccessRightsLevel this parameter will
- contain concrete channel for which access rights has been granted / retrieved.
-
- @param authorizationKey
- If \c level is set to \a PNUserAccessRightsLevel this parameter will contain authorization key which will allow
- to identify concrete user.
-
- @param accessPeriodDuration
- This is period for which \c rights are valid. After it ends, access rights will be revoked.
+ @param level                  Access rights level: PNApplicationAccessRightsLevel,
+                               PNChannelGroupAccessRightsLevel, PNChannelAccessRightsLevel, 
+                               PNUserAccessRightsLevel. This is level for which access rights has 
+                               been granted or retrieved.
+ @param rights                 This is bit mask which describe what exactly access rights has 
+                               been granted: PNUnknownAccessRights, PNReadAccessRight,
+                               PNWriteAccessRight, PNManagementRight, PNNoAccessRights.
+ @param subscriptionKey        This is the key which identify application for which access rights
+                               has been granted.
+ @param channel                If \c level is set to \a PNChannelAccessRightsLevel or 
+                               \a PNUserAccessRightsLevel this parameter will contain concrete 
+                               channel for which access rights has been granted / retrieved.
+ @param clientAuthorizationKey If \c level is set to \a PNUserAccessRightsLevel this parameter
+                               will contain authorization key which will allow to identify 
+                               concrete user.
+ @param accessPeriodDuration   This is period for which \c rights are valid. After it ends,
+                               access rights will be revoked.
 
  @return reference on initialized \b PNAccessRightsInformation instance which will allow to identify and review
  access rights information.
@@ -81,34 +77,30 @@
 #pragma mark - Instance methods
 
 /**
- Initialize data object which will be used to represent access rights with specified set of options.
+ @brief Initialize data object which will be used to represent access rights with specified set of options.
 
  @code
  @endcode
  Depending on access rights level there maybe no \c channel or \c authorizationKey.
 
- @param level
- Access rights level: PNApplicationAccessRightsLevel, PNChannelAccessRightsLevel, PNUserAccessRightsLevel.
- This is level for which access rights has been granted or retrieved.
-
- @param rights
- This is bit mask which describe what exactly access rights has been granted: PNUnknownAccessRights,
- PNReadAccessRight, PNWriteAccessRight, PNNoAccessRights.
-
- @param subscriptionKey
- This is the key which identify application for which access rights has been granted.
-
- @param channel
- If \c level is set to \a PNChannelAccessRightsLevel or \a PNUserAccessRightsLevel this parameter will
- contain concrete channel for which access rights has been granted / retrieved.
-
- @param authorizationKey
- If \c level is set to \a PNUserAccessRightsLevel this parameter will contain authorization key which will allow
- to identify concrete user.
-
- @param accessPeriodDuration
- This is period for which \c rights are valid. After it ends, access rights will be revoked.
-
+ @param level                  Access rights level: PNApplicationAccessRightsLevel, 
+                               PNChannelGroupAccessRightsLevel, PNChannelAccessRightsLevel, 
+                               PNUserAccessRightsLevel. This is level for which access rights has
+                               been granted or retrieved.
+ @param rights                 This is bit mask which describe what exactly access rights has 
+                               been granted: PNUnknownAccessRights, PNReadAccessRight, 
+                               PNWriteAccessRight, PNManagementRight, PNNoAccessRights.
+ @param subscriptionKey        This is the key which identify application for which access rights
+                               has been granted.
+ @param channel                If \c level is set to \a PNChannelAccessRightsLevel or 
+                               \a PNUserAccessRightsLevel this parameter will contain concrete 
+                               channel for which access rights has been granted / retrieved.
+ @param clientAuthorizationKey If \c level is set to \a PNUserAccessRightsLevel this parameter 
+                               will contain authorization key which will allow to identify 
+                               concrete user.
+ @param accessPeriodDuration   This is period for which \c rights are valid. After it ends, 
+                               access rights will be revoked.
+ 
  @return reference on initialized \b PNAccessRightsInformation instance which will allow to identify and review
  access rights information.
  */

@@ -76,7 +76,7 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
 
 #pragma mark - Class methods
 
-+ (id)parserForResponse:(PNResponse *)response {
++ (id)parserForResponse:(PNResponse *)__unused response {
 
     NSAssert1(0, @"%s SHOULD BE CALLED ONLY FROM PARENT CLASS", __PRETTY_FUNCTION__);
 
@@ -160,7 +160,8 @@ static NSUInteger const kPNResponseTimeTokenElementIndexForEvent = 1;
         if ([events count] > 0) {
 
             NSMutableArray *eventObjects = [[NSMutableArray alloc] initWithCapacity:[events count]];
-            [events enumerateObjectsUsingBlock:^(id event, NSUInteger eventIdx, BOOL *eventEnumeratorStop) {
+            [events enumerateObjectsUsingBlock:^(id event, NSUInteger eventIdx,
+                                                 __unused BOOL *eventEnumeratorStop) {
 
                 __block BOOL isPresenceObservationChannel = NO;
                 PNChannel* (^channelExtractBlock)(NSString *) = ^(NSString *channelName) {

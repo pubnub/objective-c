@@ -300,7 +300,7 @@
 
  @param channel                 Communication channel over which request has been sent and processed
                                 response from \b PubNub services.
- @param accessRightsInformation Instance of \b PNAccessRightsCollection which aggregate in itself
+ @param accessRightsCollection  Instance of \b PNAccessRightsCollection which aggregate in itself
                                 \b PNAccessRightsInformation instances to describe access rights at
                                 different levels (there is a three levels: application, channel and
                                 user).
@@ -316,8 +316,8 @@
 /**
  @brief Sent to the delegate when \b PubNub client failed to change access rights.
 
- @param client  \b PubNub client which failed request processing (this is singleton).
-
+ @param channel Communication channel over which request has been sent and processed response 
+                from \b PubNub services.
  @param error   \b PNError instance which holds information about what went wrong and why request
                 failed. \a 'error.associatedObject' contains reference on \b PNAccessRightOptions
                 instance which will allow to review and identify what options \b PubNub client tried
@@ -339,7 +339,7 @@
 
  @param channel                 Communication channel over which request has been sent and processed
                                 response from \b PubNub services.
- @param accessRightsInformation Instance of \b PNAccessRightsCollection which aggregate in itself
+ @param accessRightsCollection Instance of \b PNAccessRightsCollection which aggregate in itself
                                 \b PNAccessRightsInformation instances to describe access rights at
                                 different levels (there is a three levels: application, channel and
                                 user).
@@ -355,7 +355,8 @@
 /**
  @brief Sent to the delegate when \b PubNub client failed to audit access rights.
 
- @param client  \b PubNub client which failed request processing (this is singleton).
+ @param channel Communication channel over which request has been sent and processed response 
+                from \b PubNub services.
  @param error   \b PNError instance which holds information about what went wrong and why request
                 failed. \a 'error.associatedObject' contains reference on \b PNAccessRightOptions
                 instance which will allow to review and identify what options \b PubNub client used

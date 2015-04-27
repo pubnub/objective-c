@@ -34,10 +34,10 @@
 
 #pragma mark Static
 
-static void * const kHTTPHeaderStartMarker = "HTTP/1.1";
-static void * const kHTTPHeaderEndMarker = "\r\n\r\n";
-static void * const kChunkedHTTPPackenEndMarker = "\r\n0\r\n\r\n";
-static void * const kNewLineFeedMarker = "\r\n";
+static NSString * const kHTTPHeaderStartMarker = @"HTTP/1.1";
+static NSString * const kHTTPHeaderEndMarker = @"\r\n\r\n";
+static NSString * const kChunkedHTTPPacketEndMarker = @"\r\n0\r\n\r\n";
+static NSString * const kNewLineFeedMarker = @"\r\n";
 
 static NSString * const kPNTransferEncodingHeaderFieldName = @"Transfer-Encoding";
 static NSString * const kPNChunkedTransferEncodingHeaderFieldValue = @"chunked";
@@ -73,52 +73,46 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 - (NSUInteger)contentLength:(NSDictionary *)httpResponseHeaders;
 - (NSString *)contentCompressionType:(NSDictionary *)httpResponseHeaders;
 
-- (PNResponse *)responseFrom:(const void *)buffer withSize:(NSUInteger)bufferSize
+- (PNResponse *)responseFrom:(NSData *)buffer withRange:(NSRange)bufferRange
            malformedResponse:(BOOL *)isMalformedResponse;
 
 /**
  @brief      Allow to find HTTP response in specified buffer.
 
  @param buffer       Pointer to the buffer with data inside of which packet should be found.
- @param bufferSize   Original buffer size.
+ @param searchRange  Range in which search should be performed.
 
  @return \c NSNotFound in case if there is no more packets in specified buffer.
 
  @since 3.7.10
  */
-- (NSUInteger)HTTPResponseLocationIn:(const void *)buffer withSize:(NSUInteger)bufferSize;
+- (NSUInteger)HTTPResponseLocationIn:(NSData *)buffer withRange:(NSRange)searchRange;
 
 /**
  @brief      Allow to find next HTTP response in specified buffer.
- @discussion This method used as addition to \c -HTTPResponseLocationIn:withSize: and use it's
-             output as offset in buffer to find another HTTP packet start location.
 
  @param buffer       Pointer to the buffer with data inside of which packet should be found.
- @param bufferSize   Original buffer size.
- @param searchOffset Used on buffer pointer to get reference on new pointer starting from which
-                     search should be done.
+ @param searchRange  Range in which search should be performed.
 
  @return \c NSNotFound in case if there is no more packets in specified buffer.
 
  @since 3.7.10
  */
-- (NSUInteger)nextHTTPResponseLocationIn:(const void *)buffer withSize:(NSUInteger)bufferSize
-                               andOffset:(NSUInteger)searchOffset;
+- (NSUInteger)nextHTTPResponseLocationIn:(NSData *)buffer withRange:(NSRange)searchRange;
 
-- (NSUInteger)HTTPHeadersEndMarkerIn:(const void *)buffer withSize:(NSUInteger)bufferSize;
+- (NSUInteger)HTTPHeadersEndMarkerIn:(NSData *)buffer withRange:(NSRange)searchRange;
 
-- (NSUInteger)chunkedHTTPPacketEndMarkerIn:(const void *)buffer withSize:(NSUInteger)bufferSize;
-- (BOOL)hasChunkedHTTPPacketEndMarkerIn:(const void *)buffer withSize:(NSUInteger)bufferSize;
-- (NSUInteger)newLineFeedMarkerIn:(const void *)buffer withSize:(NSUInteger)bufferSize;
+- (NSUInteger)chunkedHTTPPacketEndMarkerIn:(NSData *)buffer withRange:(NSRange)searchRange;
+- (BOOL)hasChunkedHTTPPacketEndMarkerIn:(NSData *)buffer withRange:(NSRange)searchRange;
+
+- (NSUInteger)newLineFeedMarkerIn:(NSData *)buffer withRange:(NSRange)searchRange;
 
 /**
  * Allow to compose response data object from chunked data using
  * octet values to determine next chunk size
  */
-- (NSData *)joinedDataFromChunkedDataUsingOctets:(const void *)buffer withSize:(NSUInteger)bufferSize
-                                   andJoinedSize:(NSUInteger *)joinedBufferSize;
-
-#pragma mark -
+- (NSData *)joinedDataFromChunkedDataUsingOctets:(NSData *)buffer
+                                  withJoinedSize:(NSUInteger *)joinedBufferSize;
 
 
 @end
@@ -144,25 +138,18 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
     return self;
 }
 
-- (void)parseBufferContent:(dispatch_data_t)buffer
+- (void)parseBufferContent:(NSData *)buffer
                  withBlock:(void(^)(NSArray *responses, NSUInteger fullBufferLength,
                                     NSUInteger processedBufferLength,
                                     void(^readBufferPostProcessing)(void)))parseCompletionBlock {
-    
-    // "retain" passed buffer by creating sub-range from it at full size.
-    // Doing to trying to prevent ARC from generating code outisde of this method which will
-    // release last reference on object after which it will get deallocasted.
-    dispatch_data_t retainedBuffer = dispatch_data_create_subrange(buffer, 0, dispatch_data_get_size(buffer));
     
     [self pn_dispatchBlock:^{
         
         if (!self.deserializing) {
                 
             self.deserializing = YES;
-            __block dispatch_data_t normalizedBuffer = dispatch_data_create(NULL, 0,
-                                                                            DISPATCH_TARGET_QUEUE_DEFAULT,
-                                                                            DISPATCH_DATA_DESTRUCTOR_DEFAULT);
-            NSUInteger bufferSize = dispatch_data_get_size(retainedBuffer);
+            NSMutableArray *packetRanges = [NSMutableArray new];
+            NSUInteger bufferSize = [buffer length];
             __block NSUInteger processedLength = 0;
             __block NSUInteger packetsCount = 0;
             __block NSUInteger httpPacketStart = NSNotFound;
@@ -175,46 +162,35 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     
                     packetsCount++;
                     processedLength = (normalizedBufferOffset + normalizedBufferLength);
-                    dispatch_data_t packetData = dispatch_data_create_subrange(retainedBuffer,
-                                                                               normalizedBufferOffset,
-                                                                               normalizedBufferLength);
-                    dispatch_data_t mappedData = dispatch_data_create_map(packetData, NULL, NULL);
-                    dispatch_data_t updatedNormalizedBuffer = dispatch_data_create_concat(normalizedBuffer, mappedData);
-                    [PNDispatchHelper release:normalizedBuffer];
-                    normalizedBuffer = updatedNormalizedBuffer;
-                    [PNDispatchHelper release:mappedData];
-                    [PNDispatchHelper release:packetData];
+                    NSRange packetRange = NSMakeRange(normalizedBufferOffset, normalizedBufferLength);
+                    [packetRanges addObject:[NSValue valueWithRange:packetRange]];
                 }
             };
             
-            __block __pn_desired_weak void(^bufferProcessingBlockWeak)(const void *, size_t, size_t);
-            void(^bufferProcessingBlock)(const void *, size_t, size_t);
-            bufferProcessingBlockWeak = bufferProcessingBlock = ^(const void *bytes, size_t size,
-                                                                  size_t offset) {
-                
+            __block __pn_desired_weak void(^bufferProcessingBlockWeak)(NSUInteger, NSUInteger);
+            void(^bufferProcessingBlock)( NSUInteger, NSUInteger);
+            bufferProcessingBlockWeak = bufferProcessingBlock = ^(NSUInteger offset,  NSUInteger size) {
+
                 // Search for HTTP packet start location in suggested buffer.
-                NSUInteger packetStartLocation = [self HTTPResponseLocationIn:bytes
-                                                                     withSize:size];
+                NSRange searchRange = NSMakeRange(offset, size);
+                NSUInteger packetStartLocation = [self HTTPResponseLocationIn:buffer
+                                                                    withRange:searchRange];
                 
                 // Check whether packet start has been found or not.
                 if (packetStartLocation != NSNotFound) {
-                    
-                    // Calculate real HTTP packet start location using data region offset and
-                    // packet start location information.
-                    NSUInteger originalPacketOffset = (offset + packetStartLocation);
                     
                     // Check whether already found packet start earlier or not.
                     if (httpPacketStart != NSNotFound) {
                         
                         // Calculate target HTTP packet size
-                        httpPacketLength = originalPacketOffset - httpPacketStart;
-                        if (originalPacketOffset > httpPacketStart) {
+                        httpPacketLength = packetStartLocation - httpPacketStart;
+                        if (packetStartLocation > httpPacketStart) {
                             
                             captureNormalizedBuffer(httpPacketStart, httpPacketLength);
                         }
                         
                         // Update tracked HTTP packet information.
-                        httpPacketStart = originalPacketOffset;
+                        httpPacketStart = packetStartLocation;
                     }
                     else {
                         
@@ -226,33 +202,36 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                                              withParametersFromBlock:^NSArray * {
                                 
                                 return @[PNLoggerSymbols.deserializer.garbageResponseData,
-                                         @(originalPacketOffset)];
+                                         @(packetStartLocation)];
                             }];
                             
-                            [PNLogger storeGarbageHTTPPacketData:^dispatch_data_t {
+                            [PNLogger storeGarbageHTTPPacketData:^NSData *{
                                 
-                                return dispatch_data_create_subrange(retainedBuffer, 0, bufferSize);
+                                return buffer;
                             }];
                         }
-                        // Looks like potentionally we have read buffer which may haave more content in next portion.
+                        // Looks like potentially we have read buffer which may have more content in
+                        // next portion.
                         else {
                             
-                            httpPacketStart = originalPacketOffset;
+                            httpPacketStart = packetStartLocation;
                         }
                     }
                     
                     // Search for next HTTP packet start location in suggested buffer.
-                    packetStartLocation = [self nextHTTPResponseLocationIn:bytes withSize:size
-                                                                 andOffset:packetStartLocation];
+                    packetStartLocation = NSNotFound;
+                    if (bufferSize >= httpPacketStart) {
+
+                        searchRange = NSMakeRange(httpPacketStart, bufferSize - httpPacketStart);
+                        packetStartLocation = [self nextHTTPResponseLocationIn:buffer withRange:searchRange];
+                    }
                     
                     // Check whether there is more HTTP packets in this buffer or not
                     if (packetStartLocation != NSNotFound) {
                         
-                        if (size > packetStartLocation) {
+                        if (bufferSize > packetStartLocation) {
                             
-                            bufferProcessingBlockWeak(bytes + packetStartLocation,
-                                                      size - packetStartLocation,
-                                                      offset + packetStartLocation);
+                            bufferProcessingBlockWeak(packetStartLocation, bufferSize - packetStartLocation);
                         }
                     }
                     // Looks like there is no more HTTP packet in this buffer. Check whether HTTP packet
@@ -278,33 +257,25 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     }
                 }
             };
-            
-            // Iterate over chunks of data stored in buffer.
-            dispatch_data_apply(retainedBuffer, ^bool(dispatch_data_t region, size_t offset,
-                                                      const void *bytes, size_t size) {
                 
-                bufferProcessingBlock(bytes, size, offset);
-                
-                return true;
-            });
+            bufferProcessingBlock(0, bufferSize);
             
             NSMutableArray *parsedResponses = [NSMutableArray new];
-            NSUInteger normalizedBufferSize = dispatch_data_get_size(normalizedBuffer);
             if (bufferSize > 0) {
                 
                 // Check whether at least one HTTP packet has been found in provided buffer.
-                if(normalizedBufferSize > 0) {
+                if([packetRanges count] > 0) {
                     
-                    void(^malformedResponseParseErrorHandler)(void const *, NSUInteger) = ^(void const *malformedBuffer, NSUInteger malformedBufferSize) {
+                    void(^malformedResponseParseErrorHandler)(NSData *) = ^(NSData *malformedBuffer) {
                         
                         [PNLogger logDeserializerErrorMessageFrom:self withParametersFromBlock:^NSArray *{
                             
-                            NSString *encodedContent = [[NSString alloc] initWithBytes:malformedBuffer
-                                                                                length:malformedBufferSize encoding:NSUTF8StringEncoding];
+                            NSString *encodedContent = [[NSString alloc] initWithData:malformedBuffer
+                                                                             encoding:NSUTF8StringEncoding];
                             if (!encodedContent) {
                                 
-                                encodedContent = [[NSString alloc] initWithBytes:malformedBuffer
-                                                                          length:malformedBufferSize encoding:NSASCIIStringEncoding];
+                                encodedContent = [[NSString alloc] initWithData:malformedBuffer
+                                                                       encoding:NSASCIIStringEncoding];
                                 
                                 if (!encodedContent) {
                                     
@@ -313,55 +284,52 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                             }
                             
                             return @[PNLoggerSymbols.deserializer.unableToEncodeResponseData,
-                                     @(malformedBufferSize),
+                                     @([malformedBuffer length]),
                                      (encodedContent ? encodedContent : [NSNull null])];
                         }];
                     };
-                    
-                    dispatch_data_apply(normalizedBuffer, ^bool(dispatch_data_t region, size_t offset,
-                                                                void const *bytes, size_t size) {
-                        
+
+                    for (NSUInteger packetRangeIdx = 0; packetRangeIdx < [packetRanges count]; packetRangeIdx++) {
+
                         BOOL malformedResponse;
-                        PNResponse *response = [self responseFrom:bytes withSize:size
+                        NSRange packetRange = [[packetRanges objectAtIndex:packetRangeIdx] rangeValue];
+                        PNResponse *response = [self responseFrom:buffer withRange:packetRange
                                                 malformedResponse:&malformedResponse];
                         if (response) {
-                            
+
                             [parsedResponses addObject:response];
                         }
                         else {
-                            
-                            if (packetsCount == 1 || (offset + size) == normalizedBufferSize) {
-                                
+
+                            if (packetsCount == 1 || (packetRangeIdx == [packetRanges count] - 1)) {
+
                                 if (malformedResponse) {
-                                    
-                                    malformedResponseParseErrorHandler(bytes, size);
+
+                                    malformedResponseParseErrorHandler([buffer subdataWithRange:packetRange]);
                                 }
                                 else {
-                                    
-                                    if (processedLength >= size) {
-                                        
-                                        processedLength -= size;
+
+                                    if (processedLength >= packetRange.length) {
+
+                                        processedLength -= packetRange.length;
                                     }
                                 }
                             }
                             else {
-                                
+
                                 [PNLogger logDeserializerInfoMessageFrom:self withParametersFromBlock:^NSArray * {
-                                    
+
                                     return @[PNLoggerSymbols.deserializer.garbageResponseData,
-                                             @(size)];
+                                            @(packetRange.length)];
                                 }];
-                                
-                                [PNLogger storeGarbageHTTPPacketData:^dispatch_data_t {
-                                    
-                                    return dispatch_data_create_subrange(retainedBuffer, 0, bufferSize);
+
+                                [PNLogger storeGarbageHTTPPacketData:^NSData *{
+
+                                    return [buffer subdataWithRange:packetRange];
                                 }];
                             }
                         }
-                        
-                        
-                        return true;
-                    });
+                    }
                 }
                 else {
                     
@@ -372,14 +340,13 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     }];
                     
                     processedLength = bufferSize;
-                    [PNLogger storeGarbageHTTPPacketData:^dispatch_data_t {
+                    [PNLogger storeGarbageHTTPPacketData:^NSData *{
                         
-                        return dispatch_data_create_subrange(retainedBuffer, 0, bufferSize);
+                        return buffer;
                     }];
                 }
             }
-            
-            [PNDispatchHelper release:retainedBuffer];
+
             parseCompletionBlock([parsedResponses copy], bufferSize, processedLength, ^{
                 
                 [self pn_dispatchBlock:^{
@@ -387,10 +354,6 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     self.deserializing = NO;
                 }];
             });
-        }
-        else {
-            
-            [PNDispatchHelper release:retainedBuffer];
         }
     }];
 }
@@ -454,7 +417,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
     return [httpResponseHeaders objectForKey:kPNContentEncodingHeaderFieldName];
 }
 
-- (PNResponse *)responseFrom:(const void *)buffer withSize:(NSUInteger)bufferSize
+- (PNResponse *)responseFrom:(NSData *)buffer withRange:(NSRange)bufferRange
            malformedResponse:(BOOL *)isMalformedResponse {
 
     // Mark that request is incomplete because from the start we don't know for sure
@@ -463,16 +426,16 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
     PNResponse *response = nil;
 
     CFHTTPMessageRef message = NULL;
-    NSUInteger httpHeadersEndMarkerLocation = [self HTTPHeadersEndMarkerIn:buffer withSize:bufferSize];
+    NSUInteger httpHeadersEndMarkerLocation = [self HTTPHeadersEndMarkerIn:buffer withRange:bufferRange];
     NSUInteger responseBodyOffset = 0;
-    if (httpHeadersEndMarkerLocation != NSNotFound && bufferSize >= httpHeadersEndMarkerLocation) {
+    if (httpHeadersEndMarkerLocation != NSNotFound && bufferRange.length >= httpHeadersEndMarkerLocation) {
 
-        responseBodyOffset = (httpHeadersEndMarkerLocation + strlen(kHTTPHeaderEndMarker));
+        responseBodyOffset = (httpHeadersEndMarkerLocation + [kHTTPHeaderEndMarker length]);
 
         // Appending only portion of bytes which contains reference on all passed with response
         // HTTP headers which will be used during body processing.
         message = CFHTTPMessageCreateEmpty(NULL, FALSE);
-        CFHTTPMessageAppendBytes(message, buffer, (CFIndex)responseBodyOffset);
+        CFHTTPMessageAppendBytes(message, [buffer bytes], (CFIndex)responseBodyOffset);
     }
 
     if (message) {
@@ -499,11 +462,10 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
             // Retrieve response body length (from header field)
             NSUInteger contentLength = [self contentLength:headers];
 
-            if (!isResponseChunked || [self hasChunkedHTTPPacketEndMarkerIn:buffer withSize:bufferSize]) {
+            if (!isResponseChunked || [self hasChunkedHTTPPacketEndMarkerIn:buffer withRange:bufferRange]) {
 
                 // Retrieve pointer on actual message body (all headers stripped from it).
-                const void *responseBody = (buffer + responseBodyOffset);
-                NSUInteger contentSize = (bufferSize > responseBodyOffset ? (bufferSize - responseBodyOffset) : 0);
+                NSUInteger contentSize = (bufferRange.length > responseBodyOffset ? (bufferRange.length - responseBodyOffset) : 0);
 
                 if ((contentLength > 0 && contentSize > 0) || contentSize > 0) {
 
@@ -511,8 +473,8 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
                         [PNLogger logDeserializerInfoMessageFrom:self withParametersFromBlock:^NSArray *{
 
-                            NSString *encodedContent = [[NSString alloc] initWithBytes:buffer
-                                                        length:bufferSize encoding:NSASCIIStringEncoding];
+                            NSString *encodedContent = [[NSString alloc] initWithData:buffer
+                                                                             encoding:NSASCIIStringEncoding];
 
                             return @[PNLoggerSymbols.deserializer.unexpectedResponseStatusCode,
                                     @(statusCode), (encodedContent ? encodedContent : [NSNull null])];
@@ -521,7 +483,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                         // In case if response arrived with unexpected code, store it for future research.
                         [PNLogger storeUnexpectedHTTPDescription:nil packetData:^NSData *{
 
-                            return [[NSData alloc] initWithBytes:buffer length:bufferSize];
+                            return [[NSData alloc] initWithData:buffer];
                         }];
                     }
 
@@ -541,7 +503,7 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                     if (isResponseChunked) {
 
                         NSUInteger packetEndLocation = [self chunkedHTTPPacketEndMarkerIn:buffer
-                                                                                 withSize:bufferSize];
+                                                                                withRange:bufferRange];
 
                         isFullBody = (packetEndLocation != NSNotFound);
                         if (isFullBody) {
@@ -549,45 +511,34 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                             // Calculate new useful body content size. This will allow to truncate
                             // and data which has been appended by server aside from declared
                             // chinked content.
-                            contentSize = (packetEndLocation + strlen(kChunkedHTTPPackenEndMarker));
+                            contentSize = (packetEndLocation + [kChunkedHTTPPacketEndMarker length]) - responseBodyOffset;
                         }
                     }
 
                     if (isFullBody) {
 
-                        NSData *preparedData = nil;
+                        NSData *preparedData = [buffer subdataWithRange:NSMakeRange(responseBodyOffset, contentSize)];
                         if (isResponseChunked) {
 
                             NSUInteger joinedSize;
-                            NSData *joinedData = [self joinedDataFromChunkedDataUsingOctets:responseBody
-                                                                                   withSize:contentSize
-                                                                              andJoinedSize:&joinedSize];
-                            if (joinedData) {
-                                
-                                preparedData = [joinedData copy];
-                            }
+                            preparedData = [[self joinedDataFromChunkedDataUsingOctets:preparedData
+                                                                        withJoinedSize:&joinedSize] copy];
                             contentSize = joinedSize;
-                        }
-                        else {
-
-                            preparedData = [[NSData alloc] initWithBytes:responseBody
-                                                                  length:contentSize];
                         }
 
                         if (isResponseCompressed) {
 
                             NSData *extractedData;
-                            NSUInteger extractedSize;
                             if ([self isGZIPCompressedTransfer:headers]) {
                                 
-                                extractedData = pn_GZIPInflate(preparedData.bytes, contentSize, &extractedSize);
+                                extractedData = [preparedData pn_GZIPInflate];
                             }
                             else {
 
-                                extractedData = pn_inflate(preparedData.bytes, contentSize, &extractedSize);
+                                extractedData = [preparedData pn_inflate];
                             }
                             
-                            contentSize = extractedSize;
+                            contentSize = [extractedData length];
                             preparedData = [[NSData alloc] initWithData:extractedData];
                         }
                         *isMalformedResponse = (contentSize == 0);
@@ -619,28 +570,36 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
     return response;
 }
 
-- (NSData *)joinedDataFromChunkedDataUsingOctets:(const void *)buffer withSize:(NSUInteger)bufferSize
-                                   andJoinedSize:(NSUInteger *)joinedBufferSize {
+- (NSData *)joinedDataFromChunkedDataUsingOctets:(NSData *)buffer
+                                  withJoinedSize:(NSUInteger *)joinedBufferSize {
     
     NSMutableData *joinedData = [NSMutableData new];
     BOOL parsingChunkOctet = YES;
     BOOL parsingChunk = NO;
     NSUInteger chunkStart = 0;
-    NSUInteger chunkSize = 0;
+    NSInteger chunkSize = 0;
 
-    NSUInteger cursorLocation = [self newLineFeedMarkerIn:buffer withSize:bufferSize];
+    NSUInteger cursorLocation = [self newLineFeedMarkerIn:buffer
+                                                withRange:NSMakeRange(0, [buffer length])];
 
     while (cursorLocation != NSNotFound && (parsingChunkOctet || parsingChunk)) {
 
         if (parsingChunkOctet) {
             
-            // Get size of the chunk with data
-            chunkSize = strtoul(buffer + chunkStart, NULL, 16);
-            parsingChunkOctet = NO;
-            parsingChunk = (chunkSize > 0);
-            
-            // Adjust chunk start position to the end of chunk size line feed
-            chunkStart = cursorLocation + strlen(kNewLineFeedMarker);
+            if ([buffer length] > chunkStart) {
+                
+                // Get size of the chunk with data
+                chunkSize = strtol([buffer bytes] + chunkStart, NULL, 16);
+                parsingChunkOctet = NO;
+                parsingChunk = (chunkSize > 0);
+                
+                // Adjust chunk start position to the end of chunk size line feed
+                chunkStart = cursorLocation + [kNewLineFeedMarker length];
+            }
+            else {
+                
+                chunkSize = 0;
+            }
 
             // Check whether octet report that next chunk of data will
             // be zero length or not
@@ -652,25 +611,21 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
         if (parsingChunk) {
 
-            if (chunkStart + chunkSize <= bufferSize) {
+            if (chunkSize > 0 && (chunkStart + chunkSize) <= [buffer length]) {
 
-                [joinedData appendBytes:(buffer + chunkStart) length:chunkSize];
+                [joinedData appendBytes:([buffer bytes] + chunkStart) length:(NSUInteger)chunkSize];
                 parsingChunk = NO;
 
                 // Adjust chunk start position to the end of chunk size line feed.
                 // New line feed has been added, because each chunk of data end up with new line
                 // feed not counted in chunk size.
-                chunkStart += (chunkSize + strlen(kNewLineFeedMarker));
+                chunkStart += (chunkSize + [kNewLineFeedMarker length]);
 
-                if (bufferSize > chunkStart) {
+                if ([buffer length] > chunkStart) {
 
                     parsingChunkOctet = YES;
-                    cursorLocation = [self newLineFeedMarkerIn:(buffer + chunkStart)
-                                                      withSize:(bufferSize - chunkStart)];
-                    if (cursorLocation != NSNotFound) {
-                        
-                        cursorLocation += chunkStart;
-                    }
+                    cursorLocation = [self newLineFeedMarkerIn:buffer
+                                                     withRange:NSMakeRange(chunkStart, [buffer length] - chunkStart)];
                 }
             }
         }
@@ -679,49 +634,99 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
     *joinedBufferSize = joinedData.length;
 
 
-    return joinedData;
+    return (joinedData.length ? joinedData : nil);
 }
 
-- (NSUInteger)HTTPResponseLocationIn:(const void *)buffer withSize:(NSUInteger)bufferSize {
-
-    return pn_str_location(buffer, bufferSize, 0, kHTTPHeaderStartMarker);
-}
-
-- (NSUInteger)nextHTTPResponseLocationIn:(const void *)buffer withSize:(NSUInteger)bufferSize
-                               andOffset:(NSUInteger)searchOffset {
+- (NSUInteger)HTTPResponseLocationIn:(NSData *)buffer withRange:(NSRange)searchRange {
 
     NSUInteger location = NSNotFound;
-    if (searchOffset != NSNotFound) {
+    if ([buffer length] >= NSMaxRange(searchRange) && searchRange.length > 0) {
 
-        searchOffset++;
-        if (bufferSize > searchOffset) {
+        static NSData *httpHeaderStartMarker;
+        static dispatch_once_t predicate;
+        dispatch_once(&predicate, ^{
 
-            location = pn_str_location(buffer + searchOffset, bufferSize - searchOffset, 0,
-                                       kHTTPHeaderStartMarker);
-        }
+            httpHeaderStartMarker = [[kHTTPHeaderStartMarker dataUsingEncoding:NSUTF8StringEncoding] copy];
+        });
+        location = [buffer rangeOfData:httpHeaderStartMarker options:(NSDataSearchOptions)0
+                                 range:searchRange].location;
     }
+
 
     return location;
 }
 
-- (NSUInteger)HTTPHeadersEndMarkerIn:(const void *)buffer withSize:(NSUInteger)bufferSize {
+- (NSUInteger)nextHTTPResponseLocationIn:(NSData *)buffer withRange:(NSRange)searchRange {
 
-    return pn_str_location(buffer, bufferSize, 0, kHTTPHeaderEndMarker);
+    if (searchRange.length > 0) {
+
+        // Shift 1 symbol from previously found location
+        searchRange = NSMakeRange(searchRange.location + 1, searchRange.length - 1);
+    }
+
+    return [self HTTPResponseLocationIn:buffer withRange:searchRange];
 }
 
-- (NSUInteger)chunkedHTTPPacketEndMarkerIn:(const void *)buffer withSize:(NSUInteger)bufferSize {
+- (NSUInteger)HTTPHeadersEndMarkerIn:(NSData *)buffer withRange:(NSRange)searchRange {
 
-    return pn_str_location(buffer, bufferSize, 0, kChunkedHTTPPackenEndMarker);
+    NSUInteger location = NSNotFound;
+    if ([buffer length] >= NSMaxRange(searchRange) && searchRange.length > 0) {
+
+        static NSData *httpHeaderEndMarker;
+        static dispatch_once_t predicate;
+        dispatch_once(&predicate, ^{
+
+            httpHeaderEndMarker = [[kHTTPHeaderEndMarker dataUsingEncoding:NSUTF8StringEncoding] copy];
+        });
+        location = [buffer rangeOfData:httpHeaderEndMarker options:(NSDataSearchOptions)0
+                                 range:searchRange].location;
+    }
+
+
+    return location;
 }
 
-- (BOOL)hasChunkedHTTPPacketEndMarkerIn:(const void *)buffer withSize:(NSUInteger)bufferSize {
+- (NSUInteger)chunkedHTTPPacketEndMarkerIn:(NSData *)buffer withRange:(NSRange)searchRange {
 
-    return [self chunkedHTTPPacketEndMarkerIn:buffer withSize:bufferSize] != NSNotFound;
+    NSUInteger location = NSNotFound;
+    if ([buffer length] >= NSMaxRange(searchRange) && searchRange.length > 0) {
+
+        static NSData *chunkedHTTPPacketEndMarker;
+        static dispatch_once_t predicate;
+        dispatch_once(&predicate, ^{
+
+            chunkedHTTPPacketEndMarker = [[kChunkedHTTPPacketEndMarker dataUsingEncoding:NSUTF8StringEncoding] copy];
+        });
+        location = [buffer rangeOfData:chunkedHTTPPacketEndMarker options:(NSDataSearchOptions)0
+                                 range:searchRange].location;
+    }
+
+
+    return location;
 }
 
-- (NSUInteger)newLineFeedMarkerIn:(const void *)buffer withSize:(NSUInteger)bufferSize {
+- (BOOL)hasChunkedHTTPPacketEndMarkerIn:(NSData *)buffer withRange:(NSRange)searchRange {
 
-    return pn_str_location(buffer, bufferSize, 0, kNewLineFeedMarker);
+    return [self chunkedHTTPPacketEndMarkerIn:buffer withRange:searchRange] != NSNotFound;
+}
+
+- (NSUInteger)newLineFeedMarkerIn:(NSData *)buffer withRange:(NSRange)searchRange {
+
+    NSUInteger location = NSNotFound;
+    if ([buffer length] >= NSMaxRange(searchRange) && searchRange.length > 0) {
+
+        static NSData *newLineFeedMarker;
+        static dispatch_once_t predicate;
+        dispatch_once(&predicate, ^{
+
+            newLineFeedMarker = [[kNewLineFeedMarker dataUsingEncoding:NSUTF8StringEncoding] copy];
+        });
+        location = [buffer rangeOfData:newLineFeedMarker options:(NSDataSearchOptions)0
+                                 range:searchRange].location;
+    }
+
+
+    return location;
 }
 
 - (void)dealloc {

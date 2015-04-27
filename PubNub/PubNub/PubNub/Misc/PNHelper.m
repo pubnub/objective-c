@@ -27,7 +27,7 @@
 /**
  Initialize wrapper around provided object.
  
- @param object  \a GCD object which should be stored inside wrapper.
+ @param queue   \a GCD queue which should be stored inside wrapper.
  @param pointer Reference on value which store pointer used during set specific operation on queue.
  
  @return Reference on wrapper which will store \a GCD object for us.
@@ -92,6 +92,8 @@
     return dispatch_queue_create(cQueueIdentifier, DISPATCH_QUEUE_SERIAL);
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
 + (void)retain:(dispatch_object_t)dispatchObject {
     
     pn_dispatch_object_retain(dispatchObject);
@@ -101,6 +103,7 @@
     
     pn_dispatch_object_release(dispatchObject);
 }
+#pragma clang diagnostic pop
 
 #pragma mark -
 
@@ -246,7 +249,8 @@
             NSArray *backgroundModes = [applicationInformation valueForKey:@"UIBackgroundModes"];
             NSArray *suitableModes = [@[@"audio", @"location", @"voip", @"bluetooth-central",
                                         @"bluetooth-peripheral"] copy];
-            [backgroundModes enumerateObjectsUsingBlock:^(id mode, NSUInteger modeIdx, BOOL *modeEnumeratorStop) {
+            [backgroundModes enumerateObjectsUsingBlock:^(id mode, __unused NSUInteger modeIdx,
+                                                          BOOL *modeEnumeratorStop) {
                 
                 canRunInBackground = [suitableModes containsObject:mode];
                 *modeEnumeratorStop = canRunInBackground;
@@ -329,7 +333,8 @@
     NSMutableString *shortenedUUID = [NSMutableString new];
     
     NSArray *components = [originalUUID componentsSeparatedByString:@"-"];
-    [components enumerateObjectsUsingBlock:^(NSString *group, NSUInteger groupIdx, BOOL *groupEnumeratorStop) {
+    [components enumerateObjectsUsingBlock:^(NSString *group, __unused NSUInteger groupIdx,
+                                             __unused BOOL *groupEnumeratorStop) {
         
         NSRange randomValueRange = NSMakeRange([self randomIntegerInRange:NSMakeRange(0, [group length])], 1);
         [shortenedUUID appendString:[group substringWithRange:randomValueRange]];

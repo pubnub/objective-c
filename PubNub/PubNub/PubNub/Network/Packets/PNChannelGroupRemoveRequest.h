@@ -22,10 +22,9 @@
 #pragma mark - Class methods
 
 /**
- Construct request for channel group removal from \b PubNub channel registry.
+ @breif Construct request for channel group removal from \b PubNub channel registry.
  
- @param nspace
- Name of the namespace which should be removed.
+ @param group Reference on channel group which should be removed.
  
  @return Ready to use \b PNChannelGroupRemoveRequest instance.
  */
@@ -35,10 +34,9 @@
 #pragma mark - Instance methods
 
 /**
- Initialize request for channel group removal from \b PubNub channel registry.
+ @breif Initialize request for channel group removal from \b PubNub channel registry.
  
- @param nspace
- Name of the namespace which should be removed.
+ @param group Reference on channel group which should be removed.
  
  @return Ready to use \b PNChannelGroupRemoveRequest instance.
  */

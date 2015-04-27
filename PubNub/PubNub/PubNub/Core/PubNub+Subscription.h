@@ -372,7 +372,7 @@
  
  @see PNObservationCenter class
  
- @sse +subscribeOnChannel:
+ @see +subscribeOnChannel:
  */
 + (void)   subscribeOnChannel:(PNChannel *)channel
   withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
@@ -598,7 +598,7 @@
  
  @see PNObservationCenter class
  
- @sse +subscribeOnChannel:
+ @see +subscribeOnChannel:
  */
 + (void)  subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
@@ -2274,7 +2274,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
  
  @see PNObservationCenter class
  
- @sse +subscribeOnChannel:
+ @see +subscribeOnChannel:
  */
 - (void)   subscribeOnChannel:(PNChannel *)channel
   withCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
@@ -2497,7 +2497,7 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
  
  @see PNObservationCenter class
  
- @sse -subscribeOnChannel:
+ @see -subscribeOnChannel:
  */
 - (void)  subscribeOnChannel:(PNChannel *)channel withClientState:(NSDictionary *)clientState
   andCompletionHandlingBlock:(PNClientChannelSubscriptionHandlerBlock)handlerBlock
@@ -2872,15 +2872,17 @@ withCompletionHandlingBlock:(PNClientChannelUnsubscriptionHandlerBlock)handlerBl
  kPNClientSubscriptionDidCompleteNotification, kPNClientSubscriptionWillRestoreNotification, 
  kPNClientSubscriptionDidRestoreNotification, kPNClientSubscriptionDidFailNotification.
  
- @param channelObjects List of objects (which conforms to \b PNChannelProtocol data feed object protocol) on which 
-                       client should subscribe.
- @param handlerBlock   The block which will be called by PubNub client as soon as subscription process state will
-                       change. The block takes three arguments: \c state - is \b PNSubscriptionProcessState enum field 
-                       which describes current subscription state; \c channels - array of channels for which 
-                       subscription process changed state; \c error - error because of which subscription failed. Always
-                       check \a error.code to find out what caused error (check PNErrorCodes header file and use 
-                       \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
-                       human readable description for error).
+ @param channelsAndGroups List of objects (which conforms to \b PNChannelProtocol data feed 
+                          object protocol) on which client should subscribe.
+ @param handlerBlock      The block which will be called by PubNub client as soon as subscription
+                          process state will change. The block takes three arguments: \c state -
+                          is \b PNSubscriptionProcessState enum field which describes current 
+                          subscription state; \c channels - array of channels for which
+                          subscription process changed state; \c error - error because of which 
+                          subscription failed. Always check \a error.code to find out what caused
+                          error (check PNErrorCodes header file and use \a -localizedDescription 
+                          / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
+                          human readable description for error).
  
  @since 3.7.0
  */

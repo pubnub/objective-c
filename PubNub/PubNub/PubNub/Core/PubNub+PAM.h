@@ -833,13 +833,11 @@
 
  Also observation can be done using \b NSNotificationCenter to observe this notifications: 
  kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
-
- @param accessPeriodDuration
- Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
  
- @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
- @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on application 
-                             level.
+ @param accessRights         Bit field which allow to specify set of options. Bit options 
+                             specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be 
+                             applied on application level.
  
  @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
@@ -928,21 +926,21 @@
 
  Also observation can be done using \b NSNotificationCenter to observe this notifications: 
  kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
-
- @param accessPeriodDuration
- Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
  
- @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
- @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on application 
-                             level.
- @param handlerBlock         The block which will be called by \b PubNub client when one of success or error events will 
-                             be received. The block takes two arguments: \c collection - \b PNAccessRightsCollection 
-                             instance which hold set of \b PNAccessRightsInformation instances to describe new 
-                             \a 'application' access rights; \c error - error which describes what exactly went wrong
-                             during access rights change. Always check \a error.code to find out what caused error 
-                             (check PNErrorCodes header file and use \a -localizedDescription / 
-                             \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable 
-                             description for error).
+ @param accessRights         Bit field which allow to specify set of options. Bit options 
+                             specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be 
+                             applied on application level.
+ @param handlerBlock         The block which will be called by \b PubNub client when one of 
+                             success or error events will be received. The block takes two
+                             arguments: \c collection - \b PNAccessRightsCollection instance
+                             which hold set of \b PNAccessRightsInformation instances to describe
+                             new \a 'application' access rights; \c error - error which describes
+                             what exactly went wrong during access rights change. Always check 
+                             \a error.code to find out what caused error (check PNErrorCodes 
+                             header file and use \a -localizedDescription /
+                             \a -localizedFailureReason and \a -localizedRecoverySuggestion to 
+                             get human readable description for error).
  
  @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
@@ -2574,13 +2572,6 @@
 
  @param accessPeriodDuration
  Duration in minutes during which \a 'user' access level is granted with \a 'write' access rights.
- 
- @param handlerBlock
- The block which will be called by \b PubNub client when one of success or error events will be received. The block takes two arguments:
- \c collection - \b PNAccessRightsCollection instance which hold set of \b PNAccessRightsInformation instances to
- describe new \a 'user' access rights; \c error - error which describes what exactly went wrong
- during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
- and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
  @since 3.5.3
 
@@ -5682,13 +5673,11 @@
 
  Also observation can be done using \b NSNotificationCenter to observe this notifications: 
  kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
-
- @param accessPeriodDuration
- Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
  
- @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
- @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on application 
-                             level.
+ @param accessRights         Bit field which allow to specify set of options. Bit options 
+                             specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be 
+                             applied on application level.
  
  @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
@@ -5777,21 +5766,21 @@
 
  Also observation can be done using \b NSNotificationCenter to observe this notifications: 
  kPNClientAccessRightsChangeDidCompleteNotification, kPNClientAccessRightsChangeDidFailNotification.
-
- @param accessPeriodDuration
- Duration in minutes during which \a 'application' access level is granted with \a 'read'/ \a 'write' access rights.
  
- @param accessRights         Bit field which allow to specify set of options. Bit options specified in \c PNAccessRights
- @param accessPeriodDuration Duration in minutes during which provided access rights should be applied on application 
-                             level.
- @param handlerBlock         The block which will be called by \b PubNub client when one of success or error events will 
-                             be received. The block takes two arguments: \c collection - \b PNAccessRightsCollection 
-                             instance which hold set of \b PNAccessRightsInformation instances to describe new 
-                             \a 'application' access rights; \c error - error which describes what exactly went wrong
-                             during access rights change. Always check \a error.code to find out what caused error 
-                             (check PNErrorCodes header file and use \a -localizedDescription / 
-                             \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable 
-                             description for error).
+ @param accessRights         Bit field which allow to specify set of options. Bit options 
+                             specified in \c PNAccessRights
+ @param accessPeriodDuration Duration in minutes during which provided access rights should be 
+                             applied on application level.
+ @param handlerBlock         The block which will be called by \b PubNub client when one of 
+                             success or error events will be received. The block takes two 
+                             arguments: \c collection - \b PNAccessRightsCollection instance 
+                             which hold set of \b PNAccessRightsInformation instances to describe
+                             new \a 'application' access rights; \c error - error which describes
+                             what exactly went wrong during access rights change. Always check 
+                             \a error.code to find out what caused error (check PNErrorCodes 
+                             header file and use \a -localizedDescription /
+                             \a -localizedFailureReason and \a -localizedRecoverySuggestion to 
+                             get human readable description for error).
  
  @note To be able use this API, you should provide \a 'secret' key which is used for signature generation.
  @note Make sure that you enabled "Access Manager" on https://admin.pubnub.com.
@@ -7131,13 +7120,6 @@
 
  @param accessPeriodDuration
  Duration in minutes during which \a 'user' access level is granted with \a 'write' access rights.
- 
- @param handlerBlock
- The block which will be called by \b PubNub client when one of success or error events will be received. The block takes two arguments:
- \c collection - \b PNAccessRightsCollection instance which hold set of \b PNAccessRightsInformation instances to
- describe new \a 'user' access rights; \c error - error which describes what exactly went wrong
- during access rights change. Always check \a error.code to find out what caused error (check PNErrorCodes header file
- and use \a -localizedDescription / \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human readable description for error).
 
  @since 3.7.0
  */

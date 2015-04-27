@@ -992,7 +992,9 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                     [parametersForLog addObject:[[NSString alloc] initWithFormat:@"%p", sender]];
                     
                     // Transform parameters using description suitable for log
-                    [parameters enumerateObjectsUsingBlock:^(id parameter, NSUInteger idx, BOOL *stop) {
+                    [parameters enumerateObjectsUsingBlock:^(id parameter,
+                                                             __unused NSUInteger idx,
+                                                             __unused BOOL *stop) {
                         
                         #pragma clang diagnostic push
                         #pragma clang diagnostic ignored "-Wundeclared-selector"
@@ -1055,7 +1057,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
 + (void)logConnectionHTTPPacketFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock {
 
-    [self logFrom:self forLevel:PNLogConnectionLayerHTTPLoggingLevel withParametersFromBlock:parametersBlock];
+    [self logFrom:sender forLevel:PNLogConnectionLayerHTTPLoggingLevel withParametersFromBlock:parametersBlock];
 }
 
 + (void)logConnectionErrorMessageFrom:(id)sender withParametersFromBlock:(NSArray *(^)(void))parametersBlock {
@@ -1091,51 +1093,11 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
     }
 }
 
-+ (void)storeGarbageHTTPPacketData:(dispatch_data_t(^)(void))httpPacketBlock {
++ (void)storeGarbageHTTPPacketData:(NSData *(^)(void))garbageDataBlock {
     
-    if (httpPacketBlock) {
+    if (garbageDataBlock) {
         
-        [self storeRAWHTTPPacket:NO garbageData:YES dataDescription:nil withData:^id{
-            
-            dispatch_data_t data = httpPacketBlock();
-            if (data) {
-                
-                NSUInteger bufferSize = dispatch_data_get_size(data);
-                if (bufferSize) {
-                    
-                    NSMutableArray *dataBlocks = [NSMutableArray new];
-                    
-                    // Iterate over chunks of data stored in buffer.
-                    dispatch_data_apply(data, ^bool(dispatch_data_t region, size_t offset,
-                                                    const void *bytes, size_t size) {
-                        
-                        NSData *dataBlock = [[NSData alloc] initWithBytes:bytes length:size];
-                        if (dataBlock) {
-                            
-                            [dataBlocks addObject:dataBlock];
-                        }
-                        
-                        return true;
-                    });
-                    
-                    [PNDispatchHelper release:data];
-                    
-                    
-                    return dataBlocks;
-                }
-                else {
-                    
-                    [PNDispatchHelper release:data];
-                    
-                    
-                    return nil;
-                }
-            }
-            else {
-                
-                return nil;
-            }
-        }];
+        [self storeRAWHTTPPacket:NO garbageData:YES dataDescription:nil withData:garbageDataBlock];
     }
 }
 
@@ -1192,7 +1154,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                 else {
                     
                     [(NSArray *)data enumerateObjectsUsingBlock:^(NSData *dumpData, NSUInteger dumpDataIdx,
-                                                                  BOOL *dumpDataEnumeratorStop) {
+                                                                  __unused BOOL *dumpDataEnumeratorStop) {
                         
                         NSString *pathSuffix = [[NSString alloc] initWithFormat:@"-%@.dmp", @(dumpDataIdx)];
                         NSString *dumpDataStorePath = [packetStorePath stringByReplacingOccurrencesOfString:@".dmp"
@@ -1420,7 +1382,8 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
         void(^symbolsFlatteningBlock)(NSString *, NSString *, id, BOOL *);
 
         symbolsFlatteningBlockWeak = symbolsFlatteningBlock = ^(NSString *groupCode, NSString *entryCode,
-                                                                id entryContent, BOOL *entryEnumeratorStop){
+                                                                id entryContent,
+                                                                __unused BOOL *entryEnumeratorStop){
             
             if ([entryContent isKindOfClass:[NSString class]]) {
                 
@@ -1442,7 +1405,8 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                 }];
             }
         };
-        [symbolsTree enumerateKeysAndObjectsUsingBlock:^(NSString *groupCode, NSDictionary *groupCodeTable, BOOL *groupCodeEnumeratorStop) {
+        [symbolsTree enumerateKeysAndObjectsUsingBlock:^(NSString *groupCode, NSDictionary *groupCodeTable,
+                                                         __unused BOOL *groupCodeEnumeratorStop) {
             
             [groupCodeTable enumerateKeysAndObjectsUsingBlock:^(NSString *entryCode, id entryContent, BOOL *entryEnumeratorStop){
                 
@@ -1552,7 +1516,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
                                                                         DISPATCH_DATA_DESTRUCTOR_DEFAULT);
                 [self.consoleDump setLength:0];
                 dispatch_io_write(self.consoleDumpStoringChannel, 0, dumpData, self.dumpProcessingQueue,
-                                  ^(bool done, dispatch_data_t data, int error) {
+                                  ^(bool done, __unused dispatch_data_t data, int error) {
                                       
                                       if (!done && error != 0) {
                                           
@@ -1659,7 +1623,7 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
 #pragma mark - Handler methods
 
-- (void)handleConsoleDumpTimer:(NSTimer *)timer {
+- (void)handleConsoleDumpTimer:(NSTimer *)__unused timer {
     
     [self dumpConsoleOutput:nil];
 }

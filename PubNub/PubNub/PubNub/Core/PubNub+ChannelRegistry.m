@@ -38,20 +38,22 @@
  @brief Retrieve list of channel groups which has been registered for all application users
         (identifier by subscription key).
  
- @param nspace        Namespace name from which channel groups should be retrieved.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channel groups
-                      request operation will be completed. The block takes three arguments:
-                      \c namespace - namespace from which channel groups requested; \c groups - list
-                      of \b PNChannelGroup describing channel group inside of namespace;
-                      \c error - describes what exactly went wrong (check error code and compare it
-                      with \b PNErrorCodes ).
+ @param nspace                 Namespace name from which channel groups should be retrieved.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as channel
+                               groups request operation will be completed. The block takes three
+                               arguments: \c namespace - namespace from which channel groups
+                               requested; \c groups - list of \b PNChannelGroup describing channel
+                               group inside of namespace; \c error - describes what exactly went
+                               wrong (check error code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)requestChannelGroupsForNamespace:(NSString *)nspace
                 rescheduledCallbackToken:(NSString *)callbackToken
+                  numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
              withCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock;
 
 /**
@@ -60,20 +62,22 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
  
- @param nspace        Namespace name from which channel groups should be retrieved.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channel groups
-                      request operation will be completed. The block takes three arguments:
-                      \c namespace - namespace from which channel groups requested; \c groups - list
-                      of \b PNChannelGroup describing channel group inside of namespace;
-                      \c error - describes what exactly went wrong (check error code and compare it
-                      with \b PNErrorCodes ).
+ @param nspace                 Namespace name from which channel groups should be retrieved.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as channel
+                               groups request operation will be completed. The block takes three
+                               arguments: \c namespace - namespace from which channel groups
+                               requested; \c groups - list of \b PNChannelGroup describing channel
+                               group inside of namespace; \c error - describes what exactly went
+                               wrong (check error code and compare it with \b PNErrorCodes ).
 
  @since 3.7.0
  */
 - (void)postponeRequestChannelGroupsForNamespace:(NSString *)nspace
                         rescheduledCallbackToken:(NSString *)callbackToken
+                          numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                      withCompletionHandlingBlock:(id)handlerBlock;
 
 
@@ -82,18 +86,20 @@
 /**
  @brief Retrieve list of all namespaces which has been created under application subscribe key.
  
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as namespace list
-                      pulled for channel group (all available namespaces under which channel group
-                      can be registered). The block takes two arguments: \c namespaces - list of
-                      namespaces which has been created to store registered channel groups;
-                      \c error - describes what exactly went wrong (check error code and compare it
-                      with \b PNErrorCodes ).
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as
+                               namespace list pulled for channel group (all available namespaces
+                               under which channel group can be registered). The block takes two
+                               arguments: \c namespaces - list of namespaces which has been created
+                               to store registered channel groups; \c error - describes what exactly
+                               went wrong (check error code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)requestChannelGroupNamespacesWithRescheduledCallbackToken:(NSString *)callbackToken
+                                           numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                        andCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock;
 
 /**
@@ -102,37 +108,41 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
  
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as namespace list
-                      pulled for channel group (all available namespaces under which channel group
-                      can be registered). The block takes two arguments: \c namespaces - list of
-                      namespaces which has been created to store registered channel groups;
-                      \c error - describes what exactly went wrong (check error code and compare it
-                      with \b PNErrorCodes ).
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as
+                               namespace list pulled for channel group (all available namespaces
+                               under which channel group can be registered). The block takes two
+                               arguments: \c namespaces - list of namespaces which has been created
+                               to store registered channel groups; \c error - describes what exactly
+                               went wrong (check error code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)postponeChannelGroupNamespacesRequestWithRescheduledCallbackToken:(NSString *)callbackToken
+                                                   numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                                andCompletionHandlingBlock:(id)handlerBlock;
 
 /**
  @brief Remove one of channel group namespaces from channel registry. All channel groups and
         channels which has been registered and added to target namespace will be deleted as well.
  
- @param nspace        Reference on namespace name which should be removed along with all channel
-                      group and channels registered in it.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as namespace
-                      removal process will be completed. The block takes two arguments:
-                      \c namespace - namespace name which should be removed; \c error - describes
-                      what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
+ @param nspace                 Reference on namespace name which should be removed along with all
+                               channel group and channels registered in it.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as namespace
+                               removal process will be completed. The block takes two arguments:
+                               \c namespace - namespace name which should be removed;
+                               \c error - describes what exactly went wrong (check error code and
+                               compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
-- (void)removeChannelGroupNamespace:(NSString *)nspace
-           rescheduledCallbackToken:(NSString *)callbackToken
+- (void)removeChannelGroupNamespace:(NSString *)nspace rescheduledCallbackToken:(NSString *)callbackToken
+             numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
         withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock;
 
 /**
@@ -141,40 +151,44 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
  
- @param nspace        Reference on namespace name which should be removed along with all channel
-                      group and channels registered in it.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as namespace
-                      removal process will be completed. The block takes two arguments:
-                      \c namespace - namespace name which should be removed; \c error - describes
-                      what exactly went wrong (check error code and compare it with \b PNErrorCodes ).
+ @param nspace                 Reference on namespace name which should be removed along with all
+                               channel group and channels registered in it.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as namespace
+                               removal process will be completed. The block takes two arguments:
+                               \c namespace - namespace name which should be removed;
+                               \c error - describes what exactly went wrong (check error code and
+                               compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)postponeRemoveChannelGroupNamespace:(NSString *)nspace
                    rescheduledCallbackToken:(NSString *)callbackToken
+                     numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                 withCompletionHandlingBlock:(id)handlerBlock;
 
 /**
  @brief Remove one of channel groups from channel registry. All channels which has been registered
         in it also will be removed.
  
- @param group         \b PNChannelGroup instance which describes channel group which should be
-                      deleted by \b PubNub client.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channel group
-                      removal process will be completed. The block takes two arguments:
-                      \c PNChannelGroup - \b PNChannelGroup which should be removed; \c error -
-                      describes what exactly went wrong (check error code and compare it with
-                      \b PNErrorCodes ).
+ @param group                  \b PNChannelGroup instance which describes channel group which should
+                               be deleted by \b PubNub client.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as channel
+                               group removal process will be completed. The block takes two
+                               arguments: \c PNChannelGroup - \b PNChannelGroup which should be
+                               removed; \c error - describes what exactly went wrong (check error
+                               code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
-- (void) removeChannelGroup:(PNChannelGroup *)group
-   rescheduledCallbackToken:(NSString *)callbackToken
-withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock;
+- (void)removeChannelGroup:(PNChannelGroup *)group rescheduledCallbackToken:(NSString *)callbackToken
+    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock;
 
 /**
  @brief Postpone channel group removal request so it will be executed in future.
@@ -182,20 +196,22 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
  
- @param group         \b PNChannelGroup instance which describes channel group which should be
-                      deleted by \b PubNub client.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channel group
-                      removal process will be completed. The block takes two arguments:
-                      \c PNChannelGroup - \b PNChannelGroup which should be removed; \c error -
-                      describes what exactly went wrong (check error code and compare it with
-                      \b PNErrorCodes ).
+ @param group                  \b PNChannelGroup instance which describes channel group which should
+                               be deleted by \b PubNub client.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as channel
+                               group removal process will be completed. The block takes two
+                               arguments: \c PNChannelGroup - \b PNChannelGroup which should be
+                               removed; \c error - describes what exactly went wrong (check error
+                               code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)postponeRemoveChannelGroup:(PNChannelGroup *)group
           rescheduledCallbackToken:(NSString *)callbackToken
+            numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
        withCompletionHandlingBlock:(id)handlerBlock;
 
 
@@ -205,41 +221,44 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
  @brief Retrieve list of channels for specific channel group which has been added for all
         application users (identifier by subscription key).
  
- @param group         Reference on channel group object which hold information about group name and
-                      namespace.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channels for
-                      group request operation will be completed. The block takes two arguments:
-                      \c group - \b PNChannelGroup instance which describe group for which channels
-                      should be retrieved (it also has property with channels list); \c error -
-                      describes what exactly went wrong (check error code and compare it with
-                      \b PNErrorCodes ).
+ @param group                  Reference on channel group object which hold information about group
+                               name and namespace.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as
+                               channels for group request operation will be completed. The block
+                               takes two arguments: \c group - \b PNChannelGroup instance which
+                               describe group for which channels should be retrieved (it also has
+                               property with channels list); \c error - describes what exactly went
+                               wrong (check error code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
-- (void)requestChannelsForGroup:(PNChannelGroup *)group
-       rescheduledCallbackToken:(NSString *)callbackToken
+- (void)requestChannelsForGroup:(PNChannelGroup *)group rescheduledCallbackToken:(NSString *)callbackToken
+         numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
     withCompletionHandlingBlock:(PNClientChannelsForGroupRequestHandlingBlock)handlerBlock;
 
 /**
  @brief Postpone channels list for group request so it will be executed in future.
  
- @param group         Reference on channel group object which hold information about group name and
-                      namespace.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channels for
-                      group request operation will be completed. The block takes two arguments:
-                      \c group - \b PNChannelGroup instance which describe group for which channels
-                      should be retrieved (it also has property with channels list); \c error -
-                      describes what exactly went wrong (check error code and compare it with
-                      \b PNErrorCodes ).
+ @param group                  Reference on channel group object which hold information about group
+                               name and namespace.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as
+                               channels for group request operation will be completed. The block
+                               takes two arguments: \c group - \b PNChannelGroup instance which
+                               describe group for which channels should be retrieved (it also has
+                               property with channels list); \c error - describes what exactly went
+                               wrong (check error code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)postponeRequestChannelsForGroup:(PNChannelGroup *)group
                rescheduledCallbackToken:(NSString *)callbackToken
+                 numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
             withCompletionHandlingBlock:(id)handlerBlock;
 
 
@@ -248,88 +267,101 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
 /**
  @brief Add channels list to the group.
  
- @param channels      Reference on list of \b PNChannel instances which should be added to the
-                      group.
- @param group         Reference on channel group object which hold information about group name and
-                      namespace.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channels
-                      addition to group operation will be completed. The block takes two arguments:
-                      \c group - \b PNChannelGroup instance which describe group into which channels
-                      should be added; \c channels - list of \b PNChannel instance which should be
-                      added to the group; \c error - describes what exactly went wrong (check error
-                      code and compare it with \b PNErrorCodes ).
+ @param channels               Reference on list of \b PNChannel instances which should be added to
+                               the group.
+ @param group                  Reference on channel group object which hold information about group
+                               name and namespace.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as
+                               channels addition to group operation will be completed. The block
+                               takes two arguments: \c group - \b PNChannelGroup instance which
+                               describe group into which channels should be added; \c channels - list
+                               of \b PNChannel instance which should be added to the group;
+                               \c error - describes what exactly went wrong (check error code and
+                               compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
-- (void)        addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
-   rescheduledCallbackToken:(NSString *)callbackToken
-withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock;
+- (void)addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
+        rescheduledCallbackToken:(NSString *)callbackToken
+        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock;
 
 /**
  @brief Postpone channels list addition to group so it will be executed in future.
  
- @param channels      Reference on list of \b PNChannel instances which should be added to the
-                      group.
- @param group         Reference on channel group object which hold information about group name and
-                      namespace.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channels
-                      addition to group operation will be completed. The block takes two arguments:
-                      \c group - \b PNChannelGroup instance which describe group into which channels
-                      should be added; \c channels - list of \b PNChannel instance which should be
-                      added to the group; \c error - describes what exactly went wrong (check error
-                      code and compare it with \b PNErrorCodes ).
+ @param channels               Reference on list of \b PNChannel instances which should be added to
+                               the group.
+ @param group                  Reference on channel group object which hold information about group
+                               name and namespace.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as
+                               channels addition to group operation will be completed. The block
+                               takes two arguments: \c group - \b PNChannelGroup instance which
+                               describe group into which channels should be added; \c channels - list
+                               of \b PNChannel instance which should be added to the group;
+                               \c error - describes what exactly went wrong (check error code and
+                               compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)postponeAddChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
-   rescheduledCallbackToken:(NSString *)callbackToken withCompletionHandlingBlock:(id)handlerBlock;
+   rescheduledCallbackToken:(NSString *)callbackToken
+     numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+withCompletionHandlingBlock:(id)handlerBlock;
 
 /**
  @brief Remove channels list from the group.
  
- @param channels      Reference on list of \b PNChannel instances which should be removed from the
-                      group.
- @param group         Reference on channel group object which hold information about group name and
-                      namespace.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channels removal
-                      from group operation will be completed. The block takes two arguments:
-                      \c group - \b PNChannelGroup instance which describe group from which channels
-                      should be removed; \c channels - list of \b PNChannel instance which should be
-                      removed from the group; \c error - describes what exactly went wrong (check
-                      error code and compare it with \b PNErrorCodes ).
+ @param channels               Reference on list of \b PNChannel instances which should be removed
+                               from the group.
+ @param group                  Reference on channel group object which hold information about group
+                               name and namespace.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as
+                               channels removal from group operation will be completed. The block
+                               takes two arguments: \c group - \b PNChannelGroup instance which
+                               describe group from which channels should be removed;
+                               \c channels - list of \b PNChannel instance which should be removed
+                               from the group; \c error - describes what exactly went wrong (check
+                               error code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
-- (void)     removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
-   rescheduledCallbackToken:(NSString *)callbackToken
-withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock;
+- (void)removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
+        rescheduledCallbackToken:(NSString *)callbackToken
+        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock;
 
 /**
  @brief Postpone channels list removal from group so it will be executed in future.
  
- @param channels      Reference on list of \b PNChannel instances which should be removed from the
-                      group.
- @param group         Reference on channel group object which hold information about group name and
-                      namespace.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which will be called by \b PubNub client as soon as channels removal
-                      from group operation will be completed. The block takes two arguments:
-                      \c group - \b PNChannelGroup instance which describe group from which channels
-                      should be removed; \c channels - list of \b PNChannel instance which should be
-                      removed from the group; \c error - describes what exactly went wrong (check
-                      error code and compare it with \b PNErrorCodes ).
+ @param channels               Reference on list of \b PNChannel instances which should be removed
+                               from the group.
+ @param group                  Reference on channel group object which hold information about group
+                               name and namespace.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as
+                               channels removal from group operation will be completed. The block
+                               takes two arguments: \c group - \b PNChannelGroup instance which
+                               describe group from which channels should be removed;
+                               \c channels - list of \b PNChannel instance which should be removed
+                               from the group; \c error - describes what exactly went wrong (check
+                               error code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)postponeRemoveChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
       rescheduledCallbackToken:(NSString *)callbackToken
+        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
    withCompletionHandlingBlock:(id)handlerBlock;
 
 
@@ -448,11 +480,11 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
              withCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock {
 
     [self requestChannelGroupsForNamespace:nspace rescheduledCallbackToken:nil
-               withCompletionHandlingBlock:handlerBlock];
+                    numberOfRetriesOnError:0 withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)requestChannelGroupsForNamespace:(NSString *)nspace
-                rescheduledCallbackToken:(NSString *)callbackToken
+- (void)requestChannelGroupsForNamespace:(NSString *)nspace rescheduledCallbackToken:(NSString *)callbackToken
+                  numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
              withCompletionHandlingBlock:(PNClientChannelGroupsRequestHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
@@ -491,6 +523,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -524,8 +557,8 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeRequestChannelGroupsForNamespace:nspace
-                                  rescheduledCallbackToken:callbackToken
+            [self postponeRequestChannelGroupsForNamespace:nspace rescheduledCallbackToken:callbackToken
+                                    numberOfRetriesOnError:numberOfRetriesOnError
                                withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
@@ -533,13 +566,14 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
 
 - (void)postponeRequestChannelGroupsForNamespace:(NSString *)nspace
                         rescheduledCallbackToken:(NSString *)callbackToken
+                          numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                      withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL targetSelector = @selector(requestChannelGroupsForNamespace:rescheduledCallbackToken:withCompletionHandlingBlock:);
+    SEL targetSelector = @selector(requestChannelGroupsForNamespace:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:nspace],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -554,13 +588,14 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
 
 - (void)requestChannelGroupNamespacesWithCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock {
 
-    [self requestChannelGroupNamespacesWithRescheduledCallbackToken:nil
+    [self requestChannelGroupNamespacesWithRescheduledCallbackToken:nil numberOfRetriesOnError:0
                                          andCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)requestChannelGroupNamespacesWithRescheduledCallbackToken:(NSString *)callbackToken
+                                           numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                        andCompletionHandlingBlock:(PNClientChannelGroupNamespacesRequestHandlingBlock)handlerBlock {
-    
+
     [self pn_dispatchBlock:^{
         
         [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -593,6 +628,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -625,18 +661,20 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
             }];
 
             [self postponeChannelGroupNamespacesRequestWithRescheduledCallbackToken:callbackToken
+                                                             numberOfRetriesOnError:numberOfRetriesOnError
                                                          andCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
 - (void)postponeChannelGroupNamespacesRequestWithRescheduledCallbackToken:(NSString *)callbackToken
+                                                   numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                                andCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL targetSelector = @selector(requestChannelGroupNamespacesWithRescheduledCallbackToken:andCompletionHandlingBlock:);
+    SEL targetSelector = @selector(requestChannelGroupNamespacesWithRescheduledCallbackToken:numberOfRetriesOnError:andCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:callbackToken],
+            withParameters:@[[PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -649,12 +687,12 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
 - (void)removeChannelGroupNamespace:(NSString *)nspace
         withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock {
 
-    [self removeChannelGroupNamespace:nspace rescheduledCallbackToken:nil
+    [self removeChannelGroupNamespace:nspace rescheduledCallbackToken:nil numberOfRetriesOnError:0
           withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)removeChannelGroupNamespace:(NSString *)nspace
-           rescheduledCallbackToken:(NSString *)callbackToken
+- (void)removeChannelGroupNamespace:(NSString *)nspace rescheduledCallbackToken:(NSString *)callbackToken
+             numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
         withCompletionHandlingBlock:(PNClientChannelGroupNamespaceRemoveHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
@@ -693,6 +731,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -725,22 +764,22 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeRemoveChannelGroupNamespace:nspace
-                             rescheduledCallbackToken:callbackToken
+            [self postponeRemoveChannelGroupNamespace:nspace rescheduledCallbackToken:callbackToken
+                               numberOfRetriesOnError:numberOfRetriesOnError
                           withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
-- (void)postponeRemoveChannelGroupNamespace:(NSString *)nspace
-                   rescheduledCallbackToken:(NSString *)callbackToken
+- (void)postponeRemoveChannelGroupNamespace:(NSString *)nspace rescheduledCallbackToken:(NSString *)callbackToken
+                     numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                 withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL targetSelector = @selector(removeChannelGroupNamespace:rescheduledCallbackToken:withCompletionHandlingBlock:);
+    SEL targetSelector = @selector(removeChannelGroupNamespace:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:nspace],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -753,12 +792,13 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
 - (void)   removeChannelGroup:(PNChannelGroup *)group
   withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock {
 
-    [self removeChannelGroup:group rescheduledCallbackToken:nil
+    [self removeChannelGroup:group rescheduledCallbackToken:nil numberOfRetriesOnError:0
  withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void) removeChannelGroup:(PNChannelGroup *)group rescheduledCallbackToken:(NSString *)callbackToken
-withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock {
+- (void)removeChannelGroup:(PNChannelGroup *)group rescheduledCallbackToken:(NSString *)callbackToken
+    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBlock {
 
     [self pn_dispatchBlock:^{
         
@@ -792,6 +832,7 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -825,20 +866,21 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
             }];
 
             [self postponeRemoveChannelGroup:group rescheduledCallbackToken:callbackToken
+                      numberOfRetriesOnError:numberOfRetriesOnError
                  withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
-- (void)postponeRemoveChannelGroup:(PNChannelGroup *)group
-          rescheduledCallbackToken:(NSString *)callbackToken
+- (void)postponeRemoveChannelGroup:(PNChannelGroup *)group rescheduledCallbackToken:(NSString *)callbackToken
+            numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
        withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL targetSelector = @selector(removeChannelGroup:rescheduledCallbackToken:withCompletionHandlingBlock:);
+    SEL targetSelector = @selector(removeChannelGroup:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:group],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -854,11 +896,12 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
 - (void)requestChannelsForGroup:(PNChannelGroup *)group
     withCompletionHandlingBlock:(PNClientChannelsForGroupRequestHandlingBlock)handlerBlock {
 
-    [self requestChannelsForGroup:group rescheduledCallbackToken:nil
+    [self requestChannelsForGroup:group rescheduledCallbackToken:nil numberOfRetriesOnError:0
       withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)requestChannelsForGroup:(PNChannelGroup *)group rescheduledCallbackToken:(NSString *)callbackToken
+         numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
     withCompletionHandlingBlock:(PNClientChannelsForGroupRequestHandlingBlock)handlerBlock {
     
     [self pn_dispatchBlock:^{
@@ -893,6 +936,7 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -926,8 +970,8 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeRequestChannelsForGroup:group
-                         rescheduledCallbackToken:callbackToken
+            [self postponeRequestChannelsForGroup:group rescheduledCallbackToken:callbackToken
+                           numberOfRetriesOnError:numberOfRetriesOnError
                       withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
@@ -935,13 +979,14 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
 
 - (void)postponeRequestChannelsForGroup:(PNChannelGroup *)group
                rescheduledCallbackToken:(NSString *)callbackToken
+                 numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
             withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL targetSelector = @selector(requestChannelsForGroup:rescheduledCallbackToken:withCompletionHandlingBlock:);
+    SEL targetSelector = @selector(requestChannelsForGroup:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:group],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -957,13 +1002,14 @@ withCompletionHandlingBlock:(PNClientChannelGroupRemoveHandlingBlock)handlerBloc
 - (void)          addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
   withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock {
 
-    [self addChannels:channels toGroup:group rescheduledCallbackToken:nil
+    [self addChannels:channels toGroup:group rescheduledCallbackToken:nil numberOfRetriesOnError:0
             withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)        addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
-   rescheduledCallbackToken:(NSString *)callbackToken
-withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock {
+- (void)addChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
+        rescheduledCallbackToken:(NSString *)callbackToken
+        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
     // survive till asynchronous operation will complete.
@@ -1003,6 +1049,7 @@ withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handle
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -1038,21 +1085,22 @@ withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handle
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeAddChannels:channels toGroup:group
-             rescheduledCallbackToken:callbackToken
-          withCompletionHandlingBlock:handlerBlock];
+            [self postponeAddChannels:channels toGroup:group rescheduledCallbackToken:callbackToken
+               numberOfRetriesOnError:numberOfRetriesOnError withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
 - (void)postponeAddChannels:(NSArray *)channels toGroup:(PNChannelGroup *)group
-   rescheduledCallbackToken:(NSString *)callbackToken withCompletionHandlingBlock:(id)handlerBlock {
+   rescheduledCallbackToken:(NSString *)callbackToken
+     numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL targetSelector = @selector(addChannels:toGroup:rescheduledCallbackToken:withCompletionHandlingBlock:);
+    SEL targetSelector = @selector(addChannels:toGroup:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:channels], [PNHelper nilifyIfNotSet:group],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -1065,13 +1113,14 @@ withCompletionHandlingBlock:(PNClientChannelsAdditionToGroupHandlingBlock)handle
 - (void)       removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
   withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock {
 
-    [self removeChannels:channels fromGroup:group rescheduledCallbackToken:nil
+    [self removeChannels:channels fromGroup:group rescheduledCallbackToken:nil numberOfRetriesOnError:0
             withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)     removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
-   rescheduledCallbackToken:(NSString *)callbackToken
-withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock {
+- (void)removeChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
+        rescheduledCallbackToken:(NSString *)callbackToken
+        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
     // survive till asynchronous operation will complete.
@@ -1111,6 +1160,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -1146,22 +1196,22 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeRemoveChannels:channels fromGroup:group
-                rescheduledCallbackToken:callbackToken
-             withCompletionHandlingBlock:handlerBlock];
+            [self postponeRemoveChannels:channels fromGroup:group rescheduledCallbackToken:callbackToken
+                  numberOfRetriesOnError:numberOfRetriesOnError withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
 - (void)postponeRemoveChannels:(NSArray *)channels fromGroup:(PNChannelGroup *)group
       rescheduledCallbackToken:(NSString *)callbackToken
+        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
    withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL targetSelector = @selector(removeChannels:fromGroup:rescheduledCallbackToken:withCompletionHandlingBlock:);
+    SEL targetSelector = @selector(removeChannels:fromGroup:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:channels], [PNHelper nilifyIfNotSet:group],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -1377,7 +1427,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     }];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel channelGroupsRequestForNamespace:(NSString *)nspace
+- (void)serviceChannel:(PNServiceChannel *)__unused channel channelGroupsRequestForNamespace:(NSString *)nspace
       didFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -1390,6 +1440,8 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     else {
         
         [self rescheduleMethodCall:^{
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -1398,7 +1450,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
             }];
 
             [self requestChannelGroupsForNamespace:nspace rescheduledCallbackToken:callbackToken
-                       withCompletionHandlingBlock:nil];
+                            numberOfRetriesOnError:retryCountOnError withCompletionHandlingBlock:nil];
         }];
     }
 }
@@ -1439,7 +1491,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     }];
 }
 
-- (void)                         serviceChannel:(PNServiceChannel *)channel
+- (void)                         serviceChannel:(PNServiceChannel *)__unused channel
   channelGroupNamespacesRequestDidFailWithError:(PNError *)error
                                      forRequest:(PNBaseRequest *)request {
 
@@ -1452,6 +1504,8 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     else {
         
         [self rescheduleMethodCall:^{
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -1460,6 +1514,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
             }];
 
             [self requestChannelGroupNamespacesWithRescheduledCallbackToken:callbackToken
+                                                     numberOfRetriesOnError:retryCountOnError
                                                  andCompletionHandlingBlock:nil];
         }];
     }
@@ -1500,7 +1555,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     }];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel namespace:(NSString *)nspace
+- (void)serviceChannel:(PNServiceChannel *)__unused channel namespace:(NSString *)nspace
         removalDidFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -1513,6 +1568,8 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     else {
         
         [self rescheduleMethodCall:^{
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -1521,7 +1578,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
             }];
 
             [self removeChannelGroupNamespace:nspace rescheduledCallbackToken:callbackToken
-                  withCompletionHandlingBlock:nil];
+                       numberOfRetriesOnError:retryCountOnError withCompletionHandlingBlock:nil];
         }];
     }
 }
@@ -1561,7 +1618,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     }];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel channelGroup:(PNChannelGroup *)group
+- (void)serviceChannel:(PNServiceChannel *)__unused channel channelGroup:(PNChannelGroup *)group
         removalDidFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -1573,6 +1630,8 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     else {
         
         [self rescheduleMethodCall:^{
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -1581,7 +1640,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
             }];
 
             [self removeChannelGroup:group rescheduledCallbackToken:callbackToken
-         withCompletionHandlingBlock:nil];
+              numberOfRetriesOnError:retryCountOnError withCompletionHandlingBlock:nil];
         }];
     }
 }
@@ -1624,7 +1683,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     }];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel channelsForGroupRequest:(PNChannelGroup *)group
+- (void)serviceChannel:(PNServiceChannel *)__unused channel channelsForGroupRequest:(PNChannelGroup *)group
       didFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -1636,7 +1695,9 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     else {
         
         [self rescheduleMethodCall:^{
-            
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
+
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
                 return @[PNLoggerSymbols.api.rescheduleChannelsForGroupRequest,
@@ -1644,7 +1705,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
             }];
 
             [self requestChannelsForGroup:group rescheduledCallbackToken:callbackToken
-              withCompletionHandlingBlock:nil];
+                   numberOfRetriesOnError:retryCountOnError withCompletionHandlingBlock:nil];
         }];
     }
 }
@@ -1714,7 +1775,7 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     }];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel groupChannelsChange:(PNChannelGroupChange *)change
+- (void)serviceChannel:(PNServiceChannel *)__unused channel groupChannelsChange:(PNChannelGroupChange *)change
       didFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -1727,6 +1788,8 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
     else {
         
         [self rescheduleMethodCall:^{
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             NSString *symbol = ([change addingChannels] ?
                                   PNLoggerSymbols.api.rescheduleChannelsAdditionToGroup :
@@ -1739,12 +1802,14 @@ withCompletionHandlingBlock:(PNClientChannelsRemovalFromGroupHandlingBlock)handl
             if ([change addingChannels]) {
 
                 [self addChannels:change.channels toGroup:change.group
-         rescheduledCallbackToken:callbackToken withCompletionHandlingBlock:nil];
+         rescheduledCallbackToken:callbackToken numberOfRetriesOnError:retryCountOnError
+      withCompletionHandlingBlock:nil];
             }
             else {
 
                 [self removeChannels:change.channels fromGroup:change.group
-            rescheduledCallbackToken:callbackToken withCompletionHandlingBlock:nil];
+            rescheduledCallbackToken:callbackToken numberOfRetriesOnError:retryCountOnError
+         withCompletionHandlingBlock:nil];
             }
         }];
     }

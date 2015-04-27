@@ -355,7 +355,8 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
     }
 }
 
-void reachabilityContextInformationReleaseCallBack( const void *info ) {
+static void reachabilityContextInformationReleaseCallBack(const void *info);
+void reachabilityContextInformationReleaseCallBack(const void *info) {
     
     CFRelease(info);
 }
@@ -476,7 +477,7 @@ void reachabilityContextInformationReleaseCallBack( const void *info ) {
     [self stopOriginLookup:NO];
 }
 
-- (void)stopOriginLookup:(BOOL)forRelaunch {
+- (void)stopOriginLookup:(BOOL)__unused forRelaunch {
     
     [self pn_dispatchBlock:^{
         

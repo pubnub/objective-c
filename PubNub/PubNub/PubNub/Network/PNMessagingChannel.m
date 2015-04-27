@@ -264,14 +264,15 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 - (NSDictionary *)stateFromClientState:(NSDictionary *)state forChannels:(NSArray *)channels;
 
 /**
- Retrieve merged state for client based on newly submitted and already processed client state.
+ @brief Retrieve merged state for client based on newly submitted and already processed client 
+        state.
  
- @param state
- Newly submitted client state information.
- 
- @return Merged client state information.
+ @param state                Newly submitted client state information.
+ @param mergeCompletionBlock State merge completion handler block which pass only one argument -
+                             \a NSDictionary with merged client state.
  */
-- (void)mergedClientStateWithState:(NSDictionary *)state andBlock:(void (^)(NSDictionary *mergedState))mergeCompletionBlock;
+- (void)mergedClientStateWithState:(NSDictionary *)state
+                          andBlock:(void (^)(NSDictionary *mergedState))mergeCompletionBlock;
 
 /**
  * Print out current connection channel state
@@ -402,8 +403,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
     [self pn_dispatchBlock:^{
 
-        [requestsList enumerateObjectsUsingBlock:^(NSString *requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                   BOOL *requestIdentifierEnumeratorStop) {
+        [requestsList enumerateObjectsUsingBlock:^(NSString *requestIdentifier,
+                                                   __unused NSUInteger requestIdentifierIdx,
+                                                   __unused BOOL *requestIdentifierEnumeratorStop) {
 
             PNBaseRequest *request = [self requestWithIdentifier:requestIdentifier];
             if (![request isKindOfClass:[PNSubscribeRequest class]] ||
@@ -452,8 +454,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
                 NSSet *leaveChannelsSet = [[NSSet alloc] initWithArray:((PNLeaveRequest *)firstRequest).channels];
                 [sortedRequestsList enumerateObjectsUsingBlock:^(NSDictionary * requestInformation,
-                                                                 NSUInteger requestInformationIdx,
-                                                                 BOOL *requestInformationEnumeratorStop) {
+                                                                 __unused NSUInteger requestInformationIdx,
+                                                                 __unused BOOL *requestInformationEnumeratorStop) {
 
                     PNBaseRequest *request = [requestInformation valueForKey:PNRequestForReschedule.request];
                     if ([request isKindOfClass:[PNSubscribeRequest class]]) {
@@ -471,8 +473,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
                 [self pn_dispatchBlock:^{
 
-                    [sortedRequestsList enumerateObjectsUsingBlock:^(NSDictionary *requestData, NSUInteger requestDataIdx,
-                                                                     BOOL *requestDataEnumeratorStop) {
+                    [sortedRequestsList enumerateObjectsUsingBlock:^(NSDictionary *requestData,
+                                                                     __unused NSUInteger requestDataIdx,
+                                                                     __unused BOOL *requestDataEnumeratorStop) {
 
                         PNBaseRequest *request = [requestData valueForKey:PNRequestForReschedule.request];
                         [request resetWithRetryCount:shouldResetRequestsRetryCount];
@@ -889,8 +892,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                     // Check whether user want to unsubscribe from all channels or not
                     __block BOOL isLeavingAllChannels = NO;
                     NSArray *leaveRequests = [self requestsWithClass:[PNLeaveRequest class]];
-                    [leaveRequests enumerateObjectsUsingBlock:^(PNLeaveRequest *leaveRequest, NSUInteger leaveRequestIdx,
-                            BOOL *leaveRequestEnumeratorStop) {
+                    [leaveRequests enumerateObjectsUsingBlock:^(PNLeaveRequest *leaveRequest,
+                                                                __unused NSUInteger leaveRequestIdx,
+                                                                __unused BOOL *leaveRequestEnumeratorStop) {
 
                         if (!isLeavingAllChannels) {
 
@@ -1071,7 +1075,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                                                                         copyItems:NO];
     [existingObservedChannelsSet removeObject:[NSNull null]];
 
-    [existingObservedChannelsSet enumerateObjectsUsingBlock:^(PNChannel *channel, BOOL *channelEnumeratorStop) {
+    [existingObservedChannelsSet enumerateObjectsUsingBlock:^(PNChannel *channel,
+                                                              __unused BOOL *channelEnumeratorStop) {
 
         // Checking on whether channel from which presence observation already enabled (subscribed on this channel) exist in list of channels for subscription
         // and in same time still has observation instance.
@@ -1623,7 +1628,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 
 - (NSArray *)presenceEnabledChannels {
 
-    NSPredicate *filterPredicate = [NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
+    NSPredicate *filterPredicate = [NSPredicate predicateWithBlock:^BOOL(id object,
+                                                                         __unused NSDictionary *bindings) {
         
         return [object isKindOfClass:[PNChannelPresence class]];
     }];
@@ -1675,7 +1681,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     else {
         
         // Enumerate over the list of channels and mark that it should observe for presence
-        [channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+        [channels enumerateObjectsUsingBlock:^(PNChannel *channel, __unused NSUInteger channelIdx,
+                                               __unused BOOL *channelEnumeratorStop) {
             
             channel.observePresence = NO;
             channel.linkedWithPresenceObservationChannel = NO;
@@ -1827,7 +1834,9 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                             channel = (PNChannel *) [channels lastObject];
                         }
 
-                        [events.events enumerateObjectsUsingBlock:^(id event, NSUInteger eventIdx, BOOL *eventsEnumeratorStop) {
+                        [events.events enumerateObjectsUsingBlock:^(id event,
+                                                                    __unused NSUInteger eventIdx,
+                                                                    __unused BOOL *eventsEnumeratorStop) {
 
                             if ([event isKindOfClass:[PNPresenceEvent class]]) {
 
@@ -2107,7 +2116,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     [self stopChannelIdleTimer:NO];
 }
 
-- (void)stopChannelIdleTimer:(BOOL)forRelaunch {
+- (void)stopChannelIdleTimer:(BOOL)__unused forRelaunch {
     
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
@@ -2178,7 +2187,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                            onlyPresence:(BOOL)fetchPresenceChannelsOnly {
     
     NSMutableSet *fullChannelsList = [[NSMutableSet alloc] initWithCapacity:[channelsList count]];
-    [channelsList enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx, BOOL *channelEnumeratorStop) {
+    [channelsList enumerateObjectsUsingBlock:^(PNChannel *channel, __unused NSUInteger channelIdx,
+                                               __unused BOOL *channelEnumeratorStop) {
         
         if (!fetchPresenceChannelsOnly) {
             
@@ -2757,8 +2767,8 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
                         }
                         
                         [requestsOfSameType enumerateObjectsUsingBlock:^(PNSubscribeRequest *subscribeRequest,
-                                                                         NSUInteger subscribeRequestIdx,
-                                                                         BOOL *subscribeRequestEnumeratorStop) {
+                                                                         __unused NSUInteger subscribeRequestIdx,
+                                                                         __unused BOOL *subscribeRequestEnumeratorStop) {
                             
                             // Don't touch request which should preserve in the list.
                             if (![subscribeRequest isEqual:targetRequest]) {
@@ -3078,7 +3088,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
     }];
 }
 
-- (void)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request
+- (void)shouldRequestsQueue:(PNRequestsQueue *)__unused queue removeCompletedRequest:(PNBaseRequest *)request
             checkCompletion:(void(^)(BOOL))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{

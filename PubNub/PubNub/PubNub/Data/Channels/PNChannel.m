@@ -100,8 +100,9 @@ static OSSpinLock _channelsCacheSpinlock = OS_SPINLOCK_INIT;
 
     NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity:[channelsName count]];
 
-    [channelsName enumerateObjectsUsingBlock:^(NSString *channelName, NSUInteger channelNameIdx,
-                                               BOOL *channelNamesEnumerator) {
+    [channelsName enumerateObjectsUsingBlock:^(NSString *channelName,
+                                               __unused NSUInteger channelNameIdx,
+                                               __unused BOOL *channelNamesEnumerator) {
 
         PNChannel *channel = [PNChannel channelWithName:channelName];
         if (channel) {
@@ -331,7 +332,8 @@ static OSSpinLock _channelsCacheSpinlock = OS_SPINLOCK_INIT;
         self.presenceUpdateDate = [PNDate dateWithDate:[NSDate date]];
         self.participantsCount = participantsCount;
         self.participantsList = [NSMutableDictionary new];
-        [participants enumerateObjectsUsingBlock:^(PNClient *client, NSUInteger clientIdx, BOOL *clientEnumeratorStop) {
+        [participants enumerateObjectsUsingBlock:^(PNClient *client, __unused NSUInteger clientIdx,
+                                                   __unused BOOL *clientEnumeratorStop) {
 
             NSString *clientStoreIdentifier = client.identifier;
             if ([client isAnonymous]) {

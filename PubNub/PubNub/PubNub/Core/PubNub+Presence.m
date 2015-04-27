@@ -41,6 +41,8 @@
  @param callbackToken               Reference on callback token under which stored block passed by
                                     user on API usage. This block will be reused because of method
                                     rescheduling.
+ @param numberOfRetriesOnError      How many times re-scheduled request already re-sent because of
+                                    error.
  @param handleBlock                 The block which will be called by \b PubNub client as soon as
                                     participants list request operation will be completed. The block
                                     takes three arguments: \c clients - array of \b PNClient
@@ -61,6 +63,7 @@
          clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                        clientState:(BOOL)shouldFetchClientState
           rescheduledCallbackToken:(NSString *)callbackToken
+            numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock;
 
 /**
@@ -81,6 +84,8 @@
  @param callbackToken               Reference on callback token under which stored block passed by
                                     user on API usage. This block will be reused because of method
                                     rescheduling.
+ @param numberOfRetriesOnError      How many times re-scheduled request already re-sent because of
+                                    error.
  @param handleBlock                 The block which will be called by \b PubNub client as soon as
                                     participants list request operation will be completed. The block
                                     takes three arguments: \c clients - array of \b PNClient
@@ -98,28 +103,31 @@
                  clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                                clientState:(BOOL)shouldFetchClientState
                   rescheduledCallbackToken:(NSString *)callbackToken
+                    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                        withCompletionBlock:(id)handleBlock;
 
 /**
  @brief Final designated method which allow to participant channels information depending on
         provided set of parameters.
 
- @param clientIdentifier Client identifier for which \b PubNub client should get list of channels in
-                         which it reside.
- @param callbackToken    Reference on callback token under which stored block passed by user on API
-                         usage. This block will be reused because of method rescheduling.
- @param handleBlock      The block which will be called by \b PubNub client as soon as participant
-                         channels list request operation will be completed. The block takes three
-                         arguments: \c clientIdentifier - identifier for which \b PubNub client
-                         search for channels; \c channels - is list of \b PNChannel instances in
-                         which \c clientIdentifier has been found as subscriber; \c error -
-                         describes what exactly went wrong (check error code and compare it with
-                         \b PNErrorCodes ).
+ @param clientIdentifier       Client identifier for which \b PubNub client should get list of
+                               channels in which it reside.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handleBlock            The block which will be called by \b PubNub client as soon as
+                               participant channels list request operation will be completed. The
+                               block takes three arguments: \c clientIdentifier - identifier for
+                               which \b PubNub client search for channels; \c channels - is list of
+                               \b PNChannel instances in which \c clientIdentifier has been found as
+                               subscriber; \c error - describes what exactly went wrong (check error
+                               code and compare it with \b PNErrorCodes ).
 
  @since 3.6.0
  */
 - (void)requestParticipantChannelsList:(NSString *)clientIdentifier
               rescheduledCallbackToken:(NSString *)callbackToken
+                numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                    withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock;
 
 /**
@@ -128,20 +136,22 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
 
- @param clientIdentifier Client identifier for which \b PubNub client should get list of channels in
-                         which it reside.
- @param callbackToken    Reference on callback token under which stored block passed by user on API
-                         usage. This block will be reused because of method rescheduling.
- @param handleBlock      The block which will be called by \b PubNub client as soon as participant
-                         channels list request operation will be completed. The block takes three
-                         arguments: \c clientIdentifier - identifier for which \b PubNub client
-                         search for channels; \c channels - is list of \b PNChannel instances in
-                         which \c clientIdentifier has been found as subscriber; \c error -
-                         describes what exactly went wrong (check error code and compare it with
-                         \b PNErrorCodes ).
+ @param clientIdentifier       Client identifier for which \b PubNub client should get list of
+                               channels in which it reside.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handleBlock            The block which will be called by \b PubNub client as soon as
+                               participant channels list request operation will be completed. The
+                               block takes three arguments: \c clientIdentifier - identifier for
+                               which \b PubNub client search for channels; \c channels - is list of
+                               \b PNChannel instances in which \c clientIdentifier has been found as
+                               subscriber; \c error - describes what exactly went wrong (check error
+                               code and compare it with \b PNErrorCodes ).
  */
 - (void)postponeRequestParticipantChannelsList:(NSString *)clientIdentifier
                       rescheduledCallbackToken:(NSString *)callbackToken
+                        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                            withCompletionBlock:(id)handleBlock;
 
 
@@ -159,7 +169,7 @@
                                                   andCallbackToken:(NSString *)callbackToken;
 
 /**
- @Brief This method will notify delegate about that participant channels list download error
+ @brief This method will notify delegate about that participant channels list download error
         occurred.
 
  @param error         \b PNError instance which hold information about what exactly went wrong
@@ -459,15 +469,16 @@
 
     [self requestParticipantsListFor:channelObjects
            clientIdentifiersRequired:isClientIdentifiersRequired
-                         clientState:shouldFetchClientState rescheduledCallbackToken:nil
-                 withCompletionBlock:handleBlock];
+                         clientState:shouldFetchClientState
+            rescheduledCallbackToken:nil numberOfRetriesOnError:0 withCompletionBlock:handleBlock];
 }
 
 - (void)requestParticipantsListFor:(NSArray *)channelObjects
          clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                        clientState:(BOOL)shouldFetchClientState
           rescheduledCallbackToken:(NSString *)callbackToken
-               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock; {
+            numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+               withCompletionBlock:(PNClientParticipantsHandlingBlock)handleBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
     // survive till asynchronous operation will complete.
@@ -507,6 +518,7 @@
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -544,6 +556,7 @@
                            clientIdentifiersRequired:isClientIdentifiersRequired
                                          clientState:shouldFetchClientState
                             rescheduledCallbackToken:callbackToken
+                              numberOfRetriesOnError:numberOfRetriesOnError
                                  withCompletionBlock:handleBlock];
         } burstExecutionLockingOperation:NO];
     }];
@@ -553,14 +566,15 @@
                  clientIdentifiersRequired:(BOOL)isClientIdentifiersRequired
                                clientState:(BOOL)shouldFetchClientState
                   rescheduledCallbackToken:(NSString *)callbackToken
+                    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                        withCompletionBlock:(id)handleBlock {
     
-    SEL targetSelector = @selector(requestParticipantsListFor:clientIdentifiersRequired:clientState:rescheduledCallbackToken:withCompletionBlock:);
+    SEL targetSelector = @selector(requestParticipantsListFor:clientIdentifiersRequired:clientState:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionBlock:);
     id handleBlockCopy = (handleBlock ? [handleBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:channelObjects], @(isClientIdentifiersRequired),
                              @(shouldFetchClientState), [PNHelper nilifyIfNotSet:callbackToken],
-                             [PNHelper nilifyIfNotSet:handleBlockCopy]]
+                             @(numberOfRetriesOnError), [PNHelper nilifyIfNotSet:handleBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
 
@@ -573,11 +587,12 @@
                    withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
 
     [self requestParticipantChannelsList:clientIdentifier rescheduledCallbackToken:nil
-                     withCompletionBlock:handleBlock];
+                  numberOfRetriesOnError:0 withCompletionBlock:handleBlock];
 }
 
 - (void)requestParticipantChannelsList:(NSString *)clientIdentifier
               rescheduledCallbackToken:(NSString *)callbackToken
+                numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                    withCompletionBlock:(PNClientParticipantChannelsHandlingBlock)handleBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
@@ -616,6 +631,7 @@
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
             else {
@@ -650,6 +666,7 @@
 
             [self postponeRequestParticipantChannelsList:clientIdentifier
                                 rescheduledCallbackToken:callbackToken
+                                  numberOfRetriesOnError:numberOfRetriesOnError
                                      withCompletionBlock:handleBlock];
         } burstExecutionLockingOperation:NO];
     }];
@@ -657,13 +674,14 @@
 
 - (void)postponeRequestParticipantChannelsList:(NSString *)clientIdentifier
                       rescheduledCallbackToken:(NSString *)callbackToken
+                        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                            withCompletionBlock:(id)handleBlock {
     
-    SEL targetSelector = @selector(requestParticipantChannelsList:rescheduledCallbackToken:withCompletionBlock:);
+    SEL targetSelector = @selector(requestParticipantChannelsList:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionBlock:);
     id handleBlockCopy = (handleBlock ? [handleBlock copy] : nil);
     [self postponeSelector:targetSelector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handleBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -793,7 +811,7 @@ didFailParticipantChannelsListDownloadForIdentifier:error.associatedObject
     }];
 }
 
-- (void)                  serviceChannel:(PNServiceChannel *)serviceChannel
+- (void)                  serviceChannel:(PNServiceChannel *)__unused serviceChannel
   didFailParticipantsListLoadForChannels:(NSArray *)channels withError:(PNError *)error
                               forRequest:(PNBaseRequest *)request {
 
@@ -807,18 +825,21 @@ didFailParticipantChannelsListDownloadForIdentifier:error.associatedObject
     else {
         
         [self rescheduleMethodCall:^{
+
+            NSDictionary *options = (NSDictionary *)[error.associatedObject valueForKey:@"data"];
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
                 return @[PNLoggerSymbols.api.rescheduleParticipantsListRequest,
                          [self humanReadableStateFrom:self.state]];
             }];
-            
-            NSDictionary *options = (NSDictionary *)error.associatedObject;
+
             [self requestParticipantsListFor:channels
                    clientIdentifiersRequired:[[options valueForKey:@"clientIdentifiersRequired"] boolValue]
                                  clientState:[[options valueForKey:@"fetchClientState"] boolValue]
-                    rescheduledCallbackToken:callbackToken withCompletionBlock:nil];
+                    rescheduledCallbackToken:callbackToken numberOfRetriesOnError:retryCountOnError
+                         withCompletionBlock:nil];
         }];
     }
 }
@@ -862,7 +883,7 @@ didFailParticipantChannelsListDownloadForIdentifier:error.associatedObject
     }];
 }
 
-- (void)                           serviceChannel:(PNServiceChannel *)serviceChannel
+- (void)                           serviceChannel:(PNServiceChannel *)__unused serviceChannel
   didFailParticipantChannelsListLoadForIdentifier:(NSString *)clientIdentifier
                                         withError:(PNError *)error
                                        forRequest:(PNBaseRequest *)request {
@@ -877,6 +898,8 @@ didFailParticipantChannelsListDownloadForIdentifier:error.associatedObject
     else {
         
         [self rescheduleMethodCall:^{
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -884,8 +907,8 @@ didFailParticipantChannelsListDownloadForIdentifier:error.associatedObject
                          [self humanReadableStateFrom:self.state]];
             }];
 
-            [self requestParticipantChannelsList:clientIdentifier
-                        rescheduledCallbackToken:callbackToken withCompletionBlock:nil];
+            [self requestParticipantChannelsList:clientIdentifier rescheduledCallbackToken:callbackToken
+                          numberOfRetriesOnError:retryCountOnError withCompletionBlock:nil];
         }];
     }
 }

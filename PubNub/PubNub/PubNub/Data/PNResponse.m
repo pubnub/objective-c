@@ -310,8 +310,9 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
         }
 
         NSArray *unprocessedDataKeys = [processedData allKeys];
-        [unprocessedDataKeys enumerateObjectsUsingBlock:^(NSString *dataKey, NSUInteger dataKeyIdx,
-                                                             BOOL *dataKeyEnumeratorStop) {
+        [unprocessedDataKeys enumerateObjectsUsingBlock:^(NSString *dataKey,
+                                                          __unused NSUInteger dataKeyIdx,
+                                                          __unused BOOL *dataKeyEnumeratorStop) {
 
             // Checking on whether key conforms to PubNub service "private" data template or not.
             if ([dataKey rangeOfString:PNServiceResponseServiceDataKeys.privateData
@@ -327,8 +328,9 @@ struct PNServiceResponseCallbacksStruct PNServiceResponseCallbacks = {
 
             if (isPayloadFound) {
 
-                [unprocessedDataKeys enumerateObjectsUsingBlock:^(NSString *dataKey, NSUInteger dataKeyIdx,
-                                                                  BOOL *dataKeyEnumeratorStop) {
+                [unprocessedDataKeys enumerateObjectsUsingBlock:^(NSString *dataKey,
+                                                                  __unused NSUInteger dataKeyIdx,
+                                                                  __unused BOOL *dataKeyEnumeratorStop) {
 
                     [self.unknownData setValue:[processedData valueForKey:dataKey] forKey:dataKey];
                     [processedData removeObjectForKey:dataKey];

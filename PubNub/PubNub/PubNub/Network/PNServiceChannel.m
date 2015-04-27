@@ -509,8 +509,9 @@
                     PNHereNow *presenceInformation = (PNHereNow *) parsedData;
                     NSArray *channelsWithData = [presenceInformation channels];
 
-                    [channelsWithData enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
-                            BOOL *channelEnumeratorStop) {
+                    [channelsWithData enumerateObjectsUsingBlock:^(PNChannel *channel,
+                                                                   __unused NSUInteger channelIdx,
+                                                                   __unused BOOL *channelEnumeratorStop) {
                         if (!channel.isChannelGroup) {
 
                             [channel updateWithParticipantsList:[presenceInformation participantsForChannel:channel]
@@ -782,6 +783,11 @@
     // Check whether request is 'Time token' request or not
     else if ([request isKindOfClass:[PNTimeTokenRequest class]]) {
 
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+
+            [error replaceAssociatedObject:[@{@"errorCounter":@(request.retryCount)} copy]];
+        }
+
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
             return @[PNLoggerSymbols.connectionChannel.service.timeTokenRequestFailed, (self.name ? self.name : self),
@@ -800,8 +806,13 @@
                                                  channel:[request valueForKey:@"channel"] andData:clientData];
 
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            [error replaceAssociatedObject:client];
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (client) {
+
+                [replacementObject setValue:client forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
         }
 
         NSString *symbolCode = PNLoggerSymbols.connectionChannel.service.clientStateAuditRequestFailed;
@@ -859,8 +870,13 @@
             }
         }
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            [error replaceAssociatedObject:object];
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (object) {
+
+                [replacementObject setValue:object forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
         }
         
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -898,6 +914,11 @@
     }
     // Check whether request for channel group namespaces request or not
     else if ([request isKindOfClass:[PNChannelGroupNamespacesRequest class]]) {
+
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+
+            [error replaceAssociatedObject:[@{@"errorCounter":@(request.retryCount)} copy]];
+        }
         
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
             
@@ -916,8 +937,13 @@
         NSString *symbol = (change.addingChannels ? PNLoggerSymbols.connectionChannel.service.channelsAdditionToGroupRequestFailed :
                                                     PNLoggerSymbols.connectionChannel.service.channelsRemovalFromGroupRequestFailed);
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            [error replaceAssociatedObject:change];
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (change) {
+
+                [replacementObject setValue:change forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
         }
         
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -931,6 +957,16 @@
     }
     // Check whether this is 'Post message' request or not
     else if ([request isKindOfClass:[PNMessagePostRequest class]]) {
+
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (((PNMessagePostRequest *) request).message) {
+
+                [replacementObject setValue:((PNMessagePostRequest *) request).message forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
+        }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
             
@@ -964,7 +1000,13 @@
                 
                 [options setValue:historyRequest.endDate forKey:@"endDate"];
             }
-            [error replaceAssociatedObject:options];
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (options) {
+
+                [replacementObject setValue:options forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
         }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -987,8 +1029,15 @@
         PNHereNowRequest *hereNowRequest = (PNHereNowRequest *)request;
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
             
-            [error replaceAssociatedObject:[@{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
-                                              @"fetchClientState":@(hereNowRequest.shouldFetchClientState)} copy]];
+            NSDictionary *options = @{@"clientIdentifiersRequired":@(hereNowRequest.isClientIdentifiersRequired),
+                                      @"fetchClientState":@(hereNowRequest.shouldFetchClientState)};
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (options) {
+
+                [replacementObject setValue:options forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
         }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -1005,6 +1054,16 @@
     }
     // Check whether this is 'Where now' request or not
     else if ([request isKindOfClass:[PNWhereNowRequest class]]) {
+
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if ( ((PNWhereNowRequest *)request).identifier) {
+
+                [replacementObject setValue:((PNWhereNowRequest *)request).identifier forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
+        }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -1023,11 +1082,18 @@
 
         NSArray *channels = ((PNPushNotificationsStateChangeRequest *)request).channels;
         NSString *targetState = ((PNPushNotificationsStateChangeRequest *)request).targetState;
+        NSData *devicePushToken = ((PNPushNotificationsStateChangeRequest *)request).devicePushToken;
         
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            [error replaceAssociatedObject:((PNPushNotificationsStateChangeRequest *)request).devicePushToken];
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (devicePushToken) {
+
+                [replacementObject setValue:devicePushToken forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
         }
+
         if ([targetState isEqualToString:PNPushNotificationsState.enable]) {
 
             [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -1057,17 +1123,22 @@
     else if ([request isKindOfClass:[PNPushNotificationsRemoveRequest class]]) {
         
         NSData *devicePushToken = ((PNPushNotificationsRemoveRequest *)request).devicePushToken;
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (devicePushToken) {
+
+                [replacementObject setValue:devicePushToken forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
+        }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
             return @[PNLoggerSymbols.connectionChannel.service.pushNotificationRemoveRequestFailed, (self.name ? self.name : self),
                     (devicePushToken ? devicePushToken : [NSNull null]), (error ? error : [NSNull null])];
         }];
-        
-        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            [error replaceAssociatedObject:((PNPushNotificationsRemoveRequest *)request).devicePushToken];
-        }
+
         [self.serviceDelegate serviceChannel:self didFailPushNotificationsRemoveWithError:error
                                   forRequest:request];
     }
@@ -1075,17 +1146,22 @@
     else if ([request isKindOfClass:[PNPushNotificationsEnabledChannelsRequest class]]) {
         
         NSData *devicePushToken = ((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken;
+        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (devicePushToken) {
+
+                [replacementObject setValue:devicePushToken forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
+        }
 
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
             return @[PNLoggerSymbols.connectionChannel.service.pushNotificationsAuditRequestFailed, (self.name ? self.name : self),
                     (devicePushToken ? devicePushToken : [NSNull null]), (error ? error : [NSNull null])];
         }];
-        
-        if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            [error replaceAssociatedObject:((PNPushNotificationsEnabledChannelsRequest *)request).devicePushToken];
-        }
+
         [self.serviceDelegate serviceChannel:self didFailPushNotificationEnabledChannelsReceiveWithError:error
                                   forRequest:request];
     }
@@ -1093,10 +1169,14 @@
     else if ([request isKindOfClass:[PNChangeAccessRightsRequest class]]) {
         
         PNAccessRightOptions *options = ((PNChangeAccessRightsRequest *)request).accessRightOptions;
-
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            [error replaceAssociatedObject:options];
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (options) {
+
+                [replacementObject setValue:options forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
         }
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -1113,11 +1193,16 @@
     else if ([request isKindOfClass:[PNAccessRightsAuditRequest class]]) {
         
         PNAccessRightOptions *options = ((PNAccessRightsAuditRequest *)request).accessRightOptions;
-
         if (error.code == kPNRequestCantBeProcessedWithOutRescheduleError) {
-            
-            [error replaceAssociatedObject:((PNAccessRightsAuditRequest *)request).accessRightOptions];
+
+            NSMutableDictionary *replacementObject = [@{@"errorCounter":@(request.retryCount)} mutableCopy];
+            if (options) {
+
+                [replacementObject setValue:options forKey:@"data"];
+            }
+            [error replaceAssociatedObject:[replacementObject copy]];
         }
+
         [PNLogger logCommunicationChannelErrorMessageFrom:self withParametersFromBlock:^NSArray *{
 
             return @[PNLoggerSymbols.connectionChannel.service.accessRightsAuditRequestFailed, (self.name ? self.name : self),
@@ -1140,8 +1225,9 @@
 
     [self pn_dispatchBlock:^{
 
-        [requestsList enumerateObjectsUsingBlock:^(NSString *requestIdentifier, NSUInteger requestIdentifierIdx,
-                                                   BOOL *requestIdentifierEnumeratorStop) {
+        [requestsList enumerateObjectsUsingBlock:^(NSString *requestIdentifier,
+                                                   __unused NSUInteger requestIdentifierIdx,
+                                                   __unused BOOL *requestIdentifierEnumeratorStop) {
 
             PNBaseRequest *request = [self requestWithIdentifier:requestIdentifier];
 
@@ -1164,8 +1250,9 @@
 
             __block NSUInteger requestIdentifierIdx = 0;
             [requestsList enumerateObjectsWithOptions:NSEnumerationReverse
-                                           usingBlock:^(NSDictionary *requestData, NSUInteger requestDataIdx,
-                                                   BOOL *requestDataEnumeratorStop) {
+                                           usingBlock:^(NSDictionary *requestData,
+                                                        __unused NSUInteger requestDataIdx,
+                                                        __unused BOOL *requestDataEnumeratorStop) {
 
                 PNBaseRequest *request = [requestData valueForKey:PNRequestForReschedule.request];
                 [request resetWithRetryCount:shouldResetRequestsRetryCount];
@@ -1174,9 +1261,13 @@
                 // Clean up query (if request has been stored in it)
                 [self destroyRequest:request];
 
+                NSInteger errorCode = kPNRequestCantBeProcessedWithOutRescheduleError;
+                if (![request canRetry]) {
+                   
+                    errorCode = kPNResponseMalformedJSONError;
+                }
                 [self requestsQueue:nil didFailRequestSend:request
-                              error:[PNError errorWithCode:kPNRequestCantBeProcessedWithOutRescheduleError]
-                          withBlock:^{
+                              error:[PNError errorWithCode:errorCode] withBlock:^{
 
                     if (requestIdentifierIdx == ([requestsList count] - 1)) {
 
@@ -1644,7 +1735,7 @@
     }];
 }
 
-- (void)shouldRequestsQueue:(PNRequestsQueue *)queue removeCompletedRequest:(PNBaseRequest *)request
+- (void)shouldRequestsQueue:(PNRequestsQueue *)__unused queue removeCompletedRequest:(PNBaseRequest *)request
             checkCompletion:(void(^)(BOOL))checkCompletionBlock {
 
     [self pn_dispatchBlock:^{

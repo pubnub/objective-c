@@ -49,7 +49,9 @@
  @param callbackToken               Reference on callback token under which stored block passed by
                                     user on API usage. This block will be reused because of method
                                     rescheduling.
- @param handlerBlock                The block which will be called by \b PubNub client as soon as
+@param numberOfRetriesOnError       How many times re-scheduled request already re-sent because of
+                                    error.
+ @param handleBlock                 The block which will be called by \b PubNub client as soon as
                                     history request will be completed. The block takes five
                                     arguments: \c messages - array of \b PNMessage instances which
                                     represent messages sent to the specified \c channel;
@@ -65,6 +67,7 @@
                            limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
               includingTimeToken:(BOOL)shouldIncludeTimeToken
         rescheduledCallbackToken:(NSString *)callbackToken
+          numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock;
 
 /**
@@ -89,7 +92,9 @@
  @param callbackToken               Reference on callback token under which stored block passed by
                                     user on API usage. This block will be reused because of method
                                     rescheduling.
- @param handlerBlock                The block which will be called by \b PubNub client as soon as
+@param numberOfRetriesOnError       How many times re-scheduled request already re-sent because of
+                                    error.
+ @param handleBlock                 The block which will be called by \b PubNub client as soon as
                                     history request will be completed. The block takes five
                                     arguments: \c messages - array of \b PNMessage instances which
                                     represent messages sent to the specified \c channel;
@@ -106,6 +111,7 @@
                           reverseHistory:(BOOL)shouldReverseMessageHistory
                       includingTimeToken:(BOOL)shouldIncludeTimeToken
                 rescheduledCallbackToken:(NSString *)callbackToken
+                  numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                      withCompletionBlock:(id)handleBlock;
 
 
@@ -561,13 +567,14 @@
     [self requestHistoryForChannel:channel from:startDate to:endDate limit:limit
                     reverseHistory:shouldReverseMessageHistory
                 includingTimeToken:shouldIncludeTimeToken rescheduledCallbackToken:nil
-               withCompletionBlock:handleBlock];
+            numberOfRetriesOnError:0 withCompletionBlock:handleBlock];
 }
 
 - (void)requestHistoryForChannel:(PNChannel *)channel from:(PNDate *)startDate to:(PNDate *)endDate
                            limit:(NSUInteger)limit reverseHistory:(BOOL)shouldReverseMessageHistory
               includingTimeToken:(BOOL)shouldIncludeTimeToken
         rescheduledCallbackToken:(NSString *)callbackToken
+          numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
              withCompletionBlock:(PNClientHistoryLoadHandlingBlock)handleBlock {
     
     [self pn_dispatchBlock:^{
@@ -606,6 +613,7 @@
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -638,11 +646,11 @@
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeRequestHistoryForChannel:channel from:startDate to:endDate
-                                             limit:limit
+            [self postponeRequestHistoryForChannel:channel from:startDate to:endDate limit:limit
                                     reverseHistory:shouldReverseMessageHistory
                                 includingTimeToken:shouldIncludeTimeToken
                           rescheduledCallbackToken:callbackToken
+                            numberOfRetriesOnError:numberOfRetriesOnError
                                withCompletionBlock:handleBlock];
         } burstExecutionLockingOperation:NO];
     }];
@@ -653,15 +661,16 @@
                           reverseHistory:(BOOL)shouldReverseMessageHistory
                       includingTimeToken:(BOOL)shouldIncludeTimeToken
                 rescheduledCallbackToken:(NSString *)callbackToken
+                  numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                      withCompletionBlock:(id)handleBlock {
     
-    SEL selector = @selector(requestHistoryForChannel:from:to:limit:reverseHistory:includingTimeToken:rescheduledCallbackToken:withCompletionBlock:);
+    SEL selector = @selector(requestHistoryForChannel:from:to:limit:reverseHistory:includingTimeToken:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionBlock:);
     id handlerBlockCopy = (handleBlock ? [handleBlock copy] : nil);
     [self postponeSelector:selector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:channel], [PNHelper nilifyIfNotSet:startDate],
                              [PNHelper nilifyIfNotSet:endDate], @(limit),
                              @(shouldReverseMessageHistory), @(shouldIncludeTimeToken),
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -714,8 +723,9 @@
             // In case if cryptor configured and ready to go, message will be decrypted.
             if (self.cryptoHelper.ready) {
 
-                [history.messages enumerateObjectsUsingBlock:^(PNMessage *message, NSUInteger messageIdx,
-                        BOOL *messageEnumeratorStop) {
+                [history.messages enumerateObjectsUsingBlock:^(PNMessage *message,
+                                                               __unused NSUInteger messageIdx,
+                                                               __unused BOOL *messageEnumeratorStop) {
 
                     message.message = [self AESDecrypt:message.message];
                 }];
@@ -746,7 +756,7 @@
     }];
 }
 
-- (void)           serviceChannel:(PNServiceChannel *)serviceChannel
+- (void)           serviceChannel:(PNServiceChannel *)__unused serviceChannel
   didFailHisoryDownloadForChannel:(PNChannel *)channel
                         withError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
@@ -767,13 +777,15 @@
                          [self humanReadableStateFrom:self.state]];
             }];
             
-            NSDictionary *options = (NSDictionary *)error.associatedObject;
+            NSDictionary *options = (NSDictionary *)[error.associatedObject valueForKey:@"data"];
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             [self requestHistoryForChannel:channel from:[options valueForKey:@"startDate"]
                                         to:[options valueForKey:@"endDate"]
-                                     limit:[[options valueForKey:@"limit"] integerValue]
+                                     limit:[[options valueForKey:@"limit"] unsignedIntegerValue]
                             reverseHistory:[[options valueForKey:@"revertMessages"] boolValue]
                         includingTimeToken:[[options valueForKey:@"includeTimeToken"] boolValue]
-                  rescheduledCallbackToken:callbackToken withCompletionBlock:nil];
+                  rescheduledCallbackToken:callbackToken numberOfRetriesOnError:retryCountOnError
+                       withCompletionBlock:nil];
         }];
     }
 }

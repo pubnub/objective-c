@@ -34,29 +34,31 @@
  @brief Extension of -sendMessage:toChannel:compressed:storeInHistory:withCompletionBlock: and allow
         specify whether handler block should be replaced or not.
 
- @param message               Object which should be sent to \b PubNub cloud
- @param channel               \b PNChannel instance into which message should be sent.
- @param shouldCompressMessage \c YES in case if message should be compressed before sending to the
-                              PubNub service.
- @param shouldStoreInHistory  \c YES in case if message should be stored on \b PubNub service side
-                              and become available with History API.
- @param callbackToken         Reference on callback token under which stored block passed by user on
-                              API usage. This block will be reused because of method rescheduling.
- @param success               Handler block which is called by \b PubNub client when message sending
-                              process state changes. Block pass two arguments: \c state - one of
-                              \b PNMessageState fields which represent current message sending
-                              process stage; \c data - depending on current state, there can be
-                              stored \b PNMessage instance which represent message payload or
-                              \b PNError instance which hold information about why message sending
-                              process failed. Always check \a error.code to find out what caused
-                              error (check PNErrorCodes header file and use \a -localizedDescription
-                              / \a -localizedFailureReason and \a -localizedRecoverySuggestion to
-                              get human readable description for error).
+ @param message                Object which should be sent to \b PubNub cloud
+ @param channel                \b PNChannel instance into which message should be sent.
+ @param shouldCompressMessage  \c YES in case if message should be compressed before sending to the
+                               PubNub service.
+ @param shouldStoreInHistory   \c YES in case if message should be stored on \b PubNub service side
+                               and become available with History API.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param success                Handler block which is called by \b PubNub client when message sending
+                               process state changes. Block pass two arguments: \c state - one of
+                               \b PNMessageState fields which represent current message sending
+                               process stage; \c data - depending on current state, there can be
+                               stored \b PNMessage instance which represent message payload or
+                               \b PNError instance which hold information about why message sending
+                               process failed. Always check \a error.code to find out what caused
+                               error (check PNErrorCodes header file and use \a -localizedDescription
+                               / \a -localizedFailureReason and \a -localizedRecoverySuggestion to
+                               get human readable description for error).
  */
-- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id <NSObject, NSCopying>)message toChannel:(PNChannel *)channel
           alreadyEncrypted:(BOOL)alreadyEncrypted compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
   rescheduledCallbackToken:(NSString *)callbackToken
+    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
        withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 /**
@@ -65,29 +67,31 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
  
- @param message               Object which should be sent to \b PubNub cloud
- @param channel               \b PNChannel instance into which message should be sent.
- @param shouldCompressMessage \c YES in case if message should be compressed before sending to the
-                              PubNub service.
- @param shouldStoreInHistory  \c YES in case if message should be stored on \b PubNub service side
-                              and become available with History API.
- @param callbackToken         Reference on callback token under which stored block passed by user on
-                              API usage. This block will be reused because of method rescheduling.
- @param success               Handler block which is called by \b PubNub client when message sending
-                              process state changes. Block pass two arguments: \c state - one of
-                              \b PNMessageState fields which represent current message sending
-                              process stage; \c data - depending on current state, there can be
-                              stored \b PNMessage instance which represent message payload or
-                              \b PNError instance which hold information about why message sending
-                              process failed. Always check \a error.code to find out what caused
-                              error (check PNErrorCodes header file and use \a -localizedDescription
-                              / \a -localizedFailureReason and \a -localizedRecoverySuggestion to
-                              get human readable description for error).
+ @param message                Object which should be sent to \b PubNub cloud
+ @param channel                \b PNChannel instance into which message should be sent.
+ @param shouldCompressMessage  \c YES in case if message should be compressed before sending to the
+                               PubNub service.
+ @param shouldStoreInHistory   \c YES in case if message should be stored on \b PubNub service side
+                               and become available with History API.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param success                Handler block which is called by \b PubNub client when message sending
+                               process state changes. Block pass two arguments: \c state - one of
+                               \b PNMessageState fields which represent current message sending
+                               process stage; \c data - depending on current state, there can be
+                               stored \b PNMessage instance which represent message payload or
+                               \b PNError instance which hold information about why message sending
+                               process failed. Always check \a error.code to find out what caused
+                               error (check PNErrorCodes header file and use \a -localizedDescription
+                               / \a -localizedFailureReason and \a -localizedRecoverySuggestion to
+                               get human readable description for error).
  */
-- (void)postponeSendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
+- (void)postponeSendMessage:(id <NSObject, NSCopying>)message toChannel:(PNChannel *)channel
            alreadyEncrypted:(BOOL)alreadyEncrypted compressed:(BOOL)shouldCompressMessage
              storeInHistory:(BOOL)shouldStoreInHistory
    rescheduledCallbackToken:(NSString *)callbackToken
+     numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
         withCompletionBlock:(PNClientMessageProcessingBlock)success;
 
 
@@ -121,7 +125,7 @@
 
 #pragma mark - Class (singleton) methods
 
-+ (PNMessage *)sendMessage:(id)message toChannel:(PNChannel *)channel {
++ (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel {
     
     return [self sendMessage:message toChannel:channel withCompletionBlock:nil];
 }
@@ -583,13 +587,14 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
     return [self sendMessage:message toChannel:channel alreadyEncrypted:NO
                   compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory
-    rescheduledCallbackToken:nil withCompletionBlock:success];
+    rescheduledCallbackToken:nil numberOfRetriesOnError:0 withCompletionBlock:success];
 }
 
-- (PNMessage *)sendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
+- (PNMessage *)sendMessage:(id <NSObject, NSCopying>)message toChannel:(PNChannel *)channel
           alreadyEncrypted:(BOOL)alreadyEncrypted compressed:(BOOL)shouldCompressMessage
             storeInHistory:(BOOL)shouldStoreInHistory
   rescheduledCallbackToken:(NSString *)callbackToken
+    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
        withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
     [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -680,6 +685,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
                                                                to:request.shortIdentifier];
             }
 
+            request.retryCount = numberOfRetriesOnError;
             [self sendRequest:request shouldObserveProcessing:YES];
         }
             // Looks like client can't send request because of some reasons
@@ -716,26 +722,28 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
         [self postponeSendMessage:message toChannel:channel alreadyEncrypted:alreadyEncrypted
                        compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory
-         rescheduledCallbackToken:callbackToken withCompletionBlock:success];
+         rescheduledCallbackToken:callbackToken numberOfRetriesOnError:numberOfRetriesOnError
+              withCompletionBlock:success];
     } burstExecutionLockingOperation:NO];
 
 
     return messageObject;
 }
 
-- (void)postponeSendMessage:(id<NSObject, NSCopying>)message toChannel:(PNChannel *)channel
+- (void)postponeSendMessage:(id <NSObject, NSCopying>)message toChannel:(PNChannel *)channel
            alreadyEncrypted:(BOOL)alreadyEncrypted compressed:(BOOL)shouldCompressMessage
              storeInHistory:(BOOL)shouldStoreInHistory
    rescheduledCallbackToken:(NSString *)callbackToken
+     numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
         withCompletionBlock:(PNClientMessageProcessingBlock)success {
     
     id successCopy = (success ? [success copy] : nil);
-    [self postponeSelector:@selector(sendMessage:toChannel:alreadyEncrypted:compressed:storeInHistory:rescheduledCallbackToken:withCompletionBlock:)
+    [self postponeSelector:@selector(sendMessage:toChannel:alreadyEncrypted:compressed:storeInHistory:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionBlock:)
                  forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:message],
                              [PNHelper nilifyIfNotSet:channel], @(alreadyEncrypted),
                              @(shouldCompressMessage), @(shouldStoreInHistory),
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:successCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -943,10 +951,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
      storeInHistory:(BOOL)shouldStoreInHistory
 withCompletionBlock:(PNClientMessageProcessingBlock)success {
 
-    [self sendMessage:message.message toChannel:message.channel
-     alreadyEncrypted:message.isContentEncrypted compressed:shouldCompressMessage
-       storeInHistory:shouldStoreInHistory rescheduledCallbackToken:nil
-  withCompletionBlock:success];
+    [self sendMessage:message.message toChannel:message.channel alreadyEncrypted:message.isContentEncrypted compressed:shouldCompressMessage storeInHistory:shouldStoreInHistory rescheduledCallbackToken:nil numberOfRetriesOnError:0 withCompletionBlock:success];
 }
 
 
@@ -1140,7 +1145,7 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
     }];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel didFailMessageSend:(PNMessage *)message
+- (void)serviceChannel:(PNServiceChannel *)__unused schannel didFailMessageSend:(PNMessage *)message
              withError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -1153,7 +1158,9 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
     else {
         
         [self rescheduleMethodCall:^{
-            
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
+
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
                 return @[PNLoggerSymbols.api.rescheduleMessageSending,
@@ -1161,10 +1168,9 @@ withCompletionBlock:(PNClientMessageProcessingBlock)success {
             }];
 
             [self sendMessage:message.message toChannel:message.channel
-             alreadyEncrypted:message.isContentEncrypted
-                   compressed:message.shouldCompressMessage
+             alreadyEncrypted:message.isContentEncrypted compressed:message.shouldCompressMessage
                storeInHistory:message.shouldStoreInHistory rescheduledCallbackToken:callbackToken
-          withCompletionBlock:nil];
+       numberOfRetriesOnError:retryCountOnError withCompletionBlock:nil];
         }];
     }
 }

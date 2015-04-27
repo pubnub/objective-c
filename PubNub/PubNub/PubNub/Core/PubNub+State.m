@@ -36,24 +36,26 @@
 
  @discussion Retrieve client's information stored within channel or channel group.
 
- @param clientIdentifier Client identifier for which \b PubNub client should retrieve state.
- @param object           Object (which conforms to \b PNChannelProtocol data feed object protocol)
-                         for which client's state should be pulled out.
- @param callbackToken    Reference on callback token under which stored block passed by user on API
-                         usage. This block will be reused because of method rescheduling.
- @param handlerBlock     The block which will be called by \b PubNub client as soon as client state
-                         retrieval process operation will be completed. The block takes three
-                         arguments: \c clientIdentifier - identifier for which \b PubNub client
-                         search for channels; \c state - is \b PNDictionary instance which store
-                         state previously bounded to the client at specified channel; \c error -
-                         describes what exactly went wrong (check error code and compare it with
-                         \b PNErrorCodes ).
+ @param clientIdentifier       Client identifier for which \b PubNub client should retrieve state.
+ @param object                 Object (which conforms to \b PNChannelProtocol data feed object
+                               protocol) for which client's state should be pulled out.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as client
+                               state retrieval process operation will be completed. The block takes
+                               three arguments: \c clientIdentifier - identifier for which \b PubNub
+                               client search for channels; \c state - is \b PNDictionary instance
+                               which store state previously bounded to the client at specified
+                               channel; \c error - describes what exactly went wrong (check error
+                               code and compare it with \b PNErrorCodes ).
 
 @since 3.7.0
 */
-- (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
-     rescheduledCallbackToken:(NSString *)callbackToken
-  withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
+- (void)requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
+  rescheduledCallbackToken:(NSString *)callbackToken
+    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock;
 
 /**
  @brief      Postpone client's state fetch user request so it will be executed in future.
@@ -61,77 +63,82 @@
  @discussion Postpone can be because of few cases: \b PubNub client is in connecting or initial
              connection state; another request which has been issued earlier didn't completed yet.
  
- @param clientIdentifier Client identifier for which \b PubNub client should retrieve state.
- @param object           Object (which conforms to \b PNChannelProtocol data feed object protocol)
-                         for which client's state should be pulled out.
- @param callbackToken    Reference on callback token under which stored block passed by user on API
-                         usage. This block will be reused because of method rescheduling.
- @param handlerBlock     The block which will be called by \b PubNub client as soon as client state
-                         retrieval process operation will be completed. The block takes three
-                         arguments: \c clientIdentifier - identifier for which \b PubNub client
-                         search for channels; \c state - is \b PNDictionary instance which store
-                         state previously bounded to the client at specified channel; \c error -
-                         describes what exactly went wrong (check error code and compare it with
-                         \b PNErrorCodes ).
+ @param clientIdentifier       Client identifier for which \b PubNub client should retrieve state.
+ @param object                 Object (which conforms to \b PNChannelProtocol data feed object
+                               protocol) for which client's state should be pulled out.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as client
+                               state retrieval process operation will be completed. The block takes
+                               three arguments: \c clientIdentifier - identifier for which \b PubNub
+                               client search for channels; \c state - is \b PNDictionary instance
+                               which store state previously bounded to the client at specified
+                               channel; \c error - describes what exactly went wrong (check error
+                               code and compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
-- (void)postponeRequestClientState:(NSString *)clientIdentifier
-                         forObject:(id <PNChannelProtocol>)object
+- (void)postponeRequestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
           rescheduledCallbackToken:(NSString *)callbackToken
-        witCompletionHandlingBlock:(id)handlerBlock;
+            numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+       withCompletionHandlingBlock:(id)handlerBlock;
 
 /**
  @brief      Final designated method which allow to update client's state information.
  @discussion Update client's information stored inside of channel or channel group.
  
- @param clientIdentifier Client identifier for which \b PubNub client should bound state.
- @param clientState      \b NSDictionary instance with list of parameters which should be bound to
-                         the client.
- @param object           Object (which conforms to \b PNChannelProtocol data feed object protocol)
-                         for which client's state should be bound.
- @param callbackToken    Reference on callback token under which stored block passed by user on API
-                         usage. This block will be reused because of method rescheduling.
- @param handlerBlock     The block which will be called by \b PubNub client as soon as client state
-                         update process operation will be completed. The block takes three
-                         arguments: \c clientIdentifier - identifier for which \b PubNub client
-                         search for channels; \c channels - is list of \b PNChannel instances in
-                         which \c clientIdentifier has been found as subscriber; \c error -
-                         describes what exactly went wrong (check error code and compare it with
-                         \b PNErrorCodes ).
+ @param clientIdentifier       Client identifier for which \b PubNub client should bound state.
+ @param clientState            \b NSDictionary instance with list of parameters which should be
+                               bound to the client.
+ @param object                 Object (which conforms to \b PNChannelProtocol data feed object
+                               protocol) for which client's state should be bound.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as client
+                               state update process operation will be completed. The block takes
+                               three arguments: \c clientIdentifier - identifier for which \b PubNub
+                               client search for channels; \c channels - is list of \b PNChannel
+                               instances in which \c clientIdentifier has been found as subscriber;
+                               \c error - describes what exactly went wrong (check error code and
+                               compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
-- (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-                    forObject:(id <PNChannelProtocol>)object
-     rescheduledCallbackToken:(NSString *)callbackToken
-  withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock;
+- (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+                forObject:(id <PNChannelProtocol>)object
+ rescheduledCallbackToken:(NSString *)callbackToken
+   numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock;
 
 /**
  @brief      Postpone client's state update user request so it will be executed in future.
  @discussion Postpone can be because of few cases: \b PubNub client is in connecting or initial
              connection state; another request which has been issued earlier didn't completed yet.
  
- @param clientIdentifier Client identifier for which \b PubNub client should bound state.
- @param clientState      \b NSDictionary instance with list of parameters which should be bound to
-                         the client.
- @param object           Object (which conforms to \b PNChannelProtocol data feed object protocol)
-                         for which client's state should be bound.
- @param callbackToken    Reference on callback token under which stored block passed by user on API
-                         usage. This block will be reused because of method rescheduling.
- @param handlerBlock     The block which will be called by \b PubNub client as soon as client state
-                         update process operation will be completed. The block takes three
-                         arguments: \c clientIdentifier - identifier for which \b PubNub client
-                         search for channels; \c channels - is list of \b PNChannel instances in
-                         which \c clientIdentifier has been found as subscriber; \c error -
-                         describes what exactly went wrong (check error code and compare it with
-                         \b PNErrorCodes ).
+ @param clientIdentifier       Client identifier for which \b PubNub client should bound state.
+ @param clientState            \b NSDictionary instance with list of parameters which should be
+                               bound to the client.
+ @param object                 Object (which conforms to \b PNChannelProtocol data feed object
+                               protocol) for which client's state should be bound.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which will be called by \b PubNub client as soon as client
+                               state update process operation will be completed. The block takes
+                               three arguments: \c clientIdentifier - identifier for which \b PubNub
+                               client search for channels; \c channels - is list of \b PNChannel
+                               instances in which \c clientIdentifier has been found as subscriber;
+                               \c error - describes what exactly went wrong (check error code and
+                               compare it with \b PNErrorCodes ).
  
  @since 3.7.0
  */
 - (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                         forObject:(id <PNChannelProtocol>)object
          rescheduledCallbackToken:(NSString *)callbackToken
+           numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
       withCompletionHandlingBlock:(id)handlerBlock;
 
 
@@ -259,12 +266,13 @@ withCompletionHandlingBlock:nil];
   withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 
     [self requestClientState:clientIdentifier forObject:object rescheduledCallbackToken:nil
- withCompletionHandlingBlock:handlerBlock];
+      numberOfRetriesOnError:0 withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)   requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
-     rescheduledCallbackToken:(NSString *)callbackToken
-  withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
+- (void)requestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
+  rescheduledCallbackToken:(NSString *)callbackToken
+    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientStateRetrieveHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
     // survive till asynchronous operation will complete.
@@ -304,6 +312,7 @@ withCompletionHandlingBlock:nil];
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -343,21 +352,24 @@ withCompletionHandlingBlock:nil];
 
             [self postponeRequestClientState:clientIdentifier forObject:object
                     rescheduledCallbackToken:callbackToken
-                  witCompletionHandlingBlock:handlerBlock];
+                      numberOfRetriesOnError:numberOfRetriesOnError
+                 withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
-- (void)postponeRequestClientState:(NSString *)clientIdentifier forObject:(id <PNChannelProtocol>)object
+- (void)postponeRequestClientState:(NSString *)clientIdentifier
+                         forObject:(id <PNChannelProtocol>)object
           rescheduledCallbackToken:(NSString *)callbackToken
-        witCompletionHandlingBlock:(id)handlerBlock {
+            numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+       withCompletionHandlingBlock:(id)handlerBlock {
     
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
-    [self postponeSelector:@selector(requestClientState:forObject:rescheduledCallbackToken:withCompletionHandlingBlock:)
+    [self postponeSelector:@selector(requestClientState:forObject:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:)
                  forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier],
                              [PNHelper nilifyIfNotSet:object],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -389,12 +401,14 @@ withCompletionHandlingBlock:nil];
   withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
 
     [self updateClientState:clientIdentifier state:clientState forObject:object
-   rescheduledCallbackToken:nil withCompletionHandlingBlock:handlerBlock];
+   rescheduledCallbackToken:nil numberOfRetriesOnError:0 withCompletionHandlingBlock:handlerBlock];
 }
 
-- (void)    updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
-                     forObject:(id <PNChannelProtocol>)object rescheduledCallbackToken:(NSString *)callbackToken
-  withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
+- (void)updateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
+                forObject:(id <PNChannelProtocol>)object
+ rescheduledCallbackToken:(NSString *)callbackToken
+   numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
+        withCompletionHandlingBlock:(PNClientStateUpdateHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
     // survive till asynchronous operation will complete.
@@ -450,6 +464,7 @@ withCompletionHandlingBlock:nil];
                                                                        to:request.shortIdentifier];
                     }
 
+                    request.retryCount = numberOfRetriesOnError;
                     [self sendRequest:request shouldObserveProcessing:YES];
                 }
                     // Looks like client can't send request because of some reasons
@@ -504,8 +519,8 @@ withCompletionHandlingBlock:nil];
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeUpdateClientState:clientIdentifier state:clientState
-                                  forObject:object rescheduledCallbackToken:callbackToken
+            [self postponeUpdateClientState:clientIdentifier state:clientState forObject:object
+                   rescheduledCallbackToken:callbackToken numberOfRetriesOnError:numberOfRetriesOnError
                 withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
@@ -514,15 +529,16 @@ withCompletionHandlingBlock:nil];
 - (void)postponeUpdateClientState:(NSString *)clientIdentifier state:(NSDictionary *)clientState
                         forObject:(id <PNChannelProtocol>)object
          rescheduledCallbackToken:(NSString *)callbackToken
+           numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
       withCompletionHandlingBlock:(id)handlerBlock {
     
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
-    [self postponeSelector:@selector(updateClientState:state:forObject:rescheduledCallbackToken:withCompletionHandlingBlock:)
+    [self postponeSelector:@selector(updateClientState:state:forObject:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:)
                  forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:clientIdentifier],
                              [PNHelper nilifyIfNotSet:clientState],
                              [PNHelper nilifyIfNotSet:object],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -599,8 +615,9 @@ withCompletionHandlingBlock:nil];
         // client will store retrieved state in cache.
         if ([client.identifier isEqualToString:self.clientIdentifier]) {
 
-            [client.channels enumerateObjectsUsingBlock:^(PNChannel *channel, NSUInteger channelIdx,
-                                                          BOOL *channelEnumeratorStop) {
+            [client.channels enumerateObjectsUsingBlock:^(PNChannel *channel,
+                                                          __unused NSUInteger channelIdx,
+                                                          __unused BOOL *channelEnumeratorStop) {
 
                 [self.cache purgeStateForChannel:channel];
                 [self.cache storeClientState:[client stateForChannel:channel] forChannel:channel];
@@ -636,7 +653,7 @@ withCompletionHandlingBlock:nil];
     }];
 }
 
-- (void)              serviceChannel:(PNServiceChannel *)channel
+- (void)              serviceChannel:(PNServiceChannel *)__unused channel
   clientStateReceiveDidFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -649,7 +666,8 @@ withCompletionHandlingBlock:nil];
         
         [self rescheduleMethodCall:^{
             
-            PNClient *clientInformation = (PNClient *)error.associatedObject;
+            PNClient *clientInformation = (PNClient *)[error.associatedObject valueForKey:@"data"];
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -658,7 +676,8 @@ withCompletionHandlingBlock:nil];
             }];
 
             [self requestClientState:clientInformation.identifier forObject:clientInformation.channel
-            rescheduledCallbackToken:callbackToken withCompletionHandlingBlock:nil];
+            rescheduledCallbackToken:callbackToken numberOfRetriesOnError:retryCountOnError
+         withCompletionHandlingBlock:nil];
         }];
     }
 }
@@ -710,7 +729,7 @@ withCompletionHandlingBlock:nil];
     }];
 }
 
-- (void)             serviceChannel:(PNServiceChannel *)channel
+- (void)             serviceChannel:(PNServiceChannel *)__unused channel
   clientStateUpdateDidFailWithError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -722,7 +741,8 @@ withCompletionHandlingBlock:nil];
         
         [self rescheduleMethodCall:^{
             
-            PNClient *clientInformation = (PNClient *)error.associatedObject;
+            PNClient *clientInformation = (PNClient *)[error.associatedObject valueForKey:@"data"];
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -733,7 +753,7 @@ withCompletionHandlingBlock:nil];
             [self updateClientState:clientInformation.identifier
                               state:[clientInformation stateForChannel:clientInformation.channel]
                           forObject:clientInformation.channel rescheduledCallbackToken:callbackToken
-        withCompletionHandlingBlock:nil];
+             numberOfRetriesOnError:retryCountOnError withCompletionHandlingBlock:nil];
         }];
     }
 }

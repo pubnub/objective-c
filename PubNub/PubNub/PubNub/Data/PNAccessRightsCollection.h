@@ -118,9 +118,11 @@
   DEPRECATED_MSG_ATTRIBUTE(" Use '-accessRightsForClientsOn:' method instead.");
 
 /**
- Fetch access rights information for all users associalted with specified channel or channel group.
+ @brief Fetch access rights information for all users associalted with specified channel or 
+        channel group.
  
- @param channel One of \b PNChannel or \b PNChannelGroup instance for which \a 'user' access rights should be fetched.
+ @param object One of \b PNChannel or \b PNChannelGroup instance for which \a 'user' access 
+               rights should be fetched.
  
  @return List of \b PNAccessRightsInformation instances each of which describe it's own user access rights.
  

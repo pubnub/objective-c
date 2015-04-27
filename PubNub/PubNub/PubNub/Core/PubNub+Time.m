@@ -28,10 +28,12 @@
 /**
  @brief Final designated method which allow to server time token information depending on provided set of parameters.
 
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
  */
 - (void)requestServerTimeTokenRescheduledCallbackToken:(NSString *)callbackToken
+                                numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                    withCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success;
 
 /**
@@ -40,18 +42,21 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
 
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handleBlock   Handler block which is called by \b PubNub client when client's state fetching
-                      process state changes. Block pass two arguments: \c timeToken - \a NSNumber
-                      which represent server's time token information; \c error - \b PNError
-                      instance which hold information about why server's time token fetching process
-                      failed. Always check \a error.code to find out what caused error (check
-                      PNErrorCodes header file and use \a -localizedDescription /
-                      \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human
-                      readable description for error).
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param success                Handler block which is called by \b PubNub client when client's state
+                               fetching process state changes. Block pass two arguments:
+                               \c timeToken - \a NSNumber which represent server's time token
+                               information; \c error - \b PNError instance which hold information
+                               about why server's time token fetching process failed. Always check
+                               \a error.code to find out what caused error (check PNErrorCodes
+                               header file and use \a -localizedDescription /
+                               \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
+                               human readable description for error).
  */
 - (void)postponeRequestServerTimeTokenRescheduledCallbackToken:(NSString *)callbackToken
+                                        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                            withCompletionBlock:(id)success;
 
 
@@ -105,10 +110,12 @@
 
 - (void)requestServerTimeTokenWithCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success {
 
-    [self requestServerTimeTokenRescheduledCallbackToken:nil withCompletionBlock:success];
+    [self requestServerTimeTokenRescheduledCallbackToken:nil numberOfRetriesOnError:0
+                                     withCompletionBlock:success];
 }
 
 - (void)requestServerTimeTokenRescheduledCallbackToken:(NSString *)callbackToken
+                                numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                    withCompletionBlock:(PNClientTimeTokenReceivingCompleteBlock)success {
 
     [self pn_dispatchBlock:^{
@@ -143,6 +150,7 @@
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -176,18 +184,20 @@
             }];
 
             [self postponeRequestServerTimeTokenRescheduledCallbackToken:callbackToken
+                                                  numberOfRetriesOnError:numberOfRetriesOnError
                                                      withCompletionBlock:success];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
 - (void)postponeRequestServerTimeTokenRescheduledCallbackToken:(NSString *)callbackToken
+                                        numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                            withCompletionBlock:(id)success {
     
     id successCopy = (success ? [success copy] : nil);
-    [self postponeSelector:@selector(requestServerTimeTokenRescheduledCallbackToken:withCompletionBlock:)
+    [self postponeSelector:@selector(requestServerTimeTokenRescheduledCallbackToken:numberOfRetriesOnError:withCompletionBlock:)
                  forObject:self
-            withParameters:@[[PNHelper nilifyIfNotSet:callbackToken],
+            withParameters:@[[PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:successCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -260,7 +270,7 @@
     }];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel receiveTimeTokenDidFailWithError:(PNError *)error
+- (void)serviceChannel:(PNServiceChannel *)__unused channel receiveTimeTokenDidFailWithError:(PNError *)error
             forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -272,6 +282,8 @@
     else {
         
         [self rescheduleMethodCall:^{
+
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -280,6 +292,7 @@
             }];
 
             [self requestServerTimeTokenRescheduledCallbackToken:callbackToken
+                                          numberOfRetriesOnError:retryCountOnError
                                              withCompletionBlock:nil];
         }];
     }

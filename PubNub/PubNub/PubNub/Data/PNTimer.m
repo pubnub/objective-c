@@ -237,7 +237,7 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 - (void)unscheduleBlockWithIdentifier:(NSString *)identifier {
     
     [[self.scheduledBlocks copy] enumerateObjectsUsingBlock:^(NSMutableDictionary *scheduledBlockData,
-                                                              NSUInteger scheduledBlockDataIdx,
+                                                              __unused NSUInteger scheduledBlockDataIdx,
                                                               BOOL *scheduledBlocksDataEnumeratorStop) {
 
         if ([[scheduledBlockData valueForKey:PNTimerScheduledData.identifier] isEqualToString:identifier]) {
@@ -254,8 +254,8 @@ static struct PNTimerScheduledDataStructure PNTimerScheduledData = {
 - (void)handleTick {
 
     [[self.scheduledBlocks copy] enumerateObjectsUsingBlock:^(NSMutableDictionary *scheduledBlockData,
-                                                              NSUInteger scheduledBlockDataIdx,
-                                                              BOOL *scheduledBlocksDataEnumeratorStop) {
+                                                              __unused NSUInteger scheduledBlockDataIdx,
+                                                              __unused BOOL *scheduledBlocksDataEnumeratorStop) {
 
         NSTimeInterval countDown = [[scheduledBlockData valueForKey:PNTimerScheduledData.countDown] doubleValue];
         countDown -= self.tick;

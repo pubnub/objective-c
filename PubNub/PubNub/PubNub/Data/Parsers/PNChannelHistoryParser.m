@@ -28,7 +28,7 @@
 
 #pragma mark - Class methods
 
-+ (id)parserForResponse:(PNResponse *)response {
++ (id)parserForResponse:(PNResponse *)__unused response {
 
     NSAssert1(0, @"%s SHOULD BE CALLED ONLY FROM PARENT CLASS", __PRETTY_FUNCTION__);
 
@@ -103,7 +103,8 @@
 
         NSArray *messages = [responseData objectAtIndex:PNChannelHistoryResponseMessagesList];
         NSMutableArray *historyMessages = [[NSMutableArray alloc] initWithCapacity:[messages count]];
-        [messages enumerateObjectsUsingBlock:^(id message, NSUInteger messageIdx, BOOL *messageEnumerator) {
+        [messages enumerateObjectsUsingBlock:^(id message, __unused NSUInteger messageIdx,
+                                               __unused BOOL *messageEnumerator) {
 
             PNMessage *messageObject = [PNMessage messageFromServiceResponse:message onChannel:nil atDate:nil];
             [historyMessages addObject:messageObject];

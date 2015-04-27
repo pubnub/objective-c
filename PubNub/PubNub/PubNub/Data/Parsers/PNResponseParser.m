@@ -227,7 +227,7 @@
     return parserClass;
 }
 
-+ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)response {
++ (BOOL)isResponseConformToRequiredStructure:(PNResponse *)__unused response {
 
     return YES;
 }
@@ -235,7 +235,7 @@
 
 #pragma mark - Instance methods
 
-- (id)initWithResponse:(PNResponse *)response {
+- (id)initWithResponse:(PNResponse *)__unused response {
     
     NSAssert1(0, @"%s SHOULD BE RELOADED IN SUBCLASSES", __PRETTY_FUNCTION__);
     

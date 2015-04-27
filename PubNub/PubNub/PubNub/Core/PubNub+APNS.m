@@ -31,20 +31,26 @@
  @brief Extension of -enablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:
         and allow specify whether handler block should be replaced or not.
 
- @param channels      Array of \b PNChannel instances for which push notification should be enabled.
- @param pushToken     Device push token which is used to identify push notification recipient.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which is called when push notification enabling state changed. The
-                      block takes two arguments: \c channels - list of channels for which push
-                      notification enabling state changed; \c error - error because of which push
-                      notification enabling failed. Always check \a error.code to find out what
-                      caused error (check PNErrorCodes header file and use \a -localizedDescription /
-                      \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human
-                      readable description for error).
+ @param channels               Array of \b PNChannel instances for which push notification should be
+                               enabled.
+ @param pushToken              Device push token which is used to identify push notification
+                               recipient.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method
+                               rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which is called when push notification enabling state
+                               changed. The block takes two arguments: \c channels - list of
+                               channels for which push notification enabling state changed;
+                               \c error - error because of which push notification enabling failed.
+                               Always check \a error.code to find out what caused error (check
+                               PNErrorCodes header file and use \a -localizedDescription /
+                               \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
+                               human readable description for error).
  */
 - (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                  rescheduledCallbackToken:(NSString *)callbackToken
+                   numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock;
 
 /**
@@ -53,45 +59,51 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
 
- @param channels      List of \b PNChannel instances on which client should enable push
-                      notifications.
- @param pushToken     \a NSData instance which represent device push token for which list of push
-                      notification enabled channels should be changed.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  Handler block which is called by \b PubNub client when push notification
-                      enabling process state changes. Block pass two arguments: \c channels - list
-                      of \b PNChannel instances for which push notification enabling process changes
-                      state; \c error - \b PNError instance which hold information about why push
-                      notification enabling process failed. Always check \a error.code to find out
-                      what caused error (check PNErrorCodes header file and use
-                      \a -localizedDescription / \a -localizedFailureReason and
-                      \a -localizedRecoverySuggestion to get human readable description for error).
+ @param channels               Array of \b PNChannel instances for which push notification should be
+                               enabled.
+ @param pushToken              Device push token which is used to identify push notification
+                               recipient.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method
+                               rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which is called when push notification enabling state
+                               changed. The block takes two arguments: \c channels - list of
+                               channels for which push notification enabling state changed;
+                               \c error - error because of which push notification enabling failed.
+                               Always check \a error.code to find out what caused error (check
+                               PNErrorCodes header file and use \a -localizedDescription /
+                               \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
+                               human readable description for error).
  */
 - (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                          rescheduledCallbackToken:(NSString *)callbackToken
+                           numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                        andCompletionHandlingBlock:(id)handlerBlock;
 
 /**
  @brief Extension of -disablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:
         and allow specify whether handler block should be replaced or not.
 
- @param channels      Array of \b PNChannel instances for which push notification should be
-                      disabled.
- @param pushToken     Device push token which previously has been used to register for messages
-                      observation via Apple Push Notifications.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which is called when push notification disabling state changed. The
-                      block takes two arguments: \c channels - list of channels for which push
-                      notification disabling state changed; \c error - error because of which push
-                      notification disabling failed. Always check \a error.code to find out what
-                      caused error (check PNErrorCodes header file and use \a -localizedDescription /
-                      \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human
-                      readable description for error).
+ @param channels               Array of \b PNChannel instances for which push notification should be
+                               disabled.
+ @param pushToken              Device push token which previously has been used to register for
+                               messages  observation via Apple Push Notifications.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which is called when push notification disabling state
+                               changed. The block takes two arguments: \c channels - list of
+                               channels for which push notification disabling state changed;
+                               \c error - error because of which push notification disabling failed.
+                               Always check \a error.code to find out what caused error (check
+                               PNErrorCodes header file and use \a -localizedDescription /
+                               \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
+                               human readable description for error).
  */
 - (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                   rescheduledCallbackToken:(NSString *)callbackToken
+                    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                 andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock;
 
 /**
@@ -100,41 +112,47 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
 
- @param channels      List of \b PNChannel instances on which client should disable push
-                      notifications.
- @param pushToken     \a NSData instance which represent device push token for which list of push
-                      notification enabled channels should be changed.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  Handler block which is called by \b PubNub client when push notification
-                      disabling process state changes. Block pass two arguments: \c channels - list
-                      of \b PNChannel instances for which push notification disabling process
-                      changes state; \c error - \b PNError instance which hold information about why
-                      push notification disabling process failed. Always check \a error.code to find
-                      out what caused error (check PNErrorCodes header file and use
-                      \a -localizedDescription / \a -localizedFailureReason and
-                      \a -localizedRecoverySuggestion to get human readable description for error).
+ @param channels               Array of \b PNChannel instances for which push notification should be
+                               disabled.
+ @param pushToken              Device push token which previously has been used to register for
+                               messages  observation via Apple Push Notifications.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which is called when push notification disabling state
+                               changed. The block takes two arguments: \c channels - list of
+                               channels for which push notification disabling state changed;
+                               \c error - error because of which push notification disabling failed.
+                               Always check \a error.code to find out what caused error (check
+                               PNErrorCodes header file and use \a -localizedDescription /
+                               \a -localizedFailureReason and \a -localizedRecoverySuggestion to get
+                               human readable description for error).
  */
 - (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                           rescheduledCallbackToken:(NSString *)callbackToken
+                            numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                         andCompletionHandlingBlock:(id)handlerBlock;
 
 /**
  @brief Extension of -disablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:
         and allow specify whether handler block should be replaced or not.
 
- @param pushToken     Device push token which previously has been used to register for messages
-                      observation via Apple Push Notifications.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which is called when push notification disabling state changed. The
-                      block takes one argument: \c error - error because of which push notification
-                      disabling failed. Always check \a error.code to find out what caused error
-                      (check PNErrorCodes header file and use \a -localizedDescription /
-                      \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human
-                      readable description for error).
+ @param pushToken              Device push token which previously has been used to register for
+                               messages observation via Apple Push Notifications.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which is called when push notification disabling state
+                               changed. The block takes one argument: \c error - error because of
+                               which push notification disabling failed. Always check \a error.code
+                               to find out what caused error (check PNErrorCodes header file and use
+                               \a -localizedDescription / \a -localizedFailureReason and
+                               \a -localizedRecoverySuggestion to get human readable description for
+                               error).
  */
-- (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken rescheduledCallbackToken:(NSString *)callbackToken
+- (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                            rescheduledCallbackToken:(NSString *)callbackToken
+                              numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                          withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock;
 
 /**
@@ -143,40 +161,46 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
 
- @param pushToken     \a NSData instance which represent device push token for which list of push
-                      notification enabled channels should be changed.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  Handler block which is called by \b PubNub client when push notification
-                      removal process state changes. Block pass one argument: \c error - \b PNError
-                      instance which hold information about why push notification removal process
-                      failed. Always check \a error.code to find out what caused error (check
-                      PNErrorCodes header file and use \a -localizedDescription /
-                      \a -localizedFailureReason and \a -localizedRecoverySuggestion to get human
-                      readable description for error).
+ @param pushToken              Device push token which previously has been used to register for
+                               messages observation via Apple Push Notifications.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which is called when push notification disabling state
+                               changed. The block takes one argument: \c error - error because of
+                               which push notification disabling failed. Always check \a error.code
+                               to find out what caused error (check PNErrorCodes header file and use
+                               \a -localizedDescription / \a -localizedFailureReason and
+                               \a -localizedRecoverySuggestion to get human readable description for
+                               error).
  */
 - (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
                                     rescheduledCallbackToken:(NSString *)callbackToken
+                                      numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                  withCompletionHandlingBlock:(id)handlerBlock;
 
 /**
  @brief Extension of -disablePushNotificationsOnChannels:withDevicePushToken:andCompletionHandlingBlock:
         and allow specify whether handler block should be replaced or not.
 
- @param pushToken     Device push token which previously has been used to register for messages
-                      observation via Apple Push Notifications.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  The block which is called when push notification disabling state changed. The
-                      block takes two arguments: \c channels - return list of channels for which
-                      push notification has been enabled with specified device push token;
-                      \c error - error because of push notification enabled channels fetch failed.
-                      Always check \a error.code to find out what caused error (check PNErrorCodes
-                      header file and use \a -localizedDescription / \a -localizedFailureReason and
-                      \a -localizedRecoverySuggestion to get human readable description for error).
+ @param pushToken              Device push token which previously has been used to register for
+                               messages observation via Apple Push Notifications.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which is called when push notification disabling state
+                               changed. The block takes two arguments: \c channels - return list of
+                               channels for which push notification has been enabled with specified
+                               device push token; \c error - error because of push notification
+                               enabled channels fetch failed. Always check \a error.code to find out
+                               what caused error (check PNErrorCodes header file and use
+                               \a -localizedDescription / \a -localizedFailureReason and
+                               \a -localizedRecoverySuggestion to get human readable description
+                               for error).
  */
 - (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
                                         rescheduledCallbackToken:(NSString *)callbackToken
+                                          numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                      withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock;
 
 /**
@@ -186,21 +210,24 @@
  @note  Postpone can be because of few cases: \b PubNub client is in connecting or initial
         connection state; another request which has been issued earlier didn't completed yet.
  
- @param pushToken     \a NSData instance which represent device push token for which list of push
-                      notification enabled channels should be retrieved.
- @param callbackToken Reference on callback token under which stored block passed by user on API
-                      usage. This block will be reused because of method rescheduling.
- @param handlerBlock  Handler block which is called by \b PubNub client when push notification
-                      enabling channels audit process state changes. Block pass two arguments:
-                      \c channels - list of \b PNChannel instances for which push notification has
-                      been enabled; \c error - \b PNError instance which hold information about why
-                      push notification enabled channels audit process failed. Always check
-                      \a error.code to find out what caused error (check PNErrorCodes header file
-                      and use \a -localizedDescription / \a -localizedFailureReason and
-                      \a -localizedRecoverySuggestion to get human readable description for error).
+ @param pushToken              Device push token which previously has been used to register for
+                               messages observation via Apple Push Notifications.
+ @param callbackToken          Reference on callback token under which stored block passed by user
+                               on API usage. This block will be reused because of method rescheduling.
+ @param numberOfRetriesOnError How many times re-scheduled request already re-sent because of error.
+ @param handlerBlock           The block which is called when push notification disabling state
+                               changed. The block takes two arguments: \c channels - return list of
+                               channels for which push notification has been enabled with specified
+                               device push token; \c error - error because of push notification
+                               enabled channels fetch failed. Always check \a error.code to find out
+                               what caused error (check PNErrorCodes header file and use
+                               \a -localizedDescription / \a -localizedFailureReason and
+                               \a -localizedRecoverySuggestion to get human readable description
+                               for error).
  */
 - (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
                                                 rescheduledCallbackToken:(NSString *)callbackToken
+                                                  numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                              withCompletionHandlingBlock:(id)handlerBlock;
 
 
@@ -357,11 +384,13 @@
                andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
 
     [self enablePushNotificationsOnChannels:channels withDevicePushToken:pushToken
-                   rescheduledCallbackToken:nil andCompletionHandlingBlock:handlerBlock];
+                   rescheduledCallbackToken:nil numberOfRetriesOnError:0
+                 andCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)enablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                  rescheduledCallbackToken:(NSString *)callbackToken
+                   numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                andCompletionHandlingBlock:(PNClientPushNotificationsEnableHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
@@ -405,6 +434,7 @@
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -445,21 +475,22 @@
 
             [self postponeEnablePushNotificationsOnChannels:channels withDevicePushToken:pushToken
                                    rescheduledCallbackToken:callbackToken
+                                     numberOfRetriesOnError:numberOfRetriesOnError
                                  andCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
-- (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels
-                              withDevicePushToken:(NSData *)pushToken
+- (void)postponeEnablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                          rescheduledCallbackToken:(NSString *)callbackToken
+                           numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                        andCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL selector = @selector(enablePushNotificationsOnChannels:withDevicePushToken:rescheduledCallbackToken:andCompletionHandlingBlock:);
+    SEL selector = @selector(enablePushNotificationsOnChannels:withDevicePushToken:rescheduledCallbackToken:numberOfRetriesOnError:andCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:selector forObject:self
             withParameters:@[channels, [PNHelper nilifyIfNotSet:pushToken],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -487,11 +518,13 @@
                 andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
 
     [self disablePushNotificationsOnChannels:channels withDevicePushToken:pushToken
-                    rescheduledCallbackToken:nil andCompletionHandlingBlock:handlerBlock];
+                    rescheduledCallbackToken:nil numberOfRetriesOnError:0
+                  andCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)disablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                   rescheduledCallbackToken:(NSString *)callbackToken
+                    numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                 andCompletionHandlingBlock:(PNClientPushNotificationsDisableHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
@@ -535,9 +568,10 @@
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
-                // Looks like client can't send request because of some reasons
+            // Looks like client can't send request because of some reasons
             else {
 
                 [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray * {
@@ -573,24 +607,24 @@
                         [self humanReadableStateFrom:self.state]];
             }];
 
-            [self postponeDisablePushNotificationsOnChannels:channels
-                                         withDevicePushToken:pushToken
+            [self postponeDisablePushNotificationsOnChannels:channels withDevicePushToken:pushToken
                                     rescheduledCallbackToken:callbackToken
+                                      numberOfRetriesOnError:numberOfRetriesOnError
                                   andCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
-- (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels
-                               withDevicePushToken:(NSData *)pushToken
+- (void)postponeDisablePushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
                           rescheduledCallbackToken:(NSString *)callbackToken
+                            numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                         andCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL selector = @selector(disablePushNotificationsOnChannels:withDevicePushToken:rescheduledCallbackToken:andCompletionHandlingBlock:);
+    SEL selector = @selector(disablePushNotificationsOnChannels:withDevicePushToken:rescheduledCallbackToken:numberOfRetriesOnError:andCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:selector forObject:self
             withParameters:@[channels, [PNHelper nilifyIfNotSet:pushToken],
-                             [PNHelper nilifyIfNotSet:callbackToken],
+                             [PNHelper nilifyIfNotSet:callbackToken], @(numberOfRetriesOnError),
                              [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
@@ -599,11 +633,12 @@
                          withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
 
     [self removeAllPushNotificationsForDevicePushToken:pushToken rescheduledCallbackToken:nil
-                           withCompletionHandlingBlock:handlerBlock];
+                                numberOfRetriesOnError:0 withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)removeAllPushNotificationsForDevicePushToken:(NSData *)pushToken
                             rescheduledCallbackToken:(NSString *)callbackToken
+                              numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                          withCompletionHandlingBlock:(PNClientPushNotificationsRemoveHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
@@ -642,6 +677,7 @@
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -680,19 +716,22 @@
 
             [self postponeRemoveAllPushNotificationsForDevicePushToken:pushToken
                                               rescheduledCallbackToken:callbackToken
+                                                numberOfRetriesOnError:numberOfRetriesOnError
                                            withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
 }
 
-- (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken rescheduledCallbackToken:(NSString *)callbackToken
+- (void)postponeRemoveAllPushNotificationsForDevicePushToken:(NSData *)pushToken
+                                    rescheduledCallbackToken:(NSString *)callbackToken
+                                      numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                  withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL selector = @selector(removeAllPushNotificationsForDevicePushToken:rescheduledCallbackToken:withCompletionHandlingBlock:);
+    SEL selector = @selector(removeAllPushNotificationsForDevicePushToken:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:selector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:pushToken], [PNHelper nilifyIfNotSet:callbackToken],
-                             [PNHelper nilifyIfNotSet:handlerBlockCopy]]
+                             @(numberOfRetriesOnError), [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
 
@@ -700,12 +739,13 @@
                                      withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
 
     [self requestPushNotificationEnabledChannelsForDevicePushToken:pushToken
-                                          rescheduledCallbackToken:nil
+                                          rescheduledCallbackToken:nil numberOfRetriesOnError:0
                                        withCompletionHandlingBlock:handlerBlock];
 }
 
 - (void)requestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
                                         rescheduledCallbackToken:(NSString *)callbackToken
+                                          numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                      withCompletionHandlingBlock:(PNClientPushNotificationsEnabledChannelsHandlingBlock)handlerBlock {
 
     // Create additional references on objects passed from outside to ensure what objects will
@@ -745,6 +785,7 @@
                                                                    to:request.shortIdentifier];
                 }
 
+                request.retryCount = numberOfRetriesOnError;
                 [self sendRequest:request shouldObserveProcessing:YES];
             }
                 // Looks like client can't send request because of some reasons
@@ -784,6 +825,7 @@
 
             [self postponeRequestPushNotificationEnabledChannelsForDevicePushToken:pushToken
                                                           rescheduledCallbackToken:callbackToken
+                                                            numberOfRetriesOnError:numberOfRetriesOnError
                                                        withCompletionHandlingBlock:handlerBlock];
         } burstExecutionLockingOperation:NO];
     }];
@@ -791,13 +833,14 @@
 
 - (void)postponeRequestPushNotificationEnabledChannelsForDevicePushToken:(NSData *)pushToken
                                                 rescheduledCallbackToken:(NSString *)callbackToken
+                                                  numberOfRetriesOnError:(NSUInteger)numberOfRetriesOnError
                                              withCompletionHandlingBlock:(id)handlerBlock {
     
-    SEL selector = @selector(requestPushNotificationEnabledChannelsForDevicePushToken:rescheduledCallbackToken:withCompletionHandlingBlock:);
+    SEL selector = @selector(requestPushNotificationEnabledChannelsForDevicePushToken:rescheduledCallbackToken:numberOfRetriesOnError:withCompletionHandlingBlock:);
     id handlerBlockCopy = (handlerBlock ? [handlerBlock copy] : nil);
     [self postponeSelector:selector forObject:self
             withParameters:@[[PNHelper nilifyIfNotSet:pushToken], [PNHelper nilifyIfNotSet:callbackToken],
-                             [PNHelper nilifyIfNotSet:handlerBlockCopy]]
+                             @(numberOfRetriesOnError), [PNHelper nilifyIfNotSet:handlerBlockCopy]]
                 outOfOrder:(callbackToken != nil) burstExecutionLock:NO];
 }
 
@@ -966,7 +1009,7 @@
     }];
 }
 
-- (void)                    serviceChannel:(PNServiceChannel *)channel
+- (void)                    serviceChannel:(PNServiceChannel *)__unused channel
   didFailPushNotificationEnableForChannels:(NSArray *)channels
                                  withError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
@@ -981,7 +1024,8 @@
         
         [self rescheduleMethodCall:^{
             
-            NSData *devicePushToken = (NSData *)error.associatedObject;
+            NSData *devicePushToken = (NSData *)[error.associatedObject valueForKey:@"data"];
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -990,7 +1034,8 @@
             }];
 
             [self enablePushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                           rescheduledCallbackToken:callbackToken andCompletionHandlingBlock:nil];
+                           rescheduledCallbackToken:callbackToken numberOfRetriesOnError:retryCountOnError
+                         andCompletionHandlingBlock:nil];
         }];
     }
 }
@@ -1036,7 +1081,7 @@
     }];
 }
 
-- (void)serviceChannel:(PNServiceChannel *)channel didFailPushNotificationDisableForChannels:(NSArray *)channels
+- (void)serviceChannel:(PNServiceChannel *)__unused channel didFailPushNotificationDisableForChannels:(NSArray *)channels
              withError:(PNError *)error forRequest:(PNBaseRequest *)request {
 
     NSString *callbackToken = request.shortIdentifier;
@@ -1050,7 +1095,8 @@
         
         [self rescheduleMethodCall:^{
             
-            NSData *devicePushToken = (NSData *)error.associatedObject;
+            NSData *devicePushToken = (NSData *)[error.associatedObject valueForKey:@"data"];
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -1059,7 +1105,8 @@
             }];
 
             [self disablePushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                            rescheduledCallbackToken:callbackToken andCompletionHandlingBlock:nil];
+                            rescheduledCallbackToken:callbackToken numberOfRetriesOnError:retryCountOnError
+                          andCompletionHandlingBlock:nil];
         }];
     }
 }
@@ -1105,7 +1152,7 @@
     }];
 }
 
-- (void)                   serviceChannel:(PNServiceChannel *)channel
+- (void)                   serviceChannel:(PNServiceChannel *)__unused channel
   didFailPushNotificationsRemoveWithError:(PNError *)error
                                forRequest:(PNBaseRequest *)request {
 
@@ -1119,7 +1166,8 @@
         
         [self rescheduleMethodCall:^{
             
-            NSData *devicePushToken = (NSData *)error.associatedObject;
+            NSData *devicePushToken = (NSData *)[error.associatedObject valueForKey:@"data"];
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
             
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
                 
@@ -1129,6 +1177,7 @@
 
             [self removeAllPushNotificationsForDevicePushToken:devicePushToken
                                       rescheduledCallbackToken:callbackToken
+                                        numberOfRetriesOnError:retryCountOnError
                                    withCompletionHandlingBlock:nil];
         }];
     }
@@ -1177,7 +1226,7 @@
     }];
 }
 
-- (void)                                  serviceChannel:(PNServiceChannel *)channel
+- (void)                                  serviceChannel:(PNServiceChannel *)__unused channel
   didFailPushNotificationEnabledChannelsReceiveWithError:(PNError *)error
                                               forRequest:(PNBaseRequest *)request {
 
@@ -1191,7 +1240,8 @@
 
         [self rescheduleMethodCall:^{
 
-            NSData *devicePushToken = (NSData *)error.associatedObject;
+            NSData *devicePushToken = (NSData *)[error.associatedObject valueForKey:@"data"];
+            NSUInteger retryCountOnError = [[error.associatedObject valueForKey:@"errorCounter"] unsignedIntegerValue];
 
             [PNLogger logGeneralMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -1201,6 +1251,7 @@
 
             [self requestPushNotificationEnabledChannelsForDevicePushToken:devicePushToken
                                                   rescheduledCallbackToken:callbackToken
+                                                    numberOfRetriesOnError:retryCountOnError
                                                withCompletionHandlingBlock:nil];
         }];
     }

@@ -44,23 +44,25 @@
                                                   withBlock:(void (^)(BOOL restoreWithLastTimeToken))checkCompletionBlock;
 
 /**
- Retrieve client state informatino for set of channels.
+ @brief Retrieve client state informatino for set of channels.
  
- @param channels
- List of \b PNChannel instances for which state information should be fetched.
- 
- @return Cached information for channels from list,
+ @param channels                  List of \b PNChannel instances for which state information 
+                                  should be fetched.
+ @param stateFetchCompletionBlock Fetch completion handler block which pass only one parameter -
+                                  aggregated state for all passed channels.
  */
 - (void)clientStateInformationForChannels:(NSArray *)channels
                                 withBlock:(void (^)(NSDictionary *stateOnChannel))stateFetchCompletionBlock;
 
 /**
- Retrieve reference on composed client state which should be used to update client information inside \b PubNub network.
+ @brief Retrieve reference on composed client state which should be used to update client 
+        information inside \b PubNub network.
  
- @param updatedState
- \b NSDictionary instance which should be merged with main client state information.
- 
- @return Full client state information with latest changes from provided data.
+ @param updatedState         \b NSDictionary instance which should be merged with main client 
+                             state information.
+ @param mergeCompletionBlock State merge completion handler block which pass only one parameter -
+                             merged state for all channels along with data passed in 
+                             \c updatedState
  */
 - (void)clientStateMergedWith:(NSDictionary *)updatedState
                      andBlock:(void (^)(NSDictionary *mergedState))mergeCompletionBlock;
@@ -68,7 +70,8 @@
 /**
  Retrieve full client state information.
  
- @param Completed client's state information which is stored in cache.
+ @param stateFetchCompletionBlock Complete client's state information fetch completion block 
+                                  which pass only one parameter - cached client state.
  */
 - (void)clientStateInformation:(void (^)(NSDictionary *clientState))stateFetchCompletionBlock;
 

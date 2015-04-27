@@ -44,7 +44,8 @@
     
     __block NSString *logDescription = @"<[";
     
-    [self enumerateObjectsUsingBlock:^(id entry, NSUInteger entryIdx, BOOL *entryEnumeratorStop) {
+    [self enumerateObjectsUsingBlock:^(id entry, NSUInteger entryIdx,
+                                       __unused BOOL *entryEnumeratorStop) {
         
         // Check whether parameter can be transformed for log or not
         if ([entry respondsToSelector:@selector(logDescription)]) {

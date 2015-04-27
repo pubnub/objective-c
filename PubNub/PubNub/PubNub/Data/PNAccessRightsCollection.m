@@ -33,7 +33,8 @@
 
 #pragma mark - Instance methods
 
-- (id)initWithApplication:(NSString *)applicationKey andAccessRightsLevel:(PNAccessRightsLevel)level {
+- (id)initWithApplication:(NSString *)applicationKey
+     andAccessRightsLevel:(PNAccessRightsLevel)__unused level {
 
     // Check whether initialization was successful or not
     if ((self = [super init])) {
@@ -87,8 +88,8 @@
     
     NSMutableArray *groupObjectAccessRights = [[self accessRightsInformationForAllChannelGroupObjects] mutableCopy];
     [[groupObjectAccessRights copy] enumerateObjectsUsingBlock:^(PNAccessRightsInformation *objectAccessRightsInformation,
-                                                                 NSUInteger objectAccessRightsInformationIdx,
-                                                                 BOOL *objectAccessRightsInformationEnumeratorStop) {
+                                                                 __unused NSUInteger objectAccessRightsInformationIdx,
+                                                                 __unused BOOL *objectAccessRightsInformationEnumeratorStop) {
         
         if (![objectAccessRightsInformation.object isMemberOfClass:channelGroupObjectClass]) {
             
@@ -132,7 +133,7 @@
 - (NSArray *)accessRightsForClientsOn:(id<PNChannelProtocol>)object {
     
     NSString *keyPortion = [[NSString alloc] initWithFormat:@"%@.", object.name];
-    NSSet *userInformationKeys = [self.clientsAccessRightsInformation keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
+    NSSet *userInformationKeys = [self.clientsAccessRightsInformation keysOfEntriesPassingTest:^BOOL(id key, __unused id obj, __unused BOOL *stop) {
         
         return [key rangeOfString:keyPortion].location != NSNotFound;
     }];
@@ -203,8 +204,9 @@
 
 - (void)correlateAccessRightsWithOptions:(PNAccessRightOptions *)options {
 
-    [options.channels enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object, NSUInteger objectIdx,
-                                                   BOOL *objectEnumeratorStop) {
+    [options.channels enumerateObjectsUsingBlock:^(id<PNChannelProtocol> object,
+                                                   __unused NSUInteger objectIdx,
+                                                   __unused BOOL *objectEnumeratorStop) {
 
         if (options.level != PNUserAccessRightsLevel) {
 
@@ -214,8 +216,8 @@
         }
 
         [options.clientsAuthorizationKeys enumerateObjectsUsingBlock:^(NSString *clientAuthorizationKey,
-                                                                       NSUInteger clientAuthorizationKeyIdx,
-                                                                       BOOL *clientAuthorizationKeyEnumeratorStop) {
+                                                                       __unused NSUInteger clientAuthorizationKeyIdx,
+                                                                       __unused BOOL *clientAuthorizationKeyEnumeratorStop) {
 
                     [self storeClientAccessRightsInformation:[PNAccessRightsInformation accessRightsInformationForLevel:PNUserAccessRightsLevel
                                                                        rights:PNNoAccessRights applicationKey:self.applicationKey

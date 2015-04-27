@@ -70,7 +70,8 @@
 
 #pragma mark - Instance methods
 
-void objectReleaseCallBack( void *info ) {
+static void objectReleaseCallBack(void *info);
+void objectReleaseCallBack(void *info) {
     
     CFRelease(info);
 }

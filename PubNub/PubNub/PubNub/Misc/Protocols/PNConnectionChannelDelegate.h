@@ -129,12 +129,13 @@
 - (NSString *)clientIdentifier;
 
 /**
- Sent to the delegate when underlying connection channel want to find out about network and service reachability.
+ @brief Sent to the delegate when underlying connection channel want to find out about network 
+        and service reachability.
  
- @param shouldUpdateInformation
- Whether \b PubNub client should trigger syncrhronous state update or not
- 
- @return \c YES in case if \b PubNub and network reachable.
+ @param shouldUpdateInformation Whether \b PubNub client should trigger syncrhronous state update
+                                or not.
+ @param checkCompletionBlock    Check completion block which pass only one parameter - \c YES in 
+                                case if \b PubNub and network reachable.
  */
 - (void)isPubNubServiceAvailable:(BOOL)shouldUpdateInformation checkCompletionBlock:(void(^)(BOOL))checkCompletionBlock;
 

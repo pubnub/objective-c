@@ -89,7 +89,7 @@
  GCD objects treated as ARC enabled objects).
  @note Main usage for this wrapper defined by cases, when non-structure object can't be stored.
  
- @param object  \a GCD object which should be stored inside wrapper.
+ @param queue   \a GCD queue which should be stored inside wrapper.
  @param pointer Reference on value which store pointer used during set specific operation on queue.
  
  @return Reference on wrapper which will store \a GCD object for us.
@@ -185,8 +185,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  @param field
  Bit field which should be used for inspection.
  
- @param bitMask, ...
- List of bitmasks which should be used for verification.
+ @param bitMask List of bitmasks which should be used for verification.
  
  @return \c YES in case specified set of bit masks can be found in specified bit field.
  */
@@ -221,8 +220,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  @param strictly
  Whether specified bit mask containment should respond to \c 'strict' rules.
  
- @param bitMask, ...
- List of bitmasks which should be used for verification.
+ @param bitMask List of bitmasks which should be used for verification.
  
  @return \c YES in case specified set of bit masks can be found in specified bit field.
  */
@@ -245,8 +243,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  @param field
  Bit field into which specified bit mask should be added.
  
- @param bitMask, ..
- Masks which should be applied to speified bit field.
+ @param bitMask Masks which should be applied to speified bit field.
  */
 + (void)addTo:(unsigned long *)field bits:(unsigned long)bitMask, ...;
 
@@ -267,8 +264,7 @@ static NSUInteger BITS_LIST_TERMINATOR  = ((NSUInteger)0);
  @param field
  Bit field from which specified bit mask should be removed.
  
- @param bitMask, ...
- Masks which should be removed from speified bit field.
+ @param bitMask Masks which should be removed from speified bit field.
  */
 + (void)removeFrom:(unsigned long *)field bits:(unsigned long)bitMask, ...;
 

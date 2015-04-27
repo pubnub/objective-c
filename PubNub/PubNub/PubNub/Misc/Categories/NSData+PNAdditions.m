@@ -82,15 +82,15 @@ static unsigned char decodeCharTable[256] =
 
         if (idx >= 2) {
 
-            decodedDataBuffer[j] = (decodedChars[0] << 2) | (decodedChars[1] >> 4);
+            decodedDataBuffer[j] = (unsigned char)(decodedChars[0] << 2) | (decodedChars[1] >> 4);
         }
         if (idx >= 3) {
 
-            decodedDataBuffer[j+1] = (decodedChars[1] << 4) | (decodedChars[2] >> 2);
+            decodedDataBuffer[j+1] = (unsigned char)(decodedChars[1] << 4) | (decodedChars[2] >> 2);
         }
         if (idx >= 4) {
 
-            decodedDataBuffer[j+2] = (decodedChars[2] << 6) | decodedChars[3];
+            decodedDataBuffer[j+2] = (unsigned char)(decodedChars[2] << 6) | decodedChars[3];
         }
 
         j += idx-1;
@@ -199,7 +199,7 @@ static unsigned char decodeCharTable[256] =
     const unsigned char *dataBuffer = [self bytes];
 
     // Iterate over the bytes
-    for (int i=0; i < [self length]; i++) {
+    for (NSUInteger i=0; i < [self length]; i++) {
 
       [stringBuffer appendFormat:@"%02.2hhX", dataBuffer[i]];
     }

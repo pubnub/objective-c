@@ -144,7 +144,7 @@
                     NSUInteger maximumHalfLength = (NSUInteger)ceilf(length * 0.5f);
                     if (maximumHalfLength == (self.length * 0.5f)) {
 
-                        maximumHalfLength = MAX(maximumHalfLength - 2, MAX(maximumHalfLength - 1, 0));
+                        maximumHalfLength = MAX(maximumHalfLength - 2, MAX(maximumHalfLength - 1, (NSUInteger)0));
                     }
 
                     truncatedString = [[NSString alloc] initWithFormat:@"%@…%@", [self substringToIndex:maximumHalfLength],

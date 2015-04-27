@@ -18,7 +18,7 @@
 
 #pragma mark - Class methods
 
-+ (id)parserForResponse:(PNResponse *)response {
++ (id)parserForResponse:(PNResponse *)__unused response {
     
     NSAssert1(0, @"%s SHOULD BE CALLED ONLY FROM PARENT CLASS", __PRETTY_FUNCTION__);
     
@@ -54,8 +54,9 @@
         NSString *nspace = (response.additionalData ? response.additionalData : [response.response valueForKey:kPNResponseNamespaceKey]);
         NSArray *channelGroupNames = [response.response valueForKey:kPNResponseChannelGroupsKey];
         NSMutableArray *channelGroups = [[NSMutableArray alloc] initWithCapacity:[channelGroupNames count]];
-        [channelGroupNames enumerateObjectsUsingBlock:^(NSString *channelGroupName, NSUInteger channelGroupNameIdx,
-                                                        BOOL *channelGroupNamesEnumeratorStop) {
+        [channelGroupNames enumerateObjectsUsingBlock:^(NSString *channelGroupName,
+                                                        __unused NSUInteger channelGroupNameIdx,
+                                                        __unused BOOL *channelGroupNamesEnumeratorStop) {
             
             [channelGroups addObject:[PNChannelGroup channelGroupWithName:channelGroupName inNamespace:nspace]];
         }];

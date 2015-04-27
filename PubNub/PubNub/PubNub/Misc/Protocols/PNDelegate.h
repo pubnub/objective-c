@@ -233,9 +233,6 @@
  
  @param namespaces
  List of \a NSString instances with names of namespaces which has been registered with subscription current key
- 
- @param group
- Reference on \b PNChannelGroup instance which describes target channel group and namespace.
  */
 - (void)pubnubClient:(PubNub *)client didReceiveChannelGroupNamespaces:(NSArray *)namespaces;
 
@@ -716,14 +713,9 @@
 /**
  * Called on delegate when client failed to download participant channels list.
 
- @param client
- \b PubNub instance which triggered this event.
-
- @param participantChannelsList
- List of \b PNChannel instance for which \c clientIdentifier subscribed at this moment.
-
- @param error
- \b PNError instance which describe what exactly went wrong.
+ @param client           \b PubNub instance which triggered this event.
+ @param clientIdentifier Client identifier against which search has been performed.
+ @param error            \b PNError instance which describe what exactly went wrong.
  */
 - (void)pubnubClient:(PubNub *)client didFailParticipantChannelsListDownloadForIdentifier:(NSString *)clientIdentifier
            withError:(PNError *)error;

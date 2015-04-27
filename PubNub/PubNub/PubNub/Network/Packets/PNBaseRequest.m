@@ -110,7 +110,7 @@
     return [self resourcePath:YES];
 }
 
-- (NSString *)resourcePath:(BOOL)forConsole {
+- (NSString *)resourcePath:(BOOL)__unused forConsole {
 
     [PNLogger logCommunicationChannelWarnMessageFrom:self withParametersFromBlock:^NSArray *{
 
@@ -121,7 +121,7 @@
     return @"/";
 }
 
-- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)clientIdentifier {
+- (void)finalizeWithConfiguration:(PNConfiguration *)configuration clientIdentifier:(NSString *)__unused clientIdentifier {
     
     self.acceptCompressedResponse = configuration.shouldAcceptCompressedResponse;
     self.timeout = configuration.nonSubscriptionRequestTimeout;
