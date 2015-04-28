@@ -358,7 +358,10 @@ void PNReachabilityCallback(SCNetworkReachabilityRef reachability __unused, SCNe
 static void reachabilityContextInformationReleaseCallBack(const void *info);
 void reachabilityContextInformationReleaseCallBack(const void *info) {
     
-    CFRelease(info);
+    if (info) {
+        
+        CFRelease(info);
+    }
 }
 
 - (void)startServiceReachabilityMonitoring {
@@ -500,7 +503,10 @@ void reachabilityContextInformationReleaseCallBack(const void *info) {
         if (self.serviceReachability) {
 
             SCNetworkReachabilitySetDispatchQueue(self.serviceReachability, NULL);
-            CFRelease(_serviceReachability);
+            if (_serviceReachability) {
+                
+                CFRelease(_serviceReachability);
+            }
             _serviceReachability = NULL;
 
             [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -521,7 +527,10 @@ void reachabilityContextInformationReleaseCallBack(const void *info) {
         if (self.serviceReachability) {
 
             SCNetworkReachabilityUnscheduleFromRunLoop(self.serviceReachability, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
-            CFRelease(_serviceReachability);
+            if (_serviceReachability) {
+                
+                CFRelease(_serviceReachability);
+            }
             _serviceReachability = NULL;
 
             [PNLogger logReachabilityMessageFrom:self withParametersFromBlock:^NSArray *{
@@ -886,21 +895,28 @@ void reachabilityContextInformationReleaseCallBack(const void *info) {
 
 - (SCNetworkConnectionFlags)synchronousStatusFlags {
     
-    SCNetworkConnectionFlags reachabilityFlags;
+    SCNetworkConnectionFlags reachabilityFlags = 0;
     
     // Fetch cellular data reachability status
     SCNetworkReachabilityRef internetReachability = [PNReachability newReachabilityForWiFi:NO];
-    SCNetworkReachabilityGetFlags(internetReachability, &reachabilityFlags);
+    
+    if (internetReachability) {
+        SCNetworkReachabilityGetFlags(internetReachability, &reachabilityFlags);
+        CFRelease(internetReachability);
+    }
+    
     PNReachabilityStatus reachabilityStatus = PNReachabilityStatusForFlags(reachabilityFlags);
     if (reachabilityStatus == PNReachabilityStatusUnknown || reachabilityStatus == PNReachabilityStatusNotReachable) {
         
         // Fetch WiFi reachability status
         SCNetworkReachabilityRef wifiReachability = [PNReachability newReachabilityForWiFi:YES];
-        SCNetworkReachabilityGetFlags(wifiReachability, &reachabilityFlags);
-        CFRelease(wifiReachability);
+        
+        if (wifiReachability) {
+            
+            SCNetworkReachabilityGetFlags(wifiReachability, &reachabilityFlags);
+            CFRelease(wifiReachability);
+        }
     }
-    
-    CFRelease(internetReachability);
     
     
     return reachabilityFlags;

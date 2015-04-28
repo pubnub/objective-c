@@ -322,7 +322,10 @@
     CFStringRef cfUUID = CFUUIDCreateString(kCFAllocatorDefault, uuid);
     
     // release the UUID
-    CFRelease(uuid);
+    if (uuid) {
+        
+        CFRelease(uuid);
+    }
     
     
     return [[NSString alloc] initWithString:[(NSString *)CFBridgingRelease(cfUUID) lowercaseString]];

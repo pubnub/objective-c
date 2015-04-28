@@ -631,7 +631,11 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                         [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamConnected];
 
                         [connection handleStreamConnection];
-                        CFRelease(retainedStream);
+                        
+                        if (retainedStream) {
+                            
+                            CFRelease(retainedStream);
+                        }
                     }
                     break;
 
@@ -646,7 +650,11 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                         }];
                         
                         [connection handleReadStreamHasData:retainedStream];
-                        CFRelease(retainedStream);
+                        
+                        if (retainedStream) {
+                            
+                            CFRelease(retainedStream);
+                        }
                     }
                     break;
 
@@ -663,7 +671,11 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                         [connection handleStreamError:PNReadStreamError fromBlock:^CFErrorRef {
 
                             CFErrorRef cfError = CFReadStreamCopyError(retainedStream);
-                            CFRelease(retainedStream);
+                            
+                            if (retainedStream) {
+                                
+                                CFRelease(retainedStream);
+                            }
 
 
                             return cfError;
@@ -685,13 +697,20 @@ void readStreamCallback(CFReadStreamRef stream, CFStreamEventType type, void *cl
                         [PNBitwiseHelper addTo:&(connection->_state) bit:PNReadStreamDisconnected];
 
                         [connection handleStreamTimeout];
-                        CFRelease(retainedStream);
+                        
+                        if (retainedStream) {
+                            
+                            CFRelease(retainedStream);
+                        }
                     }
                     break;
 
                 default:
                     
-                    CFRelease(retainedStream);
+                    if (retainedStream) {
+                        
+                        CFRelease(retainedStream);
+                    }
                     break;
             }
         }];
@@ -728,7 +747,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamConnected];
 
                         [connection handleStreamConnection];
-                        CFRelease(retainedStream);
+                        
+                        if (retainedStream) {
+                            
+                            CFRelease(retainedStream);
+                        }
                     }
                     break;
 
@@ -743,7 +766,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         }];
 
                         [connection handleWriteStreamCanAcceptData];
-                        CFRelease(retainedStream);
+                        
+                        if (retainedStream) {
+                            
+                            CFRelease(retainedStream);
+                        }
                     }
                     break;
 
@@ -760,7 +787,11 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         [connection handleStreamError:PNWriteStreamError fromBlock:^CFErrorRef {
 
                             CFErrorRef cfError = CFWriteStreamCopyError(retainedStream);
-                            CFRelease(retainedStream);
+                            
+                            if (retainedStream) {
+                                
+                                CFRelease(retainedStream);
+                            }
 
 
                             return cfError;
@@ -782,13 +813,20 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
                         [PNBitwiseHelper addTo:&(connection->_state) bit:PNWriteStreamDisconnected];
 
                         [connection handleStreamTimeout];
-                        CFRelease(retainedStream);
+                        
+                        if (retainedStream) {
+                            
+                            CFRelease(retainedStream);
+                        }
                     }
                     break;
 
                 default:
                     
-                    CFRelease(retainedStream);
+                    if (retainedStream) {
+                        
+                        CFRelease(retainedStream);
+                    }
                     break;
             }
         }];
@@ -798,7 +836,10 @@ void writeStreamCallback(CFWriteStreamRef stream, CFStreamEventType type, void *
 static void connectionContextInformationReleaseCallBack(void *info);
 void connectionContextInformationReleaseCallBack(void *info) {
     
-    CFRelease(info);
+    if (info) {
+        
+        CFRelease(info);
+    }
 }
 
 
@@ -1888,7 +1929,8 @@ void connectionContextInformationReleaseCallBack(void *info) {
 
             CFRunLoopRun();
         }
-        if (error != NULL) {
+        
+        if (error) {
             
             CFRelease(error);
         }
@@ -1963,7 +2005,11 @@ void connectionContextInformationReleaseCallBack(void *info) {
 
                 CFReadStreamClose(readStream);
             }
-            CFRelease(readStream);
+            
+            if (readStream) {
+                
+                CFRelease(readStream);
+            }
         });
     }
 
@@ -2052,7 +2098,11 @@ void connectionContextInformationReleaseCallBack(void *info) {
             CFErrorRef error = CFReadStreamCopyError(stream);
             [PNBitwiseHelper addTo:&self->_state bit:PNReadStreamError];
             [self handleStreamError:error];
-            CFRelease(error);
+            
+            if (error) {
+                
+                CFRelease(error);
+            }
         }
     }
 }
@@ -2265,7 +2315,7 @@ void connectionContextInformationReleaseCallBack(void *info) {
             CFRunLoopRun();
         }
         
-        if (error != NULL) {
+        if (error) {
             
             CFRelease(error);
         }
@@ -2331,7 +2381,11 @@ void connectionContextInformationReleaseCallBack(void *info) {
 
                 CFWriteStreamClose(writeStream);
             }
-            CFRelease(writeStream);
+            
+            if (writeStream) {
+                
+                CFRelease(writeStream);
+            }
         });
     }
 
@@ -2512,9 +2566,13 @@ void connectionContextInformationReleaseCallBack(void *info) {
 
                                     [self handleRequestProcessingError:writeError withBlock:^{
                                         
-                                        CFRelease(writeError);
+                                        if (writeError) {
+                                            
+                                            CFRelease(writeError);
+                                        }
 
                                         [self pn_dispatchBlock:^{
+                                            
                                             isWriteBufferIsEmpty = YES;
                                             emptyBufferHandleBlock();
                                         }];
@@ -3352,11 +3410,17 @@ void connectionContextInformationReleaseCallBack(void *info) {
                 [self handleStreamError:streamError shouldCloseConnection:YES];
                 isErrorProcessed = YES;
 
-                CFRelease(errorReference);
+                if (errorReference) {
+                    
+                    CFRelease(errorReference);
+                }
             }
             else if (errorReference != NULL) {
                 
-                CFRelease(errorReference);
+                if (errorReference) {
+                    
+                    CFRelease(errorReference);
+                }
             }
         }];
     };
@@ -4279,7 +4343,10 @@ void connectionContextInformationReleaseCallBack(void *info) {
                  @(self->_state)];
     }];
     
-    CFRelease(_streamSecuritySettings);
+    if (_streamSecuritySettings) {
+        
+        CFRelease(_streamSecuritySettings);
+    }
 }
 
 #pragma mark -

@@ -563,7 +563,11 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                 *isMalformedResponse = !isResponseChunked;
             }
         }
-        CFRelease(message);
+        
+        if (message) {
+            
+            CFRelease(message);
+        }
     }
     
 

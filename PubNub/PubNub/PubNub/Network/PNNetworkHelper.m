@@ -164,14 +164,22 @@ static NSString * kPNWLANServiceSetIdentifierKey = @"SSID";
 
                     information = [(__bridge NSDictionary*)interfaceInformation copy];
                 }
-                CFRelease(interfaceInformation);
+                
+                if (interfaceInformation) {
+                    
+                    CFRelease(interfaceInformation);
+                }
             }
             if (information != nil) {
 
                 break;
             }
         }
-        CFRelease(interfaces);
+        
+        if (interfaces) {
+            
+            CFRelease(interfaces);
+        }
     }
 #else
     #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6 && MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_10

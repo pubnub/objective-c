@@ -73,7 +73,10 @@
 static void objectReleaseCallBack(void *info);
 void objectReleaseCallBack(void *info) {
     
-    CFRelease(info);
+    if (info) {
+        
+        CFRelease(info);
+    }
 }
 
 - (dispatch_queue_t)pn_privateQueue {
