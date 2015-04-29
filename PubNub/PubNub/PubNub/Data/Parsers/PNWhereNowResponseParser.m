@@ -9,8 +9,8 @@
 #import "PNWhereNowResponseParser+Protected.h"
 #import "PNResponse+Protected.h"
 #import "PNWhereNow+Protected.h"
+#import "PNChannel+Protected.h"
 #import "PNChannel.h"
-
 
 // ARC check
 #if !__has_feature(objc_arc)
