@@ -143,10 +143,11 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                                     NSUInteger processedBufferLength,
                                     void(^readBufferPostProcessing)(void)))parseCompletionBlock {
     
+    buffer = [buffer copy];
     [self pn_dispatchBlock:^{
         
         if (!self.deserializing) {
-                
+            
             self.deserializing = YES;
             NSMutableArray *packetRanges = [NSMutableArray new];
             NSUInteger bufferSize = [buffer length];
@@ -427,15 +428,17 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
 
     CFHTTPMessageRef message = NULL;
     NSUInteger httpHeadersEndMarkerLocation = [self HTTPHeadersEndMarkerIn:buffer withRange:bufferRange];
+    NSUInteger overallResponseBodyOffset = 0;
     NSUInteger responseBodyOffset = 0;
-    if (httpHeadersEndMarkerLocation != NSNotFound && bufferRange.length >= httpHeadersEndMarkerLocation) {
+    if (httpHeadersEndMarkerLocation != NSNotFound && bufferRange.length >= (httpHeadersEndMarkerLocation - bufferRange.location)) {
 
-        responseBodyOffset = (httpHeadersEndMarkerLocation + [kHTTPHeaderEndMarker length]);
+        overallResponseBodyOffset = (httpHeadersEndMarkerLocation + [kHTTPHeaderEndMarker length]);
+        responseBodyOffset = (overallResponseBodyOffset - bufferRange.location);
 
         // Appending only portion of bytes which contains reference on all passed with response
         // HTTP headers which will be used during body processing.
         message = CFHTTPMessageCreateEmpty(NULL, FALSE);
-        CFHTTPMessageAppendBytes(message, [buffer bytes], (CFIndex)responseBodyOffset);
+        CFHTTPMessageAppendBytes(message, [buffer bytes] + bufferRange.location, (CFIndex)responseBodyOffset);
     }
 
     if (message) {
@@ -511,13 +514,13 @@ static NSString * const kPNCloseConnectionTypeFieldValue = @"close";
                             // Calculate new useful body content size. This will allow to truncate
                             // and data which has been appended by server aside from declared
                             // chinked content.
-                            contentSize = (packetEndLocation + [kChunkedHTTPPacketEndMarker length]) - responseBodyOffset;
+                            contentSize = (packetEndLocation + [kChunkedHTTPPacketEndMarker length]) - overallResponseBodyOffset;
                         }
                     }
 
                     if (isFullBody) {
 
-                        NSData *preparedData = [buffer subdataWithRange:NSMakeRange(responseBodyOffset, contentSize)];
+                        NSData *preparedData = [buffer subdataWithRange:NSMakeRange(overallResponseBodyOffset, contentSize)];
                         if (isResponseChunked) {
 
                             NSUInteger joinedSize;

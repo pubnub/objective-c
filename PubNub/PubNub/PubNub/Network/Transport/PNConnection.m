@@ -2112,15 +2112,9 @@ void connectionContextInformationReleaseCallBack(void *info) {
     // This method should be launched only from within it's private queue
     [self pn_scheduleOnPrivateQueueAssert];
 
-    NSData *dataForProcessing = [self.readBuffer copy];
-    if (!dataForProcessing) {
-
-        dataForProcessing = self.notProcessedReadBuffer;
-    }
-
     // Retrieve response objects from server response
     __block __pn_desired_weak PNConnection *weakSelf = self;
-    [self.deserializer parseBufferContent:dataForProcessing
+    [self.deserializer parseBufferContent:(self.readBuffer ?: self.notProcessedReadBuffer)
                                 withBlock:^(NSArray *responses, NSUInteger fullBufferLength,
                                             NSUInteger processedBufferLength,
                                             void(^readBufferPostProcessing)(void)) {
@@ -2131,7 +2125,7 @@ void connectionContextInformationReleaseCallBack(void *info) {
 
             // Check whether buffer size has been altered while de-serializer parsed it's content
             // or not.
-            NSUInteger readBufferSize = [dataForProcessing length];
+            NSUInteger readBufferSize = [(self.readBuffer ?: self.notProcessedReadBuffer) length];
             BOOL isReadBufferChanged = (fullBufferLength != readBufferSize);
 
             // Check whether some data has been processed or not.
@@ -2154,14 +2148,15 @@ void connectionContextInformationReleaseCallBack(void *info) {
                     }
                     else {
 
+                        NSRange targetRange = NSMakeRange(processedBufferLength, readBufferSize - processedBufferLength);
                         if (strongSelf.readBuffer) {
 
-                            NSData *processedData = [strongSelf.readBuffer subdataWithRange:NSMakeRange(0, processedBufferLength)];
+                            NSData *processedData = [strongSelf.readBuffer subdataWithRange:targetRange];
                             strongSelf.readBuffer = [[NSMutableData alloc] initWithData:processedData];
                         }
                         else if (strongSelf.notProcessedReadBuffer){
 
-                            strongSelf.notProcessedReadBuffer = [strongSelf.notProcessedReadBuffer subdataWithRange:NSMakeRange(0, processedBufferLength)];
+                            strongSelf.notProcessedReadBuffer = [strongSelf.notProcessedReadBuffer subdataWithRange:targetRange];
                         }
                     }
                 }
