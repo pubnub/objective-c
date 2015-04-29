@@ -1,3 +1,10 @@
+04-29-2015 - 3f319f53 - 3.7.10.7
+
+. added check to ensure what CFRelease at least will receive non-NULL object (even in same frame)
+. fixed condition collision when server respond with non keep alive connection header and malformed data at once
+. documentation clean up according to clang warnings
+. switch from dispatch_data_t to NSMutableData as read buffer
+
 04-16-2015 - d171ec50 - 3.7.10.6
 
 . unschedule streams from run-loop and let streamClose function only release resources
