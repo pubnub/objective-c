@@ -6,6 +6,7 @@
  @copyright © 2009-13 PubNub Inc.
  */
 
+#import "PNHereNowResponseParser.h"
 
 #pragma mark Static
 
@@ -31,21 +32,13 @@ static NSString * const kPNResponseClientStateKey = @"state";
 // in room is stored
 static NSString * const kPNResponseOccupancyKey = @"occupancy";
 
-/**
- Stores reference on key under which list of channels is stored.
- */
-static NSString * const kPNResponseChannelsKey = @"channels";
-
-
 #pragma mark - Class forward
 
 @class PNHereNow, PNChannel, PNClient;
 
-
 #pragma mark - Private interface methods
 
 @interface PNHereNowResponseParser ()
-
 
 #pragma mark - Properties
 

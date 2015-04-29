@@ -9,6 +9,7 @@
 #import "PNClientStateResponseParser+Protected.h"
 #import "PNResponse+Protected.h"
 #import "PNClient+Protected.h"
+#import "PNChannel+Protected.h"
 #import "PNChannel.h"
 
 
