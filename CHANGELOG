@@ -1,3 +1,7 @@
+04-29-2015 - 50ee54b - 3.7.10.8
+
+. parser adjustment
+
 04-29-2015 - 3f319f53 - 3.7.10.7
 
 . added check to ensure what CFRelease at least will receive non-NULL object (even in same frame)
