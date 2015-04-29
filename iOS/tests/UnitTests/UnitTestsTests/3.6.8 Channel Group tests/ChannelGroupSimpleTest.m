@@ -183,9 +183,7 @@ static const NSUInteger kOnPeriod = 5;
     
     _testClient = [PubNub clientWithConfiguration:[PNConfiguration accessManagerTestConfiguration] andDelegate:self];
     [self connectClient];
-    [self changeAccessRightsFor:_testNameSpaces
-                   accessRights:PNNoAccessRights
-                       onPeriod:kOnPeriod];
+    [self changeAccessRightsFor:_testNameSpaces accessRights:PNNoAccessRights onPeriod:kOnPeriod];
     
     // Add channels to the group
     [self didFailAddChannels:_testChannels toGroup:_testGroup];
@@ -260,7 +258,6 @@ static const NSUInteger kOnPeriod = 5;
             if (error) {
               
               _XCTPrimitiveFail(strongSelf, @"PubNub client did fail to add channels to the group: %@", error);
-                
               strongSelf->_isEventObserverFail = YES;
             } else {
               

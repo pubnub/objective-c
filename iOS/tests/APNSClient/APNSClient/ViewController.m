@@ -40,6 +40,13 @@
                                 NSLog(@"error: %@", error);
                             }];
     
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [PubNub enablePushNotificationsOnChannel:my_channel
+                             withDevicePushToken:_deviceToken
+                      andCompletionHandlingBlock:^(NSArray *channel, PNError *error){
+                          NSLog(@"BLOCK: enablePushNotificationsOnChannel: %@ , Error %@",channel,error);
+                      }];
+    });
     
     [[PNObservationCenter defaultCenter] addClientConnectionStateObserver:self withCallbackBlock:^(NSString *origin, BOOL connected, PNError *connectionError){
         

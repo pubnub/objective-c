@@ -2,8 +2,8 @@
 //  ChannelGroupSubscriptionInstanceTest.m
 //  UnitTests
 //
-//  Created by Sergey on 10/13/14.
-//  Copyright (c) 2014 Vadim Osovets. All rights reserved.
+//  Created by Sergey Kazanskiy on 10/13/14.
+//  Copyright (c) 2014 PubNub Inc. All rights reserved.
 //
 
 /*
