@@ -139,7 +139,7 @@ PNDelegate
         return;
     }
     
-    XCTAssertTrue(messageSize == 314);
+    XCTAssertTrue(messageSize == 315, @"Actual message size: %@", @(messageSize));
 }
 
 - (void)testSaveMesssageInHistory {
