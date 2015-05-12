@@ -113,12 +113,13 @@
         BOOL removeAllChannels = (!shouldEnabled && channels == nil);
         PNOperationType operationType = PNRemoveAllPushNotificationsOperation;
         NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
+        NSString *channelsList = [PNChannel namesForRequest:channels];
         NSDictionary *parameters = nil;
         if (!removeAllChannels){
             
             operationType = (shouldEnabled ? PNAddPushNotificationsOnChannelsOperation :
                              PNRemovePushNotificationsFromChannelsOperation);
-            parameters = @{(shouldEnabled ? @"add":@"remove"):[PNChannel namesForRequest:channels]};
+            parameters = @{(shouldEnabled ? @"add":@"remove"): channelsList};
         }
         NSString *format = [@"/v1/push/sub-key/%@/devices/%@"
                             stringByAppendingString:(removeAllChannels ? @"/remove" : @"")];
@@ -136,6 +137,19 @@
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPushNotificationsStateModificationResponse:rawData];
         };
+        
+        if (removeAllChannels) {
+            
+            DDLogAPICall(@"<PubNub> Disable push notifications for device '%@'.",
+                         [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
+        }
+        else {
+            
+            DDLogAPICall(@"<PubNub> %@ push notifications for device '%@': %@.",
+                         (shouldEnabled ? @"Enable" : @"Disable"),
+                         [[PNData HEXFromDevicePushToken:pushToken] lowercaseString],
+                         channelsList);
+        }
 
         // Ensure what all required fields passed before starting processing.
         if ([pushToken length] > 0) {
@@ -181,6 +195,9 @@
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPushNotificationsAuditResponse:rawData];
         };
+        
+        DDLogAPICall(@"<PubNub> Push notification enabled channels for device '%@'.",
+                     [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
 
         // Ensure what all required fields passed before starting processing.
         if ([pushToken length] > 0) {

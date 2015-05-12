@@ -57,4 +57,15 @@ static NSString * const PNStatusCategoryStrings[12] = {
     [PNSSLUntrustedCertificateCategory] = @"Untrusted SSL Certificate"
 };
 
+/**
+ @brief  Helper to stringify here now data set information.
+
+ @since 4.0
+ */
+static NSString * const PNHereNowDataStrings[3] = {
+    [PNHereNowOccupancy] = @"occupancy only",
+    [PNHereNowUUID] = @"UUID list and occupancy",
+    [PNHereNowState] = @"occupancy, UUID and state"
+};
+
 #endif // PNPrivateStructures_h

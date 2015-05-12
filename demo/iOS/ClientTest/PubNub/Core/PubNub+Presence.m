@@ -5,6 +5,7 @@
  */
 #import "PubNub+Presence.h"
 #import "PubNub+StatePrivate.h"
+#import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
 #import "PubNub+Subscribe.h"
@@ -211,6 +212,18 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPresenceAuditionResponse:rawData];
         };
+        
+        if (![object length]) {
+            
+            DDLogAPICall(@"<PubNub> Global 'here now' information with %@ data.",
+                         PNHereNowDataStrings[type]);
+        }
+        else {
+            
+            DDLogAPICall(@"<PubNub> Channel%@ 'here now' information for %@ with %@ data.",
+                         (!forChannel ? @" group" : @""), (object?: @"<error>"),
+                         PNHereNowDataStrings[type]);
+        }
         [strongSelf processRequest:request];
     });
 }
@@ -241,10 +254,12 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPresenceWhereNowResponse:rawData];
         };
+        
+        DDLogAPICall(@"<PubNub> 'Where now' presence information for %@.", (uuid?: @"<error>"));
 
         // Ensure what all required fields passed before starting processing.
         if ([uuid length]) {
-
+            
             [strongSelf processRequest:request];
         }
         // Notify about incomplete parameters set.

@@ -196,6 +196,12 @@
                 __strong __typeof(self) strongSelfForProcessing = weakSelf;
                 return [strongSelfForProcessing processedPublishResponse:rawData];
             };
+            
+            DDLogAPICall(@"<PubNub> Publish%@ message to '%@' channel%@%@",
+                         (compressed ? @" compressed" : @""), (channel?: @"<error>"),
+                         (!shouldStore ? @" which won't be saved in hisotry" : @""),
+                         (!compressed ? [NSString stringWithFormat:@": %@",
+                                         (messageForPublish?: @"<error>")] : @"."));
 
             // Ensure what all required fields passed before starting processing.
             if (!publishError && [channel length] && ((!compressed && [messageForPublish length]) ||

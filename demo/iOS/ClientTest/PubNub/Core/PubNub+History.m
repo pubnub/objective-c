@@ -9,6 +9,7 @@
 #import "PNErrorCodes.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
+#import "PNLog.h"
 
 
 #pragma mark Private interface
@@ -137,6 +138,12 @@
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedHistoryResponse:rawData];
         };
+        
+        DDLogAPICall(@"<PubNub> %@ for '%@' channel%@%@ with %@ limit%@.",
+                     (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
+                     (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
+                     (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limit),
+                     (shouldIncludeTimeToken ? @" (including message time tokens)" : @""));
 
         // Ensure what all required fields passed before starting processing.
         if ([channel length]) {
@@ -204,7 +211,7 @@
                 }
                 else {
 
-                    NSLog(@"Decryption error: %@", decryptionError);
+                    DDLogAESError(@"<PubNub> History entry decryption error: %@", decryptionError);
                 }
             }
 

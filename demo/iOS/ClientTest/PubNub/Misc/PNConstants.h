@@ -27,7 +27,6 @@ static NSString * const kPNClientName = @"ObjC-MacOS";
 
 static NSString * const kPNDefaultOrigin = @"pubsub.pubnub.com";
 
-static NSTimeInterval const kPNDefaultSubscribeRequestTimeout = 10.0f;
 static NSTimeInterval const kPNDefaultSubscribeMaximumIdleTime = 310.0f;
 static NSTimeInterval const kPNDefaultNonSubscribeRequestTimeout = 10.0f;
 

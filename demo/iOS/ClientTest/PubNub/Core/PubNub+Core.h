@@ -90,19 +90,6 @@
 @property (nonatomic, copy) NSString *cipherKey;
 
 /**
- @brief      Reference on number of seconds which is used during initial subscription on remote 
-             data objects live feed.
- @discussion Initial subscription process should provide immediately response with data which 
-             should be used to perform long-poll request. If in specified time frame client won't
-             receive response from server it will report about subscription error.
- 
- @default    Client will use it's own constant (\b 10 seconds) value if origin not specified.
- 
- @since 4.0
- */
-@property (nonatomic, assign) NSTimeInterval subscribeRequestTimeout;
-
-/**
  @brief      Stores reference on maximum number of seconds which client should wait for events from
              live feed.
  @discussion By default value is set to \b 310 seconds. If in specified time frame \b PubNub service

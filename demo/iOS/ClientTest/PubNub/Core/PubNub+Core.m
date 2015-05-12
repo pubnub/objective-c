@@ -4,7 +4,6 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
-#import <CocoaLumberjack/CocoaLumberjack.h>
 #import "PubNub+SubscribePrivate.h"
 #import "PubNub+PresencePrivate.h"
 #import "PNRequest+Private.h"
@@ -17,17 +16,7 @@
 #import "PNLog.h"
 
 
-#pragma mark Static 
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for \b PubNub client class and categories.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogLevel);
-
-
-#pragma mark - Private interface declaration
+#pragma mark - Protected interface declaration
 
 @interface PubNub ()
 
@@ -253,31 +242,126 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
         // Store current configuration value to identify what part of client will require for
         // changes basing on updates information.
         NSString *origin = [strongSelf.origin copy];
+        NSString *publishKey = [strongSelf.publishKey copy];
         NSString *subscribeKey = [strongSelf.subscribeKey copy];
         NSString *authorizationKey = [strongSelf.authorizationKey copy];
         NSString *uuid = [_uuid copy];
-        BOOL isSSLEnabled = strongSelf.isSSLEnabled;
+        NSString *cipherKey = [strongSelf.cipherKey copy];
         NSTimeInterval subscribeMaximumIdleTime = strongSelf.subscribeMaximumIdleTime;
         NSTimeInterval nonSubscribeRequestTimeout = strongSelf.nonSubscribeRequestTimeout;
         NSInteger presenceHeartbeatValue = strongSelf.presenceHeartbeatValue;
         NSInteger presenceHeartbeatInterval = strongSelf.presenceHeartbeatInterval;
+        BOOL isSSLEnabled = strongSelf.isSSLEnabled;
+        BOOL keepTimeTokeOnListChange = strongSelf.shouldKeepTimeTokenOnListChange;
+        BOOL shouldRestoreSubscription = strongSelf.shouldRestoreSubscription;
+        BOOL shouldCatchUpOnRestore = strongSelf.shouldTryCatchUpOnSubscriptionRestore;
         
         // Performing client configuration change committed by user.
         if (block) {
 
             block();
         }
+        
+        BOOL serviceOriginChanged = ![origin isEqualToString:strongSelf.origin];
+        BOOL publishKeyChanged = ![publishKey isEqualToString:strongSelf.publishKey];
+        BOOL subscribeKeyChanged = ![subscribeKey isEqualToString:strongSelf.subscribeKey];
+        BOOL authorizationKeyChanged = ![authorizationKey isEqualToString:strongSelf.authorizationKey];
+        BOOL uuidChanged = ![uuid isEqualToString:_uuid];
+        BOOL cipherKeyChanged = ![cipherKey isEqualToString:strongSelf.cipherKey];
+        BOOL maximumSubscribeIdleChanged =  (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime);
+        BOOL nonSubscribeTimeoutChanged =  (nonSubscribeRequestTimeout != strongSelf.nonSubscribeRequestTimeout);
+        BOOL heartbeatValueChanged =  (presenceHeartbeatValue != strongSelf.presenceHeartbeatValue);
+        BOOL heartbeatIntervalChanged =  (presenceHeartbeatInterval != strongSelf.presenceHeartbeatInterval);
+        BOOL SSLModeChanged = (isSSLEnabled != strongSelf.isSSLEnabled);
+        BOOL keepTimeTokeOnListChanged = (keepTimeTokeOnListChange != strongSelf.shouldKeepTimeTokenOnListChange);
+        BOOL shouldRestoreSubscriptionChanged = (shouldRestoreSubscription != strongSelf.shouldRestoreSubscription);
+        BOOL shouldCatchUpOnRestoreChanged = (shouldCatchUpOnRestore != strongSelf.shouldTryCatchUpOnSubscriptionRestore);
+        if (!serviceOriginChanged && !publishKeyChanged && !subscribeKeyChanged &&
+            !authorizationKeyChanged && !uuidChanged && !cipherKeyChanged &&
+            !maximumSubscribeIdleChanged && !nonSubscribeTimeoutChanged && !heartbeatValueChanged &&
+            !heartbeatIntervalChanged && !SSLModeChanged && !keepTimeTokeOnListChanged &&
+            !shouldRestoreSubscriptionChanged && !shouldCatchUpOnRestoreChanged) {
+            
+            DDLogConfiguration(@"<PubNub> Configuration not changed.");
+        }
+        else {
+            
+            NSMutableString *configuration = [NSMutableString stringWithString:@"<PubNub> Configuration modification:\n"];
+            if (serviceOriginChanged) {
+                [configuration appendFormat:@"Changed from '%@' to '%@'\n",
+                 origin, strongSelf.origin];
+            }
+            if (publishKeyChanged) {
+                [configuration appendFormat:@"Publish key changed from '%@' to '%@'\n",
+                 publishKey, strongSelf.publishKey];
+            }
+            if (subscribeKeyChanged) {
+                [configuration appendFormat:@"Subscribe key changed from '%@' to '%@'\n",
+                 subscribeKey, strongSelf.subscribeKey];
+            }
+            if (authorizationKeyChanged) {
+                [configuration appendFormat:@"Authorization key changed from '%@' to '%@'\n",
+                 authorizationKey, strongSelf.authorizationKey];
+            }
+            if (uuidChanged) {
+                [configuration appendFormat:@"UUID changed from '%@' to '%@'\n", uuid, _uuid];
+            }
+            if (cipherKeyChanged) {
+                [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
+                 cipherKey, strongSelf.cipherKey];
+            }
+            if (cipherKeyChanged) {
+                [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
+                 cipherKey, strongSelf.cipherKey];
+            }
+            if (maximumSubscribeIdleChanged) {
+                [configuration appendFormat:@"Maximum subscribe idle changed from '%@' to '%@'\n",
+                 @(subscribeMaximumIdleTime), @(strongSelf.subscribeMaximumIdleTime)];
+            }
+            if (nonSubscribeTimeoutChanged) {
+                [configuration appendFormat:@"Non-subscribe timeout changed from '%@' to '%@'\n",
+                 @(nonSubscribeRequestTimeout), @(strongSelf.nonSubscribeRequestTimeout)];
+            }
+            if (heartbeatValueChanged) {
+                [configuration appendFormat:@"Heartbeat value changed from '%@' to '%@'\n",
+                 @(presenceHeartbeatValue), @(strongSelf.presenceHeartbeatValue)];
+            }
+            if (heartbeatIntervalChanged) {
+                [configuration appendFormat:@"Heartbeat interval changed from '%@' to '%@'\n",
+                 @(presenceHeartbeatInterval), @(strongSelf.presenceHeartbeatInterval)];
+            }
+            if (SSLModeChanged) {
+                [configuration appendFormat:@"SSL mode changed from '%@' to '%@'\n",
+                 (isSSLEnabled ? @"YES" : @"NO"), (strongSelf.isSSLEnabled ? @"YES" : @"NO")];
+            }
+            if (keepTimeTokeOnListChanged) {
+                [configuration appendFormat:@"Keep time token on channels list change changed from "
+                                             " '%@' to '%@'\n",
+                 (keepTimeTokeOnListChange ? @"YES" : @"NO"),
+                 (strongSelf.shouldKeepTimeTokenOnListChange ? @"YES" : @"NO")];
+            }
+            if (shouldRestoreSubscriptionChanged) {
+                [configuration appendFormat:@"Should restore subscription changed from '%@' to '%@'\n",
+                 (shouldRestoreSubscription ? @"YES" : @"NO"),
+                 (strongSelf.shouldRestoreSubscription ? @"YES" : @"NO")];
+            }
+            if (shouldCatchUpOnRestoreChanged) {
+                [configuration appendFormat:@"Try catch up on subscribe restore changed from "
+                                             "'%@' to '%@'\n",
+                 (shouldCatchUpOnRestore ? @"YES" : @"NO"),
+                 (strongSelf.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO")];
+            }
+            DDLogConfiguration(configuration);
+        }
 
         // Check whether base URL has been changed or not
-        if ([origin isEqualToString:strongSelf.origin] && isSSLEnabled == strongSelf.isSSLEnabled) {
+        if (!serviceOriginChanged && !SSLModeChanged) {
 
-            if (![subscribeKey isEqualToString:strongSelf.subscribeKey] ||
-                ![authorizationKey isEqualToString:strongSelf.authorizationKey] ||
-                ![uuid isEqualToString:_uuid] ||
-                (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime)){
+            if (subscribeKeyChanged || authorizationKeyChanged || uuidChanged ||
+                maximumSubscribeIdleChanged){
 
                 // Check whether request or session related information has been changed.
-                if (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime) {
+                if (maximumSubscribeIdleChanged) {
 
                     // Recreate subscription URL session with new configuration.
                     [strongSelf invalidateSession:strongSelf.subscriptionSession
@@ -297,18 +381,17 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
                 // Resume subscription cycle.
                 [self continueSubscriptionCycleIfRequired];
             }
-            if (nonSubscribeRequestTimeout != strongSelf.nonSubscribeRequestTimeout) {
+            if (nonSubscribeTimeoutChanged) {
 
                 // Recreate service URL session with new configuration allowing exising operations
                 // to be completed.
                 [strongSelf invalidateSession:strongSelf.serviceSession afterTaskCompletion:YES];
                 strongSelf.serviceSession = [strongSelf sessionForImmediateRequests];
             }
-            if (presenceHeartbeatInterval != strongSelf.presenceHeartbeatInterval ||
-                presenceHeartbeatValue != strongSelf.presenceHeartbeatValue) {
+            if (heartbeatValueChanged || heartbeatIntervalChanged) {
 
                 // Check whether heartbeat value important for service has been changed or not.
-                if (presenceHeartbeatValue != strongSelf.presenceHeartbeatValue) {
+                if (heartbeatValueChanged) {
                     
                     // Terminate all active tasks on long-polling URL session.
                     NSArray *tasks = [strongSelf.subscriptionSession tasks];
@@ -375,7 +458,6 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
         self.publishKey = publishKey;
         self.subscribeKey = subscribeKey;
         self.uuid = [[NSUUID UUID] UUIDString];
-        self.subscribeRequestTimeout = kPNDefaultSubscribeRequestTimeout;
         self.subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         self.nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
         self.SSLEnabled = kPNDefaultIsSSLEnabled;

@@ -70,6 +70,16 @@ static PNLog *_sharedInstance = nil;
     });
 }
 
++ (void)enableLogLevel:(PNLogLevel)logLevel {
+    
+    [self setClientLogLevel:([DDLog levelForClass:[PubNub class]] | logLevel)];
+}
+
++ (void)disableLogLevel:(PNLogLevel)logLevel {
+    
+    [self setClientLogLevel:([DDLog levelForClass:[PubNub class]] & ~logLevel)];
+}
+
 + (void)setClientLogLevel:(PNLogLevel)logLevel {
     
     [DDLog setLevel:(DDLogLevel)logLevel forClass:[PubNub class]];
@@ -81,10 +91,14 @@ static PNLog *_sharedInstance = nil;
         
         if (!shouldDumpToFile) {
             
+            DDLogInfo(@"<PubNub> File logger disabled");
             [DDLog removeLogger:_sharedInstance.fileLogger];
         }
         else {
             
+            DDLogInfo(@"<PubNub> File logger enabnled");
+            DDLogInfo(@"<PubNub> Log files stored in: %@",
+                      [_sharedInstance.fileLogger.logFileManager logsDirectory]);
             [DDLog addLogger:_sharedInstance.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
         }
         _sharedInstance.fileLoggerActive = shouldDumpToFile;
@@ -101,12 +115,15 @@ static PNLog *_sharedInstance = nil;
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     
     // Adding file logger for messages sent by PubNub client.
-    self.fileLoggerActive = YES;
     self.fileLogger = [[DDFileLogger alloc] initWithLogFileManager:[PNLogFileManager new]];
     self.fileLogger.maximumFileSize = (5 * 1024 * 1024);
     self.fileLogger.logFileManager.maximumNumberOfLogFiles = 5;
     self.fileLogger.logFileManager.logFilesDiskQuota = (50 * 1024 * 1024);
-    [DDLog addLogger:self.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
+#if DEBUG
+    [[self class] dumpToFile:YES];
+#else
+    [[self class] dumpToFile:NO];
+#endif
 }
 
 #pragma mark -

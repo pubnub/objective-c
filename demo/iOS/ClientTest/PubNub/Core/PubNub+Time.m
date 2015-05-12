@@ -30,6 +30,8 @@
         return ([rawData isKindOfClass:[NSArray class]] ? (NSArray *)rawData[0] : nil);
     };
     
+    DDLogAPICall(@"<PubNub> Time token.");
+    
     [self processRequest:request];
 }
 
