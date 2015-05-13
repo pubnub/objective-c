@@ -35,3 +35,35 @@ pod 'CocoaLumberjack'
  ```
 
 * Open the MyApp.xcworkspace that was created. This should be the file you use everyday to create your app.
+* Copy the PubNub source into your project
+
+You should now have a skeleton PubNub project.
+
+## Hello World
+
+* Open the workspace
+* Under **Build Phases**, under **Link Binary with Libraries**, add ```libz.dylib``` with status of required
+* Open AppDelegate.m
+* Just after ```#import``` add the PubNub import:
+ 
+```objective-c
+#import "PubNub.h"
+```
+* Add the PubNub client property within the AppDelegate interface:
+
+```
+@property (nonatomic, strong) PubNub *client;
+```
+
+* In application:didFinishLaunchingWithOptions, add the following:
+
+```objective-c
+    // Initialize PubNub client.
+    self.client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    
+    // Time
+    [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
+        
+        NSLog(@"Time: %@ (status: %@)", [result data], [status debugDescription]);
+    }];
+```
