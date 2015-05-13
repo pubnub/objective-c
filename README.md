@@ -10,3 +10,28 @@
 * Replaced configuration class with setter configuration pattern
 * Consolidated instance method names
 
+## Installing
+
+* Create a new project in Xcode as you would normally.
+* Open a terminal window, and $ cd into your project directory.
+* Create a Podfile. This can be done by running
+```
+touch Podfile
+```
+
+* Open your Podfile.
+* Populate it with:
+
+```
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '7.0'
+pod 'AFNetworking', '~> 2.5'
+pod 'CocoaLumberjack'
+```
+
+* Run:
+ ```
+ pod install
+ ```
+
+* Open the MyApp.xcworkspace that was created. This should be the file you use everyday to create your app.
