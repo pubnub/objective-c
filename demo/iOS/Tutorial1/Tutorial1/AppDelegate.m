@@ -37,11 +37,6 @@
                 
                 NSLog(@"Subscribe disconnected unexpectedly from %@", status.data[@"channels"]);
             }
-            // When reconnecting from an unexpected disconnect (airplane mode disabled, resuming from foreground)
-            else if (status.category == PNReconnectedCategory) {
-                
-                NSLog(@"Subscribe reconnected to %@", status.data[@"channels"]);
-            }
             // When receiving malformed / Non-JSON
             else if (status.category == PNMalformedResponseCategory) {
                 
@@ -62,7 +57,7 @@
     // Time (Ping) to PubNub Servers
     [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
         if (result.data) {
-            NSLog(@"Result from Time: %@", result.data[@"tt"]);
+            NSLog(@"Result from Time: %@", result.data);
         }
 
         if (status.debugDescription)  {
