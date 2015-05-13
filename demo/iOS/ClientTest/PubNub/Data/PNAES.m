@@ -6,14 +6,23 @@
 #import "PNAES.h"
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
+#import "PubNub+CorePrivate.h"
 #import <libkern/OSAtomic.h>
 #import "PNErrorCodes.h"
 #import "PNHelpers.h"
 
+
+#pragma mark Static
+
+/**
+ @brief  Initializing vector used to initialize (de)cryptor.
+ 
+ @since 4.0
+ */
 static const void * kPNAESInitializationVector = "0123456789012345";
 
 
-#pragma mark Private interface declaration
+#pragma mark - Private interface declaration
 
 @interface PNAES ()
 
@@ -104,9 +113,16 @@ static const void * kPNAESInitializationVector = "0123456789012345";
                                           userInfo:@{NSLocalizedDescriptionKey:description}];
     }
     
-    if (encryptionError && error != NULL) {
+    if (encryptionError) {
         
-        *error = encryptionError;
+        if (error != NULL) {
+            
+            *error = encryptionError;
+        }
+        else {
+            
+            DDLogAESError(@"<PubNub> Encryption error: %@", encryptionError);
+        }
     }
     
     
@@ -179,6 +195,10 @@ static const void * kPNAESInitializationVector = "0123456789012345";
         if (error != NULL) {
             
             *error = decryptionError;
+        }
+        else {
+            
+            DDLogAESError(@"<PubNub> Decryption error: %@", decryptionError);
         }
     }
     

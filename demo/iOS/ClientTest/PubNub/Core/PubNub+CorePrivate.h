@@ -1,9 +1,21 @@
 #import "PubNub+Core.h"
+#import <CocoaLumberjack/CocoaLumberjack.h>
 #import <AFNetworkReachabilityManager.h>
 #import <AFHTTPSessionManager.h>
+#import "PNLog.h"
 
 
-#pragma mark Class forward
+#pragma mark Static
+
+/**
+ @brief  Cocoa Lumberjack logging level configuration for \b PubNub client class and categories.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel = (DDLogLevel)PNVerboseLogLevel;
+
+
+#pragma mark - Class forward
 
 @class PNRequest, PNResult, PNStatus;
 

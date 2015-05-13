@@ -150,10 +150,10 @@
 		791C3A931B015B8C0067B781 /* Logger */ = {
 			isa = PBXGroup;
 			children = (
-				791C3A941B015B8C0067B781 /* PNLog.h */,
-				791C3A951B015B8C0067B781 /* PNLog.m */,
 				791C3A961B015B8C0067B781 /* PNLogFileManager.h */,
 				791C3A971B015B8C0067B781 /* PNLogFileManager.m */,
+				791C3A941B015B8C0067B781 /* PNLog.h */,
+				791C3A951B015B8C0067B781 /* PNLog.m */,
 			);
 			path = Logger;
 			sourceTree = "<group>";

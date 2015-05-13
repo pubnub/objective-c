@@ -322,6 +322,9 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedStateResponse:rawData];
         };
+        
+        DDLogAPICall(@"<PubNub> Set %@'s state on '%@' channel%@: %@.", (uuid?: @"<error>"),
+                     (object?: @"<error>"), (!onChannel ? @" group" : @""), parameters[@"state"]);
 
         // Ensure what all required fields passed before starting processing.
         if ([uuid length] && [object length]) {

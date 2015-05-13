@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+SubscribePrivate.h"
+#import "PubNub+PresencePrivate.h"
 #import "PubNub+StatePrivate.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
@@ -14,7 +15,7 @@
 #import "PNHelpers.h"
 #import "PNResult.h"
 #import "PNAES.h"
-#import "PubNub+PresencePrivate.h"
+#import "PNLog.h"
 
 
 #pragma mark Static
@@ -1365,16 +1366,16 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     if (shouldContinueSubscriptionCycle) {
 
         [self continueSubscriptionCycleIfRequired];
+        
+        // Because client received new event from service, it can restart reachability timer with
+        // new interval.
+        [self startHeartbeatIfRequired];
     }
 
     // Exclusive access to subscriber API granted only for initial subscriptions and when client
     // done with it exclusive access requirement should be removed.
     if (isInitialSubscription) {
-
-        if (shouldContinueSubscriptionCycle) {
-
-            [self startHeartbeatIfRequired];
-        }
+        
         dispatch_resume(self.subscribeQueue);
     }
 }
@@ -1527,8 +1528,8 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                         }
 
                         if (decryptionError) {
-
-                            NSLog(@"Body decryption error: %@", decryptionError);
+                            
+                            DDLogAESError(@"<PubNub> Message decryption error: %@", decryptionError);
                         }
                     }
                     event[@"message"] = eventBody;
