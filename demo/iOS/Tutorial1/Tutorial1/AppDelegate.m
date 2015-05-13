@@ -23,68 +23,84 @@
     // Initialize PubNub client.
     self.channel = @"HelloiOS4.0";
     self.client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    [self.client commitConfiguration:^{
+        
+        self.client.statusHandler = ^(PNStatus *status){
+            
+            // On expected disconnect. For example, channel changing
+            if (status.category == PNDisconnectedCategory) {
+                
+                NSLog(@"Subscribe disconnected expectedly from %@", status.data[@"channels"]);
+            }
+            // On unexpected disconnect. For example, Airplane mode turned on, Suspended, Backgrounded
+            else if (status.category == PNUnexpectedDisconnectCategory) {
+                
+                NSLog(@"Subscribe disconnected unexpectedly from %@", status.data[@"channels"]);
+            }
+            // When reconnecting from an unexpected disconnect (airplane mode disabled, resuming from foreground)
+            else if (status.category == PNReconnectedCategory) {
+                
+                NSLog(@"Subscribe reconnected to %@", status.data[@"channels"]);
+            }
+            // When receiving malformed / Non-JSON
+            else if (status.category == PNMalformedResponseCategory) {
+                
+                NSLog(@"Bad JSON. Is error? %@, It will autoretry (%@)",
+                      (status.isError ? @"YES" : @"NO"),
+                      (status.willAutomaticallyRetry ? @"YES" : @"NO"));
+            }
+            // When receiving a 403
+            else if (status.category == PNAccessDeniedCategory) {
+                
+                NSLog(@"PAM Access Denied against channel %@ -- it will autoretry: %@",
+                      status.data[@"channels"], (status.willAutomaticallyRetry ? @"YES" : @"NO"));
+                NSLog(@"In the meantime, you may wish to change the autotoken or unsubscribe from the channel in question.");
+            }
+        };
+    }];
 
     // Time (Ping) to PubNub Servers
     [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
         if (result.data) {
-            NSLog(@"Result from Time: %@", result.data.tt]);
+            NSLog(@"Result from Time: %@", result.data[@"tt"]);
         }
 
         if (status.debugDescription)  {
-            NSLog(@"Event Status from Time: %@ - Is an error: %@", [status debugDescription], [status isError]);
+            NSLog(@"Event Status from Time: %@ - Is an error: %@", [status debugDescription], (status.isError ? @"YES" : @"NO"));
         }
 
     }];
 
     [self.client subscribeToChannels:@[_channel] withPresence:YES andCompletion:^(PNResult *result, PNStatus *status) {
+        
         if (status) {
 
-            if ([status category]) {
-
-                // On initial subscribe connect event
-                if ([status category] == "connect") {
-                    NSLog(@"Subscribe Connected to %@", [status channels]);
-                    [self.client publish:@"I'm here!" toChannel:_channel compressed:YES withCompletion:^(PNResult *result, PNStatus *status) {
-                        if (result) {
-                            // There is no result data from a publish
-                        } else if (status)
-                        {
-                            if (!status.isError) {
-                                if (status.data && status.data.tt) {
-                                    NSLog(@"Message sent at TT: %@", status.data.tt);
-                                }
-                            } else if (status.isError) {
-                                NSLog(@"An error occurred while publishing: %@", status.data.description);
-                                NSLog(@"Because this WILL NOT autoretry (%@), you must manually resend this message again.", status.willAutomaticallyRetry);
-                            }
+            // On initial subscribe connect event
+            if (status.category == PNConnectedCategory) {
+                
+                NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
+                
+                [self.client publish:@"I'm here!" toChannel:_channel compressed:YES
+                      withCompletion:^(PNResult *result, PNStatus *status) {
+                          
+                    if (result) {
+                        // There is no result data from a publish
+                        // Mamontov: There is actually result information for
+                        // data post.
+                    } else if (status) {
+                        
+                        if (!status.isError) {
+                            
+                            NSLog(@"Message sent at TT: %@", status.data[@"tt"]);
+                        } else {
+                            
+                            NSLog(@"An error occurred while publishing: %@", status.data[@"information"]);
+                            NSLog(@"Because this WILL NOT autoretry (%@), you must manually resend this message again.",
+                                  (status.willAutomaticallyRetry ? @"YES" : @"NO"));
                         }
-                    }];
-
-                    // On expected disconnect. For example, channel changing
-                } else if ([status category] == "expected disconnect") {
-                    NSLog(@"Subscribe disconnected expectedly from %@", [status channels]);
-
-                // On unexpected disconnect. For example, Airplane mode turned on, Suspended, Backgrounded
-                } else if ([status category] == "unexpected disconnect") {
-                    NSLog(@"Subscribe disconnected unexpectedly from %@", [status channels]);
-
-                // When reconnecting from an unexpected disconnect (airplane mode disabled, resuming from foreground)
-                } else if ([status category] == "reconnect") {
-                    NSLog(@"Subscribe reconnected to %@", [status channels]);
-                }
-
-                // When receiving malformed / Non-JSON
-                else if ([status category] == "malformed") {
-                    NSLog(@"Bad JSON. Is error? %@, It will autoretry (%@)", [status isError], [status willAutomaticallyRetry]);
-                }
-
-                // When receiving a 403
-                else if ([status category] == "accessdenied") {
-                    NSLog(@"PAM Access Denied against channel %@ -- it will autoretry: %@", status.data.channel, status.willAutomaticallyRetry);
-                    NSLog(@"In the meantime, you may wish to change the autotoken or unsubscribe from the channel in question.");
-                }
-
-
+                    }
+                }];
+             
             }
         }
     }];
