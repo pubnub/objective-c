@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "PubNub.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <PNObjectEventListener>
 
 @property (nonatomic, strong) PubNub *client;
 
@@ -17,6 +17,20 @@
 
 @implementation AppDelegate
 
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message {
+    
+    NSLog(@"NEW MESSAGE: %@", message.data);
+}
+
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
+    
+    NSLog(@"PRESENCE EVENT: %@", event.data);
+}
+
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
+    
+    NSLog(@"STATUS: %@", [status debugDescription]);
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
@@ -31,14 +45,14 @@
     
     // Message publish (compressed/not compressed and with 'cipherKey' from above encrypted)
     [self.client publish:@{@"Hello":@"world"} toChannel:@"HelloPubNub"
-          withCompletion:^(PNResult *result, PNStatus *status) {
+          withCompletion:^(PNStatus *status) {
               
-              NSLog(@"Publish: %@ (status: %@)", [result data], status);
+              NSLog(@"Publish status: %@", [status debugDescription]);
           }];
     [self.client publish:@{@"I should":@"be compressed"} toChannel:@"HelloPubNub" compressed:YES
-          withCompletion:^(PNResult *result, PNStatus *status) {
+          withCompletion:^(PNStatus *status) {
               
-              NSLog(@"Publish compressed: %@ (status: %@)", [result data], [status debugDescription]);
+              NSLog(@"Publish compressed status: %@", [status debugDescription]);
           }];
     
     // History (also decrypt messages from history)
@@ -52,9 +66,9 @@
     
     // Client state manipulation (also available for channel group)
     [self.client setState:@{@"Very important":@"data"} forUUID:self.client.uuid
-                onChannel:@"HelloPubNub" withCompletion:^(PNResult *result, PNStatus *status) {
+                onChannel:@"HelloPubNub" withCompletion:^(PNStatus *status) {
                     
-                    NSLog(@"State update: %@ (status: %@)", [result data], [status debugDescription]);
+                    NSLog(@"State update status: %@", [status debugDescription]);
                 }];
     [self.client stateForUUID:self.client.uuid onChannel:@"HelloPubNub"
                withCompletion:^(PNResult *result, PNStatus *status) {
@@ -65,20 +79,19 @@
     // APNS
     NSData *token = [@"00000000000000000000000000000000" dataUsingEncoding:NSUTF8StringEncoding];
     [self.client addPushNotificationsOnChannels:@[@"PubNub-Push1",@"PubNub-Push2"]
-                            withDevicePushToken:token
-                                  andCompletion:^(PNResult *result, PNStatus *status) {
-                                      
-                                      NSLog(@"APNS enable: %@ (status: %@)", [result data], [status debugDescription]);
-                                  }];
+                            withDevicePushToken:token andCompletion:^(PNStatus *status) {
+                                
+                                NSLog(@"APNS enable status: %@", [status debugDescription]);
+                            }];
     [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:token
                                                          andCompletion:^(PNResult *result, PNStatus *status) {
                                                              
                                                              NSLog(@"APNS enabled: %@ (status: %@)", [result data], [status debugDescription]);
                                                          }];
     [self.client removePushNotificationsFromChannels:@[@"PubNub-Push2"] withDevicePushToken:token
-                                       andCompletion:^(PNResult *result, PNStatus *status) {
+                                       andCompletion:^(PNStatus *status) {
                                            
-                                           NSLog(@"APNS disable: %@ (status: %@)", [result data], [status debugDescription]);
+                                           NSLog(@"APNS disable status: %@", [status debugDescription]);
                                        }];
     
     // Channel group

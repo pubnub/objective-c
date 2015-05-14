@@ -42,12 +42,14 @@ static NSString * const PNOperationTypeStrings[19] = {
 
  @since 4.0
  */
-static NSString * const PNStatusCategoryStrings[12] = {
+static NSString * const PNStatusCategoryStrings[15] = {
     [PNUnknownCategory] = @"Unknown",
+    [PNAcknowledgmentCategory] = @"Acknowledgment",
     [PNAccessDeniedCategory] = @"Access Denied",
     [PNTimeoutCategory] = @"Timeout",
     [PNNetworkIssuesCategory] = @"Network Issues",
     [PNConnectedCategory] = @"Connected",
+    [PNReconnectedCategory] = @"Reconnected",
     [PNDisconnectedCategory] = @"Expected Disconnect",
     [PNUnexpectedDisconnectCategory] = @"Unexpected Disconnect",
     [PNCancelledCategory] = @"Cancelled",

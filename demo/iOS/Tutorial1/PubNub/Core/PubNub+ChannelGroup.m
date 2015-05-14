@@ -99,16 +99,23 @@
                           [PNString percentEscapedString:group]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:nil
                                            forOperation:operationType
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedChannelGroupAuditionResponse:rawData];
         };
+        request.reportBlock = block;
+        
+        if (group) {
+            
+            DDLogAPICall(@"<PubNub> Request channels for '%@' channel group.", group);
+        }
+        else {
+            
+            DDLogAPICall(@"<PubNub> Request channel groups list.");
+        }
+        
         [strongSelf processRequest:request];
     });
 }
@@ -145,12 +152,13 @@
         BOOL removeAllChannels = (!shouldAdd && channels == nil);
         PNOperationType operationType = PNRemoveGroupOperation;
         NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
+        NSString *channelsList = [PNChannel namesForRequest:channels];
         NSDictionary *parameters = nil;
         if (!removeAllChannels){
             
             operationType = (shouldAdd ? PNAddChannelsToGroupOperation :
                              PNRemoveChannelFromGroupOperation);
-            parameters = @{(shouldAdd ? @"add":@"remove"):[PNChannel namesForRequest:channels]};
+            parameters = @{(shouldAdd ? @"add":@"remove"): channelsList};
         }
         NSString *format = [@"/v1/channel-registration/sub-key/%@/channel-group/%@"
                             stringByAppendingString:(removeAllChannels ? @"/remove" : @"")];
@@ -158,16 +166,24 @@
                           [PNString percentEscapedString:group]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:operationType
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedChannelGroupModificationResponse:rawData];
         };
+        request.reportBlock = block;
+        
+        if (removeAllChannels) {
+            
+            DDLogAPICall(@"<PubNub> Remove '%@' channel group", (group?: @"<error>"));
+        }
+        else {
+            
+            DDLogAPICall(@"<PubNub> %@ channels %@ '%@' channel group: %@",
+                         (shouldAdd ? @"Add" : @"Remove"), (shouldAdd ? @"to" : @"from"),
+                         (group?: @"<error>"), (channelsList?: @"<error>"));
+        }
 
         // Ensure what all required fields passed before starting processing.
         if ([group length] && (removeAllChannels || [channels count])) {

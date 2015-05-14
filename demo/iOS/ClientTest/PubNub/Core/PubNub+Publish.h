@@ -28,14 +28,13 @@
  @param message Reference on Foundation object (\a NSString, \a NSNumber, \a NSArray, 
                 \a NSDictionary) which will be published.
  @param channel Reference on name of the channel to which message should be published.
- @param block   Publish processing completion block which pass two arguments: \c result - in case of
-                successful request processing \c data field will contain results of message publish 
-                operation; \c status - in case if error occurred during request processing.
+ @param block   Publish processing completion block which pass only one argument - request 
+                processing status to report about how data pushing was successful or not.
  
  @since 4.0
  */
 - (void)publish:(id)message toChannel:(NSString *)channel
- withCompletion:(PNCompletionBlock)block;
+ withCompletion:(PNStatusBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -54,15 +53,13 @@
  @param channel    Reference on name of the channel to which message should be published.
  @param compressed Whether message should be compressed and sent with request body instead of URI
                    part.
- @param block      Publish processing completion block which pass two arguments: \c result - in case
-                   of successful request processing \c data field will contain results of message 
-                   publish operation; \c status - in case if error occurred during request 
-                   processing.
+ @param block      Publish processing completion block which pass only one argument - request
+                   processing status to report about how data pushing was successful or not.
 
  @since 4.0
  */
 - (void)publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
- withCompletion:(PNCompletionBlock)block;
+ withCompletion:(PNStatusBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -80,15 +77,13 @@
                     \a NSDictionary) which will be published.
  @param channel     Reference on name of the channel to which message should be published.
  @param shouldStore With \c NO this message later won't be fetched with \c history API.
- @param block       Publish processing completion block which pass two arguments: \c result - in 
-                    case of successful request processing \c data field will contain results of 
-                    message publish operation; \c status - in case if error occurred during request 
-                    processing.
+ @param block       Publish processing completion block which pass only one argument - request 
+                    processing status to report about how data pushing was successful or not.
  
  @since 4.0
  */
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
- withCompletion:(PNCompletionBlock)block;
+ withCompletion:(PNStatusBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -108,15 +103,13 @@
  @param shouldStore With \c NO this message later won't be fetched with \c history API.
  @param compressed  Whether message should be compressed and sent with request body instead of URI
                     part.
- @param block       Publish processing completion block which pass two arguments: \c result - in 
-                    case of successful request processing \c data field will contain results of
-                    message publish operation; \c status - in case if error occurred during request 
-                    processing.
+ @param block       Publish processing completion block which pass only one argument - request 
+                    processing status to report about how data pushing was successful or not.
 
  @since 4.0
  */
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-     compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block;
+     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block;
 
 
 ///------------------------------------------------
@@ -141,14 +134,13 @@
  @param channel  Reference on name of the channel to which message should be published.
  @param payloads Dictionary with payloads for different vendors (Apple with "apns" key and Google
                  with "gcm").
- @param block    Publish processing completion block which pass two arguments: \c result - in case 
-                 of successful request processing \c data field will contain results of message 
-                 publish operation; \c status - in case if error occurred during request processing.
+ @param block    Publish processing completion block which pass only one argument - request 
+                 processing status to report about how data pushing was successful or not.
  
  @since 4.0
  */
 - (void)    publish:(id)message toChannel:(NSString *)channel
-  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNCompletionBlock)block;
+  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNStatusBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -170,15 +162,13 @@
                    with "gcm").
  @param compressed Whether message should be compressed and sent with request body instead of URI
                    part.
- @param block      Publish processing completion block which pass two arguments: \c result - in case
-                   of successful request processing \c data field will contain results of message 
-                   publish operation; \c status - in case if error occurred during request 
-                   processing.
+ @param block      Publish processing completion block which pass only one argument - request 
+                   processing status to report about how data pushing was successful or not.
 
  @since 4.0
  */
 - (void)publish:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary *)payloads
-     compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block;
+     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -198,16 +188,14 @@
  @param payloads    Dictionary with payloads for different vendors (Apple with "apns" key and Google 
                     with "gcm").
  @param shouldStore With \c NO this message later won't be fetched with \c history API.
- @param block       Publish processing completion block which pass two arguments: \c result - in 
-                    case of successful request processing \c data field will contain results of 
-                    message publish operation; \c status - in case if error occurred during request 
-                    processing.
+ @param block       Publish processing completion block which pass only one argument - request 
+                    processing status to report about how data pushing was successful or not.
  
  @since 4.0
  */
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-     withCompletion:(PNCompletionBlock)block;
+     withCompletion:(PNStatusBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -230,16 +218,14 @@
  @param shouldStore With \c NO this message later won't be fetched with \c history API.
  @param compressed  Whether message should be compressed and sent with request body instead of URI
                     part.
- @param block       Publish processing completion block which pass two arguments: \c result - in 
-                    case of successful request processing \c data field will contain results of 
-                    message publish operation; \c status - in case if error occurred during request 
-                    processing.
+ @param block       Publish processing completion block which pass only one argument - request
+                    processing status to report about how data pushing was successful or not.
 
  @since 4.0
  */
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block;
+         compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block;
 
 #pragma mark -
 

@@ -1,6 +1,8 @@
 #ifndef PubNub_h
 #define PubNub_h
 
+#import "PNObjectEventListener.h"
+
 #import "PubNub+Core.h"
 #import "PubNub+ChannelGroup.h"
 #import "PubNub+Subscribe.h"

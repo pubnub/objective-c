@@ -5,6 +5,7 @@
  */
 #import "PubNub+Presence.h"
 #import "PubNub+StatePrivate.h"
+#import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
 #import "PubNub+Subscribe.h"
@@ -43,7 +44,7 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
 - (dispatch_queue_t)heartbeatTimerAccessQueue;
 
 
-#pragma mark - Channel group here now
+#pragma mark - Channel/Channel group here now
 
 /**
  @brief  Request information about subscribers on specific remote data object live feeds.
@@ -201,16 +202,25 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
                           [PNString percentEscapedString:object]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:PNHereNowOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPresenceAuditionResponse:rawData];
         };
+        request.reportBlock = block;
+        
+        if (![object length]) {
+            
+            DDLogAPICall(@"<PubNub> Global 'here now' information with %@ data.",
+                         PNHereNowDataStrings[type]);
+        }
+        else {
+            
+            DDLogAPICall(@"<PubNub> Channel%@ 'here now' information for %@ with %@ data.",
+                         (!forChannel ? @" group" : @""), (object?: @"<error>"),
+                         PNHereNowDataStrings[type]);
+        }
         [strongSelf processRequest:request];
     });
 }
@@ -231,20 +241,19 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
                           subscribeKey, [PNString percentEscapedString:uuid]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:nil
                                            forOperation:PNWhereNowOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPresenceWhereNowResponse:rawData];
         };
+        request.reportBlock = block;
+        
+        DDLogAPICall(@"<PubNub> 'Where now' presence information for %@.", (uuid?: @"<error>"));
 
         // Ensure what all required fields passed before starting processing.
         if ([uuid length]) {
-
+            
             [strongSelf processRequest:request];
         }
         // Notify about incomplete parameters set.
@@ -341,7 +350,7 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
                                      subscribeKey, channelsList];
             PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                                forOperation:PNHeartbeatOperation
-                                             withCompletion:^(PNResult *result, PNStatus *status) {
+                                             withCompletion:^{
                                                  
                 __strong __typeof(self) strongSelfForHandler = weakSelf;
                 [strongSelfForHandler startHeartbeatIfRequired];

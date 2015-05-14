@@ -4,6 +4,8 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+SubscribePrivate.h"
+#import "PubNub+PresencePrivate.h"
+#import "PNObjectEventListener.h"
 #import "PubNub+StatePrivate.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
@@ -11,10 +13,11 @@
 #import "PNStatus+Private.h"
 #import <objc/runtime.h>
 #import "PNErrorCodes.h"
+#import "PNResponse.h"
 #import "PNHelpers.h"
 #import "PNResult.h"
 #import "PNAES.h"
-#import "PubNub+PresencePrivate.h"
+#import "PNLog.h"
 
 
 #pragma mark Static
@@ -47,6 +50,8 @@ static const void *kPubNubSubscribeCurrentTimeToken = &kPubNubSubscribeCurrentTi
 static const void *kPubNubSubscribePreviousTimeToken = &kPubNubSubscribePreviousTimeToken;
 static const void *kPubNubSubscribeCallCount = &kPubNubSubscribeCallCount;
 static const void *kPubNubSubscribeRetryTimer = &kPubNubSubscribeRetryTimer;
+static const void *kPubNubObjectEventListener = &kPubNubObjectEventListener;
+static const void *kPubNubSubscriberState = &kPubNubSubscriberState;
 
 /**
  Stores reference on index under which events list is stored.
@@ -75,6 +80,36 @@ static NSUInteger const kPNEventChannelsElementIndex = 2;
 static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
 
+#pragma mark - Structures
+
+typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
+    
+    /**
+     @brief  State set at the moment when client received response with 200 status code for subcribe
+             request with TT 0
+     
+     @since 4.0
+     */
+    PNConnectedSubscriberState,
+    
+    /**
+     @brief  State set at the moment when client received response on 'leave' request and not 
+             subscribed to any remote data objects live feed.
+     
+     @since 4.0
+     */
+    PNDisconnectedSubscriberState,
+    
+    /**
+     @brief  State set at the moment when client lost connection or experienced other issues with
+             communication etsablished with \b PubNub service.
+     
+     @since 4.0
+     */
+    PNDisconnectedUnexpectedlySubscriberState
+};
+
+
 #pragma mark - Protected interface declaration
 
 @interface PubNub (SubscribeProtected)
@@ -94,6 +129,27 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
 
 #pragma mark - Subscription information modification
+
+/**
+ @brief      Retrieve current subscriber state.
+ @discussion By default client not connected to any remote data objects live feed.
+ 
+ @return One of \b PNSubscriberState enum field.
+ 
+ @since 4.0
+ */
+- (PNSubscriberState)subscriberState;
+
+/**
+ @brief  Update current subscriber state.
+ 
+ @param state New state from \b PNSubscriberState enum fields which describe current subscriber 
+              state.
+ 
+ @since 4.0
+ */
+- (void)setSubscriberState:(PNSubscriberState)state;
+
 /**
  @brief  Update current subscription time token information in cache.
  
@@ -305,6 +361,49 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 - (NSArray *)channelsWithOutPresenceFrom:(NSArray *)names;
 
 
+#pragma mark - Listeners information
+
+/**
+ @brief  Stores list of listeners which would like to be notified when new message arrive from
+         remote data feed objects on which client subscrubed at this moment.
+ 
+ @return Hash table with list of new message listeners.
+ 
+ @since 4.0
+ */
+- (NSHashTable *)messageListeners;
+
+/**
+ @brief  Stores list of listeners which would like to be notified when new presence event arrive 
+         from remote data feed objects on which client subscrubed at this moment.
+ 
+ @return Hash table with list of presence event listeners.
+ 
+ @since 4.0
+ */
+- (NSHashTable *)presenceEventListeners;
+
+/**
+ @brief  Stores list of listeners which would like to be notified when on subscription state 
+         changes (connection, access rights error, disconnection and unexpected disconnection).
+ 
+ @return Hash table with list of state change listeners.
+ 
+ @since 4.0
+ */
+- (NSHashTable *)stateListeners;
+
+/**
+ @brief  Store reference on event listeners which should be notified about new messages and 
+         presence events along with subscription state change.
+ 
+ @return Map table with list of listeners.
+ 
+ @since 4.0
+ */
+- (NSMapTable *)listeners;
+
+
 #pragma mark - Subscription
 
 /**
@@ -325,10 +424,9 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                                 of presence channels which should be added to the objects list.
  @param state                   Reference on client state information which should be bound to the
                                 user on remote data objects.
- @param block                   Subscription process completion block which pass two arguments:
-                                \c result - in case of successful request processing \c data field
-                                will contain results of subscription operation; \c status - in case
-                                if error occurred during request processing.
+ @param block                   Subscription process completion block which pass only one
+                                argument - request processing status to report about how data
+                                pushing was successful or not.
  
  @since 4.0
  */
@@ -336,7 +434,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                                     presence:(BOOL)issuePresenceEvent toChannels:(NSArray *)channels
                                       groups:(NSArray *)groups andPresence:(NSArray *)presence
                              withClientState:(NSDictionary *)state
-                               andCompletion:(PNCompletionBlock)block;
+                               andCompletion:(PNStatusBlock)block;
 
 /**
  @brief      Launch subscription retry timer.
@@ -368,14 +466,13 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
  @param channels List of channels which should be removed from cached list.
  @param groups   List of channel groups which should be removed from cached list.
  @param presence List of presence channels which should be removed from cached list.
- @param block    Leave process completion block which pass two arguments: \c result - in case of
-                 successful request processing \c data field will contain results of leave
-                 operation; \c status - in case if error occurred during request processing.
+ @param block    Leave process completion block which pass only one argument - request processing 
+                 status to report about how data pushing was successful or not.
 
  @since 4.0
  */
 - (void)leaveChannels:(NSArray *)channels groups:(NSArray *)groups andPresence:(NSArray *)presence
-       withCompletion:(PNCompletionBlock)block;
+       withCompletion:(PNStatusBlock)block;
 
 
 #pragma mark - Handlers
@@ -384,60 +481,73 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
  @brief  Subscription results handling and pre-processing before notify to completion blocks (if 
          required at all).
  
+@param request   Reference on base request which is used for communication with \b PubNub service.
+                 Object also contains request processing results.
  @param channels List of channels which has been used during previous subscribe attempt.
  @param groups   List of channel groups which has been used during previous subscribe attempt.
  @param presence List of presence channels which has been used during previous subscribe attempt.
  @param state    Final client state information which has been used during subscription process.
- @param result   Reference on RAW result object which doesn't have complete information about
-                 request itself yet.
- @param status   Reference on RAW status object which doesn't have complete information about
-                 request itself yet.
+ @param block    Subscription process completion block which pass only one argument - request 
+                 processing status to report about how data pushing was successful or not.
  
  @since 4.0
  */
-- (void)handleSubscribeOn:(NSArray *)channels groups:(NSArray *)groups presence:(NSArray *)presence
-                withState:(NSDictionary *)state result:(PNResult *)result
-                andStatus:(PNStatus *)status;
+- (void)handleSubscribeRequest:(PNRequest *)request onChannels:(NSArray *)channels
+                        groups:(NSArray *)groups presence:(NSArray *)presence
+                     withState:(NSDictionary *)state andCompletion:(PNStatusBlock)block;
 
 /**
  @brief  Process message which just has been received from \b PubNub service through live feed on 
          which client subscribed at this moment.
  
- @param data Reference on result data which hold information about request on which this response
-             has been received and message itself.
+ @param data      Reference on result data which hold information about request on which this 
+                  response has been received and message itself.
+ @param listeners List of objects which should be notified about new message on one of remote data
+                  object live feeds.
  
  @since 4.0
  */
-- (void)handleNewMessage:(PNResult *)data;
+- (void)handleNewMessage:(PNResult *)data by:(NSArray *)listeners;
 
 /**
  @brief  Process presence event which just has been receoved from \b PubNub service through presence
          live feeds on which client subscribed at this moment.
  
- @param data Reference on result data which hold information about request on which this response
-             has been received and presence event itself.
+ @param data      Reference on result data which hold information about request on which this 
+                  response has been received and presence event itself.
+ @param listeners List of objects which should be notified about new message on one of remote data
+                  object live feeds.
  
  @since 4.0
  */
-- (void)handleNewPresenceEvent:(PNResult *)data;
+- (void)handleNewPresenceEvent:(PNResult *)data by:(NSArray *)listeners;
+
+/**
+ @brief  Notify client state change listeners about new client subscriber state.
+ 
+ @param state One of \b PNSubscriberState enum fields which should be delivered to listeners.
+ 
+ @since 4.0
+ */
+- (void)handleSubscriberStateChange:(PNSubscriberState)state;
 
 /**
  @brief  Unsubscription results handling and pre-processing before notify to completion blocks (if
          required at all).
  
+ @param request  Reference on base request which is used for communication with \b PubNub service.
+                 Object also contains request processing results.
  @param channels List of channels which has been used during unsubscribe attempt.
  @param groups   List of channel groups which has been used during unsubscribe attempt.
  @param presence List of presence channels which has been used during unsubscribe attempt.
- @param result   Reference on RAW result object which doesn't have complete information about
-                 request itself yet.
- @param status   Reference on RAW status object which doesn't have complete information about
-                 request itself yet.
+ @param block    Unsubscription process completion block which pass only one argument - request
+                 processing status to report about how data pushing was successful or not.
  
  @since 4.0
  */
-- (void)handleUnsubscribeFrom:(NSArray *)channels groups:(NSArray *)groups
-                     presence:(NSArray *)presence withResult:(PNResult *)result
-                    andStatus:(PNStatus **)status;
+- (void)handleUnsubscribeRequest:(PNRequest *)request fromChannels:(NSArray *)channels
+                          groups:(NSArray *)groups presence:(NSArray *)presence
+                  withCompletion:(PNStatusBlock)block;
 
 
 #pragma mark - Processing
@@ -484,6 +594,33 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
 
 #pragma mark - Subscription state information
+
+- (PNSubscriberState)subscriberState {
+    
+    __block NSNumber *subscriberState = nil;
+    dispatch_sync([self subscriberAccessQueue], ^{
+        
+        subscriberState = objc_getAssociatedObject(self, kPubNubSubscriberState);
+    });
+    if (!subscriberState) {
+        
+        subscriberState = @(PNDisconnectedSubscriberState);
+        [self setSubscriberState:PNDisconnectedSubscriberState];
+    }
+    
+    return (PNSubscriberState)[subscriberState integerValue];
+}
+
+- (void)setSubscriberState:(PNSubscriberState)state {
+    
+    __weak __typeof(self) weakSelf = self;
+    dispatch_barrier_async([self subscriberAccessQueue], ^{
+        
+        __strong __typeof(self) strongSelf = weakSelf;
+        objc_setAssociatedObject(strongSelf, kPubNubSubscriberState, @(state),
+                                 OBJC_ASSOCIATION_RETAIN);
+    });
+}
 
 - (NSNumber *)currentTimeToken {
     
@@ -789,24 +926,130 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     return isSubscribedOn;
 }
 
+#pragma mark - Listeners information
+
+- (NSHashTable *)messageListeners {
+    
+    __block NSHashTable *listeners = nil;
+    dispatch_sync([self subscriberAccessQueue], ^{
+        
+        listeners = [[self listeners] objectForKey:@"message"];
+        
+    });
+    
+    return listeners;
+}
+
+- (NSHashTable *)presenceEventListeners {
+    
+    __block NSHashTable *listeners = nil;
+    dispatch_sync([self subscriberAccessQueue], ^{
+        
+        listeners = [[self listeners] objectForKey:@"presence"];
+        
+    });
+    
+    return listeners;
+}
+
+- (NSHashTable *)stateListeners {
+    
+    __block NSHashTable *listeners = nil;
+    dispatch_sync([self subscriberAccessQueue], ^{
+        
+        listeners = [[self listeners] objectForKey:@"state"];
+        
+    });
+    
+    return listeners;
+}
+
+- (NSMapTable *)listeners {
+    
+    NSMapTable *listeners = objc_getAssociatedObject(self, kPubNubObjectEventListener);
+    if (!listeners) {
+        
+        listeners = [[NSMapTable strongToStrongObjectsMapTable] copy];
+        [listeners setObject:[[NSHashTable weakObjectsHashTable] copy] forKey:@"message"];
+        [listeners setObject:[[NSHashTable weakObjectsHashTable] copy] forKey:@"presence"];
+        [listeners setObject:[[NSHashTable weakObjectsHashTable] copy] forKey:@"state"];
+        objc_setAssociatedObject(self, kPubNubObjectEventListener, listeners,
+                                 OBJC_ASSOCIATION_RETAIN);
+    }
+    
+    return listeners;
+}
+
+
+#pragma mark - Listeners
+
+- (void)addListeners:(NSArray *)listeners {
+    
+    __weak __typeof(self) weakSelf = self;
+    dispatch_barrier_async([self subscriberAccessQueue], ^{
+        
+        __strong __typeof(self) strongSelf = weakSelf;
+        for (id listener in listeners) {
+            
+            // Ensure what provided listener conforms to required protocol.
+            if ([listener conformsToProtocol:@protocol(PNObjectEventListener)]) {
+                
+                if ([listener respondsToSelector:@selector(client:didReceiveMessage:)]) {
+                    
+                    [(NSHashTable *)[[strongSelf listeners] objectForKey:@"message"] addObject:listener];
+                }
+                if ([listener respondsToSelector:@selector(client:didReceivePresenceEvent:)]) {
+                    
+                    [(NSHashTable *)[[strongSelf listeners] objectForKey:@"presence"] addObject:listener];
+                }
+                
+                if ([listener respondsToSelector:@selector(client:didReceiveStatus:)]) {
+                    
+                    [(NSHashTable *)[[strongSelf listeners] objectForKey:@"state"] addObject:listener];
+                }
+            }
+            else {
+                
+                DDLogWarn(@"<PubNub> %@ can't be used as object event listener because it "
+                           "doesn't conform to PNObjectEventListener protocol", listener);
+            }
+        }
+    });
+}
+
+- (void)removeListeners:(NSArray *)listeners {
+    
+    __weak __typeof(self) weakSelf = self;
+    dispatch_barrier_async([self subscriberAccessQueue], ^{
+        
+        __strong __typeof(self) strongSelf = weakSelf;
+        for (id listener in listeners) {
+            
+            [(NSHashTable *)[[strongSelf listeners] objectForKey:@"message"] removeObject:listener];
+            [(NSHashTable *)[[strongSelf listeners] objectForKey:@"presence"] removeObject:listener];
+            [(NSHashTable *)[[strongSelf listeners] objectForKey:@"state"] removeObject:listener];
+        }
+    });
+}
+
 
 #pragma mark - Subscription
 
 - (void)subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
-              andCompletion:(PNCompletionBlock)block {
+              andCompletion:(PNStatusBlock)block {
     
     [self subscribeToChannels:channels withPresence:shouldObservePresence clientState:nil
                 andCompletion:block];
 }
 
 - (void)subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
-                clientState:(NSDictionary *)state andCompletion:(PNCompletionBlock)block {
+                clientState:(NSDictionary *)state andCompletion:(PNStatusBlock)block {
 
     [self setNumberOfAPICalls:([self numberOfAPICalls] + 1)];
     NSArray *presenceChannelsList = nil;
     if (shouldObservePresence) {
 
-        presenceChannelsList =[self presenceChannelsFrom:channels];
+        presenceChannelsList = [self presenceChannelsFrom:channels];
     }
 
     // Send subscribe list modification request. This way client prepare data objects on which it
@@ -819,14 +1062,14 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 }
 
 - (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
-                   andCompletion:(PNCompletionBlock)block {
+                   andCompletion:(PNStatusBlock)block {
     
     [self subscribeToChannelGroups:groups withPresence:shouldObservePresence clientState:nil
                      andCompletion:block];
 }
 
 - (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
-                     clientState:(NSDictionary *)state andCompletion:(PNCompletionBlock)block {
+                     clientState:(NSDictionary *)state andCompletion:(PNStatusBlock)block {
 
     [self setNumberOfAPICalls:([self numberOfAPICalls] + 1)];
     NSArray *groupsList = [NSArray arrayWithArray:groups];
@@ -842,7 +1085,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                                    andPresence:nil withClientState:state andCompletion:block];
 }
 
-- (void)subscribeToPresenceChannels:(NSArray *)channels withCompletion:(PNCompletionBlock)block {
+- (void)subscribeToPresenceChannels:(NSArray *)channels withCompletion:(PNStatusBlock)block {
 
     [self setNumberOfAPICalls:([self numberOfAPICalls] + 1)];
 
@@ -858,7 +1101,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                                     presence:(BOOL)issuePresenceEvent toChannels:(NSArray *)channels
                                       groups:(NSArray *)groups andPresence:(NSArray *)presence
                              withClientState:(NSDictionary *)state
-                               andCompletion:(PNCompletionBlock)block {
+                               andCompletion:(PNStatusBlock)block {
 
     // Dispatching async on private queue which is able to serialize access with client
     // configuration data. Also this queue allow to serialize subscribe requests and make sure
@@ -867,6 +1110,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     dispatch_async(self.subscribeQueue, ^{
 
         __strong __typeof(self) strongSelf = weakSelf;
+        BOOL isValidClientState = YES;
         NSArray *channelsForSubscription = [strongSelf channelsInternal];
         NSArray *groupsForSubscription = [strongSelf groupsInternal];
         NSArray *presenceForSubscription = [strongSelf presenceChannelsInternal];
@@ -875,6 +1119,15 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
             channelsForSubscription = [channelsForSubscription arrayByAddingObjectsFromArray:channels];
             groupsForSubscription = [groupsForSubscription arrayByAddingObjectsFromArray:groups];
             presenceForSubscription = [presenceForSubscription arrayByAddingObjectsFromArray:presence];
+            
+            for (NSString *objectName in state) {
+                
+                isValidClientState = [PNDictionary hasFlattenedContent:state[objectName]];
+                if (!isValidClientState) {
+                    
+                    break;
+                }
+            }
         }
         // Prepare full list of channels which passed to request as part of URI string.
         NSArray *fullChannelsList = [channelsForSubscription arrayByAddingObjectsFromArray:presenceForSubscription];
@@ -932,21 +1185,15 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
         // Build resulting resource request path.
         NSString *path = [NSString stringWithFormat:@"/subscribe/%@/%@/0/%@", subscribeKey,
                           channelsList, [strongSelf currentTimeToken]];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:PNSubscribeOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status){
+        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                          forOperation:PNSubscribeOperation
+                                                        withCompletion:^{
                                              
             __strong __typeof(self) strongSelfForResults = weakSelf;
-            [strongSelfForResults handleSubscribeOn:channelsForSubscription
-                                             groups:groupsForSubscription
-                                           presence:presenceForSubscription withState:mergedState
-                                             result:result andStatus:status];
-
-            // Check whether initial subscription or channels list update has been performed.
-            if (isInitialSubscription && block) {
-
-                [strongSelfForResults callBlock:[block copy] withResult:result andStatus:status];
-            }
+            [strongSelfForResults handleSubscribeRequest:request onChannels:channelsForSubscription
+                                                  groups:groupsForSubscription
+                                                presence:presenceForSubscription
+                                               withState:mergedState andCompletion:[block copy]];
         }];
         request.parseBlock = ^id(id rawData){
 
@@ -955,8 +1202,12 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
         };
 
         // Ensure what all required fields passed before starting processing.
-        if ([fullObjectsList count]) {
-
+        if ([fullObjectsList count] && isValidClientState) {
+            
+            if ([[strongSelf allObjects] count]) {
+                
+                [strongSelf handleSubscriberStateChange:PNDisconnectedSubscriberState];
+            }
             [strongSelf processRequest:request];
         }
         // Notify about incomplete parameters set.
@@ -1031,7 +1282,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 #pragma mark - Unsubscription
 
 - (void)unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
-                  andCompletion:(PNCompletionBlock)block {
+                  andCompletion:(PNStatusBlock)block {
 
     [self setNumberOfAPICalls:([self numberOfAPICalls] + 1)];
     NSArray *presenceChannels = nil;
@@ -1046,7 +1297,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 }
 
 - (void)unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
-                       andCompletion:(PNCompletionBlock)block {
+                       andCompletion:(PNStatusBlock)block {
 
     [self setNumberOfAPICalls:([self numberOfAPICalls] + 1)];
     NSArray *groupsList = [NSArray arrayWithArray:groups];
@@ -1060,14 +1311,14 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     [self leaveChannels:nil groups:groupsList andPresence:nil withCompletion:block];
 }
 
-- (void)unsubscribeFromPresenceChannels:(NSArray *)channels andCompletion:(PNCompletionBlock)block {
+- (void)unsubscribeFromPresenceChannels:(NSArray *)channels andCompletion:(PNStatusBlock)block {
 
     [self setNumberOfAPICalls:([self numberOfAPICalls] + 1)];
     [self leaveChannels:nil groups:nil andPresence:channels withCompletion:block];
 }
 
 - (void)leaveChannels:(NSArray *)channels groups:(NSArray *)groups andPresence:(NSArray *)presence
-       withCompletion:(PNCompletionBlock)block {
+       withCompletion:(PNStatusBlock)block {
     
     // Dispatching async on private queue which is able to serialize access with client
     // configuration data.
@@ -1098,17 +1349,14 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
         }
         NSString *path = [NSString stringWithFormat:@"/v2/presence/sub_key/%@/channel/%@/leave",
                           subscribeKey, channelsList];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:PNUnsubscribeOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status){
+                                         withCompletion:^{
                                              
             __strong __typeof(self) strongSelfForResults = weakSelf;
-            PNResult *successResult = [PNResult resultForRequest:request withResponse:nil andData:nil];
-            PNStatus *successStatus = [status copyWithData:status.data];
-            [strongSelfForResults handleUnsubscribeFrom:channels groups:groups presence:presence
-                                             withResult:(result?: successResult)
-                                              andStatus:&successStatus];
-            [strongSelfForResults callBlock:[block copy] withResult:nil andStatus:successStatus];
+            [strongSelfForResults handleUnsubscribeRequest:request fromChannels:channels
+                                                    groups:groups presence:presence
+                                            withCompletion:[block copy]];
         }];
         request.parseBlock = ^id(id rawData) {
 
@@ -1161,13 +1409,17 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
 #pragma mark - Handlers
 
-- (void)handleSubscribeOn:(NSArray *)channels groups:(NSArray *)groups presence:(NSArray *)presence
-                withState:(NSDictionary *)state result:(PNResult *)result
-                andStatus:(PNStatus *)status {
+- (void)handleSubscribeRequest:(PNRequest *)request onChannels:(NSArray *)channels
+                        groups:(NSArray *)groups presence:(NSArray *)presence
+                     withState:(NSDictionary *)state andCompletion:(PNStatusBlock)block {
 
     // Try fetch time token from passed result/status objects.
-    NSNumber *timeToken = @([[(result?:status).request.URL lastPathComponent] longLongValue]);
+    NSNumber *timeToken = @([[request.response.request.URL lastPathComponent] longLongValue]);
     BOOL isInitialSubscription = ([timeToken integerValue] == 0);
+    
+    // Retrieve list of objects which would like to receive updates and state change events.
+    NSArray *messageListeners = [[[self messageListeners] allObjects] copy];
+    NSArray *presenceListeners = [[[self presenceEventListeners] allObjects] copy];
     
     // Prepare storage to calculate set of new remote data objects on which client has been
     // subscribed.
@@ -1214,11 +1466,13 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
     // Store client state information into cache.
     [self mergeWithState:state];
-
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    PNStatus *status = [PNStatus statusForRequest:request withError:request.response.error];
 
     // Handle successful w/o troubles subscription request processing.
-    if (result) {
-
+    if (!status.isError) {
+        
         // Whether new time token from response should be applied for next subscription cycle or
         // not.
         BOOL shouldAcceptNewTimeToken = shouldContinueSubscriptionCycle;
@@ -1247,8 +1501,10 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
                 [self setPreviousTimeToken:[self currentTimeToken]];
             }
-            [self setCurrentTimeToken:result.data[@"tt"]];
+            [self setCurrentTimeToken:status.data[@"tt"]];
         }
+        
+        [self handleSubscriberStateChange:PNConnectedSubscriberState];
     }
     // Looks like some troubles happened while subscription request has been processed.
     else {
@@ -1266,11 +1522,12 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
         // If there is another subscription/unsubscription operations is waiting client shouldn't
         // handle this status yet.
         else if (shouldContinueSubscriptionCycle) {
-
+            
             // Check whether status category declare subscription retry or not.
             if (status.category == PNAccessDeniedCategory || status.category == PNTimeoutCategory ||
                 status.category == PNMalformedResponseCategory) {
 
+                shouldContinueSubscriptionCycle = NO;
                 status.automaticallyRetry = YES;
                 status.retryCancelBlock = ^{
 
@@ -1300,16 +1557,19 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                     [self removeGroups:[self groupsInternal]];
                     [self removePresenceChannels:[self presenceChannelsInternal]];
                 }
-                [self stopHeartbeatIfPossible];
+                status.category = PNUnexpectedDisconnectCategory;
                 NSLog(@"Disconnected from: %@", [self allObjects]);
+                
+                [self stopHeartbeatIfPossible];
+                [self handleSubscriberStateChange:PNDisconnectedUnexpectedlySubscriberState];
             }
         }
     }
 
     // Check whether client received updates from service or not.
-    if (result && !isInitialSubscription && [result.data[@"events"] count]) {
+    if (!isInitialSubscription && [status.data[@"events"] count]) {
 
-        NSArray *events = [result.data[@"events"] copy];
+        NSArray *events = [status.data[@"events"] copy];
         __weak __typeof(self) weakSelf = self;
         dispatch_async(self.callbackQueue, ^{
 
@@ -1317,39 +1577,42 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
             // user.
             __strong __typeof(self) strongSelf = weakSelf;
             for (NSMutableDictionary *event in events) {
-
+                
                 // Check whether event has been triggered on presence channel or channel group.
                 // In case if check will return YES this is presence event.
-                if ([event[@"channel_name"] hasSuffix:kPubNubPresenceChannelNameSuffix] ||
-                    [event[@"channel_group_name"] hasSuffix:kPubNubPresenceChannelNameSuffix]) {
+                BOOL isPresenceEvent = ([event[@"channel"] hasSuffix:kPubNubPresenceChannelNameSuffix] ||
+                                        [event[@"channel-group"] hasSuffix:kPubNubPresenceChannelNameSuffix]);
+                if (isPresenceEvent) {
                     
-                    if (event[@"channel_name"]) {
+                    if (event[@"channel"]) {
                         
-                        event[@"channel_name"] = [event[@"channel_name"] stringByReplacingOccurrencesOfString:kPubNubPresenceChannelNameSuffix
+                        event[@"channel"] = [event[@"channel"] stringByReplacingOccurrencesOfString:kPubNubPresenceChannelNameSuffix
                                                                                                    withString:@""];
                     }
-                    if (event[@"channel_group_name"]) {
+                    if (event[@"channel-group"]) {
                         
-                        event[@"channel_group_name"] = [event[@"channel_group_name"] stringByReplacingOccurrencesOfString:kPubNubPresenceChannelNameSuffix
+                        event[@"channel-group"] = [event[@"channel-group"] stringByReplacingOccurrencesOfString:kPubNubPresenceChannelNameSuffix
                                                                                                                withString:@""];
                     }
-                    [strongSelf handleNewPresenceEvent:[result copyWithData:event]];
+                }
+                
+                PNResult *eventResultObject = [PNResult resultFromStatus:status withData:event];
+                if (isPresenceEvent) {
+                    
+                    [strongSelf handleNewPresenceEvent:eventResultObject by:messageListeners];
                 }
                 else {
 
-                    [strongSelf handleNewMessage:[result copyWithData:event]];
+                    [strongSelf handleNewMessage:eventResultObject by:presenceListeners];
                 }
             }
         });
 
-        if (result.data[@"events"]) {
-
-            result.data = [(NSDictionary *)result.data dictionaryWithValuesForKeys:@[@"tt"]];
-        }
+        status.data = [(NSDictionary *)status.data dictionaryWithValuesForKeys:@[@"tt"]];
     }
     else if (isInitialSubscription) {
         
-        NSMutableDictionary *data = [NSMutableDictionary dictionaryWithDictionary:result.data];
+        NSMutableDictionary *data = [NSMutableDictionary dictionaryWithDictionary:status.data];
         if ([channelsDifference count] || [presenceChannelsDifference count]) {
             
             data[@"channels"] = [[channelsDifference setByAddingObjectsFromSet:presenceChannelsDifference] allObjects];
@@ -1359,35 +1622,42 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
             data[@"channel-groups"] = [channelGroupsDifference allObjects];
         }
         [data removeObjectForKey:@"events"];
-        result.data = [data copy];
+        status.data = [data copy];
     }
 
     if (shouldContinueSubscriptionCycle) {
 
         [self continueSubscriptionCycleIfRequired];
+        
+        // Because client received new event from service, it can restart reachability timer with
+        // new interval.
+        [self startHeartbeatIfRequired];
     }
 
     // Exclusive access to subscriber API granted only for initial subscriptions and when client
     // done with it exclusive access requirement should be removed.
     if (isInitialSubscription) {
-
-        if (shouldContinueSubscriptionCycle) {
-
-            [self startHeartbeatIfRequired];
-        }
+        
         dispatch_resume(self.subscribeQueue);
     }
-}
-
-- (void)handleNewMessage:(PNResult *)data {
-
-    if (self.messageHandler) {
-
-        self.messageHandler(data);
+    
+    // Check whether initial subscription or channels list update has been performed.
+    if (isInitialSubscription && block) {
+        
+        [self callBlock:block status:YES withResult:nil andStatus:status];
     }
 }
 
-- (void)handleNewPresenceEvent:(PNResult *)data {
+- (void)handleNewMessage:(PNResult *)data by:(NSArray *)listeners{
+
+    // Iterate over list of listeners and notify about new message.
+    for (id<PNObjectEventListener> listener in listeners) {
+        
+        [listener client:self didReceiveMessage:data];
+    }
+}
+
+- (void)handleNewPresenceEvent:(PNResult *)data  by:(NSArray *)listeners {
 
     // Check whether state modification event arrived or not.
     // In case of state modification event for current client it should be applied on local storage.
@@ -1400,31 +1670,64 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
         }
     }
 
-    // Check whether presence handling callback blocks has been defined or not.
-    if (self.presenceEventHandler) {
-
-        self.presenceEventHandler(data);
+    // Iterate over list of listeners and notify about new presence event.
+    for (id <PNObjectEventListener> listener in listeners) {
+        
+        [listener client:self didReceivePresenceEvent:data];
     }
 }
 
-- (void)handleUnsubscribeFrom:(NSArray *)channels groups:(NSArray *)groups
-                     presence:(NSArray *)presence withResult:(PNResult *)result
-                    andStatus:(PNStatus **)status {
+- (void)handleSubscriberStateChange:(PNSubscriberState)state {
+    
+    // Check whether subscriber reconnected after unexpected connection termination or not.
+    BOOL reconnected = ([self subscriberState] == PNDisconnectedUnexpectedlySubscriberState &&
+                        state == PNConnectedSubscriberState);
+    
+    // Store actual client subscriber state.
+    [self setSubscriberState:state];
+    
+    // Compose status object to report state change to listeners.
+    PNStatusCategory category = (!reconnected ? PNConnectedCategory : PNReconnectedCategory);
+    if (state != PNConnectedSubscriberState) {
+        
+        category = (state == PNDisconnectedSubscriberState ?
+                    PNDisconnectedCategory : PNUnexpectedDisconnectCategory);
+    }
+    PNStatus *status = [PNStatus statusForOperation:PNSubscribeOperation category:category];
+    
+    dispatch_async(self.callbackQueue, ^{
+        
+        // Iterate over list of listeners and notify about new presence event.
+        for (id <PNObjectEventListener> listener in [[[self stateListeners] allObjects] copy]) {
+            
+            [listener client:self didReceiveStatus:status];
+        }
+    });
+}
+
+- (void)handleUnsubscribeRequest:(PNRequest *)request fromChannels:(NSArray *)channels
+                          groups:(NSArray *)groups presence:(NSArray *)presence
+                  withCompletion:(PNStatusBlock)block {
     
     // Create status information if required.
-    if (*status == nil) {
-        
-        *status = [PNStatus statusFromResult:result];
-    }
+    PNStatus *status = [PNStatus statusForRequest:request withError:nil];
+    NSMutableDictionary *data = [(status.data?: @{}) mutableCopy];
     if ([channels count]) {
         
-        (*status).data = @{@"channels":[channels arrayByAddingObjectsFromArray:presence]};
+        data[@"channels"] = [channels arrayByAddingObjectsFromArray:presence];
     }
-    else if ([groups count]) {
+    if ([groups count]) {
         
-        (*status).data = @{@"channel-groups":groups};
+        data[@"channel-groups"] = groups;
     }
     [self setNumberOfAPICalls:MAX(([self numberOfAPICalls] - 1), 0)];
+    
+    if (![[self allObjects] count]) {
+        
+        [self handleSubscriberStateChange:PNDisconnectedSubscriberState];
+    }
+    
+    [self callBlock:block status:YES withResult:nil andStatus:status];
     
     // In case if 'leave' presence event had target channels/groups it should release subscription
     // queue to allow further requests execution
@@ -1475,11 +1778,11 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                 // Fetching remote data object name on which event fired.
                 NSString *objectName = channels[eventIdx];
                 id eventBody = feedEvents[eventIdx];
-                NSMutableDictionary *event = [@{@"channel_name": objectName,
+                NSMutableDictionary *event = [@{@"channel": objectName,
                                                 @"tt":timeToken} mutableCopy];
                 if ([groups count] > eventIdx) {
 
-                    event[@"channel_group_name"] = groups[eventIdx];
+                    event[@"channel-group"] = groups[eventIdx];
                 }
 
                 // Check whether presence event will be processed or not.
@@ -1527,8 +1830,8 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                         }
 
                         if (decryptionError) {
-
-                            NSLog(@"Body decryption error: %@", decryptionError);
+                            
+                            DDLogAESError(@"<PubNub> Message decryption error: %@", decryptionError);
                         }
                     }
                     event[@"message"] = eventBody;

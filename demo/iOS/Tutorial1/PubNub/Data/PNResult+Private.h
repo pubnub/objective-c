@@ -28,6 +28,7 @@
 */
 @property (nonatomic, strong) PNRequest *requestObject;
 
+@property (nonatomic, assign) PNOperationType operation;
 @property (nonatomic, copy) id data;
 
 
@@ -37,35 +38,41 @@
 
 /**
  @brief  Create operation result object with pre-defined set of parameters.
- 
- @param request  Reference on base request instance which hold infomration about operation type and
+
+ @param request  Reference on base request instance which hold information about operation type and
                  real network request built from it.
- @param response Reference on request response object which hold information about request
-                 processing results.
- @param data     Reference on data which has been received from service.
  
  @return Initialized and ready to use status object.
  
  @since 4.0
  */
-+ (instancetype)resultForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                         andData:(id)data;
++ (instancetype)resultForRequest:(PNRequest *)request;
+
+/**
+ @brief  Extract result information from status object and populate it with new data.
+ @discussion This method moslty used by API endpoints which should provide operation status, but
+             also may receive additional data which should be converted to result.
+ 
+ @param status \b PNStatus instance which should be used to pulk out data.
+ @param data   Pre-parsed data which should be bound to result object.
+ 
+ @return Created and ready to use status instance
+ 
+ @since 4.0
+ */
++ (instancetype)resultFromStatus:(PNStatus *)status withData:(id)data;
 
 /**
  @brief  Initialize operation result object with pre-defined set of parameters.
  
- @param request  Reference on base request instance which hold infomration about operation type and
+ @param request  Reference on base request instance which hold information about operation type and
                  real network request built from it.
- @param response Reference on request response object which hold information about request
-                 processing results.
- @param data     Reference on data which has been received from service.
  
  @return Ready to use status object.
  
  @since 4.0
  */
-- (instancetype)initForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                       andData:(id)data;
+- (instancetype)initForRequest:(PNRequest *)request;
 
 /**
  @brief      Make copy of current status object with data to store in it.

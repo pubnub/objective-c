@@ -6,6 +6,8 @@
 #import "PNResult+Private.h"
 #import "PNRequest+Private.h"
 #import "PNPrivateStructures.h"
+#import "PNResponse.h"
+#import "PNStatus.h"
 #import "PNJSON.h"
 
 
@@ -16,37 +18,51 @@
 
 #pragma mark - Initialization and configuration
 
-+ (instancetype)resultForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                         andData:(id)data {
++ (instancetype)resultForRequest:(PNRequest *)request {
     
-    return [[self alloc] initForRequest:request withResponse:response andData:data];
+    return [[self alloc] initForRequest:request];
 }
 
-- (instancetype)initForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                       andData:(id)data {
++ (instancetype)resultFromStatus:(PNStatus *)status withData:(id)data {
+    
+    // Create result object based on status with new pre-processed data.
+    PNResult *result = [self new];
+    result->_request = [status.request copy];
+    result->_headers = [status.headers copy];
+    result->_response = [status.response copy];
+    result->_origin = [status.origin copy];
+    result->_statusCode = status.statusCode;
+    result->_operation = status.operation;
+    result->_data = [data copy];
+    
+    return result;
+}
+
+- (instancetype)initForRequest:(PNRequest *)request {
     
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
 
         self.requestObject = request;
 
-        _request = [request.request copy];
-        _headers = [[response allHeaderFields] copy];
-        _response = [data copy];
-        _statusCode = (response ? response.statusCode : 200);
+        _request = [request.response.request copy];
+        _headers = [[request.response.response allHeaderFields] copy];
+        _response = [request.response.data copy];
+        _statusCode = (request.response.response ? request.response.response.statusCode : 200);
+        _operation = request.operation;
         _origin = [[_request URL] host];
 
         // Call parse block which has been passed by calling API to pre-process
         // received data before returning it to te user.
-        if (data) {
+        if (_response) {
             
             if (self.requestObject.parseBlock) {
                 
-                _data = [(self.requestObject.parseBlock(data)?:[self dataParsedAsError:data]) copy];
+                _data = [(self.requestObject.parseBlock(_response)?:[self dataParsedAsError:_response]) copy];
             }
             else {
                 
-                _data = [[self dataParsedAsError:data] copy];
+                _data = [[self dataParsedAsError:_response] copy];
             }
         }
     }
@@ -56,20 +72,10 @@
 
 - (instancetype)copyWithData:(id)data {
     
-    PNResult *result = [[self class] resultForRequest:self.requestObject withResponse:nil
-                                              andData:nil];
-    result->_headers = [self.headers copy];
-    result->_response = [self.response copy];
-    result->_statusCode = self.statusCode;
-    result->_origin = [self.origin copy];
+    PNResult *result = [[self class] resultForRequest:self.requestObject];
     result->_data = [data copy];
     
     return result;
-}
-
-- (PNOperationType)operation {
-    
-    return self.requestObject.operation;
 }
 
 
@@ -98,6 +104,10 @@
             if (data[@"payload"][@"channel-groups"]) {
                 
                 errorData[@"channel-groups"] = data[@"payload"][@"channel-groups"];
+            }
+            if (!errorData[@"channels"] && !errorData[@"channel-groups"]) {
+                
+                errorData[@"data"] = data[@"payload"];
             }
         }
     }

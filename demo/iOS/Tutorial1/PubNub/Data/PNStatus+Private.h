@@ -13,8 +13,16 @@
 
 #pragma mark - Information
 
+@property (nonatomic, assign) PNStatusCategory category;
+@property (nonatomic, assign, getter = isSSLEnabled) BOOL SSLEnabled;
+@property (nonatomic, copy) NSArray *channels;
+@property (nonatomic, copy) NSArray *groups;
+@property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, copy) NSString *authorizationKey;
+@property (nonatomic, copy) NSDictionary *state;
 @property (nonatomic, assign, getter = isError) BOOL error;
-@property (nonatomic, strong) id associatedObject;
+@property (nonatomic, strong) NSNumber *currentTimetoken;
+@property (nonatomic, strong) NSNumber *previousTimetoken;
 @property (nonatomic, assign, getter = willAutomaticallyRetry) BOOL automaticallyRetry;
 
 /**
@@ -38,6 +46,19 @@
 #pragma mark - Initialization and configuration
 
 /**
+ @brief  Construct minimal object to describe state using operation type and status category 
+         information.
+ 
+ @param operation Type of operation for which this status report.
+ @param category  Operation processing status category.
+ 
+ @return Constructed and ready to use status object.
+ 
+ @since 4.0
+ */
++ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category;
+
+/**
  @brief      Construct status object using result information.
  @discussion Status can be built for API processing errors as well as for client state changes.
 
@@ -56,16 +77,13 @@
 
  @param request  Reference on base request object which is used to identify API endpoint type and
                  set of parameters which should be sent to \b PubNub service along with it.
- @param response Reference on request processing response from service.
  @param error    Reference on request processing error. Sometime error can include server response.
- @param data     Reference on data which is bound to processing/client state.
 
  @return Created and ready to use status instance.
 
  @since 4.0
  */
-+ (instancetype)statusForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                           error:(NSError *)error andData:(id <NSObject, NSCopying>)data;
++ (instancetype)statusForRequest:(PNRequest *)request withError:(NSError *)error;
 
 /**
  @brief      Initialize status object with pre-defined information about request and how well
@@ -74,18 +92,15 @@
 
  @param request  Reference on base request object which is used to identify API endpoint type and
                  set of parameters which should be sent to \b PubNub service along with it.
- @param response Reference on request processing response from service.
  @param error    Reference on request processing error. Sometime error can include server response.
- @param data     Reference on data which is bound to processing/client state.
 
  @return Initialized and ready to use status instance.
 
  @since 4.0
  */
-- (instancetype)initForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                         error:(NSError *)error andData:(id <NSObject, NSCopying>)data;
+- (instancetype)initForRequest:(PNRequest *)request withError:(NSError *)error;
 
-#pragma mark - 
+#pragma mark -
 
 
 @end

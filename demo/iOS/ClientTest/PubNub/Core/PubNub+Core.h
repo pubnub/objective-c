@@ -201,32 +201,6 @@
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 
 /**
- @brief Reference on handler block which will be called on main or \c callbackQueue when new message
-        will arrive from live feed on which client subscribed at this moment.
- 
- @since 4.0
- */
-@property (nonatomic, copy) PNMessageHandlerBlock messageHandler;
-
-/**
- @brief Reference on handler block which will be called on main or \c callbackQueue when new 
-        presence even will arrive from live feed on which client subscribed at this moment.
- 
- @since 4.0
- */
-@property (nonatomic, copy) PNEventHandlerBlock presenceEventHandler;
-
-/**
- @brief      Reference on handler block which will be called on main or \c callbackQueue when client
-             state will be changed.
- @discussion This block can be called each time when client subscribe on new channels or leave
-             (connection and disconnected expected and not expected).
-
- @since 4.0
- */
-@property (nonatomic, copy) PNStatusHandlerBlock statusHandler;
-
-/**
  @brief  Allow rewrite in batch set of client configurations in secure way (thread-safe).
  
  @since 4.0

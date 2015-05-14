@@ -38,6 +38,7 @@
 		79DCB4301AF50E160078DF70 /* PNResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DCB41B1AF50E160078DF70 /* PNResult.m */; };
 		79DCB4311AF50E160078DF70 /* PNStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DCB41D1AF50E160078DF70 /* PNStatus.m */; };
 		B51ED128B01DF4B20C3B766B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74823CAE89C07F6853A6DEBB /* libPods.a */; };
+		DD71B6CBC96E736E150309A0 /* PNResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71B2AA0D58BD27A8B930A0 /* PNResponse.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,7 +124,11 @@
 		79DCB4291AF50E160078DF70 /* PubNub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
 		79DCB4371AF537AE0078DF70 /* PNStatus+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNStatus+Private.h"; sourceTree = "<group>"; };
 		79DCB43E1AF650480078DF70 /* PNPrivateStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateStructures.h; sourceTree = "<group>"; };
+		79DEB1811B04CCAC00BA2A47 /* PNObjectEventListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObjectEventListener.h; sourceTree = "<group>"; };
 		CD74F3B227B633D385D4F228 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		DD71B15C16A5EC6F253DBB4C /* PNResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNResponse.h; sourceTree = "<group>"; };
+		DD71B1BAA3991F496FC7CCD7 /* PNResponse+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNResponse+Private.h"; sourceTree = "<group>"; };
+		DD71B2AA0D58BD27A8B930A0 /* PNResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResponse.m; sourceTree = "<group>"; };
 		F73F76F0C05CD766CD7D3C20 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -296,6 +301,9 @@
 				79DCB41D1AF50E160078DF70 /* PNStatus.m */,
 				79DCB4141AF50E160078DF70 /* PNAES.h */,
 				79DCB4151AF50E160078DF70 /* PNAES.m */,
+				DD71B15C16A5EC6F253DBB4C /* PNResponse.h */,
+				DD71B2AA0D58BD27A8B930A0 /* PNResponse.m */,
+				DD71B1BAA3991F496FC7CCD7 /* PNResponse+Private.h */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -303,6 +311,7 @@
 		79DCB41E1AF50E160078DF70 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				79DEB1801B04CC1800BA2A47 /* Protocols */,
 				79A4D1911AF8A6CF00F06E74 /* Helpers */,
 				791C3A931B015B8C0067B781 /* Logger */,
 				79DCB43E1AF650480078DF70 /* PNPrivateStructures.h */,
@@ -311,6 +320,14 @@
 				79DCB41F1AF50E160078DF70 /* PNConstants.h */,
 			);
 			path = Misc;
+			sourceTree = "<group>";
+		};
+		79DEB1801B04CC1800BA2A47 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				79DEB1811B04CCAC00BA2A47 /* PNObjectEventListener.h */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		8709F8E5AF0B57BC17706D8E /* Frameworks */ = {
@@ -491,6 +508,7 @@
 				7989F4811AFA66140074D694 /* PubNub+State.m in Sources */,
 				794BABD71AF4EB33004D5E07 /* main.m in Sources */,
 				79A4D19C1AF8A6CF00F06E74 /* PNJSON.m in Sources */,
+				DD71B6CBC96E736E150309A0 /* PNResponse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

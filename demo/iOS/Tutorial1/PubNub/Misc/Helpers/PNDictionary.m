@@ -12,6 +12,24 @@
 @implementation PNDictionary
 
 
+#pragma mark - API helper
+
++ (BOOL)hasFlattenedContent:(NSDictionary *)dictionary {
+    
+    BOOL flattened = YES;
+    for (NSString *key in dictionary) {
+        
+        flattened = ![dictionary[key] respondsToSelector:@selector(count)];
+        if (!flattened) {
+            
+            break;
+        }
+    }
+    
+    return flattened;
+}
+
+
 #pragma mark - URL helper
 
 + (NSString *)queryStringFrom:(NSDictionary *)dictionary {

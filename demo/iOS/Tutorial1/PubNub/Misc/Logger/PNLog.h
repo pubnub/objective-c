@@ -4,6 +4,9 @@
 
 #pragma mark Log macro declaration
 
+
+#define DDLogConfiguration(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNConfigurationLogLevel,  0, nil, \
+                                                __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define DDLogReachability(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNReachabilityLogLevel,  0, nil, \
                                                __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define DDLogRequest(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNRequestLogLevel,  0, nil, \
@@ -14,6 +17,10 @@
                                          __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define DDLogFailureStatus(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNFailureStatusLogLevel,  0, nil, \
                                                 __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogAESError(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNAESErrorLogLevel,  0, nil, \
+                                           __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogAPICall(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNAESErrorLogLevel,  0, nil, \
+                                          __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
 
 
@@ -35,6 +42,24 @@
 + (void)prepare;
 
 /**
+ @brief  Enable particular logging level.
+ 
+ @param logLevel Level which should be enabled and used by Cocoa Lumberjack macro.
+ 
+ @since 4.0
+ */
++ (void)enableLogLevel:(PNLogLevel)logLevel;
+
+/**
+ @brief  Disable particular logging level.
+ 
+ @param logLevel Level which should be enabled and used by Cocoa Lumberjack macro.
+ 
+ @since 4.0
+ */
++ (void)disableLogLevel:(PNLogLevel)logLevel;
+
+/**
  @brief  Update logging level for \b PubNub client and it's categories.
  
  @param logLevel Bit field with target logging level which should be set and used by Cocoa
@@ -48,8 +73,7 @@
  @brief  Specify whether logger should store output to log files or not.
  
  @param shouldDumpToFile If set to \c YES then logger will store all output (for levels which has 
-                         been enabled) into file which is stored at path returned by 
-                         \c +dumpFilePath method.
+                         been enabled) into file.
  
  @since 4.0
  */

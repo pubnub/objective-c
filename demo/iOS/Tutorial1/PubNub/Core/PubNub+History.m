@@ -9,6 +9,7 @@
 #import "PNErrorCodes.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
+#import "PNLog.h"
 
 
 #pragma mark Private interface
@@ -127,16 +128,19 @@
                                  subscribeKey, [PNString percentEscapedString:channel]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:PNHistoryOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedHistoryResponse:rawData];
         };
+        request.reportBlock = block;
+        
+        DDLogAPICall(@"<PubNub> %@ for '%@' channel%@%@ with %@ limit%@.",
+                     (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
+                     (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
+                     (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limit),
+                     (shouldIncludeTimeToken ? @" (including message time tokens)" : @""));
 
         // Ensure what all required fields passed before starting processing.
         if ([channel length]) {
@@ -204,7 +208,7 @@
                 }
                 else {
 
-                    NSLog(@"Decryption error: %@", decryptionError);
+                    DDLogAESError(@"<PubNub> History entry decryption error: %@", decryptionError);
                 }
             }
 

@@ -24,7 +24,7 @@
 
  @since 4.0
  */
-@property (nonatomic, readonly) PNOperationType operation;
+@property (nonatomic, readonly, assign) PNOperationType operation;
 
 /**
  @brief Stores reference on copy of original request which has been used to fetch or push data

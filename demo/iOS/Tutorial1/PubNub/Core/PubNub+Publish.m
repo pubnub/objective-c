@@ -6,7 +6,9 @@
 #import "PubNub+Publish.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import "PNStatus+Private.h"
 #import "PNErrorCodes.h"
+#import "PNResponse.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
 
@@ -14,6 +16,22 @@
 #pragma mark Private interface declaration
 
 @interface PubNub (PublishPrivate)
+
+
+#pragma mark - Handlers
+
+/**
+ @brief  Process message publish request completion and notify observers about results.
+
+ @param request Reference on base request which is used for communication with \b PubNub service.
+                Object also contains request processing results.
+ @param block   State audition for user on cahnnel processing completion block which pass only one 
+                argument - request processing status to report about how data pushing was successful 
+                or not.
+
+ @since 4.0
+ */
+- (void)handlePublishRequest:(PNRequest *)request withCompletion:(PNStatusBlock)block;
 
 
 #pragma mark - Processing
@@ -80,27 +98,27 @@
 #pragma mark - Plain message publish
 
 - (void)publish:(id)message toChannel:(NSString *)channel
- withCompletion:(PNCompletionBlock)block {
+ withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel compressed:NO withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
- withCompletion:(PNCompletionBlock)block {
+ withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel storeInHistory:YES compressed:compressed
    withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
- withCompletion:(PNCompletionBlock)block {
+ withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel storeInHistory:shouldStore compressed:NO
    withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-     compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block {
+     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:nil storeInHistory:shouldStore
        compressed:compressed withCompletion:block];
@@ -110,14 +128,14 @@
 #pragma mark - Composited message publish
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
-  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNCompletionBlock)block {
+  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNStatusBlock)block {
     
     [self publish:message toChannel:channel mobilePushPayload:payloads compressed:NO
    withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary *)payloads
-     compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block {
+     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:YES
        compressed:compressed withCompletion:block];
@@ -125,7 +143,7 @@
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-     withCompletion:(PNCompletionBlock)block {
+     withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore
        compressed:NO withCompletion:block];
@@ -133,7 +151,7 @@
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block {
+         compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
 
     // Dispatching async on private queue which is able to serialize access with client
     // configuration data.
@@ -178,12 +196,12 @@
 
                 [path appendFormat:@"/%@", [PNString percentEscapedString:messageForPublish]];
             }
-            PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                               forOperation:PNPublishOperation
-                                             withCompletion:^(PNResult *result, PNStatus *status){
+            __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                              forOperation:PNPublishOperation
+                                                            withCompletion:^{
 
                 __strong __typeof(self) strongSelfForResponse = weakSelf;
-                [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
+                [strongSelfForResponse handlePublishRequest:request withCompletion:[block copy]];
             }];
             if (compressed) {
 
@@ -196,6 +214,12 @@
                 __strong __typeof(self) strongSelfForProcessing = weakSelf;
                 return [strongSelfForProcessing processedPublishResponse:rawData];
             };
+            
+            DDLogAPICall(@"<PubNub> Publish%@ message to '%@' channel%@%@",
+                         (compressed ? @" compressed" : @""), (channel?: @"<error>"),
+                         (!shouldStore ? @" which won't be saved in hisotry" : @""),
+                         (!compressed ? [NSString stringWithFormat:@": %@",
+                                         (messageForPublish?: @"<error>")] : @"."));
 
             // Ensure what all required fields passed before starting processing.
             if (!publishError && [channel length] && ((!compressed && [messageForPublish length]) ||
@@ -223,6 +247,16 @@
             }
         });
     });
+}
+
+
+#pragma mark - Handlers
+
+- (void)handlePublishRequest:(PNRequest *)request withCompletion:(PNCompletionBlock)block {
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    PNStatus *status = [PNStatus statusForRequest:request withError:request.response.error];
+    [self callBlock:block status:NO withResult:nil andStatus:status];
 }
 
 

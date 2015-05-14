@@ -44,7 +44,7 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
 - (dispatch_queue_t)heartbeatTimerAccessQueue;
 
 
-#pragma mark - Channel group here now
+#pragma mark - Channel/Channel group here now
 
 /**
  @brief  Request information about subscribers on specific remote data object live feeds.
@@ -202,16 +202,13 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
                           [PNString percentEscapedString:object]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:PNHereNowOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPresenceAuditionResponse:rawData];
         };
+        request.reportBlock = block;
         
         if (![object length]) {
             
@@ -244,16 +241,13 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
                           subscribeKey, [PNString percentEscapedString:uuid]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:nil
                                            forOperation:PNWhereNowOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPresenceWhereNowResponse:rawData];
         };
+        request.reportBlock = block;
         
         DDLogAPICall(@"<PubNub> 'Where now' presence information for %@.", (uuid?: @"<error>"));
 
@@ -356,7 +350,7 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
                                      subscribeKey, channelsList];
             PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                                forOperation:PNHeartbeatOperation
-                                             withCompletion:^(PNResult *result, PNStatus *status) {
+                                             withCompletion:^{
                                                  
                 __strong __typeof(self) strongSelfForHandler = weakSelf;
                 [strongSelfForHandler startHeartbeatIfRequired];

@@ -99,16 +99,13 @@
                           [PNString percentEscapedString:group]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:nil
                                            forOperation:operationType
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedChannelGroupAuditionResponse:rawData];
         };
+        request.reportBlock = block;
         
         if (group) {
             
@@ -169,16 +166,13 @@
                           [PNString percentEscapedString:group]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:operationType
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedChannelGroupModificationResponse:rawData];
         };
+        request.reportBlock = block;
         
         if (removeAllChannels) {
             

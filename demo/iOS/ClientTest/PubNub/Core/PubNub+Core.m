@@ -6,6 +6,8 @@
 #import "PubNub+CorePrivate.h"
 #import "PubNub+SubscribePrivate.h"
 #import "PubNub+PresencePrivate.h"
+#import "PNObjectEventListener.h"
+#import "PNResponse+Private.h"
 #import "PNRequest+Private.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
@@ -18,7 +20,7 @@
 
 #pragma mark - Protected interface declaration
 
-@interface PubNub ()
+@interface PubNub () <PNObjectEventListener>
 
 
 #pragma mark - Properties
@@ -815,10 +817,9 @@
         [query addEntriesFromDictionary:@{@"uuid":self.uuid,@"deviceid":self.deviceID,
                                           @"pnsdk":[NSString stringWithFormat:@"PubNub-%@/%@",
                                                     kPNClientName, kPNLibraryVersion]}];
-        void(^success)(id,id) = ^(id task, id responseObject) {
+        void(^success)(id,id) = ^(NSURLSessionDataTask *task, id responseObject) {
             
             __strong __typeof(self) strongSelf = weakSelf;
-            
             [strongSelf handleRequestSuccess:request withTask:task andData:responseObject];
         };
         void(^failure)(id, id) = ^(id task, id error) {
@@ -834,6 +835,27 @@
                          [session.baseURL absoluteString], request.resourcePath,
                          (queryString ? @"?" : @""), (queryString?: @""));
         }
+        
+        // Check whether API endpoint specified completion block or default processing route should
+        // be used.
+        if (!request.completionBlock) {
+            
+            __weak __typeof(request) weakRequest = request;
+            request.completionBlock = ^{
+                
+                // Construct corresponding data objects which should be delivered through completion
+                // block.
+                __strong __typeof(self) strongSelf = weakSelf;
+                __strong __typeof(request) strongRequest = weakRequest;
+                PNResult *result = nil;
+                PNStatus *status = nil;
+                [strongSelf getResult:&result andStatus:&status forRequest:strongRequest];
+                [strongSelf callBlock:strongRequest.reportBlock status:NO withResult:result
+                            andStatus:status];
+            };
+        }
+        
+        // Check whether request should pass binary data with POST body or not.
         if (!request.body) {
 
             [session GET:request.resourcePath parameters:query success:success failure:failure];
@@ -887,30 +909,10 @@
 - (void)handleRequestSuccess:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
                      andData:(id)data {
     
-    BOOL isErrorResponse = NO;
-    if ([data isKindOfClass:[NSDictionary class]]) {
-        
-        isErrorResponse = ([data[@"error"] isKindOfClass:[NSNumber class]] &&
-                           ([data[@"error"] integerValue] == 1));
-    }
-    
-    if (!isErrorResponse) {
-        
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        request.request = task.currentRequest;
-        PNResult *result = [PNResult resultForRequest:request withResponse:response andData:data];
-        request.completionBlock(result, nil);
-    }
-    else {
-        
-        NSInteger errorCode = NSURLErrorBadURL;
-        NSDictionary *userInfo = @{NSURLErrorFailingURLErrorKey:task.currentRequest.URL,
-                                   NSLocalizedDescriptionKey:[NSHTTPURLResponse localizedStringForStatusCode:400],
-                                   AFNetworkingOperationFailingURLResponseErrorKey:data};
-        NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode
-                                         userInfo:userInfo];
-        [self handleRequestFailure:request withTask:task andError:error];
-    }
+    request.response = [PNResponse responseWith:(NSHTTPURLResponse *)task.response
+                                     forRequest:task.currentRequest
+                                       withData:data andError:nil];
+    request.completionBlock();
 }
 
 - (void)handleRequestFailure:(PNRequest *)request withError:(NSError *)error {
@@ -921,7 +923,6 @@
 - (void)handleRequestFailure:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
                     andError:(NSError *)error {
 
-    __weak __typeof(self) weakSelf = self;
     NSError *processingError = error;
     id errorDetails = nil;
     
@@ -951,32 +952,11 @@
         errorDetails = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
     }
     
-    // Configure operation status instance before sending it to completion block.
-    NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-    request.request = task.currentRequest;
-    PNStatus *status = [PNStatus statusForRequest:request withResponse:response
-                                            error:processingError
-                                          andData:errorDetails];
-
-    // Check whether status created for request which doesn't rely on long-polling.
-    if (request.operation != PNSubscribeOperation && request.operation != PNUnsubscribeOperation) {
-
-        // Configure request retry block which can be triggered with -retry method call.
-        __strong __typeof(self) strongSelf = weakSelf;
-        status.retryBlock = ^{
-
-            [strongSelf processRequest:request];
-        };
-    }
-
-    status.uuid = self.uuid;
-    status.SSLEnabled = self.isSSLEnabled;
-    status.currentTimetoken = [self currentTimeToken];
-    status.previousTimetoken = [self previousTimeToken];
-    status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
-    status.groups = [self channelGroups];
-    status.authorizationKey = self.authorizationKey;
-    request.completionBlock(nil, status);
+    // Update request with information about it's processing results.
+    request.response = [PNResponse responseWith:(NSHTTPURLResponse *)task.response
+                                     forRequest:task.currentRequest
+                                       withData:errorDetails andError:processingError];
+    request.completionBlock();
 }
 
 - (void)cancelAllLongPollRequests {
@@ -999,63 +979,36 @@
 
 #pragma mark - Events notification
 
-- (void)callBlock:(PNCompletionBlock)block withResult:(PNResult *)result
+- (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result
         andStatus:(PNStatus *)status {
 
-    PNStatus *clientStatus = nil;
     // Check whether result information should be post-processed or not.
-    if (result || status) {
+    if (status) {
 
-        // Check whether result or status related to subscription process or not.
-        PNOperationType operation = (result?: status).operation;
-        if (operation == PNSubscribeOperation || operation == PNUnsubscribeOperation) {
-
-            clientStatus = (status?: [PNStatus statusFromResult:result]);
-            if (!status) {
-
-                clientStatus.uuid = self.uuid;
-                clientStatus.SSLEnabled = self.isSSLEnabled;
-                clientStatus.currentTimetoken = [self currentTimeToken];
-                clientStatus.previousTimetoken = [self previousTimeToken];
-                clientStatus.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
-                clientStatus.groups = [self channelGroups];
-                clientStatus.authorizationKey = self.authorizationKey;
-            }
-        }
-        
-        if (result) {
-            
-            if (!clientStatus) {
-                
-                DDLogResult(@"%@", [result stringifiedRepresentation]);
-            }
-            else {
-                
-                DDLogStatus(@"%@", [clientStatus stringifiedRepresentation]);
-            }
-        }
-        
-        if (clientStatus) {
-            
-            DDLogStatus(@"%@", [clientStatus stringifiedRepresentation]);
-        }
-        else if (status) {
-            
-            DDLogFailureStatus(@"%@", [status stringifiedRepresentation]);
-        }
+        status.uuid = self.uuid;
+        status.SSLEnabled = self.isSSLEnabled;
+        status.currentTimetoken = [self currentTimeToken];
+        status.previousTimetoken = [self previousTimeToken];
+        status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
+        status.groups = [self channelGroups];
+        status.authorizationKey = self.authorizationKey;
     }
-
-    if (clientStatus) {
-
-        self.recentClientStatus = clientStatus.category;
-        if (self.statusHandler) {
-
-            __weak __typeof(self) weakSelf = self;
-            dispatch_async(self.callbackQueue, ^{
-
-                __strong __typeof(self) strongSelf = weakSelf;
-                strongSelf.statusHandler(clientStatus);
-            });
+    
+    if (result) {
+            
+        DDLogResult(@"<PubNub> %@", [result stringifiedRepresentation]);
+    }
+    
+    if (status) {
+        
+        if (status.isError) {
+            
+            DDLogFailureStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
+        }
+        else {
+            
+            
+            DDLogStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
         }
     }
 
@@ -1063,8 +1016,38 @@
 
         dispatch_async(self.callbackQueue, ^{
 
-            block(result, status);
+            if (!callingStatusBlock) {
+                
+                ((PNCompletionBlock)block)(result, status);
+            }
+            else {
+                
+                ((PNStatusBlock)block)(status);
+            }
         });
+    }
+}
+
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
+    
+    self.recentClientStatus = status.category;
+}
+
+
+#pragma mark - Processing
+
+- (void)getResult:(PNResult **)result andStatus:(PNStatus **)status forRequest:(PNRequest *)request{
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    *result = nil;
+    *status = nil;
+    if (request.response.error || request.response.response.statusCode != 200) {
+        
+        *status = [PNStatus statusForRequest:request withError:request.response.error];
+    }
+    else {
+        
+        *result = [PNResult resultForRequest:request];
     }
 }
 

@@ -12,6 +12,23 @@
 
 
 ///------------------------------------------------
+/// @name API helper
+///------------------------------------------------
+
+/**
+ @brief  Check whether specified dictionary has flattened structure or not.
+ @discussion Flattened - mean what there is no nested objects stored for keys.
+
+ @param dictionary Reference on dictionary against which check should be done.
+
+ @return \c YES in case if there is collection instance stored inside of dictionary.
+
+ @since 4.0
+ */
++ (BOOL)hasFlattenedContent:(NSDictionary *)dictionary;
+
+
+///------------------------------------------------
 /// @name URL helper
 ///------------------------------------------------
 

@@ -130,7 +130,16 @@ typedef NS_OPTIONS(NSInteger, PNOperationType){
  @since 4.0
  */
 typedef NS_OPTIONS(NSInteger, PNStatusCategory) {
+    
     PNUnknownCategory,
+    
+    /**
+     @brief      \b PubNub request acknowledgment status.
+     @discussion Some API endpoints respond with request processing status w/o useful data.
+
+     @since 4.0
+     */
+    PNAcknowledgmentCategory,
 
     /**
      @brief      \b PubNub Access Manager forbidden access to particular API.
@@ -168,6 +177,14 @@ typedef NS_OPTIONS(NSInteger, PNStatusCategory) {
      @since 4.0
      */
     PNConnectedCategory,
+
+    /**
+     @brief      Status sent when client successfully restored subscription to remote data objects
+                 live feed after unexpected disconnection.
+
+     @since 4.0
+     */
+    PNReconnectedCategory,
 
     /**
      @brief      Status sent when client successfully unsubscribed from one of remote data objects
@@ -281,34 +298,27 @@ typedef NS_OPTIONS(NSInteger, PNHereNowDataType) {
  */
 typedef void(^PNCompletionBlock)(PNResult *result, PNStatus *status);
 
-/**
- @brief  Handling block which can be specified by user and client will send new results when message
-         will arrive from one of live feeds.
 
- @param result Subscribe API long-poll processing result.
+/**
+ @brief      Block type which is used as completion block for som API endpoint where only server
+             response can be delivered.
+ @discussion Used by API which as \b PubNub service to generate usable data (not request processing
+             status).
+
+ @param result Reference on results generated from passed request.
 
  @since 4.0
  */
-typedef void(^PNMessageHandlerBlock)(PNResult *result);
+typedef void(^PNResultBlock)(PNResult *result);
 
 /**
- @brief  Handling block which can be specified by user and client will send new results when
-         presence event will arrive from one of live feeds.
+ @brief  Block type which is used as completion block for som API endpoint where only request
+         processing status can be delivered in response.
 
- @param result Subscribe API long-poll processing result.
+ @param status Reference on status which represent service request processing state.
 
  @since 4.0
  */
-typedef void(^PNEventHandlerBlock)(PNResult *result);
-
-/**
- @brief  Handling block which can be specified by user and client will deliver any client state
-         changes.
-
- @param status Changed \b PubNub client status.
-
- @since 4.0
- */
-typedef void(^PNStatusHandlerBlock)(PNStatus *status);
+typedef void(^PNStatusBlock)(PNStatus *status);
 
 #endif // PNStructures_h

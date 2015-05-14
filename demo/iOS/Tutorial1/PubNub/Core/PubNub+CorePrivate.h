@@ -1,9 +1,21 @@
 #import "PubNub+Core.h"
+#import <CocoaLumberjack/CocoaLumberjack.h>
 #import <AFNetworkReachabilityManager.h>
 #import <AFHTTPSessionManager.h>
+#import "PNLog.h"
 
 
-#pragma mark Class forward
+#pragma mark Static
+
+/**
+ @brief  Cocoa Lumberjack logging level configuration for \b PubNub client class and categories.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel = (DDLogLevel)PNVerboseLogLevel;
+
+
+#pragma mark - Class forward
 
 @class PNRequest, PNResult, PNStatus;
 
@@ -146,8 +158,28 @@
 
  @since 4.0
  */
-- (void)callBlock:(PNCompletionBlock)block withResult:(PNResult *)result
+- (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result
         andStatus:(PNStatus *)status;
+
+
+///------------------------------------------------
+/// @name Processing
+///------------------------------------------------
+
+/**
+ @brief      Default request result processing method which will return corresponding objects
+             depending on request results data.
+ @discussion This method mostly used by API endpoints which doesn't require additional data 
+             pre-processing before objects will be passed further.
+ 
+ @param result Reference on address pointer where request's result object should be stored.
+ @param status Reference on address pointer where request's processing status object should be 
+               stored.
+ @param request Reference on request which should be processed and correspondoing objects generated.
+ 
+ @since 4.0
+ */
+- (void)getResult:(PNResult **)result andStatus:(PNStatus **)status forRequest:(PNRequest *)request;
 
 #pragma mark -
 

@@ -4,9 +4,10 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
-#import <CocoaLumberjack/CocoaLumberjack.h>
 #import "PubNub+SubscribePrivate.h"
 #import "PubNub+PresencePrivate.h"
+#import "PNObjectEventListener.h"
+#import "PNResponse+Private.h"
 #import "PNRequest+Private.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
@@ -17,19 +18,9 @@
 #import "PNLog.h"
 
 
-#pragma mark Static 
+#pragma mark - Protected interface declaration
 
-/**
- @brief  Cocoa Lumberjack logging level configuration for \b PubNub client class and categories.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogLevel);
-
-
-#pragma mark - Private interface declaration
-
-@interface PubNub ()
+@interface PubNub () <PNObjectEventListener>
 
 
 #pragma mark - Properties
@@ -253,31 +244,126 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
         // Store current configuration value to identify what part of client will require for
         // changes basing on updates information.
         NSString *origin = [strongSelf.origin copy];
+        NSString *publishKey = [strongSelf.publishKey copy];
         NSString *subscribeKey = [strongSelf.subscribeKey copy];
         NSString *authorizationKey = [strongSelf.authorizationKey copy];
         NSString *uuid = [_uuid copy];
-        BOOL isSSLEnabled = strongSelf.isSSLEnabled;
+        NSString *cipherKey = [strongSelf.cipherKey copy];
         NSTimeInterval subscribeMaximumIdleTime = strongSelf.subscribeMaximumIdleTime;
         NSTimeInterval nonSubscribeRequestTimeout = strongSelf.nonSubscribeRequestTimeout;
         NSInteger presenceHeartbeatValue = strongSelf.presenceHeartbeatValue;
         NSInteger presenceHeartbeatInterval = strongSelf.presenceHeartbeatInterval;
+        BOOL isSSLEnabled = strongSelf.isSSLEnabled;
+        BOOL keepTimeTokeOnListChange = strongSelf.shouldKeepTimeTokenOnListChange;
+        BOOL shouldRestoreSubscription = strongSelf.shouldRestoreSubscription;
+        BOOL shouldCatchUpOnRestore = strongSelf.shouldTryCatchUpOnSubscriptionRestore;
         
         // Performing client configuration change committed by user.
         if (block) {
 
             block();
         }
+        
+        BOOL serviceOriginChanged = ![origin isEqualToString:strongSelf.origin];
+        BOOL publishKeyChanged = ![publishKey isEqualToString:strongSelf.publishKey];
+        BOOL subscribeKeyChanged = ![subscribeKey isEqualToString:strongSelf.subscribeKey];
+        BOOL authorizationKeyChanged = ![authorizationKey isEqualToString:strongSelf.authorizationKey];
+        BOOL uuidChanged = ![uuid isEqualToString:_uuid];
+        BOOL cipherKeyChanged = ![cipherKey isEqualToString:strongSelf.cipherKey];
+        BOOL maximumSubscribeIdleChanged =  (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime);
+        BOOL nonSubscribeTimeoutChanged =  (nonSubscribeRequestTimeout != strongSelf.nonSubscribeRequestTimeout);
+        BOOL heartbeatValueChanged =  (presenceHeartbeatValue != strongSelf.presenceHeartbeatValue);
+        BOOL heartbeatIntervalChanged =  (presenceHeartbeatInterval != strongSelf.presenceHeartbeatInterval);
+        BOOL SSLModeChanged = (isSSLEnabled != strongSelf.isSSLEnabled);
+        BOOL keepTimeTokeOnListChanged = (keepTimeTokeOnListChange != strongSelf.shouldKeepTimeTokenOnListChange);
+        BOOL shouldRestoreSubscriptionChanged = (shouldRestoreSubscription != strongSelf.shouldRestoreSubscription);
+        BOOL shouldCatchUpOnRestoreChanged = (shouldCatchUpOnRestore != strongSelf.shouldTryCatchUpOnSubscriptionRestore);
+        if (!serviceOriginChanged && !publishKeyChanged && !subscribeKeyChanged &&
+            !authorizationKeyChanged && !uuidChanged && !cipherKeyChanged &&
+            !maximumSubscribeIdleChanged && !nonSubscribeTimeoutChanged && !heartbeatValueChanged &&
+            !heartbeatIntervalChanged && !SSLModeChanged && !keepTimeTokeOnListChanged &&
+            !shouldRestoreSubscriptionChanged && !shouldCatchUpOnRestoreChanged) {
+            
+            DDLogConfiguration(@"<PubNub> Configuration not changed.");
+        }
+        else {
+            
+            NSMutableString *configuration = [NSMutableString stringWithString:@"<PubNub> Configuration modification:\n"];
+            if (serviceOriginChanged) {
+                [configuration appendFormat:@"Changed from '%@' to '%@'\n",
+                 origin, strongSelf.origin];
+            }
+            if (publishKeyChanged) {
+                [configuration appendFormat:@"Publish key changed from '%@' to '%@'\n",
+                 publishKey, strongSelf.publishKey];
+            }
+            if (subscribeKeyChanged) {
+                [configuration appendFormat:@"Subscribe key changed from '%@' to '%@'\n",
+                 subscribeKey, strongSelf.subscribeKey];
+            }
+            if (authorizationKeyChanged) {
+                [configuration appendFormat:@"Authorization key changed from '%@' to '%@'\n",
+                 authorizationKey, strongSelf.authorizationKey];
+            }
+            if (uuidChanged) {
+                [configuration appendFormat:@"UUID changed from '%@' to '%@'\n", uuid, _uuid];
+            }
+            if (cipherKeyChanged) {
+                [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
+                 cipherKey, strongSelf.cipherKey];
+            }
+            if (cipherKeyChanged) {
+                [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
+                 cipherKey, strongSelf.cipherKey];
+            }
+            if (maximumSubscribeIdleChanged) {
+                [configuration appendFormat:@"Maximum subscribe idle changed from '%@' to '%@'\n",
+                 @(subscribeMaximumIdleTime), @(strongSelf.subscribeMaximumIdleTime)];
+            }
+            if (nonSubscribeTimeoutChanged) {
+                [configuration appendFormat:@"Non-subscribe timeout changed from '%@' to '%@'\n",
+                 @(nonSubscribeRequestTimeout), @(strongSelf.nonSubscribeRequestTimeout)];
+            }
+            if (heartbeatValueChanged) {
+                [configuration appendFormat:@"Heartbeat value changed from '%@' to '%@'\n",
+                 @(presenceHeartbeatValue), @(strongSelf.presenceHeartbeatValue)];
+            }
+            if (heartbeatIntervalChanged) {
+                [configuration appendFormat:@"Heartbeat interval changed from '%@' to '%@'\n",
+                 @(presenceHeartbeatInterval), @(strongSelf.presenceHeartbeatInterval)];
+            }
+            if (SSLModeChanged) {
+                [configuration appendFormat:@"SSL mode changed from '%@' to '%@'\n",
+                 (isSSLEnabled ? @"YES" : @"NO"), (strongSelf.isSSLEnabled ? @"YES" : @"NO")];
+            }
+            if (keepTimeTokeOnListChanged) {
+                [configuration appendFormat:@"Keep time token on channels list change changed from "
+                                             " '%@' to '%@'\n",
+                 (keepTimeTokeOnListChange ? @"YES" : @"NO"),
+                 (strongSelf.shouldKeepTimeTokenOnListChange ? @"YES" : @"NO")];
+            }
+            if (shouldRestoreSubscriptionChanged) {
+                [configuration appendFormat:@"Should restore subscription changed from '%@' to '%@'\n",
+                 (shouldRestoreSubscription ? @"YES" : @"NO"),
+                 (strongSelf.shouldRestoreSubscription ? @"YES" : @"NO")];
+            }
+            if (shouldCatchUpOnRestoreChanged) {
+                [configuration appendFormat:@"Try catch up on subscribe restore changed from "
+                                             "'%@' to '%@'\n",
+                 (shouldCatchUpOnRestore ? @"YES" : @"NO"),
+                 (strongSelf.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO")];
+            }
+            DDLogConfiguration(configuration);
+        }
 
         // Check whether base URL has been changed or not
-        if ([origin isEqualToString:strongSelf.origin] && isSSLEnabled == strongSelf.isSSLEnabled) {
+        if (!serviceOriginChanged && !SSLModeChanged) {
 
-            if (![subscribeKey isEqualToString:strongSelf.subscribeKey] ||
-                ![authorizationKey isEqualToString:strongSelf.authorizationKey] ||
-                ![uuid isEqualToString:_uuid] ||
-                (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime)){
+            if (subscribeKeyChanged || authorizationKeyChanged || uuidChanged ||
+                maximumSubscribeIdleChanged){
 
                 // Check whether request or session related information has been changed.
-                if (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime) {
+                if (maximumSubscribeIdleChanged) {
 
                     // Recreate subscription URL session with new configuration.
                     [strongSelf invalidateSession:strongSelf.subscriptionSession
@@ -297,18 +383,17 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
                 // Resume subscription cycle.
                 [self continueSubscriptionCycleIfRequired];
             }
-            if (nonSubscribeRequestTimeout != strongSelf.nonSubscribeRequestTimeout) {
+            if (nonSubscribeTimeoutChanged) {
 
                 // Recreate service URL session with new configuration allowing exising operations
                 // to be completed.
                 [strongSelf invalidateSession:strongSelf.serviceSession afterTaskCompletion:YES];
                 strongSelf.serviceSession = [strongSelf sessionForImmediateRequests];
             }
-            if (presenceHeartbeatInterval != strongSelf.presenceHeartbeatInterval ||
-                presenceHeartbeatValue != strongSelf.presenceHeartbeatValue) {
+            if (heartbeatValueChanged || heartbeatIntervalChanged) {
 
                 // Check whether heartbeat value important for service has been changed or not.
-                if (presenceHeartbeatValue != strongSelf.presenceHeartbeatValue) {
+                if (heartbeatValueChanged) {
                     
                     // Terminate all active tasks on long-polling URL session.
                     NSArray *tasks = [strongSelf.subscriptionSession tasks];
@@ -375,7 +460,6 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
         self.publishKey = publishKey;
         self.subscribeKey = subscribeKey;
         self.uuid = [[NSUUID UUID] UUIDString];
-        self.subscribeRequestTimeout = kPNDefaultSubscribeRequestTimeout;
         self.subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         self.nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
         self.SSLEnabled = kPNDefaultIsSSLEnabled;
@@ -733,10 +817,9 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
         [query addEntriesFromDictionary:@{@"uuid":self.uuid,@"deviceid":self.deviceID,
                                           @"pnsdk":[NSString stringWithFormat:@"PubNub-%@/%@",
                                                     kPNClientName, kPNLibraryVersion]}];
-        void(^success)(id,id) = ^(id task, id responseObject) {
+        void(^success)(id,id) = ^(NSURLSessionDataTask *task, id responseObject) {
             
             __strong __typeof(self) strongSelf = weakSelf;
-            
             [strongSelf handleRequestSuccess:request withTask:task andData:responseObject];
         };
         void(^failure)(id, id) = ^(id task, id error) {
@@ -752,6 +835,27 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
                          [session.baseURL absoluteString], request.resourcePath,
                          (queryString ? @"?" : @""), (queryString?: @""));
         }
+        
+        // Check whether API endpoint specified completion block or default processing route should
+        // be used.
+        if (!request.completionBlock) {
+            
+            __weak __typeof(request) weakRequest = request;
+            request.completionBlock = ^{
+                
+                // Construct corresponding data objects which should be delivered through completion
+                // block.
+                __strong __typeof(self) strongSelf = weakSelf;
+                __strong __typeof(request) strongRequest = weakRequest;
+                PNResult *result = nil;
+                PNStatus *status = nil;
+                [strongSelf getResult:&result andStatus:&status forRequest:strongRequest];
+                [strongSelf callBlock:strongRequest.reportBlock status:NO withResult:result
+                            andStatus:status];
+            };
+        }
+        
+        // Check whether request should pass binary data with POST body or not.
         if (!request.body) {
 
             [session GET:request.resourcePath parameters:query success:success failure:failure];
@@ -805,30 +909,10 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
 - (void)handleRequestSuccess:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
                      andData:(id)data {
     
-    BOOL isErrorResponse = NO;
-    if ([data isKindOfClass:[NSDictionary class]]) {
-        
-        isErrorResponse = ([data[@"error"] isKindOfClass:[NSNumber class]] &&
-                           ([data[@"error"] integerValue] == 1));
-    }
-    
-    if (!isErrorResponse) {
-        
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        request.request = task.currentRequest;
-        PNResult *result = [PNResult resultForRequest:request withResponse:response andData:data];
-        request.completionBlock(result, nil);
-    }
-    else {
-        
-        NSInteger errorCode = NSURLErrorBadURL;
-        NSDictionary *userInfo = @{NSURLErrorFailingURLErrorKey:task.currentRequest.URL,
-                                   NSLocalizedDescriptionKey:[NSHTTPURLResponse localizedStringForStatusCode:400],
-                                   AFNetworkingOperationFailingURLResponseErrorKey:data};
-        NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode
-                                         userInfo:userInfo];
-        [self handleRequestFailure:request withTask:task andError:error];
-    }
+    request.response = [PNResponse responseWith:(NSHTTPURLResponse *)task.response
+                                     forRequest:task.currentRequest
+                                       withData:data andError:nil];
+    request.completionBlock();
 }
 
 - (void)handleRequestFailure:(PNRequest *)request withError:(NSError *)error {
@@ -839,7 +923,6 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
 - (void)handleRequestFailure:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
                     andError:(NSError *)error {
 
-    __weak __typeof(self) weakSelf = self;
     NSError *processingError = error;
     id errorDetails = nil;
     
@@ -869,32 +952,11 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
         errorDetails = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
     }
     
-    // Configure operation status instance before sending it to completion block.
-    NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-    request.request = task.currentRequest;
-    PNStatus *status = [PNStatus statusForRequest:request withResponse:response
-                                            error:processingError
-                                          andData:errorDetails];
-
-    // Check whether status created for request which doesn't rely on long-polling.
-    if (request.operation != PNSubscribeOperation && request.operation != PNUnsubscribeOperation) {
-
-        // Configure request retry block which can be triggered with -retry method call.
-        __strong __typeof(self) strongSelf = weakSelf;
-        status.retryBlock = ^{
-
-            [strongSelf processRequest:request];
-        };
-    }
-
-    status.uuid = self.uuid;
-    status.SSLEnabled = self.isSSLEnabled;
-    status.currentTimetoken = [self currentTimeToken];
-    status.previousTimetoken = [self previousTimeToken];
-    status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
-    status.groups = [self channelGroups];
-    status.authorizationKey = self.authorizationKey;
-    request.completionBlock(nil, status);
+    // Update request with information about it's processing results.
+    request.response = [PNResponse responseWith:(NSHTTPURLResponse *)task.response
+                                     forRequest:task.currentRequest
+                                       withData:errorDetails andError:processingError];
+    request.completionBlock();
 }
 
 - (void)cancelAllLongPollRequests {
@@ -917,63 +979,36 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
 
 #pragma mark - Events notification
 
-- (void)callBlock:(PNCompletionBlock)block withResult:(PNResult *)result
+- (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result
         andStatus:(PNStatus *)status {
 
-    PNStatus *clientStatus = nil;
     // Check whether result information should be post-processed or not.
-    if (result || status) {
+    if (status) {
 
-        // Check whether result or status related to subscription process or not.
-        PNOperationType operation = (result?: status).operation;
-        if (operation == PNSubscribeOperation || operation == PNUnsubscribeOperation) {
-
-            clientStatus = (status?: [PNStatus statusFromResult:result]);
-            if (!status) {
-
-                clientStatus.uuid = self.uuid;
-                clientStatus.SSLEnabled = self.isSSLEnabled;
-                clientStatus.currentTimetoken = [self currentTimeToken];
-                clientStatus.previousTimetoken = [self previousTimeToken];
-                clientStatus.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
-                clientStatus.groups = [self channelGroups];
-                clientStatus.authorizationKey = self.authorizationKey;
-            }
-        }
-        
-        if (result) {
-            
-            if (!clientStatus) {
-                
-                DDLogResult(@"%@", [result stringifiedRepresentation]);
-            }
-            else {
-                
-                DDLogStatus(@"%@", [clientStatus stringifiedRepresentation]);
-            }
-        }
-        
-        if (clientStatus) {
-            
-            DDLogStatus(@"%@", [clientStatus stringifiedRepresentation]);
-        }
-        else if (status) {
-            
-            DDLogFailureStatus(@"%@", [status stringifiedRepresentation]);
-        }
+        status.uuid = self.uuid;
+        status.SSLEnabled = self.isSSLEnabled;
+        status.currentTimetoken = [self currentTimeToken];
+        status.previousTimetoken = [self previousTimeToken];
+        status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
+        status.groups = [self channelGroups];
+        status.authorizationKey = self.authorizationKey;
     }
-
-    if (clientStatus) {
-
-        self.recentClientStatus = clientStatus.category;
-        if (self.statusHandler) {
-
-            __weak __typeof(self) weakSelf = self;
-            dispatch_async(self.callbackQueue, ^{
-
-                __strong __typeof(self) strongSelf = weakSelf;
-                strongSelf.statusHandler(clientStatus);
-            });
+    
+    if (result) {
+            
+        DDLogResult(@"<PubNub> %@", [result stringifiedRepresentation]);
+    }
+    
+    if (status) {
+        
+        if (status.isError) {
+            
+            DDLogFailureStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
+        }
+        else {
+            
+            
+            DDLogStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
         }
     }
 
@@ -981,8 +1016,38 @@ static DDLogLevel ddLogLevel = (DDLogLevel)(PNReachabilityLogLevel|PNRequestLogL
 
         dispatch_async(self.callbackQueue, ^{
 
-            block(result, status);
+            if (!callingStatusBlock) {
+                
+                ((PNCompletionBlock)block)(result, status);
+            }
+            else {
+                
+                ((PNStatusBlock)block)(status);
+            }
         });
+    }
+}
+
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
+    
+    self.recentClientStatus = status.category;
+}
+
+
+#pragma mark - Processing
+
+- (void)getResult:(PNResult **)result andStatus:(PNStatus **)status forRequest:(PNRequest *)request{
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    *result = nil;
+    *status = nil;
+    if (request.response.error || request.response.response.statusCode != 200) {
+        
+        *status = [PNStatus statusForRequest:request withError:request.response.error];
+    }
+    else {
+        
+        *result = [PNResult resultForRequest:request];
     }
 }
 

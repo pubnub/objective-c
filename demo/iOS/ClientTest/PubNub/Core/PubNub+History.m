@@ -128,16 +128,13 @@
                                  subscribeKey, [PNString percentEscapedString:channel]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:PNHistoryOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status){
-
-            __strong __typeof(self) strongSelfForResponse = weakSelf;
-            [strongSelfForResponse callBlock:[block copy] withResult:result andStatus:status];
-        }];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedHistoryResponse:rawData];
         };
+        request.reportBlock = block;
         
         DDLogAPICall(@"<PubNub> %@ for '%@' channel%@%@ with %@ limit%@.",
                      (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),

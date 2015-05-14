@@ -16,14 +16,14 @@
 #pragma mark - Initialization and configuration
 
 + (instancetype)requestWithPath:(NSString *)resourcePath parameters:(NSDictionary *)queryParameters
-                   forOperation:(PNOperationType)type withCompletion:(PNCompletionBlock)block {
+                   forOperation:(PNOperationType)type withCompletion:(dispatch_block_t)block {
     
     return [[self alloc] initWithPath:resourcePath parameters:queryParameters forOperation:type
                        withCompletion:block];
 }
 
 - (instancetype)initWithPath:(NSString *)resourcePath parameters:(NSDictionary *)queryParameters
-                forOperation:(PNOperationType)type withCompletion:(PNCompletionBlock)block {
+                forOperation:(PNOperationType)type withCompletion:(dispatch_block_t)block {
  
     // Check whether initialization has been successful or not.
     if ((self = [super init])) {
@@ -33,7 +33,6 @@
         _parameters = [(queryParameters?: @{}) copy];
         _completionBlock = [block copy];
     }
-    
     
     return self;
 }

@@ -25,35 +25,42 @@
 
  @since 4.0
 */
-@property (nonatomic, assign) PNStatusCategory category;
+@property (nonatomic, readonly, assign) PNStatusCategory category;
+
+/**
+ @brief  One of \b PNStatusCategory fields which provide a bit detailed information about issue.
+
+ @since 4.0
+*/
+@property (nonatomic, readonly, assign) PNStatusCategory subCategory;
 
 /**
  @brief  Stores whether client currently used secured connection or not.
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = isSSLEnabled) BOOL SSLEnabled;
+@property (nonatomic, readonly, assign, getter = isSSLEnabled) BOOL SSLEnabled;
 
 /**
  @brief  Stores reference on list of channels on which client currently subscribed.
  
  @since 4.0
  */
-@property (nonatomic, copy) NSArray *channels;
+@property (nonatomic, readonly, copy) NSArray *channels;
 
 /**
  @brief  Stores reference on channel group names list on which client currently subscribed.
  
  @since 4.0
  */
-@property (nonatomic, copy) NSArray *groups;
+@property (nonatomic, readonly, copy) NSArray *groups;
 
 /**
  @brief  UUID which is currently used by client to identify user on \b PubNub service.
  
  @since 4.0
  */
-@property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, readonly, copy) NSString *uuid;
 
 /**
  @brief      Authorization which is used to get access to protected remote resources.
@@ -62,7 +69,7 @@
  
  @since 4.0
  */
-@property (nonatomic, copy) NSString *authorizationKey;
+@property (nonatomic, readonly, copy) NSString *authorizationKey;
 
 /**
  @brief      Reference on cached client state which is used for subscribe and heartbeat requests.
@@ -71,7 +78,7 @@
  
  @since 4.0
  */
-@property (nonatomic, copy) NSDictionary *state;
+@property (nonatomic, readonly, copy) NSDictionary *state;
 
 /**
  @brief  Whether status object represent error or not.
@@ -81,18 +88,11 @@
 @property (nonatomic, readonly, assign, getter = isError) BOOL error;
 
 /**
- @brief  Reference on object which can help with results processing.
-
- @since 4.0
- */
-@property (nonatomic, readonly, strong) id associatedObject;
-
-/**
  @brief  Stores reference on time token which has been used to establish current subscription cycle.
  
  @since 4.0
  */
-@property (nonatomic, assign) NSNumber *currentTimetoken;
+@property (nonatomic, readonly, strong) NSNumber *currentTimetoken;
 
 /**
  @brief  Stores reference on previous key which has been used in subscription cycle to receive
@@ -100,7 +100,7 @@
  
  @since 4.0
  */
-@property (nonatomic, assign) NSNumber *previousTimetoken;
+@property (nonatomic, readonly, strong) NSNumber *previousTimetoken;
 
 /**
  @brief      Stores whether client will try to resend request associated with status or not.

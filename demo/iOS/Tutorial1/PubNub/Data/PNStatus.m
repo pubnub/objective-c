@@ -6,7 +6,10 @@
 #import "PNStatus+Private.h"
 #import <AFURLResponseSerialization.h>
 #import "PNPrivateStructures.h"
+#import "PNStatus+Private.h"
 #import "PNResult+Private.h"
+#import "PNResponse.h"
+#import "PNLog.h"
 
 
 #pragma mark Private interface
@@ -15,15 +18,6 @@
 
 
 #pragma mark - Interpretation
-
-/**
- @brief Try interpret error object to meaningful status object state.
-
- @param error Reference on error which should be used during interpretation.
-
- @since 4.0
- */
-- (PNStatusCategory)categoryTypeFromError:(NSError *)error;
 
 /**
  @brief Try interpret response status code meaningful status object state.
@@ -35,13 +29,13 @@
 - (PNStatusCategory)categoryTypeFromStatusCode:(NSInteger)statusCode;
 
 /**
- @brief Correlate previously stored category information with operation type.
+ @brief Try interpret error object to meaningful status object state.
 
- @param type One of \b PNOperationType fields which should be translated to category.
+ @param error Reference on error which should be used during interpretation.
 
  @since 4.0
  */
-- (PNStatusCategory)correlateCategoryToOperationType:(PNOperationType)type;
+- (PNStatusCategory)categoryTypeFromError:(NSError *)error;
 
 /**
  @brief Try extract useful data from error object (in case if service provided some feedback).
@@ -62,39 +56,61 @@
 
 @implementation PNStatus
 
-+ (instancetype)statusFromResult:(PNResult *)result {
-
-    PNStatus *status = [[self alloc] initForRequest:result.requestObject withResponse:nil error:nil
-                                            andData:result.data];
++ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category {
+    
+    PNStatus *status = [PNStatus new];
+    status.operation = operation;
+    status.category = category;
     
     return status;
 }
 
-+ (instancetype)statusForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                           error:(NSError *)error andData:(id <NSObject, NSCopying>)data {
-    
-    return [[self alloc] initForRequest:request withResponse:response error:error andData:data];
++ (instancetype)statusFromResult:(PNResult *)result {
+
+    return [[self alloc] initForRequest:result.requestObject
+                              withError:result.requestObject.response.error];
 }
 
-- (instancetype)initForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                         error:(NSError *)error andData:(id <NSObject, NSCopying>)data {
++ (instancetype)statusForRequest:(PNRequest *)request withError:(NSError *)error {
+    
+    return [[self alloc] initForRequest:request withError:error];
+}
+
+- (instancetype)initForRequest:(PNRequest *)request withError:(NSError *)error {
     
     // Check whether initialization has been successful or not.
-    if ((self = [super initForRequest:request withResponse:response andData:data])) {
+    if ((self = [super initForRequest:request])) {
+        
+        NSError *processingError = (error?: request.response.error);
+        
+        // Check whether status should represent acknowledgment or not.
+        if (request.response.response.statusCode == 200 && !processingError) {
+            
+            self.category = PNAcknowledgmentCategory;
+        }
+        else {
+            
+            // Try extract category basing on response status codes.
+            self.category = [self categoryTypeFromStatusCode:request.response.response.statusCode];
 
-        self.category = [self categoryTypeFromStatusCode:response.statusCode];
+            // Extract status category from passed error object.
+            if (self.category == PNUnknownCategory) {
+                
+                self.category = [self categoryTypeFromError:processingError];
+            }
+        }
+        _subCategory = self.category;
+        self.error = (self.category != PNAcknowledgmentCategory);
+        if (self.isError && ![self.data count]) {
+            
+            self.data = ([self dataParsedAsError:request.response.data]?: [self dataFromError:error]);
+        }
+        self.data = (([self.data count] ? self.data : [self dataFromError:error]) ?: request.response.data);
         if (self.category == PNUnknownCategory) {
             
-            self.category = [self categoryTypeFromError:error];
+            NSLog(@"<PubNub> Status with unknown operation: %@", [self dictionaryRepresentation]);
         }
-        self.category = [self correlateCategoryToOperationType:request.operation];
-        self.error = ((response && response.statusCode != 200) ||
-                      self.category == PNUnexpectedDisconnectCategory);
-
-        self.data = (([self.data count] ? self.data : [self dataFromError:error])?: data);
-        
     }
-    
     
     return self;
 }
@@ -120,6 +136,17 @@
 
 
 #pragma mark - Interpretation
+
+- (PNStatusCategory)categoryTypeFromStatusCode:(NSInteger)statusCode {
+    
+    PNStatusCategory category = PNUnknownCategory;
+    if (statusCode == 403) {
+        
+        category = PNAccessDeniedCategory;
+    }
+    
+    return category;
+}
 
 - (PNStatusCategory)categoryTypeFromError:(NSError *)error {
 
@@ -154,7 +181,11 @@
                 break;
             case NSURLErrorSecureConnectionFailed:
 
-                category = PNCancelledCategory;
+                category = PNSSLConnectionFailedCategory;
+                break;
+            case NSURLErrorServerCertificateUntrusted:
+                
+                category = PNSSLUntrustedCertificateCategory;
                 break;
             default:
                 break;
@@ -175,9 +206,9 @@
     else if ([error.domain isEqualToString:AFURLResponseSerializationErrorDomain]) {
         
         switch (error.code) {
-            case 403:
+            case NSURLErrorBadServerResponse:
                 
-                category = PNAccessDeniedCategory;
+                category = PNMalformedResponseCategory;
                 break;
                 
             default:
@@ -186,39 +217,6 @@
     }
     
     return category;
-}
-
-- (PNStatusCategory)categoryTypeFromStatusCode:(NSInteger)statusCode {
-    
-    PNStatusCategory category = PNUnknownCategory;
-    if (statusCode == 403) {
-        
-        category = PNAccessDeniedCategory;
-    }
-    
-    return category;
-}
-
-- (PNStatusCategory)correlateCategoryToOperationType:(PNOperationType)type {
-
-    PNStatusCategory category = PNUnknownCategory;
-    if ((type == PNSubscribeOperation || type == PNUnsubscribeOperation)) {
-
-        if (self.category == PNUnknownCategory) {
-
-            category = (type == PNSubscribeOperation ? PNConnectedCategory:PNDisconnectedCategory);
-        }
-        else if (type != PNUnsubscribeOperation){
-
-            if (self.category != PNCancelledCategory && self.category != PNConnectedCategory &&
-                self.category != PNDisconnectedCategory && self.category != PNUnexpectedDisconnectCategory) {
-
-                category = PNUnexpectedDisconnectCategory;
-            }
-        }
-    }
-
-    return (category == PNUnknownCategory ? self.category : category);
 }
 
 - (NSDictionary *)dataFromError:(NSError *)error {
@@ -244,14 +242,16 @@
 - (NSDictionary *)dictionaryRepresentation {
     
     NSMutableDictionary *status = [[super dictionaryRepresentation] mutableCopy];
-    [status addEntriesFromDictionary:@{@"Category": PNStatusCategoryStrings[self.category],
+    [status addEntriesFromDictionary:@{@"Category": @{
+                                               @"Main": PNStatusCategoryStrings[self.category],
+                                               @"Additional": PNStatusCategoryStrings[self.subCategory]},
                                        @"Secure": (self.isSSLEnabled ? @"YES" : @"NO"),
                                        @"Objects": @{@"Channels": (self.channels?: @"no channels"),
                                                      @"Channel groups": (self.groups?: @"no groups")},
                                        @"UUID": (self.uuid?: @"uknonwn"),
                                        @"Authorization": (self.authorizationKey?: @"not set"),
-                                       @"Time": @{@"Current": self.currentTimetoken,
-                                                  @"Previous": self.previousTimetoken}}];
+                                       @"Time": @{@"Current": (self.currentTimetoken?: @(0)),
+                                                  @"Previous": (self.previousTimetoken?: @(0))}}];
     
     return [status copy];
 }
