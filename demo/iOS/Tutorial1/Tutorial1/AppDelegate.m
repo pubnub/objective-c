@@ -28,7 +28,7 @@
     // Time (Ping) to PubNub Servers
     [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
         if (result.data) {
-            NSLog(@"Result from Time: %@", result.data[@"tt"]);
+            NSLog(@"Result from Time: %@", result.data);
         }
 
         if (status.debugDescription)  {
