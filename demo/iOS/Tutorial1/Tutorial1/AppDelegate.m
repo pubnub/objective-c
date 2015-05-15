@@ -9,33 +9,26 @@
 #import "AppDelegate.h"
 #import "PubNub.h"
 
-
 #pragma mark Private interface declaration
 
 @interface AppDelegate () <PNObjectEventListener>
 
-#pragma mark - Properteis
+#pragma mark - Properties
 
 @property (nonatomic, strong) PubNub *client;
 @property (nonatomic, strong) NSString *channel;
-
 
 #pragma mark - Configuration
 
 - (void)updateClientConfiguration;
 - (void)printClientConfiguration;
 
-
 #pragma mark -
-
-
 @end
-
 
 #pragma mark - Interface implementation
 
 @implementation AppDelegate
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
@@ -88,6 +81,8 @@
     return YES;
 }
 
+/********************************** Subscribe Loop Listeners  Start ********************************/
+
 - (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message {
     
     NSLog(@"Did receive message: %@", message.data);
@@ -139,6 +134,9 @@
         // Retry attempts can be canceled with this code: [status cancelAutomaticRetry];
     }
 }
+
+
+/********************************** Subscribe Loop Listeners End ********************************/
 
 
 #pragma mark - Configuration
