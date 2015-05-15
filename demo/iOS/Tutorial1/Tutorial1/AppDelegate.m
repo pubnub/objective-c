@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "PubNub.h"
-#import "PNResult+Private.h"
 
 @interface AppDelegate () <PNObjectEventListener>
     @property (nonatomic, strong) PubNub *client;
