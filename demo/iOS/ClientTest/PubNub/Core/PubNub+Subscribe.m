@@ -11,6 +11,7 @@
 #import "PNRequest+Private.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
+#import <libkern/OSAtomic.h>
 #import <objc/runtime.h>
 #import "PNErrorCodes.h"
 #import "PNResponse.h"
@@ -589,16 +590,23 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (dispatch_queue_t)subscriberAccessQueue {
     
+    static OSSpinLock _subscriberAccessQueueSpinLock;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        dispatch_queue_t queue = dispatch_queue_create("com.pubnub.subscription.channels",
-                                                       DISPATCH_QUEUE_CONCURRENT);
+        _subscriberAccessQueueSpinLock = OS_SPINLOCK_INIT;
+    });
+    OSSpinLockLock(&_subscriberAccessQueueSpinLock);
+    dispatch_queue_t queue = objc_getAssociatedObject(self, kPubNubSubscriberSynchronizationQueue);
+    if (!queue) {
+        
+        queue = dispatch_queue_create("com.pubnub.subscription.channels", DISPATCH_QUEUE_CONCURRENT);
         objc_setAssociatedObject(self, kPubNubSubscriberSynchronizationQueue, queue,
                                  OBJC_ASSOCIATION_RETAIN);
-    });
+    }
+    OSSpinLockUnlock(&_subscriberAccessQueueSpinLock);
     
-    return objc_getAssociatedObject(self, kPubNubSubscriberSynchronizationQueue);
+    return queue;
 }
 
 
