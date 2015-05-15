@@ -122,7 +122,7 @@
         }
         if (endDate) {
             
-            parameters[@"end"] = startDate;
+            parameters[@"end"] = endDate;
         }
         NSMutableString *path = [NSMutableString stringWithFormat:@"/v2/history/sub-key/%@/channel/%@",
                                  subscribeKey, [PNString percentEscapedString:channel]];

@@ -6,6 +6,7 @@
 #import "PubNub+StatePrivate.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import <libkern/OSAtomic.h>
 #import "PNStatus+Private.h"
 #import <objc/runtime.h>
 #import "PNErrorCodes.h"
@@ -157,16 +158,23 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
 
 - (dispatch_queue_t)stateAccessQueue {
     
+    static OSSpinLock _stateAccessQueueSpinLock;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        dispatch_queue_t queue = dispatch_queue_create("com.pubnub.state.cache",
-                                                       DISPATCH_QUEUE_CONCURRENT);
+        _stateAccessQueueSpinLock = OS_SPINLOCK_INIT;
+    });
+    OSSpinLockLock(&_stateAccessQueueSpinLock);
+    dispatch_queue_t queue = objc_getAssociatedObject(self, kPubNubStateCacheSynchronizationQueue);
+    if (!queue) {
+        
+        queue = dispatch_queue_create("com.pubnub.state.cache", DISPATCH_QUEUE_CONCURRENT);
         objc_setAssociatedObject(self, kPubNubStateCacheSynchronizationQueue, queue,
                                  OBJC_ASSOCIATION_RETAIN);
-    });
+    }
+    OSSpinLockUnlock(&_stateAccessQueueSpinLock);
     
-    return objc_getAssociatedObject(self, kPubNubStateCacheSynchronizationQueue);
+    return queue;
 }
 
 - (NSMutableDictionary *)mutableState {
