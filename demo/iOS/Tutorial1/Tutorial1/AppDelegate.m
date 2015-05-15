@@ -63,7 +63,7 @@
     [self.client subscribeToChannels:@[_channel] withPresence:YES andCompletion:^(PNStatus *status) {
         
         // On initial subscribe connect event
-        if (status.category == PNConnectedCategory) {
+        if (!status.isError) {
             
             NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
             

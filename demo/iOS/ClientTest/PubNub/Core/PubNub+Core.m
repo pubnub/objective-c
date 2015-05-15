@@ -819,6 +819,10 @@
         [query addEntriesFromDictionary:@{@"uuid":self.uuid,@"deviceid":self.deviceID,
                                           @"pnsdk":[NSString stringWithFormat:@"PubNub-%@/%@",
                                                     kPNClientName, kPNLibraryVersion]}];
+        if ([self.authKey length]) {
+            
+            query[@"auth"] = self.authKey;
+        }
         void(^success)(id,id) = ^(NSURLSessionDataTask *task, id responseObject) {
             
             __strong __typeof(self) strongSelf = weakSelf;
@@ -881,10 +885,10 @@
             
             // Create request data task which will send our request with specified body to PubNub
             // service.
-            NSURLSessionDataTask *task = [session dataTaskWithRequest:httpRequest
-                                                    completionHandler:^(NSURLResponse *response,
-                                                                        id responseObject,
-                                                                        NSError *error) {
+            __block __weak NSURLSessionDataTask *task = [session dataTaskWithRequest:httpRequest
+                                                                   completionHandler:^(NSURLResponse *response,
+                                                                                       id responseObject,
+                                                                                       NSError *error) {
                                                         
                 (!error ? success : failure)(task, (error?: responseObject));
             }];
