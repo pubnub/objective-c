@@ -9,10 +9,30 @@
 #import "AppDelegate.h"
 #import "PubNub.h"
 
+
+#pragma mark Private interface declaration
+
 @interface AppDelegate () <PNObjectEventListener>
-    @property (nonatomic, strong) PubNub *client;
-    @property (nonatomic, strong) NSString *channel;
+
+#pragma mark - Properteis
+
+@property (nonatomic, strong) PubNub *client;
+@property (nonatomic, strong) NSString *channel;
+
+
+#pragma mark - Configuration
+
+- (void)updateClientConfiguration;
+- (void)printClientConfiguration;
+
+
+#pragma mark -
+
+
 @end
+
+
+#pragma mark - Interface implementation
 
 @implementation AppDelegate
 
@@ -20,9 +40,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     // Initialize PubNub client.
-    self.channel = @"HelloiOS4.0";
-    self.client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    self.channel = @"myCh";
+    self.client = [PubNub clientWithPublishKey:@"demo-36" andSubscribeKey:@"demo-36"];
     [self.client addListeners:@[self]];
+    [PNLog enableLogLevel:PNRequestLogLevel];
+    
+    [self updateClientConfiguration];
+    [self printClientConfiguration];
 
     // Time (Ping) to PubNub Servers
     [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
@@ -76,6 +100,8 @@
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
     
+    NSLog(@"Did status: %@", status.data);
+    
     // On expected disconnect. For example, channel changing
     if (status.category == PNDisconnectedCategory) {
         
@@ -114,26 +140,57 @@
     }
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+
+#pragma mark - Configuration
+
+- (void)updateClientConfiguration {
+    
+    [self.client commitConfiguration:^{
+        
+        // Set PubNub Configuration
+        self.client.SSLEnabled = YES;
+        self.client.origin = @"ios4.pubnub.com";
+        self.client.authKey = @"myAuthKey";
+        self.client.uuid = @"ios4.0Tutorial";
+        
+        // Presence Settings
+        self.client.presenceHeartbeatValue = 120;
+        self.client.presenceHeartbeatInterval = 3;
+        
+        // Cipher Key Settings
+        self.client.cipherKey = @"enigma";
+        
+        // Time Token Handling Settings
+        self.client.keepTimeTokenOnListChange = YES;
+        self.client.restoreSubscription = YES;
+        self.client.catchUpOnSubscriptionRestore = YES;
+    }];
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+- (void)printClientConfiguration {
+    
+    // Get PubNub Options
+    NSLog(@"SSELEnabled: %@", (self.client.isSSLEnabled ? @"YES" : @"NO"));
+    NSLog(@"Origin: %@", self.client.origin);
+    NSLog(@"authKey: %@", self.client.authKey);
+    NSLog(@"UUID: %@", self.client.uuid);
+    
+    // Time Token Handling Settings
+    NSLog(@"keepTimeTokenOnChannelChange: %@",
+          (self.client.shouldKeepTimeTokenOnListChange ? @"YES" : @"NO"));
+    NSLog(@"resubscribeOnConnectionRestore: %@",
+          (self.client.shouldRestoreSubscription ? @"YES" : @"NO"));
+    NSLog(@"catchUpOnSubscriptionRestore: %@",
+          (self.client.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO"));
+    
+    // Get Presence Options
+    NSLog(@"Heartbeat value: %@", @(self.client.presenceHeartbeatValue));
+    NSLog(@"Heartbeat interval: %@", @(self.client.presenceHeartbeatInterval));
+    
+    // Get CipherKey
+    NSLog(@"Cipher key: %@", self.client.cipherKey);
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-}
+#pragma mark -
 
 @end

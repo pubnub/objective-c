@@ -639,8 +639,8 @@
 
 - (void)setPresenceHeartbeatInterval:(NSInteger)presenceHeartbeatInterval {
     
-    _presenceHeartbeatValue = (presenceHeartbeatInterval > _presenceHeartbeatValue ?
-                               _presenceHeartbeatValue - 3: presenceHeartbeatInterval);
+    _presenceHeartbeatInterval = (presenceHeartbeatInterval > _presenceHeartbeatValue ?
+                                  _presenceHeartbeatValue - 3: presenceHeartbeatInterval);
 }
 
 

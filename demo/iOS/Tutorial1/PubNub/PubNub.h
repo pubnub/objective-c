@@ -15,5 +15,6 @@
 #import "PNResult.h"
 #import "PNStatus.h"
 #import "PNAES.h"
+#import "PNLog.h"
 
 #endif

@@ -97,8 +97,7 @@
 
 #pragma mark - Plain message publish
 
-- (void)publish:(id)message toChannel:(NSString *)channel
- withCompletion:(PNStatusBlock)block {
+- (void)publish:(id)message toChannel:(NSString *)channel withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel compressed:NO withCompletion:block];
 }
