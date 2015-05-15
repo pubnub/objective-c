@@ -255,7 +255,7 @@
     
     // Construct corresponding data objects which should be delivered through completion block.
     PNStatus *status = [PNStatus statusForRequest:request withError:request.response.error];
-    [self callBlock:block status:NO withResult:nil andStatus:status];
+    [self callBlock:block status:YES withResult:nil andStatus:status];
 }
 
 
