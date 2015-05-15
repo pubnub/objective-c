@@ -1727,11 +1727,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         category = (updatedState == PNDisconnectedSubscriberState ?
                     PNDisconnectedCategory : PNUnexpectedDisconnectCategory);
     }
-    PNStatus *subscriberStatus = [status copy];
     if (state == PNAccessRightsErrorSubscriberState) {
         
         status.category = PNAccessDeniedCategory;
     }
+    else {
+        
+        status.category = category;
+    }
+    PNStatus *subscriberStatus = [status copy];
     [self completeStatusObject:subscriberStatus];
     
     dispatch_async(self.callbackQueue, ^{
@@ -1815,7 +1819,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             for (NSUInteger eventIdx = 0; eventIdx < [feedEvents count]; eventIdx++) {
                 
                 // Fetching remote data object name on which event fired.
-                NSString *objectName = channels[eventIdx];
+                NSString *objectName = (eventIdx < [channels count] ?
+                                        channels[eventIdx] : (channels[0]?: @"empty"));
                 id eventBody = feedEvents[eventIdx];
                 NSMutableDictionary *event = [@{@"channel": objectName,
                                                 @"tt":timeToken} mutableCopy];

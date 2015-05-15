@@ -8,6 +8,7 @@
 #import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import <libkern/OSAtomic.h>
 #import "PubNub+Subscribe.h"
 #import <objc/runtime.h>
 #import "PNErrorCodes.h"
@@ -119,17 +120,24 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
 
 - (dispatch_queue_t)heartbeatTimerAccessQueue {
     
+    static OSSpinLock _heartbeatTimerAccessQueueSpinLock;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        dispatch_queue_t queue = dispatch_queue_create("com.pubnub.presence.heartbeat",
-                                                       DISPATCH_QUEUE_CONCURRENT);
+        _heartbeatTimerAccessQueueSpinLock = OS_SPINLOCK_INIT;
+    });
+    OSSpinLockLock(&_heartbeatTimerAccessQueueSpinLock);
+    dispatch_queue_t queue = objc_getAssociatedObject(self, kPubNubHeartbeatTimerQueue);
+    if (!queue) {
+        
+        queue = dispatch_queue_create("com.pubnub.presence.heartbeat", DISPATCH_QUEUE_CONCURRENT);
         dispatch_set_target_queue(queue, self.serviceQueue);
         objc_setAssociatedObject(self, kPubNubHeartbeatTimerQueue, queue,
                                  OBJC_ASSOCIATION_RETAIN);
-    });
+    }
+    OSSpinLockUnlock(&_heartbeatTimerAccessQueueSpinLock);
     
-    return objc_getAssociatedObject(self, kPubNubHeartbeatTimerQueue);
+    return queue;
 }
 
 
