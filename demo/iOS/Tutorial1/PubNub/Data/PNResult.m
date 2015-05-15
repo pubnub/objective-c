@@ -45,24 +45,25 @@
 
         self.requestObject = request;
 
-        _request = [request.response.request copy];
-        _headers = [[request.response.response allHeaderFields] copy];
-        _response = [request.response.data copy];
-        _statusCode = (request.response.response ? request.response.response.statusCode : 200);
-        _operation = request.operation;
-        _origin = [[_request URL] host];
+        self.request = request.response.request;
+        self.headers = [request.response.response allHeaderFields];
+        self.response = request.response.data;
+        self.statusCode = (request.response.response ? request.response.response.statusCode : 200);
+        self.operation = request.operation;
+        self.origin = [[_request URL] host];
 
         // Call parse block which has been passed by calling API to pre-process
         // received data before returning it to te user.
-        if (_response) {
+        if (self.response) {
             
             if (self.requestObject.parseBlock) {
                 
-                _data = [(self.requestObject.parseBlock(_response)?:[self dataParsedAsError:_response]) copy];
+                self.data = (self.requestObject.parseBlock(self.response)?:
+                             [self dataParsedAsError:_response]);
             }
             else {
                 
-                _data = [[self dataParsedAsError:_response] copy];
+                self.data = [self dataParsedAsError:self.response];
             }
         }
     }

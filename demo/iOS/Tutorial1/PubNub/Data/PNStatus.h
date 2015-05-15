@@ -12,7 +12,7 @@
  @since 4.0
  @copyright © 2009-2015 PubNub, Inc.
  */
-@interface PNStatus : PNResult
+@interface PNStatus : PNResult <NSCopying>
 
 
 ///------------------------------------------------
@@ -69,7 +69,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSString *authorizationKey;
+@property (nonatomic, readonly, copy) NSString *authKey;
 
 /**
  @brief      Reference on cached client state which is used for subscribe and heartbeat requests.

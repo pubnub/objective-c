@@ -61,6 +61,18 @@
     PNStatus *status = [PNStatus new];
     status.operation = operation;
     status.category = category;
+    status->_subCategory = category;
+    if (status.category == PNConnectedCategory || status.category == PNDisconnectedCategory ||
+        status.category == PNUnexpectedDisconnectCategory || status.category == PNCancelledCategory ||
+        status.category == PNAcknowledgmentCategory) {
+        
+        status.error = NO;
+        status.statusCode = 200;
+    }
+    else {
+        
+        status.statusCode = (status.category == PNAccessDeniedCategory ? 403 : 400);
+    }
     
     return status;
 }
@@ -113,6 +125,34 @@
     }
     
     return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    
+    PNStatus *status = [[[self class] allocWithZone:zone] init];
+    status.request = self.request;
+    status.headers = self.headers;
+    status.response = self.response;
+    status.statusCode = self.statusCode;
+    status.operation = self.operation;
+    status.origin = self.origin;
+    status.data = self.data;
+    status.category = self.category;
+    status->_subCategory = self.subCategory;
+    status.SSLEnabled = self.isSSLEnabled;
+    status.channels = self.channels;
+    status.groups = self.groups;
+    status.uuid = self.uuid;
+    status.authKey = self.authKey;
+    status.state = self.state;
+    status.error = self.isError;
+    status.currentTimetoken = self.currentTimetoken;
+    status.previousTimetoken = self.previousTimetoken;
+    status.automaticallyRetry = self.willAutomaticallyRetry;
+    status.retryBlock = self.retryBlock;
+    status.retryCancelBlock = self.retryCancelBlock;
+    
+    return status;
 }
 
 
@@ -249,7 +289,7 @@
                                        @"Objects": @{@"Channels": (self.channels?: @"no channels"),
                                                      @"Channel groups": (self.groups?: @"no groups")},
                                        @"UUID": (self.uuid?: @"uknonwn"),
-                                       @"Authorization": (self.authorizationKey?: @"not set"),
+                                       @"Authorization": (self.authKey?: @"not set"),
                                        @"Time": @{@"Current": (self.currentTimetoken?: @(0)),
                                                   @"Previous": (self.previousTimetoken?: @(0))}}];
     

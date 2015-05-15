@@ -64,12 +64,12 @@
  
  @since 4.0
  */
-@property (nonatomic, copy) NSString *authorizationKey;
+@property (nonatomic, copy) NSString *authKey;
 
 /**
  @brief      Reference on unique client identifier used to identify concrete client user from
              another which currently use \b PubNub services.
- @discussion This value is different from \c authorizationKey (which is used only by \b PAM) and
+ @discussion This value is different from \c authKey (which is used only by \b PAM) and
              represent concrete client across server. This identifier is used for presence events
              to tell what some client joined or leaved live feed.
  @warning    There can't be two same client identifiers online at the same time.

@@ -181,6 +181,15 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNVerboseLogLevel;
  */
 - (void)getResult:(PNResult **)result andStatus:(PNStatus **)status forRequest:(PNRequest *)request;
 
+/**
+ @brief  Compile status object with all client state information which is available at this moment.
+ 
+ @param status Reference on object which should be completed with client state.
+ 
+ @since 4.0
+ */
+- (void)completeStatusObject:(PNStatus *)status;
+
 #pragma mark -
 
 

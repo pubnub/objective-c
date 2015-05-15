@@ -63,7 +63,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly) NSInteger statusCode;
+@property (nonatomic, readonly, assign) NSInteger statusCode;
 
 /**
  @brief      Stores reference on processed \c response which is ready to use by user.

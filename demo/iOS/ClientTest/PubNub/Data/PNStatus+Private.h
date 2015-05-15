@@ -18,7 +18,7 @@
 @property (nonatomic, copy) NSArray *channels;
 @property (nonatomic, copy) NSArray *groups;
 @property (nonatomic, copy) NSString *uuid;
-@property (nonatomic, copy) NSString *authorizationKey;
+@property (nonatomic, copy) NSString *authKey;
 @property (nonatomic, copy) NSDictionary *state;
 @property (nonatomic, assign, getter = isError) BOOL error;
 @property (nonatomic, strong) NSNumber *currentTimetoken;

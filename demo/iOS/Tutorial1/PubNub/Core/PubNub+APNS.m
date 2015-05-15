@@ -205,9 +205,9 @@
         NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
         NSString *path = [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@", subscribeKey,
                           [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]];
-        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:nil
-                                                          forOperation:PNPushNotificationEnabledChannelsOperation
-                                                        withCompletion:nil];
+        PNRequest *request = [PNRequest requestWithPath:path parameters:nil
+                                           forOperation:PNPushNotificationEnabledChannelsOperation
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;

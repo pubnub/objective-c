@@ -85,8 +85,16 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     /**
+     @brief  State set at the moment when client received response with 403 status code for subcribe
+             request.
+     
+     @since 4.0
+     */
+    PNAccessRightsErrorSubscriberState,
+    
+    /**
      @brief  State set at the moment when client received response with 200 status code for subcribe
-             request with TT 0
+             request with TT 0.
      
      @since 4.0
      */
@@ -525,11 +533,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 /**
  @brief  Notify client state change listeners about new client subscriber state.
  
- @param state One of \b PNSubscriberState enum fields which should be delivered to listeners.
+ @param status Reference on original status object which describe request processing state.
+ @param state  One of \b PNSubscriberState enum fields which should be delivered to listeners.
  
  @since 4.0
  */
-- (void)handleSubscriberStateChange:(PNSubscriberState)state;
+- (void)handleSubscriberStatus:(PNStatus *)status change:(PNSubscriberState)state;
 
 /**
  @brief  Unsubscription results handling and pre-processing before notify to completion blocks (if
@@ -1204,9 +1213,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         // Ensure what all required fields passed before starting processing.
         if ([fullObjectsList count] && isValidClientState) {
             
-            if ([[strongSelf allObjects] count]) {
+            if (isInitialSubscription && [[strongSelf allObjects] count]) {
                 
-                [strongSelf handleSubscriberStateChange:PNDisconnectedSubscriberState];
+                [strongSelf handleSubscriberStatus:nil change:PNDisconnectedSubscriberState];
             }
             [strongSelf processRequest:request];
         }
@@ -1504,7 +1513,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             [self setCurrentTimeToken:status.data[@"tt"]];
         }
         
-        [self handleSubscriberStateChange:PNConnectedSubscriberState];
+        if (isInitialSubscription) {
+            
+            status.category = PNConnectedCategory;
+            [self handleSubscriberStatus:status change:PNConnectedSubscriberState];
+        }
     }
     // Looks like some troubles happened while subscription request has been processed.
     else {
@@ -1527,13 +1540,23 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             if (status.category == PNAccessDeniedCategory || status.category == PNTimeoutCategory ||
                 status.category == PNMalformedResponseCategory) {
 
+                __weak __typeof(self) weakSelf = self;
                 shouldContinueSubscriptionCycle = NO;
                 status.automaticallyRetry = YES;
                 status.retryCancelBlock = ^{
 
-                    [self stopRetryTimer];
+                    DDLogAPICall(@"<PubNub> Cancel retry");
+                    __strong __typeof(self) strongSelf = weakSelf;
+                    [strongSelf stopRetryTimer];
                 };
                 [self startRetryTimer];
+                PNSubscriberState subscriberState = PNAccessRightsErrorSubscriberState;
+                if (status.category != PNAccessDeniedCategory) {
+                    
+                    subscriberState = PNDisconnectedUnexpectedlySubscriberState;
+                    status.category = PNUnexpectedDisconnectCategory;
+                }
+                [self handleSubscriberStatus:status change:subscriberState];
             }
             // Looks like client lost connection with internet or has any other connection
             // related issues.
@@ -1561,7 +1584,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 NSLog(@"Disconnected from: %@", [self allObjects]);
                 
                 [self stopHeartbeatIfPossible];
-                [self handleSubscriberStateChange:PNDisconnectedUnexpectedlySubscriberState];
+                [self handleSubscriberStatus:status
+                                      change:PNDisconnectedUnexpectedlySubscriberState];
             }
         }
     }
@@ -1677,30 +1701,37 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
 }
 
-- (void)handleSubscriberStateChange:(PNSubscriberState)state {
+- (void)handleSubscriberStatus:(PNStatus *)status change:(PNSubscriberState)state {
     
     // Check whether subscriber reconnected after unexpected connection termination or not.
     BOOL reconnected = ([self subscriberState] == PNDisconnectedUnexpectedlySubscriberState &&
                         state == PNConnectedSubscriberState);
-    
+        
     // Store actual client subscriber state.
-    [self setSubscriberState:state];
+    PNSubscriberState updatedState = (state == PNAccessRightsErrorSubscriberState ?
+                                      PNDisconnectedSubscriberState : state);
+    [self setSubscriberState:updatedState];
     
     // Compose status object to report state change to listeners.
     PNStatusCategory category = (!reconnected ? PNConnectedCategory : PNReconnectedCategory);
-    if (state != PNConnectedSubscriberState) {
+    if (updatedState != PNConnectedSubscriberState) {
         
-        category = (state == PNDisconnectedSubscriberState ?
+        category = (updatedState == PNDisconnectedSubscriberState ?
                     PNDisconnectedCategory : PNUnexpectedDisconnectCategory);
     }
-    PNStatus *status = [PNStatus statusForOperation:PNSubscribeOperation category:category];
+    PNStatus *subscriberStatus = [status copy];
+    if (state == PNAccessRightsErrorSubscriberState) {
+        
+        status.category = PNAccessDeniedCategory;
+    }
+    [self completeStatusObject:subscriberStatus];
     
     dispatch_async(self.callbackQueue, ^{
         
         // Iterate over list of listeners and notify about new presence event.
         for (id <PNObjectEventListener> listener in [[[self stateListeners] allObjects] copy]) {
             
-            [listener client:self didReceiveStatus:status];
+            [listener client:self didReceiveStatus:subscriberStatus];
         }
     });
 }
@@ -1724,7 +1755,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     if (![[self allObjects] count]) {
         
-        [self handleSubscriberStateChange:PNDisconnectedSubscriberState];
+        [self handleSubscriberStatus:status change:PNDisconnectedSubscriberState];
     }
     
     [self callBlock:block status:YES withResult:nil andStatus:status];

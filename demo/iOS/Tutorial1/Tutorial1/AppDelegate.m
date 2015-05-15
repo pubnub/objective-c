@@ -40,8 +40,7 @@
     [self.client subscribeToChannels:@[_channel] withPresence:YES andCompletion:^(PNStatus *status) {
         
         // On initial subscribe connect event
-//        if (status.category == PNConnectedCategory) { <- Connection state not tuned yet.
-        if (status.category == PNAcknowledgmentCategory) {
+        if (status.category == PNConnectedCategory) {
             
             NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
             
@@ -78,9 +77,6 @@
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
     
-    // !!!: This doesn't work properly yet.
-    
-   /*
     // On expected disconnect. For example, channel changing
     if (status.category == PNDisconnectedCategory) {
         
@@ -96,12 +92,17 @@
         
         NSLog(@"Subscribe reconnected to %@", status.data[@"channels"]);
     }
+    // !!!: This case almost impossible for subscrib/unsubscribe events.
     // When receiving malformed / Non-JSON
     else if (status.category == PNMalformedResponseCategory) {
         
         NSLog(@"Bad JSON. Is error? %@, It will autoretry (%@)",
               (status.isError ? @"YES" : @"NO"),
               (status.willAutomaticallyRetry ? @"YES" : @"NO"));
+        
+        // If willAutomaticallyRetry is 'NO' then it is possible manually relaunch request
+        // using: [status retry];
+
     }
     // When receiving a 403
     else if (status.category == PNAccessDeniedCategory) {
@@ -109,9 +110,9 @@
         NSLog(@"PAM Access Denied against channel %@ -- it will autoretry: %@",
               status.data[@"channels"], (status.willAutomaticallyRetry ? @"YES" : @"NO"));
         NSLog(@"In the meantime, you may wish to change the autotoken or unsubscribe from the channel in question.");
+        
+        // Retry attempts can be canceled with this code: [status cancelAutomaticRetry];
     }
-    */
-
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

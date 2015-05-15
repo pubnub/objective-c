@@ -27,8 +27,13 @@
  @since 4.0
 */
 @property (nonatomic, strong) PNRequest *requestObject;
-
+\
+@property (nonatomic, copy) NSURLRequest *request;
+@property (nonatomic, copy) NSDictionary *headers;
+@property (nonatomic, copy) id response;
+@property (nonatomic, copy) NSString *origin;
 @property (nonatomic, assign) PNOperationType operation;
+@property (nonatomic, assign) NSInteger statusCode;
 @property (nonatomic, copy) id data;
 
 

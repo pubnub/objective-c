@@ -246,7 +246,7 @@
         NSString *origin = [strongSelf.origin copy];
         NSString *publishKey = [strongSelf.publishKey copy];
         NSString *subscribeKey = [strongSelf.subscribeKey copy];
-        NSString *authorizationKey = [strongSelf.authorizationKey copy];
+        NSString *authKey = [strongSelf.authKey copy];
         NSString *uuid = [_uuid copy];
         NSString *cipherKey = [strongSelf.cipherKey copy];
         NSTimeInterval subscribeMaximumIdleTime = strongSelf.subscribeMaximumIdleTime;
@@ -267,7 +267,7 @@
         BOOL serviceOriginChanged = ![origin isEqualToString:strongSelf.origin];
         BOOL publishKeyChanged = ![publishKey isEqualToString:strongSelf.publishKey];
         BOOL subscribeKeyChanged = ![subscribeKey isEqualToString:strongSelf.subscribeKey];
-        BOOL authorizationKeyChanged = ![authorizationKey isEqualToString:strongSelf.authorizationKey];
+        BOOL authKeyChanged = ![authKey isEqualToString:strongSelf.authKey];
         BOOL uuidChanged = ![uuid isEqualToString:_uuid];
         BOOL cipherKeyChanged = ![cipherKey isEqualToString:strongSelf.cipherKey];
         BOOL maximumSubscribeIdleChanged =  (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime);
@@ -279,7 +279,7 @@
         BOOL shouldRestoreSubscriptionChanged = (shouldRestoreSubscription != strongSelf.shouldRestoreSubscription);
         BOOL shouldCatchUpOnRestoreChanged = (shouldCatchUpOnRestore != strongSelf.shouldTryCatchUpOnSubscriptionRestore);
         if (!serviceOriginChanged && !publishKeyChanged && !subscribeKeyChanged &&
-            !authorizationKeyChanged && !uuidChanged && !cipherKeyChanged &&
+            !authKeyChanged && !uuidChanged && !cipherKeyChanged &&
             !maximumSubscribeIdleChanged && !nonSubscribeTimeoutChanged && !heartbeatValueChanged &&
             !heartbeatIntervalChanged && !SSLModeChanged && !keepTimeTokeOnListChanged &&
             !shouldRestoreSubscriptionChanged && !shouldCatchUpOnRestoreChanged) {
@@ -301,9 +301,9 @@
                 [configuration appendFormat:@"Subscribe key changed from '%@' to '%@'\n",
                  subscribeKey, strongSelf.subscribeKey];
             }
-            if (authorizationKeyChanged) {
+            if (authKeyChanged) {
                 [configuration appendFormat:@"Authorization key changed from '%@' to '%@'\n",
-                 authorizationKey, strongSelf.authorizationKey];
+                 authKey, strongSelf.authKey];
             }
             if (uuidChanged) {
                 [configuration appendFormat:@"UUID changed from '%@' to '%@'\n", uuid, _uuid];
@@ -359,7 +359,7 @@
         // Check whether base URL has been changed or not
         if (!serviceOriginChanged && !SSLModeChanged) {
 
-            if (subscribeKeyChanged || authorizationKeyChanged || uuidChanged ||
+            if (subscribeKeyChanged || authKeyChanged || uuidChanged ||
                 maximumSubscribeIdleChanged){
 
                 // Check whether request or session related information has been changed.
@@ -985,13 +985,7 @@
     // Check whether result information should be post-processed or not.
     if (status) {
 
-        status.uuid = self.uuid;
-        status.SSLEnabled = self.isSSLEnabled;
-        status.currentTimetoken = [self currentTimeToken];
-        status.previousTimetoken = [self previousTimeToken];
-        status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
-        status.groups = [self channelGroups];
-        status.authorizationKey = self.authorizationKey;
+        [self completeStatusObject:status];
     }
     
     if (result) {
@@ -1030,7 +1024,11 @@
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
     
-    self.recentClientStatus = status.category;
+    if (status.category == PNConnectedCategory || status.category == PNDisconnectedCategory ||
+        status.category == PNUnexpectedDisconnectCategory) {
+        
+        self.recentClientStatus = status.category;
+    }
 }
 
 
@@ -1049,6 +1047,17 @@
         
         *result = [PNResult resultForRequest:request];
     }
+}
+
+- (void)completeStatusObject:(in PNStatus *)status {
+    
+    status.uuid = self.uuid;
+    status.SSLEnabled = self.isSSLEnabled;
+    status.currentTimetoken = [self currentTimeToken];
+    status.previousTimetoken = [self previousTimeToken];
+    status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
+    status.groups = [self channelGroups];
+    status.authKey = self.authKey;
 }
 
 #pragma mark -
