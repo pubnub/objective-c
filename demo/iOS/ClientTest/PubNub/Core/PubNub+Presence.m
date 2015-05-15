@@ -102,7 +102,7 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
  
  @since 4.0
  */
-- (NSArray *)processedPresenceWhereNowResponse:(id)response;
+- (NSDictionary *)processedPresenceWhereNowResponse:(id)response;
 
 #pragma mark -
 
@@ -397,8 +397,8 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
             
             // Composing initial response content.
             NSMutableDictionary *data = [@{@"total_channels":response[@"payload"][@"total_channels"],
-                                           @"total_occupancy":response[@"payload"][@"total_occupancy"]
-                                           } mutableCopy];
+                                           @"total_occupancy":response[@"payload"][@"total_occupancy"],
+                                           @"channels": [NSMutableDictionary new]} mutableCopy];
             for (NSDictionary *channelName in response[@"payload"][@"channels"]) {
                 
                 NSDictionary *channelData = response[@"payload"][@"channels"][channelName];
@@ -409,7 +409,7 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
                     parsedChannelData[@"uuids"] = uuidParseBlock(channelData[@"uuids"]);
                 }
                 
-                data[channelName] = parsedChannelData;
+                data[@"channels"][channelName] = parsedChannelData;
             }
             processedResponse = data;
         }
@@ -427,16 +427,16 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
     return [processedResponse copy];
 }
 
-- (NSArray *)processedPresenceWhereNowResponse:(id)response {
+- (NSDictionary *)processedPresenceWhereNowResponse:(id)response {
     
     // To handle case when response is unexpected for this type of operation processed value sent
     // through 'nil' initialized local variable.
-    NSArray *processedResponse = nil;
+    NSDictionary *processedResponse = nil;
     
     // Dictionary is valid response type for where now response.
     if ([response isKindOfClass:[NSDictionary class]] && response[@"payload"][@"channels"]) {
         
-        processedResponse = response[@"payload"][@"channels"];
+        processedResponse = @{@"channels": response[@"payload"][@"channels"]};
     }
     
     return [processedResponse copy];

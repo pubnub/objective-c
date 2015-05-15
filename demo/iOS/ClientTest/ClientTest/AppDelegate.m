@@ -83,9 +83,9 @@
     
     // Channel group
     [self.client addChannels:@[@"PubNub-fcg",@"PubNub-fcg"] toGroup:@"PubNub-cg"
-              withCompletion:^(PNResult *result, PNStatus *status) {
+              withCompletion:^(PNStatus *status) {
                   
-                  NSLog(@"Channel group channels list change: %@ (status: %@)", [result data], status);
+                  NSLog(@"Channel group channels list change status: %@", status);
               }];
     [self.client channelsForGroup:@"PubNub-cg" withCompletion:^(PNResult *result, PNStatus *status) {
         

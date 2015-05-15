@@ -94,7 +94,7 @@
         }
         else if (data[@"error"]) {
             
-            errorData[@"message"] = data[@"error"];
+            errorData[@"information"] = data[@"error"];
         }
         if (data[@"payload"]) {
             
