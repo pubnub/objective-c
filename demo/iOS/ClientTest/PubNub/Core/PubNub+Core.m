@@ -531,6 +531,8 @@
                 invalidateSessionCleanBlock(session);
             });
         }];
+        
+        [self addListeners:@[self]];
     }
     
     
