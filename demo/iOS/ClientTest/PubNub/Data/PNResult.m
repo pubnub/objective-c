@@ -27,7 +27,7 @@
     
     // Create result object based on status with new pre-processed data.
     PNResult *result = [self new];
-    result->_request = [status.request copy];
+    result->_clientRequest = [status.clientRequest copy];
     result->_headers = [status.headers copy];
     result->_response = [status.response copy];
     result->_origin = [status.origin copy];
@@ -45,12 +45,12 @@
 
         self.requestObject = request;
 
-        self.request = request.response.request;
+        self.clientRequest = request.response.clientRequest;
         self.headers = [request.response.response allHeaderFields];
         self.response = request.response.data;
         self.statusCode = (request.response.response ? request.response.response.statusCode : 200);
         self.operation = request.operation;
-        self.origin = [[_request URL] host];
+        self.origin = [[_clientRequest URL] host];
 
         // Call parse block which has been passed by calling API to pre-process
         // received data before returning it to te user.
@@ -122,9 +122,9 @@
 - (NSDictionary *)dictionaryRepresentation {
     
     return @{@"Operation": PNOperationTypeStrings[[self operation]],
-             @"Request": @{@"Method": (self.request.HTTPMethod?: @"GET"),
-                           @"URL": ([self.request.URL absoluteString]?: @"null"),
-                           @"POST Body size": @([self.request.HTTPBody length]),
+             @"Request": @{@"Method": (self.clientRequest.HTTPMethod?: @"GET"),
+                           @"URL": ([self.clientRequest.URL absoluteString]?: @"null"),
+                           @"POST Body size": @([self.clientRequest.HTTPBody length]),
                            @"Origin": (self.origin?: @"unknown")},
              @"Response": @{@"Status code": @(self.statusCode),
                             @"Headers": (self.headers?: @"no headers"),

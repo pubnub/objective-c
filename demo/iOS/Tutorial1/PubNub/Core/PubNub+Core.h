@@ -147,7 +147,7 @@
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = isSSLEnabled) BOOL SSLEnabled;
+@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 
 /**
  @brief  Stores whether client should keep previous time token when subscribe on new set of remote

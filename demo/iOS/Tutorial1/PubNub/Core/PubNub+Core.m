@@ -116,6 +116,15 @@
  */
 - (void)stopReachability;
 
+/**
+ @brief      Launch remote service pinging process till successful response will be received.
+ @discussion Ping is used as confirmation what network again become available and subscription 
+             process should be restored.
+ 
+ @since 4.0
+ */
+- (void)startRemoteServicePing;
+
 
 #pragma mark - Sessions
 
@@ -188,6 +197,18 @@
  */
 - (NSURL *)requestURLWithPath:(NSString *)resourcePath andParameters:(NSDictionary *)parameters;
 
+
+#pragma mark - Handlers
+
+/**
+ @brief  Handle application with active client transition between foreground and background 
+         execution contexts.
+ 
+ @param notification Reference on notification which will provide information about to which context
+                     application has been pushed.
+ */
+- (void)handleContextTransition:(NSNotification *)notification;
+
 #pragma mark -
 
 
@@ -227,8 +248,7 @@
  */
 + (void)ddSetLogLevel:(DDLogLevel)logLevel {
     
-    // Force add reachability flag to current logger level.
-    ddLogLevel = (logLevel & PNReachabilityLogLevel ? logLevel : (logLevel|PNReachabilityLogLevel));
+    ddLogLevel = logLevel;
 }
 
 
@@ -253,7 +273,7 @@
         NSTimeInterval nonSubscribeRequestTimeout = strongSelf.nonSubscribeRequestTimeout;
         NSInteger presenceHeartbeatValue = strongSelf.presenceHeartbeatValue;
         NSInteger presenceHeartbeatInterval = strongSelf.presenceHeartbeatInterval;
-        BOOL isSSLEnabled = strongSelf.isSSLEnabled;
+        BOOL isTLSEnabled = strongSelf.isTLSEnabled;
         BOOL keepTimeTokeOnListChange = strongSelf.shouldKeepTimeTokenOnListChange;
         BOOL shouldRestoreSubscription = strongSelf.shouldRestoreSubscription;
         BOOL shouldCatchUpOnRestore = strongSelf.shouldTryCatchUpOnSubscriptionRestore;
@@ -274,17 +294,17 @@
         BOOL nonSubscribeTimeoutChanged =  (nonSubscribeRequestTimeout != strongSelf.nonSubscribeRequestTimeout);
         BOOL heartbeatValueChanged =  (presenceHeartbeatValue != strongSelf.presenceHeartbeatValue);
         BOOL heartbeatIntervalChanged =  (presenceHeartbeatInterval != strongSelf.presenceHeartbeatInterval);
-        BOOL SSLModeChanged = (isSSLEnabled != strongSelf.isSSLEnabled);
+        BOOL TLSModeChanged = (isTLSEnabled != strongSelf.isTLSEnabled);
         BOOL keepTimeTokeOnListChanged = (keepTimeTokeOnListChange != strongSelf.shouldKeepTimeTokenOnListChange);
         BOOL shouldRestoreSubscriptionChanged = (shouldRestoreSubscription != strongSelf.shouldRestoreSubscription);
         BOOL shouldCatchUpOnRestoreChanged = (shouldCatchUpOnRestore != strongSelf.shouldTryCatchUpOnSubscriptionRestore);
         if (!serviceOriginChanged && !publishKeyChanged && !subscribeKeyChanged &&
             !authKeyChanged && !uuidChanged && !cipherKeyChanged &&
             !maximumSubscribeIdleChanged && !nonSubscribeTimeoutChanged && !heartbeatValueChanged &&
-            !heartbeatIntervalChanged && !SSLModeChanged && !keepTimeTokeOnListChanged &&
+            !heartbeatIntervalChanged && !TLSModeChanged && !keepTimeTokeOnListChanged &&
             !shouldRestoreSubscriptionChanged && !shouldCatchUpOnRestoreChanged) {
             
-            DDLogConfiguration(@"<PubNub> Configuration not changed.");
+            DDLogClientInfo(@"<PubNub> Configuration not changed.");
         }
         else {
             
@@ -332,9 +352,9 @@
                 [configuration appendFormat:@"Heartbeat interval changed from '%@' to '%@'\n",
                  @(presenceHeartbeatInterval), @(strongSelf.presenceHeartbeatInterval)];
             }
-            if (SSLModeChanged) {
-                [configuration appendFormat:@"SSL mode changed from '%@' to '%@'\n",
-                 (isSSLEnabled ? @"YES" : @"NO"), (strongSelf.isSSLEnabled ? @"YES" : @"NO")];
+            if (TLSModeChanged) {
+                [configuration appendFormat:@"TLS mode changed from '%@' to '%@'\n",
+                 (isTLSEnabled ? @"YES" : @"NO"), (strongSelf.isTLSEnabled ? @"YES" : @"NO")];
             }
             if (keepTimeTokeOnListChanged) {
                 [configuration appendFormat:@"Keep time token on channels list change changed from "
@@ -353,11 +373,11 @@
                  (shouldCatchUpOnRestore ? @"YES" : @"NO"),
                  (strongSelf.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO")];
             }
-            DDLogConfiguration(configuration);
+            DDLogClientInfo(configuration);
         }
 
         // Check whether base URL has been changed or not
-        if (!serviceOriginChanged && !SSLModeChanged) {
+        if (!serviceOriginChanged && !TLSModeChanged) {
 
             if (subscribeKeyChanged || authKeyChanged || uuidChanged ||
                 maximumSubscribeIdleChanged){
@@ -381,7 +401,7 @@
                 }
 
                 // Resume subscription cycle.
-                [self continueSubscriptionCycleIfRequired];
+                [self restoreSubscriptionCycleIfRequired];
             }
             if (nonSubscribeTimeoutChanged) {
 
@@ -403,7 +423,7 @@
                     }
 
                     // Resume subscription cycle.
-                    [strongSelf continueSubscriptionCycleIfRequired];
+                    [strongSelf restoreSubscriptionCycleIfRequired];
                 }
                 else {
 
@@ -419,7 +439,7 @@
             strongSelf.serviceSession = [strongSelf sessionForImmediateRequests];
 
             // Resume subscription cycle.
-            [strongSelf continueSubscriptionCycleIfRequired];
+            [strongSelf restoreSubscriptionCycleIfRequired];
         }
     });
 }
@@ -462,7 +482,7 @@
         self.uuid = [[NSUUID UUID] UUIDString];
         self.subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         self.nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
-        self.SSLEnabled = kPNDefaultIsSSLEnabled;
+        self.TLSEnabled = kPNDefaultIsTLSEnabled;
         self.keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         self.restoreSubscription = kPNDefaultShouldRestoreSubscription;
         self.catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
@@ -532,6 +552,14 @@
             });
         }];
         
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleContextTransition:)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleContextTransition:)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:nil];
         [self addListeners:@[self]];
     }
     
@@ -587,7 +615,6 @@
         // Check whether previous client state reported unexpected disconnection from remote data
         // objects live feed or not.
         __strong __typeof(self) strongSelf = weakSelf;
-        PNStatusCategory previousState = _recentClientStatus;
         PNStatusCategory currentState = recentClientStatus;
         
         // In case if client disconnected only from one of it's channels it should keep 'connected'
@@ -603,27 +630,25 @@
         // Check whether client currently connected or not.
         if (currentState == PNConnectedCategory) {
             
-            // In case if previous client state was unexpected disconnection (because of network
-            // issues for example) connection should be restored if possible.
-            if (previousState == PNUnexpectedDisconnectCategory) {
-                
-                // Try to recover subscription to old channels set.
-                [strongSelf continueSubscriptionCycleIfRequired];
-                [strongSelf startReachability];
-            }
-            // In case if client just connected (for first time) it need to launch reachability
-            // monitor.
-            else if (previousState == PNUnknownCategory ||
-                     previousState == PNDisconnectedCategory) {
-                
-                [strongSelf startReachability];
-            }
+            [strongSelf startReachability];
         }
         // Looks like client completelly disconnected from all remote data objects live feed and
         // reachability should be turned off.
         else if (currentState == PNDisconnectedCategory) {
             
             [strongSelf stopReachability];
+        }
+        // Check whether client reported unexpected disconnection.
+        else if (currentState == PNUnexpectedDisconnectCategory) {
+            
+            // Dispatching check block with small delay, which will alloow to fire reachability
+            // change event.
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
+                           dispatch_get_main_queue(), ^{
+               
+                __strong __typeof(self) strongSelfForDelayed = weakSelf;
+                [strongSelfForDelayed startRemoteServicePing];
+            });
         }
     });
 }
@@ -650,7 +675,7 @@
 
 - (NSURL *)baseServiceURL {
     
-    NSString *scheme = (self.isSSLEnabled ? @"https://" : @"http://");
+    NSString *scheme = (self.isTLSEnabled ? @"https://" : @"http://");
     
     return [NSURL URLWithString:[scheme stringByAppendingString:self.origin]];;
 }
@@ -705,23 +730,16 @@
                 status != AFNetworkReachabilityStatusNotReachable &&
                 status != AFNetworkReachabilityStatusUnknown) {
                 
-                DDLogReachability(@"<PubNub> Connection restored");
+                DDLogReachability(@"<PubNub> Connection restored.");
                 
-                // Try to request 'time' API to ensure what network really available.
-                [strongSelfForHandler timeWithCompletion:^(PNResult *result, PNStatus *requestStatus) {
-                    
-                    __strong __typeof(self) strongSelfForResponse = weakSelf;
-                    if (result) {
-                        
-                        [strongSelfForResponse continueSubscriptionCycleIfRequired];
-                    }
-                }];
+                // Launch service ping process.
+                [strongSelfForHandler startRemoteServicePing];
             }
             else if (status == AFNetworkReachabilityStatusNotReachable &&
                      previousStatus != AFNetworkReachabilityStatusNotReachable &&
                      previousStatus != AFNetworkReachabilityStatusUnknown) {
                 
-                DDLogReachability(@"<PubNub> Connection went down");
+                DDLogReachability(@"<PubNub> Connection went down.");
             }
         }];
         
@@ -744,6 +762,34 @@
             strongSelf.reachabilityManager = nil;
         }
     });
+}
+
+- (void)startRemoteServicePing {
+    
+    // Try to request 'time' API to ensure what network really available.
+    __weak __typeof(self) weakSelf = self;
+    [self timeWithCompletion:^(PNResult *result, PNStatus *requestStatus) {
+        
+        __strong __typeof(self) strongSelfForResponse = weakSelf;
+        if (result) {
+            
+            [strongSelfForResponse restoreSubscriptionCycleIfRequired];
+            [strongSelfForResponse startHeartbeatIfRequired];
+        }
+        else if (strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusNotReachable &&
+                 strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusUnknown) {
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
+                           dispatch_get_main_queue(), ^{
+                
+                __strong __typeof(self) strongSelfForDelayed = weakSelf;
+                dispatch_async([strongSelfForDelayed configurationAccessQueue], ^{
+                    
+                    [strongSelfForDelayed startRemoteServicePing];
+                });
+            });
+        }
+    }];
 }
 
 
@@ -1022,6 +1068,13 @@
             }
             else {
                 
+                PNStatus *targetStatus = status;
+                if (status.category == PNConnectedCategory ||
+                    status.category == PNDisconnectedCategory) {
+                    
+                    targetStatus = [status copy];
+                    [targetStatus revertToOriginalCategory];
+                }
                 ((PNStatusBlock)block)(status);
             }
         });
@@ -1058,12 +1111,43 @@
 - (void)completeStatusObject:(in PNStatus *)status {
     
     status.uuid = self.uuid;
-    status.SSLEnabled = self.isSSLEnabled;
-    status.currentTimetoken = [self currentTimeToken];
-    status.previousTimetoken = [self previousTimeToken];
-    status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
-    status.groups = [self channelGroups];
+    status.TLSEnabled = self.isTLSEnabled;
+    if (status.operation == PNSubscribeOperation || status.operation == PNUnsubscribeOperation) {
+        
+        status.currentTimetoken = [self currentTimeToken];
+        status.previousTimetoken = [self previousTimeToken];
+        status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
+        status.groups = [self channelGroups];
+    }
     status.authKey = self.authKey;
+}
+
+
+#pragma mark - Handlers
+
+- (void)handleContextTransition:(NSNotification *)notification {
+    
+    if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
+        
+        DDLogClientInfo(@"<PubNub> Did enter background execution context.");
+    }
+    else if ([notification.name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
+        
+        DDLogClientInfo(@"<PubNub> Will enter foreground execution context.");
+    }
+}
+
+
+#pragma mark - Misc
+
+- (void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationDidEnterBackgroundNotification
+                                                  object:nil];
 }
 
 #pragma mark -

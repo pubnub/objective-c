@@ -28,7 +28,7 @@
 */
 @property (nonatomic, strong) PNRequest *requestObject;
 \
-@property (nonatomic, copy) NSURLRequest *request;
+@property (nonatomic, copy) NSURLRequest *clientRequest;
 @property (nonatomic, copy) NSDictionary *headers;
 @property (nonatomic, copy) id response;
 @property (nonatomic, copy) NSString *origin;

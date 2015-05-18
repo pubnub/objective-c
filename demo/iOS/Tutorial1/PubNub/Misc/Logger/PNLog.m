@@ -72,15 +72,21 @@ static PNLog *_sharedInstance = nil;
 
 + (void)enableLogLevel:(PNLogLevel)logLevel {
     
-    [self setClientLogLevel:([DDLog levelForClass:[PubNub class]] | logLevel)];
+    [self setLogLevel:([DDLog levelForClass:[PubNub class]] | logLevel)];
 }
 
 + (void)disableLogLevel:(PNLogLevel)logLevel {
     
-    [self setClientLogLevel:([DDLog levelForClass:[PubNub class]] & ~logLevel)];
+    [self setLogLevel:([DDLog levelForClass:[PubNub class]] & ~logLevel)];
 }
 
-+ (void)setClientLogLevel:(PNLogLevel)logLevel {
++ (void)setLogLevel:(PNLogLevel)logLevel {
+    
+    // Check whether all log levels should be disabled.
+    if (logLevel & PNSilentLogLevel) {
+        
+        logLevel = 0;
+    }
     
     [DDLog setLevel:(DDLogLevel)logLevel forClass:[PubNub class]];
 }
@@ -96,7 +102,7 @@ static PNLog *_sharedInstance = nil;
         }
         else {
             
-            DDLogInfo(@"<PubNub> File logger enabnled");
+            DDLogInfo(@"<PubNub> File logger enabled");
             DDLogInfo(@"<PubNub> Log files stored in: %@",
                       [_sharedInstance.fileLogger.logFileManager logsDirectory]);
             [DDLog addLogger:_sharedInstance.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];

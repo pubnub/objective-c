@@ -39,7 +39,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, assign, getter = isSSLEnabled) BOOL SSLEnabled;
+@property (nonatomic, readonly, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 
 /**
  @brief  Stores reference on list of channels on which client currently subscribed.

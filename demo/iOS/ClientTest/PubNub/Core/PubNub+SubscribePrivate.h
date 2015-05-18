@@ -35,6 +35,14 @@
 #pragma mark - Subscription
 
 /**
+ @brief  Try restore subscription cycle by using \b 0 time token and if required try to catch up on
+         previous subscribe time token (basing on user configuration).
+ 
+ @since 4.0
+ */
+- (void)restoreSubscriptionCycleIfRequired;
+
+/**
  @brief  Continue subscription cycle using \c currentTimeToken value and channels, stored in cache.
  
  @since 4.0

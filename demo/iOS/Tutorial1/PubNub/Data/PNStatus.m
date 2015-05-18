@@ -127,10 +127,18 @@
     return self;
 }
 
+- (void)revertToOriginalCategory {
+    
+    if (self.subCategory != PNUnknownCategory) {
+        
+        self.category = self.subCategory;
+    }
+}
+
 - (id)copyWithZone:(NSZone *)zone {
     
     PNStatus *status = [[[self class] allocWithZone:zone] init];
-    status.request = self.request;
+    status.clientRequest = self.clientRequest;
     status.headers = self.headers;
     status.response = self.response;
     status.statusCode = self.statusCode;
@@ -139,7 +147,7 @@
     status.data = self.data;
     status.category = self.category;
     status->_subCategory = self.subCategory;
-    status.SSLEnabled = self.isSSLEnabled;
+    status.TLSEnabled = self.isTLSEnabled;
     status.channels = self.channels;
     status.groups = self.groups;
     status.uuid = self.uuid;
@@ -221,11 +229,11 @@
                 break;
             case NSURLErrorSecureConnectionFailed:
 
-                category = PNSSLConnectionFailedCategory;
+                category = PNTLSConnectionFailedCategory;
                 break;
             case NSURLErrorServerCertificateUntrusted:
                 
-                category = PNSSLUntrustedCertificateCategory;
+                category = PNTLSUntrustedCertificateCategory;
                 break;
             default:
                 break;
@@ -285,7 +293,7 @@
     [status addEntriesFromDictionary:@{@"Category": @{
                                                @"Main": PNStatusCategoryStrings[self.category],
                                                @"Additional": PNStatusCategoryStrings[self.subCategory]},
-                                       @"Secure": (self.isSSLEnabled ? @"YES" : @"NO"),
+                                       @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
                                        @"Objects": @{@"Channels": (self.channels?: @"no channels"),
                                                      @"Channel groups": (self.groups?: @"no groups")},
                                        @"UUID": (self.uuid?: @"uknonwn"),

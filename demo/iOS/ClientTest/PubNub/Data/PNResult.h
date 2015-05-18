@@ -32,7 +32,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSURLRequest *request;
+@property (nonatomic, readonly, copy) NSURLRequest *clientRequest;
 
 /**
  @brief  Stores reference on headers which has been passed by \b PubNub service.

@@ -8,37 +8,31 @@
 
 #import "AppDelegate.h"
 #import "PubNub.h"
-
+#import "PNResponse.h"
 
 #pragma mark Private interface declaration
 
 @interface AppDelegate () <PNObjectEventListener>
 
-#pragma mark - Properteis
+#pragma mark - Properties
 
 @property (nonatomic, strong) PubNub *client;
 @property (nonatomic, strong) NSString *channel;
-
 
 #pragma mark - Configuration
 
 - (void)updateClientConfiguration;
 - (void)printClientConfiguration;
 
-
 #pragma mark -
-
-
 @end
-
 
 #pragma mark - Interface implementation
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
+
     // Initialize PubNub client.
     self.channel = @"myCh";
     self.client = [PubNub clientWithPublishKey:@"demo-36" andSubscribeKey:@"demo-36"];
@@ -67,7 +61,7 @@
             
             NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
             
-            [self.client publish:@"I'm here!" toChannel:_channel compressed:YES
+            [self.client publish:@"I'm here!" toChannel:_channel
                   withCompletion:^(PNStatus *status) {
                     
                 if (!status.isError) {
@@ -87,6 +81,8 @@
 
     return YES;
 }
+
+/********************************** Subscribe Loop Listeners  Start ********************************/
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message {
     
@@ -141,6 +137,9 @@
 }
 
 
+/********************************** Subscribe Loop Listeners End ********************************/
+
+
 #pragma mark - Configuration
 
 - (void)updateClientConfiguration {
@@ -148,7 +147,7 @@
     [self.client commitConfiguration:^{
         
         // Set PubNub Configuration
-        self.client.SSLEnabled = YES;
+        self.client.TLSEnabled = YES;
         self.client.origin = @"ios4.pubnub.com";
         self.client.authKey = @"myAuthKey";
         self.client.uuid = @"ios4.0Tutorial";
@@ -158,7 +157,7 @@
         self.client.presenceHeartbeatInterval = 3;
         
         // Cipher Key Settings
-        self.client.cipherKey = @"enigma";
+        //self.client.cipherKey = @"enigma";
         
         // Time Token Handling Settings
         self.client.keepTimeTokenOnListChange = YES;
@@ -170,7 +169,7 @@
 - (void)printClientConfiguration {
     
     // Get PubNub Options
-    NSLog(@"SSELEnabled: %@", (self.client.isSSLEnabled ? @"YES" : @"NO"));
+    NSLog(@"SSELEnabled: %@", (self.client.isTLSEnabled ? @"YES" : @"NO"));
     NSLog(@"Origin: %@", self.client.origin);
     NSLog(@"authKey: %@", self.client.authKey);
     NSLog(@"UUID: %@", self.client.uuid);

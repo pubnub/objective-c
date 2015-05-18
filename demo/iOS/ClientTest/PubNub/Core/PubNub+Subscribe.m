@@ -1239,6 +1239,23 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
+- (void)restoreSubscriptionCycleIfRequired {
+    
+    [self stopRetryTimer];
+    dispatch_barrier_async([self subscriberAccessQueue], ^{
+        
+        if ([[self mutableChannels] count] || [[self mutableGroups] count] ||
+            [[self mutablePresenceChannels] count]) {
+            
+            [self subscribeWithObjectsListModification:NO presence:YES
+                                            toChannels:[[self mutableChannels] allObjects]
+                                                groups:[[self mutableGroups] allObjects]
+                                           andPresence:[[self mutablePresenceChannels] allObjects]
+                                       withClientState:nil andCompletion:NULL];
+        }
+    });
+}
+
 - (void)continueSubscriptionCycleIfRequired {
 
     [self stopRetryTimer];
@@ -1406,6 +1423,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 
                 dispatch_async(self.subscribeQueue, ^{
                     
+                    // Reset subscription time token data.
+                    [self setCurrentTimeToken:@(0)];
+                    [self setPreviousTimeToken:@(0)];
+                    
                     // Cancel pending long-poll subscribe requests.
                     __strong __typeof(self) strongSelfForCancel = weakSelf;
                     [strongSelfForCancel cancelAllLongPollRequests];
@@ -1431,7 +1452,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                      withState:(NSDictionary *)state andCompletion:(PNStatusBlock)block {
 
     // Try fetch time token from passed result/status objects.
-    NSNumber *timeToken = @([[request.response.request.URL lastPathComponent] longLongValue]);
+    NSNumber *timeToken = @([[request.response.clientRequest.URL lastPathComponent] longLongValue]);
     BOOL isInitialSubscription = ([timeToken integerValue] == 0);
     
     // Retrieve list of objects which would like to receive updates and state change events.
@@ -1674,7 +1695,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
     
     // Check whether initial subscription or channels list update has been performed.
-    if (isInitialSubscription && block) {
+    if (isInitialSubscription || status.category == PNUnexpectedDisconnectCategory) {
         
         [self callBlock:block status:YES withResult:nil andStatus:status];
     }
