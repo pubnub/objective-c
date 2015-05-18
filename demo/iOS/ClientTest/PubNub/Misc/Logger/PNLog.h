@@ -5,8 +5,8 @@
 #pragma mark Log macro declaration
 
 
-#define DDLogConfiguration(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNConfigurationLogLevel,  0, nil, \
-                                                __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogClientInfo(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNInfoLogLevel,  0, nil, \
+                                             __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define DDLogReachability(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNReachabilityLogLevel,  0, nil, \
                                                __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define DDLogRequest(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNRequestLogLevel,  0, nil, \
@@ -67,7 +67,7 @@
  
  @since 4.0
  */
-+ (void)setClientLogLevel:(PNLogLevel)logLevel;
++ (void)setLogLevel:(PNLogLevel)logLevel;
 
 /**
  @brief  Specify whether logger should store output to log files or not.

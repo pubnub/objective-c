@@ -12,7 +12,9 @@
  
  @since 4.0
  */
-static DDLogLevel ddLogLevel = (DDLogLevel)PNVerboseLogLevel;
+static DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
+                                            PNFailureStatusLogLevel|PNAPICallLogLevel|
+                                            PNAESErrorLogLevel);
 
 
 #pragma mark - Class forward

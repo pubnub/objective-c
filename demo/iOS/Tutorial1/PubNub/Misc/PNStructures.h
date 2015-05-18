@@ -24,19 +24,28 @@
 typedef NS_OPTIONS(NSUInteger, PNLogLevel){
     
     /**
-     @brief  \b PNLog level which allow to print out client configuration modification information.
+     @brief       \b PNLog level which allow to disable all active logging levels.
+     @discussion This log level can be set with \b PNLog class method +setLogLevel:
      
      @since 4.0
      */
-    PNConfigurationLogLevel = (1 << 5),
+    PNSilentLogLevel = (1 << 5),
+    
+    /**
+     @brief  \b PNLog level which allow to print out client information data.
+     @discussion Log events like: transition between foreground/background, configuration 
+                 modification
+     
+     @since 4.0
+     */
+    PNInfoLogLevel = (1 << 6),
     
     /**
      @brief  \b PNLog level which allow to print out all reachability events.
-     @note   This logging level can't be disabled and attempts will be ignored.
      
      @since 4.0
      */
-    PNReachabilityLogLevel = (1 << 6),
+    PNReachabilityLogLevel = (1 << 7),
     
     /**
      @brief  \b PNLog level which allow to print out all API call request URI which has been passed
@@ -44,14 +53,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNRequestLogLevel = (1 << 7),
+    PNRequestLogLevel = (1 << 8),
     
     /**
      @brief  \b PNLog level which allow to print out API execution results.
      
      @since 4.0
      */
-    PNResultLogLevel = (1 << 8),
+    PNResultLogLevel = (1 << 9),
     
     /**
      @brief  \b PNLog level which allow to print out client state change status information and 
@@ -59,16 +68,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNStatusLogLevel = (1 << 9),
-    
-    /**
-     @brief      \b PNLog level which allow to print out all API calls with passed parameters.
-     @discussion This log level allo with debug to find out when API has been called and what
-                 parameters should be passed.
-     
-     @since 4.0
-     */
-    PNAPICallLogLevel = (1 << 10),
+    PNStatusLogLevel = (1 << 10),
     
     /**
      @brief      \b PNLog level which allow to print out every failure status information.
@@ -80,19 +80,29 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
     PNFailureStatusLogLevel = (1 << 11),
     
     /**
+     @brief      \b PNLog level which allow to print out all API calls with passed parameters.
+     @discussion This log level allo with debug to find out when API has been called and what
+                 parameters should be passed.
+     
+     @since 4.0
+     */
+    PNAPICallLogLevel = (1 << 12),
+    
+    /**
      @brief  \b PNLog level which allow to print out all AES errors.
      
      @since 4.0
      */
-    PNAESErrorLogLevel = (1 << 12),
+    PNAESErrorLogLevel = (1 << 13),
     
     /**
      @brief  Log every message from \b PubNub client.
      
      @since 4.0
      */
-    PNVerboseLogLevel = (PNReachabilityLogLevel|PNRequestLogLevel|PNResultLogLevel|PNStatusLogLevel|
-                         PNAPICallLogLevel|PNFailureStatusLogLevel|PNAESErrorLogLevel)
+    PNVerboseLogLevel = (PNInfoLogLevel|PNReachabilityLogLevel|PNRequestLogLevel|PNResultLogLevel|
+                         PNStatusLogLevel|PNFailureStatusLogLevel|PNAPICallLogLevel|
+                         PNAESErrorLogLevel)
 };
 
 /**
@@ -243,7 +253,7 @@ typedef NS_OPTIONS(NSInteger, PNStatusCategory) {
 
      @since 4.0
      */
-    PNSSLConnectionFailedCategory,
+    PNTLSConnectionFailedCategory,
 
     /**
      @brief      Status is sent in case if client unable to check certificates trust chain.
@@ -252,7 +262,7 @@ typedef NS_OPTIONS(NSInteger, PNStatusCategory) {
                  "nslookup pubsub.pubnub.com" status object debug description and mail to
                  support@pubnub.com
     */
-    PNSSLUntrustedCertificateCategory
+    PNTLSUntrustedCertificateCategory
 };
 
 /**
