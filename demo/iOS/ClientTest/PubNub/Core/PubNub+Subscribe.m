@@ -1263,7 +1263,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         if ([[self mutableChannels] count] || [[self mutableGroups] count] ||
             [[self mutablePresenceChannels] count]) {
-
+            
             [self subscribeWithObjectsListModification:NO presence:NO
                                             toChannels:[[self mutableChannels] allObjects]
                                                 groups:[[self mutableGroups] allObjects]
@@ -1702,6 +1702,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 }
 
 - (void)handleNewMessage:(PNResult *)data by:(NSArray *)listeners{
+    
+    if (data) {
+        
+        DDLogResult(@"<PubNub> %@", [data stringifiedRepresentation]);
+    }
 
     // Iterate over list of listeners and notify about new message.
     for (id<PNObjectEventListener> listener in listeners) {

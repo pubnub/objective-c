@@ -287,9 +287,11 @@
         BOOL serviceOriginChanged = ![origin isEqualToString:strongSelf.origin];
         BOOL publishKeyChanged = ![publishKey isEqualToString:strongSelf.publishKey];
         BOOL subscribeKeyChanged = ![subscribeKey isEqualToString:strongSelf.subscribeKey];
-        BOOL authKeyChanged = ![authKey isEqualToString:strongSelf.authKey];
-        BOOL uuidChanged = ![uuid isEqualToString:_uuid];
-        BOOL cipherKeyChanged = ![cipherKey isEqualToString:strongSelf.cipherKey];
+        BOOL authKeyChanged = ((authKey || strongSelf.authKey) &&
+                               ![authKey isEqualToString:strongSelf.authKey]);
+        BOOL uuidChanged = ((uuid || _uuid) && ![uuid isEqualToString:_uuid]);
+        BOOL cipherKeyChanged = ((cipherKey || strongSelf.cipherKey) &&
+                                 ![cipherKey isEqualToString:strongSelf.cipherKey]);
         BOOL maximumSubscribeIdleChanged =  (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime);
         BOOL nonSubscribeTimeoutChanged =  (nonSubscribeRequestTimeout != strongSelf.nonSubscribeRequestTimeout);
         BOOL heartbeatValueChanged =  (presenceHeartbeatValue != strongSelf.presenceHeartbeatValue);
@@ -327,10 +329,6 @@
             }
             if (uuidChanged) {
                 [configuration appendFormat:@"UUID changed from '%@' to '%@'\n", uuid, _uuid];
-            }
-            if (cipherKeyChanged) {
-                [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
-                 cipherKey, strongSelf.cipherKey];
             }
             if (cipherKeyChanged) {
                 [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
@@ -615,6 +613,7 @@
         // Check whether previous client state reported unexpected disconnection from remote data
         // objects live feed or not.
         __strong __typeof(self) strongSelf = weakSelf;
+        PNStatusCategory previousState = _recentClientStatus;
         PNStatusCategory currentState = recentClientStatus;
         
         // In case if client disconnected only from one of it's channels it should keep 'connected'
@@ -641,14 +640,22 @@
         // Check whether client reported unexpected disconnection.
         else if (currentState == PNUnexpectedDisconnectCategory) {
             
-            // Dispatching check block with small delay, which will alloow to fire reachability
-            // change event.
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
-                           dispatch_get_main_queue(), ^{
-               
-                __strong __typeof(self) strongSelfForDelayed = weakSelf;
-                [strongSelfForDelayed startRemoteServicePing];
-            });
+            // Check whether client unexpectedly disconnected while tried to subscribe or not.
+            if (previousState == PNUnknownCategory || previousState == PNDisconnectedCategory) {
+                
+                [strongSelf startReachability];
+            }
+            else {
+                
+                // Dispatching check block with small delay, which will alloow to fire reachability
+                // change event.
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
+                               dispatch_get_main_queue(), ^{
+                   
+                    __strong __typeof(self) strongSelfForDelayed = weakSelf;
+                    [strongSelfForDelayed startRemoteServicePing];
+                });
+            }
         }
     });
 }
@@ -776,17 +783,14 @@
             [strongSelfForResponse restoreSubscriptionCycleIfRequired];
             [strongSelfForResponse startHeartbeatIfRequired];
         }
-        else if (strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusNotReachable &&
-                 strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusUnknown) {
+        else if (strongSelfForResponse.reachabilityManager &&
+                 strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusNotReachable) {
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
                            dispatch_get_main_queue(), ^{
                 
                 __strong __typeof(self) strongSelfForDelayed = weakSelf;
-                dispatch_async([strongSelfForDelayed configurationAccessQueue], ^{
-                    
-                    [strongSelfForDelayed startRemoteServicePing];
-                });
+                [strongSelfForDelayed startRemoteServicePing];
             });
         }
     }];
@@ -1052,7 +1056,6 @@
             DDLogFailureStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
         }
         else {
-            
             
             DDLogStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
         }

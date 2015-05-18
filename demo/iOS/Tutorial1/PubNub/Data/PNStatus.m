@@ -290,9 +290,7 @@
 - (NSDictionary *)dictionaryRepresentation {
     
     NSMutableDictionary *status = [[super dictionaryRepresentation] mutableCopy];
-    [status addEntriesFromDictionary:@{@"Category": @{
-                                               @"Main": PNStatusCategoryStrings[self.category],
-                                               @"Additional": PNStatusCategoryStrings[self.subCategory]},
+    [status addEntriesFromDictionary:@{@"Category": PNStatusCategoryStrings[self.category],
                                        @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
                                        @"Objects": @{@"Channels": (self.channels?: @"no channels"),
                                                      @"Channel groups": (self.groups?: @"no groups")},
