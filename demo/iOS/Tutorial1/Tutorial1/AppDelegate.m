@@ -17,13 +17,6 @@
 #pragma mark - Properties
 
 @property (nonatomic, strong) PubNub *client;
-@property (nonatomic, strong) PubNub *client1;
-@property (nonatomic, strong) PubNub *client2;
-@property (nonatomic, strong) PubNub *client3;
-@property (nonatomic, strong) PubNub *client4;
-@property (nonatomic, strong) PubNub *client5;
-@property (nonatomic, strong) PubNub *client6;
-
 @property (nonatomic, strong) NSString *channel;
 
 #pragma mark - Configuration
