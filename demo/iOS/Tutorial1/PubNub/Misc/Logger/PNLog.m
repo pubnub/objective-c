@@ -102,7 +102,7 @@ static PNLog *_sharedInstance = nil;
         }
         else {
             
-            DDLogInfo(@"<PubNub> File logger enabnled");
+            DDLogInfo(@"<PubNub> File logger enabled");
             DDLogInfo(@"<PubNub> Log files stored in: %@",
                       [_sharedInstance.fileLogger.logFileManager logsDirectory]);
             [DDLog addLogger:_sharedInstance.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
