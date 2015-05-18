@@ -14,7 +14,7 @@
 #pragma mark - Information
 
 @property (nonatomic, assign) PNStatusCategory category;
-@property (nonatomic, assign, getter = isSSLEnabled) BOOL SSLEnabled;
+@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 @property (nonatomic, copy) NSArray *channels;
 @property (nonatomic, copy) NSArray *groups;
 @property (nonatomic, copy) NSString *uuid;
@@ -99,6 +99,14 @@
  @since 4.0
  */
 - (instancetype)initForRequest:(PNRequest *)request withError:(NSError *)error;
+
+/**
+ @brief      Sometimes category changed to be used in upper layers of the client, but before 
+             delivering
+ @discussion Before delivering status to the user, this method allow to return original category
+             which has been passed during initalization.
+ */
+- (void)revertToOriginalCategory;
 
 #pragma mark -
 

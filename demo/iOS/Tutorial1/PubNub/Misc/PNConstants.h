@@ -30,7 +30,7 @@ static NSString * const kPNDefaultOrigin = @"pubsub.pubnub.com";
 static NSTimeInterval const kPNDefaultSubscribeMaximumIdleTime = 310.0f;
 static NSTimeInterval const kPNDefaultNonSubscribeRequestTimeout = 10.0f;
 
-static BOOL const kPNDefaultIsSSLEnabled = YES;
+static BOOL const kPNDefaultIsTLSEnabled = YES;
 static BOOL const kPNDefaultShouldKeepTimeTokenOnListChange = YES;
 static BOOL const kPNDefaultShouldRestoreSubscription = YES;
 static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;

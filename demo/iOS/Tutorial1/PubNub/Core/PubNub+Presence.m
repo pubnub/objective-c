@@ -328,7 +328,8 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
     dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
-        if (strongSelf.presenceHeartbeatValue > 0) {
+        if (strongSelf.presenceHeartbeatValue > 0 &&
+            ([[strongSelf channels] count] || [[strongSelf channelGroups] count])) {
             
             NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
             
@@ -364,6 +365,10 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
                 [strongSelfForHandler startHeartbeatIfRequired];
             }];
             [strongSelf processRequest:request];
+        }
+        else {
+            
+            [strongSelf stopHeartbeatIfPossible];
         }
     });
 }

@@ -55,8 +55,8 @@ static NSString * const PNStatusCategoryStrings[15] = {
     [PNCancelledCategory] = @"Cancelled",
     [PNBadRequestCategory] = @"Bad Request",
     [PNMalformedResponseCategory] = @"Malformed Response",
-    [PNSSLConnectionFailedCategory] = @"SSL Connection Failed",
-    [PNSSLUntrustedCertificateCategory] = @"Untrusted SSL Certificate"
+    [PNTLSConnectionFailedCategory] = @"TLS Connection Failed",
+    [PNTLSUntrustedCertificateCategory] = @"Untrusted TLS Certificate"
 };
 
 /**

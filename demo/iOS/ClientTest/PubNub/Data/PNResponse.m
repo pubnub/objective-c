@@ -13,7 +13,7 @@
 
 #pragma mark - Information
 
-@property (nonatomic, copy) NSURLRequest *request;
+@property (nonatomic, copy) NSURLRequest *clientRequest;
 @property (nonatomic, copy) id data;
 @property (nonatomic, copy) NSHTTPURLResponse *response;
 @property (nonatomic, copy) NSError *error;
@@ -44,7 +44,7 @@
     if ((self = [super init]))  {
 
         self.response = response;
-        self.request = request;
+        self.clientRequest = request;
         self.data = data;
         self.error = error;
     }

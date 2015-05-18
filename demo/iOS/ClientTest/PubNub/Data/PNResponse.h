@@ -23,7 +23,7 @@
 
  @since 4.0
 */
-@property (nonatomic, readonly, copy) NSURLRequest *request;
+@property (nonatomic, readonly, copy) NSURLRequest *clientRequest;
 
 /**
  @brief  Stores reference on HTTP response received by NSURL loading system.
