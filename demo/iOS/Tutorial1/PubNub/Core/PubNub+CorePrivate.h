@@ -12,7 +12,7 @@
  
  @since 4.0
  */
-static DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
+static DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|PNRequestLogLevel|
                                             PNFailureStatusLogLevel|PNAPICallLogLevel|
                                             PNAESErrorLogLevel);
 

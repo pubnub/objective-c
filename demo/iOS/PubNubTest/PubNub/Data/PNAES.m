@@ -6,14 +6,23 @@
 #import "PNAES.h"
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
+#import "PubNub+CorePrivate.h"
 #import <libkern/OSAtomic.h>
 #import "PNErrorCodes.h"
 #import "PNHelpers.h"
 
+
+#pragma mark Static
+
+/**
+ @brief  Initializing vector used to initialize (de)cryptor.
+ 
+ @since 4.0
+ */
 static const void * kPNAESInitializationVector = "0123456789012345";
 
 
-#pragma mark Private interface declaration
+#pragma mark - Private interface declaration
 
 @interface PNAES ()
 
@@ -104,9 +113,16 @@ static const void * kPNAESInitializationVector = "0123456789012345";
                                           userInfo:@{NSLocalizedDescriptionKey:description}];
     }
     
-    if (encryptionError && error != NULL) {
+    if (encryptionError) {
         
-        *error = encryptionError;
+        if (error != NULL) {
+            
+            *error = encryptionError;
+        }
+        else {
+            
+            DDLogAESError(@"<PubNub> Encryption error: %@", encryptionError);
+        }
     }
     
     
@@ -180,6 +196,10 @@ static const void * kPNAESInitializationVector = "0123456789012345";
             
             *error = decryptionError;
         }
+        else {
+            
+            DDLogAESError(@"<PubNub> Decryption error: %@", decryptionError);
+        }
     }
     
     
@@ -191,16 +211,16 @@ static const void * kPNAESInitializationVector = "0123456789012345";
 
 + (NSData *)SHA256HexFromKey:(NSString *)cipherKey {
     
-    static OSSpinLock _cipherKeysSpinlock;
+    static OSSpinLock _cipherKeysSpinLock;
     static NSMutableDictionary *_cipherKeys;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        _cipherKeysSpinlock = OS_SPINLOCK_INIT;
+        _cipherKeysSpinLock = OS_SPINLOCK_INIT;
         _cipherKeys = [NSMutableDictionary new];
     });
     
-    OSSpinLockLock(&_cipherKeysSpinlock);
+    OSSpinLockLock(&_cipherKeysSpinLock);
     NSData *key = _cipherKeys[cipherKey];
     if (!key) {
         
@@ -208,7 +228,7 @@ static const void * kPNAESInitializationVector = "0123456789012345";
         key = [PNString UTF8DataFrom:[SHA256String lowercaseString]];
         _cipherKeys[cipherKey] = key;
     }
-    OSSpinLockUnlock(&_cipherKeysSpinlock);
+    OSSpinLockUnlock(&_cipherKeysSpinLock);
     
     return key;
 }

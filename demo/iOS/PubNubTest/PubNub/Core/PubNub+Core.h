@@ -33,8 +33,7 @@
  @brief   Reference on key which is used to push data/state to \b PubNub service.
  @note    This key can be obtained on PubNub's administration portal after free registration
           https://admin.pubnub.com
- 
- @default Client will use it's own constant (\b demo) value if origin not specified.
+ @warning Can't be \c nil and in attempt to set \c nil will throw \b UnacceptableValue exception.
  
  @since 4.0
  */
@@ -44,6 +43,7 @@
  @brief   Reference on key which is used to fetch data/state from \b PubNub service.
  @note    This key can be obtained on PubNub's administration portal after free registration
           https://admin.pubnub.com
+ @warning Can't be \c nil and in attempt to set \c nil will throw \b UnacceptableValue exception.
  
  @default Client will use it's own constant (\b demo) value if origin not specified.
  
@@ -64,12 +64,12 @@
  
  @since 4.0
  */
-@property (nonatomic, copy) NSString *authorizationKey;
+@property (nonatomic, copy) NSString *authKey;
 
 /**
  @brief      Reference on unique client identifier used to identify concrete client user from
              another which currently use \b PubNub services.
- @discussion This value is different from \c authorizationKey (which is used only by \b PAM) and
+ @discussion This value is different from \c authKey (which is used only by \b PAM) and
              represent concrete client across server. This identifier is used for presence events
              to tell what some client joined or leaved live feed.
  @warning    There can't be two same client identifiers online at the same time.
@@ -88,19 +88,6 @@
  @since 4.0
  */
 @property (nonatomic, copy) NSString *cipherKey;
-
-/**
- @brief      Reference on number of seconds which is used during initial subscription on remote 
-             data objects live feed.
- @discussion Initial subscription process should provide immediately response with data which 
-             should be used to perform long-poll request. If in specified time frame client won't
-             receive response from server it will report about subscription error.
- 
- @default    Client will use it's own constant (\b 10 seconds) value if origin not specified.
- 
- @since 4.0
- */
-@property (nonatomic, assign) NSTimeInterval subscribeRequestTimeout;
 
 /**
  @brief      Stores reference on maximum number of seconds which client should wait for events from
@@ -160,7 +147,7 @@
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = isSSLEnabled) BOOL SSLEnabled;
+@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 
 /**
  @brief  Stores whether client should keep previous time token when subscribe on new set of remote
@@ -214,22 +201,6 @@
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 
 /**
- @brief Reference on handler block which will be called on main or \c callbackQueue when new message
-        will arrive from live feed on which client subscribed at this moment.
- 
- @since 4.0
- */
-@property (nonatomic, copy) PNEventHandlingBlock messageHandlingBlock;
-
-/**
- @brief Reference on handler block which will be called on main or \c callbackQueue when new 
-        presence even will arrive from live feed on which client subscribed at this moment.
- 
- @since 4.0
- */
-@property (nonatomic, copy) PNEventHandlingBlock presenceEventHandlingBlock;
-
-/**
  @brief  Allow rewrite in batch set of client configurations in secure way (thread-safe).
  
  @since 4.0
@@ -242,7 +213,7 @@
 ///------------------------------------------------
 
 /**
- @brief      Construct new \b PubNub client instance with pre-defined publish and subscrib keys.
+ @brief      Construct new \b PubNub client instance with pre-defined publish and subscribe keys.
  @discussion If all keys will be specified, client will be able to read and modify data on 
              \b PubNub service.
  @note       All required keys can be found on https://admin.pubnub.com
@@ -253,17 +224,14 @@
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
  @endcode
- 
- Also client can be initialized with default keys using this example:
- @code
- PubNub *client = [PubNub new];
- @endcode
 
  @param publishKey   Key which allow client to use data push API.
  @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub 
                      service.
 
- @return Configured and ready to use \b PubNub client.
+ @return Configured and ready to use \b PubNub client. \c nil in case if one or both keys are
+         missing.
+
  @since 4.0
 */
 + (instancetype)clientWithPublishKey:(NSString *)publishKey

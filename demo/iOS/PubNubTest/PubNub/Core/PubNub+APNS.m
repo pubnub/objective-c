@@ -6,6 +6,9 @@
 #import "PubNub+APNS.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import "PNStatus+Private.h"
+#import "PNErrorCodes.h"
+#import "PNResponse.h"
 #import "PNHelpers.h"
 
 
@@ -22,18 +25,37 @@
  
  @param shouldEnabled Whether push notification should be enabled or disabled on \c channels.
  @param channels      List of channels for which notification state should be changed.
- @param pushToken     Reference on device push tokne for which on specified \c channels push 
+ @param pushToken     Reference on device push token for which on specified \c channels push
                       notifications will be enabled or disabled.
  @param block         Push notifications state modification on channels processing completion 
-                      block which pass two arguments: \c result - in case of successful request 
-                      processing \c data field will contain results of push notification state
-                      modification operation; \c status - in case if error occurred during request
-                      processing.
+                      block which pass only one argument - request processing status to report about
+                      how data pushing was successful or not.
  
  @since 4.0
  */
 - (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(NSArray *)channels
-           withDevicePushToken:(NSData *)pushToken andCompletion:(PNCompletionBlock)block;
+           withDevicePushToken:(NSData *)pushToken andCompletion:(PNStatusBlock)block;
+
+
+#pragma mark - Handlers
+
+/**
+ @brief  Process push notifications modification request completion and notify observers about 
+         results.
+
+ @param request   Reference on base request which is used for communication with \b PubNub service.
+                  Object also contains request processing results.
+ @param pushToken Reference on device push token for which on specified \c channels push
+                  notifications will be enabled or disabled.
+ @param block     Push notifications addition on channels processing completion block which pass 
+                  only one argument - request processing status to report about how data pushing
+                  was successful or not.
+
+ @since 4.0
+ */
+- (void)handlePushNotificationModificationRequest:(PNRequest *)request
+                               forDevicePushToken:(NSData *)pushToken
+                                    andCompletion:(PNStatusBlock)block;
 
 
 #pragma mark - Processing
@@ -62,7 +84,7 @@
  
  @since 4.0
  */
-- (NSArray *)processedPushNotificationsAuditResponse:(id)response;
+- (NSDictionary *)processedPushNotificationsAuditResponse:(id)response;
 
 #pragma mark - 
 
@@ -78,7 +100,7 @@
 #pragma mark - Push notifications state manipulation
 
 - (void)addPushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                         andCompletion:(PNCompletionBlock)block {
+                         andCompletion:(PNStatusBlock)block {
     
     [self enablePushNotification:YES onChannels:channels withDevicePushToken:pushToken
                    andCompletion:block];
@@ -86,51 +108,85 @@
 
 - (void)removePushNotificationsFromChannels:(NSArray *)channels
                         withDevicePushToken:(NSData *)pushToken
-                              andCompletion:(PNCompletionBlock)block {
+                              andCompletion:(PNStatusBlock)block {
     
     [self enablePushNotification:NO onChannels:channels withDevicePushToken:pushToken
                    andCompletion:block];
 }
 
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
-                                            andCompletion:(PNCompletionBlock)block {
+                                            andCompletion:(PNStatusBlock)block {
     
     [self enablePushNotification:NO onChannels:nil withDevicePushToken:pushToken
                    andCompletion:block];
 }
 
 - (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(NSArray *)channels
-           withDevicePushToken:(NSData *)pushToken andCompletion:(PNCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    // Dispatching async on private queue which is able to serialize access with client
+           withDevicePushToken:(NSData *)pushToken andCompletion:(PNStatusBlock)block {
+
+    // Dispatching async on private serial queue which is able to serialize access with client
     // configuration data.
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
         BOOL removeAllChannels = (!shouldEnabled && channels == nil);
         PNOperationType operationType = PNRemoveAllPushNotificationsOperation;
         NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
+        NSString *channelsList = [PNChannel namesForRequest:channels];
         NSDictionary *parameters = nil;
         if (!removeAllChannels){
             
             operationType = (shouldEnabled ? PNAddPushNotificationsOnChannelsOperation :
                              PNRemovePushNotificationsFromChannelsOperation);
-            parameters = @{(shouldEnabled ? @"add":@"remove"):[PNChannel namesForRequest:channels]};
+            parameters = @{(shouldEnabled ? @"add":@"remove"): channelsList};
         }
         NSString *format = [@"/v1/push/sub-key/%@/devices/%@"
                             stringByAppendingString:(removeAllChannels ? @"/remove" : @"")];
         NSString *path = [NSString stringWithFormat:format, subscribeKey,
                           [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:operationType withCompletion:block];
+        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                          forOperation:operationType
+                                                        withCompletion:^{
+
+            __strong __typeof(self) strongSelfForResponse = weakSelf;
+            [strongSelfForResponse handlePushNotificationModificationRequest:request
+                                                          forDevicePushToken:pushToken
+                                                               andCompletion:[block copy]];
+        }];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPushNotificationsStateModificationResponse:rawData];
         };
-        [strongSelf processRequest:request];
+        
+        if (removeAllChannels) {
+            
+            DDLogAPICall(@"<PubNub> Disable push notifications for device '%@'.",
+                         [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
+        }
+        else {
+            
+            DDLogAPICall(@"<PubNub> %@ push notifications for device '%@': %@.",
+                         (shouldEnabled ? @"Enable" : @"Disable"),
+                         [[PNData HEXFromDevicePushToken:pushToken] lowercaseString],
+                         channelsList);
+        }
+
+        // Ensure what all required fields passed before starting processing.
+        if ([pushToken length] > 0) {
+
+            [strongSelf processRequest:request];
+        }
+        // Notify about incomplete parameters set.
+        else {
+
+            NSString *description = @"Empty device push token.";
+            NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                                 code:kPNAPIUnacceptableParameters
+                                             userInfo:@{NSLocalizedDescriptionKey:description}];
+            [strongSelf handleRequestFailure:request withError:error];
+        }
     });
 }
 
@@ -139,11 +195,10 @@
 
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
                                                 andCompletion:(PNCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    // Dispatching async on private queue which is able to serialize access with client
+
+    // Dispatching async on private serial queue which is able to serialize access with client
     // configuration data.
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
@@ -152,14 +207,44 @@
                           [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:nil
                                            forOperation:PNPushNotificationEnabledChannelsOperation
-                                         withCompletion:block];
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPushNotificationsAuditResponse:rawData];
         };
-        [strongSelf processRequest:request];
+        request.reportBlock = block;
+        
+        DDLogAPICall(@"<PubNub> Push notification enabled channels for device '%@'.",
+                     [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
+
+        // Ensure what all required fields passed before starting processing.
+        if ([pushToken length] > 0) {
+
+            [strongSelf processRequest:request];
+        }
+        // Notify about incomplete parameters set.
+        else {
+
+            NSString *description = @"Empty device push token.";
+            NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                                 code:kPNAPIUnacceptableParameters
+                                             userInfo:@{NSLocalizedDescriptionKey:description}];
+            [strongSelf handleRequestFailure:request withError:error];
+        }
     });
+}
+
+
+#pragma mark - Handlers
+
+- (void)handlePushNotificationModificationRequest:(PNRequest *)request
+                               forDevicePushToken:(NSData *)pushToken
+                                    andCompletion:(PNStatusBlock)block {
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    PNStatus *status = [PNStatus statusForRequest:request withError:request.response.error];
+    [self callBlock:block status:YES withResult:nil andStatus:status];
 }
 
 
@@ -181,16 +266,16 @@
     return [processedResponse copy];
 }
 
-- (NSArray *)processedPushNotificationsAuditResponse:(id)response {
+- (NSDictionary *)processedPushNotificationsAuditResponse:(id)response {
     
     // To handle case when response is unexpected for this type of operation processed value sent
     // through 'nil' initialized local variable.
-    NSArray *processedResponse = nil;
+    NSDictionary *processedResponse = nil;
     
     // Array is valid response type for device removal from APNS request.
     if ([response isKindOfClass:[NSArray class]]) {
         
-        processedResponse = response;
+        processedResponse = @{@"channels": response};
     }
     
     return [processedResponse copy];

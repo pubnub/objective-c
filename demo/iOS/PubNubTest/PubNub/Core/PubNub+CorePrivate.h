@@ -1,11 +1,25 @@
 #import "PubNub+Core.h"
+#import <CocoaLumberjack/CocoaLumberjack.h>
 #import <AFNetworkReachabilityManager.h>
 #import <AFHTTPSessionManager.h>
+#import "PNLog.h"
 
 
-#pragma mark Class forward
+#pragma mark Static
 
-@class PNRequest;
+/**
+ @brief  Cocoa Lumberjack logging level configuration for \b PubNub client class and categories.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|PNRequestLogLevel|
+                                            PNFailureStatusLogLevel|PNAPICallLogLevel|
+                                            PNAESErrorLogLevel);
+
+
+#pragma mark - Class forward
+
+@class PNRequest, PNResult, PNStatus;
 
 
 /**
@@ -56,20 +70,11 @@
 @property (nonatomic, readonly, strong) dispatch_queue_t serviceQueue;
 
 /**
- @brief Stores reference on unique device identifier based on bundle identifier used by software
-        vendor.
+ @brief  Stores reference about recent client state (whether it was connected or not).
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSString *deviceID;
-
-/**
- @brief Stores reference on session with pre-configured options useful for 'subscription' API group
-        with long-polling.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, strong) AFHTTPSessionManager *subscriptionSession;
+@property (nonatomic, readonly, assign) PNStatusCategory recentClientStatus;
 
 /**
  @brief Stores reference on session with pre-configured options useful for 'non-subscription' API 
@@ -93,6 +98,15 @@
  @since 4.0
  */
 - (void)processRequest:(PNRequest *)request;
+
+/**
+ @brief      Notify about request processing error.
+ @discussion In most cases this method will be used by client itself to report about API calls
+             processing issues (incomplete or unacceptable parameters has been passed to methods).
+
+ @since 4.0
+ */
+- (void)handleRequestFailure:(PNRequest *)request withError:(NSError *)error;
 
 /**
  @brief  Handle successful request task execution with further building of result and status 
@@ -123,6 +137,60 @@
  */
 - (void)handleRequestFailure:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
                     andError:(NSError *)error;
+
+/**
+ @brief  Terminate any long-poll based tasks.
+
+ @since 4.0
+ */
+- (void)cancelAllLongPollRequests;
+
+
+///------------------------------------------------
+/// @name Events notification
+///------------------------------------------------
+
+/**
+ @brief  Notify user about processing results by calling completion block with specified result and
+         status on callback queue.
+
+ @param block  Reference on completion block which has been passed by user during API call.
+ @param result Reference on API request processing results.
+ @param status Reference on API request processing status (mostly reports about errors).
+
+ @since 4.0
+ */
+- (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result
+        andStatus:(PNStatus *)status;
+
+
+///------------------------------------------------
+/// @name Processing
+///------------------------------------------------
+
+/**
+ @brief      Default request result processing method which will return corresponding objects
+             depending on request results data.
+ @discussion This method mostly used by API endpoints which doesn't require additional data 
+             pre-processing before objects will be passed further.
+ 
+ @param result Reference on address pointer where request's result object should be stored.
+ @param status Reference on address pointer where request's processing status object should be 
+               stored.
+ @param request Reference on request which should be processed and correspondoing objects generated.
+ 
+ @since 4.0
+ */
+- (void)getResult:(PNResult **)result andStatus:(PNStatus **)status forRequest:(PNRequest *)request;
+
+/**
+ @brief  Compile status object with all client state information which is available at this moment.
+ 
+ @param status Reference on object which should be completed with client state.
+ 
+ @since 4.0
+ */
+- (void)completeStatusObject:(PNStatus *)status;
 
 #pragma mark -
 

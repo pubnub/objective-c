@@ -6,13 +6,35 @@
 #import "PubNub+History.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import "PNStatus+Private.h"
+#import "PNResult+Private.h"
+#import "PNErrorCodes.h"
 #import "PNHelpers.h"
+#import "PNResult.h"
 #import "PNAES.h"
+#import "PNLog.h"
 
 
 #pragma mark Private interface
 
 @interface PubNub (HistoryPrivate)
+
+
+#pragma mark - Handlers
+
+/**
+ @brief  History request results handling and pre-processing before notify to completion blocks (if
+         required at all).
+ 
+@param request   Reference on base request which is used for communication with \b PubNub service.
+                 Object also contains request processing results.
+ @param block    History pull processing completion block which pass two arguments: \c result - in
+                 case of successful request processing \c data field will contain results of history
+                 request operation; \c status - in case if error occurred during request processing.
+ 
+ @since 4.0
+ */
+- (void)handleHistoryRequest:(PNRequest *)request withCompletion:(PNCompletionBlock)block;
 
 
 #pragma mark - Processing
@@ -103,11 +125,10 @@
     }
     // Clamp limit to allowed values.
     limit = MIN(limit, (NSUInteger)100);
-    
-    __weak __typeof(self) weakSelf = self;
-    
+
     // Dispatching async on private queue which is able to serialize access with client
     // configuration data.
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
@@ -121,20 +142,64 @@
         }
         if (endDate) {
             
-            parameters[@"end"] = startDate;
+            parameters[@"end"] = endDate;
         }
         NSMutableString *path = [NSMutableString stringWithFormat:@"/v2/history/sub-key/%@/channel/%@",
                                  subscribeKey, [PNString percentEscapedString:channel]];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:PNHistoryOperation
-                                         withCompletion:block];
+        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                          forOperation:PNHistoryOperation
+                                                        withCompletion:^{
+                                                            
+            __strong __typeof(self) strongSelfForResponse = weakSelf;
+            [strongSelfForResponse handleHistoryRequest:request withCompletion:[block copy]];
+        }];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedHistoryResponse:rawData];
         };
-        [strongSelf processRequest:request];
+        
+        DDLogAPICall(@"<PubNub> %@ for '%@' channel%@%@ with %@ limit%@.",
+                     (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
+                     (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
+                     (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limit),
+                     (shouldIncludeTimeToken ? @" (including message time tokens)" : @""));
+
+        // Ensure what all required fields passed before starting processing.
+        if ([channel length]) {
+
+            [strongSelf processRequest:request];
+        }
+        // Notify about incomplete parameters set.
+        else {
+
+            NSString *description = @"Channel not specified.";
+            NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                                 code:kPNAPIUnacceptableParameters
+                                             userInfo:@{NSLocalizedDescriptionKey:description}];
+            [strongSelf handleRequestFailure:request withError:error];
+        }
     });
+}
+
+
+#pragma mark - Handlers
+
+- (void)handleHistoryRequest:(PNRequest *)request withCompletion:(PNCompletionBlock)block; {
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    PNStatus *status = nil;
+    PNResult *result = nil;
+    [self getResult:&result andStatus:&status forRequest:request];
+    if (result && result.data[@"decryptError"]) {
+        
+        status = [PNStatus statusFromResult:result];
+        status.category = PNDecryptionErrorCategory;
+        NSMutableDictionary *updatedData = [result.data mutableCopy];
+        [updatedData removeObjectForKey:@"decryptError"];
+        status.data = updatedData;
+    }
+    [self callBlock:block status:NO withResult:result andStatus:status];
 }
 
 
@@ -149,8 +214,8 @@
     // Array is valid response type for history request.
     if ([response isKindOfClass:[NSArray class]] && [(NSArray *)response count] == 3) {
         
-        NSDictionary *data = @{@"start":(NSArray *)response[1], @"end":(NSArray *)response[2],
-                               @"messages":[NSMutableArray new]};
+        NSMutableDictionary *data = [@{@"start":(NSArray *)response[1], @"end":(NSArray *)response[2],
+                                       @"messages":[NSMutableArray new]} mutableCopy];
         [(NSArray *)response[0] enumerateObjectsUsingBlock:^(id messageObject,
                                                              NSUInteger messageObjectIdx,
                                                              BOOL *messageObjectEnumeratorStop) {
@@ -174,23 +239,27 @@
                                           andError:&decryptionError];
                 if (!decryptionError) {
                     
-                    message = [NSString stringWithUTF8String:[eventData bytes]];
+                    message = [[NSString alloc] initWithData:eventData
+                                                    encoding:NSUTF8StringEncoding];
+
+                    // In case if decrypted message (because of error suppression) is equal to
+                    // original message, there is no need to retry JSON de-serialization.
                     if (![message isEqualToString:messageObject]) {
                         
                         message = [PNJSON JSONObjectFrom:message withError:nil];
                     }
                 }
-            }
-            if (message) {
-                
-                if (timeToken) {
-                    
-                    [data[@"messages"] addObject:@{@"message":message, @"tt":timeToken}];
-                }
                 else {
-                    
-                    [data[@"messages"] addObject:message];
+
+                    DDLogAESError(@"<PubNub> History entry decryption error: %@", decryptionError);
+                    data[@"decryptError"] = @YES;
                 }
+            }
+
+            if (message) {
+
+                message = (timeToken ? @{@"message":message, @"tt":timeToken} : message);
+                [data[@"messages"] addObject:message];
             }
         }];
         processedResponse = data;

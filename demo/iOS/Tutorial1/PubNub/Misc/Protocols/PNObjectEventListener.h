@@ -30,10 +30,12 @@
  @param client  Reference on \b PubNub client which triggered this callback method call.
  @param message Reference on \b PNResult instance which store message information in \c data 
                 property.
+ @param status  Additional status information which may arrive with messages (for example decryption
+                error).
  
  @since 4.0
  */
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message;
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status;
 
 /**
  @brief  Notify listener about new presence events which arrived from one of remote data object's 

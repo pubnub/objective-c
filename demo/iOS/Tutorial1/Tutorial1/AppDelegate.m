@@ -81,9 +81,13 @@
 
 /********************************** Subscribe Loop Listeners  Start ********************************/
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message {
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status {
 
     NSLog(@"Did receive message: %@", message.data);
+    if (status.isError) {
+        
+        NSLog(@"Message error: %@", @(status.category));
+    }
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
@@ -96,7 +100,7 @@
     // Easily filter errors vs informational events with .isError attribute
     if (!status.isError) {
 
-        NSLog(@"*** status.category is: %d", status.category);
+        NSLog(@"*** status.category is: %@", @(status.category));
 
         if (status.category == PNConnectedCategory) {
 

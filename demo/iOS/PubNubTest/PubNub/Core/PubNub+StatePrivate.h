@@ -50,6 +50,16 @@
  */
 - (void)mergeWithState:(NSDictionary *)state;
 
+/**
+ @brief  Overwrite client state information bound to specified \c object.
+
+ @param state  State which should replace cached information.
+ @param object Name of the object for which new data should be applied.
+
+ @since 4.0
+ */
+- (void)setState:(NSDictionary *)state forObject:(NSString *)object;
+
 #pragma mark -
 
 

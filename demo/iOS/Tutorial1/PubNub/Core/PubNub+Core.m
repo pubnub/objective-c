@@ -40,6 +40,13 @@
 @property (nonatomic, assign) PNStatusCategory recentClientStatus;
 
 /**
+ @brief  Stores whether remote service ping active at this moment or not.
+ 
+ @since 4.0
+ */
+@property (nonatomic, assign, getter = pingingRemoteService) BOOL pingRemoteService;
+
+/**
  @brief Stores reference on session with pre-configured options useful for 'subscription' API group
         with long-polling.
  
@@ -719,18 +726,19 @@
         strongSelf.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:strongSelf.origin];
         [strongSelf.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
             
+            __strong __typeof(self) strongSelfForHandler = weakSelf;
             if (status == AFNetworkReachabilityStatusReachableViaWiFi) {
                 
                 DDLogReachability(@"<PubNub> Network available via WiFi");
             } else if (status == AFNetworkReachabilityStatusReachableViaWWAN) {
                 
                 DDLogReachability(@"<PubNub> Network available via WWAN");
-            } else if (status == AFNetworkReachabilityStatusNotReachable) {
+            } else if (status == AFNetworkReachabilityStatusNotReachable &&
+                       strongSelfForHandler.reachabilityStatus != status) {
                 
                 DDLogReachability(@"<PubNub> Network not available");
             }
             
-            __strong __typeof(self) strongSelfForHandler = weakSelf;
             AFNetworkReachabilityStatus previousStatus = strongSelfForHandler.reachabilityStatus;
             strongSelfForHandler.reachabilityStatus = status;
             if (previousStatus == AFNetworkReachabilityStatusNotReachable &&
@@ -773,27 +781,37 @@
 
 - (void)startRemoteServicePing {
     
-    // Try to request 'time' API to ensure what network really available.
     __weak __typeof(self) weakSelf = self;
-    [self timeWithCompletion:^(PNResult *result, PNStatus *requestStatus) {
+    dispatch_async([self serviceQueue], ^{
         
-        __strong __typeof(self) strongSelfForResponse = weakSelf;
-        if (result) {
+        __strong __typeof(self) strongSelf = weakSelf;
+        if (!strongSelf.pingingRemoteService) {
             
-            [strongSelfForResponse restoreSubscriptionCycleIfRequired];
-            [strongSelfForResponse startHeartbeatIfRequired];
-        }
-        else if (strongSelfForResponse.reachabilityManager &&
-                 strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusNotReachable) {
+            strongSelf.pingRemoteService = YES;
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
-                           dispatch_get_main_queue(), ^{
+            // Try to request 'time' API to ensure what network really available.
+            [strongSelf timeWithCompletion:^(PNResult *result, PNStatus *requestStatus) {
                 
-                __strong __typeof(self) strongSelfForDelayed = weakSelf;
-                [strongSelfForDelayed startRemoteServicePing];
-            });
+                __strong __typeof(self) strongSelfForResponse = weakSelf;
+                if (result) {
+                    
+                    [strongSelfForResponse restoreSubscriptionCycleIfRequired];
+                    [strongSelfForResponse startHeartbeatIfRequired];
+                }
+                else if (strongSelfForResponse.reachabilityManager &&
+                         strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusNotReachable) {
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
+                                   dispatch_get_main_queue(), ^{
+                                       
+                                       __strong __typeof(self) strongSelfForDelayed = weakSelf;
+                                       [strongSelfForDelayed startRemoteServicePing];
+                                   });
+                }
+                strongSelfForResponse.pingRemoteService = NO;
+            }];
         }
-    }];
+    });
 }
 
 
@@ -879,7 +897,7 @@
             [strongSelf handleRequestSuccess:request withTask:task andData:responseObject];
         };
         void(^failure)(id, id) = ^(id task, id error) {
-
+            
             __strong __typeof(self) strongSelf = weakSelf;
             [strongSelf handleRequestFailure:request withTask:task andError:error];
         };
@@ -1053,7 +1071,7 @@
         
         if (status.isError) {
             
-            DDLogFailureStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
+            DDLogFailureStatus(@"<PubNubF> %@", [status stringifiedRepresentation]);
         }
         else {
             

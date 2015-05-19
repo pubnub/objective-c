@@ -100,7 +100,7 @@
             
             self.category = PNAcknowledgmentCategory;
         }
-        else {
+        else if (self.category == PNUnknownCategory) {
             
             // Try extract category basing on response status codes.
             self.category = [self categoryTypeFromStatusCode:request.response.response.statusCode];
@@ -118,13 +118,18 @@
             self.data = ([self dataParsedAsError:request.response.data]?: [self dataFromError:error]);
         }
         self.data = (([self.data count] ? self.data : [self dataFromError:error]) ?: request.response.data);
-        if (self.category == PNUnknownCategory) {
-            
-            NSLog(@"<PubNub> Status with unknown operation: %@", [self dictionaryRepresentation]);
-        }
     }
     
     return self;
+}
+
+- (void)setCategory:(PNStatusCategory)category {
+    
+    _category = category;
+    if (_category == PNDecryptionErrorCategory) {
+        
+        self.error = YES;
+    }
 }
 
 - (void)revertToOriginalCategory {
@@ -295,7 +300,8 @@
                                        @"UUID": (self.uuid?: @"uknonwn"),
                                        @"Authorization": (self.authKey?: @"not set"),
                                        @"Time": @{@"Current": (self.currentTimetoken?: @(0)),
-                                                  @"Previous": (self.previousTimetoken?: @(0))}}];
+                                                  @"Previous": (self.previousTimetoken?: @(0))},
+                                       @"Error": (self.isError ? @"YES" : @"NO")}];
     if ([self.channels count] || [self.channelGroups count]) {
         
         status[@"Objects"] = [NSMutableDictionary new];

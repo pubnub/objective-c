@@ -23,6 +23,13 @@
  */
 - (void)startHeartbeatIfRequired;
 
+/**
+ @brief  In case if there is active heartbeat timer it will be stopped.
+
+ @since 4.0
+ */
+- (void)stopHeartbeatIfPossible;
+
 #pragma mark -
 
 

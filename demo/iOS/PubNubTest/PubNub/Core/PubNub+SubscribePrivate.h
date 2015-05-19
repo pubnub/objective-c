@@ -11,25 +11,15 @@
 @interface PubNub (SubscribePrivate)
 
 
-#pragma mark - Subscription information modification
+#pragma mark - Subscription
 
 /**
- @brief  Retrieve stored current subscription time token information.
- 
- @return Cached current time token information or \b 0 if requested for first time.
+ @brief  Try restore subscription cycle by using \b 0 time token and if required try to catch up on
+         previous subscribe time token (basing on user configuration).
  
  @since 4.0
  */
-- (NSNumber *)currentTimeToken;
-
-/**
- @brief  Retrieve stored previous subscription time token information.
- 
- @return Cached previuos time token information or \b 0 if requested for first time.
- 
- @since 4.0
- */
-- (NSNumber *)previousTimeToken;
+- (void)restoreSubscriptionCycleIfRequired;
 
 #pragma mark -
 
