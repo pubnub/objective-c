@@ -13,7 +13,11 @@
 #import "GCDGroup.h"
 #import "GCDWrapper.h"
 
+#import "TestConfigurator.h"
+
 @interface PNCoreTests : XCTestCase
+
+/*
 
 @property (nonatomic, copy) NSString *publishKey;
 @property (nonatomic, copy) NSString *subscribeKey;
@@ -33,31 +37,56 @@
 - (void)commitConfiguration:(dispatch_block_t)block;
 + (instancetype)clientWithPublishKey:(NSString *)publishKey
                      andSubscribeKey:(NSString *)subscribeKey;
+ */
+
 @end
 
 
-@implementation PNCoreTests  {
-    
-    PubNub *_pubNub;
-    GCDGroup *_resGroup;
-    NSData *_devicePushToken;
+@implementation PNCoreTests {
+    PubNub *_client;
 }
 
 - (void)setUp {
     
     [super setUp];
-    
-    _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
-    _pubNub.uuid = @"testUUID";
-    _pubNub.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-    
-    _devicePushToken = nil;
 }
 
 - (void)tearDown {
     
-    _pubNub =nil;
+    _client = nil;
     [super tearDown];
+}
+
+#pragma mark - Tests
+
+- (void)testSimpleInstance {
+    
+    _client = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
+    
+    if (_client == nil) {
+        XCTFail(@"Cannot allocate client");
+    }
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Checking configuration to work"];
+    
+    // we use it just to understand that we configure client appropriate way
+    [_client timeWithCompletion:^(PNResult *result, PNStatus *status) {
+        if (result) {
+            NSLog(@"Time token: %@", result.data);
+        }
+        else {
+            
+            XCTFail(@"Request failed: %@", status);
+        }
+        
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        if (error) {
+            XCTFail(@"Error: %@", error);
+        }
+    }];
 }
 
 - (void)testCommitConfiguration {

@@ -60,6 +60,7 @@
 		9688CB711B0A817A003BA07F /* PNLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CB521B0A817A003BA07F /* PNLog.m */; };
 		9688CB721B0A817A003BA07F /* PNLogFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CB541B0A817A003BA07F /* PNLogFileManager.m */; };
 		9688CB731B0A82E9003BA07F /* PNRequestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CAB11B0A3B59003BA07F /* PNRequestTests.m */; };
+		9688CB761B0B5C36003BA07F /* TestConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CB741B0B5C36003BA07F /* TestConfigurator.m */; };
 		A5269DDB1B04CE1D001E64EF /* PNStatusTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5269DDA1B04CE1D001E64EF /* PNStatusTests.m */; };
 		A5BAF2BD1B03A403001A5DE7 /* PNResultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BAF2BC1B03A403001A5DE7 /* PNResultTests.m */; };
 /* End PBXBuildFile section */
@@ -174,6 +175,8 @@
 		9688CB581B0A817A003BA07F /* PNStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNStructures.h; sourceTree = "<group>"; };
 		9688CB5A1B0A817A003BA07F /* PNObjectEventListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObjectEventListener.h; sourceTree = "<group>"; };
 		9688CB5B1B0A817A003BA07F /* PubNub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
+		9688CB741B0B5C36003BA07F /* TestConfigurator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConfigurator.m; sourceTree = "<group>"; };
+		9688CB751B0B5C36003BA07F /* TestConfigurator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestConfigurator.h; sourceTree = "<group>"; };
 		96C9098F1B0385E800F1DC10 /* PNRequestTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNRequestTests.m; sourceTree = "<group>"; };
 		9DD086142799BE46D6F6A432 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5269DDA1B04CE1D001E64EF /* PNStatusTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNStatusTests.m; sourceTree = "<group>"; };
@@ -253,6 +256,8 @@
 		9671F0CB1AFCB1440037E226 /* PubNubTestTests */ = {
 			isa = PBXGroup;
 			children = (
+				9688CB751B0B5C36003BA07F /* TestConfigurator.h */,
+				9688CB741B0B5C36003BA07F /* TestConfigurator.m */,
 				9688C9CD1B064EBD003BA07F /* CoreTests */,
 				96C9098E1B0385E800F1DC10 /* DataTests */,
 				9671F0CC1AFCB1440037E226 /* Supporting Files */,
@@ -679,6 +684,7 @@
 				9671F1351AFCB2D40037E226 /* GCDWrapper.m in Sources */,
 				9688CAB81B0A3B59003BA07F /* PNPresenceTests.m in Sources */,
 				9688CABB1B0A3B59003BA07F /* PNStateTests.m in Sources */,
+				9688CB761B0B5C36003BA07F /* TestConfigurator.m in Sources */,
 				9671F13B1AFCB2D40037E226 /* PNTestManager.m in Sources */,
 				A5269DDB1B04CE1D001E64EF /* PNStatusTests.m in Sources */,
 				9688CAB51B0A3B59003BA07F /* PNChannelGroupTests.m in Sources */,

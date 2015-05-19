@@ -40,7 +40,7 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
 
 - (void)tearDown {
     
-    _pubNub =nil;
+    _pubNub = nil;
     [super tearDown];
 }
 
