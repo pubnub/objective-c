@@ -634,26 +634,11 @@
         }
         strongSelf->_recentClientStatus = currentState;
         
-        // Check whether client currently connected or not.
-        if (currentState == PNConnectedCategory) {
-            
-            [strongSelf startReachability];
-        }
-        // Looks like client completelly disconnected from all remote data objects live feed and
-        // reachability should be turned off.
-        else if (currentState == PNDisconnectedCategory) {
-            
-            [strongSelf stopReachability];
-        }
         // Check whether client reported unexpected disconnection.
-        else if (currentState == PNUnexpectedDisconnectCategory) {
+        if (currentState == PNUnexpectedDisconnectCategory) {
             
             // Check whether client unexpectedly disconnected while tried to subscribe or not.
-            if (previousState == PNUnknownCategory || previousState == PNDisconnectedCategory) {
-                
-                [strongSelf startReachability];
-            }
-            else {
+            if (previousState != PNUnknownCategory && previousState != PNDisconnectedCategory) {
                 
                 // Dispatching check block with small delay, which will alloow to fire reachability
                 // change event.
