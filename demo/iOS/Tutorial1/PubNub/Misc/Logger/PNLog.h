@@ -5,21 +5,21 @@
 #pragma mark Log macro declaration
 
 
-#define DDLogClientInfo(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNInfoLogLevel,  0, nil, \
+#define DDLogClientInfo(frmt, ...) LOG_MAYBE(NO, ddLogLevel, PNInfoLogLevel,  0, nil, \
                                              __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogReachability(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNReachabilityLogLevel,  0, nil, \
+#define DDLogReachability(frmt, ...) LOG_MAYBE(NO, ddLogLevel, PNReachabilityLogLevel,  0, nil, \
                                                __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogRequest(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNRequestLogLevel,  0, nil, \
+#define DDLogRequest(frmt, ...) LOG_MAYBE(NO, ddLogLevel, PNRequestLogLevel,  0, nil, \
                                           __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogResult(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNResultLogLevel,  0, nil, \
+#define DDLogResult(frmt, ...) LOG_MAYBE(NO, ddLogLevel, PNResultLogLevel,  0, nil, \
                                          __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogStatus(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNStatusLogLevel,  0, nil, \
+#define DDLogStatus(frmt, ...) LOG_MAYBE(NO, ddLogLevel, PNStatusLogLevel,  0, nil, \
                                          __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogFailureStatus(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNFailureStatusLogLevel,  0, nil, \
+#define DDLogFailureStatus(frmt, ...) LOG_MAYBE(NO, ddLogLevel, PNFailureStatusLogLevel,  0, nil, \
                                                 __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogAESError(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNAESErrorLogLevel,  0, nil, \
+#define DDLogAESError(frmt, ...) LOG_MAYBE(NO, ddLogLevel, PNAESErrorLogLevel,  0, nil, \
                                            __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogAPICall(frmt, ...) LOG_MAYBE(YES, ddLogLevel, PNAESErrorLogLevel,  0, nil, \
+#define DDLogAPICall(frmt, ...) LOG_MAYBE(NO, ddLogLevel, PNAESErrorLogLevel,  0, nil, \
                                           __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
 

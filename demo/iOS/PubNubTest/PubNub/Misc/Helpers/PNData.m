@@ -40,7 +40,7 @@
     }
     
     
-    return stringBuffer;
+    return [stringBuffer copy];
 }
 
 + (NSString *)base64StringFrom:(NSData *)data {

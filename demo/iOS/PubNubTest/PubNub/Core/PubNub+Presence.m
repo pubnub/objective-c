@@ -5,10 +5,13 @@
  */
 #import "PubNub+Presence.h"
 #import "PubNub+StatePrivate.h"
+#import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import <libkern/OSAtomic.h>
 #import "PubNub+Subscribe.h"
 #import <objc/runtime.h>
+#import "PNErrorCodes.h"
 #import "PNHelpers.h"
 
 
@@ -21,6 +24,7 @@
  */
 static const void *kPubNubHeartbeatTimerQueue = &kPubNubHeartbeatTimerQueue;
 static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKey;
+static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
 
 
 #pragma mark - Protected interface declaration
@@ -40,13 +44,8 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
  */
 - (dispatch_queue_t)heartbeatTimerAccessQueue;
 
-- (BOOL)isHeartbeatTimerActive;
-- (void)setHeartbeatTimerActive:(BOOL)active;
 
-- (void)handleHeartbeatTimer;
-
-
-#pragma mark - Channel group here now
+#pragma mark - Channel/Channel group here now
 
 /**
  @brief  Request information about subscribers on specific remote data object live feeds.
@@ -66,6 +65,16 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
  */
 - (void)hereNowData:(PNHereNowDataType)type forChannel:(BOOL)forChannel withName:(NSString *)object
      withCompletion:(PNCompletionBlock)block;
+
+
+#pragma mark - Heartbeat
+
+/**
+ @brief  Process heartbeat timer fire event and send heartbeat request to \b PubNub service.
+
+ @since 4.0
+ */
+- (void)handleHeartbeatTimer;
 
 
 #pragma mark - Processing
@@ -94,7 +103,7 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
  
  @since 4.0
  */
-- (NSArray *)processedPresenceWhereNowResponse:(id)response;
+- (NSDictionary *)processedPresenceWhereNowResponse:(id)response;
 
 #pragma mark -
 
@@ -111,35 +120,24 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
 
 - (dispatch_queue_t)heartbeatTimerAccessQueue {
     
+    static OSSpinLock _heartbeatTimerAccessQueueSpinLock;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        dispatch_queue_t queue = dispatch_queue_create("com.pubnub.presence.heartbeat",
-                                                       DISPATCH_QUEUE_CONCURRENT);
+        _heartbeatTimerAccessQueueSpinLock = OS_SPINLOCK_INIT;
+    });
+    OSSpinLockLock(&_heartbeatTimerAccessQueueSpinLock);
+    dispatch_queue_t queue = objc_getAssociatedObject(self, kPubNubHeartbeatTimerQueue);
+    if (!queue) {
+        
+        queue = dispatch_queue_create("com.pubnub.presence.heartbeat", DISPATCH_QUEUE_CONCURRENT);
+        dispatch_set_target_queue(queue, self.serviceQueue);
         objc_setAssociatedObject(self, kPubNubHeartbeatTimerQueue, queue,
                                  OBJC_ASSOCIATION_RETAIN);
-    });
+    }
+    OSSpinLockUnlock(&_heartbeatTimerAccessQueueSpinLock);
     
-    return objc_getAssociatedObject(self, kPubNubHeartbeatTimerQueue);
-}
-
-- (BOOL)isHeartbeatTimerActive {
-    
-    __block BOOL isHeartbeatTimerActive = NO;
-    dispatch_sync([self heartbeatTimerAccessQueue], ^{
-        
-        isHeartbeatTimerActive = [objc_getAssociatedObject(self, kPubNubHeartbeatTimerStateKey) boolValue];
-    });
-    
-    return isHeartbeatTimerActive;
-}
-- (void)setHeartbeatTimerActive:(BOOL)active {
-    
-    dispatch_barrier_async([self heartbeatTimerAccessQueue], ^{
-        
-        objc_setAssociatedObject(self, kPubNubHeartbeatTimerStateKey, @(active),
-                                 OBJC_ASSOCIATION_RETAIN);
-    });
+    return queue;
 }
 
 
@@ -185,11 +183,10 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
 
 - (void)hereNowData:(PNHereNowDataType)type forChannel:(BOOL)forChannel withName:(NSString *)object
      withCompletion:(PNCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
+
     // Dispatching async on private queue which is able to serialize access with client
     // configuration data.
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
@@ -203,7 +200,7 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
                 parameters[@"state"] = @"1";
             }
         }
-        if (!forChannel && object) {
+        if (!forChannel && [object length]) {
             
             parameters[@"channel-group"] = [PNString percentEscapedString:object];
         }
@@ -212,12 +209,26 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
         NSString *path = [NSString stringWithFormat:format, subscribeKey,
                           [PNString percentEscapedString:object]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:PNHereNowOperation withCompletion:block];
+                                           forOperation:PNHereNowOperation
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPresenceAuditionResponse:rawData];
         };
+        request.reportBlock = block;
+        
+        if (![object length]) {
+            
+            DDLogAPICall(@"<PubNub> Global 'here now' information with %@ data.",
+                         PNHereNowDataStrings[type]);
+        }
+        else {
+            
+            DDLogAPICall(@"<PubNub> Channel%@ 'here now' information for %@ with %@ data.",
+                         (!forChannel ? @" group" : @""), (object?: @"<error>"),
+                         PNHereNowDataStrings[type]);
+        }
         [strongSelf processRequest:request];
     });
 }
@@ -226,11 +237,10 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
 #pragma mark - Client where now
 
 - (void)whereNowUUID:(NSString *)uuid withCompletion:(PNCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
+
     // Dispatching async on private queue which is able to serialize access with client
     // configuration data.
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
@@ -238,13 +248,31 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
         NSString *path = [NSString stringWithFormat:@"/v2/presence/sub-key/%@/uuid/%@",
                           subscribeKey, [PNString percentEscapedString:uuid]];
         PNRequest *request = [PNRequest requestWithPath:path parameters:nil
-                                           forOperation:PNWhereNowOperation withCompletion:block];
+                                           forOperation:PNWhereNowOperation
+                                         withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedPresenceWhereNowResponse:rawData];
         };
-        [strongSelf processRequest:request];
+        request.reportBlock = block;
+        
+        DDLogAPICall(@"<PubNub> 'Where now' presence information for %@.", (uuid?: @"<error>"));
+
+        // Ensure what all required fields passed before starting processing.
+        if ([uuid length]) {
+            
+            [strongSelf processRequest:request];
+        }
+        // Notify about incomplete parameters set.
+        else {
+
+            NSString *description = @"UUID not specified.";
+            NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                                 code:kPNAPIUnacceptableParameters
+                                             userInfo:@{NSLocalizedDescriptionKey:description}];
+            [strongSelf handleRequestFailure:request withError:error];
+        }
     });
 }
 
@@ -252,35 +280,56 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
 #pragma mark - Heartbeat
 
 - (void)startHeartbeatIfRequired {
-    
-    __typeof(self) weakSelf = self;
-    if (![self isHeartbeatTimerActive]) {
-        
-        dispatch_async(self.configurationAccessQueue, ^{
-            
-            __strong __typeof(self) strongSelf = weakSelf;
-            if (strongSelf.presenceHeartbeatValue > 0) {
-                
-                [strongSelf setHeartbeatTimerActive:YES];
-                int64_t offset = (int64_t)((NSUInteger)strongSelf.presenceHeartbeatInterval * NSEC_PER_SEC);
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, offset), dispatch_get_main_queue(), ^{
-                    
-                    __strong __typeof(self) strongSelfForTimer = weakSelf;
-                    [strongSelfForTimer handleHeartbeatTimer];
-                });
-            }
+
+    // Stop previous heartbeat timer if it has been launched.
+    [self stopHeartbeatIfPossible];
+
+    // Dispatching async on private queue which is able to serialize access with client
+    // configuration data.
+    __weak __typeof(self) weakSelf = self;
+    dispatch_barrier_async([self heartbeatTimerAccessQueue], ^{
+
+        __strong __typeof__(self) strongSelf = weakSelf;
+        dispatch_queue_t timerQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue);
+        dispatch_source_set_event_handler(timer, ^{
+
+            __strong __typeof__(self) strongSelfForHandler = weakSelf;
+            [strongSelfForHandler handleHeartbeatTimer];
         });
-    }
+        uint64_t offset = (uint64_t)strongSelf.presenceHeartbeatInterval * NSEC_PER_SEC;
+        dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)offset);
+        dispatch_source_set_timer(timer, start, offset, NSEC_PER_SEC);
+        objc_setAssociatedObject(strongSelf, kPubNubHeartbeatTimer, timer, OBJC_ASSOCIATION_RETAIN);
+        dispatch_resume(timer);
+    });
+}
+
+- (void)stopHeartbeatIfPossible {
+
+    __weak __typeof(self) weakSelf = self;
+    dispatch_barrier_async([self heartbeatTimerAccessQueue], ^{
+
+        __strong __typeof__(self) strongSelf = weakSelf;
+        dispatch_source_t timer = objc_getAssociatedObject(strongSelf, kPubNubHeartbeatTimer);
+        if (timer != NULL && dispatch_source_testcancel(timer) == 0) {
+
+            dispatch_source_cancel(timer);
+        }
+        objc_setAssociatedObject(strongSelf, kPubNubHeartbeatTimer, nil, OBJC_ASSOCIATION_RETAIN);
+    });
 }
 
 - (void)handleHeartbeatTimer {
-    
-    __typeof(self) weakSelf = self;
-    [self setHeartbeatTimerActive:NO];
-    dispatch_async(self.configurationAccessQueue, ^{
+
+    // Dispatching async on private queue which is able to serialize access with client
+    // configuration data.
+    __weak __typeof(self) weakSelf = self;
+    dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
-        if (strongSelf.presenceHeartbeatValue > 0) {
+        if (strongSelf.presenceHeartbeatValue > 0 &&
+            ([[strongSelf channels] count] || [[strongSelf channelGroups] count])) {
             
             NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
             
@@ -290,7 +339,7 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
             NSString *groupsList = [PNChannel namesForRequest:[strongSelf channelGroups]];
             NSDictionary *state = [strongSelf state];
             
-            // Prepare uery parameters basing on available information.
+            // Prepare query parameters basing on available information.
             NSMutableDictionary *parameters = [NSMutableDictionary new];
             parameters[@"heartbeat"] = @(strongSelf.presenceHeartbeatValue);
             if ([groupsList length]) {
@@ -300,7 +349,7 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
             if ([state count]) {
                 
                 NSString *stateString = [PNJSON JSONStringFrom:state withError:nil];
-                if (stateString) {
+                if ([stateString length]) {
                     
                     parameters[@"state"] = stateString;
                 }
@@ -309,13 +358,17 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
                                                                        "/channel/%@/heartbeat",
                                      subscribeKey, channelsList];
             PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                               forOperation:PNTimeOperation
-                                             withCompletion:^(PNResult *result, PNStatus *status) {
+                                               forOperation:PNHeartbeatOperation
+                                             withCompletion:^{
                                                  
                 __strong __typeof(self) strongSelfForHandler = weakSelf;
                 [strongSelfForHandler startHeartbeatIfRequired];
             }];
             [strongSelf processRequest:request];
+        }
+        else {
+            
+            [strongSelf stopHeartbeatIfPossible];
         }
     });
 }
@@ -357,8 +410,8 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
             
             // Composing initial response content.
             NSMutableDictionary *data = [@{@"total_channels":response[@"payload"][@"total_channels"],
-                                           @"total_occupancy":response[@"payload"][@"total_occupancy"]
-                                           } mutableCopy];
+                                           @"total_occupancy":response[@"payload"][@"total_occupancy"],
+                                           @"channels": [NSMutableDictionary new]} mutableCopy];
             for (NSDictionary *channelName in response[@"payload"][@"channels"]) {
                 
                 NSDictionary *channelData = response[@"payload"][@"channels"][channelName];
@@ -369,7 +422,7 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
                     parsedChannelData[@"uuids"] = uuidParseBlock(channelData[@"uuids"]);
                 }
                 
-                data[channelName] = parsedChannelData;
+                data[@"channels"][channelName] = parsedChannelData;
             }
             processedResponse = data;
         }
@@ -387,16 +440,16 @@ static const void *kPubNubHeartbeatTimerStateKey = &kPubNubHeartbeatTimerStateKe
     return [processedResponse copy];
 }
 
-- (NSArray *)processedPresenceWhereNowResponse:(id)response {
+- (NSDictionary *)processedPresenceWhereNowResponse:(id)response {
     
     // To handle case when response is unexpected for this type of operation processed value sent
     // through 'nil' initialized local variable.
-    NSArray *processedResponse = nil;
+    NSDictionary *processedResponse = nil;
     
     // Dictionary is valid response type for where now response.
     if ([response isKindOfClass:[NSDictionary class]] && response[@"payload"][@"channels"]) {
         
-        processedResponse = response[@"payload"][@"channels"];
+        processedResponse = @{@"channels": response[@"payload"][@"channels"]};
     }
     
     return [processedResponse copy];

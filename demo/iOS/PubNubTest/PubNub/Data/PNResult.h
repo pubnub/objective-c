@@ -24,7 +24,7 @@
 
  @since 4.0
  */
-@property (nonatomic, readonly) PNOperationType operation;
+@property (nonatomic, readonly, assign) PNOperationType operation;
 
 /**
  @brief Stores reference on copy of original request which has been used to fetch or push data
@@ -32,14 +32,22 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSURLRequest *request;
+@property (nonatomic, readonly, copy) NSURLRequest *clientRequest;
 
 /**
- @brief Stores reference on original response body which hasn't been transformed yet.
+ @brief  Stores reference on headers which has been passed by \b PubNub service.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSDictionary *headers;
+
+/**
+ @brief Stores reference on original (not processed) response body which hasn't been transformed 
+        yet.
 
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSString *response;
+@property (nonatomic, readonly, copy) id response;
 
 /**
  @brief Stores reference on \b PubNub service host name or IP address against which \c request
@@ -55,7 +63,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly) NSInteger statusCode;
+@property (nonatomic, readonly, assign) NSInteger statusCode;
 
 /**
  @brief      Stores reference on processed \c response which is ready to use by user.

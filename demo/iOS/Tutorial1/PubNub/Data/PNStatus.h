@@ -28,13 +28,6 @@
 @property (nonatomic, readonly, assign) PNStatusCategory category;
 
 /**
- @brief  One of \b PNStatusCategory fields which provide a bit detailed information about issue.
-
- @since 4.0
-*/
-@property (nonatomic, readonly, assign) PNStatusCategory subCategory;
-
-/**
  @brief  Stores whether client currently used secured connection or not.
  
  @since 4.0
@@ -53,7 +46,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSArray *groups;
+@property (nonatomic, readonly, copy) NSArray *channelGroups;
 
 /**
  @brief  UUID which is currently used by client to identify user on \b PubNub service.

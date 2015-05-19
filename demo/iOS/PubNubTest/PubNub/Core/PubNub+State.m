@@ -6,8 +6,14 @@
 #import "PubNub+StatePrivate.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import <libkern/OSAtomic.h>
+#import "PNStatus+Private.h"
 #import <objc/runtime.h>
+#import "PNErrorCodes.h"
+#import "PNResponse.h"
 #import "PNHelpers.h"
+#import "PNResult.h"
+#import "PNStatus.h"
 
 
 #pragma mark Static
@@ -58,15 +64,14 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
  @param onChannel Whether state has been provided for channel or channel group.
  @param object    Name of remote data object which will store provided state information for 
                   \c uuid.
- @param block     State modification for user on remote data object processing completion block 
-                  which pass two arguments: \c result - in case of successful request processing 
-                  \c data field will contain results of client state update operation;
-                  \c status - in case if error occurred during request processing.
+ @param block     State modification for user on cahnnel processing completion block which pass only
+                  one argument - request processing status to report about how data pushing was 
+                  successful or not.
  
  @since 4.0
  */
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannel:(BOOL)onChannel
-        withName:(NSString *)object withCompletion:(PNCompletionBlock)block;
+        withName:(NSString *)object withCompletion:(PNStatusBlock)block;
 
 /**
  @brief  Retrieve state information for \c uuid on specified remote data object.
@@ -84,6 +89,43 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
  */
 - (void)stateForUUID:(NSString *)uuid onChannel:(BOOL)onChannel withName:(NSString *)object
       withCompletion:(PNCompletionBlock)block;
+
+
+#pragma mark - Handlers
+
+/**
+ @brief  Process client state modification request completion and notify observers about results.
+
+ @param request Reference on base request which is used for communication with \b PubNub service.
+                Object also contains request processing results.
+ @param uuid    Reference on unique user identifier for which state should be updated.
+ @param object  Name of remote data object for which state information for \c uuid had been bound.
+ @param block   State modification for user on cahnnel processing completion block which pass only 
+                one argument - request processing status to report about how data pushing was 
+                successful or not.
+
+ @since 4.0
+ */
+- (void)handleSetStateRequest:(PNRequest *)request forUUID:(NSString *)uuid
+                     atObject:(NSString *)object withCompletion:(PNStatusBlock)block;
+
+/**
+ @brief  Process client state audition request completion and notify observers about results.
+
+ @param request Reference on base request which is used for communication with \b PubNub service.
+                Object also contains request processing results.
+ @param uuid    Reference on unique user identifier for which state should be retrieved.
+ @param object  Name of remote data object from which state information for \c uuid will be pulled
+                out.
+ @param block   State audition for user on cahnnel processing completion block which pass two
+                arguments: \c result - in case of successful request processing \c data field will
+                contain results of client state retrieve operation; \c status - in case if error
+                occurred during request processing.
+
+ @since 4.0
+ */
+- (void)handleStateRequest:(PNRequest *)request forUUID:(NSString *)uuid
+                  atObject:(NSString *)object withCompletion:(PNCompletionBlock)block;
 
 
 #pragma mark - Processing
@@ -116,16 +158,23 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
 
 - (dispatch_queue_t)stateAccessQueue {
     
+    static OSSpinLock _stateAccessQueueSpinLock;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        dispatch_queue_t queue = dispatch_queue_create("com.pubnub.state.cache",
-                                                       DISPATCH_QUEUE_CONCURRENT);
+        _stateAccessQueueSpinLock = OS_SPINLOCK_INIT;
+    });
+    OSSpinLockLock(&_stateAccessQueueSpinLock);
+    dispatch_queue_t queue = objc_getAssociatedObject(self, kPubNubStateCacheSynchronizationQueue);
+    if (!queue) {
+        
+        queue = dispatch_queue_create("com.pubnub.state.cache", DISPATCH_QUEUE_CONCURRENT);
         objc_setAssociatedObject(self, kPubNubStateCacheSynchronizationQueue, queue,
                                  OBJC_ASSOCIATION_RETAIN);
-    });
+    }
+    OSSpinLockUnlock(&_stateAccessQueueSpinLock);
     
-    return objc_getAssociatedObject(self, kPubNubStateCacheSynchronizationQueue);
+    return queue;
 }
 
 - (NSMutableDictionary *)mutableState {
@@ -199,28 +248,47 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
 }
 
 - (void)mergeWithState:(NSDictionary *)state {
-    
+
+    if ([state count]) {
+
+        NSMutableDictionary *mutableState = [self mutableState];
+        dispatch_barrier_async([self stateAccessQueue], ^{
+
+            [state enumerateKeysAndObjectsUsingBlock:^(NSString *objectName,
+                    NSDictionary *stateForObject,
+                    BOOL *stateEnumeratorStop) {
+
+                // Check whether cache already store information for specified object or not.
+                if (mutableState[objectName] != nil) {
+
+                    // Clean up cached version (if required)
+                    NSMutableDictionary *cachedObjectState = [mutableState[objectName] mutableCopy];
+                    [cachedObjectState addEntriesFromDictionary:stateForObject];
+                    mutableState[objectName] = [cachedObjectState copy];
+                }
+                else {
+
+                    mutableState[objectName] = stateForObject;
+                }
+            }];
+
+        });
+    }
+}
+
+- (void)setState:(NSDictionary *)state forObject:(NSString *)object {
+
     NSMutableDictionary *mutableState = [self mutableState];
     dispatch_barrier_async([self stateAccessQueue], ^{
-        
-        [state enumerateKeysAndObjectsUsingBlock:^(NSString *objectName,
-                                                   NSDictionary *stateForObject,
-                                                   BOOL *stateEnumeratorStop) {
-            
-            // Check whether cache already store information for specified object or not.
-            if (mutableState[objectName] != nil) {
-                
-                // Clean up cached version (if required)
-                NSMutableDictionary *cachedObjectState = [mutableState[objectName] mutableCopy];
-                [cachedObjectState addEntriesFromDictionary:stateForObject];
-                mutableState[objectName] = [cachedObjectState copy];
-            }
-            else {
-                
-                mutableState[objectName] = stateForObject;
-            }
-        }];
-        
+
+        if ([state count]) {
+
+            mutableState[object] = state;
+        }
+        else {
+
+            [mutableState removeObjectForKey:object];
+        }
     });
 }
 
@@ -228,54 +296,71 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
 #pragma mark - Client state information manipulation
 
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannel:(NSString *)channel
-  withCompletion:(PNCompletionBlock)block {
+  withCompletion:(PNStatusBlock)block {
     
     [self setState:state forUUID:uuid onChannel:YES withName:channel withCompletion:block];
 }
 
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannelGroup:(NSString *)group
-  withCompletion:(PNCompletionBlock)block {
+  withCompletion:(PNStatusBlock)block {
     
     [self setState:state forUUID:uuid onChannel:NO withName:group withCompletion:block];
 }
 
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannel:(BOOL)onChannel
-        withName:(NSString *)object withCompletion:(PNCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
+        withName:(NSString *)object withCompletion:(PNStatusBlock)block {
+
     // Dispatching async on private queue which is able to serialize access with client
     // configuration data.
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
         NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
         NSString *channel = (onChannel ? [PNString percentEscapedString:object] : @".");
         NSString *stateString = [PNJSON JSONStringFrom:state withError:NULL];
-        NSMutableDictionary *parameters = [@{@"state": stateString} mutableCopy];
-        if (!onChannel) {
+        NSMutableDictionary *parameters = [@{@"state": (stateString?:@"{}")} mutableCopy];
+        if (!onChannel && [object length]) {
             
             parameters[@"channel-group"] = [PNString percentEscapedString:object];
         }
         NSString *path = [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/uuid/%@/data",
                           subscribeKey, channel, [PNString percentEscapedString:uuid]];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:PNSetStateOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status) {
-                                             
-                                             // TODO: Update cached state.
-                                             
-                                             if (block) {
-                                                 
-                                                 block(result, status);
-                                             }
-                                         }];
+        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                          forOperation:PNSetStateOperation
+                                                        withCompletion:^{
+
+            __strong __typeof(self) strongSelfForResults = weakSelf;
+             [strongSelfForResults handleSetStateRequest:request forUUID:uuid atObject:object
+                                          withCompletion:[block copy]];
+        }];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedStateResponse:rawData];
         };
-        [strongSelf processRequest:request];
+        
+        DDLogAPICall(@"<PubNub> Set %@'s state on '%@' channel%@: %@.", (uuid?: @"<error>"),
+                     (object?: @"<error>"), (!onChannel ? @" group" : @""), parameters[@"state"]);
+
+        // Ensure what all required fields passed before starting processing.
+        if ([uuid length] && [object length] && [PNDictionary hasFlattenedContent:state]) {
+
+            [strongSelf processRequest:request];
+        }
+        // Notify about incomplete parameters set.
+        else {
+
+            NSString *description = @"UUID not specified.";
+            if (![object length]) {
+
+                description = (onChannel ? @"Channel not specified":@"Channel group not specified");
+            }
+            NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                                 code:kPNAPIUnacceptableParameters
+                                             userInfo:@{NSLocalizedDescriptionKey:description}];
+            [strongSelf handleRequestFailure:request withError:error];
+        }
     });
 }
 
@@ -296,40 +381,90 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
 
 - (void)stateForUUID:(NSString *)uuid onChannel:(BOOL)onChannel withName:(NSString *)object
       withCompletion:(PNCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
+
     // Dispatching async on private queue which is able to serialize access with client
     // configuration data.
+    __weak __typeof(self) weakSelf = self;
     dispatch_async(self.serviceQueue, ^{
         
         __strong __typeof(self) strongSelf = weakSelf;
         NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
         NSString *channel = (onChannel ? [PNString percentEscapedString:object] : @".");
         NSDictionary *parameters = nil;
-        if (!onChannel) {
+        if (!onChannel && [object length]) {
+
             parameters = @{@"channel-group": [PNString percentEscapedString:object]};
         }
         NSString *path = [NSString stringWithFormat:@"/v2/presence/sub-key/%@/channel/%@/uuid/%@",
                           subscribeKey, channel, [PNString percentEscapedString:uuid]];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:PNStateOperation
-                                         withCompletion:^(PNResult *result, PNStatus *status) {
-                                             
-                                             // TODO: Update cached state.
-                                             
-                                             if (block) {
-                                                 
-                                                 block(result, status);
-                                             }
-                                         }];
+        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                          forOperation:PNStateOperation
+                                                        withCompletion:^{
+
+            __strong __typeof(self) strongSelfForResults = weakSelf;
+            [strongSelfForResults handleStateRequest:request forUUID:uuid atObject:object
+                                      withCompletion:[block copy]];
+        }];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedStateResponse:rawData];
         };
-        [strongSelf processRequest:request];
+
+        // Ensure what all required fields passed before starting processing.
+        if ([uuid length] && [object length]) {
+
+            [strongSelf processRequest:request];
+        }
+        // Notify about incomplete parameters set.
+        else {
+
+            NSString *description = @"UUID not specified.";
+            if (![object length]) {
+
+                description = (onChannel ? @"Channel not specified":@"Channel group not specified");
+            }
+            NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                                 code:kPNAPIUnacceptableParameters
+                                             userInfo:@{NSLocalizedDescriptionKey:description}];
+            [strongSelf handleRequestFailure:request withError:error];
+        }
     });
+}
+
+
+#pragma mark - Handlers
+
+- (void)handleSetStateRequest:(PNRequest *)request forUUID:(NSString *)uuid
+                     atObject:(NSString *)object withCompletion:(PNStatusBlock)block {
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    PNStatus *status = [PNStatus statusForRequest:request withError:request.response.error];
+    
+    // Check whether state modification to the client has been successful or not.
+    if (!request.response.error && request.response.response.statusCode == 200) {
+
+        // Overwrite cached state information.
+        [self setState:(status.data[@"state"]?: @{}) forObject:object];
+    }
+    [self callBlock:block status:YES withResult:nil andStatus:status];
+}
+
+- (void)handleStateRequest:(PNRequest *)request forUUID:(NSString *)uuid
+                  atObject:(NSString *)object withCompletion:(PNCompletionBlock)block {
+
+    // Construct corresponding data objects which should be delivered through completion block.
+    PNResult *result = nil;
+    PNStatus *status = nil;
+    [self getResult:&result andStatus:&status forRequest:request];
+    
+    // Check whether state successfully fetched or not.
+    if (result) {
+
+        // Overwrite cached state information.
+        [self setState:result.data forObject:object];
+    }
+    [self callBlock:block status:NO withResult:result andStatus:status];
 }
 
 
@@ -342,7 +477,7 @@ static const void *kPubNubStateCacheSynchronizationQueue = &kPubNubStateCacheSyn
     NSDictionary *processedResponse = nil;
     
     // Dictionary is valid response type for state update.
-    if ([response isKindOfClass:[NSDictionary class]]) {
+    if ([response isKindOfClass:[NSDictionary class]] && [response[@"status"] integerValue] == 200){
         
         processedResponse = @{@"state": response[@"payload"],
                               @"status": @([response[@"message"] isEqualToString:@"OK"])};

@@ -246,6 +246,16 @@ typedef NS_OPTIONS(NSInteger, PNStatusCategory) {
     PNMalformedResponseCategory,
 
     /**
+     @brief      Looks like \b PubNub client can't use provided \c cipherKey to decrypt received
+                 message.
+     @discussion In case if this status arrive, make sure what all clients use same \c cipherKey to
+                 encrypt published messages.
+
+     @since 4.0
+     */
+    PNDecryptionErrorCategory,
+
+    /**
      @brief      Status is sent in case if client was unable to use API using secured connection.
      @discussion In case if this issue happens, client can be re-configured to use insecure
                  connection. If insecure connection is impossible then it is better to print out

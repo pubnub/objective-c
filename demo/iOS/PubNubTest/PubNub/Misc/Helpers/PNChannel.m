@@ -35,6 +35,14 @@
     return namesForRequest;
 }
 
+
+#pragma mark - Lists decoding
+
++ (NSArray *)namesFromRequest:(NSString *)response {
+
+    return [response componentsSeparatedByString:@","];
+}
+
 #pragma mark -
 
 

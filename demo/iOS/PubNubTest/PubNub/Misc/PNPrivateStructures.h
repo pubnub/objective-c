@@ -7,10 +7,16 @@
  */
 #import "PNStructures.h"
 
+
 #ifndef PNPrivateStructures_h
 #define PNPrivateStructures_h
 
-static NSString * const PNOperationTypeStrings[] = {
+/**
+ @brief  Helper to stringify operation type in result and status objects.
+
+ @since 4.0
+ */
+static NSString * const PNOperationTypeStrings[19] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
@@ -31,12 +37,38 @@ static NSString * const PNOperationTypeStrings[] = {
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNStatusCategoryStrings[] = {
+/**
+ @brief  Helper to stringify status category.
+
+ @since 4.0
+ */
+static NSString * const PNStatusCategoryStrings[15] = {
     [PNUnknownCategory] = @"Unknown",
+    [PNAcknowledgmentCategory] = @"Acknowledgment",
     [PNAccessDeniedCategory] = @"Access Denied",
     [PNTimeoutCategory] = @"Timeout",
+    [PNNetworkIssuesCategory] = @"Network Issues",
+    [PNConnectedCategory] = @"Connected",
+    [PNReconnectedCategory] = @"Reconnected",
+    [PNDisconnectedCategory] = @"Expected Disconnect",
+    [PNUnexpectedDisconnectCategory] = @"Unexpected Disconnect",
     [PNCancelledCategory] = @"Cancelled",
+    [PNBadRequestCategory] = @"Bad Request",
     [PNMalformedResponseCategory] = @"Malformed Response",
+    [PNDecryptionErrorCategory] = @"Decryption Error",
+    [PNTLSConnectionFailedCategory] = @"TLS Connection Failed",
+    [PNTLSUntrustedCertificateCategory] = @"Untrusted TLS Certificate"
+};
+
+/**
+ @brief  Helper to stringify here now data set information.
+
+ @since 4.0
+ */
+static NSString * const PNHereNowDataStrings[3] = {
+    [PNHereNowOccupancy] = @"occupancy only",
+    [PNHereNowUUID] = @"UUID list and occupancy",
+    [PNHereNowState] = @"occupancy, UUID and state"
 };
 
 #endif // PNPrivateStructures_h

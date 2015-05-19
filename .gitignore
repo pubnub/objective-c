@@ -17,6 +17,12 @@ xcuserdata
 # Markdown helper
 README.css
 
+# CocoaPods #
+#############
+
+Pods/
+Podfile.lock
+
 # OS generated files #
 ######################
 .DS_Store

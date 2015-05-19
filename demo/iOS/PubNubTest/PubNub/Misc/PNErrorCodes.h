@@ -15,8 +15,9 @@
 /// @name Error domains
 ///------------------------------------------------
 
+
 static NSString * const kPNAESErrorDomain = @"PNAESErrorDomain";
-static NSString * const kPNPublishErrorDomain = @"PNPublishErrorDomain";
+static NSString * const kPNAPIErrorDomain = @"PNAPIErrorDomain";
 
 
 ///------------------------------------------------
@@ -25,11 +26,20 @@ static NSString * const kPNPublishErrorDomain = @"PNPublishErrorDomain";
 
 static NSInteger const kPNUnknownErrorCode = -1;
 
+/**
+ @brief Incomplete or unacceptable set of parameters.
+
+ @since 4.0
+ */
+static NSInteger const kPNAPIUnacceptableParameters = 100;
+
 ///------------------------------------------------
 /// @name Publish
 ///------------------------------------------------
 
 static NSInteger const kPNEmptyMessageError = 3000;
+
+
 
 ///------------------------------------------------
 /// @name AES Error domain codes

@@ -6,6 +6,7 @@
 #ifndef PNHelpers_h
 #define PNHelpers_h
 
+#import "PNDictionary.h"
 #import "PNChannel.h"
 #import "PNString.h"
 #import "PNArray.h"

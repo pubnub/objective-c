@@ -34,10 +34,6 @@ static NSInteger const kPNUnknownErrorCode = -1;
 static NSInteger const kPNAPIUnacceptableParameters = 100;
 
 ///------------------------------------------------
-/// @name APNS
-///------------------------------------------------
-
-///------------------------------------------------
 /// @name Publish
 ///------------------------------------------------
 

@@ -14,25 +14,28 @@
 #pragma mark - Serialization
 
 + (NSString *)JSONStringFrom:(id)object withError:(NSError **)error {
-    
+
     NSString *JSONString = nil;
-    if ([object respondsToSelector:@selector(count)]) {
-        
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:object
-                                                           options:(NSJSONWritingOptions)0
-                                                             error:error];
-        if (JSONData) {
-            
-            JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+    if (object) {
+
+        if ([object respondsToSelector:@selector(count)]) {
+
+            NSData *JSONData = [NSJSONSerialization dataWithJSONObject:object
+                                                               options:(NSJSONWritingOptions)0
+                                                                 error:error];
+            if (JSONData) {
+
+                JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+            }
         }
-    }
-    else if ([self isJSONString:object]){
-        
-        JSONString = object;
-    }
-    else {
-        
-        JSONString = [[NSString alloc] initWithFormat:@"\"%@\"", object];
+        else if ([self isJSONString:object]){
+
+            JSONString = object;
+        }
+        else {
+
+            JSONString = [[NSString alloc] initWithFormat:@"\"%@\"", object];
+        }
     }
     
     return JSONString;
@@ -45,27 +48,29 @@
     
     id JSONObject = nil;
     NSError *parsingError = nil;
-    
-    // Check whether object represent string (composed from NSString as root object or not).
-    // This route required because NSJSONSerialization unable to parse JSON strings where root
-    // object is NSString.
-    if ([object characterAtIndex:0] == '"' &&
-        [object characterAtIndex:0] == [object characterAtIndex:([object length] -1 )]) {
-        
-        NSCharacterSet *trimCharSet = [NSCharacterSet characterSetWithCharactersInString:@"\""];
-        JSONObject = [object stringByTrimmingCharactersInSet:trimCharSet];
-    }
-    else {
-        
-        NSData *JSONData = [object dataUsingEncoding:NSUTF8StringEncoding];
-        JSONObject = [NSJSONSerialization JSONObjectWithData:JSONData
-                                                     options:NSJSONReadingAllowFragments
-                                                       error:&parsingError];
-    }
-    
-    if (parsingError && error) {
-        
-        *error = parsingError;
+    if (object) {
+
+        // Check whether object represent string (composed from NSString as root object or not).
+        // This route required because NSJSONSerialization unable to parse JSON strings where root
+        // object is NSString.
+        if ([object characterAtIndex:0] == '"' &&
+                [object characterAtIndex:0] == [object characterAtIndex:([object length] -1 )]) {
+
+            NSCharacterSet *trimCharSet = [NSCharacterSet characterSetWithCharactersInString:@"\""];
+            JSONObject = [object stringByTrimmingCharactersInSet:trimCharSet];
+        }
+        else {
+
+            NSData *JSONData = [object dataUsingEncoding:NSUTF8StringEncoding];
+            JSONObject = [NSJSONSerialization JSONObjectWithData:JSONData
+                                                         options:NSJSONReadingAllowFragments
+                                                           error:&parsingError];
+        }
+
+        if (parsingError && error) {
+
+            *error = parsingError;
+        }
     }
     
     return JSONObject;

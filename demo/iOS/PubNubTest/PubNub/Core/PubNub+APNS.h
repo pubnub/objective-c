@@ -25,15 +25,14 @@
  @param channels  List of channel names for which push notifications should be enabled.
  @param pushToken Device push token which should be used to enabled push notifications on specified
                   set of channels.
- @param block     Push notifications addition on channels processing completion block which pass two 
-                  arguments: \c result - in case of successful request processing \c data field will
-                  contain results of push notification enabling operation; \c status - in case if 
-                  error occurred during request processing.
+ @param block     Push notifications addition on channels processing completion block which pass 
+                  only one argument - request processing status to report about how data pushing
+                  was successful or not.
  
  @since 4.0
  */
 - (void)addPushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                         andCompletion:(PNCompletionBlock)block;
+                         andCompletion:(PNStatusBlock)block;
 
 /**
  @brief   Disable push notifications on provided set of \c channels.
@@ -44,15 +43,14 @@
  @param pushToken Device push token which should be used to disable push notifications on specified
                   set of channels.
  @param block     Push notifications removal from channels processing completion block which pass 
-                  two arguments: \c result - in case of successful request processing \c data field
-                  will contain results of push notification disabling operation; \c status - in case
-                  if error occurred during request processing.
+                  only one argument - request processing status to report about how data pushing
+                  was successful or not.
  
  @since 4.0
  */
 - (void)removePushNotificationsFromChannels:(NSArray *)channels
                         withDevicePushToken:(NSData *)pushToken
-                              andCompletion:(PNCompletionBlock)block;
+                              andCompletion:(PNStatusBlock)block;
 
 /**
  @brief  Disable push notifications from all channels which is registered with specified 
@@ -60,15 +58,14 @@
  
  @param pushToken Device push token which should be used to disable push notifications on specified
                   set of channels.
- @param block     Push notifications removal from device processing completion block which pass two 
-                  arguments: \c result - in case of successful request processing \c data field will
-                  contain results of push notification disabling operation; \c status - in case if
-                  error occurred during request processing.
+ @param block     Push notifications removal from device processing completion block which pass only
+                  one argument - request processing status to report about how data pushing was 
+                  successful or not.
  
  @since 4.0
  */
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
-                                            andCompletion:(PNCompletionBlock)block;
+                                            andCompletion:(PNStatusBlock)block;
 
 
 ///------------------------------------------------

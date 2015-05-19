@@ -13,6 +13,8 @@
 #import "GCDGroup.h"
 #import "GCDWrapper.h"
 
+#import "TestConfigurator.h"
+
 @interface PNPresenceTests : XCTestCase
 
 @end
@@ -30,7 +32,6 @@
     
     _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
     _pubNub.uuid = @"testUUID";
-    _pubNub.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 }
 
 - (void)tearDown {
@@ -42,8 +43,11 @@
 
 - (void)testPresenceForChannel {
 
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    
+    XCTestExpectation *_hereNowOccupancyExpectation = [self expectationWithDescription:@"Getting hereNowOccupancy"];
+    XCTestExpectation *_hereNowUUIDExpectation = [self expectationWithDescription:@"Getting hereNowUUID"];
+    XCTestExpectation *_hereNowStateExpectation = [self expectationWithDescription:@"Getting hereNowState"];
     
     [_pubNub subscribeToChannels:@[@"testChannel1"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
         
@@ -51,8 +55,7 @@
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
-        
+        [_subscribeExpectation fulfill];
     }];
     
     [_pubNub hereNowData:PNHereNowOccupancy forChannel:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
@@ -61,8 +64,7 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_hereNowOccupancyExpectation fulfill];
     }];
     
     [_pubNub hereNowData:PNHereNowUUID forChannel:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
@@ -71,8 +73,7 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_hereNowUUIDExpectation fulfill];
     }];
     
     
@@ -82,20 +83,20 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_hereNowStateExpectation fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during publishing");
-    }
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+    }];
 }
 
 - (void)testPresenceForGroup {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    
+    XCTestExpectation *_hereNowOccupancyExpectation = [self expectationWithDescription:@"Getting hereNowOccupancy"];
+    XCTestExpectation *_hereNowUUIDExpectation = [self expectationWithDescription:@"Getting hereNowUUID"];
+    XCTestExpectation *_hereNowStateExpectation = [self expectationWithDescription:@"Getting hereNowState"];
     
     [_pubNub subscribeToChannels:@[@"testChannel1"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
         
@@ -103,7 +104,7 @@
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_subscribeExpectation fulfill];
         
     }];
     
@@ -114,7 +115,7 @@
             XCTFail(@"Error");
         }
         
-        [_resGroup leave];
+        [_hereNowOccupancyExpectation fulfill];
     }];
     
     [_pubNub hereNowData:PNHereNowUUID forChannelGroup:@"testGroup1" withCompletion:^(PNResult *result, PNStatus *status) {
@@ -123,8 +124,7 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_hereNowUUIDExpectation fulfill];
     }];
     
     
@@ -134,14 +134,11 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_hereNowStateExpectation fulfill];;
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during publishing");
-    }
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+    }];
 }
 
 @end

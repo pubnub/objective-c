@@ -6,6 +6,9 @@
 #import "PNResult+Private.h"
 #import "PNRequest+Private.h"
 #import "PNPrivateStructures.h"
+#import "PNResponse.h"
+#import "PNStatus.h"
+#import "PNJSON.h"
 
 
 #pragma mark Interface implementation
@@ -15,37 +18,52 @@
 
 #pragma mark - Initialization and configuration
 
-+ (instancetype)resultForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                         andData:(id)data {
++ (instancetype)resultForRequest:(PNRequest *)request {
     
-    return [[self alloc] initForRequest:request withResponse:response andData:data];
+    return [[self alloc] initForRequest:request];
 }
 
-- (instancetype)initForRequest:(PNRequest *)request withResponse:(NSHTTPURLResponse *)response
-                       andData:(id)data {
++ (instancetype)resultFromStatus:(PNStatus *)status withData:(id)data {
+    
+    // Create result object based on status with new pre-processed data.
+    PNResult *result = [self new];
+    result->_clientRequest = [status.clientRequest copy];
+    result->_headers = [status.headers copy];
+    result->_response = [status.response copy];
+    result->_origin = [status.origin copy];
+    result->_statusCode = status.statusCode;
+    result->_operation = status.operation;
+    result->_data = [data copy];
+    
+    return result;
+}
+
+- (instancetype)initForRequest:(PNRequest *)request {
     
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
 
         self.requestObject = request;
 
-        _request = [request.request copy];
-        _response = [[NSString alloc] initWithFormat:@"%@\n%@", [response allHeaderFields], data];
-        _response = [_response stringByReplacingOccurrencesOfString:@"\n" withString:@"\n\t"];
-        _statusCode = response.statusCode;
-        _origin = [[_request URL] host];
+        self.clientRequest = request.response.clientRequest;
+        self.headers = [request.response.response allHeaderFields];
+        self.response = request.response.data;
+        self.statusCode = (request.response.response ? request.response.response.statusCode : 200);
+        self.operation = request.operation;
+        self.origin = [[_clientRequest URL] host];
 
         // Call parse block which has been passed by calling API to pre-process
         // received data before returning it to te user.
-        if (data) {
+        if (self.response) {
             
             if (self.requestObject.parseBlock) {
                 
-                _data = [(self.requestObject.parseBlock(data)?:[self dataParsedAsError:data]) copy];
+                self.data = (self.requestObject.parseBlock(self.response)?:
+                             [self dataParsedAsError:_response]);
             }
             else {
                 
-                _data = [[self dataParsedAsError:data] copy];
+                self.data = [self dataParsedAsError:self.response];
             }
         }
     }
@@ -55,19 +73,10 @@
 
 - (instancetype)copyWithData:(id)data {
     
-    PNResult *result = [[self class] resultForRequest:self.requestObject withResponse:nil
-                                              andData:nil];
-    result->_response = [self.response copy];
-    result->_statusCode = self.statusCode;
-    result->_origin = [self.origin copy];
+    PNResult *result = [[self class] resultForRequest:self.requestObject];
     result->_data = [data copy];
     
     return result;
-}
-
-- (PNOperationType)operation {
-    
-    return self.requestObject.operation;
 }
 
 
@@ -85,7 +94,7 @@
         }
         else if (data[@"error"]) {
             
-            errorData[@"message"] = data[@"error"];
+            errorData[@"information"] = data[@"error"];
         }
         if (data[@"payload"]) {
             
@@ -97,6 +106,10 @@
                 
                 errorData[@"channel-groups"] = data[@"payload"][@"channel-groups"];
             }
+            if (!errorData[@"channels"] && !errorData[@"channel-groups"]) {
+                
+                errorData[@"data"] = data[@"payload"];
+            }
         }
     }
     
@@ -106,19 +119,27 @@
 
 #pragma mark - Misc
 
+- (NSDictionary *)dictionaryRepresentation {
+    
+    return @{@"Operation": PNOperationTypeStrings[[self operation]],
+             @"Request": @{@"Method": (self.clientRequest.HTTPMethod?: @"GET"),
+                           @"URL": ([self.clientRequest.URL absoluteString]?: @"null"),
+                           @"POST Body size": @([self.clientRequest.HTTPBody length]),
+                           @"Origin": (self.origin?: @"unknown")},
+             @"Response": @{@"Status code": @(self.statusCode),
+                            @"Headers": (self.headers?: @"no headers"),
+                            @"Raw data": (self.response?: @"no response"),
+                            @"Processed data": (self.data?: @"no data")}};
+}
+
+- (NSString *)stringifiedRepresentation {
+    
+    return [PNJSON JSONStringFrom:[self dictionaryRepresentation] withError:NULL];
+}
+
 - (NSString *)debugDescription {
     
-    NSString *request = [self.request.URL absoluteString];
-    return [NSString stringWithFormat:@"\n<Result\n\tOperation: %@\n\tRequest: %@ %@%@"
-                                       "\n\tResponse: %@\n\tStatus code: %@\n\tOrigin: %@"
-                                       "\n\tData: %@\n>",
-            PNOperationTypeStrings[[self operation]], self.request.HTTPMethod,
-            [request stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-            ([self.request.HTTPBody length] ? [NSString stringWithFormat:@" (%@)",
-                                               @([self.request.HTTPBody length])] : @""),
-            self.response, @(self.statusCode), self.origin,
-            [[self.data description] stringByReplacingOccurrencesOfString:@"\n"
-                                                               withString:@"\n\t"]];
+    return [[self dictionaryRepresentation] description];
 }
 
 #pragma mark -

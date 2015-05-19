@@ -13,6 +13,8 @@
 #import "GCDGroup.h"
 #import "GCDWrapper.h"
 
+#import "TestConfigurator.h"
+
 @interface PNPublishTests : XCTestCase
 
 @end
@@ -30,7 +32,6 @@
     
     _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
     _pubNub.uuid = @"testUUID";
-    _pubNub.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 }
 
 - (void)tearDown {
@@ -43,8 +44,8 @@
 
 - (void)testPublishWithStoryInHistory {
 
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message"];
+    XCTestExpectation *_getHistoryExpectation = [self expectationWithDescription:@"Getting history"];
     
     [_pubNub publish:@"Hello world" toChannel:@"testChannel1" storeInHistory:YES withCompletion:^(PNStatus *status) {
         
@@ -52,8 +53,7 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_publishExpectation fulfill];
     }];
     
     [_pubNub historyForChannel:@"testChannel1" withCompletion:^(PNResult *result, PNStatus *status) {
@@ -62,20 +62,17 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_getHistoryExpectation fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during publishing");
-    }
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+    }];
 }
 
 - (void)testPublishWithoutStoryInHistory {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message"];
+    XCTestExpectation *_getHistoryExpectation = [self expectationWithDescription:@"Getting history"];
     
     [_pubNub publish:@"Hello world" toChannel:@"testChannel1" storeInHistory:NO withCompletion:^(PNStatus *status) {
         
@@ -83,8 +80,7 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_publishExpectation fulfill];
     }];
     
     [_pubNub historyForChannel:@"testChannel1" withCompletion:^(PNResult *result, PNStatus *status) {
@@ -93,14 +89,11 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_getHistoryExpectation fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during publishing");
-    }
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+    }];
 }
 
 

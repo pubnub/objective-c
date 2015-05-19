@@ -160,6 +160,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)setSubscriberState:(PNSubscriberState)state;
 
 /**
+ @brief  Retrieve stored current subscription time token information.
+
+ @return Cached current time token information or \b 0 if requested for first time.
+
+ @since 4.0
+ */
+- (NSNumber *)currentTimeToken;
+
+/**
  @brief  Update current subscription time token information in cache.
  
  @param timeToken Reference on current time token which should replace the one stored in cache.
@@ -167,6 +176,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  @since 4.0
  */
 - (void)setCurrentTimeToken:(NSNumber *)timeToken;
+
+/**
+ @brief  Retrieve stored previous subscription time token information.
+
+ @return Cached previous time token information or \b 0 if requested for first time.
+
+ @since 4.0
+ */
+- (NSNumber *)previousTimeToken;
 
 /**
  @brief  Update previous subscription time token information in cache.
@@ -416,6 +434,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 #pragma mark - Subscription
 
 /**
+ @brief  Continue subscription cycle using \c currentTimeToken value and channels, stored in cache.
+
+ @since 4.0
+ */
+- (void)continueSubscriptionCycleIfRequired;
+
+/**
  @brief  Final designated subscription method before issue subscribe request to \b PubNub service.
 
  @param shouldModifyObjectsList Whether request is part of channel list modification sequence (by
@@ -561,6 +586,16 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 
 #pragma mark - Processing
+
+/**
+ @brief      Add additional information about current subscriber state to the status.
+ @discussion Additional information can be used for further status information processing by user.
+
+ @param status Reference on status object which should be populated with additional data.
+
+ @since 4.0
+ */
+- (void)addSubscriberStateInformationTo:(PNStatus *)status;
 
 /**
  @brief  Try to pre-process provided data and translate it's content to expected from 'subscribe'
@@ -1011,7 +1046,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             // Ensure what provided listener conforms to required protocol.
             if ([listener conformsToProtocol:@protocol(PNObjectEventListener)]) {
                 
-                if ([listener respondsToSelector:@selector(client:didReceiveMessage:)]) {
+                if ([listener respondsToSelector:@selector(client:didReceiveMessage:withStatus:)]) {
                     
                     [(NSHashTable *)[[strongSelf listeners] objectForKey:@"message"] addObject:listener];
                 }
@@ -1223,7 +1258,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             if (isInitialSubscription && [[strongSelf allObjects] count]) {
                 
-                [strongSelf handleSubscriberStatus:nil change:PNDisconnectedSubscriberState];
+                // Construct corresponding data objects which should be delivered through to state
+                // change listeners.
+                PNStatus *status = [PNStatus statusForRequest:request withError:nil];
+                status.category = PNAcknowledgmentCategory;
+                [strongSelf handleSubscriberStatus:status change:PNDisconnectedSubscriberState];
             }
             [strongSelf processRequest:request];
         }
@@ -1263,7 +1302,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         if ([[self mutableChannels] count] || [[self mutableGroups] count] ||
             [[self mutablePresenceChannels] count]) {
-
+            
             [self subscribeWithObjectsListModification:NO presence:NO
                                             toChannels:[[self mutableChannels] allObjects]
                                                 groups:[[self mutableGroups] allObjects]
@@ -1666,14 +1705,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     else if (isInitialSubscription) {
         
         NSMutableDictionary *data = [NSMutableDictionary dictionaryWithDictionary:status.data];
-        if ([channelsDifference count] || [presenceChannelsDifference count]) {
-            
-            data[@"channels"] = [[channelsDifference setByAddingObjectsFromSet:presenceChannelsDifference] allObjects];
-        }
-        if ([channelGroupsDifference count]) {
-            
-            data[@"channel-groups"] = [channelGroupsDifference allObjects];
-        }
         [data removeObjectForKey:@"events"];
         status.data = [data copy];
     }
@@ -1696,17 +1727,32 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Check whether initial subscription or channels list update has been performed.
     if (isInitialSubscription || status.category == PNUnexpectedDisconnectCategory) {
-        
+
+        [self addSubscriberStateInformationTo:status];
         [self callBlock:block status:YES withResult:nil andStatus:status];
     }
 }
 
 - (void)handleNewMessage:(PNResult *)data by:(NSArray *)listeners{
+    
+    PNStatus *status = nil;
+    if (data) {
+        
+        DDLogResult(@"<PubNub> %@", [data stringifiedRepresentation]);
+        if (data.data[@"decryptError"]) {
+            
+            status = [PNStatus statusFromResult:data];
+            status.category = PNDecryptionErrorCategory;
+            NSMutableDictionary *updatedData = [data.data mutableCopy];
+            [updatedData removeObjectForKey:@"decryptError"];
+            status.data = updatedData;
+        }
+    }
 
     // Iterate over list of listeners and notify about new message.
     for (id<PNObjectEventListener> listener in listeners) {
         
-        [listener client:self didReceiveMessage:data];
+        [listener client:self didReceiveMessage:data withStatus:status];
     }
 }
 
@@ -1732,41 +1778,75 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)handleSubscriberStatus:(PNStatus *)status change:(PNSubscriberState)state {
     
-    // Check whether subscriber reconnected after unexpected connection termination or not.
-    BOOL reconnected = ([self subscriberState] == PNDisconnectedUnexpectedlySubscriberState &&
-                        state == PNConnectedSubscriberState);
-        
-    // Store actual client subscriber state.
-    PNSubscriberState updatedState = (state == PNAccessRightsErrorSubscriberState ?
-                                      PNDisconnectedSubscriberState : state);
-    [self setSubscriberState:updatedState];
+    // Retrieve current subscruber state.
+    PNSubscriberState currentState = [self subscriberState];
     
     // Compose status object to report state change to listeners.
-    PNStatusCategory category = (!reconnected ? PNConnectedCategory : PNReconnectedCategory);
-    if (updatedState != PNConnectedSubscriberState) {
-        
-        category = (updatedState == PNDisconnectedSubscriberState ?
-                    PNDisconnectedCategory : PNUnexpectedDisconnectCategory);
-    }
-    if (state == PNAccessRightsErrorSubscriberState) {
-        
-        status.category = PNAccessDeniedCategory;
-    }
-    else {
-        
-        status.category = category;
-    }
-    PNStatus *subscriberStatus = [status copy];
-    [self completeStatusObject:subscriberStatus];
+    PNStatusCategory category = PNUnknownCategory;
+    BOOL shouldHandleTransition = NO;
     
-    dispatch_async(self.callbackQueue, ^{
+    // Check whether transit to 'connected' state.
+    if (state == PNConnectedSubscriberState) {
         
-        // Iterate over list of listeners and notify about new presence event.
-        for (id <PNObjectEventListener> listener in [[[self stateListeners] allObjects] copy]) {
+        // Check whether client transit from 'disconnected' -> 'connected' state.
+        shouldHandleTransition = ((currentState == PNDisconnectedSubscriberState)?:
+                                  shouldHandleTransition);
+        
+        // Check whether client transit from 'access denied' -> 'connected' state.
+        shouldHandleTransition = (shouldHandleTransition?:
+                                  (currentState == PNAccessRightsErrorSubscriberState));
+        category = PNConnectedCategory;
+        
+        // Check whether client transit from 'unexpected disconnect' -> 'connected' state
+        if (!shouldHandleTransition && currentState == PNDisconnectedUnexpectedlySubscriberState) {
             
-            [listener client:self didReceiveStatus:subscriberStatus];
+            // Change state to 'reconnected'
+            state = PNConnectedSubscriberState;
+            category = PNReconnectedCategory;
+            shouldHandleTransition = YES;
         }
-    });
+    }
+    // Check whether transit to 'disconnected' or 'unexpected disconnect' state.
+    else if (state == PNDisconnectedSubscriberState ||
+             state == PNDisconnectedUnexpectedlySubscriberState) {
+        
+        // Check whether client transit from 'connected' -> 'disconnected'/'unexpected disconnect'
+        // state.
+        shouldHandleTransition = ((currentState == PNConnectedSubscriberState)?:
+                                  shouldHandleTransition);
+        category = ((state == PNDisconnectedSubscriberState) ? PNDisconnectedCategory :
+                    PNUnexpectedDisconnectCategory);
+    }
+    // Check whether transit to 'access deined' state.
+    else if (state == PNAccessRightsErrorSubscriberState) {
+        
+        // Check whether client transit from non-'access deined' -> 'access deined' state.
+        shouldHandleTransition = ((currentState != PNAccessRightsErrorSubscriberState)?:
+                                  shouldHandleTransition);
+        category = PNDisconnectedCategory;
+    }
+    
+    // Check whether allowed state transition has been issued or not.
+    if (shouldHandleTransition) {
+        
+        // Store actual client subscriber state.
+        [self setSubscriberState:state];
+        
+        // Compose status object to report state change to listeners.
+        PNStatus *subscriberStatus = [status copy];
+        subscriberStatus.category = category;
+        [self completeStatusObject:subscriberStatus];
+        [self addSubscriberStateInformationTo:subscriberStatus];
+        
+        dispatch_async(self.callbackQueue, ^{
+            
+            // Iterate over list of listeners and notify about new presence event.
+            for (id <PNObjectEventListener> listener in [[[self stateListeners] allObjects] copy]) {
+                
+                [listener client:self didReceiveStatus:subscriberStatus];
+            }
+        });
+    }
 }
 
 - (void)handleUnsubscribeRequest:(PNRequest *)request fromChannels:(NSArray *)channels
@@ -1775,22 +1855,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Create status information if required.
     PNStatus *status = [PNStatus statusForRequest:request withError:nil];
-    NSMutableDictionary *data = [(status.data?: @{}) mutableCopy];
-    if ([channels count]) {
-        
-        data[@"channels"] = [channels arrayByAddingObjectsFromArray:presence];
-    }
-    if ([groups count]) {
-        
-        data[@"channel-groups"] = groups;
-    }
     [self setNumberOfAPICalls:MAX(([self numberOfAPICalls] - 1), 0)];
     
     if (![[self allObjects] count]) {
         
         [self handleSubscriberStatus:status change:PNDisconnectedSubscriberState];
     }
-    
+
+    [self addSubscriberStateInformationTo:status];
     [self callBlock:block status:YES withResult:nil andStatus:status];
     
     // In case if 'leave' presence event had target channels/groups it should release subscription
@@ -1803,6 +1875,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 
 #pragma mark - Processing
+
+- (void)addSubscriberStateInformationTo:(PNStatus *)status {
+
+    status.currentTimetoken = [self currentTimeToken];
+    status.previousTimetoken = [self previousTimeToken];
+    status.channels = [[[self mutableChannels] setByAddingObjectsFromSet:[self mutablePresenceChannels]] allObjects];
+    status.channelGroups = [[self mutableGroups] allObjects];
+}
 
 - (NSDictionary *)processedSubscribeResponse:(id)response {
     
@@ -1897,6 +1977,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                         if (decryptionError) {
                             
                             DDLogAESError(@"<PubNub> Message decryption error: %@", decryptionError);
+                            event[@"decryptError"] = @YES;
                         }
                     }
                     event[@"message"] = eventBody;

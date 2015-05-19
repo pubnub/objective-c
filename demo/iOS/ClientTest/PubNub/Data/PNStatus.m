@@ -100,7 +100,7 @@
             
             self.category = PNAcknowledgmentCategory;
         }
-        else {
+        else if (self.category == PNUnknownCategory) {
             
             // Try extract category basing on response status codes.
             self.category = [self categoryTypeFromStatusCode:request.response.response.statusCode];
@@ -118,13 +118,18 @@
             self.data = ([self dataParsedAsError:request.response.data]?: [self dataFromError:error]);
         }
         self.data = (([self.data count] ? self.data : [self dataFromError:error]) ?: request.response.data);
-        if (self.category == PNUnknownCategory) {
-            
-            NSLog(@"<PubNub> Status with unknown operation: %@", [self dictionaryRepresentation]);
-        }
     }
     
     return self;
+}
+
+- (void)setCategory:(PNStatusCategory)category {
+    
+    _category = category;
+    if (_category == PNDecryptionErrorCategory) {
+        
+        self.error = YES;
+    }
 }
 
 - (void)revertToOriginalCategory {
@@ -149,7 +154,7 @@
     status->_subCategory = self.subCategory;
     status.TLSEnabled = self.isTLSEnabled;
     status.channels = self.channels;
-    status.groups = self.groups;
+    status.channelGroups = self.channelGroups;
     status.uuid = self.uuid;
     status.authKey = self.authKey;
     status.state = self.state;
@@ -290,16 +295,25 @@
 - (NSDictionary *)dictionaryRepresentation {
     
     NSMutableDictionary *status = [[super dictionaryRepresentation] mutableCopy];
-    [status addEntriesFromDictionary:@{@"Category": @{
-                                               @"Main": PNStatusCategoryStrings[self.category],
-                                               @"Additional": PNStatusCategoryStrings[self.subCategory]},
+    [status addEntriesFromDictionary:@{@"Category": PNStatusCategoryStrings[self.category],
                                        @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
-                                       @"Objects": @{@"Channels": (self.channels?: @"no channels"),
-                                                     @"Channel groups": (self.groups?: @"no groups")},
                                        @"UUID": (self.uuid?: @"uknonwn"),
                                        @"Authorization": (self.authKey?: @"not set"),
                                        @"Time": @{@"Current": (self.currentTimetoken?: @(0)),
-                                                  @"Previous": (self.previousTimetoken?: @(0))}}];
+                                                  @"Previous": (self.previousTimetoken?: @(0))},
+                                       @"Error": (self.isError ? @"YES" : @"NO")}];
+    if ([self.channels count] || [self.channelGroups count]) {
+        
+        status[@"Objects"] = [NSMutableDictionary new];
+        if ([self.channels count]) {
+            
+            status[@"Objects"][@"Channels"] = self.channels;
+        }
+        if ([self.channelGroups count]) {
+            
+            status[@"Objects"][@"Channel groups"] = self.channelGroups;
+        }
+    }
     
     return [status copy];
 }

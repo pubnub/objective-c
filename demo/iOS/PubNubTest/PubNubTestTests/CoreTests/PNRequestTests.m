@@ -21,6 +21,8 @@
 #import "PNResult.h"
 #import "PNStatus.h"
 
+#import "TestConfigurator.h"
+
 @interface PNRequestTests : XCTestCase
 
 @end

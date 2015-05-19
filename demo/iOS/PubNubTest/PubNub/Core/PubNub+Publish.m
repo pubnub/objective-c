@@ -6,7 +6,9 @@
 #import "PubNub+Publish.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import "PNStatus+Private.h"
 #import "PNErrorCodes.h"
+#import "PNResponse.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
 
@@ -14,6 +16,22 @@
 #pragma mark Private interface declaration
 
 @interface PubNub (PublishPrivate)
+
+
+#pragma mark - Handlers
+
+/**
+ @brief  Process message publish request completion and notify observers about results.
+
+ @param request Reference on base request which is used for communication with \b PubNub service.
+                Object also contains request processing results.
+ @param block   State audition for user on cahnnel processing completion block which pass only one 
+                argument - request processing status to report about how data pushing was successful 
+                or not.
+
+ @since 4.0
+ */
+- (void)handlePublishRequest:(PNRequest *)request withCompletion:(PNStatusBlock)block;
 
 
 #pragma mark - Processing
@@ -49,7 +67,7 @@
  
  @since 4.0
  */
-- (id)mergedMessage:(id)message withMobilePushPayload:(NSDictionary *)payloads;
+- (NSDictionary *)mergedMessage:(NSString *)message withMobilePushPayload:(NSDictionary *)payloads;
 
 /**
  @brief  Try perform encryption of data which should be pushed to \b PubNub services.
@@ -63,8 +81,8 @@
  
  @since 4.0
  */
-- (NSString *)encryptedMessag:(NSString *)message withCipherKey:(NSString *)key
-                        error:(NSError **)error;
+- (NSString *)encryptedMessage:(NSString *)message withCipherKey:(NSString *)key
+                         error:(NSError **)error;
 
 #pragma mark -
 
@@ -79,28 +97,27 @@
 
 #pragma mark - Plain message publish
 
-- (void)publish:(id)message toChannel:(NSString *)channel
- withCompletion:(PNCompletionBlock)block {
+- (void)publish:(id)message toChannel:(NSString *)channel withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel compressed:NO withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
- withCompletion:(PNCompletionBlock)block {
+ withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel storeInHistory:YES compressed:compressed
    withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
- withCompletion:(PNCompletionBlock)block {
+ withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel storeInHistory:shouldStore compressed:NO
    withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-     compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block {
+     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:nil storeInHistory:shouldStore
        compressed:compressed withCompletion:block];
@@ -110,14 +127,14 @@
 #pragma mark - Composited message publish
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
-  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNCompletionBlock)block {
+  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNStatusBlock)block {
     
     [self publish:message toChannel:channel mobilePushPayload:payloads compressed:NO
    withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary *)payloads
-     compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block {
+     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:YES
        compressed:compressed withCompletion:block];
@@ -125,7 +142,7 @@
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-     withCompletion:(PNCompletionBlock)block {
+     withCompletion:(PNStatusBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore
        compressed:NO withCompletion:block];
@@ -133,89 +150,112 @@
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withCompletion:(PNCompletionBlock)block {
+         compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
 
-    if (message || [payloads count]) {
+    // Dispatching async on private queue which is able to serialize access with client
+    // configuration data.
+    __weak __typeof(self) weakSelf = self;
+    dispatch_async(self.serviceQueue, ^{
 
-        __weak __typeof(self) weakSelf = self;
+        __strong __typeof(self) strongSelf = weakSelf;
+        NSString *publishKey = [PNString percentEscapedString:strongSelf.publishKey];
+        NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
+        NSString *cipherKey = [strongSelf.cipherKey copy];
 
-        // Dispatching async on private queue which is able to serialize access with client
-        // configuration data.
-        dispatch_async(self.serviceQueue, ^{
+        // Push further code execution on secondary queue to make service queue responsive during
+        // JSON serialization and encryption process.
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-            __strong __typeof(self) strongSelf = weakSelf;
-            NSString *publishKey = [PNString percentEscapedString:strongSelf.publishKey];
-            NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
-            NSString *cipherKey = [strongSelf.cipherKey copy];
+            __strong __typeof(self) strongSelfForPreparation = weakSelf;
+            NSError *publishError = nil;
+            NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
 
-            // Push further code execution on secondary queue to make main queue responsive during
-            // JSON serialization and encryption process.
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // Encrypt message in case if serialization to JSON was successful.
+            if (!publishError) {
 
-                __strong __typeof(self) strongSelfForPreparation = weakSelf;
-                NSError *publishError = nil;
-                id messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
-                
-                if (!publishError) {
+                // Try perform user message encryption.
+                messageForPublish = [strongSelfForPreparation encryptedMessage:messageForPublish
+                                                                 withCipherKey:cipherKey
+                                                                         error:&publishError];
+            }
 
-                    // Append to encrypted message push payloads (if provided).
-                    messageForPublish = [self mergedMessage:messageForPublish
-                                      withMobilePushPayload:payloads];
-                    messageForPublish = [strongSelfForPreparation encryptedMessag:messageForPublish
-                                                                    withCipherKey:cipherKey
-                                                                            error:&publishError];
+            // Merge user message with push notification payloads (if provided).
+            if (!publishError && [payloads count]) {
+
+                NSDictionary *mergedData = [self mergedMessage:messageForPublish
+                                         withMobilePushPayload:payloads];
+                messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
+            }
+
+            NSDictionary *parameters = (!shouldStore ? @{@"store": @"0"} : nil);
+            NSMutableString *path = [NSMutableString stringWithFormat:@"/publish/%@/%@/0/%@/0",
+                                     publishKey, subscribeKey,
+                                     [PNString percentEscapedString:channel]];
+            if (!compressed) {
+
+                [path appendFormat:@"/%@", [PNString percentEscapedString:messageForPublish]];
+            }
+            __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                              forOperation:PNPublishOperation
+                                                            withCompletion:^{
+
+                __strong __typeof(self) strongSelfForResponse = weakSelf;
+                [strongSelfForResponse handlePublishRequest:request withCompletion:[block copy]];
+            }];
+            if (compressed) {
+
+                NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
+                NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
+                request.body = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
+            }
+            request.parseBlock = ^id(id rawData){
+
+                __strong __typeof(self) strongSelfForProcessing = weakSelf;
+                return [strongSelfForProcessing processedPublishResponse:rawData];
+            };
+            
+            DDLogAPICall(@"<PubNub> Publish%@ message to '%@' channel%@%@",
+                         (compressed ? @" compressed" : @""), (channel?: @"<error>"),
+                         (!shouldStore ? @" which won't be saved in hisotry" : @""),
+                         (!compressed ? [NSString stringWithFormat:@": %@",
+                                         (messageForPublish?: @"<error>")] : @"."));
+
+            // Ensure what all required fields passed before starting processing.
+            if (!publishError && [channel length] && ((!compressed && [messageForPublish length]) ||
+                (compressed && [request.body length]))) {
+
+                [strongSelfForPreparation processRequest:request];
+            }
+            // Notify about incomplete parameters set.
+            else {
+
+                NSString *description = @"Channel not specified.";
+                if (!compressed && [messageForPublish length]) {
+
+                    description = @"Empty message.";
                 }
+                else if  (compressed && [request.body length]) {
 
-                if (!publishError) {
-
-                    NSDictionary *parameters = (!shouldStore ? @{@"store": @"0"} : nil);
-                    NSMutableString *path = [NSMutableString stringWithFormat:@"/publish/%@/%@/0/%@"
-                                                                               "/0",
-                                             publishKey, subscribeKey,
-                                             [PNString percentEscapedString:channel]];
-                    if (!compressed) {
-
-                        [path appendFormat:@"/%@", [PNString percentEscapedString:messageForPublish]];
-                    }
-                    PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                                       forOperation:PNPublishOperation
-                                                     withCompletion:block];
-                    if (compressed) {
-
-                        NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
-                        NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
-                        request.body = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
-                    }
-                    request.parseBlock = ^id(id rawData){
-
-                        __strong __typeof(self) strongSelfForProcessing = weakSelf;
-                        return [strongSelfForProcessing processedPublishResponse:rawData];
-                    };
-
-                    [strongSelfForPreparation processRequest:request];
+                    description = @"Message compression failed.";
                 }
-                else {
-
-                    PNRequest *failedRequest = [PNRequest requestWithPath:nil parameters:nil
-                                                             forOperation:PNPublishOperation
-                                                           withCompletion:block];
-                    [strongSelfForPreparation handleRequestFailure:failedRequest withTask:nil
-                                                          andError:publishError];
-                }
-            });
+                NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                                     code:kPNAPIUnacceptableParameters
+                                                 userInfo:@{NSLocalizedDescriptionKey:description}];
+                [strongSelfForPreparation handleRequestFailure:request
+                                                     withError:(publishError?: error)];
+            }
         });
-    }
-    else {
-        
-        NSString *description = @"Tried to send empty message";
-        NSError *publishError = [NSError errorWithDomain:kPNPublishErrorDomain
-                                                    code:kPNEmptyMessageError
-                                                userInfo:@{NSLocalizedDescriptionKey:description}];
-        PNRequest *failedRequest = [PNRequest requestWithPath:nil parameters:nil
-                                                 forOperation:PNPublishOperation
-                                               withCompletion:block];
-        [self handleRequestFailure:failedRequest withTask:nil andError:publishError];
-    }
+    });
+}
+
+
+#pragma mark - Handlers
+
+- (void)handlePublishRequest:(PNRequest *)request withCompletion:(PNCompletionBlock)block {
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    PNStatus *status = [PNStatus statusForRequest:request withError:request.response.error];
+    [self callBlock:block status:YES withResult:nil andStatus:status];
 }
 
 
@@ -255,50 +295,48 @@
 
 #pragma mark - Misc
 
-- (id)mergedMessage:(id)message withMobilePushPayload:(NSDictionary *)payloads {
-    
-    id mergedMessage = (message ?: ([payloads count] ? @{} : nil));
-    
-    // Make composed message which is able to deliver notification using one of specified provider.
-    if ([payloads count]) {
-        
-        // Convert passed message to mutable dictionary into which required by push notification
-        // delivery service provider data will be added.
-        mergedMessage = [([message isKindOfClass:[NSDictionary class]] ?
-                         message : @{@"pn_other":message}) mutableCopy];
-        
-        for (NSString *pushProviderType in payloads) {
-            
-            [mergedMessage setValue:payloads[pushProviderType]
-                                 forKey:[NSString stringWithFormat:@"pn_%@", pushProviderType]];
+- (NSDictionary *)mergedMessage:(NSString *)message withMobilePushPayload:(NSDictionary *)payloads {
+
+    // Convert passed message to mutable dictionary into which required by push notification
+    // delivery service provider data will be added.
+    NSMutableDictionary *mergedMessage = [@{@"pn_other":message} mutableCopy];
+
+    for (NSString *pushProviderType in payloads) {
+
+        id payload = payloads[pushProviderType];
+        if ([pushProviderType isEqualToString:@"apns"] && payload[@"aps"] == nil) {
+
+            payload = @{@"aps":payload};
         }
+        NSString *provideKey = [NSString stringWithFormat:@"pn_%@", pushProviderType];
+        [mergedMessage setValue:payload forKey:provideKey];
     }
     
     return [mergedMessage copy];
 }
 
-- (NSString *)encryptedMessag:(NSString *)message withCipherKey:(NSString *)key
-                        error:(NSError **)error {
+- (NSString *)encryptedMessage:(NSString *)message withCipherKey:(NSString *)key
+                         error:(NSError **)error {
     
-    NSString *encryptedMessag = message;
+    NSString *encryptedMessage = message;
     if ([key length]) {
         
         NSData *JSONData = [message dataUsingEncoding:NSUTF8StringEncoding];
         NSString *JSONString = [PNAES encrypt:JSONData withKey:key andError:error];
         if (*error == nil) {
             
-            // \b PNAES encryption output is \a NSString which is valid JSON object from \b PubNub
+            // PNAES encryption output is NSString which is valid JSON object from PubNub
             // service perspective, but it should be decorated with " (this done internally
             // by helper when it need to create JSON string).
-            encryptedMessag = [PNJSON JSONStringFrom:JSONString withError:error];
+            encryptedMessage = [PNJSON JSONStringFrom:JSONString withError:error];
         }
         else {
-            
-            encryptedMessag = nil;
+
+            encryptedMessage = nil;
         }
     }
     
-    return encryptedMessag;
+    return encryptedMessage;
 }
 
 #pragma mark -

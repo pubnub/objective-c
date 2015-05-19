@@ -6,8 +6,11 @@
 #import "PubNub+History.h"
 #import "PubNub+CorePrivate.h"
 #import "PNRequest+Private.h"
+#import "PNStatus+Private.h"
+#import "PNResult+Private.h"
 #import "PNErrorCodes.h"
 #import "PNHelpers.h"
+#import "PNResult.h"
 #import "PNAES.h"
 #import "PNLog.h"
 
@@ -15,6 +18,23 @@
 #pragma mark Private interface
 
 @interface PubNub (HistoryPrivate)
+
+
+#pragma mark - Handlers
+
+/**
+ @brief  History request results handling and pre-processing before notify to completion blocks (if
+         required at all).
+ 
+@param request   Reference on base request which is used for communication with \b PubNub service.
+                 Object also contains request processing results.
+ @param block    History pull processing completion block which pass two arguments: \c result - in
+                 case of successful request processing \c data field will contain results of history
+                 request operation; \c status - in case if error occurred during request processing.
+ 
+ @since 4.0
+ */
+- (void)handleHistoryRequest:(PNRequest *)request withCompletion:(PNCompletionBlock)block;
 
 
 #pragma mark - Processing
@@ -126,15 +146,18 @@
         }
         NSMutableString *path = [NSMutableString stringWithFormat:@"/v2/history/sub-key/%@/channel/%@",
                                  subscribeKey, [PNString percentEscapedString:channel]];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:PNHistoryOperation
-                                         withCompletion:nil];
+        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                          forOperation:PNHistoryOperation
+                                                        withCompletion:^{
+                                                            
+            __strong __typeof(self) strongSelfForResponse = weakSelf;
+            [strongSelfForResponse handleHistoryRequest:request withCompletion:[block copy]];
+        }];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
             return [strongSelfForParsing processedHistoryResponse:rawData];
         };
-        request.reportBlock = block;
         
         DDLogAPICall(@"<PubNub> %@ for '%@' channel%@%@ with %@ limit%@.",
                      (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
@@ -160,6 +183,26 @@
 }
 
 
+#pragma mark - Handlers
+
+- (void)handleHistoryRequest:(PNRequest *)request withCompletion:(PNCompletionBlock)block; {
+    
+    // Construct corresponding data objects which should be delivered through completion block.
+    PNStatus *status = nil;
+    PNResult *result = nil;
+    [self getResult:&result andStatus:&status forRequest:request];
+    if (result && result.data[@"decryptError"]) {
+        
+        status = [PNStatus statusFromResult:result];
+        status.category = PNDecryptionErrorCategory;
+        NSMutableDictionary *updatedData = [result.data mutableCopy];
+        [updatedData removeObjectForKey:@"decryptError"];
+        status.data = updatedData;
+    }
+    [self callBlock:block status:NO withResult:result andStatus:status];
+}
+
+
 #pragma mark - Processing
 
 - (NSDictionary *)processedHistoryResponse:(id)response {
@@ -171,8 +214,8 @@
     // Array is valid response type for history request.
     if ([response isKindOfClass:[NSArray class]] && [(NSArray *)response count] == 3) {
         
-        NSDictionary *data = @{@"start":(NSArray *)response[1], @"end":(NSArray *)response[2],
-                               @"messages":[NSMutableArray new]};
+        NSMutableDictionary *data = [@{@"start":(NSArray *)response[1], @"end":(NSArray *)response[2],
+                                       @"messages":[NSMutableArray new]} mutableCopy];
         [(NSArray *)response[0] enumerateObjectsUsingBlock:^(id messageObject,
                                                              NSUInteger messageObjectIdx,
                                                              BOOL *messageObjectEnumeratorStop) {
@@ -209,6 +252,7 @@
                 else {
 
                     DDLogAESError(@"<PubNub> History entry decryption error: %@", decryptionError);
+                    data[@"decryptError"] = @YES;
                 }
             }
 

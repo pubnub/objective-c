@@ -113,14 +113,8 @@
                             stringByAppendingString:(group ? @"/%@" : @"")];
         NSString *path = [NSString stringWithFormat:format, subscribeKey,
                           [PNString percentEscapedString:group]];
-        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:nil
-                                                          forOperation:operationType
-                                                        withCompletion:^{
-                                                            
-            __strong __typeof(self) strongSelfForResults = weakSelf;
-            [strongSelfForResults handleGroupModificationRequest:request
-                                                  withCompletion:[block copy]];
-        }];
+        PNRequest *request = [PNRequest requestWithPath:path parameters:nil
+                                           forOperation:operationType withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;
@@ -135,6 +129,7 @@
             
             DDLogAPICall(@"<PubNub> Request channel groups list.");
         }
+        request.reportBlock = block;
         
         [strongSelf processRequest:request];
     });
@@ -184,9 +179,14 @@
                             stringByAppendingString:(removeAllObjects ? @"/remove" : @"")];
         NSString *path = [NSString stringWithFormat:format, subscribeKey,
                           [PNString percentEscapedString:group]];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:operationType
-                                         withCompletion:nil];
+        __block __weak PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
+                                                          forOperation:operationType
+                                                        withCompletion:^{
+                                                            
+            __strong __typeof(self) strongSelfForResults = weakSelf;
+            [strongSelfForResults handleGroupModificationRequest:request
+                                                  withCompletion:[block copy]];
+        }];
         request.parseBlock = ^id(id rawData) {
             
             __strong __typeof(self) strongSelfForParsing = weakSelf;

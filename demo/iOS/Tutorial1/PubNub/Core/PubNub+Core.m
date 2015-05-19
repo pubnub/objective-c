@@ -40,6 +40,13 @@
 @property (nonatomic, assign) PNStatusCategory recentClientStatus;
 
 /**
+ @brief  Stores whether remote service ping active at this moment or not.
+ 
+ @since 4.0
+ */
+@property (nonatomic, assign, getter = pingingRemoteService) BOOL pingRemoteService;
+
+/**
  @brief Stores reference on session with pre-configured options useful for 'subscription' API group
         with long-polling.
  
@@ -287,9 +294,11 @@
         BOOL serviceOriginChanged = ![origin isEqualToString:strongSelf.origin];
         BOOL publishKeyChanged = ![publishKey isEqualToString:strongSelf.publishKey];
         BOOL subscribeKeyChanged = ![subscribeKey isEqualToString:strongSelf.subscribeKey];
-        BOOL authKeyChanged = ![authKey isEqualToString:strongSelf.authKey];
-        BOOL uuidChanged = ![uuid isEqualToString:_uuid];
-        BOOL cipherKeyChanged = ![cipherKey isEqualToString:strongSelf.cipherKey];
+        BOOL authKeyChanged = ((authKey || strongSelf.authKey) &&
+                               ![authKey isEqualToString:strongSelf.authKey]);
+        BOOL uuidChanged = ((uuid || _uuid) && ![uuid isEqualToString:_uuid]);
+        BOOL cipherKeyChanged = ((cipherKey || strongSelf.cipherKey) &&
+                                 ![cipherKey isEqualToString:strongSelf.cipherKey]);
         BOOL maximumSubscribeIdleChanged =  (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime);
         BOOL nonSubscribeTimeoutChanged =  (nonSubscribeRequestTimeout != strongSelf.nonSubscribeRequestTimeout);
         BOOL heartbeatValueChanged =  (presenceHeartbeatValue != strongSelf.presenceHeartbeatValue);
@@ -327,10 +336,6 @@
             }
             if (uuidChanged) {
                 [configuration appendFormat:@"UUID changed from '%@' to '%@'\n", uuid, _uuid];
-            }
-            if (cipherKeyChanged) {
-                [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
-                 cipherKey, strongSelf.cipherKey];
             }
             if (cipherKeyChanged) {
                 [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
@@ -615,6 +620,7 @@
         // Check whether previous client state reported unexpected disconnection from remote data
         // objects live feed or not.
         __strong __typeof(self) strongSelf = weakSelf;
+        PNStatusCategory previousState = _recentClientStatus;
         PNStatusCategory currentState = recentClientStatus;
         
         // In case if client disconnected only from one of it's channels it should keep 'connected'
@@ -641,14 +647,22 @@
         // Check whether client reported unexpected disconnection.
         else if (currentState == PNUnexpectedDisconnectCategory) {
             
-            // Dispatching check block with small delay, which will alloow to fire reachability
-            // change event.
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
-                           dispatch_get_main_queue(), ^{
-               
-                __strong __typeof(self) strongSelfForDelayed = weakSelf;
-                [strongSelfForDelayed startRemoteServicePing];
-            });
+            // Check whether client unexpectedly disconnected while tried to subscribe or not.
+            if (previousState == PNUnknownCategory || previousState == PNDisconnectedCategory) {
+                
+                [strongSelf startReachability];
+            }
+            else {
+                
+                // Dispatching check block with small delay, which will alloow to fire reachability
+                // change event.
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
+                               dispatch_get_main_queue(), ^{
+                   
+                    __strong __typeof(self) strongSelfForDelayed = weakSelf;
+                    [strongSelfForDelayed startRemoteServicePing];
+                });
+            }
         }
     });
 }
@@ -712,18 +726,19 @@
         strongSelf.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:strongSelf.origin];
         [strongSelf.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
             
+            __strong __typeof(self) strongSelfForHandler = weakSelf;
             if (status == AFNetworkReachabilityStatusReachableViaWiFi) {
                 
                 DDLogReachability(@"<PubNub> Network available via WiFi");
             } else if (status == AFNetworkReachabilityStatusReachableViaWWAN) {
                 
                 DDLogReachability(@"<PubNub> Network available via WWAN");
-            } else if (status == AFNetworkReachabilityStatusNotReachable) {
+            } else if (status == AFNetworkReachabilityStatusNotReachable &&
+                       strongSelfForHandler.reachabilityStatus != status) {
                 
                 DDLogReachability(@"<PubNub> Network not available");
             }
             
-            __strong __typeof(self) strongSelfForHandler = weakSelf;
             AFNetworkReachabilityStatus previousStatus = strongSelfForHandler.reachabilityStatus;
             strongSelfForHandler.reachabilityStatus = status;
             if (previousStatus == AFNetworkReachabilityStatusNotReachable &&
@@ -766,30 +781,37 @@
 
 - (void)startRemoteServicePing {
     
-    // Try to request 'time' API to ensure what network really available.
     __weak __typeof(self) weakSelf = self;
-    [self timeWithCompletion:^(PNResult *result, PNStatus *requestStatus) {
+    dispatch_async([self serviceQueue], ^{
         
-        __strong __typeof(self) strongSelfForResponse = weakSelf;
-        if (result) {
+        __strong __typeof(self) strongSelf = weakSelf;
+        if (!strongSelf.pingingRemoteService) {
             
-            [strongSelfForResponse restoreSubscriptionCycleIfRequired];
-            [strongSelfForResponse startHeartbeatIfRequired];
-        }
-        else if (strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusNotReachable &&
-                 strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusUnknown) {
+            strongSelf.pingRemoteService = YES;
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
-                           dispatch_get_main_queue(), ^{
+            // Try to request 'time' API to ensure what network really available.
+            [strongSelf timeWithCompletion:^(PNResult *result, PNStatus *requestStatus) {
                 
-                __strong __typeof(self) strongSelfForDelayed = weakSelf;
-                dispatch_async([strongSelfForDelayed configurationAccessQueue], ^{
+                __strong __typeof(self) strongSelfForResponse = weakSelf;
+                if (result) {
                     
-                    [strongSelfForDelayed startRemoteServicePing];
-                });
-            });
+                    [strongSelfForResponse restoreSubscriptionCycleIfRequired];
+                    [strongSelfForResponse startHeartbeatIfRequired];
+                }
+                else if (strongSelfForResponse.reachabilityManager &&
+                         strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusNotReachable) {
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
+                                   dispatch_get_main_queue(), ^{
+                                       
+                                       __strong __typeof(self) strongSelfForDelayed = weakSelf;
+                                       [strongSelfForDelayed startRemoteServicePing];
+                                   });
+                }
+                strongSelfForResponse.pingRemoteService = NO;
+            }];
         }
-    }];
+    });
 }
 
 
@@ -875,7 +897,7 @@
             [strongSelf handleRequestSuccess:request withTask:task andData:responseObject];
         };
         void(^failure)(id, id) = ^(id task, id error) {
-
+            
             __strong __typeof(self) strongSelf = weakSelf;
             [strongSelf handleRequestFailure:request withTask:task andError:error];
         };
@@ -1049,10 +1071,9 @@
         
         if (status.isError) {
             
-            DDLogFailureStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
+            DDLogFailureStatus(@"<PubNubF> %@", [status stringifiedRepresentation]);
         }
         else {
-            
             
             DDLogStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
         }
@@ -1075,7 +1096,7 @@
                     targetStatus = [status copy];
                     [targetStatus revertToOriginalCategory];
                 }
-                ((PNStatusBlock)block)(status);
+                ((PNStatusBlock)block)(targetStatus);
             }
         });
     }
@@ -1112,13 +1133,6 @@
     
     status.uuid = self.uuid;
     status.TLSEnabled = self.isTLSEnabled;
-    if (status.operation == PNSubscribeOperation || status.operation == PNUnsubscribeOperation) {
-        
-        status.currentTimetoken = [self currentTimeToken];
-        status.previousTimetoken = [self previousTimeToken];
-        status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
-        status.groups = [self channelGroups];
-    }
     status.authKey = self.authKey;
 }
 
