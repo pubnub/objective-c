@@ -1078,7 +1078,7 @@
                     targetStatus = [status copy];
                     [targetStatus revertToOriginalCategory];
                 }
-                ((PNStatusBlock)block)(status);
+                ((PNStatusBlock)block)(targetStatus);
             }
         });
     }
@@ -1115,13 +1115,6 @@
     
     status.uuid = self.uuid;
     status.TLSEnabled = self.isTLSEnabled;
-    if (status.operation == PNSubscribeOperation || status.operation == PNUnsubscribeOperation) {
-        
-        status.currentTimetoken = [self currentTimeToken];
-        status.previousTimetoken = [self previousTimeToken];
-        status.channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
-        status.groups = [self channelGroups];
-    }
     status.authKey = self.authKey;
 }
 

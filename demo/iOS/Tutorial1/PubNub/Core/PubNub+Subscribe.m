@@ -160,6 +160,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)setSubscriberState:(PNSubscriberState)state;
 
 /**
+ @brief  Retrieve stored current subscription time token information.
+
+ @return Cached current time token information or \b 0 if requested for first time.
+
+ @since 4.0
+ */
+- (NSNumber *)currentTimeToken;
+
+/**
  @brief  Update current subscription time token information in cache.
  
  @param timeToken Reference on current time token which should replace the one stored in cache.
@@ -167,6 +176,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  @since 4.0
  */
 - (void)setCurrentTimeToken:(NSNumber *)timeToken;
+
+/**
+ @brief  Retrieve stored previous subscription time token information.
+
+ @return Cached previous time token information or \b 0 if requested for first time.
+
+ @since 4.0
+ */
+- (NSNumber *)previousTimeToken;
 
 /**
  @brief  Update previous subscription time token information in cache.
@@ -416,6 +434,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 #pragma mark - Subscription
 
 /**
+ @brief  Continue subscription cycle using \c currentTimeToken value and channels, stored in cache.
+
+ @since 4.0
+ */
+- (void)continueSubscriptionCycleIfRequired;
+
+/**
  @brief  Final designated subscription method before issue subscribe request to \b PubNub service.
 
  @param shouldModifyObjectsList Whether request is part of channel list modification sequence (by
@@ -561,6 +586,16 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 
 #pragma mark - Processing
+
+/**
+ @brief      Add additional information about current subscriber state to the status.
+ @discussion Additional information can be used for further status information processing by user.
+
+ @param status Reference on status object which should be populated with additional data.
+
+ @since 4.0
+ */
+- (void)addSubscriberStateInformationTo:(PNStatus *)status;
 
 /**
  @brief  Try to pre-process provided data and translate it's content to expected from 'subscribe'
@@ -1666,14 +1701,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     else if (isInitialSubscription) {
         
         NSMutableDictionary *data = [NSMutableDictionary dictionaryWithDictionary:status.data];
-        if ([channelsDifference count] || [presenceChannelsDifference count]) {
-            
-            data[@"channels"] = [[channelsDifference setByAddingObjectsFromSet:presenceChannelsDifference] allObjects];
-        }
-        if ([channelGroupsDifference count]) {
-            
-            data[@"channel-groups"] = [channelGroupsDifference allObjects];
-        }
         [data removeObjectForKey:@"events"];
         status.data = [data copy];
     }
@@ -1696,7 +1723,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Check whether initial subscription or channels list update has been performed.
     if (isInitialSubscription || status.category == PNUnexpectedDisconnectCategory) {
-        
+
+        [self addSubscriberStateInformationTo:status];
         [self callBlock:block status:YES withResult:nil andStatus:status];
     }
 }
@@ -1763,6 +1791,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
     PNStatus *subscriberStatus = [status copy];
     [self completeStatusObject:subscriberStatus];
+    [self addSubscriberStateInformationTo:subscriberStatus];
     
     dispatch_async(self.callbackQueue, ^{
         
@@ -1780,22 +1809,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Create status information if required.
     PNStatus *status = [PNStatus statusForRequest:request withError:nil];
-    NSMutableDictionary *data = [(status.data?: @{}) mutableCopy];
-    if ([channels count]) {
-        
-        data[@"channels"] = [channels arrayByAddingObjectsFromArray:presence];
-    }
-    if ([groups count]) {
-        
-        data[@"channel-groups"] = groups;
-    }
     [self setNumberOfAPICalls:MAX(([self numberOfAPICalls] - 1), 0)];
     
     if (![[self allObjects] count]) {
         
         [self handleSubscriberStatus:status change:PNDisconnectedSubscriberState];
     }
-    
+
+    [self addSubscriberStateInformationTo:status];
     [self callBlock:block status:YES withResult:nil andStatus:status];
     
     // In case if 'leave' presence event had target channels/groups it should release subscription
@@ -1808,6 +1829,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 
 #pragma mark - Processing
+
+- (void)addSubscriberStateInformationTo:(PNStatus *)status {
+
+    status.currentTimetoken = [self currentTimeToken];
+    status.previousTimetoken = [self previousTimeToken];
+    status.channels = [[[self mutableChannels] setByAddingObjectsFromSet:[self mutablePresenceChannels]] allObjects];
+    status.channelGroups = [[self mutableGroups] allObjects];
+}
 
 - (NSDictionary *)processedSubscribeResponse:(id)response {
     

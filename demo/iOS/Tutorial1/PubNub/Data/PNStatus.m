@@ -149,7 +149,7 @@
     status->_subCategory = self.subCategory;
     status.TLSEnabled = self.isTLSEnabled;
     status.channels = self.channels;
-    status.groups = self.groups;
+    status.channelGroups = self.channelGroups;
     status.uuid = self.uuid;
     status.authKey = self.authKey;
     status.state = self.state;
@@ -292,12 +292,22 @@
     NSMutableDictionary *status = [[super dictionaryRepresentation] mutableCopy];
     [status addEntriesFromDictionary:@{@"Category": PNStatusCategoryStrings[self.category],
                                        @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
-                                       @"Objects": @{@"Channels": (self.channels?: @"no channels"),
-                                                     @"Channel groups": (self.groups?: @"no groups")},
                                        @"UUID": (self.uuid?: @"uknonwn"),
                                        @"Authorization": (self.authKey?: @"not set"),
                                        @"Time": @{@"Current": (self.currentTimetoken?: @(0)),
                                                   @"Previous": (self.previousTimetoken?: @(0))}}];
+    if ([self.channels count] || [self.channelGroups count]) {
+        
+        status[@"Objects"] = [NSMutableDictionary new];
+        if ([self.channels count]) {
+            
+            status[@"Objects"][@"Channels"] = self.channels;
+        }
+        if ([self.channelGroups count]) {
+            
+            status[@"Objects"][@"Channel groups"] = self.channelGroups;
+        }
+    }
     
     return [status copy];
 }

@@ -14,9 +14,18 @@
 #pragma mark - Information
 
 @property (nonatomic, assign) PNStatusCategory category;
+
+
+/**
+ @brief  One of \b PNStatusCategory fields which provide a bit detailed information about issue.
+
+ @since 4.0
+*/
+@property (nonatomic, readonly, assign) PNStatusCategory subCategory;
+
 @property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 @property (nonatomic, copy) NSArray *channels;
-@property (nonatomic, copy) NSArray *groups;
+@property (nonatomic, copy) NSArray *channelGroups;
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, copy) NSString *authKey;
 @property (nonatomic, copy) NSDictionary *state;
