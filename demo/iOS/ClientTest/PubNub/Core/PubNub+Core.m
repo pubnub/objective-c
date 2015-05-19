@@ -566,6 +566,7 @@
                                                      name:UIApplicationDidEnterBackgroundNotification
                                                    object:nil];
         [self addListeners:@[self]];
+        [self startReachability];
     }
     
     

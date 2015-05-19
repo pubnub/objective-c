@@ -1649,7 +1649,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     [self removePresenceChannels:[self presenceChannelsInternal]];
                 }
                 status.category = PNUnexpectedDisconnectCategory;
-                NSLog(@"Disconnected from: %@", [self allObjects]);
                 
                 [self stopHeartbeatIfPossible];
                 [self handleSubscriberStatus:status
@@ -1828,6 +1827,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Check whether allowed state transition has been issued or not.
     if (shouldHandleTransition) {
+        
+        if (state == PNDisconnectedSubscriberState ||
+            state == PNDisconnectedUnexpectedlySubscriberState ||
+            state == PNAccessRightsErrorSubscriberState) {
+            
+            NSLog(@"Disconnected from: %@", [self allObjects]);
+        }
         
         // Store actual client subscriber state.
         [self setSubscriberState:state];

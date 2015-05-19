@@ -566,6 +566,7 @@
                                                      name:UIApplicationDidEnterBackgroundNotification
                                                    object:nil];
         [self addListeners:@[self]];
+        [self startReachability];
     }
     
     
@@ -1071,7 +1072,7 @@
         
         if (status.isError) {
             
-            DDLogFailureStatus(@"<PubNubF> %@", [status stringifiedRepresentation]);
+            DDLogFailureStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
         }
         else {
             
