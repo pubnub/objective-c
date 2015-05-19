@@ -27,6 +27,8 @@
     
     XCTestExpectation *_receiveStatusExpectation;
     XCTestExpectation *_receiveMessageExpectation;
+    
+    BOOL _isTestError;
 }
 
 - (void)setUp {
@@ -48,34 +50,85 @@
 
 - (void)testReturnSubscribedChannels {
     
+    // Subscribe to channels
     XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
-    [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES
+    NSArray *channels = @[@"testChannel1", @"testChannel2"];
+    __block NSArray *statusChannels;
+    
+    [_pubNub subscribeToChannels:channels withPresence:YES
                      clientState:nil andCompletion:^(PNStatus *status) {
                          
                          if (status.error) {
                              
                              XCTFail(@"Error");
+                             _isTestError = YES;
+                         } else {
+                             
+                             statusChannels = status.channels;
                          }
                          [_subscribeExpectation fulfill];
                      }];
     
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        _isTestError = YES;
     }];
     
-    NSArray *channels = [_pubNub channels];
-    NSLog(@"!!!%@", channels);
+    if (_isTestError) {
+        
+        return;
+    }
+    
+    NSSet *setChannels = [[NSSet alloc] initWithArray:channels];
+    NSSet *setStatusChannels = [[NSSet alloc] initWithArray:statusChannels];
+    XCTAssertTrue([setChannels isSubsetOfSet:setStatusChannels]);
+    
+    // Get subscribed channels
+    NSArray *subscribedChannels = [_pubNub channels];
+    
+    NSSet *setSubscribedChannels = [[NSSet alloc] initWithArray:subscribedChannels];
+    XCTAssertTrue([setChannels isSubsetOfSet:setSubscribedChannels]);
 }
 
 - (void)testReturnSubscribedGroups {
     
+    // Create group by adding channels to group
+    XCTestExpectation *_addChannelsExpectation = [self expectationWithDescription:@"Adding channels"];
+    
+    [_pubNub addChannels:@[@"testChannel1", @"testChannel2"] toGroup:@"testGroup" withCompletion:^(PNStatus *status) {
+        
+                        if (status.error) {
+                            
+                            XCTFail(@"Error"); //?
+                            _isTestError = YES;
+                        }
+                        [_addChannelsExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        _isTestError = YES;
+    }];
+    
+    if (_isTestError) {
+        return;
+    }
+    
+    // Subscribe to groups
     XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
-    [_pubNub subscribeToChannelGroups:@[@"testGroup1", @"testGroup2"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
+    NSArray *groups = @[@"testGroup"];
+    __block NSArray *statusGroups;
+    
+    [_pubNub subscribeToChannelGroups:groups withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
         
                          if (status.error) {
                              
-                             XCTFail(@"Error");
+                             XCTFail(@"Test error %@", status.data);
+                             _isTestError = YES;
+                         } else {
+                             
+                             statusGroups = status.channelGroups;
                          }
                          [_subscribeExpectation fulfill];
                      }];
@@ -83,8 +136,18 @@
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
     }];
     
-    NSArray *groups = [_pubNub channelGroups];
-    NSLog(@"!!!%@", groups);
+    if (_isTestError) {
+        return;
+    }
+    
+    NSSet *setGroups = [[NSSet alloc] initWithArray:groups];
+    NSSet *setStatusGroups = [[NSSet alloc] initWithArray:statusGroups];
+    XCTAssertTrue([setGroups isSubsetOfSet:setStatusGroups]);
+    
+    // Get subscribed groups
+    NSArray *subscribedGroups = [_pubNub channelGroups];
+    NSSet *setSubscribedGroups = [[NSSet alloc] initWithArray:subscribedGroups];
+    XCTAssertTrue([setGroups isSubsetOfSet:setSubscribedGroups]);
 }
 
 - (void)testReturnChannelsWithEventPresence {
