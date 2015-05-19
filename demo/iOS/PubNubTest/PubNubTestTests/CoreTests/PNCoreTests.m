@@ -49,7 +49,6 @@
     
     _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
     _pubNub.uuid = @"testUUID";
-    _pubNub.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     
     _devicePushToken = nil;
 }

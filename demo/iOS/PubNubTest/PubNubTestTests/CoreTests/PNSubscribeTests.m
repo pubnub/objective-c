@@ -21,9 +21,10 @@
     
     PubNub *_pubNub;
     PubNub *_pubNub2;
-    GCDGroup *_resGroup;
     BOOL _clientListening;
     
+    XCTestExpectation *_receiveStatusExpectation;
+    XCTestExpectation *_receiveMessageExpectation;
 }
 
 - (void)setUp {
@@ -31,11 +32,9 @@
     
     _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
     _pubNub.uuid = @"testUUID";
-    _pubNub.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     
     _pubNub2 = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
     _pubNub2.uuid = @"testUUID2";
-    _pubNub2.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 }
 
 - (void)tearDown {
@@ -47,8 +46,7 @@
 
 - (void)testReturnSubscribedChannels {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES
                      clientState:nil andCompletion:^(PNStatus *status) {
@@ -57,13 +55,11 @@
                              
                              XCTFail(@"Error");
                          }
-                         [_resGroup leave];
+                         [_subscribeExpectation fulfill];
                      }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
     NSArray *channels = [_pubNub channels];
     NSLog(@"!!!%@", channels);
@@ -71,8 +67,7 @@
 
 - (void)testReturnSubscribedGroups {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToChannelGroups:@[@"testGroup1", @"testGroup2"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
         
@@ -80,13 +75,11 @@
                              
                              XCTFail(@"Error");
                          }
-                         [_resGroup leave];
+                         [_subscribeExpectation fulfill];
                      }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
     NSArray *groups = [_pubNub channelGroups];
     NSLog(@"!!!%@", groups);
@@ -94,8 +87,7 @@
 
 - (void)testReturnChannelsWithEventPresence {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES
                      clientState:nil andCompletion:^(PNStatus *status) {
@@ -104,13 +96,11 @@
                              
                              XCTFail(@"Error");
                          }
-                         [_resGroup leave];
+                         [_subscribeExpectation fulfill];
                      }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
     NSArray *channels = [_pubNub presenceChannels];
     NSLog(@"!!!%@", channels);
@@ -118,8 +108,7 @@
 
 - (void)testCheckIsSubscribeOn {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES
                      clientState:nil andCompletion:^(PNStatus *status) {
@@ -128,13 +117,11 @@
                              
                              XCTFail(@"Error");
                          }
-                         [_resGroup leave];
+                         [_subscribeExpectation fulfill];
                      }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
     BOOL isSubscribe = [_pubNub isSubscribedOn:@"testChannel1"];
     NSLog(@"!!!%d", isSubscribe);
@@ -142,8 +129,7 @@
 
 - (void)testSubscribeUnsubscribeFromChannels {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES
                      clientState:nil andCompletion:^(PNStatus *status) {
@@ -152,16 +138,13 @@
                              
                              XCTFail(@"Error");
                          }
-                         [_resGroup leave];
-                         
+                         [_subscribeExpectation fulfill];
                      }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
-    [_resGroup enter];
+    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     [_pubNub unsubscribeFromChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES andCompletion:^(PNStatus *status) {
         
@@ -169,20 +152,17 @@
                              
                              XCTFail(@"Error");
                          }
-                         [_resGroup leave];
+                         [_unsubscribeExpectation fulfill];
                          
                      }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during unsubscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
  }
 
 - (void)testSubscribeUnsubscribeFromGroups {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToChannelGroups:@[@"testGroup1", @"testGroup2"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
         
@@ -190,15 +170,13 @@
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_subscribeExpectation fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
-    [_resGroup enter];
+    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     [_pubNub unsubscribeFromChannelGroups:@[@"testGroup1", @"testGroup2"] withPresence:YES andCompletion:^(PNStatus *status) {
 
@@ -206,35 +184,29 @@
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_unsubscribeExpectation fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during unsubscribing");
-    }
-    
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
 }
 
 - (void)testSubscribeUnsubscribeFromPresenceChannels {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+     XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToPresenceChannels:@[@"testChannel1", @"testChannel2"] withCompletion:^(PNStatus *status) {
         if (status.error) {
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_subscribeExpectation fulfill];
     }];
      
-     if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
-    [_resGroup enter];
+    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     [_pubNub unsubscribeFromPresenceChannels:@[@"testChannel1", @"testChannel2"] andCompletion:^(PNStatus *status) {
         
@@ -242,13 +214,12 @@
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_unsubscribeExpectation fulfill];
         
     }];
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during unsubscribing");
-    }
+    
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
 }
 
@@ -258,8 +229,11 @@
     [_pubNub addListeners:@[self]];
     _clientListening = YES;
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enterTimes:4];
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    _receiveStatusExpectation = [self expectationWithDescription:@"Delegate:'ReceiveStatus'"];
+    
+    XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message"];
+    _receiveMessageExpectation = [self expectationWithDescription:@"Delegate:'ReceiveMessage'"];
     
     // Delegate:"ReceiveStatus" have to invoked
     [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
@@ -268,8 +242,7 @@
                              
                              XCTFail(@"Error");
                          }
-                         [_resGroup leave];
-                         
+                         [_subscribeExpectation fulfill];
                      }];
     
     // Delegate:"ReceivePresenceEvent" have to invoked
@@ -290,22 +263,19 @@
             
             XCTFail(@"Error");
         }
-          
-        [_resGroup leave];
+        [_publishExpectation fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
 
     //      Remove listeners
     [_pubNub removeListeners:@[self]];
     _clientListening = NO;
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enterTimes:2];
+    
+    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     // Delegate:"ReceiveStatus" have not be invoked
     [_pubNub unsubscribeFromChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES andCompletion:^(PNStatus *status) {
@@ -314,8 +284,7 @@
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
-        
+        [_unsubscribeExpectation fulfill];
     }];
     
     
@@ -330,6 +299,7 @@
 //        
 //    }];
 
+    _publishExpectation = [self expectationWithDescription:@"Send message"];
     
     // Delegate:"ReceiveMessage" have not be invoked
     [_pubNub publish:@"Hello world" toChannel:@"testChannel1" storeInHistory:YES withCompletion:^(PNStatus *status) {
@@ -338,14 +308,11 @@
             
             XCTFail(@"Error");
         }
-        
-        [_resGroup leave];
+        [_publishExpectation fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
 }
 
 
@@ -354,10 +321,10 @@
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
     
-    if (_resGroup && _clientListening) {
+    if (_receiveStatusExpectation && _clientListening) {
         
-        [_resGroup leave];
-    } else if ((_resGroup && !_clientListening) ) {
+        [_receiveStatusExpectation fulfill];
+    } else if (_receiveStatusExpectation && !_clientListening) {
         
         XCTFail(@"Error");
     }
@@ -365,21 +332,21 @@
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
     
-    if (_resGroup && _clientListening) {
-        
-        [_resGroup leave];
-    } else if ((_resGroup && !_clientListening) ) {
-        
-        XCTFail(@"Error");
-    }
+//    if (_resGroup && _clientListening) {
+//        
+//        [_resGroup leave];
+//    } else if ((_resGroup && !_clientListening) ) {
+//        
+//        XCTFail(@"Error");
+//    }
 }
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message {
     
-    if (_resGroup && _clientListening) {
+    if (_receiveMessageExpectation && _clientListening) {
         
-        [_resGroup leave];
-    } else if ((_resGroup && !_clientListening) ) {
+        [_receiveMessageExpectation fulfill];
+    } else if ((_receiveMessageExpectation && !_clientListening) ) {
         
         XCTFail(@"Error");
     }

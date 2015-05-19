@@ -23,7 +23,6 @@
 @implementation PNStateTests {
     
     PubNub *_pubNub;
-    GCDGroup *_resGroup;
 }
 
 - (void)setUp {
@@ -32,7 +31,6 @@
     
     _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
     _pubNub.uuid = @"testUUID";
-    _pubNub.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 }
 
 - (void)tearDown {
@@ -43,8 +41,8 @@
 
 - (void)testStateForClientOnChannel {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enterTimes:2];
+    XCTestExpectation *_setState = [self expectationWithDescription:@"Setting state for client on channel"];
+    XCTestExpectation *_getState = [self expectationWithDescription:@"Getting state for client on channel"];
     
     [_pubNub setState:@{@"Name" : @"Jeims", @"Surname" : @"Bond"} forUUID:@"testUUID" onChannel:@"testChannel" withCompletion:^(PNStatus *status) {
  
@@ -52,7 +50,7 @@
                              
                              XCTFail(@"Error");
                          }
-                         [_resGroup leave];
+                         [_setState fulfill];
     }];
                         
     [_pubNub stateForUUID:@"testUUID" onChannel:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
@@ -61,19 +59,18 @@
             
                             XCTFail(@"Error");
                         }
-                        [_resGroup leave];
+                        [_getState fulfill];
      }];
 
                         
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }}
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
+}
      
 - (void)testStateForClientOnGroup {
     
-    _resGroup = [GCDGroup group];
-    [_resGroup enterTimes:2];
+    XCTestExpectation *_setState = [self expectationWithDescription:@"Setting state for client on channel"];
+    XCTestExpectation *_getState = [self expectationWithDescription:@"Getting state for client on channel"];
     
     [_pubNub setState:@{@"Name" : @"Jeims", @"Surname" : @"Bond"} forUUID:@"testUUID" onChannelGroup:@"testGroup" withCompletion:^(PNStatus *status) {
         
@@ -81,7 +78,7 @@
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_setState fulfill];
     }];
     
     [_pubNub stateForUUID:@"testUUID" onChannelGroup:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
@@ -90,14 +87,12 @@
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_getState fulfill];
     }];
     
-    
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired during subscribing");
-    }}
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
+}
 
 
 @end

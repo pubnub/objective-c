@@ -22,7 +22,6 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
 @implementation PNAPNSTest  {
     
     PubNub *_pubNub;
-    GCDGroup *_resGroup;
     NSData *_devicePushToken;
 }
 
@@ -33,7 +32,6 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
     
     _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
     _pubNub.uuid = @"testUUID";
-    _pubNub.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     
     _devicePushToken = nil;
 }
@@ -47,8 +45,7 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
 - (void)testARNS {
 
     // Add push notifications on channels
-    _resGroup = [GCDGroup group];
-    [_resGroup enter];
+    XCTestExpectation *_addPushNotifications = [self expectationWithDescription:@"Adding PushNotifications"];
     
     [_pubNub addPushNotificationsOnChannels:@[@"testChannel1", @"testChannel2"] withDevicePushToken:_devicePushToken andCompletion:^(PNStatus *status) {
         
@@ -56,16 +53,14 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
             
             XCTFail(@"Error"); //?
         }
-        [_resGroup leave];
+        [_addPushNotifications fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired");
-    }
-
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
+    
      // Remove push notifications from channels
-    [_resGroup enter];
+    XCTestExpectation *_removePushNotifications = [self expectationWithDescription:@"Removing PushNotifications"];
     
     [_pubNub removePushNotificationsFromChannels:@[@"testChannel1", @"testChannel2"] withDevicePushToken:_devicePushToken andCompletion:^(PNStatus *status) {
         
@@ -73,16 +68,14 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_removePushNotifications fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
 
     // Remove all push notifications from device
-    [_resGroup enter];
+    XCTestExpectation *_removeAllPushNotifications = [self expectationWithDescription:@"Removing all PushNotifications"];
     
     [_pubNub removeAllPushNotificationsFromDeviceWithPushToken:_devicePushToken andCompletion:^(PNStatus *status) {
         
@@ -90,16 +83,14 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_removeAllPushNotifications fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
     
     // Request for all channels on which push notification has been enabled
-    [_resGroup enter];
+    XCTestExpectation *_getChannelsWithPushNotifications = [self expectationWithDescription:@"Getting all channels with PushNotifications"];;
     
     [_pubNub pushNotificationEnabledChannelsForDeviceWithPushToken:_devicePushToken andCompletion:^(PNResult *result, PNStatus *status) {
     
@@ -107,13 +98,11 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
             
             XCTFail(@"Error");
         }
-        [_resGroup leave];
+        [_getChannelsWithPushNotifications fulfill];
     }];
     
-    if ([GCDWrapper isGCDGroup:_resGroup timeoutFiredValue:30]) {
-        
-        XCTFail(@"Timeout fired");
-    }
+    [self waitForExpectationsWithTimeout:kTestTimout handler:^(NSError *error) {
+    }];
 }
 
 @end
