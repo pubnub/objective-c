@@ -96,6 +96,8 @@
     // Easily filter errors vs informational events with .isError attribute
     if (!status.isError) {
 
+        NSLog(@"*** status.category is: %d", status.category);
+
         if (status.category == PNConnectedCategory) {
 
             // Connect event. You can do stuff like publish, and know you'll get it.
@@ -104,7 +106,6 @@
             // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
             NSLog(@"Connected! Channel Info: %@", status.channels);
             [self publishHelloWorld];
-
 
         }
         else if (status.category == PNDisconnectedCategory) {
