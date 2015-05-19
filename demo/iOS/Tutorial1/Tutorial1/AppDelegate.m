@@ -54,6 +54,29 @@
         }
 
     }];
+    
+    [self.client historyForChannel:_channel withCompletion:^(PNResult *result, PNStatus *status) {
+        
+        if (status.isError) {
+            
+            if (status.category == PNAccessDeniedCategory) {
+                
+                NSLog(@"History request failed because of PAM: %@", [status data]);
+            }
+            else if (status.category == PNDecryptionErrorCategory) {
+                
+                NSLog(@"History request received messages, but failed to decrypt them.");
+            }
+            else {
+                
+                NSLog(@"History request failed: %@", [status debugDescription]);
+            }
+        }
+        if (result) {
+            
+            NSLog(@"Loaded history data: %@", result.data);
+        }
+    }];
 
     [self.client subscribeToChannels:@[_channel] withPresence:YES andCompletion:^(PNStatus *status) {
 
