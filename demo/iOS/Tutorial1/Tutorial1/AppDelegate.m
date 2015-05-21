@@ -26,6 +26,7 @@
 #pragma mark - Configuration
 
 - (void)updateClientConfiguration;
+
 - (void)printClientConfiguration;
 
 #pragma mark -
@@ -61,14 +62,14 @@
     [self printClientConfiguration];
 }
 
--(void)delayedSub
-{
+- (void)delayedSub {
     NSLog(@"Timer Called");
     [self.client subscribeToChannels:@[_channel2] withPresence:YES andCompletion:^(PNStatus *status) {
         if (!status.isError) {
             NSLog(@"^^^^Second Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
         } else {
-            NSLog(@"^^^^Second Subscribe request did not succeed. Will auto retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+            NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
+            NSLog(@"You can always verify if an operation will auto retry by checking status.willAutomaticallyRetry: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
         }
     }];
 }
@@ -77,15 +78,21 @@
     // Subscribe
     [self.client subscribeToChannels:@[_channel] withPresence:YES andCompletion:^(PNStatus *status) {
         // Here we monitor subscribe events that we care about only at subscribe call time.
-        // Subsequent subscribe loop status events should be monitored within didReceiveStatus listener
+        // Subsequent subscribe loop status events are monitored within didReceiveStatus listener
+        // And the messages that arrive via this subscribe call are monitored via the didReceiveMessage listener
 
-        if (!status.isError) {
+        if (status.isError) {
+            [self handleErrors:status];
+        }
+
+        else if (!status.isError) {
             NSLog(@"^^^^Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
 
             self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(delayedSub) userInfo:nil repeats:NO];
 
         } else {
-            NSLog(@"^^^^Subscribe request did not succeed. Will auto retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+            NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
+            NSLog(@"You can always verify if an operation will auto retry by checking status.willAutomaticallyRetry: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
         }
     }];
 }
@@ -96,24 +103,41 @@
 
         if (status.isError) {
 
-            if (status.category == PNAccessDeniedCategory) {
-
-                NSLog(@"History request failed because of PAM: %@", [status data]);
-            }
-            else if (status.category == PNDecryptionErrorCategory) {
-
-                NSLog(@"History request received messages, but failed to decrypt them.");
-            }
-            else {
-
-                NSLog(@"History request failed: %@", [status debugDescription]);
-            }
+            [self handleErrors:status];
         }
-        if (result) {
+        else if (result) {
 
-            NSLog(@"Loaded history data: %@", result.data);
+            NSLog(@"Loaded history data: %@", result.data);  // TODO: Call out data attributes here
         }
     }];
+}
+
+- (void)handleErrors:(PNStatus *)status {
+
+    NSLog(@"If this was a subscribe or presence PAM error, the system will continue to retry automatically.");
+    NSLog(@"If this was any other operation, you will need to manually retry the operation.");
+
+    NSLog(@"You can always verify if an operation will auto retry by checking status.willAutomaticallyRetry: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+    NSLog(@"If the operation will not auto retry, you can manually retry by calling [status retry]");
+
+    if (status.category == PNAccessDeniedCategory) {
+
+        NSLog(@"Access Denied via PAM. Access status.data to determine the resource in question that was denied. %@", [status data]);
+        NSLog(@"In addition, you can also change auth key dynamically if needed.");
+
+        // TODO detail fields in data that depict the PAM error
+
+    }
+    else if (status.category == PNDecryptionErrorCategory) {
+
+        NSLog(@"Decryption error. Be sure the data is encrypted and/or encrypted with the correct cipher key.");
+        NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.data);
+        // TODO: detail fields in data that show "broken" ciphertext
+    }
+    else {
+
+        NSLog(@"Request failed: %@", [status debugDescription]);
+    }
 }
 
 - (void)pubNubTime {
@@ -129,7 +153,6 @@
 
     }];
 }
-
 
 
 - (void)publishHelloWorld {
@@ -154,7 +177,7 @@
 
     NSLog(@"Did receive message: %@", message.data);
     if (status.isError) {
-        
+
         NSLog(@"Message error: %@", @(status.category));
     }
 }
@@ -174,53 +197,7 @@
 
         NSLog(@"^^^^Status ERROR: %i", status.category);
 
-        if (status.category == PNDisconnectedCategory) {
-
-            // PNDisconnect happens as part of our regular operation
-            // No need to monitor for this unless requested by support
-
-            NSLog(@"ExpectedDisconnect! Channel Info: %@", status.channels);
-
-        }
-        else if (status.category == PNUnexpectedDisconnectCategory) {
-
-            // PNUnexpectedDisconnect happens as part of our regular operation
-            // This event happens when radio / connectivity is lost
-
-            NSLog(@"UnexpectedDisconnect! Channel Info: %@", status.channels);
-
-        }
-
-    } else
-
-    if (!status.isError) {
-
-        NSLog(@"^^^^Status NON-ERROR: %i", status.category);
-
-        NSLog(@"*** status.category is: %@", @(status.category));
-
-        if (status.category == PNConnectedCategory) {
-
-            // Connect event. You can do stuff like publish, and know you'll get it.
-            // Or just use the connected event to confirm you are subscribed for UI / internal notifications, etc
-
-            // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
-            NSLog(@"Connected! Channel Info: %@", status.channels);
-            [self publishHelloWorld];
-
-        }
-
-
-        else if (status.category == PNReconnectedCategory) {
-
-            // PNUnexpectedDisconnect happens as part of our regular operation
-            // This event happens when radio / connectivity is lost
-
-            NSLog(@"Reconnected! Channel Info: %@", status.channels);
-
-        }
-
-        else if (status.category == PNMalformedResponseCategory) {
+        if (status.category == PNMalformedResponseCategory) {
 
             NSLog(@"Bad JSON. Is error? %@, It will autoretry (%@)",
                     (status.isError ? @"YES" : @"NO"),
@@ -232,14 +209,72 @@
 
 
         }
-            // When receiving a 403
+            // When receiving a PAM Error (403)
+
         else if (status.category == PNAccessDeniedCategory) {
 
             NSLog(@"PAM Access Denied against channel %@ -- it will autoretry: %@",
                     status.data[@"channels"], (status.willAutomaticallyRetry ? @"YES" : @"NO"));
             NSLog(@"In the meantime, you may wish to change the autotoken or unsubscribe from the channel in question.");
 
+        } else {
+
+            NSLog(@"An unknown error has occurred.");
+
+
         }
+
+
+    } else
+
+    if (!status.isError) {
+
+        NSLog(@"^^^^Status NON-ERROR: %i", status.category);
+        NSLog(@"*** status.category is: %@", @(status.category));
+
+        [self reactToSubscribeConnectionChange:status];
+
+    }
+}
+
+- (void)reactToSubscribeConnectionChange:(PNStatus *)status {
+    // This method shows how to act on connection events specifically related to the subscribe loop
+    // Don't use these status checks on anything other than the subscribe status completion block or
+    // on the long-running subscribe loop listener didReceiveStatus
+
+    if (status.category == PNDisconnectedCategory) {
+
+        // PNDisconnect happens as part of our regular operation
+        // No need to monitor for this unless requested by support
+
+        NSLog(@"ExpectedDisconnect! Channel Info: %@", status.channels);
+
+    }
+    else if (status.category == PNUnexpectedDisconnectCategory) {
+
+        // PNUnexpectedDisconnect happens as part of our regular operation
+        // This event happens when radio / connectivity is lost
+
+        NSLog(@"UnexpectedDisconnect! Channel Info: %@", status.channels);
+
+    }
+    else if (status.category == PNConnectedCategory) {
+
+        // Connect event. You can do stuff like publish, and know you'll get it.
+        // Or just use the connected event to confirm you are subscribed for UI / internal notifications, etc
+
+        // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
+        NSLog(@"Connected! Channel Info: %@", status.channels);
+        [self publishHelloWorld];
+
+    }
+    else if (status.category == PNReconnectedCategory) {
+
+        // PNUnexpectedDisconnect happens as part of our regular operation
+        // This event happens when radio / connectivity is lost
+
+        NSLog(@"Reconnected! Channel Info: %@", status.channels);
+
     }
 }
 
