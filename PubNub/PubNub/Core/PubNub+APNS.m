@@ -138,10 +138,9 @@
                              PNRemovePushNotificationsFromChannelsOperation);
             parameters = @{(shouldEnabled ? @"add":@"remove"): channelsList};
         }
-        NSString *format = [@"/v1/push/sub-key/%@/devices/%@"
-                            stringByAppendingString:(removeAllChannels ? @"/remove" : @"")];
-        NSString *path = [NSString stringWithFormat:format, subscribeKey,
-                          [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]];
+        NSString *path = [NSString stringWithFormat:@"/v1/push/sub-key/%@/devices/%@%@", subscribeKey,
+                          [[PNData HEXFromDevicePushToken:pushToken] lowercaseString],
+                          (removeAllChannels ? @"/remove" : @"")];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:operationType
                                          withCompletion:^(PNRequest *completedRequest) {

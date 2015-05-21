@@ -109,10 +109,10 @@
         PNOperationType operationType = (group ? PNChannelGroupsOperation :
                                          PNChannelsForGroupOperation);
         NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
-        NSString *format = [@"/v1/channel-registration/sub-key/%@/channel-group"
-                            stringByAppendingString:(group ? @"/%@" : @"")];
-        NSString *path = [NSString stringWithFormat:format, subscribeKey,
-                          [PNString percentEscapedString:group]];
+        NSString *path = [NSString stringWithFormat:@"/v1/channel-registration/sub-key/%@"
+                          "/channel-group%@", subscribeKey,
+                          (group ? [NSString stringWithFormat:@"/%@",
+                                    [PNString percentEscapedString:group]] : @"")];
         PNRequest *request = [PNRequest requestWithPath:path parameters:nil
                                            forOperation:operationType withCompletion:nil];
         request.parseBlock = ^id(id rawData) {
@@ -175,10 +175,9 @@
                              PNRemoveChannelFromGroupOperation);
             parameters = @{(shouldAdd ? @"add":@"remove"): channelsList};
         }
-        NSString *format = [@"/v1/channel-registration/sub-key/%@/channel-group/%@"
-                            stringByAppendingString:(removeAllObjects ? @"/remove" : @"")];
-        NSString *path = [NSString stringWithFormat:format, subscribeKey,
-                          [PNString percentEscapedString:group]];
+        NSString *path = [NSString stringWithFormat:@"/v1/channel-registration/sub-key/%@"
+                          "/channel-group/%@%@", subscribeKey, [PNString percentEscapedString:group],
+                          (removeAllObjects ? @"/remove" : @"")];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:operationType
                                          withCompletion:^(PNRequest *completedRequest) {
