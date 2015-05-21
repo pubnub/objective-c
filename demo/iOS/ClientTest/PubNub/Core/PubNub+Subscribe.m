@@ -1690,11 +1690,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 PNResult *eventResultObject = [PNResult resultFromStatus:status withData:event];
                 if (isPresenceEvent) {
                     
-                    [strongSelf handleNewPresenceEvent:eventResultObject by:messageListeners];
+                    [strongSelf handleNewPresenceEvent:eventResultObject by:presenceListeners];
                 }
                 else {
 
-                    [strongSelf handleNewMessage:eventResultObject by:presenceListeners];
+                    [strongSelf handleNewMessage:eventResultObject by:messageListeners];
                 }
             }
         });
