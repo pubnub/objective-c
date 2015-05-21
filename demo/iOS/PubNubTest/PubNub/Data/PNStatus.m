@@ -96,14 +96,14 @@
         NSError *processingError = (error?: request.response.error);
         
         // Check whether status should represent acknowledgment or not.
-        if (request.response.response.statusCode == 200 && !processingError) {
+        if (self.statusCode == 200 && !processingError) {
             
             self.category = PNAcknowledgmentCategory;
         }
         else if (self.category == PNUnknownCategory) {
             
             // Try extract category basing on response status codes.
-            self.category = [self categoryTypeFromStatusCode:request.response.response.statusCode];
+            self.category = [self categoryTypeFromStatusCode:self.statusCode];
 
             // Extract status category from passed error object.
             if (self.category == PNUnknownCategory) {
@@ -129,6 +129,11 @@
     if (_category == PNDecryptionErrorCategory) {
         
         self.error = YES;
+    }
+    else if (_category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory ||
+             _category == PNReconnectedCategory) {
+        
+        self.error = NO;
     }
 }
 

@@ -1437,9 +1437,17 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         };
 
         // Ensure what all required fields passed before starting processing.
-        if ([channels count] || [filteredGroups count]) {
+        if ([channels count] || [filteredGroups count] || [presence count]) {
 
-            [strongSelf processRequest:request];
+            if ([channels count] || [filteredGroups count]) {
+                
+                [strongSelf processRequest:request];
+            }
+            else {
+                
+                [strongSelf handleUnsubscribeRequest:request fromChannels:channels groups:groups
+                                            presence:presence withCompletion:[block copy]];
+            }
 
             // In case if there is some channels left after unsubscription client should pick them
             // up and subscribe back.
@@ -1636,6 +1644,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 // not.
                 if (self.shouldRestoreSubscription) {
                     
+                    status.automaticallyRetry = YES;
+                    status.retryCancelBlock = ^{
+                        /* Do nothing, because we can't stop auto-retry in case of network issues.
+                           It handled by client configuration. */ };
                     if (!self.shouldTryCatchUpOnSubscriptionRestore) {
                         
                         [self setCurrentTimeToken:@(0)];
@@ -1690,11 +1702,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 PNResult *eventResultObject = [PNResult resultFromStatus:status withData:event];
                 if (isPresenceEvent) {
                     
-                    [strongSelf handleNewPresenceEvent:eventResultObject by:messageListeners];
+                    [strongSelf handleNewPresenceEvent:eventResultObject by:presenceListeners];
                 }
                 else {
 
-                    [strongSelf handleNewMessage:eventResultObject by:presenceListeners];
+                    [strongSelf handleNewMessage:eventResultObject by:messageListeners];
                 }
             }
         });
