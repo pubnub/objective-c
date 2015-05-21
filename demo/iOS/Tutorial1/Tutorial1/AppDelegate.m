@@ -69,17 +69,24 @@
             NSLog(@"^^^^Second Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
         } else {
             NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-            NSLog(@"You can always verify if an operation will auto retry by checking status.willAutomaticallyRetry: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+            [self handleErrors:status];
         }
     }];
 }
 
 - (void)pubNubSubscribe {
     // Subscribe
+
     [self.client subscribeToChannels:@[_channel] withPresence:YES andCompletion:^(PNStatus *status) {
+
+        // There are two places to monitor for the outcomes of a subscribe.
+
+        // The first place is here, within the subscribe completion block.
         // Here we monitor subscribe events that we care about only at subscribe call time.
-        // Subsequent subscribe loop status events are monitored within didReceiveStatus listener
-        // And the messages that arrive via this subscribe call are monitored via the didReceiveMessage listener
+        // This context will disappear after the initial subscribe connect event.
+
+        // Subsequent subscribe loop status events are received within didReceiveStatus listener
+        // And the messages that arrive via this subscribe call are received via the didReceiveMessage listener
 
         if (status.isError) {
             [self handleErrors:status];
@@ -92,21 +99,20 @@
 
         } else {
             NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-            NSLog(@"You can always verify if an operation will auto retry by checking status.willAutomaticallyRetry: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+            [self handleErrors:status];
         }
     }];
 }
 
 - (void)pubNubHistory {
     // History
+
     [self.client historyForChannel:_channel withCompletion:^(PNResult *result, PNStatus *status) {
 
         if (status.isError) {
-
             [self handleErrors:status];
         }
         else if (result) {
-
             NSLog(@"Loaded history data: %@", result.data);  // TODO: Call out data attributes here
         }
     }];
@@ -114,13 +120,39 @@
 
 - (void)handleErrors:(PNStatus *)status {
 
-    NSLog(@"If this was a subscribe or presence PAM error, the system will continue to retry automatically.");
+    /*
+
+    // TODO differentiate between errors, non-errors, connection, ack status events
+    // TODO handleErrorStatus vs handleNonErrorStatus ?
+
+    Then could handle like this:
+
+        if (status.isError) {
+            [self handleErrorStatus:status];
+        } else if (!status.isError) {
+            [self handleNonErrorStatus:status];
+        }
+
+     */
+
+    NSLog(@"Two types of status events are possible. Errors, and non-errors. Errors will prevent normal operation of your app.");
+
+    NSLog(@"\nIf this was a subscribe or presence PAM error, the system will continue to retry automatically.");
     NSLog(@"If this was any other operation, you will need to manually retry the operation.");
 
-    NSLog(@"You can always verify if an operation will auto retry by checking status.willAutomaticallyRetry: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+    NSLog(@"\nYou can always verify if an operation will auto retry by checking status.willAutomaticallyRetry: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
     NSLog(@"If the operation will not auto retry, you can manually retry by calling [status retry]");
+    NSLog(@"Retry attempts can be cancelled via [status cancelAutomaticRetry]");
 
-    if (status.category == PNAccessDeniedCategory) {
+    NSLog(@"^^^^Status Category: %i\n\n", status.category);
+
+    // if this is a subscribe or presence operation, check to see if its a connection-related status
+
+    if (status.operation == PNSubscribeOperation) {
+        [self handleSubscribeConnectionChange:status];
+    }
+
+    else if (status.category == PNAccessDeniedCategory) {
 
         NSLog(@"Access Denied via PAM. Access status.data to determine the resource in question that was denied. %@", [status data]);
         NSLog(@"In addition, you can also change auth key dynamically if needed.");
@@ -134,39 +166,38 @@
         NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.data);
         // TODO: detail fields in data that show "broken" ciphertext
     }
-    else {
+    else if (status.category == PNMalformedResponseCategory) {
 
-        NSLog(@"Request failed: %@", [status debugDescription]);
+        NSLog(@"We were expecting JSON from the server, but we got HTML, or otherwise not legal JSON.");
+        NSLog(@"This may happen when you connect to a public WiFi Hotspot that requires you to auth via your web browser first,");
+        NSLog(@"or if there is a proxy somewhere returning an HTML access denied error, or if there was an intermittent server issue.");
+    }
+
+    else {
+        NSLog(@"Request failed... if this is an issue that is consistently interrupting the performance of your app, email the output of debugDescription to support along with all available log info: %@", [status debugDescription]);
     }
 }
 
 - (void)pubNubTime {
-// Time (Ping) to PubNub Servers
+    // Time (Ping) to PubNub Servers
+
     [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
         if (result.data) {
             NSLog(@"Result from Time: %@", result.data);
         }
-
-        if (status.debugDescription) {
-            NSLog(@"Event Status from Time: %@ - Is an error: %@", [status debugDescription], (status.isError ? @"YES" : @"NO"));
+        else if (status.debugDescription) {
+            [self handleErrors:status];
         }
-
     }];
 }
-
 
 - (void)publishHelloWorld {
     [self.client publish:@"I'm here!" toChannel:_channel
           withCompletion:^(PNStatus *status) {
-
               if (!status.isError) {
-
                   NSLog(@"Message sent at TT: %@", status.data[@"tt"]);
               } else {
-
-                  NSLog(@"An error occurred while publishing: %@", status.data[@"information"]);
-                  NSLog(@"Because this WILL NOT autoretry (%@), you must manually resend this message again.",
-                          (status.willAutomaticallyRetry ? @"YES" : @"NO"));
+                  [self handleErrors:status];
               }
           }];
 }
@@ -175,72 +206,35 @@
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status {
 
-    NSLog(@"Did receive message: %@", message.data);
-    if (status.isError) {
-
-        NSLog(@"Message error: %@", @(status.category));
+    if (status) {
+        [self handleErrors:status];
+    } else if (message) {
+        NSLog(@"Received message: %@", message.data);
     }
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
+    // TODO detail fields in data that depict the PAM error
 
     NSLog(@"Did receive presence event: %@", event.data);
 }
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
 
-    // Easily filter errors vs informational events with .isError attribute
+    // This is where we'll find ongoing status events from our subscribe loop
+    // Results (messages) from our subscribe loop will be found in didReceiveMessage
+    // Results (presence events) from our subscribe loop will be found in didReceiveStatus
 
-    NSLog(@"^^^^Status DETECTED: %i", status.category);
-
-    if (status.isError) {
-
-        NSLog(@"^^^^Status ERROR: %i", status.category);
-
-        if (status.category == PNMalformedResponseCategory) {
-
-            NSLog(@"Bad JSON. Is error? %@, It will autoretry (%@)",
-                    (status.isError ? @"YES" : @"NO"),
-                    (status.willAutomaticallyRetry ? @"YES" : @"NO"));
-
-            // If willAutomaticallyRetry is 'NO' then it is possible manually relaunch request
-            // using: [status retry];
-            // Retry attempts can be canceled with this code: [status cancelAutomaticRetry];
-
-
-        }
-            // When receiving a PAM Error (403)
-
-        else if (status.category == PNAccessDeniedCategory) {
-
-            NSLog(@"PAM Access Denied against channel %@ -- it will autoretry: %@",
-                    status.data[@"channels"], (status.willAutomaticallyRetry ? @"YES" : @"NO"));
-            NSLog(@"In the meantime, you may wish to change the autotoken or unsubscribe from the channel in question.");
-
-        } else {
-
-            NSLog(@"An unknown error has occurred.");
-
-
-        }
-
-
-    } else
-
-    if (!status.isError) {
-
-        NSLog(@"^^^^Status NON-ERROR: %i", status.category);
-        NSLog(@"*** status.category is: %@", @(status.category));
-
-        [self reactToSubscribeConnectionChange:status];
-
-    }
+    [self handleErrors:status];
 }
 
-- (void)reactToSubscribeConnectionChange:(PNStatus *)status {
+- (void)handleSubscribeConnectionChange:(PNStatus *)status {
+
     // This method shows how to act on connection events specifically related to the subscribe loop
     // Don't use these status checks on anything other than the subscribe status completion block or
     // on the long-running subscribe loop listener didReceiveStatus
+
+    // Connection events are never defined as errors via status.isError
 
     if (status.category == PNDisconnectedCategory) {
 
