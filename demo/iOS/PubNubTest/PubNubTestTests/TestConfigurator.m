@@ -25,8 +25,10 @@ static TestConfigurator *_sharedInstance = nil;
     return _sharedInstance;
 }
 
+
 #pragma mark - Properties
 
+// keys "demo"
 - (NSString *)mainPubKey {
     return @"demo";
 }
@@ -35,6 +37,14 @@ static TestConfigurator *_sharedInstance = nil;
     return @"demo";
 }
 
+// keys "admin"
+- (NSString *)adminPubKey {
+    return @"pub-c-c37b4f44-6eab-4827-9059-3b1c9a4085f6";
+}
+
+- (NSString *)adminSubKey {
+    return @"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe";
+}
 - (NSTimeInterval)testTimeout {
     return 10;
 }

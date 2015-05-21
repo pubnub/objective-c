@@ -30,7 +30,7 @@
     
     [super setUp];
     
-    _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
 }
 
@@ -47,18 +47,18 @@
     
     [_pubNub setState:@{@"Name" : @"Jeims", @"Surname" : @"Bond"} forUUID:@"testUUID" onChannel:@"testChannel" withCompletion:^(PNStatus *status) {
  
-                         if (status.error) {
+                         if (status.isError) {
                              
-                             XCTFail(@"Error");
+                             XCTFail(@"Error occurs during setting state for client on channel %@", status.data);
                          }
                          [_setState fulfill];
     }];
                         
     [_pubNub stateForUUID:@"testUUID" onChannel:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
         
-                        if (status.error) {
+                        if (status.isError) {
             
-                            XCTFail(@"Error");
+                            XCTFail(@"Error occurs during getting status for client on channel %@", status.data);
                         }
                         [_getState fulfill];
      }];
@@ -75,18 +75,18 @@
     
     [_pubNub setState:@{@"Name" : @"Jeims", @"Surname" : @"Bond"} forUUID:@"testUUID" onChannelGroup:@"testGroup" withCompletion:^(PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            XCTFail(@"Error occurs during setting state for client on channelgroup %@", status.data);
         }
         [_setState fulfill];
     }];
     
-    [_pubNub stateForUUID:@"testUUID" onChannelGroup:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
+    [_pubNub stateForUUID:@"testUUID" onChannelGroup:@"testGroup" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            XCTFail(@"Error occurs during getting status for client on channelgroup %@", status.data);
         }
         [_getState fulfill];
     }];

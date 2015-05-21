@@ -10,9 +10,6 @@
 #import <XCTest/XCTest.h>
 #import "PubNub.h"
 
-#import "GCDGroup.h"
-#import "GCDWrapper.h"
-
 #import "TestConfigurator.h"
 
 @interface PNPublishTests : XCTestCase
@@ -22,7 +19,7 @@
 @implementation PNPublishTests  {
     
     PubNub *_pubNub;
-    GCDGroup *_resGroup;
+    BOOL _isTestError;
 }
 
 
@@ -30,7 +27,7 @@
     
     [super setUp];
     
-    _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
 }
 
@@ -47,53 +44,107 @@
     XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message"];
     XCTestExpectation *_getHistoryExpectation = [self expectationWithDescription:@"Getting history"];
     
-    [_pubNub publish:@"Hello world" toChannel:@"testChannel1" storeInHistory:YES withCompletion:^(PNStatus *status) {
+    // Send message
+    NSString *testMessage = @"Hello world";
+
+    [_pubNub publish:testMessage toChannel:@"testChannel1" storeInHistory:YES withCompletion:^(PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            XCTFail(@"Error occurs during publishing %@", status.data);
+            _isTestError = YES;
         }
         [_publishExpectation fulfill];
     }];
     
+    // Get history
+    __block NSString *sentMessage;
+    
     [_pubNub historyForChannel:@"testChannel1" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            XCTFail(@"Error occurs during getting history %@", status.data);
+            _isTestError = YES;
+        } else {
+            
+            NSArray *messages = (NSArray *)[result.data objectForKey:@"messages"];
+            sentMessage = [(NSDictionary *)[messages lastObject] objectForKey:@"message"];
         }
         [_getHistoryExpectation fulfill];
     }];
     
+    // Waiting for result
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
+    
+    if (_isTestError) {
+        
+        return;
+    }
+    
+    // Check result
+    XCTAssertEqualObjects(testMessage, sentMessage, @"Error, got incorrectly message: %@", sentMessage);
 }
 
 - (void)testPublishWithoutStoryInHistory {
     
-    XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message"];
+    XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message withut store in history"];
     XCTestExpectation *_getHistoryExpectation = [self expectationWithDescription:@"Getting history"];
     
-    [_pubNub publish:@"Hello world" toChannel:@"testChannel1" storeInHistory:NO withCompletion:^(PNStatus *status) {
+    // Send message without store in history
+    NSString *testMessage = @"Hello world again";
+    
+    [_pubNub publish:testMessage toChannel:@"testChannel1" storeInHistory:NO withCompletion:^(PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            XCTFail(@"Error occurs during publishing %@", status.data);
+            _isTestError = YES;
         }
         [_publishExpectation fulfill];
     }];
+
+    // Get history
+    __block NSString *sentMessage;
     
     [_pubNub historyForChannel:@"testChannel1" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            XCTFail(@"Error occurs during getting history %@", status.data);
+            _isTestError = YES;
+        } else {
+            
+            NSArray *messages = (NSArray *)[result.data objectForKey:@"messages"];
+            sentMessage = [(NSDictionary *)[messages lastObject] objectForKey:@"message"];
         }
         [_getHistoryExpectation fulfill];
     }];
     
+    // Waiting for result
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
+    
+    if (_isTestError) {
+        
+        return;
+    };
+    
+    // Check result
+    XCTAssertFalse([testMessage isEqual:sentMessage], @"Error, got incorrectly message: %@", sentMessage);
 }
 
 
