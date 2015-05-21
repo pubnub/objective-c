@@ -61,6 +61,7 @@
 		9688CB721B0A817A003BA07F /* PNLogFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CB541B0A817A003BA07F /* PNLogFileManager.m */; };
 		9688CB731B0A82E9003BA07F /* PNRequestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CAB11B0A3B59003BA07F /* PNRequestTests.m */; };
 		9688CB761B0B5C36003BA07F /* TestConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CB741B0B5C36003BA07F /* TestConfigurator.m */; };
+		A523D0961B0DB64900C7CD2D /* PNTempTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A523D0951B0DB64900C7CD2D /* PNTempTest.m */; };
 		A5269DDB1B04CE1D001E64EF /* PNStatusTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5269DDA1B04CE1D001E64EF /* PNStatusTests.m */; };
 		A5BAF2BD1B03A403001A5DE7 /* PNResultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BAF2BC1B03A403001A5DE7 /* PNResultTests.m */; };
 /* End PBXBuildFile section */
@@ -179,6 +180,7 @@
 		9688CB751B0B5C36003BA07F /* TestConfigurator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestConfigurator.h; sourceTree = "<group>"; };
 		96C9098F1B0385E800F1DC10 /* PNRequestTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNRequestTests.m; sourceTree = "<group>"; };
 		9DD086142799BE46D6F6A432 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A523D0951B0DB64900C7CD2D /* PNTempTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTempTest.m; sourceTree = "<group>"; };
 		A5269DDA1B04CE1D001E64EF /* PNStatusTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNStatusTests.m; sourceTree = "<group>"; };
 		A5BAF2BC1B03A403001A5DE7 /* PNResultTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNResultTests.m; sourceTree = "<group>"; };
 		B7042C553D29A3AB2DB710C2 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 			children = (
 				9688CAAB1B0A3B59003BA07F /* PNAPNSTest.m */,
 				9688CAAC1B0A3B59003BA07F /* PNChannelGroupTests.m */,
+				A523D0951B0DB64900C7CD2D /* PNTempTest.m */,
 				9688CAAD1B0A3B59003BA07F /* PNCoreTests.m */,
 				9688CAAE1B0A3B59003BA07F /* PNHistoryTests.m */,
 				9688CAAF1B0A3B59003BA07F /* PNPresenceTests.m */,
@@ -674,6 +677,7 @@
 				9688C9CF1B064EBD003BA07F /* PNTimeTests.m in Sources */,
 				9688CAB61B0A3B59003BA07F /* PNCoreTests.m in Sources */,
 				9688CAB71B0A3B59003BA07F /* PNHistoryTests.m in Sources */,
+				A523D0961B0DB64900C7CD2D /* PNTempTest.m in Sources */,
 				9688CAB41B0A3B59003BA07F /* PNAPNSTest.m in Sources */,
 				A5BAF2BD1B03A403001A5DE7 /* PNResultTests.m in Sources */,
 				9688CABC1B0A3B59003BA07F /* PNSubscribeTests.m in Sources */,

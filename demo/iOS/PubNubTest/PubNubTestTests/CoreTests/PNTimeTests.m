@@ -29,7 +29,7 @@
     [super setUp];
     
     // Init PubNub
-    _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
 }
 

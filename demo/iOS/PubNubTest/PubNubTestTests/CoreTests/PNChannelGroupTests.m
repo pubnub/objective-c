@@ -9,12 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "PubNub.h"
-
-#import "GCDGroup.h"
-#import "GCDWrapper.h"
-
 #import "TestConfigurator.h"
-
 
 @interface PNChannelGroupTests : XCTestCase
 
@@ -23,6 +18,7 @@
 @implementation PNChannelGroupTests  {
     
     PubNub *_pubNub;
+    BOOL _isTestError;
 }
 
 
@@ -30,7 +26,7 @@
     
     [super setUp];
     
-    _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
 }
 
@@ -47,24 +43,39 @@
     
     [_pubNub addChannels:@[@"testChannel1", @"testChannel2"] toGroup:@"testGroup" withCompletion:^(PNStatus *status) {
 
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error"); //?
+            _isTestError = YES;
+            NSLog(@"!!! Error during adding channels %@", status.data);
         }
         [_addChannelsExpectation fulfill];
     }];
     
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
+    
+    if (_isTestError) {
+        
+        XCTFail(@"Error occurs during adding channels to group");
+        return;
+    }
  
     // Get channels from group
      XCTestExpectation *_getChannelsExpectation = [self expectationWithDescription:@"Getting channels for group"];
     
     [_pubNub channelsForGroup:@"testGroup" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            _isTestError = YES;
+
+            XCTFail(@"Error occurs during getting channels for group %@", status.data);
         }
         [_getChannelsExpectation fulfill];
     }];
@@ -74,45 +85,76 @@
     
     [_pubNub channelGroupsWithCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            XCTFail(@"Error occurs during getting groups %@", status.data);
         }
         [_getGroupsExpectation fulfill];
     }];
     
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
     
+    if (_isTestError) {
+        
+        XCTFail(@"Error occurs during getting info");
+        return;
+    }
+   
     
     // Remove channels from group
     XCTestExpectation *_removeChannelsExpectation = [self expectationWithDescription:@"Removing channels from group"];
     
     [_pubNub removeChannels:@[@"testChannel1"] fromGroup:@"testGroup" withCompletion:^(PNStatus *status) {
 
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+            XCTFail(@"Error occurs during removing channels from group %@", status.data);
         }
         [_removeChannelsExpectation fulfill];
     }];
     
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
+    
+    if (_isTestError) {
+        
+        return;
+    }
+
     
     // Remove group
     XCTestExpectation *_removeGroupExpectation = [self expectationWithDescription:@"Removing group"];
     
     [_pubNub removeChannelsFromGroup:@"testGroup" withCompletion:^(PNStatus *status) {
 
-        if (status.error) {
+        if (status.isError) {
             
-            XCTFail(@"Error");
+             XCTFail(@"Error occurs during removing group %@", status.data);
+            _isTestError = YES;
         }
         [_removeGroupExpectation fulfill];;
     }];
     
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
 }
 

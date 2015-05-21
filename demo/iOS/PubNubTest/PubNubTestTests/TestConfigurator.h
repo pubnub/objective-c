@@ -15,6 +15,9 @@
 - (NSString *)mainPubKey;
 - (NSString *)mainSubKey;
 
+- (NSString *)adminPubKey;
+- (NSString *)adminSubKey;
+
 - (NSTimeInterval)testTimeout;
 
 @end

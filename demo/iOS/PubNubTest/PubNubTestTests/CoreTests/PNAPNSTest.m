@@ -32,7 +32,7 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
     
     [super setUp];
     
-    _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
     
     _devicePushToken = nil;
@@ -51,7 +51,7 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
     
     [_pubNub addPushNotificationsOnChannels:@[@"testChannel1", @"testChannel2"] withDevicePushToken:_devicePushToken andCompletion:^(PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error"); //?
         }
@@ -66,7 +66,7 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
     
     [_pubNub removePushNotificationsFromChannels:@[@"testChannel1", @"testChannel2"] withDevicePushToken:_devicePushToken andCompletion:^(PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
         }
@@ -81,7 +81,7 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
     
     [_pubNub removeAllPushNotificationsFromDeviceWithPushToken:_devicePushToken andCompletion:^(PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
         }
@@ -96,7 +96,7 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
     
     [_pubNub pushNotificationEnabledChannelsForDeviceWithPushToken:_devicePushToken andCompletion:^(PNResult *result, PNStatus *status) {
     
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
         }

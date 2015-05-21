@@ -10,9 +10,6 @@
 #import <XCTest/XCTest.h>
 #import "PubNub.h"
 
-#import "GCDGroup.h"
-#import "GCDWrapper.h"
-
 #import "TestConfigurator.h"
 
 @interface PNPresenceTests : XCTestCase
@@ -22,15 +19,14 @@
 @implementation PNPresenceTests {
     
     PubNub *_pubNub;
-    GCDGroup *_resGroup;
+    BOOL _isTestError;
 }
-
 
 - (void)setUp {
     
     [super setUp];
     
-    _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
 }
 
@@ -40,104 +36,247 @@
     [super tearDown];
 }
 
+#pragma mark - Tests
 
 - (void)testPresenceForChannel {
-
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+   
+    [self setState:@{@"name":@"James", @"sername":@"Bond"} onChannel:@"testChannel"];
+    [self subscribeOnChannel:@"testChannel"];
     
+     // Here now occupancy
     XCTestExpectation *_hereNowOccupancyExpectation = [self expectationWithDescription:@"Getting hereNowOccupancy"];
-    XCTestExpectation *_hereNowUUIDExpectation = [self expectationWithDescription:@"Getting hereNowUUID"];
-    XCTestExpectation *_hereNowStateExpectation = [self expectationWithDescription:@"Getting hereNowState"];
-    
-    [_pubNub subscribeToChannels:@[@"testChannel1"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
-        
-        if (status.error) {
-            
-            XCTFail(@"Error");
-        }
-        [_subscribeExpectation fulfill];
-    }];
+     __block long resultOccupancy;
     
     [_pubNub hereNowData:PNHereNowOccupancy forChannel:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
   
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
+            _isTestError = YES;
+        } else {
+
+            resultOccupancy = [(NSNumber *)[result.data objectForKey:@"occupancy"] longValue];
         }
         [_hereNowOccupancyExpectation fulfill];
     }];
+
+#warning Sametimes resultUUID = NULL
+    
+    // Here now UUID
+    XCTestExpectation *_hereNowUUIDExpectation = [self expectationWithDescription:@"Getting hereNowUUID"];
+    __block NSString *resultUUID;
     
     [_pubNub hereNowData:PNHereNowUUID forChannel:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
+            _isTestError = YES;
+        } else {
+            
+            resultUUID = [(NSArray *)[result.data objectForKey:@"uuids"] lastObject];
         }
         [_hereNowUUIDExpectation fulfill];
     }];
+
+#warning PNHereNowState have to return participants identifier names along with state information at specified remote data objects live feeds
     
+    // Here now State
+    XCTestExpectation *_hereNowStateExpectation = [self expectationWithDescription:@"Getting hereNowState"];
+    __block NSDictionary *resultState;
     
     [_pubNub hereNowData:PNHereNowState forChannel:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
+            _isTestError = YES;
+        } else {
+            
+            resultState = (NSDictionary *)[result.data objectForKey:@"state"];
         }
         [_hereNowStateExpectation fulfill];
     }];
     
+    // Waiting for expectations
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
+    
+    if (_isTestError) {
+        
+        XCTFail(@"Error");
+        return;
+    }
+    
+    // Check results
+    XCTAssertTrue(resultOccupancy == 1, @"Error incorrect occupancy: %ld", resultOccupancy);
+    XCTAssertTrue([resultUUID isEqual:@"testUUID"], @"Error incorrect UUID: %@", resultUUID);
+//    XCTAssertTrue([resultState isEqual:testState], @"Error incorrect state: %@", resultState);
 }
 
-- (void)testPresenceForGroup {
+- (void)testPresenceForChannelGroup {
     
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    [self setState:@{@"name":@"James", @"sername":@"Bond"} onChannel:@"testChannel"];
+    [self createGroup:@"testGroup" withChannel:@"testChannel"];
+    [self subscribeOnChannel:@"testChannel"];
     
+    // Here now occupancy
     XCTestExpectation *_hereNowOccupancyExpectation = [self expectationWithDescription:@"Getting hereNowOccupancy"];
-    XCTestExpectation *_hereNowUUIDExpectation = [self expectationWithDescription:@"Getting hereNowUUID"];
-    XCTestExpectation *_hereNowStateExpectation = [self expectationWithDescription:@"Getting hereNowState"];
+    __block long resultOccupancy;
     
-    [_pubNub subscribeToChannels:@[@"testChannel1"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
+    [_pubNub hereNowData:PNHereNowOccupancy forChannelGroup:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
-        }
-        [_subscribeExpectation fulfill];
-        
-    }];
-    
-    [_pubNub hereNowData:PNHereNowOccupancy forChannelGroup:@"testGroup1" withCompletion:^(PNResult *result, PNStatus *status) {
-        
-        if (status.error) {
+            _isTestError = YES;
+        } else {
             
-            XCTFail(@"Error");
+            resultOccupancy = [(NSNumber *)[result.data objectForKey:@"occupancy"] longValue];
         }
-        
         [_hereNowOccupancyExpectation fulfill];
     }];
     
-    [_pubNub hereNowData:PNHereNowUUID forChannelGroup:@"testGroup1" withCompletion:^(PNResult *result, PNStatus *status) {
+#warning Sametimes resultUUID = NULL
+    
+    // Here now UUID
+    XCTestExpectation *_hereNowUUIDExpectation = [self expectationWithDescription:@"Getting hereNowUUID"];
+    __block NSString *resultUUID;
+    
+    [_pubNub hereNowData:PNHereNowUUID forChannelGroup:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
+            _isTestError = YES;
+        } else {
+            
+            resultUUID = [(NSArray *)[result.data objectForKey:@"uuids"] lastObject];
         }
         [_hereNowUUIDExpectation fulfill];
     }];
     
+#warning PNHereNowState have to return participants identifier names along with state information at specified remote data objects live feeds
     
-    [_pubNub hereNowData:PNHereNowState forChannelGroup:@"testGroup1" withCompletion:^(PNResult *result, PNStatus *status) {
+    // Here now State
+    XCTestExpectation *_hereNowStateExpectation = [self expectationWithDescription:@"Getting hereNowState"];
+    __block NSDictionary *resultState;
+    
+    [_pubNub hereNowData:PNHereNowState forChannelGroup:@"testChannel" withCompletion:^(PNResult *result, PNStatus *status) {
         
-        if (status.error) {
+        if (status.isError) {
             
             XCTFail(@"Error");
+            _isTestError = YES;
+        } else {
+            
+            resultState = (NSDictionary *)[result.data objectForKey:@"state"];
         }
-        [_hereNowStateExpectation fulfill];;
+        [_hereNowStateExpectation fulfill];
     }];
     
+    // Waiting for expectations
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
+    }];
+    
+    if (_isTestError) {
+        
+        XCTFail(@"Error");
+        return;
+    }
+    
+    // Check results
+    XCTAssertTrue(resultOccupancy == 1, @"Error incorrect occupancy: %ld", resultOccupancy);
+    XCTAssertTrue([resultUUID isEqual:@"testUUID"], @"Error incorrect UUID: %@", resultUUID);
+    //    XCTAssertTrue([resultState isEqual:testState], @"Error incorrect state: %@", resultState);
+}
+
+
+#pragma mark - Private methods
+
+- (void)subscribeOnChannel:(NSString *)channelName {
+    
+    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    
+    [_pubNub subscribeToChannels:@[@"testChannel"] withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
+        
+        if (status.isError) {
+            
+            XCTFail(@"Error occurs during subscription %@", status.error);
+            _isTestError = YES;
+        }
+        [_subscribeExpectation fulfill];
+    }];
+    
+     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
+    }];
+}
+
+- (void)setState:(NSDictionary *)state onChannel:(NSString *)channelName {
+    
+    XCTestExpectation *_stateExpectation = [self expectationWithDescription:@"Setting state"];
+    
+    [_pubNub setState:state forUUID:@"testUUID" onChannel:channelName withCompletion:^(PNStatus *status) {
+        
+        if (status.isError) {
+            
+            XCTFail(@"Error");
+            _isTestError = YES;
+        }
+        [_stateExpectation fulfill];
+    }];
+    
+    // Waiting for expectations
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
+    }];
+}
+
+- (void)createGroup:(NSString *)groupName withChannel:(NSString *)channelName {
+    
+    XCTestExpectation *_addChannelsExpectation = [self expectationWithDescription:@"Adding channels"];
+    
+    [_pubNub addChannels:@[channelName] toGroup:groupName withCompletion:^(PNStatus *status) {
+        
+        if (status.isError) {
+            
+            NSLog(@"!!! Error occurs during adding channels %@", status.data);
+            _isTestError = YES;
+        }
+        [_addChannelsExpectation fulfill];
+    }];
+    
+    // Waiting for expectations
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
 }
 
