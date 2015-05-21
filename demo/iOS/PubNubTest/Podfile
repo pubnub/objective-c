@@ -2,6 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '7.0'
 pod 'AFNetworking', '~> 2.5'
 pod 'CocoaLumberjack'
+pod 'PubNub', :path => '../../..'
 
 target :PubNubTestTests, :exclusive => true do
   pod 'OCHamcrest', '~> 4.0'

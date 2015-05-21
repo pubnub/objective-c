@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   # path will automatically have '*.{h,m,mm,c,cpp}' appended.
   #  
 
-  s.source_files = 'demo/iOS/ClientTest/PubNub/**/*.{h,m}'
+  s.source_files = 'PubNub/**/*.{h,m}'
   
   s.dependency 'AFNetworking', '~> 2.5'
   s.dependency 'CocoaLumberjack'
@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
   s.library   = 'z'
   #s.osx.frameworks = 'CoreWLAN'
   #s.osx.prefix_header_contents = <<-EOS
-###import "PNImports.h"
+###import "PubNub.h"
 #EOS
   
   s.homepage = 'http://www.pubnub.com/'

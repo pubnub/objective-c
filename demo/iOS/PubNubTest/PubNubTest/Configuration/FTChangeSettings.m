@@ -7,7 +7,7 @@
 //
 
 #import "FTChangeSettings.h"
-#import "PubNub.h"
+#import <PubNub/PubNub.h>
 
 #import "GCDGroup.h"
 #import "GCDWrapper.h"

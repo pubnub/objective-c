@@ -7,9 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "PubNub.h"
-#import "PNResponse.h"
-#import "PNStatus+Private.h"
+#import <PubNub/PubNub.h>
 
 #pragma mark Private interface declaration
 
@@ -144,7 +142,7 @@
     NSLog(@"If the operation will not auto retry, you can manually retry by calling [status retry]");
     NSLog(@"Retry attempts can be cancelled via [status cancelAutomaticRetry]");
 
-    NSLog(@"^^^^Status Category: %i\n\n", status.category);
+    NSLog(@"^^^^Status Category: %@\n\n", @(status.category));
 
     // if this is a subscribe or presence operation, check to see if its a connection-related status
 

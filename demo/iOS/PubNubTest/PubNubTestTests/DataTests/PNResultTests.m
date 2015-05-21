@@ -19,7 +19,7 @@
 #import "PNRequest+Private.h"
 #import "PNPrivateStructures.h"
 
-#import "PubNub.h"
+#import <PubNub/PubNub.h>
 
 #import "GCDGroup.h"
 #import "GCDWrapper.h"

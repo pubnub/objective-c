@@ -20,7 +20,7 @@
 }
 
 - (void)run {
-    
+
     [super run];
     
     // simple configuration

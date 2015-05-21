@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "PubNub.h"
+#import <PubNub/PubNub.h>
 #import "TestConfigurator.h"
 
 @interface PNSubscribeTests : XCTestCase <PNObjectEventListener>
