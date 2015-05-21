@@ -117,7 +117,7 @@
          includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNCompletionBlock)block {
     
     // Swap time frame dates if required.
-    if ([startDate integerValue] > [endDate integerValue]) {
+    if ([startDate compare:endDate] == NSOrderedDescending) {
         
         NSNumber *_startDate = startDate;
         startDate = endDate;
