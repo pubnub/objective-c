@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "PNStatus+Private.h"
 #import <PubNub/PubNub.h>
 
 #pragma mark Private interface declaration
@@ -35,6 +36,9 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.channel = @"ping_3";
+    self.channel2 = @"ping_10";
+
     [self tireKicker];
     return YES;
 }
@@ -48,10 +52,10 @@
 
 - (void)pubNubInit {
     // Initialize PubNub client.
-    self.channel = @"ping_3";
-    self.channel2 = @"ping_10";
-
     self.client = [PubNub clientWithPublishKey:@"demo-36" andSubscribeKey:@"demo-36"];
+
+    // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
+    // just be sure the target has implemented the PNObjectEventListener extension
 
     [self.client addListeners:@[self]];
 
@@ -67,7 +71,7 @@
             NSLog(@"^^^^Second Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
         } else {
             NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-            [self handleErrors:status];
+            [self handleStatus:status];
         }
     }];
 }
@@ -79,25 +83,19 @@
 
         // There are two places to monitor for the outcomes of a subscribe.
 
-        // The first place is here, within the subscribe completion block.
+        // The first place is here, within the subscribe status completion block.
         // Here we monitor subscribe events that we care about only at subscribe call time.
         // This context will disappear after the initial subscribe connect event.
 
         // Subsequent subscribe loop status events are received within didReceiveStatus listener
         // And the messages that arrive via this subscribe call are received via the didReceiveMessage listener
 
-        if (status.isError) {
-            [self handleErrors:status];
-        }
-
-        else if (!status.isError) {
+        if (!status.isError) {
             NSLog(@"^^^^Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
-
             self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(delayedSub) userInfo:nil repeats:NO];
-
         } else {
             NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-            [self handleErrors:status];
+            [self handleStatus:status];
         }
     }];
 }
@@ -107,50 +105,101 @@
 
     [self.client historyForChannel:_channel withCompletion:^(PNResult *result, PNStatus *status) {
 
-        if (status.isError) {
-            [self handleErrors:status];
+        // For completion blocks that provide both result and status parameters, you will only ever
+        // have a non-nil status or result.
+
+        // If you have a result, the data you specifically requested (in this case, history response) is available in result.data
+        // If you have a status, error or non-error status information is available regarding the call.
+
+        if (status) {
+            // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
+            // Timeout Error, PAM Error, etc.
+
+            [self handleStatus:status];
         }
         else if (result) {
+            // As a result, this contains the messages, start, and end timetoken in the data attribute
+
             NSLog(@"Loaded history data: %@", result.data);  // TODO: Call out data attributes here
         }
     }];
 }
 
-- (void)handleErrors:(PNStatus *)status {
 
-    /*
+- (void)pubNubTime {
+    // Time (Ping) to PubNub Servers
+
+    [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
+        if (result.data) {
+            NSLog(@"Result from Time: %@", result.data);
+        }
+        else if (status) {
+            [self handleStatus:status];
+        }
+    }];
+}
+
+- (void)publishHelloWorld {
+    [self.client publish:@"I'm here!" toChannel:_channel
+          withCompletion:^(PNStatus *status) {
+              if (!status.isError) {
+                  NSLog(@"Message sent at TT: %@", status.data[@"tt"]);
+              } else {
+                  [self handleStatus:status];
+              }
+          }];
+}
+
+/********************************** Subscribe Loop Listeners  Start ********************************/
+
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status {
+
+    if (status) {
+        [self handleStatus:status];
+    } else if (message) {
+        NSLog(@"Received message: %@", message.data);
+    }
+}
+
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
+    // TODO detail fields in data that depict the Presence event
+
+    NSLog(@"Did receive presence event: %@", event.data);
+}
+
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
+
+    // This is where we'll find ongoing status events from our subscribe loop
+    // Results (messages) from our subscribe loop will be found in didReceiveMessage
+    // Results (presence events) from our subscribe loop will be found in didReceiveStatus
+
+    [self handleStatus:status];
+}
+
+- (void)handleStatus:(PNStatus *)status {
 
     // TODO differentiate between errors, non-errors, connection, ack status events
     // TODO handleErrorStatus vs handleNonErrorStatus ?
 
-    Then could handle like this:
+//    Two types of status events are possible. Errors, and non-errors. Errors will prevent normal operation of your app.
+//
+//    If this was a subscribe or presence PAM error, the system will continue to retry automatically.
+//    If this was any other operation, you will need to manually retry the operation.
+//
+//    You can always verify if an operation will auto retry by checking status.willAutomaticallyRetry
+//    If the operation will not auto retry, you can manually retry by calling [status retry]
+//    Retry attempts can be cancelled via [status cancelAutomaticRetry]
 
-        if (status.isError) {
-            [self handleErrorStatus:status];
-        } else if (!status.isError) {
-            [self handleNonErrorStatus:status];
-        }
 
-     */
+    status.isError ? [self handleErrorStatus:status] : [self handleNonErrorStatus:status];
+    
+    NSLog(@"^^^^ Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
 
-    NSLog(@"Two types of status events are possible. Errors, and non-errors. Errors will prevent normal operation of your app.");
+}
 
-    NSLog(@"\nIf this was a subscribe or presence PAM error, the system will continue to retry automatically.");
-    NSLog(@"If this was any other operation, you will need to manually retry the operation.");
+- (void)handleErrorStatus:(PNStatus *)status {
 
-    NSLog(@"\nYou can always verify if an operation will auto retry by checking status.willAutomaticallyRetry: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
-    NSLog(@"If the operation will not auto retry, you can manually retry by calling [status retry]");
-    NSLog(@"Retry attempts can be cancelled via [status cancelAutomaticRetry]");
-
-    NSLog(@"^^^^Status Category: %@\n\n", @(status.category));
-
-    // if this is a subscribe or presence operation, check to see if its a connection-related status
-
-    if (status.operation == PNSubscribeOperation) {
-        [self handleSubscribeConnectionChange:status];
-    }
-
-    else if (status.category == PNAccessDeniedCategory) {
+    if (status.category == PNAccessDeniedCategory) {
 
         NSLog(@"Access Denied via PAM. Access status.data to determine the resource in question that was denied. %@", [status data]);
         NSLog(@"In addition, you can also change auth key dynamically if needed.");
@@ -171,103 +220,77 @@
         NSLog(@"or if there is a proxy somewhere returning an HTML access denied error, or if there was an intermittent server issue.");
     }
 
+    else if (status.category == PNTimeoutCategory) {
+
+        NSLog(@"For whatever reason, the request timed out. Temporary connectivity issues, etc.");
+    }
+
     else {
-        NSLog(@"Request failed... if this is an issue that is consistently interrupting the performance of your app, email the output of debugDescription to support along with all available log info: %@", [status debugDescription]);
+        // Aside from checking for PAM, this is a generic catch-all if you just want to handle any error, regardless of reason
+        // status.debugDescription will shed light on exactly whats going on
+
+        NSLog(@"Request failed... if this is an issue that is consistently interrupting the performance of your app,");
+        NSLog(@"email the output of debugDescription to support along with all available log info: %@", [status debugDescription]);
     }
 }
 
-- (void)pubNubTime {
-    // Time (Ping) to PubNub Servers
+- (void)handleNonErrorStatus:(PNStatus *)status {
 
-    [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
-        if (result.data) {
-            NSLog(@"Result from Time: %@", result.data);
+    // This method demonstrates how to handle status events that are not errors -- that is,
+    // status events that can safely be ignored, but if you do choose to handle them, you
+    // can get increased functionality from the client
+
+    if (status.category == PNAcknowledgmentCategory) {
+        NSLog(@"^^^^ Non-error status: ACK");
+
+        // For methods like Publish, Channel Group Add|Remove|List, APNS Add|Remove|List
+        // when the method is executed, and completes, you can receive the 'ack' for it here.
+        // status.data will contain more server-provided information about the ack as well.
+
+    }
+
+    if (status.operation == PNSubscribeOperation) {
+
+        // Specific to the subscribe loop operation, you can handle connection events
+        // These status checks are only available via the subscribe status completion block or
+        // on the long-running subscribe loop listener didReceiveStatus
+
+        // Connection events are never defined as errors via status.isError
+
+        if (status.category == PNDisconnectedCategory) {
+            // PNDisconnect happens as part of our regular operation
+            // No need to monitor for this unless requested by support
+            NSLog(@"^^^^ Non-error status: Expected Disconnect, Channel Info: %@", status.channels);
         }
-        else if (status.debugDescription) {
-            [self handleErrors:status];
+
+        else if (status.category == PNUnexpectedDisconnectCategory) {
+            // PNUnexpectedDisconnect happens as part of our regular operation
+            // This event happens when radio / connectivity is lost
+
+            NSLog(@"^^^^ Non-error status: Unexpected Disconnect, Channel Info: %@", status.channels);
         }
-    }];
-}
 
-- (void)publishHelloWorld {
-    [self.client publish:@"I'm here!" toChannel:_channel
-          withCompletion:^(PNStatus *status) {
-              if (!status.isError) {
-                  NSLog(@"Message sent at TT: %@", status.data[@"tt"]);
-              } else {
-                  [self handleErrors:status];
-              }
-          }];
-}
+        else if (status.category == PNConnectedCategory) {
 
-/********************************** Subscribe Loop Listeners  Start ********************************/
+            // Connect event. You can do stuff like publish, and know you'll get it.
+            // Or just use the connected event to confirm you are subscribed for UI / internal notifications, etc
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status {
+            // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
+            NSLog(@"^^^^ Non-error status: Connected, Channel Info: %@", status.channels);
+            [self publishHelloWorld];
 
-    if (status) {
-        [self handleErrors:status];
-    } else if (message) {
-        NSLog(@"Received message: %@", message.data);
-    }
-}
+        }
+        else if (status.category == PNReconnectedCategory) {
 
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
-    // TODO detail fields in data that depict the PAM error
+            // PNUnexpectedDisconnect happens as part of our regular operation
+            // This event happens when radio / connectivity is lost
 
-    NSLog(@"Did receive presence event: %@", event.data);
-}
+            NSLog(@"^^^^ Non-error status: Reconnected, Channel Info: %@", status.channels);
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
-
-    // This is where we'll find ongoing status events from our subscribe loop
-    // Results (messages) from our subscribe loop will be found in didReceiveMessage
-    // Results (presence events) from our subscribe loop will be found in didReceiveStatus
-
-    [self handleErrors:status];
-}
-
-- (void)handleSubscribeConnectionChange:(PNStatus *)status {
-
-    // This method shows how to act on connection events specifically related to the subscribe loop
-    // Don't use these status checks on anything other than the subscribe status completion block or
-    // on the long-running subscribe loop listener didReceiveStatus
-
-    // Connection events are never defined as errors via status.isError
-
-    if (status.category == PNDisconnectedCategory) {
-
-        // PNDisconnect happens as part of our regular operation
-        // No need to monitor for this unless requested by support
-
-        NSLog(@"ExpectedDisconnect! Channel Info: %@", status.channels);
+        }
 
     }
-    else if (status.category == PNUnexpectedDisconnectCategory) {
 
-        // PNUnexpectedDisconnect happens as part of our regular operation
-        // This event happens when radio / connectivity is lost
-
-        NSLog(@"UnexpectedDisconnect! Channel Info: %@", status.channels);
-
-    }
-    else if (status.category == PNConnectedCategory) {
-
-        // Connect event. You can do stuff like publish, and know you'll get it.
-        // Or just use the connected event to confirm you are subscribed for UI / internal notifications, etc
-
-        // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
-        NSLog(@"Connected! Channel Info: %@", status.channels);
-        [self publishHelloWorld];
-
-    }
-    else if (status.category == PNReconnectedCategory) {
-
-        // PNUnexpectedDisconnect happens as part of our regular operation
-        // This event happens when radio / connectivity is lost
-
-        NSLog(@"Reconnected! Channel Info: %@", status.channels);
-
-    }
 }
 
 
@@ -288,7 +311,7 @@
 
         // Presence Settings
         self.client.presenceHeartbeatValue = 120;
-        self.client.presenceHeartbeatInterval = 3;
+        self.client.presenceHeartbeatInterval = 60;
 
         // Cipher Key Settings
         //self.client.cipherKey = @"enigma";
