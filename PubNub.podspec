@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   # path will automatically have '*.{h,m,mm,c,cpp}' appended.
   #  
 
-  s.source_files = 'PubNub/**/*.{h,m}'
+  s.source_files = 'PubNub/PubNub/**/*.{h,m}'
   
   s.dependency 'AFNetworking', '~> 2.5'
   s.dependency 'CocoaLumberjack'

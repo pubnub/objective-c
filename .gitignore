@@ -12,7 +12,7 @@ DerivedData
 xcuserdata
 
 # We need this file to keep all our shared schemas
-#xcshareddata
+lib/
 
 # Markdown helper
 README.css

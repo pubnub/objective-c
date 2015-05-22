@@ -18,6 +18,18 @@
 #import "PNLog.h"
 
 
+#pragma mark Static
+
+/**
+ @brief  Cocoa Lumberjack logging level configuration for \b PubNub client class and categories.
+ 
+ @since 4.0
+ */
+DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
+                                            PNFailureStatusLogLevel|PNAPICallLogLevel|
+                                            PNAESErrorLogLevel);
+
+
 #pragma mark - Protected interface declaration
 
 @interface PubNub () <PNObjectEventListener>

@@ -6,6 +6,33 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		79880CCA1B0F5BB200C14B8C /* PubNub Static Universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 79880CCB1B0F5BB200C14B8C /* Build configuration list for PBXAggregateTarget "PubNub Static Universal" */;
+			buildPhases = (
+				79880CD01B0F5BD700C14B8C /* Create universal static library binary */,
+			);
+			dependencies = (
+				79880CCF1B0F5BD300C14B8C /* PBXTargetDependency */,
+			);
+			name = "PubNub Static Universal";
+			productName = "PubNub Static Universal";
+		};
+		79880CD81B0F632800C14B8C /* PubNub Universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 79880CD91B0F632800C14B8C /* Build configuration list for PBXAggregateTarget "PubNub Universal" */;
+			buildPhases = (
+				79880CDC1B0F633B00C14B8C /* Create universal framework library binary */,
+			);
+			dependencies = (
+				79880CDE1B0F635B00C14B8C /* PBXTargetDependency */,
+			);
+			name = "PubNub Universal";
+			productName = "PubNub Universal";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		79B111F01B0E40B3008651AD /* PubNub.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B111EF1B0E40B3008651AD /* PubNub.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B112481B0E4102008651AD /* PubNub+APNS.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112071B0E4102008651AD /* PubNub+APNS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -69,11 +96,90 @@
 		79B112991B0E4102008651AD /* PNStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112451B0E4102008651AD /* PNStructures.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B1129A1B0E4102008651AD /* PNObjectEventListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112471B0E4102008651AD /* PNObjectEventListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B112CE1B0E5023008651AD /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B112CD1B0E5023008651AD /* libz.dylib */; };
-		E4EA5586571B9B3D3FB04A5B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E2D1903BA01EF99B1793C15 /* libPods.a */; };
+		79B113511B0F317A008651AD /* PubNub+APNS.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112081B0E4102008651AD /* PubNub+APNS.m */; };
+		79B113531B0F317A008651AD /* PubNub+ChannelGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1120A1B0E4102008651AD /* PubNub+ChannelGroup.m */; };
+		79B113551B0F317A008651AD /* PubNub+Core.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1120C1B0E4102008651AD /* PubNub+Core.m */; };
+		79B113581B0F317A008651AD /* PubNub+History.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1120F1B0E4102008651AD /* PubNub+History.m */; };
+		79B1135A1B0F317A008651AD /* PubNub+Presence.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112111B0E4102008651AD /* PubNub+Presence.m */; };
+		79B1135D1B0F317A008651AD /* PubNub+Publish.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112141B0E4102008651AD /* PubNub+Publish.m */; };
+		79B1135F1B0F317A008651AD /* PubNub+State.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112161B0E4102008651AD /* PubNub+State.m */; };
+		79B113621B0F317A008651AD /* PubNub+Subscribe.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112191B0E4102008651AD /* PubNub+Subscribe.m */; };
+		79B113651B0F317A008651AD /* PubNub+Time.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1121C1B0E4102008651AD /* PubNub+Time.m */; };
+		79B1136A1B0F317A008651AD /* PNRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112221B0E4102008651AD /* PNRequest.m */; };
+		79B1136D1B0F317A008651AD /* PNResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112251B0E4102008651AD /* PNResponse.m */; };
+		79B113701B0F317A008651AD /* PNResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112281B0E4102008651AD /* PNResult.m */; };
+		79B113731B0F317A008651AD /* PNStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1122B1B0E4102008651AD /* PNStatus.m */; };
+		79B113751B0F317A008651AD /* PNArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1122F1B0E4102008651AD /* PNArray.m */; };
+		79B113771B0F317A008651AD /* PNChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112311B0E4102008651AD /* PNChannel.m */; };
+		79B113791B0F317A008651AD /* PNData.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112331B0E4102008651AD /* PNData.m */; };
+		79B1137B1B0F317A008651AD /* PNDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112351B0E4102008651AD /* PNDictionary.m */; };
+		79B1137D1B0F317A008651AD /* PNGZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112371B0E4102008651AD /* PNGZIP.m */; };
+		79B113801B0F317A008651AD /* PNJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1123A1B0E4102008651AD /* PNJSON.m */; };
+		79B113821B0F317A008651AD /* PNString.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1123C1B0E4102008651AD /* PNString.m */; };
+		79B113841B0F317A008651AD /* PNLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1123F1B0E4102008651AD /* PNLog.m */; };
+		79B113861B0F317A008651AD /* PNLogFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B112411B0E4102008651AD /* PNLogFileManager.m */; };
+		79B1138D1B0F32CB008651AD /* PNAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B1121F1B0E4102008651AD /* PNAES.m */; };
+		79B113901B0F3369008651AD /* PubNub+ChannelGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112091B0E4102008651AD /* PubNub+ChannelGroup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113911B0F3379008651AD /* PNObjectEventListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112471B0E4102008651AD /* PNObjectEventListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113921B0F3388008651AD /* PubNub+Subscribe.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112181B0E4102008651AD /* PubNub+Subscribe.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113931B0F338F008651AD /* PubNub+Presence.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112101B0E4102008651AD /* PubNub+Presence.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113941B0F339C008651AD /* PubNub+Publish.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112131B0E4102008651AD /* PubNub+Publish.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113951B0F33A5008651AD /* PubNub+History.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1120E1B0E4102008651AD /* PubNub+History.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113961B0F33AA008651AD /* PubNub+APNS.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112071B0E4102008651AD /* PubNub+APNS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113971B0F33BA008651AD /* PubNub+State.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112151B0E4102008651AD /* PubNub+State.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113981B0F33BD008651AD /* PubNub+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1120B1B0E4102008651AD /* PubNub+Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113991B0F33D2008651AD /* PNErrorCodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112431B0E4102008651AD /* PNErrorCodes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B1139A1B0F33E3008651AD /* PubNub+Time.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1121B1B0E4102008651AD /* PubNub+Time.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B1139B1B0F3408008651AD /* PNAES.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1121E1B0E4102008651AD /* PNAES.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B1139C1B0F3408008651AD /* PNResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112271B0E4102008651AD /* PNResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B1139D1B0F3408008651AD /* PNStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1122A1B0E4102008651AD /* PNStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B1139E1B0F3408008651AD /* PNLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1123E1B0E4102008651AD /* PNLog.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B1139F1B0F3408008651AD /* PNStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112451B0E4102008651AD /* PNStructures.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113A01B0F3427008651AD /* PubNub.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B111EF1B0E40B3008651AD /* PubNub.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79B113A11B0F34A0008651AD /* PNData.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112321B0E4102008651AD /* PNData.h */; };
+		79B113A21B0F34AB008651AD /* PNGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112361B0E4102008651AD /* PNGZIP.h */; };
+		79B113A31B0F34B0008651AD /* PNArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1122E1B0E4102008651AD /* PNArray.h */; };
+		79B113A41B0F34BC008651AD /* PNString.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1123B1B0E4102008651AD /* PNString.h */; };
+		79B113A51B0F34C3008651AD /* PNJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112391B0E4102008651AD /* PNJSON.h */; };
+		79B113A61B0F34CC008651AD /* PNHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112381B0E4102008651AD /* PNHelpers.h */; };
+		79B113A71B0F34D8008651AD /* PNChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112301B0E4102008651AD /* PNChannel.h */; };
+		79B113A81B0F34E9008651AD /* PNRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112211B0E4102008651AD /* PNRequest.h */; };
+		79B113A91B0F34F1008651AD /* PNDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112341B0E4102008651AD /* PNDictionary.h */; };
+		79B113AA1B0F34FA008651AD /* PNResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112241B0E4102008651AD /* PNResponse.h */; };
+		79B113AB1B0F3504008651AD /* PNConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112421B0E4102008651AD /* PNConstants.h */; };
+		79B113AC1B0F3518008651AD /* PNStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112291B0E4102008651AD /* PNStatus+Private.h */; };
+		79B113AD1B0F3526008651AD /* PNResult+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112261B0E4102008651AD /* PNResult+Private.h */; };
+		79B113AE1B0F3534008651AD /* PNLogFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112401B0E4102008651AD /* PNLogFileManager.h */; };
+		79B113AF1B0F3543008651AD /* PNRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112201B0E4102008651AD /* PNRequest+Private.h */; };
+		79B113B01B0F3549008651AD /* PNPrivateStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112441B0E4102008651AD /* PNPrivateStructures.h */; };
+		79B113B11B0F354E008651AD /* PubNub+CorePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1120D1B0E4102008651AD /* PubNub+CorePrivate.h */; };
+		79B113B31B0F3571008651AD /* PNResponse+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112231B0E4102008651AD /* PNResponse+Private.h */; };
+		79B113B41B0F3577008651AD /* PubNub+StatePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112171B0E4102008651AD /* PubNub+StatePrivate.h */; };
+		79B113B51B0F3582008651AD /* PubNub+PresencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B112121B0E4102008651AD /* PubNub+PresencePrivate.h */; };
+		79B113B61B0F3589008651AD /* PubNub+SubscribePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B1121A1B0E4102008651AD /* PubNub+SubscribePrivate.h */; };
+		F6E5E5F97D85C3930ABF4CEB /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A4A310BDE81DA98AE284218C /* libPods.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		79880CCE1B0F5BD300C14B8C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79B111E11B0E40B3008651AD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 79B113381B0F2DC2008651AD;
+			remoteInfo = "PubNub Static";
+		};
+		79880CDD1B0F635B00C14B8C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79B111E11B0E40B3008651AD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 79B111E91B0E40B3008651AD;
+			remoteInfo = PubNub;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		5E2D1903BA01EF99B1793C15 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A823ED33C2D1863C2F941D0 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		79880CC51B0F507D00C14B8C /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		79B111EA1B0E40B3008651AD /* PubNub.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PubNub.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79B111EE1B0E40B3008651AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		79B111EF1B0E40B3008651AD /* PubNub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
@@ -138,8 +244,10 @@
 		79B112451B0E4102008651AD /* PNStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNStructures.h; sourceTree = "<group>"; };
 		79B112471B0E4102008651AD /* PNObjectEventListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNObjectEventListener.h; sourceTree = "<group>"; };
 		79B112CD1B0E5023008651AD /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		CEF35E7AFEC5CFA17555DE13 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		F6415968CB9185FC5085907B /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		79B113391B0F2DC2008651AD /* libPubNub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPubNub.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		79B114011B0F491F008651AD /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Release-iphoneos/libPods.a"; sourceTree = "<group>"; };
+		A4A310BDE81DA98AE284218C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4E74F3A9B7144EFAF8FC1E4 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,7 +256,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				79B112CE1B0E5023008651AD /* libz.dylib in Frameworks */,
-				E4EA5586571B9B3D3FB04A5B /* libPods.a in Frameworks */,
+				F6E5E5F97D85C3930ABF4CEB /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79B113361B0F2DC2008651AD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,8 +275,8 @@
 			children = (
 				79B111EC1B0E40B3008651AD /* PubNub */,
 				79B111EB1B0E40B3008651AD /* Products */,
-				E73F28FB654D3D476AC11973 /* Pods */,
 				D14F22F8461EB7BF833A193B /* Frameworks */,
+				EDE3D6A847F7D7AFD1816C55 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -169,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				79B111EA1B0E40B3008651AD /* PubNub.framework */,
+				79B113391B0F2DC2008651AD /* libPubNub.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -301,17 +417,19 @@
 		D14F22F8461EB7BF833A193B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				79880CC51B0F507D00C14B8C /* libPods.a */,
+				79B114011B0F491F008651AD /* libPods.a */,
 				79B112CD1B0E5023008651AD /* libz.dylib */,
-				5E2D1903BA01EF99B1793C15 /* libPods.a */,
+				A4A310BDE81DA98AE284218C /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		E73F28FB654D3D476AC11973 /* Pods */ = {
+		EDE3D6A847F7D7AFD1816C55 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F6415968CB9185FC5085907B /* Pods.debug.xcconfig */,
-				CEF35E7AFEC5CFA17555DE13 /* Pods.release.xcconfig */,
+				3A823ED33C2D1863C2F941D0 /* Pods.release.xcconfig */,
+				B4E74F3A9B7144EFAF8FC1E4 /* Pods.debug.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -324,43 +442,88 @@
 			buildActionMask = 2147483647;
 			files = (
 				79B1124B1B0E4102008651AD /* PubNub+ChannelGroup.h in Headers */,
-				79B112981B0E4102008651AD /* PNPrivateStructures.h in Headers */,
+				79B1129A1B0E4102008651AD /* PNObjectEventListener.h in Headers */,
 				79B112601B0E4102008651AD /* PubNub+Subscribe.h in Headers */,
+				79B112551B0E4102008651AD /* PubNub+Presence.h in Headers */,
 				79B112591B0E4102008651AD /* PubNub+Publish.h in Headers */,
+				79B112521B0E4102008651AD /* PubNub+History.h in Headers */,
 				79B112481B0E4102008651AD /* PubNub+APNS.h in Headers */,
-				79B112971B0E4102008651AD /* PNErrorCodes.h in Headers */,
 				79B1125C1B0E4102008651AD /* PubNub+State.h in Headers */,
 				79B1124E1B0E4102008651AD /* PubNub+Core.h in Headers */,
-				79B112731B0E4102008651AD /* PNResult.h in Headers */,
-				79B112991B0E4102008651AD /* PNStructures.h in Headers */,
-				79B1129A1B0E4102008651AD /* PNObjectEventListener.h in Headers */,
-				79B112521B0E4102008651AD /* PubNub+History.h in Headers */,
-				79B112901B0E4102008651AD /* PNLog.h in Headers */,
-				79B112771B0E4102008651AD /* PNStatus.h in Headers */,
+				79B112971B0E4102008651AD /* PNErrorCodes.h in Headers */,
 				79B112641B0E4102008651AD /* PubNub+Time.h in Headers */,
+				79B112991B0E4102008651AD /* PNStructures.h in Headers */,
+				79B112731B0E4102008651AD /* PNResult.h in Headers */,
+				79B112771B0E4102008651AD /* PNStatus.h in Headers */,
+				79B111F01B0E40B3008651AD /* PubNub.h in Headers */,
 				79B112671B0E4102008651AD /* PNAES.h in Headers */,
-				79B112551B0E4102008651AD /* PubNub+Presence.h in Headers */,
+				79B112631B0E4102008651AD /* PubNub+SubscribePrivate.h in Headers */,
+				79B112901B0E4102008651AD /* PNLog.h in Headers */,
+				79B112581B0E4102008651AD /* PubNub+PresencePrivate.h in Headers */,
+				79B1125F1B0E4102008651AD /* PubNub+StatePrivate.h in Headers */,
+				79B1126E1B0E4102008651AD /* PNResponse+Private.h in Headers */,
+				79B112511B0E4102008651AD /* PubNub+CorePrivate.h in Headers */,
+				79B112981B0E4102008651AD /* PNPrivateStructures.h in Headers */,
+				79B1126A1B0E4102008651AD /* PNRequest+Private.h in Headers */,
+				79B112931B0E4102008651AD /* PNLogFileManager.h in Headers */,
+				79B112721B0E4102008651AD /* PNResult+Private.h in Headers */,
+				79B112761B0E4102008651AD /* PNStatus+Private.h in Headers */,
+				79B112961B0E4102008651AD /* PNConstants.h in Headers */,
 				79B1126F1B0E4102008651AD /* PNResponse.h in Headers */,
 				79B112831B0E4102008651AD /* PNDictionary.h in Headers */,
-				79B1127A1B0E4102008651AD /* PNArray.h in Headers */,
-				79B112761B0E4102008651AD /* PNStatus+Private.h in Headers */,
-				79B112891B0E4102008651AD /* PNHelpers.h in Headers */,
-				79B1125F1B0E4102008651AD /* PubNub+StatePrivate.h in Headers */,
-				79B1128D1B0E4102008651AD /* PNString.h in Headers */,
-				79B112861B0E4102008651AD /* PNGZIP.h in Headers */,
-				79B1126A1B0E4102008651AD /* PNRequest+Private.h in Headers */,
 				79B1126B1B0E4102008651AD /* PNRequest.h in Headers */,
-				79B1128A1B0E4102008651AD /* PNJSON.h in Headers */,
-				79B111F01B0E40B3008651AD /* PubNub.h in Headers */,
-				79B112631B0E4102008651AD /* PubNub+SubscribePrivate.h in Headers */,
-				79B112721B0E4102008651AD /* PNResult+Private.h in Headers */,
-				79B1126E1B0E4102008651AD /* PNResponse+Private.h in Headers */,
-				79B112961B0E4102008651AD /* PNConstants.h in Headers */,
-				79B112581B0E4102008651AD /* PubNub+PresencePrivate.h in Headers */,
-				79B112801B0E4102008651AD /* PNData.h in Headers */,
-				79B112511B0E4102008651AD /* PubNub+CorePrivate.h in Headers */,
 				79B1127D1B0E4102008651AD /* PNChannel.h in Headers */,
-				79B112931B0E4102008651AD /* PNLogFileManager.h in Headers */,
+				79B112891B0E4102008651AD /* PNHelpers.h in Headers */,
+				79B1128A1B0E4102008651AD /* PNJSON.h in Headers */,
+				79B1128D1B0E4102008651AD /* PNString.h in Headers */,
+				79B1127A1B0E4102008651AD /* PNArray.h in Headers */,
+				79B112861B0E4102008651AD /* PNGZIP.h in Headers */,
+				79B112801B0E4102008651AD /* PNData.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79B1138F1B0F3300008651AD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79B113901B0F3369008651AD /* PubNub+ChannelGroup.h in Headers */,
+				79B113911B0F3379008651AD /* PNObjectEventListener.h in Headers */,
+				79B113921B0F3388008651AD /* PubNub+Subscribe.h in Headers */,
+				79B113931B0F338F008651AD /* PubNub+Presence.h in Headers */,
+				79B113941B0F339C008651AD /* PubNub+Publish.h in Headers */,
+				79B113951B0F33A5008651AD /* PubNub+History.h in Headers */,
+				79B113961B0F33AA008651AD /* PubNub+APNS.h in Headers */,
+				79B113971B0F33BA008651AD /* PubNub+State.h in Headers */,
+				79B113981B0F33BD008651AD /* PubNub+Core.h in Headers */,
+				79B113991B0F33D2008651AD /* PNErrorCodes.h in Headers */,
+				79B1139A1B0F33E3008651AD /* PubNub+Time.h in Headers */,
+				79B1139F1B0F3408008651AD /* PNStructures.h in Headers */,
+				79B1139C1B0F3408008651AD /* PNResult.h in Headers */,
+				79B1139D1B0F3408008651AD /* PNStatus.h in Headers */,
+				79B113A01B0F3427008651AD /* PubNub.h in Headers */,
+				79B1139B1B0F3408008651AD /* PNAES.h in Headers */,
+				79B1139E1B0F3408008651AD /* PNLog.h in Headers */,
+				79B113B61B0F3589008651AD /* PubNub+SubscribePrivate.h in Headers */,
+				79B113B51B0F3582008651AD /* PubNub+PresencePrivate.h in Headers */,
+				79B113B41B0F3577008651AD /* PubNub+StatePrivate.h in Headers */,
+				79B113B31B0F3571008651AD /* PNResponse+Private.h in Headers */,
+				79B113B11B0F354E008651AD /* PubNub+CorePrivate.h in Headers */,
+				79B113B01B0F3549008651AD /* PNPrivateStructures.h in Headers */,
+				79B113AF1B0F3543008651AD /* PNRequest+Private.h in Headers */,
+				79B113AE1B0F3534008651AD /* PNLogFileManager.h in Headers */,
+				79B113AD1B0F3526008651AD /* PNResult+Private.h in Headers */,
+				79B113AC1B0F3518008651AD /* PNStatus+Private.h in Headers */,
+				79B113AB1B0F3504008651AD /* PNConstants.h in Headers */,
+				79B113AA1B0F34FA008651AD /* PNResponse.h in Headers */,
+				79B113A91B0F34F1008651AD /* PNDictionary.h in Headers */,
+				79B113A81B0F34E9008651AD /* PNRequest.h in Headers */,
+				79B113A71B0F34D8008651AD /* PNChannel.h in Headers */,
+				79B113A61B0F34CC008651AD /* PNHelpers.h in Headers */,
+				79B113A51B0F34C3008651AD /* PNJSON.h in Headers */,
+				79B113A41B0F34BC008651AD /* PNString.h in Headers */,
+				79B113A31B0F34B0008651AD /* PNArray.h in Headers */,
+				79B113A21B0F34AB008651AD /* PNGZIP.h in Headers */,
+				79B113A11B0F34A0008651AD /* PNData.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,12 +534,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 79B112001B0E40B3008651AD /* Build configuration list for PBXNativeTarget "PubNub" */;
 			buildPhases = (
-				1F03030F3C95DACF9F77F44E /* Check Pods Manifest.lock */,
+				65AA5996C6D41A88D1115520 /* Check Pods Manifest.lock */,
 				79B111E51B0E40B3008651AD /* Sources */,
 				79B111E61B0E40B3008651AD /* Frameworks */,
 				79B111E71B0E40B3008651AD /* Headers */,
 				79B111E81B0E40B3008651AD /* Resources */,
 				D11322ADA225FF0DC12D9543 /* Copy Pods Resources */,
+				79880CD11B0F618D00C14B8C /* Copy static library to project directory */,
 			);
 			buildRules = (
 			);
@@ -387,6 +551,26 @@
 			productReference = 79B111EA1B0E40B3008651AD /* PubNub.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		79B113381B0F2DC2008651AD /* PubNub Static */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79B1134E1B0F2DC3008651AD /* Build configuration list for PBXNativeTarget "PubNub Static" */;
+			buildPhases = (
+				79B114041B0F4B36008651AD /* Check Pods Manifest.lock */,
+				79B113351B0F2DC2008651AD /* Sources */,
+				79B113361B0F2DC2008651AD /* Frameworks */,
+				79B1138F1B0F3300008651AD /* Headers */,
+				79B114031B0F4B19008651AD /* Copy Pods Resources */,
+				79B113B71B0F35BD008651AD /* Copy static library to project directory */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PubNub Static";
+			productName = libPubNub;
+			productReference = 79B113391B0F2DC2008651AD /* libPubNub.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -396,7 +580,16 @@
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Sergey Mamontov";
 				TargetAttributes = {
+					79880CCA1B0F5BB200C14B8C = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					79880CD81B0F632800C14B8C = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
 					79B111E91B0E40B3008651AD = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					79B113381B0F2DC2008651AD = {
 						CreatedOnToolsVersion = 6.3.2;
 					};
 				};
@@ -414,6 +607,9 @@
 			projectRoot = "";
 			targets = (
 				79B111E91B0E40B3008651AD /* PubNub */,
+				79880CD81B0F632800C14B8C /* PubNub Universal */,
+				79B113381B0F2DC2008651AD /* PubNub Static */,
+				79880CCA1B0F5BB200C14B8C /* PubNub Static Universal */,
 			);
 		};
 /* End PBXProject section */
@@ -429,7 +625,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1F03030F3C95DACF9F77F44E /* Check Pods Manifest.lock */ = {
+		65AA5996C6D41A88D1115520 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -443,6 +639,90 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
+		};
+		79880CD01B0F5BD700C14B8C /* Create universal static library binary */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Create universal static library binary";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\n# Ignoring uninitialised variable (probably running from main \"process\")\nset +u\n    # Avoid recursively calling this script.\n    if [[ $BUILDING_USER_DEFINED_TARGET ]]; then\n        echo \"{WARN} Already running build of ${PROJECT_NAME} for ${SDK_NAME}\"\n\n        # Notified and we are done here\n        exit 0\n    fi\nset -u\n\n# Set environment variable to prevent cycles from attempt to\n# universal static with opposite SDK\nexport BUILDING_USER_DEFINED_TARGET=1\n\n# Declare path to PubNub library build results.\nPRODUCT_DIR=\"${SRCROOT}/lib\"\n\n# Extracting platform name (simulator or device)\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]; then\n\tTARGET_PLATFORM=${BASH_REMATCH[1]}\nelse\n\n\techo \"{ERROR} Unkonwn platform: ${SDK_NAME}\"\n\n\t# We got error so we should report and stop aggregation target build process\n\texit 1\nfi\n\nif [ \"$TARGET_PLATFORM\" == \"iphoneos\" ] || [ \"$TARGET_PLATFORM\" == \"iphonesimulator\" ] ; then\n\n    # Extracting SDK version used to deploy on specified platform\n    if [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]; then\n        TARGET_SDK_VERSION=${BASH_REMATCH[1]}\n    else\n        echo \"{ERROR} Unkonwn SDK version: $SDK_NAME\"\n\n        # We got error so we should report and stop aggregation target build process\n        exit 1\n    fi\n\n    # Find out secondary platform which should be built and path there it will be stored\n    SCRIPT_DEFINED_TARGET=`[ \"$TARGET_PLATFORM\" == \"iphoneos\" ] && echo \"iphonesimulator\" || echo \"iphoneos\"`\n    SCRIPT_DEFINED_TARGET_PATH=${BUILT_PRODUCTS_DIR%$TARGET_PLATFORM}$SCRIPT_DEFINED_TARGET\n    SCRIPT_DEFINED_SDK_NAME=${SCRIPT_DEFINED_TARGET}${TARGET_SDK_VERSION}\n\n    # Declare path to PubNub library build results.\n    PRODUCT_DIR=\"${SRCROOT}/lib\"\n    # Compose target library product name.\n    STATIC_LIB_FILE_NAME=\"lib${PROJECT_NAME}.a\"\n\n    # Rename compiled for current target static library.\n    /bin/mv \"${PRODUCT_DIR}/${STATIC_LIB_FILE_NAME}\" \"${PRODUCT_DIR}/lib${PROJECT_NAME}-${TARGET_PLATFORM}.a\"\n\n    # Build for another platform\n    xcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SCRIPT_DEFINED_SDK_NAME} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n    # Copy PubNub library build results to product directory.\n    /bin/cp \"${SCRIPT_DEFINED_TARGET_PATH}/${STATIC_LIB_FILE_NAME}\" \"${PRODUCT_DIR}/lib${PROJECT_NAME}-${SCRIPT_DEFINED_TARGET}.a\"\n\n    # Create fat binary using lipo and store it inside of original target .framework (created previously by static library post-build script).\n    xcrun lipo -create \"${PRODUCT_DIR}/lib${PROJECT_NAME}-${TARGET_PLATFORM}.a\" \"${PRODUCT_DIR}/lib${PROJECT_NAME}-${SCRIPT_DEFINED_TARGET}.a\" -output \"${PRODUCT_DIR}/${STATIC_LIB_FILE_NAME}\"\n\n    # Clean up\n    /bin/rm \"${PRODUCT_DIR}/lib${PROJECT_NAME}-${TARGET_PLATFORM}.a\"\n    /bin/rm \"${PRODUCT_DIR}/lib${PROJECT_NAME}-${SCRIPT_DEFINED_TARGET}.a\"\nfi";
+		};
+		79880CD11B0F618D00C14B8C /* Copy static library to project directory */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy static library to project directory";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\n# Declare path to PubNub library build results.\nPRODUCT_DIR=\"${SRCROOT}/lib\"\n# Compose target library product name.\nSTATIC_LIB_FILE_NAME=\"${PROJECT_NAME}.framework\"\n\n# Prepare product folder.\nmkdir -p \"${SRCROOT}/lib\"\n\n# Copy PubNub library build results to product directory.\n/bin/cp -R \"${BUILT_PRODUCTS_DIR}/${STATIC_LIB_FILE_NAME}\" \"${PRODUCT_DIR}\"";
+		};
+		79880CDC1B0F633B00C14B8C /* Create universal framework library binary */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Create universal framework library binary";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\n# Ignoring uninitialised variable (probably running from main \"process\")\nset +u\n    # Avoid recursively calling this script.\n    if [[ $BUILDING_USER_DEFINED_TARGET ]]; then\n        echo \"{WARN} Already running build of ${PROJECT_NAME} for ${SDK_NAME}\"\n\n        # Notified and we are done here\n        exit 0\n    fi\nset -u\n\n# Set environment variable to prevent cycles from attempt to\n# universal static with opposite SDK\nexport BUILDING_USER_DEFINED_TARGET=1\n\n# Declare path to PubNub library build results.\nPRODUCT_DIR=\"${SRCROOT}/lib\"\n\n# Extracting platform name (simulator or device)\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]; then\n\tTARGET_PLATFORM=${BASH_REMATCH[1]}\nelse\n\n\techo \"{ERROR} Unkonwn platform: ${SDK_NAME}\"\n\n\t# We got error so we should report and stop aggregation target build process\n\texit 1\nfi\n\nif [ \"$TARGET_PLATFORM\" == \"iphoneos\" ] || [ \"$TARGET_PLATFORM\" == \"iphonesimulator\" ] ; then\n\n    # Extracting SDK version used to deploy on specified platform\n    if [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]; then\n        TARGET_SDK_VERSION=${BASH_REMATCH[1]}\n    else\n        echo \"{ERROR} Unkonwn SDK version: $SDK_NAME\"\n\n        # We got error so we should report and stop aggregation target build process\n        exit 1\n    fi\n\n    # Find out secondary platform which should be built and path there it will be stored\n    SCRIPT_DEFINED_TARGET=`[ \"$TARGET_PLATFORM\" == \"iphoneos\" ] && echo \"iphonesimulator\" || echo \"iphoneos\"`\n    SCRIPT_DEFINED_TARGET_PATH=${BUILT_PRODUCTS_DIR%$TARGET_PLATFORM}$SCRIPT_DEFINED_TARGET\n    SCRIPT_DEFINED_SDK_NAME=${SCRIPT_DEFINED_TARGET}${TARGET_SDK_VERSION}\n\n    # Declare path to PubNub library build results.\n    PRODUCT_DIR=\"${SRCROOT}/lib\"\n    # Compose target library product name.\n    FRAMEWORK_FILE_NAME=\"${PROJECT_NAME}.framework\"\n\n    # Rename compiled for current target framework.\n    /bin/mv \"${PRODUCT_DIR}/${FRAMEWORK_FILE_NAME}\" \"${PRODUCT_DIR}/${PROJECT_NAME}-${TARGET_PLATFORM}.framework\"\n\n    # Build for another platform\n    xcrun xcodebuild -workspace \"${SRCROOT}/${PROJECT_NAME}.xcworkspace\" -scheme \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SCRIPT_DEFINED_SDK_NAME} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n    # Copy PubNub framework build results to product directory.\n    /bin/cp -R \"${SCRIPT_DEFINED_TARGET_PATH}/${FRAMEWORK_FILE_NAME}\" \"${PRODUCT_DIR}\"\n\n    # Rename compiled for secondary target framework.\n    /bin/mv \"${PRODUCT_DIR}/${FRAMEWORK_FILE_NAME}\" \"${PRODUCT_DIR}/${PROJECT_NAME}-${SCRIPT_DEFINED_TARGET}.framework\"\n\n    /bin/cp -R \"${PRODUCT_DIR}/${PROJECT_NAME}-${TARGET_PLATFORM}.framework\" \"${PRODUCT_DIR}/${FRAMEWORK_FILE_NAME}\"\n    /bin/rm \"${PRODUCT_DIR}/${FRAMEWORK_FILE_NAME}/${PROJECT_NAME}\"\n\n    # Create fat binary using lipo and store it inside of original target .framework (created previously by static library post-build script).\n    xcrun lipo -create \"${PRODUCT_DIR}/${PROJECT_NAME}-${TARGET_PLATFORM}.framework/${PROJECT_NAME}\" \"${PRODUCT_DIR}/${PROJECT_NAME}-${SCRIPT_DEFINED_TARGET}.framework/${PROJECT_NAME}\" -output \"${PRODUCT_DIR}/${FRAMEWORK_FILE_NAME}/${PROJECT_NAME}\"\nfi";
+		};
+		79B113B71B0F35BD008651AD /* Copy static library to project directory */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy static library to project directory";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\n# Declare path to PubNub library build results.\nPRODUCT_DIR=\"${SRCROOT}/lib\"\n# Compose target library product name.\nSTATIC_LIB_FILE_NAME=\"lib${PROJECT_NAME}.a\"\n\n# Prepare product folder.\nmkdir -p \"${SRCROOT}/lib\"\n\n# Copy PubNub library build results to product directory.\n/bin/cp \"${BUILT_PRODUCTS_DIR}/${STATIC_LIB_FILE_NAME}\" \"${PRODUCT_DIR}/${STATIC_LIB_FILE_NAME}\"\n/bin/cp -R \"${BUILT_PRODUCTS_DIR}/Headers\" \"${PRODUCT_DIR}\"";
+		};
+		79B114031B0F4B19008651AD /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+		};
+		79B114041B0F4B36008651AD /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\ncat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\nexit 1\nfi\n";
 		};
 		D11322ADA225FF0DC12D9543 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -466,36 +746,79 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79B1128E1B0E4102008651AD /* PNString.m in Sources */,
-				79B112701B0E4102008651AD /* PNResponse.m in Sources */,
-				79B112781B0E4102008651AD /* PNStatus.m in Sources */,
-				79B112531B0E4102008651AD /* PubNub+History.m in Sources */,
-				79B112941B0E4102008651AD /* PNLogFileManager.m in Sources */,
-				79B112871B0E4102008651AD /* PNGZIP.m in Sources */,
-				79B1124F1B0E4102008651AD /* PubNub+Core.m in Sources */,
-				79B112491B0E4102008651AD /* PubNub+APNS.m in Sources */,
-				79B112651B0E4102008651AD /* PubNub+Time.m in Sources */,
-				79B112811B0E4102008651AD /* PNData.m in Sources */,
-				79B1125D1B0E4102008651AD /* PubNub+State.m in Sources */,
-				79B1126C1B0E4102008651AD /* PNRequest.m in Sources */,
 				79B1124C1B0E4102008651AD /* PubNub+ChannelGroup.m in Sources */,
-				79B112561B0E4102008651AD /* PubNub+Presence.m in Sources */,
-				79B112841B0E4102008651AD /* PNDictionary.m in Sources */,
-				79B1127B1B0E4102008651AD /* PNArray.m in Sources */,
 				79B112611B0E4102008651AD /* PubNub+Subscribe.m in Sources */,
-				79B112741B0E4102008651AD /* PNResult.m in Sources */,
-				79B1127E1B0E4102008651AD /* PNChannel.m in Sources */,
-				79B112911B0E4102008651AD /* PNLog.m in Sources */,
+				79B112561B0E4102008651AD /* PubNub+Presence.m in Sources */,
+				79B112941B0E4102008651AD /* PNLogFileManager.m in Sources */,
 				79B1125A1B0E4102008651AD /* PubNub+Publish.m in Sources */,
-				79B112681B0E4102008651AD /* PNAES.m in Sources */,
+				79B112531B0E4102008651AD /* PubNub+History.m in Sources */,
+				79B112491B0E4102008651AD /* PubNub+APNS.m in Sources */,
+				79B1125D1B0E4102008651AD /* PubNub+State.m in Sources */,
+				79B112651B0E4102008651AD /* PubNub+Time.m in Sources */,
+				79B1124F1B0E4102008651AD /* PubNub+Core.m in Sources */,
+				79B112701B0E4102008651AD /* PNResponse.m in Sources */,
+				79B112841B0E4102008651AD /* PNDictionary.m in Sources */,
+				79B1126C1B0E4102008651AD /* PNRequest.m in Sources */,
+				79B1127E1B0E4102008651AD /* PNChannel.m in Sources */,
+				79B112741B0E4102008651AD /* PNResult.m in Sources */,
+				79B112781B0E4102008651AD /* PNStatus.m in Sources */,
+				79B1128E1B0E4102008651AD /* PNString.m in Sources */,
 				79B1128B1B0E4102008651AD /* PNJSON.m in Sources */,
+				79B1127B1B0E4102008651AD /* PNArray.m in Sources */,
+				79B112871B0E4102008651AD /* PNGZIP.m in Sources */,
+				79B112811B0E4102008651AD /* PNData.m in Sources */,
+				79B112681B0E4102008651AD /* PNAES.m in Sources */,
+				79B112911B0E4102008651AD /* PNLog.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79B113351B0F2DC2008651AD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79B113531B0F317A008651AD /* PubNub+ChannelGroup.m in Sources */,
+				79B113621B0F317A008651AD /* PubNub+Subscribe.m in Sources */,
+				79B1135A1B0F317A008651AD /* PubNub+Presence.m in Sources */,
+				79B113861B0F317A008651AD /* PNLogFileManager.m in Sources */,
+				79B1135D1B0F317A008651AD /* PubNub+Publish.m in Sources */,
+				79B113581B0F317A008651AD /* PubNub+History.m in Sources */,
+				79B113511B0F317A008651AD /* PubNub+APNS.m in Sources */,
+				79B1135F1B0F317A008651AD /* PubNub+State.m in Sources */,
+				79B113651B0F317A008651AD /* PubNub+Time.m in Sources */,
+				79B113551B0F317A008651AD /* PubNub+Core.m in Sources */,
+				79B1136D1B0F317A008651AD /* PNResponse.m in Sources */,
+				79B1137B1B0F317A008651AD /* PNDictionary.m in Sources */,
+				79B1136A1B0F317A008651AD /* PNRequest.m in Sources */,
+				79B113771B0F317A008651AD /* PNChannel.m in Sources */,
+				79B113701B0F317A008651AD /* PNResult.m in Sources */,
+				79B113731B0F317A008651AD /* PNStatus.m in Sources */,
+				79B113821B0F317A008651AD /* PNString.m in Sources */,
+				79B113801B0F317A008651AD /* PNJSON.m in Sources */,
+				79B113751B0F317A008651AD /* PNArray.m in Sources */,
+				79B1137D1B0F317A008651AD /* PNGZIP.m in Sources */,
+				79B113791B0F317A008651AD /* PNData.m in Sources */,
+				79B1138D1B0F32CB008651AD /* PNAES.m in Sources */,
+				79B113841B0F317A008651AD /* PNLog.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		79880CCF1B0F5BD300C14B8C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 79B113381B0F2DC2008651AD /* PubNub Static */;
+			targetProxy = 79880CCE1B0F5BD300C14B8C /* PBXContainerItemProxy */;
+		};
+		79880CDE1B0F635B00C14B8C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 79B111E91B0E40B3008651AD /* PubNub */;
+			targetProxy = 79880CDD1B0F635B00C14B8C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
-		79B111FE1B0E40B3008651AD /* Debug */ = {
+		79880CC71B0F50B000C14B8C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -516,16 +839,10 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -533,12 +850,124 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		79880CC81B0F50B000C14B8C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B4E74F3A9B7144EFAF8FC1E4 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				INFOPLIST_FILE = PubNub/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		79880CC91B0F50B000C14B8C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B4E74F3A9B7144EFAF8FC1E4 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CURRENT_PROJECT_VERSION = "";
+				DEAD_CODE_STRIPPING = NO;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Release-iphoneos",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_MODULE_NAME = PubNub;
+				PRODUCT_NAME = PubNub;
+				PUBLIC_HEADERS_FOLDER_PATH = Headers;
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = "non-global";
+				VERSIONING_SYSTEM = "";
+			};
+			name = Debug;
+		};
+		79880CCC1B0F5BB200C14B8C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		79880CCD1B0F5BB200C14B8C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		79880CDA1B0F632800C14B8C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		79880CDB1B0F632800C14B8C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
@@ -583,48 +1012,9 @@
 			};
 			name = Release;
 		};
-		79B112011B0E40B3008651AD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F6415968CB9185FC5085907B /* Pods.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
-				CLANG_WARN_ASSIGN_ENUM = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
-				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
-				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
-				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
-				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
-				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
-				GCC_WARN_PEDANTIC = NO;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				GCC_WARN_UNUSED_PARAMETER = YES;
-				INFOPLIST_FILE = PubNub/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
 		79B112021B0E40B3008651AD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEF35E7AFEC5CFA17555DE13 /* Pods.release.xcconfig */;
+			baseConfigurationReference = 3A823ED33C2D1863C2F941D0 /* Pods.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
 				CLANG_WARN_ASSIGN_ENUM = YES;
@@ -655,20 +1045,81 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				INFOPLIST_FILE = PubNub/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
+		79B1134B1B0F2DC3008651AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3A823ED33C2D1863C2F941D0 /* Pods.release.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CURRENT_PROJECT_VERSION = "";
+				DEAD_CODE_STRIPPING = NO;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Release-iphoneos",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_MODULE_NAME = PubNub;
+				PRODUCT_NAME = PubNub;
+				PUBLIC_HEADERS_FOLDER_PATH = Headers;
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = "non-global";
+				VERSIONING_SYSTEM = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		79880CCB1B0F5BB200C14B8C /* Build configuration list for PBXAggregateTarget "PubNub Static Universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79880CCC1B0F5BB200C14B8C /* Release */,
+				79880CCD1B0F5BB200C14B8C /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		79880CD91B0F632800C14B8C /* Build configuration list for PBXAggregateTarget "PubNub Universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79880CDA1B0F632800C14B8C /* Release */,
+				79880CDB1B0F632800C14B8C /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		79B111E41B0E40B3008651AD /* Build configuration list for PBXProject "PubNub" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				79B111FE1B0E40B3008651AD /* Debug */,
 				79B111FF1B0E40B3008651AD /* Release */,
+				79880CC71B0F50B000C14B8C /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -676,8 +1127,17 @@
 		79B112001B0E40B3008651AD /* Build configuration list for PBXNativeTarget "PubNub" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				79B112011B0E40B3008651AD /* Debug */,
 				79B112021B0E40B3008651AD /* Release */,
+				79880CC81B0F50B000C14B8C /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		79B1134E1B0F2DC3008651AD /* Build configuration list for PBXNativeTarget "PubNub Static" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79B1134B1B0F2DC3008651AD /* Release */,
+				79880CC91B0F50B000C14B8C /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

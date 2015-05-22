@@ -1441,11 +1441,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 
                 [strongSelf processRequest:request];
             }
-            else {
-                
-                [strongSelf handleUnsubscribeRequest:request fromChannels:channels groups:groups
-                                      withCompletion:[block copy]];
-            }
 
             // In case if there is some channels left after unsubscription client should pick them
             // up and subscribe back.
@@ -1476,6 +1471,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     __strong __typeof(self) strongSelfForCancel = weakSelf;
                     [strongSelfForCancel cancelAllLongPollRequests];
                 });
+            }
+            
+            if (![channels count] && ![filteredGroups count]) {
+                
+                [strongSelf handleUnsubscribeRequest:request fromChannels:channels groups:groups
+                                      withCompletion:[block copy]];
             }
         }
         // Notify about incomplete parameters set.
@@ -1668,7 +1669,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
 
     // Check whether client received updates from service or not.
-    if (!isInitialSubscription && [status.data[@"events"] count]) {
+    if (!isInitialSubscription && [(NSArray *)status.data[@"events"] count]) {
 
         NSArray *events = [status.data[@"events"] copy];
         __weak __typeof(self) weakSelf = self;
@@ -1798,12 +1799,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     if (state == PNConnectedSubscriberState) {
         
         // Check whether client transit from 'disconnected' -> 'connected' state.
-        shouldHandleTransition = ((currentState == PNDisconnectedSubscriberState)?:
-                                  shouldHandleTransition);
+        shouldHandleTransition = (currentState == PNDisconnectedSubscriberState);
         
         // Check whether client transit from 'access denied' -> 'connected' state.
-        shouldHandleTransition = (shouldHandleTransition?:
-                                  (currentState == PNAccessRightsErrorSubscriberState));
+        if (!shouldHandleTransition) {
+            
+            shouldHandleTransition = (currentState == PNAccessRightsErrorSubscriberState);
+        }
         category = PNConnectedCategory;
         
         // Check whether client transit from 'unexpected disconnect' -> 'connected' state
@@ -1821,8 +1823,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         // Check whether client transit from 'connected' -> 'disconnected'/'unexpected disconnect'
         // state.
-        shouldHandleTransition = ((currentState == PNConnectedSubscriberState)?:
-                                  shouldHandleTransition);
+        shouldHandleTransition = (currentState == PNConnectedSubscriberState);
         category = ((state == PNDisconnectedSubscriberState) ? PNDisconnectedCategory :
                     PNUnexpectedDisconnectCategory);
     }
@@ -1830,8 +1831,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     else if (state == PNAccessRightsErrorSubscriberState) {
         
         // Check whether client transit from non-'access deined' -> 'access deined' state.
-        shouldHandleTransition = ((currentState != PNAccessRightsErrorSubscriberState)?:
-                                  shouldHandleTransition);
+        shouldHandleTransition = (currentState != PNAccessRightsErrorSubscriberState);
         category = PNDisconnectedCategory;
     }
     
@@ -1870,6 +1870,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Create status information if required.
     PNStatus *status = [PNStatus statusForRequest:request withError:nil];
+    
+    // Override status information because 'leave' can't fail.
+    status.category = PNAcknowledgmentCategory;
+    status.error = NO;
+    status.data = @{};
     [self setNumberOfAPICalls:MAX(([self numberOfAPICalls] - 1), 0)];
     
     if (![[self allObjects] count]) {
