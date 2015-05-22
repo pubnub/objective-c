@@ -204,10 +204,9 @@ static const void *kPubNubHeartbeatTimer = &kPubNubHeartbeatTimer;
             
             parameters[@"channel-group"] = [PNString percentEscapedString:object];
         }
-        NSString *format = [@"/v2/presence/sub-key/%@"
-                            stringByAppendingString:((forChannel && object) ? @"/channel/%@":@"")];
-        NSString *path = [NSString stringWithFormat:format, subscribeKey,
-                          [PNString percentEscapedString:object]];
+        NSString *path = [NSString stringWithFormat:@"/v2/presence/sub-key/%@%@", subscribeKey,
+                          ((forChannel && object) ? [NSString stringWithFormat:@"/channel/%@",
+                                                     [PNString percentEscapedString:object]] : @"")];
         PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
                                            forOperation:PNHereNowOperation withCompletion:nil];
         request.parseBlock = ^id(id rawData) {

@@ -92,8 +92,8 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- NSNumber *startDate = @(((NSUInteger)[[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970])*10000000);
- NSNumber *endDate = @(((NSUInteger)[[NSDate date] timeIntervalSince1970])*10000000);
+ NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
+ NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [client historyForChannel:@"storage" start:startDate end:endDate
             withCompletion:^(PNResult *result, PNStatus *status) {
     
@@ -165,8 +165,8 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- NSNumber *startDate = @(((NSUInteger)[[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970])*10000000);
- NSNumber *endDate = @(((NSUInteger)[[NSDate date] timeIntervalSince1970])*10000000);
+ NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
+ NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [client historyForChannel:@"storage" start:startDate end:endDate limit:50
             withCompletion:^(PNResult *result, PNStatus *status) {
     
@@ -245,8 +245,8 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- NSNumber *startDate = @(((NSUInteger)[[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970])*10000000);
- NSNumber *endDate = @(((NSUInteger)[[NSDate date] timeIntervalSince1970])*10000000);
+ NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
+ NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [client historyForChannel:@"storage" start:startDate end:endDate includeTimeToken:YES
             withCompletion:^(PNResult *result, PNStatus *status) {
     
@@ -325,8 +325,8 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- NSNumber *startDate = @(((NSUInteger)[[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970])*10000000);
- NSNumber *endDate = @(((NSUInteger)[[NSDate date] timeIntervalSince1970])*10000000);
+ NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
+ NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [client historyForChannel:@"storage" start:startDate end:endDate limit:35 includeTimeToken:YES
             withCompletion:^(PNResult *result, PNStatus *status) {
     
@@ -408,8 +408,8 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- NSNumber *startDate = @(((NSUInteger)[[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970])*10000000);
- NSNumber *endDate = @(((NSUInteger)[[NSDate date] timeIntervalSince1970])*10000000);
+ NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
+ NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES
             withCompletion:^(PNResult *result, PNStatus *status) {
     
@@ -486,8 +486,8 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- NSNumber *startDate = @(((NSUInteger)[[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970])*10000000);
- NSNumber *endDate = @(((NSUInteger)[[NSDate date] timeIntervalSince1970])*10000000);
+ NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
+ NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES 
           includeTimeToken:YES withCompletion:^(PNResult *result, PNStatus *status) {
     

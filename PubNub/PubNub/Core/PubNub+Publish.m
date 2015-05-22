@@ -284,7 +284,7 @@
         }
         else {
             
-            timeToken = @(((NSUInteger)[[NSDate date] timeIntervalSince1970])*10000000);
+            timeToken = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
         }
         
         processedResponse = @{@"status":status, @"information":information, @"tt": timeToken};
