@@ -1161,14 +1161,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
         __strong __typeof(self) strongSelf = weakSelf;
         BOOL isValidClientState = YES;
-        NSArray *channelsForSubscription = [strongSelf channelsInternal];
-        NSArray *groupsForSubscription = [strongSelf groupsInternal];
-        NSArray *presenceForSubscription = [strongSelf presenceChannelsInternal];
+        NSMutableSet *channelsForSubscription = [strongSelf mutableChannels];
+        NSMutableSet *groupsForSubscription = [strongSelf mutableGroups];
+        NSMutableSet *presenceForSubscription = [strongSelf mutablePresenceChannels];
         if (shouldModifyObjectsList) {
 
-            channelsForSubscription = [channelsForSubscription arrayByAddingObjectsFromArray:channels];
-            groupsForSubscription = [groupsForSubscription arrayByAddingObjectsFromArray:groups];
-            presenceForSubscription = [presenceForSubscription arrayByAddingObjectsFromArray:presence];
+            [channelsForSubscription addObjectsFromArray:channels];
+            [groupsForSubscription addObjectsFromArray:groups];
+            [presenceForSubscription addObjectsFromArray:presence];
             
             for (NSString *objectName in state) {
                 
@@ -1180,7 +1180,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             }
         }
         // Prepare full list of channels which passed to request as part of URI string.
-        NSArray *fullChannelsList = [channelsForSubscription arrayByAddingObjectsFromArray:presenceForSubscription];
+        NSSet *fullChannelsList = [channelsForSubscription setByAddingObjectsFromSet:presenceForSubscription];
 
         // In case if presence event generation has been requested, current time token should be set
         // to 0.
@@ -1204,13 +1204,18 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
         // Compose full list of channels which should be placed into request path (consist from
         // regular and presence channels)
-        NSString *channelsList = [PNChannel namesForRequest:fullChannelsList defaultString:@","];
-        NSString *groupsList = [PNChannel namesForRequest:groupsForSubscription];
+        NSString *channelsList = [PNChannel namesForRequest:[fullChannelsList allObjects] defaultString:@","];
+        NSString *groupsList = [PNChannel namesForRequest:[groupsForSubscription allObjects]];
         NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
-
+        ;
+        if([channelsList isEqualToString:@"good,good"]) {
+            
+            NSLog(@"STOPP!!!");
+        }
         // Prepare client state information which should be bound to remote data objects.
-        NSArray *fullObjectsList = [fullChannelsList arrayByAddingObjectsFromArray:groupsForSubscription];
-        NSDictionary *mergedState = [strongSelf stateMergedWith:state forObjects:fullObjectsList];
+        NSSet *fullObjectsList = [fullChannelsList setByAddingObjectsFromSet:groupsForSubscription];
+        NSDictionary *mergedState = [strongSelf stateMergedWith:state
+                                                     forObjects:[fullObjectsList allObjects]];
 
         // Prepare query parameters basing on available information.
         NSMutableDictionary *parameters = [NSMutableDictionary new];
@@ -1241,9 +1246,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                                              
             __strong __typeof(self) strongSelfForResults = weakSelf;
             [strongSelfForResults handleSubscribeRequest:completedRequest
-                                              onChannels:channelsForSubscription
-                                                  groups:groupsForSubscription
-                                                presence:presenceForSubscription
+                                              onChannels:[channelsForSubscription allObjects]
+                                                  groups:[groupsForSubscription allObjects]
+                                                presence:[presenceForSubscription allObjects]
                                                withState:mergedState andCompletion:[block copy]];
         }];
         request.parseBlock = ^id(id rawData){
@@ -1830,9 +1835,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     // Check whether transit to 'access deined' state.
     else if (state == PNAccessRightsErrorSubscriberState) {
         
-        // Check whether client transit from non-'access deined' -> 'access deined' state.
-        shouldHandleTransition = (currentState != PNAccessRightsErrorSubscriberState);
-        category = PNDisconnectedCategory;
+        shouldHandleTransition = YES;
+        category = status.category;
     }
     
     // Check whether allowed state transition has been issued or not.
