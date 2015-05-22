@@ -1830,8 +1830,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     // Check whether transit to 'access deined' state.
     else if (state == PNAccessRightsErrorSubscriberState) {
         
-        shouldHandleTransition = YES;
-        category = status.category;
+        // Check whether client transit from non-'access deined' -> 'access deined' state.
+        shouldHandleTransition = (currentState != PNAccessRightsErrorSubscriberState);
+        category = PNDisconnectedCategory;
     }
     
     // Check whether allowed state transition has been issued or not.
