@@ -45,18 +45,18 @@
     // Settings Config for PAM Example
     // http://www.pubnub.com/console/?channel=good&origin=d.pubnub.com&sub=pam&pub=pam&cipher=&ssl=false&secret=pam&auth=myAuthKey
 
-    self.channel1 = @"bad";
-    self.channel2 = @"good";
-    self.pubKey = @"pam";
-    self.subKey = @"pam";
-    self.authKey = @"myAuthKey";
+//    self.channel1 = @"bad";
+//    self.channel2 = @"good";
+//    self.pubKey = @"pam";
+//    self.subKey = @"pam";
+//    self.authKey = @"myAuthKey";
 
-//    // Settings Config for Non-PAM Example
-//    self.channel1 = @"bot";
-//    self.channel2 = @"myCh";
-//    self.pubKey = @"demo-36";
-//    self.subKey = @"demo-36";
-//    self.subKey = @"myAuthKey";
+    // Settings Config for Non-PAM Example
+    self.channel1 = @"bot";
+    self.channel2 = @"myCh";
+    self.pubKey = @"demo-36";
+    self.subKey = @"demo-36";
+    self.authKey = @"myAuthKey";
 
 
     [self tireKicker];
