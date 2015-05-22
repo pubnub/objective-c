@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "PNStatus+Private.h"
+#import "PNResult+Private.h"
 #import <PubNub/PubNub.h>
 
 #pragma mark Private interface declaration
@@ -17,8 +18,12 @@
 #pragma mark - Properties
 
 @property(nonatomic, strong) PubNub *client;
-@property(nonatomic, strong) NSString *channel;
+@property(nonatomic, strong) NSString *channel1;
 @property(nonatomic, strong) NSString *channel2;
+@property(nonatomic, strong) NSString *subKey;
+@property(nonatomic, strong) NSString *pubKey;
+@property(nonatomic, strong) NSString *authKey;
+
 @property(nonatomic, strong) NSTimer *timer;
 
 
@@ -36,8 +41,23 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.channel = @"ping_3";
-    self.channel2 = @"ping_10";
+
+    // Settings Config for PAM Example
+    // http://www.pubnub.com/console/?channel=good&origin=d.pubnub.com&sub=pam&pub=pam&cipher=&ssl=false&secret=pam&auth=myAuthKey
+
+    self.channel1 = @"bad";
+    self.channel2 = @"good";
+    self.pubKey = @"pam";
+    self.subKey = @"pam";
+    self.authKey = @"myAuthKey";
+
+//    // Settings Config for Non-PAM Example
+//    self.channel1 = @"bot";
+//    self.channel2 = @"myCh";
+//    self.pubKey = @"demo-36";
+//    self.subKey = @"demo-36";
+//    self.subKey = @"myAuthKey";
+
 
     [self tireKicker];
     return YES;
@@ -52,7 +72,7 @@
 
 - (void)pubNubInit {
     // Initialize PubNub client.
-    self.client = [PubNub clientWithPublishKey:@"pam" andSubscribeKey:@"pam"];
+    self.client = [PubNub clientWithPublishKey:_pubKey andSubscribeKey:_subKey];
 
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
@@ -64,22 +84,22 @@
     [self printClientConfiguration];
 }
 
-- (void)delayedSub {
-    NSLog(@"Timer Called");
-    [self.client subscribeToChannels:@[_channel2] withPresence:YES andCompletion:^(PNStatus *status) {
-        if (!status.isError) {
-            NSLog(@"^^^^Second Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
-        } else {
-            NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-            [self handleStatus:status];
-        }
-    }];
-}
+//- (void)delayedSub {
+//    NSLog(@"Timer Called");
+//    [self.client subscribeToChannels:@[_channel2] withPresence:NO andCompletion:^(PNStatus *status) {
+//        if (!status.isError) {
+//            NSLog(@"^^^^Second Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
+//        } else {
+//            NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
+//            [self handleStatus:status];
+//        }
+//    }];
+//}
 
 - (void)pubNubSubscribe {
     // Subscribe
 
-    [self.client subscribeToChannels:@[_channel] withPresence:YES andCompletion:^(PNStatus *status) {
+    [self.client subscribeToChannels:@[_channel1] withPresence:NO andCompletion:^(PNStatus *status) {
 
         // There are two places to monitor for the outcomes of a subscribe.
 
@@ -92,7 +112,7 @@
 
         if (!status.isError) {
             NSLog(@"^^^^Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
-            self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(delayedSub) userInfo:nil repeats:NO];
+            //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(delayedSub) userInfo:nil repeats:NO];
         } else {
             NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
             [self handleStatus:status];
@@ -103,7 +123,7 @@
 - (void)pubNubHistory {
     // History
 
-    [self.client historyForChannel:_channel withCompletion:^(PNResult *result, PNStatus *status) {
+    [self.client historyForChannel:_channel1 withCompletion:^(PNResult *result, PNStatus *status) {
 
         // For completion blocks that provide both result and status parameters, you will only ever
         // have a non-nil status or result.
@@ -140,7 +160,7 @@
 }
 
 - (void)publishHelloWorld {
-    [self.client publish:@"I'm here!" toChannel:_channel
+    [self.client publish:@"I'm here!" toChannel:_channel1
           withCompletion:^(PNStatus *status) {
               if (!status.isError) {
                   NSLog(@"Message sent at TT: %@", status.data[@"tt"]);
@@ -207,21 +227,11 @@
 - (void)handleErrorStatus:(PNStatus *)status {
 
 
+    NSLog(@"^^^^ Debug: %@", status.debugDescription);
+    NSLog(@"^^^^ handleErrorStatus: PAM Error: for resource Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+
     if (status.category == PNAccessDeniedCategory) {
-
-        // Access Denied via PAM. Access status.data to determine the resource in question that was denied.
-        // In addition, you can also change auth key dynamically if needed."
-
-        NSLog(@"^^^^ Debug: %@", status.debugDescription);
-        NSLog(@"^^^^ handleErrorStatus: PAM Error: for resource Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
-
-        if (status.data[@"channels"]) {
-            NSLog(@"PAM error on channel %@", status.data[@"channels"][0]);
-        } else if (status.data[@"channel-groups"]) {
-            NSLog(@"PAM error on channel %@", status.data[@"channel-groups"][0]);
-        }
-        // TODO detail fields in data that depict the PAM error
-
+        [self handlePAMError:status];
     }
     else if (status.category == PNDecryptionErrorCategory) {
 
@@ -247,6 +257,54 @@
 
         NSLog(@"Request failed... if this is an issue that is consistently interrupting the performance of your app,");
         NSLog(@"email the output of debugDescription to support along with all available log info: %@", [status debugDescription]);
+    }
+}
+
+- (void)handlePAMError:(PNStatus *)status {
+    // Access Denied via PAM. Access status.data to determine the resource in question that was denied.
+    // In addition, you can also change auth key dynamically if needed."
+
+    NSString *pamResourceName = status.data[@"channels"] ? status.data[@"channels"][0] : status.data[@"channel-groups"];
+    NSString *pamResourceType = status.data[@"channels"] ? @"channel" : @"channel-groups";
+
+    NSLog(@"PAM error on %@ %@", pamResourceType, pamResourceName);
+
+    // If its a PAM error on subscribe, lets grab the channel name in question, and unsubscribe from it, and re-subscribe to a channel that we're authed to
+
+    if (status.operation == PNSubscribeOperation) {
+        if ([pamResourceType isEqualToString:@"channel"]) {
+            NSLog(@"^^^^ Unsubscribing from %@", pamResourceName);
+            [self.client unsubscribeFromChannels:@[pamResourceName] withPresence:YES andCompletion:^(PNStatus *status) {
+
+                // If the Unsubscribe was error-free
+
+                if (!status.isError) {
+                    NSLog(@"^^^^ Unsubscribe successful. Subscribing to channel %@", _channel2);
+
+                    [self.client subscribeToChannels:@[_channel2] withPresence:NO andCompletion:^(PNStatus *status) {
+                        if (!status.isError) {
+                            NSLog(@"^^^^ Subscribe to new authorized channel %@ successful.", _channel2);
+                        } else {
+                            // Handle sub error, etc.
+                            NSLog(@"^^^^ Subscribe to new authorized channel %@ failed.", _channel2);
+                        }
+                    }];
+                } else {
+                    // If the Unsubscribe was NOT error-free
+                    // Handle unsub error
+
+                    NSLog(@"^^^^ Unsubscribe successful. Subscribing to channel 'good'");
+                }
+            }];
+        } else {
+            [self.client unsubscribeFromChannelGroups:pamResourceName withPresence:YES andCompletion:^(PNStatus *status) {
+                // the case where we're dealing with CGs instead of CHs... follows the same pattern as above
+            }];
+        }
+    } else if (status.operation == PNPublishOperation) {
+        NSLog(@"^^^^ Error publishing with authKey: %@ to channel %@.", _authKey, pamResourceName);
+        NSLog(@"^^^^ Setting auth to an authKey that will allow for both sub and pub");
+        [self.client setAuthKey:@"myAuthKeyForPubAndSubToChannelGood"];
     }
 }
 
@@ -318,7 +376,7 @@
         // Set PubNub Configuration
         self.client.TLSEnabled = YES;
         self.client.origin = @"ios4.pubnub.com";
-        self.client.authKey = @"myAuthKey";
+        self.client.authKey = _authKey;
         self.client.uuid = @"ios4.0Tutorial";
 
         // Presence Settings
