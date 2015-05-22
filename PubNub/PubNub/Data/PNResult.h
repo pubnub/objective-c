@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "PNRequest.h"
+#import "PNStructures.h"
 
 
 /**
@@ -72,7 +72,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) id data;
+@property (nonatomic, readonly, copy) NSDictionary *data;
 
 #pragma mark -
 

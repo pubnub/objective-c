@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNStatus.h"
+#import "PNRequest.h"
 
 
 #pragma mark Private interface declaration

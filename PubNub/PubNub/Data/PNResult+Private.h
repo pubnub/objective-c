@@ -34,7 +34,7 @@
 @property (nonatomic, copy) NSString *origin;
 @property (nonatomic, assign) PNOperationType operation;
 @property (nonatomic, assign) NSInteger statusCode;
-@property (nonatomic, copy) id data;
+@property (nonatomic, copy) NSDictionary *data;
 
 
 ///------------------------------------------------
