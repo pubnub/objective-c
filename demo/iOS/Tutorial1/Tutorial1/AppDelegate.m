@@ -52,7 +52,7 @@
 
 - (void)pubNubInit {
     // Initialize PubNub client.
-    self.client = [PubNub clientWithPublishKey:@"demo-36" andSubscribeKey:@"demo-36"];
+    self.client = [PubNub clientWithPublishKey:@"pam" andSubscribeKey:@"pam"];
 
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
@@ -150,7 +150,7 @@
           }];
 }
 
-/********************************** Subscribe Loop Listeners  Start ********************************/
+#pragma mark - Streaming Data didReceiveMessage Listener
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status {
 
@@ -161,11 +161,15 @@
     }
 }
 
+#pragma mark - Streaming Data didReceivePresenceEvent Listener
+
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
     // TODO detail fields in data that depict the Presence event
 
     NSLog(@"Did receive presence event: %@", event.data);
 }
+
+#pragma mark - Streaming Data didReceiveStatus Listener
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
 
@@ -175,6 +179,8 @@
 
     [self handleStatus:status];
 }
+
+#pragma mark - example status handling
 
 - (void)handleStatus:(PNStatus *)status {
 
@@ -190,20 +196,30 @@
 //    If the operation will not auto retry, you can manually retry by calling [status retry]
 //    Retry attempts can be cancelled via [status cancelAutomaticRetry]
 
-
-    status.isError ? [self handleErrorStatus:status] : [self handleNonErrorStatus:status];
-    
-    NSLog(@"^^^^ Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+    if (status.isError) {
+        [self handleErrorStatus:status];
+    } else {
+        [self handleNonErrorStatus:status];
+    }
 
 }
 
 - (void)handleErrorStatus:(PNStatus *)status {
 
+
     if (status.category == PNAccessDeniedCategory) {
 
-        NSLog(@"Access Denied via PAM. Access status.data to determine the resource in question that was denied. %@", [status data]);
-        NSLog(@"In addition, you can also change auth key dynamically if needed.");
+        // Access Denied via PAM. Access status.data to determine the resource in question that was denied.
+        // In addition, you can also change auth key dynamically if needed."
 
+        NSLog(@"^^^^ Debug: %@", status.debugDescription);
+        NSLog(@"^^^^ handleErrorStatus: PAM Error: for resource Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+
+        if (status.data[@"channels"]) {
+            NSLog(@"PAM error on channel %@", status.data[@"channels"][0]);
+        } else if (status.data[@"channel-groups"]) {
+            NSLog(@"PAM error on channel %@", status.data[@"channel-groups"][0]);
+        }
         // TODO detail fields in data that depict the PAM error
 
     }
@@ -292,10 +308,6 @@
     }
 
 }
-
-
-/********************************** Subscribe Loop Listeners End ********************************/
-
 
 #pragma mark - Configuration
 
