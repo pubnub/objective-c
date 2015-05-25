@@ -9,10 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
-
-#import "GCDGroup.h"
-#import "GCDWrapper.h"
-
 #import "TestConfigurator.h"
 
 @interface PNStateTests : XCTestCase
@@ -29,7 +25,6 @@
 - (void)setUp {
     
     [super setUp];
-    
     _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
 }
@@ -45,7 +40,8 @@
     XCTestExpectation *_setState = [self expectationWithDescription:@"Setting state for client on channel"];
     XCTestExpectation *_getState = [self expectationWithDescription:@"Getting state for client on channel"];
     
-    [_pubNub setState:@{@"Name" : @"Jeims", @"Surname" : @"Bond"} forUUID:@"testUUID" onChannel:@"testChannel" withCompletion:^(PNStatus *status) {
+    [_pubNub setState:@{@"Name" : @"Jeims", @"Surname" : @"Bond"} forUUID:@"testUUID"
+            onChannel:@"testChannel" withCompletion:^(PNStatus *status) {
  
                          if (status.isError) {
                              
@@ -73,7 +69,8 @@
     XCTestExpectation *_setState = [self expectationWithDescription:@"Setting state for client on channel"];
     XCTestExpectation *_getState = [self expectationWithDescription:@"Getting state for client on channel"];
     
-    [_pubNub setState:@{@"Name" : @"Jeims", @"Surname" : @"Bond"} forUUID:@"testUUID" onChannelGroup:@"testGroup" withCompletion:^(PNStatus *status) {
+    [_pubNub setState:@{@"Name" : @"Jeims", @"Surname" : @"Bond"} forUUID:@"testUUID"
+       onChannelGroup:@"testGroup" withCompletion:^(PNStatus *status) {
         
         if (status.isError) {
             

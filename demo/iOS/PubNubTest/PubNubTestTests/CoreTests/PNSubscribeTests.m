@@ -25,6 +25,9 @@
     XCTestExpectation *_receiveStatusExpectation;
     XCTestExpectation *_receiveMessageExpectation;
     
+    int _numberOfTestChannels;
+    int _numberOfTestGroups;
+    int _numberOfTestPresences;
     BOOL _isTestError;
 }
 
@@ -38,6 +41,10 @@
     _pubNub1.uuid = @"testUUID1";
     _pubNub2 = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub2.uuid = @"testUUID2";
+    
+    _numberOfTestChannels = 10;
+    _numberOfTestGroups = 10;
+    _numberOfTestPresences = 10;
 }
 
 - (void)tearDown {
@@ -53,7 +60,7 @@
 - (void)testSubscribeToChannelsInBlock {
     
     // Subscribe to channels inside complection block
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToChannels:@[@"testChannel1"] withPresence:YES
                      clientState:nil andCompletion:^(PNStatus *status) {
@@ -81,7 +88,7 @@
                                                                                XCTFail(@"Error occurs during subscription %@", status.data);
                                                                                _isTestError = YES;
                                                                            }
-                                                                           [_subscribeExpectation fulfill];
+                                                                           [subscribeExpectation fulfill];
                                                                        }];
                                                   }
                                               }];
@@ -111,7 +118,7 @@
 - (void)testSubscribeToChannelsInLoop {
     
     // Subscribe to channels in loop
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     NSMutableArray *testChannels = [NSMutableArray new];
     __block NSMutableArray *subscribedChannels = [NSMutableArray new];
@@ -139,7 +146,7 @@
             
             if (i == numberOfTestChannels) {
                 
-                [_subscribeExpectation fulfill];
+                [subscribeExpectation fulfill];
             }
         }];
     }
@@ -167,35 +174,10 @@
 - (void)testUnsubscribeFromChannelsInBlock {
     
     // Subscribe to channels
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
-    
-    [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2", @"testChannel3"] withPresence:YES
-                     clientState:nil andCompletion:^(PNStatus *status) {
-                         
-                         if (status.isError) {
-                             
-                             XCTFail(@"Error occurs during subscription %@", status.data);
-                             _isTestError = YES;
-                         }
-                         [_subscribeExpectation fulfill];
-                     }];
-    
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-        
-        if (error) {
-            
-            XCTFail(@"Timeout is fired");
-            _isTestError = YES;
-        }
-    }];
-    
-    if (_isTestError) {
-        
-        return;
-    }
+    [self subscribeOnChannels:@[@"testChannel1", @"testChannel2", @"testChannel3"]];
     
     // Unsubscribe from channels inside complection block
-    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
+    XCTestExpectation *unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     [_pubNub unsubscribeFromChannels:@[@"testChannel1"]
                         withPresence:YES andCompletion:^(PNStatus *status) {
@@ -223,7 +205,7 @@
                                                                                         XCTFail(@"Error occurs during subscription %@", status.data);
                                                                                         _isTestError = YES;
                                                                                     }
-                                                                                    [_unsubscribeExpectation fulfill];
+                                                                                    [unsubscribeExpectation fulfill];
                                                                                 }];
                                                         }
                                                     }];
@@ -252,46 +234,19 @@
 
 - (void)testUnsubscribeFromChannelsInLoop {
     
-    // Subscribe to channels
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
-    
+    // Subscribe to severel channels
     NSMutableArray *testChannels = [NSMutableArray new];
-    int numberOfTestChannels = 10;
     
-    for (int i = 1; i <= numberOfTestChannels ; i++) {
+     for (int i = 1; i <= _numberOfTestChannels ; i++) {
         
         [testChannels addObject:[NSString stringWithFormat:@"testChannel%d", i]];
     }
+    [self subscribeOnChannels:testChannels];
+     
+    // Unsubscribe from the channels in loop
+    XCTestExpectation *unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
-    [_pubNub subscribeToChannels:testChannels withPresence:YES
-                     clientState:nil andCompletion:^(PNStatus *status) {
-                         
-                         if (status.isError) {
-                             
-                             XCTFail(@"Error occurs during subscription %@", status.data);
-                             _isTestError = YES;
-                         }
-                         [_subscribeExpectation fulfill];
-                     }];
-    
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-        
-        if (error) {
-            
-            XCTFail(@"Timeout is fired");
-            _isTestError = YES;
-        }
-    }];
-    
-    if (_isTestError) {
-        
-        return;
-    }
-    
-    // Unsubscribe from channels in loop
-    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
-    
-    for (int i = 1; i <= numberOfTestChannels ; i++) {
+    for (int i = 1; i <= _numberOfTestChannels ; i++) {
         
         [_pubNub unsubscribeFromChannels:@[[NSString stringWithFormat:@"testChannel%d", i]] withPresence:YES andCompletion:^(PNStatus *status) {
 
@@ -301,9 +256,9 @@
                 _isTestError = YES;
             }
             
-            if (i == numberOfTestChannels) {
+            if (i == _numberOfTestChannels) {
                 
-                [_unsubscribeExpectation fulfill];
+                [unsubscribeExpectation fulfill];
             }
         }];
     }
@@ -318,7 +273,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -335,43 +289,14 @@
 
 - (void)testSubscribeToGroupsInBlock {
     
-    // Create groups
-    void(^createGroup)(NSString *, NSString *) = ^(NSString *groupName, NSString *channelName) {
-        
-        XCTestExpectation *_addChannelsExpectation = [self expectationWithDescription:@"Adding channels"];
-        
-        [_pubNub addChannels:@[channelName] toGroup:groupName withCompletion:^(PNStatus *status) {
-            
-            if (status.isError) {
-                
-                XCTFail(@"!!! Error occurs during adding channels %@", status.data);
-                _isTestError = YES;
-            }
-            [_addChannelsExpectation fulfill];
-        }];
-        
-        [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-            
-            if (error) {
-                
-                XCTFail(@"Timeout is fired");
-                _isTestError = YES;
-            }
-        }];
-    };
-    
+    // Create groups in loop
     for (int i = 1; i <= 3; i++) {
         
-        createGroup([NSString stringWithFormat:@"testGroup%d", i], [NSString stringWithFormat:@"testChannel%d", i]);
-    }
-    
-    if (_isTestError) {
-        
-        return;
+        [self createGroup:[NSString stringWithFormat:@"testGroup%d", i] withChannel:[NSString stringWithFormat:@"testChannel%d", i]];
     }
 
     // Subscribe to groups inside complection block
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub1 subscribeToChannelGroups:@[@"testGroup1"] withPresence:YES
                           clientState:nil andCompletion:^(PNStatus *status) {
@@ -399,7 +324,7 @@
                                                                                XCTFail(@"Error occurs during subscription %@", status.data);
                                                                                _isTestError = YES;
                                                                            }
-                                                                           [_subscribeExpectation fulfill];
+                                                                           [subscribeExpectation fulfill];
                                                                        }];
                                                   }
                                               }];
@@ -429,20 +354,18 @@
 - (void)t1estSubscribeToGroupsInLoop {
     
     // Create groups in loop
-    int numberOfTestGroups = 10;
-    
-    for (int i = 1; i <= numberOfTestGroups ; i++) {
+    for (int i = 1; i <= _numberOfTestGroups ; i++) {
         
         [self createGroup:[NSString stringWithFormat:@"testGroup%d",i] withChannel:[NSString stringWithFormat:@"testChannel%d",i]];
     }
     
-    // Subscribe to grops in loop
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    // Subscribe to groups in loop
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     NSMutableArray *testGroups = [NSMutableArray new];
     __block NSMutableArray *subscribedGroups = [NSMutableArray new];
     
-    for (int i = 1; i <= numberOfTestGroups ; i++) {
+    for (int i = 1; i <= _numberOfTestGroups ; i++) {
         
         NSString *testGroup = [NSString stringWithFormat:@"testGroup%d", i];
         [testGroups addObject:testGroup];
@@ -461,9 +384,9 @@
                 [subscribedGroups addObject:status.channelGroups[index]];
             }
             
-            if (i == numberOfTestGroups) {
+            if (i == _numberOfTestGroups) {
                 
-                [_subscribeExpectation fulfill];
+                [subscribeExpectation fulfill];
             }
         }];
     }
@@ -496,35 +419,10 @@
     [self createGroup:@"testGroup3" withChannel:@"testChannel3"];
     
     // Subscribe to groups
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
-    
-    [_pubNub subscribeToChannelGroups:@[@"testGroup1", @"testGroup2", @"testGroup3"] withPresence:YES
-                          clientState:nil andCompletion:^(PNStatus *status) {
-                              
-                              if (status.isError) {
-      
-                                   XCTFail(@"Error occurs during subscription %@", status.data);
-                                   _isTestError = YES;
-                               }
-                               [_subscribeExpectation fulfill];
-                          }];
-    
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-        
-        if (error) {
-            
-            XCTFail(@"Timeout is fired");
-            _isTestError = YES;
-        }
-    }];
-    
-    if (_isTestError) {
-        
-        return;
-    }
+    [self subscribeOnChannelGroups:@[@"testGroup1", @"testGroup2", @"testGroup3"]];
     
     // Unsubscribe from channels inside complection block
-    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
+    XCTestExpectation *unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     [_pubNub unsubscribeFromChannelGroups:@[@"testGroup1"]
                              withPresence:YES andCompletion:^(PNStatus *status) {
@@ -552,7 +450,7 @@
                                                                                         XCTFail(@"Error occurs during subscription %@", status.data);
                                                                                         _isTestError = YES;
                                                                                     }
-                                                                                    [_unsubscribeExpectation fulfill];
+                                                                                    [unsubscribeExpectation fulfill];
                                                                                 }];
                                                         }
                                                     }];
@@ -569,7 +467,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -592,35 +489,10 @@
     }
     
     // Subscribe to groups
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
-    
-    [_pubNub subscribeToChannelGroups:@[@"testGroup1", @"testGroup2", @"testGroup3"] withPresence:YES
-                          clientState:nil andCompletion:^(PNStatus *status) {
-                              
-                              if (status.isError) {
-                                  
-                                  XCTFail(@"Error occurs during subscription %@", status.data);
-                                  _isTestError = YES;
-                              }
-                              [_subscribeExpectation fulfill];
-                          }];
-    
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-        
-        if (error) {
-            
-            XCTFail(@"Timeout is fired");
-            _isTestError = YES;
-        }
-    }];
-    
-    if (_isTestError) {
-        
-        return;
-    }
+    [self subscribeOnChannelGroups:testGroups];
     
     // Unsubscribe from groups in loop
-    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
+    XCTestExpectation *unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     for (int i = 1; i <= numberOfTestGroups ; i++) {
         
@@ -634,7 +506,7 @@
             
             if (i == numberOfTestGroups) {
                 
-                [_unsubscribeExpectation fulfill];
+                [unsubscribeExpectation fulfill];
             }
         }];
     }
@@ -664,14 +536,14 @@
 
 - (void)testSimpleSubUnsubPresenceChannels {
     
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToPresenceChannels:@[@"testPresenceChannel-pnpres"] withCompletion:^(PNStatus *status) {
         
         if (status.isError) {
             
             XCTFail(@"Error occurs during subscription %@", status.data);
-            [_subscribeExpectation fulfill];
+            [subscribeExpectation fulfill];
         } else {
             
             [_pubNub unsubscribeFromPresenceChannels:@[@"testPresenceChannel-pnpres"] andCompletion:^(PNStatus *status) {
@@ -680,18 +552,22 @@
                     
                     XCTFail(@"Error occurs during unsubscription %@", status.data);
                 }
-                [_subscribeExpectation fulfill];
+                [subscribeExpectation fulfill];
             }];
        }
     }];
     
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            XCTFail(@"Timeout is fired");
+        }
     }];
 }
 - (void)testSubscribeToPresenceChannelsInBlock {
     
     // Subscribe to channels inside complection block
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     [_pubNub subscribeToPresenceChannels:@[@"testPresenceChannel1"] withCompletion:^(PNStatus *status) {
         
@@ -716,7 +592,7 @@
                                                                                XCTFail(@"Error occurs during subscription %@", status.data);
                                                                                _isTestError = YES;
                                                                            }
-                                                                           [_subscribeExpectation fulfill];
+                                                                           [subscribeExpectation fulfill];
                                                                        }];
                                                   }
                                               }];
@@ -745,15 +621,12 @@
 
 - (void)testSubscribeToPresenceChannelsInLoop {
     
-    // Subscribe to channels in loop
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     
     NSMutableArray *testChannels = [NSMutableArray new];
     __block NSMutableArray *subscribedChannels = [NSMutableArray new];
     
-    int numberOfTestChannels = 10;
-    
-    for (int i = 1; i <= numberOfTestChannels ; i++) {
+    for (int i = 1; i <= _numberOfTestChannels ; i++) {
         
         NSString *testChannel = [NSString stringWithFormat:@"testPresenceChannel%d", i];
         [testChannels addObject:testChannel];
@@ -772,9 +645,9 @@
                 [subscribedChannels addObject:status.channels[index]];
             }
             
-            if (i == numberOfTestChannels) {
+            if (i == _numberOfTestChannels) {
                 
-                [_subscribeExpectation fulfill];
+                [subscribeExpectation fulfill];
             }
         }];
     }
@@ -804,35 +677,10 @@
 - (void)testUnsubscribeFromPresenceChannelsInBlock {
     
     // Subscribe to PresenceChannels
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
-    
-    [_pubNub subscribeToPresenceChannels:@[@"testPresenceChannel1-pnpres", @"testPresenceChannel2-pnpres", @"testPresenceChannel3-pnpres"] withCompletion:^(PNStatus *status) {
-                         
-                         if (status.isError) {
-                             
-                             XCTFail(@"Error occurs during subscription");
-                             _isTestError = YES;
-                         }
-                         [_subscribeExpectation fulfill];
-                     }];
-    
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-        
-        if (error) {
-            
-            XCTFail(@"Timeout is fired");
-            _isTestError = YES;
-        }
-    }];
-    
-    if (_isTestError) {
-        
-        return;
-    }
-    NSArray *subscribedPresenceChannels = [_pubNub presenceChannels];
+    [self subscribeOnPresenceChannels:@[@"testPresenceChannel1-pnpres", @"testPresenceChannel2-pnpres", @"testPresenceChannel3-pnpres"]];
     
     // Unsubscribe from PresenceChannels inside complection block
-    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
+    XCTestExpectation *unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     [_pubNub unsubscribeFromPresenceChannels:@[@"testPresenceChannel1-pnpres"] andCompletion:^(PNStatus *status) {
                             
@@ -857,7 +705,7 @@
                                                                                         XCTFail(@"Error occurs during unsubscription %@", status.data);
                                                                                         _isTestError = YES;
                                                                                     }
-                                                                                    [_unsubscribeExpectation fulfill];
+                                                                                    [unsubscribeExpectation fulfill];
                                                                                 }];
                                                         }
                                                     }];
@@ -886,47 +734,21 @@
 
 #warning Error occurs during Unsubscription
 
-- (void)t1estUnsubscribeFromPresenceChannelsInLoop {
+- (void)testUnsubscribeFromPresenceChannelsInLoop {
     
     // Subscribe to PresenceChannels
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
-
-    NSMutableArray *testChannels = [NSMutableArray new];
-    int numberOfTestChannels = 10;
+    NSMutableArray *testPresenceChannels = [NSMutableArray new];
     
-    for (int i = 1; i <= numberOfTestChannels ; i++) {
+    for (int i = 1; i <= _numberOfTestChannels ; i++) {
         
-        [testChannels addObject:[NSString stringWithFormat:@"testPresenceChannel%d", i]];
+        [testPresenceChannels addObject:[NSString stringWithFormat:@"testPresenceChannel%d", i]];
     }
-
-    [_pubNub subscribeToPresenceChannels:testChannels withCompletion:^(PNStatus *status) {
-                         
-                         if (status.isError) {
-                             
-                             XCTFail(@"Error occurs during subscription");
-                             _isTestError = YES;
-                         }
-                         [_subscribeExpectation fulfill];
-                     }];
+    [self subscribeOnPresenceChannels:testPresenceChannels];
     
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-        
-        if (error) {
-            
-            XCTFail(@"Timeout is fired");
-            _isTestError = YES;
-        }
-    }];
-    
-    if (_isTestError) {
-        
-        return;
-    }
-
     // Unsubscribe from channels in loop
-    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
+    XCTestExpectation *unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
-    for (int i = 1; i <= numberOfTestChannels ; i++) {
+    for (int i = 1; i <= _numberOfTestChannels ; i++) {
         
         [_pubNub unsubscribeFromPresenceChannels:@[[NSString stringWithFormat:@"testPresenceChannel%d", i]] andCompletion:^(PNStatus *status) {
             
@@ -936,9 +758,9 @@
                 _isTestError = YES;
             }
             
-            if (i == numberOfTestChannels) {
+            if (i == _numberOfTestChannels) {
                 
-                [_unsubscribeExpectation fulfill];
+                [unsubscribeExpectation fulfill];
             }
         }];
     }
@@ -953,12 +775,11 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
 
     // Chesk that the array of subscribed channels don't contains any test presenceChannels
-    NSSet *testChannelsSet = [[NSSet alloc] initWithArray:testChannels];
+    NSSet *testChannelsSet = [[NSSet alloc] initWithArray:testPresenceChannels];
     NSSet *subscribedChannelsSet = [[NSSet alloc] initWithArray:[_pubNub presenceChannels]];
     XCTAssertFalse([testChannelsSet intersectsSet:subscribedChannelsSet]);
 }
@@ -968,135 +789,67 @@
 
 - (void)testReturnSubscribedChannels {
     
-    // Subscribe to channels
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
-    
-    NSArray *channels = @[@"testChannel1", @"testChannel2"];
-    __block NSArray *statusChannels;
-    
-    [_pubNub subscribeToChannels:channels withPresence:YES
-                     clientState:nil andCompletion:^(PNStatus *status) {
-                         
-                         if (status.isError) {
-                             
-                             XCTFail(@"Error occurs during subscription %@", status.data);
-                             _isTestError = YES;
-                         } else {
-                             
-                             statusChannels = status.channels;
-                         }
-                         
-                         [_subscribeExpectation fulfill];
-                     }];
-    
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-        
-        if (error) {
-            
-            XCTFail(@"Timeout is fired");
-            _isTestError = YES;
-        }
-    }];
-    
-    if (_isTestError) {
-        
-        return;
-    }
-    
-    // Checking received from PNStatus channels
-    NSSet *channelsSet = [[NSSet alloc] initWithArray:channels];
-    NSSet *statusChannelsSet = [[NSSet alloc] initWithArray:statusChannels];
-    XCTAssertTrue([channelsSet isSubsetOfSet:statusChannelsSet]);
+    // Prepare data
+    NSArray *testChannels = @[@"testChannel1", @"testChannel2"];
+    [self subscribeOnChannels:testChannels];
     
     // Get subscribed channels
     NSArray *subscribedChannels = [_pubNub channels];
+    
+    // Checking result
+    NSSet *channelsSet = [[NSSet alloc] initWithArray:testChannels];
     NSSet *subscribedChannelsSet = [[NSSet alloc] initWithArray:subscribedChannels];
     XCTAssertTrue([channelsSet isSubsetOfSet:subscribedChannelsSet]);
 }
 
-- (void)t1estReturnSubscribedGroups {
+#warning _pubNub channelGroups don't work
+
+- (void)testReturnSubscribedGroups {
     
-    // Create groups
+    // Prepare data
     [self createGroup:@"testGroup1" withChannel:@"testChannel1"];
+    [self createGroup:@"testGroup2" withChannel:@"testChannel2"];
     
-    // Subscribe to groups
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
-    
-    NSArray *groups = @[@"testGroup"];
-    __block NSArray *statusGroups;
-    
-    [_pubNub subscribeToChannelGroups:groups withPresence:YES clientState:nil andCompletion:^(PNStatus *status) {
-        
-        if (status.isError) {
-            
-            XCTFail(@"Error occurs during subscription %@", status.data);
-            _isTestError = YES;
-        } else {
-            
-            statusGroups = status.channelGroups;
-        }
-        [_subscribeExpectation fulfill];
-    }];
-    
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-    }];
-    
-    if (_isTestError) {
-        return;
-    }
-    
-    NSSet *groupsSet = [[NSSet alloc] initWithArray:groups];
-    NSSet *statusGroupsSet = [[NSSet alloc] initWithArray:statusGroups];
-    XCTAssertTrue([groupsSet isSubsetOfSet:statusGroupsSet]);
+    NSArray *testGroups = @[@"testGroup1", @"testGroup2"];
+    [self subscribeOnChannelGroups:testGroups];
     
     // Get subscribed groups
     NSArray *subscribedGroups = [_pubNub channelGroups];
+    
+    // Checking result
+    NSSet *groupsSet = [[NSSet alloc] initWithArray:testGroups];
     NSSet *subscribedGroupsSet = [[NSSet alloc] initWithArray:subscribedGroups];
     XCTAssertTrue([groupsSet isSubsetOfSet:subscribedGroupsSet]);
 }
 
 - (void)testReturnSubscribedPresenceChannels {
     
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    // Prepare data
+    NSArray *testChannels = @[@"testChannel1-pnpres", @"testChannel2-pnpres"];
+    [self subscribeOnPresenceChannels:testChannels];
     
-    [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES
-                     clientState:nil andCompletion:^(PNStatus *status) {
-                         
-                         if (status.isError) {
-                             
-                             XCTFail(@"Error %@", status.data);
-                             _isTestError = YES;
-                         }
-                         [_subscribeExpectation fulfill];
-                     }];
+    // Get subscribed channels
+    NSArray *subscribedChannels = [_pubNub presenceChannels];
     
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-    }];
-    
-    NSArray *channels = [_pubNub presenceChannels];
-    NSLog(@"!!!%@", channels);
+    // Checking result
+    NSSet *channelsSet = [[NSSet alloc] initWithArray:testChannels];
+    NSSet *subscribedChannelsSet = [[NSSet alloc] initWithArray:subscribedChannels];
+    XCTAssertTrue([channelsSet isSubsetOfSet:subscribedChannelsSet]);
 }
 
 - (void)testCheckIsSubscribeOn {
     
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    // Prepare data
+    [self subscribeOnChannels:@[@"testChannel"]];
+    [self subscribeOnPresenceChannels:@[@"testPresenceChannel"]];
     
-    [_pubNub subscribeToChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES
-                     clientState:nil andCompletion:^(PNStatus *status) {
-                         
-                         if (status.isError) {
-                             
-                             XCTFail(@"Error %@", status.data);
-                             _isTestError = YES;
-                         }
-                         [_subscribeExpectation fulfill];
-                     }];
+    [self createGroup:@"testGroup" withChannel:@"testChannel"];
+    [self subscribeOnChannelGroups:@[@"testGroup"]];
     
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-    }];
-    
-    BOOL isSubscribe = [_pubNub isSubscribedOn:@"testChannel1"];
-    NSLog(@"!!!%d", isSubscribe);
+    // Checking result
+    XCTAssertTrue([_pubNub isSubscribedOn:@"testChannel"]);
+    XCTAssertTrue([_pubNub isSubscribedOn:@"testGroup"]);
+    XCTAssertTrue([_pubNub isSubscribedOn:@"testPresenceChannel"]);
 }
 
 
@@ -1108,7 +861,7 @@
     [_pubNub addListeners:@[self]];
     _clientListening = YES;
     
-    XCTestExpectation *_subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     _receiveStatusExpectation = [self expectationWithDescription:@"Delegate:'ReceiveStatus'"];
     
     XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message"];
@@ -1122,7 +875,7 @@
                              XCTFail(@"Error %@", status.data);
                              _isTestError = YES;
                          }
-                         [_subscribeExpectation fulfill];
+                         [subscribeExpectation fulfill];
                      }];
     
     // Delegate:"ReceivePresenceEvent" have to invoked
@@ -1157,7 +910,7 @@
     _clientListening = NO;
     
     
-    XCTestExpectation *_unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
+    XCTestExpectation *unsubscribeExpectation = [self expectationWithDescription:@"Unsubscribing"];
     
     // Delegate:"ReceiveStatus" have not be invoked
     [_pubNub unsubscribeFromChannels:@[@"testChannel1", @"testChannel2"] withPresence:YES andCompletion:^(PNStatus *status) {
@@ -1167,7 +920,7 @@
             XCTFail(@"Error %@", status.data);
             _isTestError = YES;
         }
-        [_unsubscribeExpectation fulfill];
+        [unsubscribeExpectation fulfill];
     }];
     
     
@@ -1268,7 +1021,164 @@
     }];
     
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
     }];
+    
+    if (_isTestError) {
+        
+        return;
+    }
 }
+
+- (void)subscribeOnChannels:(NSArray *)channels {
+    
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    __block NSArray *statusChannels;
+
+    [_pubNub subscribeToChannels:channels withPresence:YES
+                     clientState:nil andCompletion:^(PNStatus *status) {
+                         
+                         if (status.isError) {
+                             
+                             XCTFail(@"Error occurs during subscription %@", status.data);
+                             _isTestError = YES;
+                         } else {
+                             
+                             statusChannels = status.channels;
+                         }
+                         [subscribeExpectation fulfill];
+                     }];
+    
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
+    }];
+    
+    // Checking received from PNStatus channels
+    NSSet *channelsSet = [[NSSet alloc] initWithArray:channels];
+    NSSet *statusChannelsSet = [[NSSet alloc] initWithArray:statusChannels];
+    XCTAssertTrue([channelsSet isSubsetOfSet:statusChannelsSet]);
+    
+    // Checking isSubscribedOn
+    for (NSString *testChannel in channels) {
+        
+        if (![_pubNub isSubscribedOn:testChannel]) {
+            
+            XCTFail(@"Error client didn't subscribe on all specified channels");
+            _isTestError = YES;
+        }
+    }
+    
+    if (_isTestError) {
+        return;
+    }
+}
+
+- (void)subscribeOnChannelGroups:(NSArray *)groups {
+    
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    __block NSArray *statusGroups;
+    
+    [_pubNub subscribeToChannelGroups:groups withPresence:YES andCompletion:^(PNStatus *status) {
+
+                         if (status.isError) {
+                             
+                             XCTFail(@"Error occurs during subscription %@", status.data);
+                             _isTestError = YES;
+                         } else {
+                             
+                             statusGroups = status.channelGroups;
+                         }
+                         [subscribeExpectation fulfill];
+                     }];
+    
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
+    }];
+    
+    // Checking received from PNStatus channels
+    NSSet *groupsSet = [[NSSet alloc] initWithArray:groups];
+    NSSet *statusGroupsSet = [[NSSet alloc] initWithArray:statusGroups];
+    XCTAssertTrue([groupsSet isSubsetOfSet:statusGroupsSet]);
+    
+    // Checking isSubscribedOn
+    for (NSString *testGroup in groups) {
+        
+        if (![_pubNub isSubscribedOn:testGroup]) {
+            
+            XCTFail(@"Error client didn't subscribe on all specified channels");
+            _isTestError = YES;
+        }
+    }
+    
+    if (_isTestError) {
+        
+        return;
+    }
+}
+
+- (void)subscribeOnPresenceChannels:(NSArray *)presenceChannels {
+    
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    __block NSArray *statusChannels;
+    
+    [_pubNub subscribeToPresenceChannels:presenceChannels withCompletion:^(PNStatus *status) {
+        
+        if (status.isError) {
+            
+            XCTFail(@"Error occurs during subscription %@", status.data);
+            _isTestError = YES;
+        } else {
+            
+            statusChannels = status.channels;
+        }
+
+        [subscribeExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            
+            XCTFail(@"Timeout is fired");
+            _isTestError = YES;
+        }
+    }];
+    
+    // Checking received from PNStatus channels
+    NSSet *channelsSet = [[NSSet alloc] initWithArray:presenceChannels];
+    NSSet *statusChannelsSet = [[NSSet alloc] initWithArray:statusChannels];
+    XCTAssertTrue([channelsSet isSubsetOfSet:statusChannelsSet]);
+    
+    // Checking isSubscribedOn
+    for (NSString *testPresenceChannel in presenceChannels) {
+        
+        if (![_pubNub isSubscribedOn:testPresenceChannel]) {
+            
+            XCTFail(@"Error client didn't subscribe on all specified channels");
+            _isTestError = YES;
+        }
+    }
+    
+    if (_isTestError) {
+        
+        return;
+    }
+}
+
 
 @end

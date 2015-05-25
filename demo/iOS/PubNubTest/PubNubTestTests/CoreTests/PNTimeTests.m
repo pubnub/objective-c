@@ -9,10 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
-
-#import "GCDGroup.h"
-#import "GCDWrapper.h"
-
 #import "TestConfigurator.h"
 
 @interface PNTimeTests : XCTestCase
