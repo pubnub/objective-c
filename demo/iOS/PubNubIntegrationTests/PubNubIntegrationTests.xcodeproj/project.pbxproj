@@ -15,7 +15,8 @@
 		5112523D1B1519710083FDC1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5112523B1B1519710083FDC1 /* Main.storyboard */; };
 		5112523F1B1519710083FDC1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5112523E1B1519710083FDC1 /* Images.xcassets */; };
 		511252421B1519710083FDC1 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 511252401B1519710083FDC1 /* LaunchScreen.xib */; };
-		5112524E1B1519720083FDC1 /* PubNubIntegrationTestsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5112524D1B1519720083FDC1 /* PubNubIntegrationTestsTests.m */; };
+		511252581B15249F0083FDC1 /* FirstViewControllerTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 511252571B15249F0083FDC1 /* FirstViewControllerTestCase.m */; };
+		90B9659DE29C796663D954A2 /* libPods-PubNubIntegrationTestsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B31C03098D4D6B878DA083DA /* libPods-PubNubIntegrationTestsTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1FF0F4074C639A9DEE2B5729 /* Pods-PubNubIntegrationTestsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNubIntegrationTestsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PubNubIntegrationTestsTests/Pods-PubNubIntegrationTestsTests.release.xcconfig"; sourceTree = "<group>"; };
 		3E5261261037E9D62578968A /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		5112522B1B1519710083FDC1 /* PubNubIntegrationTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNubIntegrationTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5112522F1B1519710083FDC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -44,9 +46,11 @@
 		511252411B1519710083FDC1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		511252471B1519720083FDC1 /* PubNubIntegrationTestsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PubNubIntegrationTestsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5112524C1B1519720083FDC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5112524D1B1519720083FDC1 /* PubNubIntegrationTestsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PubNubIntegrationTestsTests.m; sourceTree = "<group>"; };
+		511252571B15249F0083FDC1 /* FirstViewControllerTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirstViewControllerTestCase.m; sourceTree = "<group>"; };
 		98AFF2D1FA8FA5EE6E3102D5 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9D9F53DB334163523671857D /* Pods-PubNubIntegrationTestsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNubIntegrationTestsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PubNubIntegrationTestsTests/Pods-PubNubIntegrationTestsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AD73BF80762B07DB43395B0E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B31C03098D4D6B878DA083DA /* libPods-PubNubIntegrationTestsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PubNubIntegrationTestsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90B9659DE29C796663D954A2 /* libPods-PubNubIntegrationTestsTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,7 +122,7 @@
 		5112524A1B1519720083FDC1 /* PubNubIntegrationTestsTests */ = {
 			isa = PBXGroup;
 			children = (
-				5112524D1B1519720083FDC1 /* PubNubIntegrationTestsTests.m */,
+				511252571B15249F0083FDC1 /* FirstViewControllerTestCase.m */,
 				5112524B1B1519720083FDC1 /* Supporting Files */,
 			);
 			path = PubNubIntegrationTestsTests;
@@ -135,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				AD73BF80762B07DB43395B0E /* libPods.a */,
+				B31C03098D4D6B878DA083DA /* libPods-PubNubIntegrationTestsTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -144,6 +150,8 @@
 			children = (
 				3E5261261037E9D62578968A /* Pods.debug.xcconfig */,
 				98AFF2D1FA8FA5EE6E3102D5 /* Pods.release.xcconfig */,
+				9D9F53DB334163523671857D /* Pods-PubNubIntegrationTestsTests.debug.xcconfig */,
+				1FF0F4074C639A9DEE2B5729 /* Pods-PubNubIntegrationTestsTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -174,9 +182,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 511252541B1519720083FDC1 /* Build configuration list for PBXNativeTarget "PubNubIntegrationTestsTests" */;
 			buildPhases = (
+				C07FF6CDDD5788C6B39AFC36 /* Check Pods Manifest.lock */,
 				511252431B1519720083FDC1 /* Sources */,
 				511252441B1519720083FDC1 /* Frameworks */,
 				511252451B1519720083FDC1 /* Resources */,
+				791BC3B8CF680CBBD4AAC106 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -246,6 +256,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		791BC3B8CF680CBBD4AAC106 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PubNubIntegrationTestsTests/Pods-PubNubIntegrationTestsTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		798BA2EB96EBA217E9C1DA9B /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -262,6 +287,21 @@
 			showEnvVarsInLog = 0;
 		};
 		BEBA8D4E4B79753B7DE64795 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C07FF6CDDD5788C6B39AFC36 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -294,7 +334,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5112524E1B1519720083FDC1 /* PubNubIntegrationTestsTests.m in Sources */,
+				511252581B15249F0083FDC1 /* FirstViewControllerTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,6 +474,7 @@
 		};
 		511252551B1519720083FDC1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D9F53DB334163523671857D /* Pods-PubNubIntegrationTestsTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -453,6 +494,7 @@
 		};
 		511252561B1519720083FDC1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1FF0F4074C639A9DEE2B5729 /* Pods-PubNubIntegrationTestsTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (

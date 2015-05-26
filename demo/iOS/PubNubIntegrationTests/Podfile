@@ -3,3 +3,8 @@ platform :ios, '7.0'
 pod 'AFNetworking', '~> 2.5'
 pod 'CocoaLumberjack'
 pod 'PubNub', :path => '../../..'
+
+target 'PubNubIntegrationTestsTests', :exclusive => true do
+	pod 'KIF', '~> 3.2', :configurations => ['Debug']
+	pod 'KIF/IdentifierTests', '~> 3.2', :configurations => ['Debug']
+end

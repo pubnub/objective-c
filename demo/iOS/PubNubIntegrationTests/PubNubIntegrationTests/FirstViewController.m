@@ -34,8 +34,16 @@
     [self.client subscribeToChannels:@[self.uniqueChannelName] withPresence:NO andCompletion:nil];
 //    self.uniqueMessageString = [[NSUUID UUID] UUIDString];
     [self.sendButton addTarget:self action:@selector(startButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    self.sendButton.isAccessibilityElement = YES;
+    self.sendButton.accessibilityIdentifier = @"sendButton";
     self.textField.delegate = self;
+    self.textField.isAccessibilityElement = YES;
+    self.textField.accessibilityIdentifier = @"textField";
     [self.generateRandomStringButton addTarget:self action:@selector(generateRandomStringButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    self.generateRandomStringButton.isAccessibilityElement = YES;
+    self.generateRandomStringButton.accessibilityIdentifier = @"generateRandomStringButton";
+    self.messageLabel.accessibilityIdentifier = @"messageLabel";
+    self.channelLabel.accessibilityIdentifier = @"channelLabel";
     [self setUIEnabled:YES];
 //    [self.client publish:self.uniqueMessageString toChannel:uniqueChannelName withCompletion:nil];
 }
@@ -43,6 +51,10 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc {
+    [self.client removeListeners:@[self]];
 }
 
 #pragma mark - UI
@@ -77,6 +89,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
+//    textField.accessibilityValue = textField.text;
     return YES;
 }
 
@@ -86,7 +99,10 @@
     [self setUIEnabled:YES];
     NSLog(@"message: %@", message.data);
     self.messageLabel.text = message.data[@"message"];
+    
+//    self.messageLabel.accessibilityValue = self.messageLabel.text;
     self.channelLabel.text = message.data[@"channel"];
+//    self.channelLabel.accessibilityValue = self.channelLabel.text;
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
