@@ -21,20 +21,25 @@
     NSString *_testChannel;
     NSString *_testGroup;
     NSDictionary *_testState;
-    
+
     BOOL _isTestError;
+    NSException *_stopTestException;
 }
 
 - (void)setUp {
     
     [super setUp];
     
-    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] VadimPubKey] andSubscribeKey:[[TestConfigurator shared] VadimSubKey]];
     _pubNub.uuid = @"testUUID";
 
     _testChannel = @"testChannel";
     _testGroup = @"testGroup";
     _testState = @{@"name":@"James", @"sername":@"Bond"};
+    
+    _stopTestException = [NSException exceptionWithName:@"StopTestException"
+                                                 reason:nil
+                                               userInfo:nil];
 }
 
 - (void)tearDown {
@@ -45,10 +50,10 @@
 
 
 #pragma mark - Tests presence for channel
-
+#warning Error occurs sometimes
 - (void)testPresenceForChannelHereNowOccupancy {
     
-    // Preparing date
+    // Preparing
     [self subscribeOnChannels:@[_testChannel]];
     
     // Getting here now occupancy
@@ -78,11 +83,73 @@
     XCTAssertTrue(resultOccupancy == 1, @"Error incorrect occupancy: %ld", resultOccupancy);
 }
 
-#warning Sametimes resultUUID = NULL
+- (void)testPresenceForChannelHereNowOccupancyInBlook {
+    
+    // Subscribe to channels inside complection block
+    XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
+    
+    [_pubNub subscribeToChannels:@[_testChannel] withPresence:YES
+                     clientState:nil andCompletion:^(PNStatus *status) {
+                         
+                         if (status.isError) {
+                             
+                             XCTFail(@"Error occurs during subscription %@", status.data);
+                         } else {
+                             
+                             [_pubNub hereNowData:PNHereNowOccupancy forChannel:_testChannel withCompletion:^(PNResult *result, PNStatus *status) {
+                                 
+                                 if (status.isError) {
+                                     
+                                     XCTFail(@"Error occurs during getting number of participants for the channel");
+                                 } else {
+                                     
+                                     long resultOccupancy = [[result.data objectForKey:@"occupancy"] longValue];
+                                     XCTAssertTrue(resultOccupancy == 1, @"Error, occupancy = %lu instead 1", resultOccupancy);
+                                     
+                                     [_pubNub unsubscribeFromChannels:@[_testChannel] withPresence:YES andCompletion:^(PNStatus *status) {
+                                  
+                                                          if (status.isError) {
+                                                              
+                                                              XCTFail(@"Error occurs during subscription %@", status.data);
+                                                          } else {
+                                                              
+                                                              [_pubNub hereNowData:PNHereNowOccupancy forChannel:_testChannel withCompletion:^(PNResult *result, PNStatus *status) {
+                                                                  
+                                                                  long resultOccupancy = [[result.data objectForKey:@"occupancy"] longValue];
+                                                                  if (status.isError) {
+                                                                      
+                                                                      XCTFail(@"Error occurs during getting number of participants for the channel");
+                                                                  }
+                                                                  
+                                                                  resultOccupancy = [[result.data objectForKey:@"occupancy"] longValue];
+                                                                  XCTAssertTrue(resultOccupancy == 0, @"Error, occupancy = %lu instead 0", resultOccupancy);
+                                                                  
+                                                                  [subscribeExpectation fulfill];
+                                                              }];
+                                                          }
+                                                      }];
+                                 }
+                             }];
+                          }
+                     }];
+    
+    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
+        
+        if (error) {
+            XCTFail(@"Timeout is fired");
+        }
+    }];
+}
 
+- (void)testPresenceForChannelHereNowOccupancyInLoop {
+    
+    
+}
+
+#warning Sametimes resultUUID = NULL
 - (void)testPresenceForChannelHereNowUUID {
     
-    // Preparing date
+    // Preparing
     [self subscribeOnChannels:@[_testChannel]];
     
     // Getting here now UUID
@@ -116,7 +183,7 @@
 
 - (void)testPresenceForChannelHereNowState {
     
-    // Preparing date
+    // Preparing
     [self setState:_testState onChannel:_testChannel];
     [self subscribeOnChannels:@[_testChannel]];
     
@@ -152,7 +219,7 @@
 
 - (void)testPresenceForGroupHereNowOccupancy {
     
-    // Preparing date
+    // Preparing
     [self createGroup:_testGroup withChannel:_testChannel];
     [self subscribeOnChannelGroups:@[_testGroup]];
     
@@ -187,7 +254,7 @@
 
 - (void)testPresenceForGroupHereNowUUID {
     
-    // Preparing date
+    // Preparing
     [self createGroup:_testGroup withChannel:_testChannel];
     [self subscribeOnChannelGroups:@[_testGroup]];
     
@@ -222,7 +289,7 @@
 
 - (void)testPresenceForGroupHereNowState {
     
-    // Preparing date
+    // Preparing
     [self createGroup:_testGroup withChannel:_testChannel];
     [self setState:_testState onChannelGroup:_testChannel];
     [self subscribeOnChannelGroups:@[_testGroup]];
@@ -259,7 +326,6 @@
 
 - (void)subscribeOnChannels:(NSArray *)channels {
     
-    
     XCTestExpectation *subscribeExpectation = [self expectationWithDescription:@"Subscribing"];
     __block NSArray *statusChannels;
     
@@ -286,6 +352,10 @@
         }
     }];
     
+    if (_isTestError) {
+        @throw _stopTestException;
+    }
+    
     // Checking received from PNStatus channels
     NSSet *channelsSet = [[NSSet alloc] initWithArray:channels];
     NSSet *statusChannelsSet = [[NSSet alloc] initWithArray:statusChannels];
@@ -302,7 +372,7 @@
     }
     
     if (_isTestError) {
-        return;
+        @throw _stopTestException;
     }
 }
 
@@ -333,6 +403,10 @@
         }
     }];
     
+    if (_isTestError) {
+        @throw _stopTestException;
+    }
+    
     // Checking received from PNStatus channels
     NSSet *groupsSet = [[NSSet alloc] initWithArray:groups];
     NSSet *statusGroupsSet = [[NSSet alloc] initWithArray:statusGroups];
@@ -349,8 +423,7 @@
     }
     
     if (_isTestError) {
-        
-        return;
+        @throw _stopTestException;
     }
 }
 
@@ -377,6 +450,10 @@
             _isTestError = YES;
         }
     }];
+    
+    if (_isTestError) {
+        @throw _stopTestException;
+    }
 }
 
 
@@ -403,6 +480,10 @@
             _isTestError = YES;
         }
     }];
+    
+    if (_isTestError) {
+        @throw _stopTestException;
+    }
 }
 
 - (void)createGroup:(NSString *)groupName withChannel:(NSString *)channelName {
@@ -428,6 +509,10 @@
             _isTestError = YES;
         }
     }];
+    
+    if (_isTestError) {
+        @throw _stopTestException;
+    }
 }
 
 @end

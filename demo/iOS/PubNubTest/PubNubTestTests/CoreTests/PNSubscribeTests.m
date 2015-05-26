@@ -28,7 +28,9 @@
     int _numberOfTestChannels;
     int _numberOfTestGroups;
     int _numberOfTestPresences;
+    
     BOOL _isTestError;
+    NSException *_stopTestException;
 }
 
 - (void)setUp {
@@ -45,6 +47,10 @@
     _numberOfTestChannels = 10;
     _numberOfTestGroups = 10;
     _numberOfTestPresences = 10;
+    
+    _stopTestException = [NSException exceptionWithName:@"StopTestException"
+                                                 reason:nil
+                                               userInfo:nil];
 }
 
 - (void)tearDown {
@@ -105,7 +111,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -161,7 +166,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -222,7 +226,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -341,7 +344,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -401,7 +403,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -521,7 +522,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -609,7 +609,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -662,7 +661,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -722,7 +720,6 @@
     }];
     
     if (_isTestError) {
-        
         return;
     }
     
@@ -857,7 +854,7 @@
 
 - (void)testAddRemoveListeners {
     
-    //      Add listeners
+    // Add listeners
     [_pubNub addListeners:@[self]];
     _clientListening = YES;
     
@@ -1030,8 +1027,7 @@
     }];
     
     if (_isTestError) {
-        
-        return;
+        @throw _stopTestException;
     }
 }
 
@@ -1079,7 +1075,7 @@
     }
     
     if (_isTestError) {
-        return;
+        @throw _stopTestException;
     }
 }
 
@@ -1126,8 +1122,7 @@
     }
     
     if (_isTestError) {
-        
-        return;
+        @throw _stopTestException;
     }
 }
 
@@ -1175,8 +1170,7 @@
     }
     
     if (_isTestError) {
-        
-        return;
+        @throw _stopTestException;
     }
 }
 

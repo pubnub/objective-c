@@ -18,9 +18,11 @@
 @implementation PNPublishTests  {
     
     PubNub *_pubNub;
-    BOOL _isTestError;
     NSString *_testChannel;
     NSString *_testMessage;
+    
+    BOOL _isTestError;
+    NSException *_stopTestException;
 }
 
 
@@ -32,6 +34,10 @@
     _pubNub.uuid = @"testUUID";
     _testChannel = @"testChannel";
     _testMessage = [self randomStringWithLength:10];
+    
+    _stopTestException = [NSException exceptionWithName:@"StopTestException"
+                                                 reason:nil
+                                               userInfo:nil];
 }
 
 - (void)tearDown {
@@ -94,6 +100,7 @@
         if (status.isError) {
             
             XCTFail(@"Error occurs during getting history %@", status.data);
+            _isTestError =YES;
         } else {
             
             NSArray *dictionariesWithMessage = (NSArray *)[result.data objectForKey:@"messages"];
@@ -113,9 +120,13 @@
         if (error) {
             
             XCTFail(@"Timeout is fired");
+            _isTestError =YES;
         }
     }];
     
+    if (_isTestError) {
+        @throw _stopTestException;
+    }
     return messages;
 }
 

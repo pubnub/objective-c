@@ -45,6 +45,15 @@ static TestConfigurator *_sharedInstance = nil;
 - (NSString *)adminSubKey {
     return @"sub-c-fb5d8de4-3735-11e4-8736-02ee2ddab7fe";
 }
+
+// keys "Vadim"
+- (NSString *)VadimPubKey {
+    return @"pub-c-12b1444d-4535-4c42-a003-d509cc071e09";
+}
+
+- (NSString *)VadimSubKey {
+    return @"sub-c-6dc508c0-bff0-11e3-a219-02ee2ddab7fe";
+}
 - (NSTimeInterval)testTimeout {
     return 10;
 }

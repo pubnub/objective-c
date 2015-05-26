@@ -18,12 +18,14 @@
 @implementation PNHistoryTests {
     
     PubNub *_pubNub;
-    BOOL _isTestError;
     NSNumber *_testTimeToken1;
     NSNumber *_testTimeToken2;
     NSString *_testChannel;
     NSString *_testMessage;
     NSArray *_messagesFromHistory;
+    
+    BOOL _isTestError;
+    NSException *_stopTestException;
 }
 
 - (void)setUp {
@@ -34,6 +36,10 @@
     _pubNub.uuid = @"testUUID";
     _testChannel = @"testChannel";
     _testMessage = @"Hello world";
+    
+    _stopTestException = [NSException exceptionWithName:@"StopTestException"
+                                                 reason:nil
+                                               userInfo:nil];
 }
 
 - (void)tearDown {
@@ -120,7 +126,6 @@
     [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
         
         if (error) {
-            
             XCTFail(@"Timeout is fired");
         }
     }];
@@ -329,11 +334,10 @@
         }
     }];
     
-    if (!_isTestError && timeToken) {
-        
-        return timeToken;
+    if (_isTestError) {
+        @throw _stopTestException;
     }
-    return nil;
+    return timeToken;
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channelName storeInHistory:(BOOL)isStore {
@@ -359,8 +363,7 @@
     }];
     
     if (_isTestError) {
-        
-        return;
+        @throw _stopTestException;
     }
 }
 
@@ -397,6 +400,9 @@
         }
     }];
     
+    if (_isTestError) {
+        @throw _stopTestException;
+    }
     return messages;
 }
 
@@ -434,6 +440,9 @@
         }
     }];
     
+    if (_isTestError) {
+        @throw _stopTestException;
+    }
     return messages;
 }
 
