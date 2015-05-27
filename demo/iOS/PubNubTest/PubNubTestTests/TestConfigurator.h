@@ -18,9 +18,8 @@
 - (NSString *)adminPubKey;
 - (NSString *)adminSubKey;
 
-- (NSString *)VadimPubKey;
-- (NSString *)VadimSubKey;
-
 - (NSTimeInterval)testTimeout;
+
++ (NSString *)uniqueString;
 
 @end

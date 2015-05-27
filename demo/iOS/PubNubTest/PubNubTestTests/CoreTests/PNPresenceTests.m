@@ -30,7 +30,7 @@
     
     [super setUp];
     
-    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] VadimPubKey] andSubscribeKey:[[TestConfigurator shared] VadimSubKey]];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
 
     _testChannel = @"testChannel";
