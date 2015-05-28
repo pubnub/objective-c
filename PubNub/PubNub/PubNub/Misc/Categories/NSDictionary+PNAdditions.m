@@ -51,15 +51,7 @@
 
     [self enumerateKeysAndObjectsUsingBlock:^(__unused NSString *key, id value, BOOL *keysEnumeratorStop) {
 
-        if ([value isKindOfClass:[NSDictionary class]]) {
-
-            isValidState = NO;
-            if (isFirstLevelNesting) {
-
-                isValidState = [value pn_isValidState:NO];
-            }
-        }
-        else {
+        if (![value isKindOfClass:[NSDictionary class]]) {
 
             isValidState = ([value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSString class]] ||
                                [value isKindOfClass:[NSNull class]]);

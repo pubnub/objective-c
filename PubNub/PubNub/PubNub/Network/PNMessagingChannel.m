@@ -1029,6 +1029,25 @@ typedef NS_OPTIONS(NSUInteger, PNMessagingConnectionStateFlag)  {
 - (void)subscribeOnChannels:(NSArray *)channels withCatchUp:(BOOL)shouldCatchUp
              andClientState:(NSDictionary *)clientState {
     
+    // determine is it state from client or new state
+    if (clientState != nil) {
+        NSSet *clientStateKeys = [NSSet setWithArray:[clientState allKeys]];
+        NSSet *channelNames = [[NSSet alloc] initWithArray:[channels valueForKey:@"name"]];
+        
+        if (![clientStateKeys isEqualToSet:channelNames]) {
+            // upgrade it with channel key if it is not
+            NSMutableDictionary *extendedClientState = [NSMutableDictionary dictionaryWithCapacity:[channelNames count]];
+            
+            for (NSString *channelName in channelNames) {
+                [extendedClientState setValue:clientState forKey:channelName];
+            }
+            
+            if ([[extendedClientState allKeys] count] > 0) {
+                clientState = extendedClientState;
+            }
+        }
+    }
+    
     clientState = [[self stateFromClientState:clientState
                                   forChannels:[[self subscribedChannels] arrayByAddingObjectsFromArray:channels]] mutableCopy];
 

@@ -12,14 +12,15 @@
 		961B70EC1A40B86C0036C02B /* MessageToUnsubChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 961B70EB1A40B86C0036C02B /* MessageToUnsubChannelTest.m */; };
 		9627E74E1A51F15300D939FA /* ChaosSubscribeUnsubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627E74D1A51F15300D939FA /* ChaosSubscribeUnsubscribeTest.m */; };
 		96411A4F1AB0ADFA0062EF03 /* ResetDeallocTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96411A4E1AB0ADFA0062EF03 /* ResetDeallocTest.m */; };
-		96411A511AB0E9780062EF03 /* ClientStateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96411A501AB0E9780062EF03 /* ClientStateTest.m */; };
 		964F68351A13B5D5002AE069 /* testdata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 964F68341A13B5D5002AE069 /* testdata.plist */; };
+		96517C191B1717F80023E5BF /* ClientStateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96517C181B1717F80023E5BF /* ClientStateTest.m */; };
+		96517C1B1B1718100023E5BF /* ClientStateNestedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96517C1A1B1718100023E5BF /* ClientStateNestedTest.m */; };
+		96517C1E1B1719980023E5BF /* TestConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = 96517C1C1B1719980023E5BF /* TestConfigurator.m */; };
 		965236821A09126600E6BF32 /* PNChannelGroupTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 965236811A09126600E6BF32 /* PNChannelGroupTest.m */; };
 		9658512B1A7FD1B400E0C0CE /* PNConfiguration+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 9658512A1A7FD1B400E0C0CE /* PNConfiguration+Test.m */; };
 		965C8CA01A1F526E00DC6C30 /* GCDGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 965C8C9F1A1F526E00DC6C30 /* GCDGroup.m */; };
 		965CFF7A1AD68160004FB197 /* PAMFunctionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 965CFF781AD68160004FB197 /* PAMFunctionTest.m */; };
 		965CFF7B1AD68160004FB197 /* PAMSimpleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 965CFF791AD68160004FB197 /* PAMSimpleTest.m */; };
-		9662D5C81AEA956B0033AF03 /* ChannelGroupSimpleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9662D5C71AEA956B0033AF03 /* ChannelGroupSimpleTest.m */; };
 		967882301A28DCA10042C82A /* PNSubscribeUnsubscribeChannelsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9678822F1A28DCA10042C82A /* PNSubscribeUnsubscribeChannelsTest.m */; };
 		967882321A28DCA90042C82A /* PNCryptoHelperInstanseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 967882311A28DCA90042C82A /* PNCryptoHelperInstanseTest.m */; };
 		9688151E1A03FEAE00BB548D /* PNCryptoInstanceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */; };
@@ -226,9 +227,12 @@
 		961B70EB1A40B86C0036C02B /* MessageToUnsubChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageToUnsubChannelTest.m; sourceTree = "<group>"; };
 		9627E74D1A51F15300D939FA /* ChaosSubscribeUnsubscribeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaosSubscribeUnsubscribeTest.m; sourceTree = "<group>"; };
 		96411A4E1AB0ADFA0062EF03 /* ResetDeallocTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResetDeallocTest.m; sourceTree = "<group>"; };
-		96411A501AB0E9780062EF03 /* ClientStateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientStateTest.m; sourceTree = "<group>"; };
 		964F682C1A12657C002AE069 /* StoreUnexpectedHTTPDesctiptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreUnexpectedHTTPDesctiptionTest.m; sourceTree = "<group>"; };
 		964F68341A13B5D5002AE069 /* testdata.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testdata.plist; sourceTree = "<group>"; };
+		96517C181B1717F80023E5BF /* ClientStateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientStateTest.m; sourceTree = "<group>"; };
+		96517C1A1B1718100023E5BF /* ClientStateNestedTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientStateNestedTest.m; sourceTree = "<group>"; };
+		96517C1C1B1719980023E5BF /* TestConfigurator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConfigurator.m; sourceTree = "<group>"; };
+		96517C1D1B1719980023E5BF /* TestConfigurator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestConfigurator.h; sourceTree = "<group>"; };
 		965236811A09126600E6BF32 /* PNChannelGroupTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupTest.m; sourceTree = "<group>"; };
 		965851291A7FD1B400E0C0CE /* PNConfiguration+Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConfiguration+Test.h"; sourceTree = "<group>"; };
 		9658512A1A7FD1B400E0C0CE /* PNConfiguration+Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PNConfiguration+Test.m"; sourceTree = "<group>"; };
@@ -236,7 +240,6 @@
 		965C8C9F1A1F526E00DC6C30 /* GCDGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDGroup.m; sourceTree = "<group>"; };
 		965CFF781AD68160004FB197 /* PAMFunctionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMFunctionTest.m; sourceTree = "<group>"; };
 		965CFF791AD68160004FB197 /* PAMSimpleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAMSimpleTest.m; sourceTree = "<group>"; };
-		9662D5C71AEA956B0033AF03 /* ChannelGroupSimpleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelGroupSimpleTest.m; sourceTree = "<group>"; };
 		9678822F1A28DCA10042C82A /* PNSubscribeUnsubscribeChannelsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeUnsubscribeChannelsTest.m; sourceTree = "<group>"; };
 		967882311A28DCA90042C82A /* PNCryptoHelperInstanseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoHelperInstanseTest.m; sourceTree = "<group>"; };
 		9688151D1A03FEAE00BB548D /* PNCryptoInstanceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNCryptoInstanceTest.m; sourceTree = "<group>"; };
@@ -680,6 +683,15 @@
 			path = "3.7.7 Regression tests";
 			sourceTree = "<group>";
 		};
+		96517C171B1717F80023E5BF /* Client State tests */ = {
+			isa = PBXGroup;
+			children = (
+				96517C181B1717F80023E5BF /* ClientStateTest.m */,
+				96517C1A1B1718100023E5BF /* ClientStateNestedTest.m */,
+			);
+			path = "Client State tests";
+			sourceTree = "<group>";
+		};
 		968AFD591AD9A0CB00F29724 /* PubNub */ = {
 			isa = PBXGroup;
 			children = (
@@ -1078,7 +1090,6 @@
 			children = (
 				9697B42C1AA4C2E800D63BCB /* PNSizeOfMessageTest.m */,
 				96411A4E1AB0ADFA0062EF03 /* ResetDeallocTest.m */,
-				96411A501AB0E9780062EF03 /* ClientStateTest.m */,
 			);
 			path = "3.7.9 Regression tests";
 			sourceTree = "<group>";
@@ -1177,6 +1188,7 @@
 		96CB66E819CFE75D0093D64E /* UnitTestsTests */ = {
 			isa = PBXGroup;
 			children = (
+				96517C171B1717F80023E5BF /* Client State tests */,
 				969EDF6A1ACC20820023279A /* PAM Functional Tests */,
 				96E1B4081AC56877000824A0 /* 3.7.10.3 Regression Tests */,
 				9697B42B1AA4C2E800D63BCB /* 3.7.9 Regression tests */,
@@ -1208,6 +1220,8 @@
 		96CB6A0219D01F210093D64E /* PNTestSuite */ = {
 			isa = PBXGroup;
 			children = (
+				96517C1D1B1719980023E5BF /* TestConfigurator.h */,
+				96517C1C1B1719980023E5BF /* TestConfigurator.m */,
 				965C8C9E1A1F526E00DC6C30 /* GCDGroup.h */,
 				965C8C9F1A1F526E00DC6C30 /* GCDGroup.m */,
 				96CB6A2519D071D40093D64E /* Swizzler.h */,
@@ -1585,6 +1599,7 @@
 			files = (
 				96CB6A2719D071D40093D64E /* Swizzler.m in Sources */,
 				96CB6A8B19D19A6B0093D64E /* PNLatencyMeasureRequestTest.m in Sources */,
+				96517C1E1B1719980023E5BF /* TestConfigurator.m in Sources */,
 				96CB6A8C19D19A6B0093D64E /* PNLeaveRequestTest.m in Sources */,
 				96CB6A7219D19A6B0093D64E /* Configuration.m in Sources */,
 				96CB6A7D19D19A6B0093D64E /* PNChannelConstructor.m in Sources */,
@@ -1599,6 +1614,7 @@
 				965236821A09126600E6BF32 /* PNChannelGroupTest.m in Sources */,
 				96CB6A9519D19A6B0093D64E /* PNPushNotificationsEnabledChannelsParserTest.m in Sources */,
 				96E28B9D1A3EEDD800DC39F4 /* PNDeserializeResponseTest.m in Sources */,
+				96517C191B1717F80023E5BF /* ClientStateTest.m in Sources */,
 				96E9B30B19E8380500362A9D /* ChannelGroupSubscriptionTest.m in Sources */,
 				96CB6A0A19D01F210093D64E /* PNBaseTestCase.m in Sources */,
 				96CB6A7019D19A6B0093D64E /* ChangingChannels.m in Sources */,
@@ -1622,6 +1638,7 @@
 				96CB6A7619D19A6B0093D64E /* PAMTestError.m in Sources */,
 				96A5F8AB1A07D0DF004C92AA /* PNJSONSerializationTest.m in Sources */,
 				96CB6A8419D19A6B0093D64E /* PNCryptoHelperTest.m in Sources */,
+				96517C1B1B1718100023E5BF /* ClientStateNestedTest.m in Sources */,
 				96A252F619DB3EB600C4CFCC /* PubNubTest.m in Sources */,
 				96CB6A8019D19A6B0093D64E /* PNChannelPresenceTest.m in Sources */,
 				96E0446919EC3A1B00A4C18A /* ChannelGroupSubscriptionInstanceTest.m in Sources */,
@@ -1650,7 +1667,6 @@
 				96CB6A0B19D01F210093D64E /* PNTestManager.m in Sources */,
 				967882301A28DCA10042C82A /* PNSubscribeUnsubscribeChannelsTest.m in Sources */,
 				96CB6A8F19D19A6B0093D64E /* PNMessagesHistoryTest.m in Sources */,
-				96411A511AB0E9780062EF03 /* ClientStateTest.m in Sources */,
 				9658512B1A7FD1B400E0C0CE /* PNConfiguration+Test.m in Sources */,
 				960063291A027789002063CF /* PNCryptoHistoryTest.m in Sources */,
 				96CB6A9C19D19A6B0093D64E /* SubscribeLeaveTest.m in Sources */,
