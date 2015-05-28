@@ -126,7 +126,7 @@
     PNIdentificationViewController *weakSelf = self;
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
 
-        PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK} PubNub client connected to: %@", origin);
+        NSLog(@"{BLOCK} PubNub client connected to: %@", origin);
 
         [weakSelf updateConnectionProgressMessage:[NSString stringWithFormat:@"Connected to '%@'",
                                                    [PNDataManager sharedInstance].configuration.origin]];

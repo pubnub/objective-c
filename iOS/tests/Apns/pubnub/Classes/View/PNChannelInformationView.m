@@ -91,11 +91,11 @@
                                         context:nil];
 
     [[PNObservationCenter defaultCenter] addChannelParticipantsListProcessingObserver:self
-                                                                                withBlock:^(NSArray *participants,
-                                                                                            PNChannel *channel,
-                                                                                            PNError *fetchError) {
+                                                                                withBlock:^(PNHereNow *presenceInformation, NSArray *channels, PNError *error) {
 
-                                [self updateLayoutForChannel:channel];
+                                                                                    for (PNChannel *channel in channels) {
+                                                                                        [self updateLayoutForChannel:channel];
+                                                                                    }
                             }];
 }
 

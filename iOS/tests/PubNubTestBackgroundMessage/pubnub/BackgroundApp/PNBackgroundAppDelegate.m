@@ -110,7 +110,7 @@
 
 															if (!connected && error) {
 
-																PNLog(PNLogGeneralLevel, self, @"#2 PubNub client was unable to connect because of error: %@",
+																NSLog(@"#2 PubNub client was unable to connect because of error: %@",
 																	  [error localizedDescription],
 																	  [error localizedFailureReason]);
 															}
@@ -128,29 +128,25 @@
 
 																		 case PNSubscriptionProcessNotSubscribedState:
 
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client subscription failed with error: %@",
+																			 NSLog(@"{BLOCK-P} PubNub client subscription failed with error: %@",
 																				   subscriptionError);
 																			 break;
 
 																		 case PNSubscriptionProcessSubscribedState:
 
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client subscribed on channels: %@",
+																			 NSLog(@"{BLOCK-P} PubNub client subscribed on channels: %@",
 																				   channels);
 																			 break;
 
 																		 case PNSubscriptionProcessWillRestoreState:
 
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
+																			 NSLog(@"{BLOCK-P} PubNub client will restore subscribed on channels: %@",
 																				   channels);
 																			 break;
 
 																		 case PNSubscriptionProcessRestoredState:
 
-																			 PNLog(PNLogGeneralLevel, weakSelf,
-																				   @"{BLOCK-P} PubNub client restores subscribed on channels: %@",
+																			 NSLog(@"{BLOCK-P} PubNub client restores subscribed on channels: %@",
 																				   channels);
 																			 break;
 																	 }
@@ -160,7 +156,7 @@
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:weakSelf
                                                          withBlock:^(PNMessage *message) {
 
-															 PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new message: %@",
+															 NSLog(@"{BLOCK-P} PubNubc client received new message: %@",
 																   message);
 														 }];
 
@@ -168,7 +164,7 @@
     [[PNObservationCenter defaultCenter] addPresenceEventObserver:weakSelf
                                                         withBlock:^(PNPresenceEvent *presenceEvent) {
 
-                                                            PNLog(PNLogGeneralLevel, weakSelf, @"{BLOCK-P} PubNubc client received new event: %@",
+                                                            NSLog(@"{BLOCK-P} PubNubc client received new event: %@",
 																  presenceEvent);
                                                         }];
 }

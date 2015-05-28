@@ -218,9 +218,7 @@ static NSUInteger const inChatMessageLabelTag = 878;
                                                         }];
 
     [[PNObservationCenter defaultCenter] addChannelParticipantsListProcessingObserver:self
-                                                                                    withBlock:^(NSArray *participants,
-                                                                                                PNChannel *channel,
-                                                                                                PNError *fetchError) {
+                                                                                    withBlock:^(PNHereNow *presenceInformation, NSArray *channels, PNError *error) {
 
                                                         [weakSelf.channelParticipantsTableView reloadData];
                                                     }];

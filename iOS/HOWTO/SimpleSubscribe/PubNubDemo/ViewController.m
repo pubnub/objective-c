@@ -41,7 +41,7 @@
               [strongSelf.textView setText:@""];
           }
 
-          [strongSelf.textView setText:[message.message stringByAppendingFormat:@"\n%@\n", strongSelf.textView.text]];
+          [strongSelf.textView setText:[NSString  stringWithFormat:@"\n%@ %@\n", message.message,strongSelf.textView.text]];
 
       }];
 

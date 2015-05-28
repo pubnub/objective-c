@@ -86,7 +86,7 @@
     dispatch_group_enter(_syncGroup);
     
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
-        PNLog(PNLogGeneralLevel, nil, @"\n{BLOCK} PubNub client connected to: %@", origin);
+        NSLog(@"\n{BLOCK} PubNub client connected to: %@", origin);
         dispatch_group_leave(_syncGroup);
     }
                          errorBlock:^(PNError *connectionError) {
@@ -183,6 +183,13 @@
             });
         });
     }
+    
+    
+    PubNub *pubNub = [PubNub new];
+    
+    [pubNub auditAccessRightsForApplicationWithCompletionHandlingBlock:^(PNAccessRightsCollection *accessRightsCollection, PNError *error) {
+        
+    }];
 }
 
 @end

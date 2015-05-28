@@ -76,7 +76,7 @@
                                                                  [textView setText:@""];
                                                              }
 
-                                                             [textView setText:[message.message stringByAppendingFormat:@"\n%@\n", textView.text]];
+                                                             [textView setText:[[NSString stringWithFormat:@"%@", message.message] stringByAppendingFormat:@"\n%@\n", textView.text]];
 
                                                          }];
 

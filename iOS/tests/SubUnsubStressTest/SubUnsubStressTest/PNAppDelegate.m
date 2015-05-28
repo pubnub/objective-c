@@ -88,7 +88,7 @@ static const NSInteger kTimeout = 6;
     dispatch_group_enter(resGroup);
     
     [PubNub connectWithSuccessBlock:^(NSString *origin) {
-        PNLog(PNLogGeneralLevel, nil, @"\n{BLOCK} PubNub client connected to: %@", origin);
+        NSLog(@"\n{BLOCK} PubNub client connected to: %@", origin);
         dispatch_group_leave(resGroup);
     }
                          errorBlock:^(PNError *connectionError) {

@@ -1,1 +1,1 @@
-pod 'PubNub'
+pod 'PubNub', :path => '../../..'
