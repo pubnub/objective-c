@@ -83,7 +83,10 @@
     
     PNChannel *channel = [PNChannel channelWithName:[TestConfigurator uniqueString] shouldObservePresence:YES];
     
-    NSDictionary *nestedClientState = @{@"1": @{@"1-2": @{@"1-3": @(423432423)}}};
+//    NSDictionary *nestedClientState = @{@"1": @{@"1-2": @{@"1-3": @(423432423)}}};
+    
+    NSDictionary *nestedClientState = @{@"testSimple": @"one"};
+
     
     [_pubNub subscribeOn:@[channel] withClientState:nestedClientState andCompletionHandlingBlock:^(PNSubscriptionProcessState state, NSArray *channels, PNError *error) {
         if (error) {
