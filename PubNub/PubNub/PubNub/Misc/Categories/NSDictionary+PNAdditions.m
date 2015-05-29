@@ -41,27 +41,7 @@
 
 - (BOOL)pn_isValidState {
 
-    return [self count] && [self pn_isValidState:YES];
-}
-
-- (BOOL)pn_isValidState:(BOOL)isFirstLevelNesting {
-
-    __block BOOL isValidState = YES;
-
-
-    [self enumerateKeysAndObjectsUsingBlock:^(__unused NSString *key, id value, BOOL *keysEnumeratorStop) {
-
-        if (![value isKindOfClass:[NSDictionary class]]) {
-
-            isValidState = ([value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSString class]] ||
-                               [value isKindOfClass:[NSNull class]]);
-        }
-
-        *keysEnumeratorStop = !isValidState;
-    }];
-
-
-    return isValidState;
+    return [self count] && [NSJSONSerialization isValidJSONObject:self];
 }
 
 - (NSString *)logDescription {

@@ -56,7 +56,7 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"master";
+static NSString * const kPNCodebaseBranch = @"hotfix-nestedStates";
 
 /**
  SHA of the commit which stores actual changes in this codebase.
