@@ -38,6 +38,7 @@
 		9688CABC1B0A3B59003BA07F /* PNSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CAB31B0A3B59003BA07F /* PNSubscribeTests.m */; };
 		9688CB731B0A82E9003BA07F /* PNRequestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CAB11B0A3B59003BA07F /* PNRequestTests.m */; };
 		9688CB761B0B5C36003BA07F /* TestConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = 9688CB741B0B5C36003BA07F /* TestConfigurator.m */; };
+		9693D7421B15BD5200BC2C86 /* PubNub+PublishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9693D7411B15BD5200BC2C86 /* PubNub+PublishTests.m */; };
 		A523D0961B0DB64900C7CD2D /* PNTempTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A523D0951B0DB64900C7CD2D /* PNTempTest.m */; };
 		A5269DDB1B04CE1D001E64EF /* PNStatusTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5269DDA1B04CE1D001E64EF /* PNStatusTests.m */; };
 		A5BAF2BD1B03A403001A5DE7 /* PNResultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BAF2BC1B03A403001A5DE7 /* PNResultTests.m */; };
@@ -94,6 +95,7 @@
 		9688CAB31B0A3B59003BA07F /* PNSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeTests.m; sourceTree = "<group>"; };
 		9688CB741B0B5C36003BA07F /* TestConfigurator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConfigurator.m; sourceTree = "<group>"; };
 		9688CB751B0B5C36003BA07F /* TestConfigurator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestConfigurator.h; sourceTree = "<group>"; };
+		9693D7411B15BD5200BC2C86 /* PubNub+PublishTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PubNub+PublishTests.m"; sourceTree = "<group>"; };
 		96C9098F1B0385E800F1DC10 /* PNRequestTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNRequestTests.m; sourceTree = "<group>"; };
 		9DD086142799BE46D6F6A432 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A523D0951B0DB64900C7CD2D /* PNTempTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTempTest.m; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				9688CAB21B0A3B59003BA07F /* PNStateTests.m */,
 				9688CAB31B0A3B59003BA07F /* PNSubscribeTests.m */,
 				9688C9CE1B064EBD003BA07F /* PNTimeTests.m */,
+				9693D7411B15BD5200BC2C86 /* PubNub+PublishTests.m */,
 			);
 			path = CoreTests;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 				9671F13D1AFCB2D40037E226 /* Swizzler.m in Sources */,
 				9671F1331AFCB2D40037E226 /* GCDGroup.m in Sources */,
 				9671F1351AFCB2D40037E226 /* GCDWrapper.m in Sources */,
+				9693D7421B15BD5200BC2C86 /* PubNub+PublishTests.m in Sources */,
 				9688CAB81B0A3B59003BA07F /* PNPresenceTests.m in Sources */,
 				9688CABB1B0A3B59003BA07F /* PNStateTests.m in Sources */,
 				9688CB761B0B5C36003BA07F /* TestConfigurator.m in Sources */,

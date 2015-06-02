@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
-
 #import "TestConfigurator.h"
 
 @interface PNPublishTests : XCTestCase
@@ -19,7 +18,11 @@
 @implementation PNPublishTests  {
     
     PubNub *_pubNub;
+    NSString *_testChannel;
+    NSString *_testMessage;
+    
     BOOL _isTestError;
+    NSException *_stopTestException;
 }
 
 
@@ -29,6 +32,12 @@
     
     _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
     _pubNub.uuid = @"testUUID";
+    _testChannel = @"testChannel";
+    _testMessage = [self randomStringWithLength:10];
+    
+    _stopTestException = [NSException exceptionWithName:@"StopTestException"
+                                                 reason:nil
+                                               userInfo:nil];
 }
 
 - (void)tearDown {
@@ -41,13 +50,10 @@
 
 - (void)testPublishWithStoryInHistory {
 
+    // Sending  message with story in history
     XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message"];
-    XCTestExpectation *_getHistoryExpectation = [self expectationWithDescription:@"Getting history"];
-    
-    // Send message
-    NSString *testMessage = @"Hello world";
 
-    [_pubNub publish:testMessage toChannel:@"testChannel1" storeInHistory:YES withCompletion:^(PNStatus *status) {
+    [_pubNub publish:_testMessage toChannel:_testChannel storeInHistory:YES withCompletion:^(PNStatus *status) {
         
         if (status.isError) {
             
@@ -57,51 +63,17 @@
         [_publishExpectation fulfill];
     }];
     
-    // Get history
-    __block NSString *sentMessage;
-    
-    [_pubNub historyForChannel:@"testChannel1" withCompletion:^(PNResult *result, PNStatus *status) {
-        
-        if (status.isError) {
-            
-            XCTFail(@"Error occurs during getting history %@", status.data);
-            _isTestError = YES;
-        } else {
-            
-            NSArray *messages = (NSArray *)[result.data objectForKey:@"messages"];
-            sentMessage = [(NSDictionary *)[messages lastObject] objectForKey:@"message"];
-        }
-        [_getHistoryExpectation fulfill];
-    }];
-    
-    // Waiting for result
-    [self waitForExpectationsWithTimeout:[[TestConfigurator shared] testTimeout] handler:^(NSError *error) {
-        
-        if (error) {
-            
-            XCTFail(@"Timeout is fired");
-            _isTestError = YES;
-        }
-    }];
-    
-    if (_isTestError) {
-        
-        return;
-    }
-    
-    // Check result
-    XCTAssertEqualObjects(testMessage, sentMessage, @"Error, got incorrectly message: %@", sentMessage);
+    // Checking result
+    NSString *savedMessage = [[self historyForChannel:_testChannel] lastObject];
+    XCTAssertEqualObjects(_testMessage, savedMessage, @"Error, test-message: %@, saved-message: %@", _testMessage, savedMessage);
 }
 
 - (void)testPublishWithoutStoryInHistory {
     
-    XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message withut store in history"];
-    XCTestExpectation *_getHistoryExpectation = [self expectationWithDescription:@"Getting history"];
+    // Sending  message without story in history
+    XCTestExpectation *_publishExpectation = [self expectationWithDescription:@"Send message"];
     
-    // Send message without store in history
-    NSString *testMessage = @"Hello world again";
-    
-    [_pubNub publish:testMessage toChannel:@"testChannel1" storeInHistory:NO withCompletion:^(PNStatus *status) {
+    [_pubNub publish:_testMessage toChannel:_testChannel storeInHistory:NO withCompletion:^(PNStatus *status) {
         
         if (status.isError) {
             
@@ -110,20 +82,34 @@
         }
         [_publishExpectation fulfill];
     }];
-
-    // Get history
-    __block NSString *sentMessage;
     
-    [_pubNub historyForChannel:@"testChannel1" withCompletion:^(PNResult *result, PNStatus *status) {
+    // Checking result
+    NSString *savedMessage = [[self historyForChannel:_testChannel] lastObject];
+    XCTAssertFalse([_testMessage isEqual:savedMessage], @"Error, test-message: %@, saved-message: %@", _testMessage, savedMessage);
+}
+
+#pragma mark - Private methods
+
+- (NSArray *)historyForChannel:(NSString *)channelName {
+    
+    XCTestExpectation *_getHistoryExpectation = [self expectationWithDescription:@"Getting history"];
+    __block NSMutableArray *messages = nil;
+    
+    [_pubNub historyForChannel:channelName withCompletion:^(PNResult *result, PNStatus *status) {
         
         if (status.isError) {
             
             XCTFail(@"Error occurs during getting history %@", status.data);
-            _isTestError = YES;
+            _isTestError =YES;
         } else {
             
-            NSArray *messages = (NSArray *)[result.data objectForKey:@"messages"];
-            sentMessage = [(NSDictionary *)[messages lastObject] objectForKey:@"message"];
+            NSArray *dictionariesWithMessage = (NSArray *)[result.data objectForKey:@"messages"];
+            messages = [NSMutableArray new];
+            
+            for (NSDictionary *dic in dictionariesWithMessage) {
+                
+                [messages addObject:[dic objectForKey:@"message"]];
+            }
         }
         [_getHistoryExpectation fulfill];
     }];
@@ -134,18 +120,26 @@
         if (error) {
             
             XCTFail(@"Timeout is fired");
-            _isTestError = YES;
+            _isTestError =YES;
         }
     }];
     
     if (_isTestError) {
-        
-        return;
-    };
-    
-    // Check result
-    XCTAssertFalse([testMessage isEqual:sentMessage], @"Error, got incorrectly message: %@", sentMessage);
+        @throw _stopTestException;
+    }
+    return messages;
 }
 
+-(NSString *)randomStringWithLength:(int)length {
+    
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity:length];
+    
+    for (int i=0; i<length; i++) {
+        
+        [randomString appendFormat: @"%C",[letters characterAtIndex:(NSUInteger)arc4random_uniform((u_int32_t)[letters length])]];
+    }
+    return randomString;
+}
 
 @end

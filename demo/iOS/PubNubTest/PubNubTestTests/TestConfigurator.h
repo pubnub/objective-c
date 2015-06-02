@@ -20,4 +20,6 @@
 
 - (NSTimeInterval)testTimeout;
 
++ (NSString *)uniqueString;
+
 @end

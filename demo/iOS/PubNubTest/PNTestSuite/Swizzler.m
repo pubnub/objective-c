@@ -106,6 +106,20 @@
   return [Swizzler _replaceMethod:method1 withMethod:method2];
 }
 
++ (SwizzleReceipt *)swizzleSelector:(SEL)sel1
+                           forClass:(Class)cls1
+                       withSelector:(SEL)sel2
+                          fromClass:(Class)cls2
+{
+    Method method1 = class_getInstanceMethod(cls1, sel1);
+    Method method2 = class_getInstanceMethod(cls2, sel2);
+    NSAssert(method1 != NULL && method2 != NULL,
+             @"class_getClassMethod(%s, %s) failed.",
+             class_getName(cls1),
+             sel_getName(sel1));
+    return [Swizzler _replaceMethod:method1 withMethod:method2];
+}
+
 + (void)unswizzleFromReceipt:(SwizzleReceipt *)receipt
 {
 	if( receipt != nil )

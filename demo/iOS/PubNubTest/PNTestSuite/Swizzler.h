@@ -15,6 +15,11 @@
 + (SwizzleReceipt *)swizzleSelector:(SEL)sel1
                            forClass:(Class)cls
 						 withSelector:(SEL)sel2;
+
++ (SwizzleReceipt *)swizzleSelector:(SEL)sel1
+                           forClass:(Class)cls1
+                       withSelector:(SEL)sel2
+                          fromClass:(Class)cls2;
 /**
  Swizzles class method; returns a receipt for unswizzling.
  */

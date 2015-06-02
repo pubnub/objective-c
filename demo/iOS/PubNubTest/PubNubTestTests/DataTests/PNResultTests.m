@@ -24,7 +24,7 @@
 #import "GCDGroup.h"
 #import "GCDWrapper.h"
 
-static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
+#import "TestConfigurator.h"
 
 @interface PNResultTests : XCTestCase
 
@@ -38,9 +38,9 @@ static NSString const *deviceid = @"F9D977FE-34AB-440D-B1D3-531F0780FD51";
 - (void)setUp {
     
     [super setUp];
-    _pubNub = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    _pubNub = [PubNub clientWithPublishKey:[[TestConfigurator shared] mainPubKey] andSubscribeKey:[[TestConfigurator shared] mainSubKey]];
+    
     _pubNub.uuid = @"testUUID";
-    _pubNub.callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 }
 
 - (void)tearDown {
