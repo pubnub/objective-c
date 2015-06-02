@@ -147,14 +147,10 @@
                          trigger all required presence notifications or  not.
  @param state            Reference on client state which should be bound to channels on which
                          client has been subscribed or will subscribe now.
- @param block            Subscription process completion block which pass only one
-                         argument - request processing status to report about how subscription was
-                         successful or not.
  
  @since 4.0
  */
-- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state
-       completion:(PNStatusBlock)block;
+- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state;
 
 /**
  @brief  Try restore subscription cycle by using \b 0 time token and if required try to catch up on
@@ -171,13 +167,10 @@
  
  @param channels Whether unsubscribing from list of channels or channel groups.
  @param objects  List of objects from which client should unsubscribe.
- @param block    Unsubscription process completion block which pass only one argument - request
-                 processing status to report about how unsubscription was successful or not.
  
  @since 4.0
  */
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
-         withCompletion:(PNStatusBlock)block;
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects;
 
 #pragma mark -
 

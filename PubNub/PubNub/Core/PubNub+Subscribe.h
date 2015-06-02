@@ -100,53 +100,15 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client subscribeToChannels:@[@"swift"] withPresence:YES andCompletion:^(PNStatus *status) {
-    
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-        
-         // Successfully subscribed on data and presence channels.
-     }
-     // Request processing failed.
-     else {
-        
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // In case of error susbcribe requests automatically retry in 1 second. In case when
-         // subscription failed because client doesn't have access rights for some of channels
-         // unsubscribe request should be done on those channels.
-         // Request retry cancel can be done here (block will be called only once) or in
-         // -client:didReceiveStatus: if class added as state change listener and call this
-         // method: [status cancelAutomaticRetry];
-     }
- }];
+ [client subscribeToChannels:@[@"swift"] withPresence:YES];
  @endcode
  
  @param channels              List of channel names on which client should try to subscribe.
  @param shouldObservePresence Whether presence observation should be enabled for \c channels or not.
- @param block                 Subscription process completion block which pass only one 
-                              argument - request processing status to report about how data pushing
-                              was successful or not.
  
  @since 4.0
  */
-- (void)subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
-              andCompletion:(PNStatusBlock)block;
+- (void)subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence;
 
 /**
  @brief      Try subscribe on specified set of channels.
@@ -154,8 +116,8 @@
              listen for new events from them.
  @code
  @endcode
- Extension to \c -subscribeToChannels:withPresence:andCompletion: and allow to specify client state
- information which should be passed to \b PubNub service along with subscription.
+ Extension to \c -subscribeToChannels:withPresence: and allow to specify client state information 
+ which should be passed to \b PubNub service along with subscription.
  
  @code
  @endcode
@@ -164,56 +126,18 @@
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
  [client subscribeToChannels:@[@"swift"] withPresence:YES
-                 clientState:@{@"swift": @{@"Type": @"Developer"}} andCompletion:^(PNStatus *status) {
-    
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-        
-         // Successfully subscribed on data and presence channels. Additional data has been bound to
-         // the client at 'swift' channel.
-     }
-     // Request processing failed.
-     else {
-        
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // In case of error susbcribe requests automatically retry in 1 second. In case when
-         // subscription failed because client doesn't have access rights for some of channels
-         // unsubscribe request should be done on those channels.
-         // Request retry cancel can be done here (block will be called only once) or in
-         // -client:didReceiveStatus: if class added as state change listener and call this
-         // method: [status cancelAutomaticRetry];
-     }
- }];
+                 clientState:@{@"swift": @{@"Type": @"Developer"}}];
  @endcode
  
  @param channels              List of channel names on which client should try to subscribe.
  @param shouldObservePresence Whether presence observation should be enabled for \c channels or not.
  @param state                 Reference on dictionary which stores key-value pairs based on channel
                               name and value which should be assigned to it.
- @param block                 Subscription process completion block which pass only one 
-                              argument - request processing status to report about how data pushing
-                              was successful or not.
  
  @since 4.0
  */
 - (void)subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
-                clientState:(NSDictionary *)state andCompletion:(PNStatusBlock)block;
+                clientState:(NSDictionary *)state;
 
 /**
  @brief      Try subscribe on specified set of channel groups.
@@ -226,54 +150,15 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client subscribeToChannelGroups:@[@"developers"] withPresence:YES 
-                    andCompletion:^(PNStatus *status) {
-    
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-        
-         // Successfully subscribed on data and presence groups.
-     }
-     // Request processing failed.
-     else {
-        
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description),
-         //     "channel-groups": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // In case of error susbcribe requests automatically retry in 1 second. In case when
-         // subscription failed because client doesn't have access rights for some of channels
-         // unsubscribe request should be done on those channels.
-         // Request retry cancel can be done here (block will be called only once) or in
-         // -client:didReceiveStatus: if class added as state change listener and call this
-         // method: [status cancelAutomaticRetry];
-     }
- }];
+ [client subscribeToChannelGroups:@[@"developers"] withPresence:YES];
  @endcode
  
  @param groups                List of channel group names on which client should try to subscribe.
  @param shouldObservePresence Whether presence observation should be enabled for \c groups or not.
- @param block                 Subscription process completion block which pass only one
-                              argument - request processing status to report about how data pushing
-                              was successful or not.
  
  @since 4.0
  */
-- (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
-                   andCompletion:(PNStatusBlock)block;
+- (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence;
 
 /**
  @brief      Try subscribe on specified set of channel groups.
@@ -281,8 +166,8 @@
              listen for new events from them.
  @code
  @endcode
- Extension to \c -subscribeToChannelGroups:withPresence:andCompletion: and allow to specify client 
- state information which should be passed to \b PubNub service along with subscription.
+ Extension to \c -subscribeToChannelGroups:withPresence: and allow to specify client state 
+ information which should be passed to \b PubNub service along with subscription.
  
  @code
  @endcode
@@ -291,57 +176,18 @@
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
  [client subscribeToChannelGroups:@[@"developers"] withPresence:YES
-                      clientState:@{@"developers": @{@"Name": @"Bob"}}
-                    andCompletion:^(PNStatus *status) {
-    
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-        
-         // Successfully subscribed on data and presence groups. Additional data has been bound to
-         // the client at all channels in 'developers' group.
-     }
-     // Request processing failed.
-     else {
-        
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description),
-         //     "channel-groups": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // In case of error susbcribe requests automatically retry in 1 second. In case when
-         // subscription failed because client doesn't have access rights for some of channels
-         // unsubscribe request should be done on those channels.
-         // Request retry cancel can be done here (block will be called only once) or in
-         // -client:didReceiveStatus: if class added as state change listener and call this
-         // method: [status cancelAutomaticRetry];
-     }
- }];
+                      clientState:@{@"developers": @{@"Name": @"Bob"}}];
  @endcode
  
  @param groups                List of channel group names on which client should try to subscribe.
  @param shouldObservePresence Whether presence observation should be enabled for \c groups or not.
  @param state                 Reference on dictionary which stores key-value pairs based on channel
                               group name and value which should be assigned to it.
- @param block                 Subscription process completion block which pass only one
-                              argument - request processing status to report about how data pushing
-                              was successful or not.
  
  @since 4.0
  */
 - (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
-                     clientState:(NSDictionary *)state andCompletion:(PNStatusBlock)block;
+                     clientState:(NSDictionary *)state;
 
 /**
  @brief      Enable presence observation on specified \c channels.
@@ -354,51 +200,15 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client subscribeToPresenceChannels:@[@"swift-pnpres"] withCompletion:^(PNStatus *status) {
-    
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-        
-         // Successfully subscribed on presence channels.
-     }
-     // Request processing failed.
-     else {
-        
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // In case of error susbcribe requests automatically retry in 1 second. In case when
-         // subscription failed because client doesn't have access rights for some of channels
-         // unsubscribe request should be done on those channels.
-         // Request retry cancel can be done here (block will be called only once) or in
-         // -client:didReceiveStatus: if class added as state change listener and call this
-         // method: [status cancelAutomaticRetry];
-     }
- }];
+ [client subscribeToPresenceChannels:@[@"swift-pnpres"]];
  @endcode
  
  @param channels List of channel names for which client should try to subscribe on presence 
                  observing channels.
- @param block    Subscription process completion block which pass only one argument - request 
-                 processing status to report about how data pushing was successful or not.
  
  @since 4.0
  */
-- (void)subscribeToPresenceChannels:(NSArray *)channels withCompletion:(PNStatusBlock)block;
+- (void)subscribeToPresenceChannels:(NSArray *)channels;
 
 
 ///------------------------------------------------
@@ -416,37 +226,16 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client unsubscribeFromChannels:@[@"objc"] withPresence:YES andCompletion:^(PNStatus *status) {
- 
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-        
-         // Successfully unsubscribed from data and presence channels.
-     }
-     // Request processing failed.
-     else {
-        
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue
-         // (service response).
-     }
- }];
+ [client unsubscribeFromChannels:@[@"objc"] withPresence:YES];
  @endcode
  
  @param channels              List of channel names from which client should try to unsubscribe.
  @param shouldObservePresence Whether client should disable presence observation on specified 
                               channels or keep listening for presence event on them.
- @param block                 Unsubscription process completion block which pass only one 
-                              argument - request processing status to report about how data pushing 
-                              was successful or not.
  
  @since 4.0
  */
-- (void)unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
-                  andCompletion:(PNStatusBlock)block;
+- (void)unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence;
 
 /**
  @brief      Unsubscribe/leave from specified set of channel groups.
@@ -460,39 +249,17 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client unsubscribeFromChannelGroups:@[@"developers"] withPresence:YES 
-                        andCompletion:^(PNStatus *status) {
- 
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-        
-         // Successfully unsubscribed from data and presence groups.
-     }
-     // Request processing failed.
-     else {
-        
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue
-         // (service response).
-     }
- }];
+ [client unsubscribeFromChannelGroups:@[@"developers"] withPresence:YES];
  @endcode
  
  @param groups                List of channel group names from which client should try to 
                               unsubscribe.
  @param shouldObservePresence Whether client should disable presence observation on specified 
                               channel groups or keep listening for presence event on them.
- @param block                 Unsubscription process completion block which pass only one
-                              argument - request processing status to report about how data pushing
-                              was successful or not.
  
  @since 4.0
  */
-- (void)unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
-                       andCompletion:(PNStatusBlock)block;
+- (void)unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence;
 
 /**
  @brief      Disable presence events observation on specified channels.
@@ -504,34 +271,15 @@
  
  @code
  PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client unsubscribeFromPresenceChannels:@[@"swifty-pnpres"] andCompletion:^(PNStatus *status) {
- 
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-        
-         // Successfully unsubscribed from presence channels.
-     }
-     // Request processing failed.
-     else {
-        
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue
-         // (service response).
-     }
- }];
+ [client unsubscribeFromPresenceChannels:@[@"swifty-pnpres"]];
  @endcode
  
  @param channels List of channel names for which client should try to unsubscribe from presence 
                  observing channels
- @param block    Unsubscription process completion block which pass only one argument - request 
-                 processing status to report about how data pushing was successful or not.
  
  @since 4.0
  */
-- (void)unsubscribeFromPresenceChannels:(NSArray *)channels andCompletion:(PNStatusBlock)block;
+- (void)unsubscribeFromPresenceChannels:(NSArray *)channels;
 
 #pragma mark -
 

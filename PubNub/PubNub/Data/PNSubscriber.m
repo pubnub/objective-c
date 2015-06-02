@@ -32,6 +32,13 @@ static NSTimeInterval const kPubNubSubscriptionRetryInterval = 1.0f;
 typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     /**
+     @brief  State set when subscriber has been just initialized.
+     
+     @since 4.0
+     */
+    PNInitializedSubscriberState,
+    
+    /**
      @brief  State set at the moment when client received response on 'leave' request and not 
              subscribed to any remote data objects live feed.
      
@@ -209,11 +216,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
              processing to corresponding methods.
  
  @param status Reference on status object which has been received from \b PubNub network.
- @param block  Reference on block which should be called at the end of status processing.
  
  @since 4.0
  */
-- (void)handleSubscriptionStatus:(PNStatus *)status withCompletion:(PNStatusBlock)block;
+- (void)handleSubscriptionStatus:(PNStatus *)status;
 
 /**
  @brief      Process successful subscription status.
@@ -221,11 +227,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
              as long-poll response with events from remote data objects live feed.
  
  @param status Reference on status object which has been received from \b PubNub network.
- @param block  Reference on block which should be called at the end of status processing.
  
  @since 4.0
  */
-- (void)handleSuccessSubscriptionStatus:(PNStatus *)status withCompletion:(PNStatusBlock)block;
+- (void)handleSuccessSubscriptionStatus:(PNStatus *)status;
 
 /**
  @brief      Process failed subscription status.
@@ -233,11 +238,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
              subscribe request has been canceled (to execute new subscription for example).
  
  @param status Reference on status object which has been received from \b PubNub network.
- @param block  Reference on block which should be called at the end of status processing.
  
  @since 4.0
  */
-- (void)handleFailedSubscriptionStatus:(PNStatus *)status withCompletion:(PNStatusBlock)block;
+- (void)handleFailedSubscriptionStatus:(PNStatus *)status;
 
 /**
  @brief  Handle subscription time token received from \b PubNub network.
@@ -454,7 +458,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         if (targetState == PNConnectedSubscriberState) {
             
             // Check whether client transit from 'disconnected' -> 'connected' state.
-            shouldHandleTransition = (currentState == PNDisconnectedSubscriberState);
+            shouldHandleTransition = (currentState == PNInitializedSubscriberState ||
+                                      currentState == PNDisconnectedSubscriberState);
             
             // Check whether client transit from 'access denied' -> 'connected' state.
             if (!shouldHandleTransition) {
@@ -478,15 +483,20 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             // Check whether client transit from 'connected' -> 'disconnected'/'unexpected disconnect'
             // state.
-            shouldHandleTransition = (currentState == PNConnectedSubscriberState);
+            shouldHandleTransition = (currentState == PNInitializedSubscriberState ||
+                                      currentState == PNConnectedSubscriberState);
             category = ((targetState == PNDisconnectedSubscriberState) ? PNDisconnectedCategory :
                         PNUnexpectedDisconnectCategory);
+            if (currentState == PNInitializedSubscriberState) {
+                
+                targetState = PNInitializedSubscriberState;
+            }
         }
         // Check whether transit to 'access deined' state.
         else if (targetState == PNAccessRightsErrorSubscriberState) {
             
             // Check whether client transit from non-'access deined' -> 'access deined' state.
-            shouldHandleTransition = (currentState != PNAccessRightsErrorSubscriberState);
+            shouldHandleTransition = YES;
             category = PNAccessDeniedCategory;
         }
         
@@ -547,8 +557,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 #pragma mark - Subscription
 
-- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state
-       completion:(PNStatusBlock)block {
+- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state {
     
     [self stopRetryTimer];
 
@@ -574,11 +583,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         PNRequestParameters *parameters = [self subscribeRequestParametersWithState:state];
         __weak __typeof(self) weakSelf = self;
-        PNStatusBlock blockCopy = [block copy];
         [self.client processOperation:PNSubscribeOperation withParameters:parameters
                       completionBlock:^(PNStatus *status){
                           
-                          [weakSelf handleSubscriptionStatus:status withCompletion:blockCopy];
+                          [weakSelf handleSubscriptionStatus:status];
                       }];
     }
     else {
@@ -588,7 +596,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         [self.client appendClientInformation:status];
         [self updateStateTo:PNDisconnectedSubscriberState withStatus:status];
         [self.client cancelAllLongPollingOperations];
-        [self.client callBlock:block status:YES withResult:nil andStatus:status];
+        [self.client callBlock:nil status:YES withResult:nil andStatus:status];
     }
     #pragma clang diagnostic pop
 }
@@ -607,17 +615,16 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
     if (shouldRestore && ableToRestore) {
         
-        [self subscribe:YES withState:nil completion:nil];
+        [self subscribe:YES withState:nil];
     }
 }
 
 - (void)continueSubscriptionCycleIfRequired {
 
-    [self subscribe:NO withState:nil completion:nil];
+    [self subscribe:NO withState:nil];
 }
 
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
-         withCompletion:(PNStatusBlock)block {
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -641,21 +648,20 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             [parameters addQueryParameter:objectsList forFieldName:@"channel-group"];
         }
-        PNStatusBlock blockCopy = [block copy];
         __weak __typeof(self) weakSelf = self;
         [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
                       completionBlock:^(__unused PNStatus *status){
                           
             [weakSelf updateStateTo:PNDisconnectedSubscriberState withStatus:successStatus];
-            [weakSelf.client callBlock:blockCopy status:YES withResult:nil andStatus:successStatus];
-            [weakSelf subscribe:YES withState:nil completion:nil];
+            [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+            [weakSelf subscribe:YES withState:nil];
         }];
     }
     else {
         
         [self updateStateTo:PNDisconnectedSubscriberState withStatus:successStatus];
-        [self subscribe:YES withState:nil completion:nil];
-        [self.client callBlock:block status:YES withResult:nil andStatus:successStatus];
+        [self subscribe:YES withState:nil];
+        [self.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
     }
     #pragma clang diagnostic pop
 }
@@ -698,20 +704,20 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 #pragma mark - Handlers
 
-- (void)handleSubscriptionStatus:(PNStatus *)status withCompletion:(PNStatusBlock)block {
+- (void)handleSubscriptionStatus:(PNStatus *)status {
 
     [self stopRetryTimer];
     if (!status.isError) {
         
-        [self handleSuccessSubscriptionStatus:status withCompletion:block];
+        [self handleSuccessSubscriptionStatus:status];
     }
     else {
         
-        [self handleFailedSubscriptionStatus:status withCompletion:block];
+        [self handleFailedSubscriptionStatus:status];
     }
 }
 
-- (void)handleSuccessSubscriptionStatus:(PNStatus *)status withCompletion:(PNStatusBlock)block {
+- (void)handleSuccessSubscriptionStatus:(PNStatus *)status {
     
     // Try fetch time token from passed result/status objects.
     NSNumber *timeToken = @([[status.clientRequest.URL lastPathComponent] longLongValue]);
@@ -740,12 +746,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     if (status.clientRequest.URL != nil && isInitialSubscription) {
         
         [self updateStateTo:PNConnectedSubscriberState withStatus:status];
-        [self.client callBlock:block status:YES withResult:nil andStatus:status];
+        [self.client callBlock:nil status:YES withResult:nil andStatus:status];
     }
     #pragma clang diagnostic pop
 }
 
-- (void)handleFailedSubscriptionStatus:(PNStatus *)status withCompletion:(PNStatusBlock)block {
+- (void)handleFailedSubscriptionStatus:(PNStatus *)status {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -829,7 +835,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             [self updateStateTo:PNDisconnectedUnexpectedlySubscriberState withStatus:status];
         }
     }
-    [self.client callBlock:block status:YES withResult:nil andStatus:status];
+    [self.client callBlock:nil status:YES withResult:nil andStatus:status];
     #pragma clang diagnostic pop
 }
 

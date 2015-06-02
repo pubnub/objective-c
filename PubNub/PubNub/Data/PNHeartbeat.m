@@ -107,11 +107,11 @@
     // Code is aware about this case and at the end will simply call on 'nil' object method.
     // This instance is one of client properties and if client already deallocated there is
     // no need to this object which will be deallocated as well.
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (self.client.configuration.presenceHeartbeatInterval > 0) {
         
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-        #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         __weak __typeof(self) weakSelf = self;
         dispatch_queue_t timerQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue);
@@ -120,12 +120,12 @@
             [weakSelf handleHeartbeatTimer];
         });
         uint64_t offset = (uint64_t)self.client.configuration.presenceHeartbeatInterval * NSEC_PER_SEC;
-        #pragma clang diagnostic pop
         dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)offset);
         dispatch_source_set_timer(timer, start, offset, NSEC_PER_SEC);
         self.heartbeatTimer = timer;
         dispatch_resume(timer);
     }
+    #pragma clang diagnostic pop
 }
 
 - (void)stopHeartbeatIfPossible {

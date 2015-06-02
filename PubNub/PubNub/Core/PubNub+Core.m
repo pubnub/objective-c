@@ -4,10 +4,10 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
-#import "PubNub+SubscribePrivate.h"
 #import "PubNub+PresencePrivate.h"
 #import "PNObjectEventListener.h"
 #import "PNRequestParameters.h"
+#import "PubNub+Subscribe.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
